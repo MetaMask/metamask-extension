@@ -168,13 +168,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap
@@ -212,6 +214,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -231,13 +234,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap USDC → SOL
@@ -258,6 +263,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -278,13 +284,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap and verify no quotes message
@@ -312,13 +320,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap SOL → USDC
@@ -340,6 +350,7 @@ describe('Swap on Solana', function () {
         });
 
         // After failure, the bridge navigates to home/activity with the failed tx
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },

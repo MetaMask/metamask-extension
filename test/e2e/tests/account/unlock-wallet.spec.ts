@@ -78,10 +78,10 @@ describe('Unlock wallet - ', function () {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
@@ -95,7 +95,7 @@ describe('Unlock wallet - ', function () {
 
         await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
 
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);

@@ -1,5 +1,11 @@
 import { strict as assert } from 'assert';
+import { Hex } from '@metamask/utils';
+import { Key } from 'selenium-webdriver';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
+import TokenOverviewPage from '../token-overview-page';
 
 export type BridgeQuote = {
   amount: string;
@@ -15,7 +21,7 @@ class BridgeQuotePage {
 
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
-  private destinationAssetPickerButton =
+  public destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
   private mutlichainAssetPicker =
@@ -30,13 +36,13 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  public tokenButton = '[data-testid="bridge-asset"]';
+  public tokenButton = '[data-testid^="bridge-asset--"]';
 
-  private submitButton = { text: 'Swap', tag: 'button' };
+  private submitButton = '[data-testid="bridge-cta-button"]';
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
   };
 
   private backButton = '[aria-label="Back"]';
@@ -148,6 +154,69 @@ class BridgeQuotePage {
     );
   };
 
+  searchForAsset = async (
+    token: string,
+    assetPicker = this.sourceAssetPickerButton,
+  ) => {
+    console.log(`Opening asset picker`);
+    await this.driver.clickElement(assetPicker);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    console.log(`Filled search input with ${token}`);
+    const assetElement = await this.driver.findElement({
+      css: this.tokenButton,
+      text: token,
+    });
+    return assetElement;
+  };
+
+  goToAssetPage = async (
+    token: string,
+    chainId: Hex,
+    address: string,
+    assetPicker = this.sourceAssetPickerButton,
+  ) => {
+    const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
+    const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+
+    console.log(`Opening asset picker`);
+    await this.driver.clickElement(assetPicker);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    console.log(`Filled search input with ${token}`);
+    const assetElement = await this.driver.findElement({
+      tag: 'button',
+      testId: `bridge-asset-info-icon-${expectedAssetId}`,
+    });
+    console.log(`Clicked link to the asset page`);
+    await assetElement.click();
+    await this.driver.waitForUrlContaining({
+      url: expectedUrl,
+    });
+    const assetPage = new TokenOverviewPage(this.driver);
+    await assetPage.checkPageIsLoaded();
+  };
+
+  checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
+    await this.driver.waitForSelector({
+      css: this.sourceAssetPickerButton,
+      text: sourceToken,
+    });
+    console.log(`Expected source asset ${sourceToken} is selected`);
+    await this.driver.waitForSelector({
+      css: this.destinationAssetPickerButton,
+      text: destToken,
+    });
+    console.log(`Expected dest asset ${destToken} is selected`);
+  };
+
+  checkAssetPickerModalIsReopened = async () => {
+    await this.driver.waitForSelector({
+      testId: 'bridge-asset-picker-modal',
+    });
+    console.log('Asset picker modal is visible');
+    await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
+    console.log('Asset picker modal closed');
+  };
+
   waitForQuote = async () => {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
@@ -256,6 +325,10 @@ class BridgeQuotePage {
   async setCustomSlippage(value: string): Promise<void> {
     await this.driver.clickElement(this.slippageEditButton);
     await this.driver.clickElement(this.slippageCustomButton);
+    const input = await this.driver.waitForSelector(this.slippageCustomInput, {
+      timeout: 1000,
+    });
+    await input.sendKeys(Key.BACK_SPACE);
     await this.driver.fill(this.slippageCustomInput, value);
     await this.driver.executeScript(`
       const input = document.querySelector('${this.slippageCustomInput}');

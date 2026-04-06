@@ -127,22 +127,24 @@ export const getWalletsWithAccounts = createSelector(
         };
 
         Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
-          const accountsFromGroup = group.accounts.map((accountId) => {
-            const accountWithMetadata = { ...accountsById[accountId] };
+          const accountsFromGroup = group.accounts
+            .filter((accountId) => accountsById[accountId] !== undefined)
+            .map((accountId) => {
+              const accountWithMetadata = { ...accountsById[accountId] };
 
-            // Set flags for pinned, hidden, and active accounts
-            accountWithMetadata.pinned = pinnedAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.hidden = hiddenAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.active =
-              selectedAccount.id === accountWithMetadata.id &&
-              connectedAccountIdsSet.has(accountWithMetadata.id);
+              // Set flags for pinned, hidden, and active accounts
+              accountWithMetadata.pinned = pinnedAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.hidden = hiddenAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.active =
+                selectedAccount.id === accountWithMetadata.id &&
+                connectedAccountIdsSet.has(accountWithMetadata.id);
 
-            return accountWithMetadata;
-          });
+              return accountWithMetadata;
+            });
 
           consolidatedWallets[wallet.id].groups[group.id] = {
             id: group.id,
@@ -535,15 +537,14 @@ export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
 );
 
 /**
- * Get the selected account group from the account tree.
+ * Get the selected account group from the state.
  *
- * @param accountTree - The account tree state.
+ * @param state - The multichain accounts state.
  * @returns The selected account group, or null if not found.
  */
-export const getSelectedAccountGroup = createSelector(
-  getAccountTree,
-  (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
-);
+export const getSelectedAccountGroup = (
+  state: MultichainAccountsState,
+): AccountGroupId => state.metamask.selectedAccountGroup;
 
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.

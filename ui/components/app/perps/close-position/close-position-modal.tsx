@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
@@ -27,7 +28,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getDisplayName } from '../utils';
-import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
+import {
+  PERPS_MARKET_ORDER_FEE_RATE,
+  PERPS_MIN_MARKET_ORDER_USD,
+} from '../constants';
 import { CloseAmountSection } from '../order-entry';
 import type { Position } from '../types';
 
@@ -45,8 +49,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,12 +90,36 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
+  /** HyperLiquid requires ≥ $10 notional for partial closes; full close omits size and skips this. */
+  const closeNotionalUsd = useMemo(
+    () => closeSize * currentPrice,
+    [closeSize, currentPrice],
+  );
+
+  const isPriceValid = useMemo(
+    () => Number.isFinite(currentPrice) && currentPrice > 0,
+    [currentPrice],
+  );
+
+  const isPartialCloseBelowMinNotional = useMemo(() => {
+    if (closePercent >= 100) {
+      return false;
+    }
+    // Compare unrounded notional: rounding to cents can lift e.g. $9.995 to $10.00 and wrongly allow submit.
+    return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
+  }, [closePercent, closeNotionalUsd]);
+
   const youWillReceive = useMemo(
     () => margin + unrealizedPnl - estimatedFees,
     [margin, unrealizedPnl, estimatedFees],
   );
 
-  const isSubmitDisabled = closePercent <= 0 || isSubmitting || closeSize <= 0;
+  const isSubmitDisabled =
+    !isPriceValid ||
+    closePercent <= 0 ||
+    isSubmitting ||
+    closeSize <= 0 ||
+    isPartialCloseBelowMinNotional;
 
   const handleClose = useCallback(async () => {
     if (isSubmitDisabled) {
@@ -106,10 +133,12 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       const params: {
         symbol: string;
         orderType: 'market';
+        currentPrice: number;
         size?: string;
       } = {
         symbol: position.symbol,
         orderType: 'market',
+        currentPrice,
       };
 
       if (closePercent < 100) {
@@ -125,13 +154,30 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       }
       onClose();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred',
-      );
+      if (err instanceof Error && err.message === 'ORDER_SIZE_MIN') {
+        setError(
+          t('perpsClosePartialMinNotional', [
+            formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+          ]),
+        );
+      } else {
+        setError(
+          err instanceof Error ? err.message : 'An unknown error occurred',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitDisabled, position.symbol, closePercent, closeSize, onClose]);
+  }, [
+    isSubmitDisabled,
+    position.symbol,
+    closePercent,
+    closeSize,
+    currentPrice,
+    onClose,
+    t,
+    formatCurrencyWithMinThreshold,
+  ]);
 
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
@@ -149,23 +195,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {/* Available to close */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsAvailableToClose')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {formatTokenQuantity(positionSize, displayName)}
-              </Text>
-            </Box>
-
             {/* Close Amount Section (input + slider) */}
             <CloseAmountSection
               positionSize={position.size}
@@ -174,6 +203,34 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               asset={displayName}
               currentPrice={currentPrice}
             />
+
+            {isPartialCloseBelowMinNotional ? (
+              <Box
+                backgroundColor={BoxBackgroundColor.WarningMuted}
+                className="rounded-lg"
+                padding={3}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+              >
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Sm}
+                  color={IconColor.WarningDefault}
+                />
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.WarningDefault}
+                >
+                  {t('perpsClosePartialMinNotional', [
+                    formatCurrencyWithMinThreshold(
+                      PERPS_MIN_MARKET_ORDER_USD,
+                      'USD',
+                    ),
+                  ])}
+                </Text>
+              </Box>
+            ) : null}
 
             {/* Summary rows */}
             <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -206,10 +263,23 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     textAlign={TextAlign.Right}
                   >
                     {t('perpsIncludesPnl', [
-                      `${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                        Math.abs(unrealizedPnl),
-                        'USD',
-                      )}`,
+                      <Text
+                        key="perps-close-margin-pnl"
+                        variant={TextVariant.BodyXs}
+                        color={
+                          unrealizedPnl >= 0
+                            ? TextColor.SuccessDefault
+                            : TextColor.ErrorDefault
+                        }
+                        asChild
+                      >
+                        <span>
+                          {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
+                            Math.abs(unrealizedPnl),
+                            'USD',
+                          )}`}
+                        </span>
+                      </Text>,
                     ])}
                   </Text>
                 </Box>
@@ -262,7 +332,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
             {/* Error */}
             {error && (
               <Box
-                className="bg-error-muted rounded-lg"
+                backgroundColor={BoxBackgroundColor.ErrorMuted}
+                className="rounded-lg"
                 padding={3}
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
@@ -284,7 +355,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           </Box>
         </ModalBody>
         <ModalFooter
-          onCancel={onClose}
           onSubmit={handleClose}
           submitButtonProps={{
             'data-testid': 'perps-close-position-modal-submit',

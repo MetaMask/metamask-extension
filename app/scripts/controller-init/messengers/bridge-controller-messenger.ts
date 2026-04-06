@@ -1,34 +1,11 @@
-import { Messenger } from '@metamask/messenger';
-import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import type {
-  GetCurrencyRateState,
-  MultichainAssetsRatesControllerGetStateAction,
-  TokenRatesControllerGetStateAction,
-} from '@metamask/assets-controllers';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
-import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { BridgeControllerMessenger } from '@metamask/bridge-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | AccountsControllerGetAccountByAddressAction
-  | GetCurrencyRateState
-  | TokenRatesControllerGetStateAction
-  | MultichainAssetsRatesControllerGetStateAction
-  | HandleSnapRequest
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerTokenAction;
-
-export type BridgeControllerMessenger = ReturnType<
-  typeof getBridgeControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -38,14 +15,12 @@ export type BridgeControllerMessenger = ReturnType<
  * messenger.
  */
 export function getBridgeControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
+  messenger: RootMessenger<
+    MessengerActions<BridgeControllerMessenger>,
+    MessengerEvents<BridgeControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'BridgeController',
-    AllowedActions,
-    never,
-    typeof messenger
-  >({
+  const controllerMessenger: BridgeControllerMessenger = new Messenger({
     namespace: 'BridgeController',
     parent: messenger,
   });
