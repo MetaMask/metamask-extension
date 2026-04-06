@@ -11,6 +11,7 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -47,7 +48,6 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           IS_FORK_PR: ${{ github.event.pull_request.head.repo.fork || 'false' }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/yarn-audit-and-triage.mts --output-file /tmp/audit-current.json
 
       # Upload the current audit output as the new baseline when merging to main.
@@ -70,8 +70,6 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true
         uses: actions/github-script@v8
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
             // Security: we must use an explicit push-to-main run ID when
@@ -86,7 +84,7 @@ jobs:
               repo: context.repo.repo,
               branch: 'main',
               event: 'push',
-              status: 'success',
+              status: 'completed',
               per_page: 1,
             });
             const run = data.workflow_runs[0];
@@ -114,7 +112,6 @@ jobs:
       - name: Run audit diff
         if: ${{ github.event_name == 'pull_request' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         # TODO: remove --skip-if-no-baseline after first main push deposits the baseline artifact
         run: node .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json --skip-if-no-baseline
@@ -135,7 +132,6 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn tsx .github/scripts/check-feature-flag-registry.ts
 
       - name: Check working tree

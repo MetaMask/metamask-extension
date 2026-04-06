@@ -620,19 +620,14 @@ async function main() {
     summaryLines.push('');
   }
 
-  if (triage.decisions.blockReleaseCandidate) {
-    summaryLines.push('### Decision');
-    summaryLines.push('');
-    summaryLines.push(
-      '- **BLOCK RC**: Production dependency advisory present on a release branch.',
-    );
-    summaryLines.push('');
-  } else {
-    summaryLines.push('### Decision');
-    summaryLines.push('');
-    summaryLines.push('- No blocking conditions met.');
-    summaryLines.push('');
-  }
+  summaryLines.push('### Decision');
+  summaryLines.push('');
+  summaryLines.push(
+    triage.decisions.blockReleaseCandidate
+      ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
+      : '- No blocking conditions met.',
+  );
+  summaryLines.push('');
 
   writeStepSummary(summaryLines.join('\n'));
 
@@ -659,14 +654,14 @@ async function main() {
     BRANCH === 'main'
   ) {
     const repo = getRepoFromEnv();
-    const token = getGitHubToken();
 
-    if (!repo || !token) {
+    if (!repo) {
       githubAnnotate(
         'warning',
-        'CREATE_TRACKING_ISSUE=true but missing GITHUB_REPOSITORY or GITHUB_TOKEN; skipping issue creation.',
+        'CREATE_TRACKING_ISSUE=true but missing GITHUB_REPOSITORY; skipping issue creation.',
       );
     } else {
+      const token = getGitHubToken();
       const trackingKey = sha256Short(
         JSON.stringify({
           advisories: trackOnlyDev

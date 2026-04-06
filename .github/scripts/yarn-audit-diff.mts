@@ -65,6 +65,35 @@ function readAdvisories(filePath: string | null): ParsedAdvisory[] | null {
   }
 }
 
+function sevLabel(a: ParsedAdvisory): string {
+  return (a.effectiveSeverity ?? 'unknown').toUpperCase();
+}
+
+function toAnnotation(a: ParsedAdvisory): object {
+  return {
+    path: '.github',
+    start_line: 1,
+    end_line: 1,
+    annotation_level: 'failure',
+    message: `New advisory: [${sevLabel(a)}] ${a.moduleName} \u2014 ${a.title} (${a.url})`,
+  };
+}
+
+async function postCheckRunQuietly(
+  conclusion: 'success' | 'failure',
+  title: string,
+  summary: string,
+  annotations: object[],
+): Promise<void> {
+  try {
+    await postCheckRun(conclusion, title, summary, annotations);
+  } catch (e) {
+    console.log(
+      `::notice::Could not post check run (fork token?): ${String(e)}`,
+    );
+  }
+}
+
 async function postCheckRun(
   conclusion: 'success' | 'failure',
   title: string,
@@ -72,7 +101,9 @@ async function postCheckRun(
   annotations: object[],
 ): Promise<void> {
   if (!repoOwner || !repoName) {
-    console.log('::notice::GITHUB_REPOSITORY not set — skipping check run post.');
+    console.log(
+      '::notice::GITHUB_REPOSITORY not set — skipping check run post.',
+    );
     return;
   }
 
@@ -136,36 +167,33 @@ async function main() {
       // Rollout mode: no baseline available yet. Post success and exit 0 so
       // this PR isn't blocked. Remove --skip-if-no-baseline after the first
       // push-to-main run deposits the baseline artifact.
-      console.log('::notice::No baseline found — posting success (skip-if-no-baseline mode).');
-      try {
-        await postCheckRun(
-          'success',
-          'No baseline yet',
-          'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
-          [],
-        );
-      } catch (e) {
-        console.log(`::notice::Could not post check run (fork token?): ${String(e)}`);
-      }
+      console.log(
+        '::notice::No baseline found — posting success (skip-if-no-baseline mode).',
+      );
+      await postCheckRunQuietly(
+        'success',
+        'No baseline yet',
+        'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
+        [],
+      );
       return;
     }
 
     // No baseline = treat all current advisories as new → block.
-    console.log(`::warning::No baseline found. Treating all ${current.length} advisory/advisories as new.`);
-    const annotations = current.map((a) => ({
-      path: '.github',
-      start_line: 1,
-      end_line: 1,
-      annotation_level: 'failure',
-      message: `New advisory: [${(a.effectiveSeverity ?? 'unknown').toUpperCase()}] ${a.moduleName} — ${a.title} (${a.url})`,
-    }));
-    const summary = `No baseline artifact found. Treating all **${current.length}** advisory/advisories as new.\n\n` +
-      current.map((a) => `- [${(a.effectiveSeverity ?? 'unknown').toUpperCase()}] \`${a.moduleName}\` — ${a.title}`).join('\n');
-    try {
-      await postCheckRun('failure', 'New vulnerabilities found', summary, annotations);
-    } catch (e) {
-      console.log(`::notice::Could not post check run (fork token?): ${String(e)}`);
-    }
+    console.log(
+      `::warning::No baseline found. Treating all ${current.length} advisory/advisories as new.`,
+    );
+    const summary =
+      `No baseline artifact found. Treating all **${current.length}** advisory/advisories as new.\n\n` +
+      current
+        .map((a) => `- [${sevLabel(a)}] \`${a.moduleName}\` — ${a.title}`)
+        .join('\n');
+    await postCheckRunQuietly(
+      'failure',
+      'New vulnerabilities found',
+      summary,
+      current.map(toAnnotation),
+    );
     return;
   }
 
@@ -173,9 +201,7 @@ async function main() {
   // Diff: advisories present in current but not in baseline (by GHSA ID)
   // ------------------------------------------------------------------
   const baselineIds = new Set(
-    baseline
-      .map((a) => a.id)
-      .filter((id): id is number => id !== null),
+    baseline.map((a) => a.id).filter((id): id is number => id !== null),
   );
 
   const newAdvisories = current.filter(
@@ -183,45 +209,41 @@ async function main() {
   );
 
   if (newAdvisories.length === 0) {
-    console.log(`No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`);
-    try {
-      await postCheckRun(
-        'success',
-        'No new vulnerabilities',
-        `Compared **${current.length}** current advisory/advisories against **${baseline.length}** baseline. No new advisories introduced by this PR.`,
-        [],
-      );
-    } catch (e) {
-      console.log(`::notice::Could not post check run (fork token?): ${String(e)}`);
-    }
+    console.log(
+      `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
+    );
+    await postCheckRunQuietly(
+      'success',
+      'No new vulnerabilities',
+      `Compared **${current.length}** current advisory/advisories against **${baseline.length}** baseline. No new advisories introduced by this PR.`,
+      [],
+    );
     return;
   }
 
   // New advisories found — post a failure check run.
-  console.log(`Found ${newAdvisories.length} new advisory/advisories not in baseline.`);
+  console.log(
+    `Found ${newAdvisories.length} new advisory/advisories not in baseline.`,
+  );
   for (const a of newAdvisories) {
-    console.log(`  [${(a.effectiveSeverity ?? 'unknown').toUpperCase()}] ${a.moduleName} — ${a.title} (${a.url})`);
+    console.log(`  [${sevLabel(a)}] ${a.moduleName} — ${a.title} (${a.url})`);
   }
-
-  const annotations = newAdvisories.map((a) => ({
-    path: '.github',
-    start_line: 1,
-    end_line: 1,
-    annotation_level: 'failure',
-    message: `New advisory: [${(a.effectiveSeverity ?? 'unknown').toUpperCase()}] ${a.moduleName} — ${a.title} (${a.url})`,
-  }));
 
   const summaryBody =
     `Found **${newAdvisories.length}** new advisory/advisories not present in the baseline.\n\n` +
     newAdvisories
-      .map((a) => `- [${(a.effectiveSeverity ?? 'unknown').toUpperCase()}] \`${a.moduleName}\` — ${a.title} (<${a.url}>)`)
+      .map(
+        (a) =>
+          `- [${sevLabel(a)}] \`${a.moduleName}\` — ${a.title} (<${a.url}>)`,
+      )
       .join('\n');
 
-  try {
-    await postCheckRun('failure', 'New vulnerabilities found', summaryBody, annotations);
-  } catch (e) {
-    console.log(`::notice::Could not post check run (fork token?): ${String(e)}`);
-  }
+  await postCheckRunQuietly(
+    'failure',
+    'New vulnerabilities found',
+    summaryBody,
+    newAdvisories.map(toAnnotation),
+  );
 }
 
 try {
