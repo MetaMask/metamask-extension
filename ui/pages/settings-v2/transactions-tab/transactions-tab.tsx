@@ -46,6 +46,13 @@ const TransactionSimulationsItem = createToggleItem({
   action: setUseTransactionSimulations,
   dataTestId: 'transactions-simulations-toggle',
   disabledSelector: selectIsDisabledByShieldSubscription,
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_transaction_simulations: newValue,
+    }),
+  },
 });
 
 const SecurityAlertsItem = createToggleItem({
@@ -100,6 +107,13 @@ const ProposedNicknamesItem = createToggleItem({
     Boolean(getUseExternalNameSources(state)),
   action: setUseExternalNameSources,
   dataTestId: 'transactions-proposed-nicknames-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_external_name_sources: newValue,
+    }),
+  },
 });
 
 const ShowHexDataItem = createToggleItem({
@@ -111,6 +125,13 @@ const ShowHexDataItem = createToggleItem({
   action: (value: boolean) => setFeatureFlag('sendHexData', value, ''),
   dataTestId: 'transactions-show-hex-data-toggle',
   containerDataTestId: 'transactions-settings-hex-data-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      send_hex_data: newValue,
+    }),
+  },
 });
 
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [

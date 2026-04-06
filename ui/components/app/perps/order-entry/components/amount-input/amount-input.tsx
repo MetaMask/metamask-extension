@@ -21,7 +21,6 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
-import { formatFlooredDecimals } from '../../../utils/number';
 import type { AmountInputProps } from '../../order-entry.types';
 import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
@@ -119,7 +118,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
     const numValue = Number.parseFloat(amount);
     if (Number.isFinite(numValue) && numValue > 0) {
-      onAmountChange(formatFlooredDecimals(numValue));
+      onAmountChange(numValue.toFixed(2));
       return;
     }
 
@@ -149,7 +148,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(formatFlooredDecimals(usdMargin));
+        onAmountChange(usdMargin.toFixed(2));
         if (availableBalance > 0) {
           const pct = Math.min(
             Math.round((usdMargin / availableBalance) * 100),
@@ -185,7 +184,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         onAmountChange('');
       } else {
         const newAmount = (availableBalance * percent) / 100;
-        onAmountChange(formatFlooredDecimals(newAmount));
+        onAmountChange(newAmount.toFixed(2));
       }
     },
     [onAmountChange, onBalancePercentChange, availableBalance],
@@ -203,7 +202,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onAmountChange('');
           } else {
             const newAmount = (availableBalance * num) / 100;
-            onAmountChange(formatFlooredDecimals(newAmount));
+            onAmountChange(newAmount.toFixed(2));
           }
         }
       }
@@ -220,7 +219,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(formatFlooredDecimals(availableBalance));
+      onAmountChange(availableBalance.toFixed(2));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));

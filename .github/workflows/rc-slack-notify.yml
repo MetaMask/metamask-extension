@@ -1,0 +1,125 @@
+# Posts a Slack Block Kit message after a successful Main workflow run on release/X.Y.Z,
+# when the release PR (into stable) has the `auto-rc-builds` label — parity with Mobile RC Slack.
+# See .github/scripts/slack-rc-notification.ts
+#
+# Test without waiting for Main:
+#   Actions → RC Slack notify → Run workflow → fill head_sha, semver, github_run_id, test_channel
+#   (requires SLACK_BOT_TOKEN secret and vars.AWS_CLOUDFRONT_URL for real download URLs)
+#
+# Optional repo variable (Settings → Variables): SLACK_RC_CHANNEL — if set, automated workflow_run
+# posts there instead of #release-extension-* (use only for staging; clear when done).
+
+name: RC Slack notify
+
+on:
+  workflow_run:
+    workflows:
+      - Main
+    types:
+      - completed
+    branches:
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: 'Commit SHA to checkout (must include CHANGELOG.md / package.json for that RC)'
+        required: true
+      semver:
+        description: 'Semver X.Y.Z (same as release/X.Y.Z)'
+        required: true
+      github_run_id:
+        description: 'GitHub Actions run ID for CloudFront HOST_URL path and run link (e.g. from a recent Main run)'
+        required: true
+      test_channel:
+        description: 'Slack channel (#name or ID). Sets SLACK_RC_CHANNEL for the script. Bot must be in the channel.'
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    # workflow_dispatch: manual test to a channel. workflow_run: successful push to semver release branch in this repo.
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'workflow_run' &&
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_repository.full_name == github.repository &&
+          startsWith(github.event.workflow_run.head_branch, 'release/'))
+      }}
+    steps:
+      - name: Gate — release PR must have auto-rc-builds (workflow_run only)
+        id: gate
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+          if [[ ! "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Not release/x.y.z: $BRANCH — skipping Slack."
+            exit 0
+          fi
+          PR_JSON="$(gh pr list --head "$BRANCH" --base stable --json number,labels --jq '.[0]' 2>/dev/null || true)"
+          if [[ -z "$PR_JSON" || "$PR_JSON" == "null" ]]; then
+            echo "No PR with base stable for head $BRANCH — skipping Slack."
+            exit 0
+          fi
+          if ! echo "$PR_JSON" | jq -r '.labels[].name' | grep -qx 'auto-rc-builds'; then
+            echo "PR exists but missing auto-rc-builds label — skipping Slack."
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "semver=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
+          echo "Proceeding: release PR has auto-rc-builds."
+
+      - name: Set notification variables
+        id: notif
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_RUN_ID: ${{ inputs.github_run_id }}
+          INPUT_SEMVER: ${{ inputs.semver }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          GATE_SEMVER: ${{ steps.gate.outputs.semver }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "run_id=${INPUT_RUN_ID}" >> "$GITHUB_OUTPUT"
+            echo "semver=${INPUT_SEMVER}" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_id=${WORKFLOW_RUN_ID}" >> "$GITHUB_OUTPUT"
+            echo "semver=${GATE_SEMVER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout and setup
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.head_sha || github.event.workflow_run.head_sha }}
+
+      - name: Post RC Slack notification
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
+        continue-on-error: true
+        env:
+          SEMVER: ${{ steps.notif.outputs.semver }}
+          GITHUB_RUN_ID: ${{ steps.notif.outputs.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          # Dispatch: workflow input. Automated runs: optional vars.SLACK_RC_CHANNEL to test destinations.
+          SLACK_RC_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_channel || vars.SLACK_RC_CHANNEL || '' }}
+          # AWS_CLOUDFRONT_URL: full origin (https://…); if empty, artifact links are skipped.
+          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ steps.notif.outputs.run_id }}
+        run: yarn exec tsx ./.github/scripts/slack-rc-notification.ts

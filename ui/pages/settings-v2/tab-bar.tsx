@@ -118,7 +118,6 @@ const TabBar = ({
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.TextAlternative}
-                className="capitalize"
               >
                 {title}
               </Text>
