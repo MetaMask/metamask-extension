@@ -207,7 +207,7 @@ describe('patch-store substream connection', () => {
       await patchesPromise;
     });
 
-    it('resolves with the patches from the background response', async () => {
+    it('returns the patches from the background response', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
       randomIdMock.mockReturnValue(42);
@@ -226,7 +226,7 @@ describe('patch-store substream connection', () => {
       expect(actualPatches).toStrictEqual(expectedPatches);
     });
 
-    it('rejects when the background responds with an error', async () => {
+    it('throws when the background responds with an error', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const rpcError = { code: -32000, message: 'Internal error' };
       randomIdMock.mockReturnValue(42);
@@ -264,7 +264,7 @@ describe('patch-store substream connection', () => {
       ]);
     });
 
-    it('does not reject when a getStatePatches response result is not an array of patches', async () => {
+    it('does not throw when a getStatePatches response result is not an array of patches', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
@@ -292,7 +292,9 @@ describe('patch-store substream connection', () => {
         handleSendUpdate: jest.fn(),
       });
       // Suppress the 'error' event that fires alongside 'close' on destroy
-      uiStream.on('error', () => undefined);
+      uiStream.on('error', () => {
+        // Do nothing
+      });
 
       const patchesPromise = getStatePatches();
       uiMux.destroy();
@@ -302,19 +304,36 @@ describe('patch-store substream connection', () => {
       );
     });
 
-    it('rejects pending requests when the stream finishes', async () => {
+    it('throws if the stream has already ended', async () => {
       const { uiStream } = createPatchStreamPair();
       randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
-
-      const patchesPromise = getStatePatches();
       uiStream.end();
 
-      await expect(patchesPromise).rejects.toThrow(
-        'Patch-store substream closed, aborting request',
+      await expect(getStatePatches()).rejects.toThrow(
+        'Patch-store substream closed',
       );
+    });
+
+    it('returns an empty array if the stream is already destroyed', async () => {
+      const { uiMux, uiStream } = createPatchStreamPair();
+      randomIdMock.mockReturnValue(42);
+      setupPatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      let caughtError;
+      uiStream.on('error', (error) => {
+        caughtError = error;
+      });
+      uiMux.destroy();
+      await flushBufferedWrites();
+
+      expect(caughtError).toMatchObject({
+        message: 'Premature close',
+      });
+      expect(await getStatePatches()).toStrictEqual([]);
     });
   });
 });

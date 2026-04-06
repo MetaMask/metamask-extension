@@ -5,6 +5,7 @@ import type { Patch } from 'immer';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
+import { onStreamClosed } from '../../shared/lib/stream-utils';
 
 /**
  * A notification with the method `sendUpdate`.
@@ -120,15 +121,19 @@ async function receiveMessage(
 }
 
 /**
- * Fails all pending `getStatePatches` requests with a disconnect error. Called
- * when the patch-store substream closes or finishes, so that callers do not
- * hang indefinitely.
+ * Fails all pending `getStatePatches` requests with a disconnect error, then
+ * clears the patch-stroe substream singleton.
+ *
+ * Called when the patch-store substream closes or finishes, so that callers do
+ * not hang indefinitely.
  */
-function failPendingRequests() {
+function onPatchStoreSubstreamClosed() {
   pendingGetStatePatchesRequests.forEach(({ reject }) => {
     reject(new Error('Patch-store substream closed, aborting request'));
   });
   pendingGetStatePatchesRequests.clear();
+
+  patchStoreSubstreamSingleton = undefined;
 }
 
 /**
@@ -159,8 +164,7 @@ export function setupPatchStoreSubstreamConnection(
       );
     });
   });
-  patchStoreSubstreamSingleton.on('finish', failPendingRequests);
-  patchStoreSubstreamSingleton.on('close', failPendingRequests);
+  onStreamClosed(patchStoreSubstreamSingleton, onPatchStoreSubstreamClosed);
 }
 
 /**
