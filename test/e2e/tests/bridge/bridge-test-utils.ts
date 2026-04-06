@@ -1916,23 +1916,7 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
 }
 
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        '1': {
-          network: 'ethereum-mainnet',
-          explorer: 'https://etherscan.io',
-          confirmations: true,
-          smartTransactions: true,
-          relayTransactions: true,
-          hidden: false,
-          sendBundle: false,
-        },
-      },
-    }));
+  return mockSentinelNetworks(mockServer, false);
 }
 
 export const getGasless7702SwapFixtures = (title?: string) => {
@@ -1964,17 +1948,21 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         await mockGetTokenArbitrum(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockGasSponsoredSwapETHtoUSDC(mockServer),
-        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, {
-          smartTransactionsNetworks: {
-            '0x1': {
-              maxDeadline: 160,
-              sentinelUrl: STX_MAINNET_SENTINEL_URL,
-              expectedDeadline: 45,
-              extensionActive: true,
-              gaslessBridgeWith7702Enabled: true,
+        await mockFeatureFlags(
+          mockServer,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          {
+            smartTransactionsNetworks: {
+              '0x1': {
+                maxDeadline: 160,
+                sentinelUrl: STX_MAINNET_SENTINEL_URL,
+                expectedDeadline: 45,
+                extensionActive: true,
+                gaslessBridgeWith7702Enabled: true,
+              },
             },
           },
-        }),
+        ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
