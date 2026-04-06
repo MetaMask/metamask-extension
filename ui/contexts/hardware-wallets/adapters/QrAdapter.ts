@@ -17,7 +17,7 @@ import { checkCameraPermission } from '../webConnectionUtils';
  * Readiness depends on camera availability and permission state for QR scanning.
  */
 export class QrAdapter implements HardwareWalletAdapter {
-  private options: HardwareWalletAdapterOptions;
+  private readonly options: HardwareWalletAdapterOptions;
 
   private connected = false;
 

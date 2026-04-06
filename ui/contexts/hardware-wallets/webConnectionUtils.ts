@@ -31,12 +31,12 @@ export function isWebUsbAvailable(): boolean {
  * Check if camera APIs are available in the current browser.
  */
 export function isCameraAvailable(): boolean {
-  if (typeof globalThis.window === 'undefined') {
+  if (globalThis.window === undefined) {
     return false;
   }
   const { navigator } = globalThis;
   return (
-    typeof navigator.mediaDevices !== 'undefined' &&
+    navigator.mediaDevices !== undefined &&
     typeof navigator.mediaDevices.getUserMedia === 'function'
   );
 }
