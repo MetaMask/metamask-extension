@@ -1147,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Price impact"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "You will lose $1 on this trade"
+  },
   "bridgePriceImpactHigh": {
     "message": "High price impact"
   },

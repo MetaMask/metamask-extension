@@ -92,7 +92,11 @@ import {
   isStockRWAToken,
   isTokenTradingOpenAt,
 } from '../../pages/bridge/hooks/useRWAToken';
-import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
+import {
+  formatPriceImpactFiat,
+  formatPriceImpactPercentage,
+} from '../../pages/bridge/utils/price-impact';
+import { getCurrentCurrency } from '../metamask/metamask';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -705,9 +709,18 @@ export const getPriceImpact = createSelector(
   },
 );
 
-export const getFormattedPriceImpact = createSelector(
+export const getFormattedPriceImpactPercentage = createSelector(
   [getPriceImpact],
-  (priceImpact) => formatPriceImpact(priceImpact),
+  (priceImpact) => formatPriceImpactPercentage(priceImpact),
+);
+
+export const getFormattedPriceImpactFiat = createSelector(
+  [
+    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    getCurrentCurrency,
+  ],
+  (activeQuote, currentCurrency) =>
+    formatPriceImpactFiat(activeQuote, currentCurrency),
 );
 
 const _getBaseValidationErrors = createDeepEqualSelector(

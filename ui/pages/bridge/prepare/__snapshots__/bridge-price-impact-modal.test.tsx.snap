@@ -112,6 +112,13 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
             </p>
           </div>
           <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <div
+              class=""
+            />
+          </div>
+          <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
@@ -218,6 +225,13 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
             >
               You'll lose approximately 27% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <div
+              class=""
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -327,6 +341,13 @@ exports[`BridgePriceImpactModal submit-cta should disable the submit button when
             >
               You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <div
+              class=""
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -518,6 +539,13 @@ exports[`BridgePriceImpactModal submit-cta should render when there is a price i
             >
               You'll lose approximately 90% of your token's market price on this swap. Try a smaller trade or a more liquid route to improve your rate.
             </p>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          >
+            <div
+              class=""
+            />
           </div>
           <div
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
