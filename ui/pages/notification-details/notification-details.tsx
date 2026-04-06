@@ -29,7 +29,9 @@ import { NotificationDetailsFooter } from './notification-details-footer/notific
 function useNotificationByPath() {
   const { pathname } = useLocation();
   const id = getExtractIdentifier(pathname);
-  const notification = useSelector(getMetamaskNotificationById(id));
+  const notification = useSelector((state) =>
+    getMetamaskNotificationById(state, id),
+  );
 
   return {
     notification,

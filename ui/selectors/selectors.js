@@ -1291,7 +1291,8 @@ export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
-export const getNetworkConfigurationIdByChainId = createDeepEqualSelector(
+
+export const getNetworkConfigurationIdByChainId = createSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
     Object.entries(networkConfigurationsByChainId).reduce(
@@ -2251,13 +2252,14 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   },
 );
 
-const getAllConnectedAccounts = createDeepEqualSelector(
+const getAllConnectedAccounts = createSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
   },
 );
-export const getConnectedSitesList = createDeepEqualSelector(
+
+export const getConnectedSitesList = createSelector(
   getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getAllConnectedAccounts,
@@ -2586,7 +2588,7 @@ export const getSelectedNetwork = createDeepEqualSelector(
   },
 );
 
-export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+export const getConnectedSitesListWithNetworkInfo = createSelector(
   getConnectedSitesList,
   getAllDomains,
   getNetworkConfigurationsByChainId,
