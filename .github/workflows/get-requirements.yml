@@ -42,7 +42,7 @@ env:
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
-  IS_RUN_EVERYTHING_BRANCH: ${{ (github.head_ref || github.ref_name) == 'main' || (github.head_ref || github.ref_name) == 'stable' }}
+  IS_RUN_EVERYTHING_BRANCH: ${{ 'false' }}
   RUN_ID: ${{ github.run_id }}
   # For a `pull_request` event, the base branch is `github.event.pull_request.base.ref`.
   # For a `push` event on release/* branches, fall back to `stable`; otherwise `main`.

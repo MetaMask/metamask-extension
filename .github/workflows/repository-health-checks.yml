@@ -12,6 +12,8 @@ jobs:
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # TEST OVERRIDE: disable issue creation. Remove before merging to main.
+      CREATE_TRACKING_ISSUE: 'false'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -47,7 +49,7 @@ jobs:
       - name: Run audit and triage
         if: ${{ !cancelled() }}
         env:
-          IS_FORK_PR: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+          IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: node .github/scripts/yarn-audit-and-triage.mts --output-file /tmp/audit-current.json
 
       # Upload the current audit output as the new baseline when merging to main.
