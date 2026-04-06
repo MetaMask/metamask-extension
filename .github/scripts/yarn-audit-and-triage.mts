@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { appendFileSync, existsSync, writeFileSync } from 'fs';
-import { getGitHubToken } from './github-token.mts';
+import { getGitHubToken } from './shared/github-token.mts';
 
 type YarnSeverity =
   | 'info'

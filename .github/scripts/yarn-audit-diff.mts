@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { getGitHubToken } from './github-token.mts';
+import { getGitHubToken } from './shared/github-token.mts';
 
 // ---------------------------------------------------------------------------
 // CLI args
