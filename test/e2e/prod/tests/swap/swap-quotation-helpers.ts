@@ -38,9 +38,7 @@ export async function importTokensFromTokenlist(
   chainId: number,
   count: number = TOKENS_TO_IMPORT,
 ): Promise<Token[]> {
-  console.log(
-    `[HELPER] Fetching tokenlist from: ${tokenlistUrl}`,
-  );
+  console.log(`[HELPER] Fetching tokenlist from: ${tokenlistUrl}`);
   let data: any;
 
   // Handle both remote URLs and local file:// URLs
@@ -84,9 +82,7 @@ export async function importTokensFromTokenlist(
     throw new Error(`No tokens array found in tokenlist from ${tokenlistUrl}`);
   }
 
-  console.log(
-    `[HELPER] Total tokens in tokenlist: ${tokensArray.length}`,
-  );
+  console.log(`[HELPER] Total tokens in tokenlist: ${tokensArray.length}`);
 
   // Normalize logoUri/logoURI field (some tokenlists use lowercase, some uppercase)
   const normalizedTokens = tokensArray.map((token: any) => {
@@ -105,18 +101,14 @@ export async function importTokensFromTokenlist(
   );
 
   if (filteredTokens.length === 0) {
-    console.warn(
-      `[WARN] No tokens found for chainId ${chainId} in tokenlist`,
-    );
+    console.warn(`[WARN] No tokens found for chainId ${chainId} in tokenlist`);
     const availableChainIds = [
       ...new Set(normalizedTokens.map((t: Token) => Number(t.chainId))),
     ];
     console.warn(
       `[WARN] Available chain IDs in tokenlist: ${availableChainIds.join(', ')}`,
     );
-    throw new Error(
-      `No tokens found for chainId ${chainId} in tokenlist`,
-    );
+    throw new Error(`No tokens found for chainId ${chainId} in tokenlist`);
   }
 
   console.log(
@@ -160,7 +152,9 @@ export async function importTokensIntoWallet(
 
   for (const token of tokens) {
     await assetListPage.checkTokenExistsInList(token.symbol);
-    console.log(`[HELPER] Verified token visible in asset list: ${token.symbol}`);
+    console.log(
+      `[HELPER] Verified token visible in asset list: ${token.symbol}`,
+    );
   }
 }
 
@@ -208,7 +202,8 @@ export async function performSwapFlow(
     sourceTokenSymbol: string;
     destinationTokenAddress: string;
     destinationTokenSymbol: string;
-    fromAmount?: number;
+    fromAmount?: string | number;
+    useMax?: boolean;
   },
 ): Promise<void> {
   const {
@@ -216,6 +211,7 @@ export async function performSwapFlow(
     destinationTokenAddress,
     destinationTokenSymbol,
     fromAmount = DEFAULT_SWAP_AMOUNT,
+    useMax = false,
   } = options;
 
   console.log(
@@ -277,6 +273,7 @@ export async function performSwapFlow(
     destinationTokenAddress,
     destinationTokenSymbol,
     fromAmount,
+    useMax,
   });
 
   console.log(
@@ -293,6 +290,7 @@ export async function performSwapFlow(
  * @param options.destinationTokenAddress - Destination token address to search and select
  * @param options.destinationTokenSymbol - Destination token symbol for logging
  * @param options.fromAmount - Amount to fill in from-amount input
+ * @param options.useMax - Click the Max button instead of filling the amount input
  */
 export async function configureSwapPairInCurrentSwapPage(
   driver: Driver,
@@ -300,7 +298,8 @@ export async function configureSwapPairInCurrentSwapPage(
     sourceTokenSymbol: string;
     destinationTokenAddress: string;
     destinationTokenSymbol: string;
-    fromAmount?: number;
+    fromAmount?: string | number;
+    useMax?: boolean;
   },
 ): Promise<void> {
   const {
@@ -308,6 +307,7 @@ export async function configureSwapPairInCurrentSwapPage(
     destinationTokenAddress,
     destinationTokenSymbol,
     fromAmount = DEFAULT_SWAP_AMOUNT,
+    useMax = false,
   } = options;
 
   // Step 3: Ensure source token is selected in swap UI
@@ -327,7 +327,9 @@ export async function configureSwapPairInCurrentSwapPage(
       { timeout: 3000 },
     );
     sourceAlreadySelected = true;
-    console.log(`[HELPER] Source token ${sourceTokenSymbol} already selected, skipping picker`);
+    console.log(
+      `[HELPER] Source token ${sourceTokenSymbol} already selected, skipping picker`,
+    );
   } catch (_e) {
     // Need to select it
   }
@@ -380,11 +382,19 @@ export async function configureSwapPairInCurrentSwapPage(
   await driver.clickElement(bridgeAsset);
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
-  // Step 6: Fill from-amount
-  console.log(`[HELPER] Step 6: Filling from-amount with ${fromAmount}`);
+  // Step 6: Fill from-amount or use Max
   const fromAmountInput = '[data-testid="from-amount"]';
   await driver.waitForSelector(fromAmountInput);
-  await driver.fill(fromAmountInput, fromAmount.toString());
+  if (useMax) {
+    console.log('[HELPER] Step 6: Clicking Max button for source amount');
+    await driver.clickElement({
+      tag: 'button',
+      text: 'Max',
+    });
+  } else {
+    console.log(`[HELPER] Step 6: Filling from-amount with ${fromAmount}`);
+    await driver.fill(fromAmountInput, String(fromAmount));
+  }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   console.log(
@@ -649,7 +659,9 @@ export async function generateQuotationReport(
     );
 
     await Promise.all(
-      staleReports.map((fileName) => fs.unlink(path.join(artifactDir, fileName))),
+      staleReports.map((fileName) =>
+        fs.unlink(path.join(artifactDir, fileName)),
+      ),
     );
   } catch (error) {
     console.warn('[WARN] Failed to clean old swap quotation reports:', error);
@@ -748,7 +760,11 @@ export function generateTokenPairs(
   });
 
   // Imported token combinations without reverse duplication (T1→T2, T1→T3, T2→T3)
-  for (let sourceIndex = 0; sourceIndex < importedTokens.length; sourceIndex++) {
+  for (
+    let sourceIndex = 0;
+    sourceIndex < importedTokens.length;
+    sourceIndex++
+  ) {
     for (
       let destinationIndex = sourceIndex + 1;
       destinationIndex < importedTokens.length;

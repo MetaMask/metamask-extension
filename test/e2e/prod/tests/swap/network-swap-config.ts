@@ -22,6 +22,10 @@ export interface NetworkSwapConfig {
   fixtureSetupMethod?: string;
   /** Optional: Block explorer URL */
   blockExplorerUrl?: string;
+  /** Optional: ERC-20 token symbols to resolve from tokenlist for execution tests */
+  swapExecutionTokenSymbols?: string[];
+  /** Optional: Ordered swap routes for execution tests */
+  swapExecutionRoutes?: Array<{ from: string; to: string }>;
 }
 
 /**
@@ -78,6 +82,35 @@ export interface QuotationTestResult {
 }
 
 /**
+ * Result of a single swap execution route
+ */
+export interface SwapRouteResult {
+  /** Route label e.g. "MON → AUSD" */
+  route: string;
+  fromSymbol: string;
+  toSymbol: string;
+  /** Source amount captured from the swap UI before submission */
+  fromAmount: string;
+  /** Destination amount captured from the swap UI before submission */
+  toAmount: string;
+  status: 'passed' | 'failed';
+  error?: string;
+}
+
+/**
+ * Consolidated report for a swap execution test run
+ */
+export interface SwapExecutionReport {
+  networkName: string;
+  chainId: number;
+  timestamp: string;
+  totalRoutes: number;
+  passedRoutes: number;
+  failedRoutes: number;
+  routeResults: SwapRouteResult[];
+}
+
+/**
  * Consolidated test results for report generation
  */
 export interface ConsolidatedTestResults {
@@ -117,6 +150,13 @@ export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
       'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
     fixtureSetupMethod: 'withNetworkControllerOnMonad',
     blockExplorerUrl: 'https://explorer.monad.xyz',
+    swapExecutionTokenSymbols: ['AUSD', 'AZND', 'BTC.b'],
+    swapExecutionRoutes: [
+      { from: 'MON', to: 'AUSD' },
+      { from: 'AUSD', to: 'AZND' },
+      { from: 'AZND', to: 'BTC.b' },
+      { from: 'BTC.b', to: 'MON' },
+    ],
   },
   // Add more networks here as needed
   // Example for future network:
@@ -165,9 +205,7 @@ export function validateNetworkSwapConfig(config: NetworkSwapConfig): void {
     throw new Error('Network config missing required field: chainId');
   }
   if (!config.nativeTokenSymbol) {
-    throw new Error(
-      'Network config missing required field: nativeTokenSymbol',
-    );
+    throw new Error('Network config missing required field: nativeTokenSymbol');
   }
   if (!config.tokenlistUrl) {
     throw new Error('Network config missing required field: tokenlistUrl');
