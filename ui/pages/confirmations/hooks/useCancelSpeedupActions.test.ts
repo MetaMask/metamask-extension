@@ -75,4 +75,27 @@ describe('useCancelSpeedupActions', () => {
 
     expect(result.current.error).toBeNull();
   });
+
+  it('clears previous error when a subsequent submit succeeds', async () => {
+    const { result } = renderHook(() => useCancelSpeedupActions(mockOnClose));
+
+    await act(async () => {
+      await result.current.submitTransaction(
+        () => Promise.reject(new Error('first failure')),
+        true,
+      );
+    });
+
+    expect(result.current.error).toStrictEqual({
+      message: 'first failure',
+      isCancel: true,
+    });
+
+    await act(async () => {
+      await result.current.submitTransaction(() => Promise.resolve(), false);
+    });
+
+    expect(result.current.error).toBeNull();
+    expect(mockOnClose).toHaveBeenCalledTimes(2);
+  });
 });

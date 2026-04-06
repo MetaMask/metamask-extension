@@ -21,6 +21,7 @@ export function useCancelSpeedupActions(onClose: () => void) {
 
   const submitTransaction = useCallback(
     async (action: () => void, isCancel: boolean) => {
+      setError(null);
       onClose();
       try {
         await Promise.resolve(action());
