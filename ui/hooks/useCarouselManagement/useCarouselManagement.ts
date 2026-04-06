@@ -18,6 +18,7 @@ import {
   getUseExternalServices,
 } from '../../selectors';
 import { getCurrentLocale } from '../../ducks/locale/locale';
+import { isMaintainedLocale } from '../../../shared/constants/locales';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -187,7 +188,9 @@ export const useCarouselManagement = ({
 
       try {
         const { prioritySlides, regularSlides } =
-          await fetchCarouselSlidesFromContentful(currentLocale);
+          await fetchCarouselSlidesFromContentful(
+            isMaintainedLocale(currentLocale) ? currentLocale : undefined,
+          );
 
         if (cancelled) {
           return;
