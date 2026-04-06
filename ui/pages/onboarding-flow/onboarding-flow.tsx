@@ -273,7 +273,7 @@ export default function OnboardingFlow() {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        handleSocialLoginRehydration();
+        await handleSocialLoginRehydration();
         return;
       }
       navigate(nextRoute, { replace: true });
