@@ -117,18 +117,18 @@ export const BridgePriceImpactWarningModal = ({
             )}
           </Text>
         </Column>
-        <Column gap={3} paddingInline={4} paddingBottom={4}>
-          <Box>
-            {formattedPriceImpactFiat && isPriceImpactError && (
+        {formattedPriceImpactFiat && isPriceImpactError && (
+          <Column gap={3} paddingInline={4} paddingBottom={4}>
+            <Box>
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t('bridgePriceImpactFiatAlert', [
                   formattedPriceImpactFiat,
                 ])}
               />
-            )}
-          </Box>
-        </Column>
+            </Box>
+          </Column>
+        )}
         <ModalFooter>
           <Row gap={4}>
             {variant === 'submit-cta' && isPriceImpactError && (
