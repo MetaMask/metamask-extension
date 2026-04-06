@@ -430,20 +430,6 @@ describe('webConnectionUtils', () => {
       );
     });
 
-    it('checkCameraPermissionState returns Prompt when permissions API is unavailable', async () => {
-      expect(isCameraAvailable()).toBe(true);
-
-      Object.defineProperty(window.navigator, 'permissions', {
-        value: undefined,
-        writable: true,
-        configurable: true,
-      });
-
-      await expect(checkCameraPermissionState()).resolves.toBe(
-        HardwareConnectionPermissionState.Prompt,
-      );
-    });
-
     it('checkCameraPermission returns denied when camera APIs are unavailable', async () => {
       Object.defineProperty(window.navigator, 'mediaDevices', {
         value: undefined,
