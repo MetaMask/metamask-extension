@@ -53,7 +53,7 @@ export type AmountField = {
   /** Raw hex or BigNumber value. Each renderer formats this for its view. */
   getValue: (ctx: PermissionContext) => Hex | BigNumber;
   /** For ERC20 amounts, returns the token contract address. */
-  getTokenAddress?: (ctx: PermissionContext) => string;
+  getTokenAddress?: (ctx: PermissionContext) => Hex;
   tooltip?: string;
   visible?: (ctx: PermissionContext) => boolean;
 };
