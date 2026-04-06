@@ -206,6 +206,60 @@ describe('CancelSpeedup Component', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it('renders loading skeleton when previousGas is not set', async () => {
+    const transactionWithoutPreviousGas = {
+      ...mockTransaction,
+      previousGas: undefined,
+    } as unknown as TransactionMeta;
+
+    const store = configureStore({
+      appState: { isLoading: false },
+      metamask: {
+        ...mockState.metamask,
+        isInitialized: true,
+        accounts: {
+          [mockSelectedInternalAccount.address]: {
+            address: mockSelectedInternalAccount.address,
+            balance: '0x1F4',
+          },
+        },
+        preferences: { showFiatInTestnets: true },
+        featureFlags: { advancedInlineGas: true },
+        gasFeeEstimates:
+          mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+            gasFeeEstimates:
+              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <CancelSpeedup
+        transaction={transactionWithoutPreviousGas}
+        editGasMode={EditGasModes.cancel}
+      />,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-section-loading'),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId('cancel-speedup-section'),
+    ).not.toBeInTheDocument();
+
+    const confirmButton = screen.getByTestId('cancel-speedup-confirm-button');
+    expect(confirmButton).toBeDisabled();
+  });
+
   it('renders correctly in Speed Up mode', async () => {
     render({ editGasMode: EditGasModes.speedUp });
 

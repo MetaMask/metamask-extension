@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,6 +14,16 @@ import {
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import {
+  FEEDBACK_CONFIG,
+  SUPPORT_CONFIG,
+} from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
 
 const LIST_ITEM_BASE =
@@ -62,26 +72,60 @@ const SupportListItem: React.FC<SupportListItemProps> = ({
 export const PerpsSupportLearn: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleLearnPerps = useCallback(() => {
     dispatch(setTutorialModalOpen(true));
   }, [dispatch]);
+
+  const handleContactSupport = useCallback(() => {
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_CONFIG.Url,
+          location: 'perps_support_learn',
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
+  }, [trackEvent]);
+
+  const handleFeedback = useCallback(() => {
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Feedback,
+        event: MetaMetricsEventName.ExternalLinkClicked,
+        properties: {
+          url: FEEDBACK_CONFIG.Url,
+          location: 'perps_support_learn',
+          text: 'perps_feedback_survey',
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
+  }, [trackEvent]);
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
       <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
         <SupportListItem
           label={t('perpsContactSupport')}
-          onClick={() => {
-            // TODO: Navigate to support
-          }}
+          onClick={handleContactSupport}
           className="rounded-t-xl"
+          data-testid="perps-contact-support"
         />
         <SupportListItem
           label={t('perpsGiveFeedback')}
-          onClick={() => {
-            // TODO: Navigate to feedback page
-          }}
+          onClick={handleFeedback}
+          data-testid="perps-give-feedback"
         />
         <SupportListItem
           label={t('perpsLearnBasics')}

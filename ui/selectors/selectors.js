@@ -2698,16 +2698,6 @@ export function getUseNftDetection(state) {
 }
 
 /**
- * To get the useBlockie flag which determines whether we show blockies or Jazzicons
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getUseBlockie(state) {
-  return Boolean(state.metamask.useBlockie);
-}
-
-/**
  * To get the openSeaEnabled flag which determines whether we use OpenSea's API
  *
  * @param {*} state
@@ -2938,6 +2928,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return '';
   }
 };
+
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * Returns true if a token list is available for the current network.
  *
@@ -2950,10 +2942,12 @@ export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 export function getAllDetectedTokens(state) {
   return state.metamask.allDetectedTokens;
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * To retrieve the list of tokens detected across all chains.
  *

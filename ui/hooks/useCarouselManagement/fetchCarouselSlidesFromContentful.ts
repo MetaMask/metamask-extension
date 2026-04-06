@@ -1,6 +1,7 @@
 import semver from 'semver';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import { isProduction } from '../../../shared/lib/environment';
+import { captureException } from '../../../shared/lib/sentry';
 import packageJson from '../../../package.json';
 
 const APP_VERSION = packageJson.version;
@@ -78,7 +79,40 @@ type ContentfulBannerResponse = {
   };
 };
 
-export async function fetchCarouselSlidesFromContentful(): Promise<{
+export class UnknownLocaleError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UnknownLocaleError';
+  }
+}
+
+async function fetchEntries(
+  baseUrl: URL,
+  locale?: string,
+): Promise<ContentfulBannerResponse> {
+  const url = new URL(baseUrl.toString());
+  if (locale) {
+    url.searchParams.set('locale', locale);
+  }
+  const res = await fetch(url);
+  const json = await res.json();
+
+  if (!res.ok) {
+    if (
+      typeof json?.message === 'string' &&
+      json.message.includes('Unknown locale')
+    ) {
+      throw new UnknownLocaleError(json.message);
+    }
+    throw new Error(`Contentful error: ${json?.message ?? res.statusText}`);
+  }
+
+  return json as ContentfulBannerResponse;
+}
+
+export async function fetchCarouselSlidesFromContentful(
+  locale?: string,
+): Promise<{
   prioritySlides: CarouselSlide[];
   regularSlides: CarouselSlide[];
 }> {
@@ -95,7 +129,19 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
   url.searchParams.set('access_token', accessToken);
   url.searchParams.set('content_type', CONTENT_TYPE);
   url.searchParams.set('fields.showInExtension', 'true');
-  const res: ContentfulBannerResponse = await fetch(url).then((r) => r.json());
+
+  let res: ContentfulBannerResponse;
+  try {
+    res = await fetchEntries(url, locale);
+  } catch (error) {
+    if (error instanceof UnknownLocaleError && locale) {
+      captureException(error);
+      // In case of unknown locale, fallback to default locale
+      res = await fetchEntries(url);
+    } else {
+      throw error;
+    }
+  }
 
   const assets = res.includes?.Asset || [];
   const resolveImage = (imageRef: ContentfulSysField) => {

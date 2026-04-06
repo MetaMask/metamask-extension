@@ -1,5 +1,8 @@
 import { Context } from 'mocha';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -48,7 +51,11 @@ describe('Token List via StorageService', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importTokenBySearch(tokenName);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await assetListPage.importTokenBySearch({
+          tokenName,
+          networkName: MAINNET_DISPLAY_NAME,
+        });
         await assetListPage.checkTokenExistsInList(tokenSymbol);
       },
     );

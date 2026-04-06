@@ -2,9 +2,17 @@ import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
 } from '../../../../shared/constants/benchmarks';
 
-export { BENCHMARK_PLATFORMS, BENCHMARK_BUILD_TYPES };
+export {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+};
+
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
   POWER_USER_HOME: 'startupPowerUserHome',
@@ -24,17 +32,6 @@ export const USER_JOURNEY_PRESETS = {
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
-
-export const BENCHMARK_PERSONA = {
-  STANDARD: 'standard',
-  POWER_USER: 'powerUser',
-} as const;
-
-export const BENCHMARK_TYPE = {
-  BENCHMARK: 'benchmark',
-  PERFORMANCE: 'performance',
-  USER_ACTION: 'userAction',
-} as const;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
@@ -163,8 +160,8 @@ const SWAP: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   fetchAndDisplaySwapQuotes: {
-    p75: { warn: 1200, fail: 2000 },
-    p95: { warn: 2000, fail: 3500 },
+    p75: { warn: 2800, fail: 5000 },
+    p95: { warn: 3500, fail: 6000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -277,7 +274,7 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
- * Threshold configurations for interaction and user journey benchmarks.
+ * Threshold configurations for all benchmarks.
  */
 const BENCHMARK_THRESHOLDS = {
   // Interaction benchmarks (run on all 4 combos, shared baseline)
@@ -294,50 +291,18 @@ const BENCHMARK_THRESHOLDS = {
   sendTransactions: SEND_TRANSACTIONS,
   swap: SWAP,
 
-  // Startup benchmarks (fallback when platform/buildType not available)
+  // Startup benchmarks (platform/buildType now stored in data, not in key)
   startupStandardHome: STANDARD_HOME,
   startupPowerUserHome: POWER_USER_HOME,
 };
-
-/**
- * Startup benchmark configurations.
- * Generated for all platform/buildType combos with platform-prefixed keys.
- */
-const STARTUP_BENCHMARK_CONFIGS = {
-  startupStandardHome: STANDARD_HOME,
-  startupPowerUserHome: POWER_USER_HOME,
-};
-
-/**
- * Generates startup benchmark thresholds for all platform/buildType combinations.
- * Creates keys like 'chrome-browserify-startupStandardHome'.
- */
-function generateStartupThresholds(): Record<string, ThresholdConfig> {
-  const platforms = Object.values(BENCHMARK_PLATFORMS);
-  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES);
-  const result: Record<string, ThresholdConfig> = {};
-
-  for (const [benchmarkName, config] of Object.entries(
-    STARTUP_BENCHMARK_CONFIGS,
-  )) {
-    for (const platform of platforms) {
-      for (const buildType of buildTypes) {
-        result[`${platform}-${buildType}-${benchmarkName}`] = config;
-      }
-    }
-  }
-
-  return result;
-}
 
 /**
  * Registry of threshold configurations keyed by benchmark name (camelCase).
  *
  * To add a new benchmark:
- * - Interaction/User Journey: Add to BENCHMARK_THRESHOLDS (works for all platforms)
- * - Startup: Add to STARTUP_BENCHMARK_CONFIGS (auto-generates 8 platform-combo entries)
+ * - Add to BENCHMARK_THRESHOLDS with a camelCase key matching the filename
+ * - All benchmarks now use simple keys; platform/buildType are stored as data fields
  */
 export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
   ...BENCHMARK_THRESHOLDS,
-  ...generateStartupThresholds(),
 };

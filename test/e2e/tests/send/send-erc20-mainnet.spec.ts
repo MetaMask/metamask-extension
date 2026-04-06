@@ -6,7 +6,7 @@
  */
 
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,13 +14,15 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 describe('Send ERC20 - Mainnet', function () {
   it('sends DAI with preloaded state', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -44,7 +46,11 @@ describe('Send ERC20 - Mainnet', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importTokenBySearch('DAI');
+        await homePage.waitForNonEvmAccountsLoaded();
+        await assetListPage.importTokenBySearch({
+          tokenName: 'DAI',
+          networkName: MAINNET_DISPLAY_NAME,
+        });
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
@@ -68,6 +74,7 @@ describe('Send ERC20 - Mainnet', function () {
 
         await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity('-10 DAI');

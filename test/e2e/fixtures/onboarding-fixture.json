@@ -12,7 +12,8 @@
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+      "hasAccountTreeSyncingSyncedAtLeastOnce": false,
+      "selectedAccountGroup": ""
     },
     "AccountsController": {
       "internalAccounts": {
@@ -36,7 +37,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 200,
+      "currentMigrationVersion": 202,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1982,7 +1983,6 @@
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -2074,7 +2074,7 @@
     "SnapInterfaceController": {
       "interfaces": {}
     },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": null,
       "databaseUnavailable": false,
       "lastUpdated": null,
@@ -2186,6 +2186,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 200
+    "version": 202
   }
 }
