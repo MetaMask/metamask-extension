@@ -1778,7 +1778,10 @@ export const checkInputChangedEvents = async (
   return expectedInputChanges.length;
 };
 
-async function mockSentinelNetworks(mockServer: Mockttp) {
+async function mockSentinelNetworks(
+  mockServer: Mockttp,
+  sendBundle: boolean = true,
+) {
   return await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
     .always()
@@ -1792,7 +1795,7 @@ async function mockSentinelNetworks(mockServer: Mockttp) {
           smartTransactions: true,
           relayTransactions: true,
           hidden: false,
-          sendBundle: true,
+          sendBundle,
         },
       },
     }));
