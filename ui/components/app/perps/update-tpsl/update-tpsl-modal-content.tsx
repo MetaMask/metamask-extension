@@ -17,7 +17,6 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import { FEE_RATES } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -32,6 +31,10 @@ import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
 import { normalizeTpslPrices } from '../utils';
+
+// HyperLiquid taker fee rate (0.045%) - applied when a TP/SL order executes.
+// Source: FEE_RATES.taker in @metamask/perps-controller/constants/hyperLiquidConfig
+const HYPERLIQUID_TAKER_FEE_RATE = 0.00045;
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
@@ -208,7 +211,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee = Math.abs(signedSize) * exitPrice * FEE_RATES.taker;
+    const closingFee =
+      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
     return grossPnl - closingFee;
   }, [editingTpPrice, signedSize, entryPriceForEdit]);
 
@@ -222,7 +226,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee = Math.abs(signedSize) * exitPrice * FEE_RATES.taker;
+    const closingFee =
+      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
     return grossPnl - closingFee;
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
