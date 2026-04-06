@@ -189,9 +189,7 @@ describe('PerpsActivityPage', () => {
 
       // Switch to the Orders filter to reveal order transactions
       fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
-      fireEvent.click(
-        screen.getByTestId('perps-activity-filter-option-order'),
-      );
+      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
 
       // tx-004 has type 'order' and symbol 'SOL' — click its transaction card
       const orderCard = screen.getByTestId('transaction-card-tx-004');
@@ -206,9 +204,7 @@ describe('PerpsActivityPage', () => {
       renderWithProvider(<PerpsActivityPage />, createMockStore());
 
       fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
-      fireEvent.click(
-        screen.getByTestId('perps-activity-filter-option-order'),
-      );
+      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
 
       // tx-004 has symbol 'SOL' — encodeURIComponent('SOL') === 'SOL'
       const orderCard = screen.getByTestId('transaction-card-tx-004');

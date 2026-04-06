@@ -106,22 +106,26 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsCancelOrder', [{ orderId: order.orderId, symbol: order.symbol }]);
+      }>('perpsCancelOrder', [
+        { orderId: order.orderId, symbol: order.symbol },
+      ]);
       if (!result?.success) {
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
       onClose();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t('somethingWentWrong'),
-      );
+      setError(err instanceof Error ? err.message : t('somethingWentWrong'));
     } finally {
       setIsSubmitting(false);
     }
   }, [order.orderId, order.symbol, onClose, t]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} data-testid="perps-cancel-order-modal">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      data-testid="perps-cancel-order-modal"
+    >
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm}>
         <ModalHeader onClose={onClose}>{modalTitle}</ModalHeader>
@@ -134,19 +138,13 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               gap={2}
             >
               <PerpsTokenLogo symbol={order.symbol} size={AvatarTokenSize.Lg} />
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-              >
+              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
                 {displayName}
               </Text>
             </Box>
 
             {/* Order Details Rows */}
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              gap={3}
-            >
+            <Box flexDirection={BoxFlexDirection.Column} gap={3}>
               {/* Date */}
               <Box
                 flexDirection={BoxFlexDirection.Row}
@@ -159,7 +157,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 >
                   {t('perpsOrderDate')}
                 </Text>
-                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
                   {formattedDate}
                 </Text>
               </Box>
@@ -176,7 +177,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 >
                   {t('perpsLimitPrice')}
                 </Text>
-                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
                   {formattedPrice}
                 </Text>
               </Box>
@@ -193,7 +197,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 >
                   {t('perpsSize')}
                 </Text>
-                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
                   {order.size} {displayName}
                 </Text>
               </Box>
@@ -254,7 +261,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 >
                   {t('perpsReduceOnly')}
                 </Text>
-                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
                   {order.reduceOnly ? t('yes') : 'No'}
                 </Text>
               </Box>
@@ -271,9 +281,11 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 >
                   {t('perpsOrderStatus')}
                 </Text>
-                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                  {order.status.charAt(0).toUpperCase() +
-                    order.status.slice(1)}
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </Text>
               </Box>
             </Box>

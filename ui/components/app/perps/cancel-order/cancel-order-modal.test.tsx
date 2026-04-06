@@ -87,7 +87,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsLimitPrice.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
       expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
@@ -144,7 +146,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsOrderValue.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderValue.message),
+      ).toBeInTheDocument();
       expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
@@ -167,7 +171,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsReduceOnly.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceOnly.message),
+      ).toBeInTheDocument();
       expect(screen.getByText(messages.yes.message)).toBeInTheDocument();
     });
 
@@ -177,7 +183,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsReduceOnly.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReduceOnly.message),
+      ).toBeInTheDocument();
       // Reduce-only false branch is still a hardcoded "No" in the component (no locale key).
       expect(screen.getByText('No')).toBeInTheDocument();
     });
@@ -188,8 +196,12 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsOrderStatus.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsStatusOpen.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderStatus.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusOpen.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the cancel order button', () => {
@@ -209,12 +221,18 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsCancelOrder.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCancelOrder.message),
+      ).toBeInTheDocument();
     });
 
     it('does not render when isOpen is false', () => {
       renderWithProvider(
-        <CancelOrderModal isOpen={false} onClose={jest.fn()} order={baseOrder} />,
+        <CancelOrderModal
+          isOpen={false}
+          onClose={jest.fn()}
+          order={baseOrder}
+        />,
         mockStore,
       );
 
@@ -326,7 +344,9 @@ describe('CancelOrderModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(messages.hardwareWalletErrorUnknownErrorTitle.message),
+          screen.getByText(
+            messages.hardwareWalletErrorUnknownErrorTitle.message,
+          ),
         ).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();
@@ -349,9 +369,7 @@ describe('CancelOrderModal', () => {
       fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId('perps-cancel-order-button'),
-        ).toBeDisabled();
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeDisabled();
       });
 
       // Cleanup: resolve the pending promise
@@ -365,7 +383,11 @@ describe('CancelOrderModal', () => {
       });
 
       const { rerender } = renderWithProvider(
-        <CancelOrderModal isOpen={false} onClose={jest.fn()} order={baseOrder} />,
+        <CancelOrderModal
+          isOpen={false}
+          onClose={jest.fn()}
+          order={baseOrder}
+        />,
         mockStore,
       );
 
