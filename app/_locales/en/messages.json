@@ -5949,11 +5949,11 @@
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
   },
-  "perpsWithdrawInvalidAmount": {
-    "message": "Enter a valid amount."
-  },
   "perpsWithdrawInvalidAddress": {
     "message": "Enter a valid destination address."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Enter a valid amount."
   },
   "perpsWithdrawMinNotice": {
     "message": "Minimum withdrawal: $1 USDC",
