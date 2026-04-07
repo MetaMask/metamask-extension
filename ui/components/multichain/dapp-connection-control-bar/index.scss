@@ -4,7 +4,6 @@
   flex-shrink: 0;
   background-color: var(--color-background-default);
   border-top: 1px solid var(--color-border-muted);
-  position: relative;
   z-index: design-system.$dapp-connection-bar-z-index;
   view-transition-name: dapp-connection-bar;
 
@@ -94,15 +93,4 @@
     background-color: var(--color-border-muted);
     flex-shrink: 0;
   }
-}
-
-/* Prevent the connection bar from participating in view-transition animations.
-   Without this, tab-content slide animations render on top of the bar because
-   the bar is part of the root group which sits below named groups. Giving the
-   bar its own name + higher z-index promotes it to a separate group that paints
-   above tab-content (later DOM order = higher z-index). */
-::view-transition-group(dapp-connection-bar),
-::view-transition-old(dapp-connection-bar),
-::view-transition-new(dapp-connection-bar) {
-  animation: none;
 }
