@@ -270,7 +270,7 @@
   "previewBuilds": {
     "@metamask/assets-controller": {
       "type": "non-breaking",
-      "previewVersion": "4.0.0-preview-c5f25f9"
+      "previewVersion": "4.0.0-preview-212d43f"
     }
   },
   "dependencies": {
