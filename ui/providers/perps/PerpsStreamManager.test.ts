@@ -82,7 +82,7 @@ describe('PerpsStreamManager', () => {
       jest.useFakeTimers();
     });
 
-    it('notifies subscribers with empty markets when fetch fails', async () => {
+    it('notifies subscribers with empty markets when initial fetch fails without cache', async () => {
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
@@ -102,6 +102,57 @@ describe('PerpsStreamManager', () => {
         await Promise.resolve();
 
         expect(onData).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch markets',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
+
+    it('preserves cached markets when a refresh fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        const cachedMarkets = [
+          {
+            symbol: 'BTC',
+            name: 'Bitcoin',
+          },
+        ] as never[];
+
+        let marketFetchCount = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            marketFetchCount += 1;
+            if (marketFetchCount === 1) {
+              return Promise.resolve(cachedMarkets);
+            }
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onData);
+
+        await Promise.resolve();
+        await Promise.resolve();
+
+        unsubscribe();
+
+        const onDataAfterReconnect = jest.fn();
+        manager.markets.subscribe(onDataAfterReconnect);
+
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(onData).toHaveBeenCalledWith(cachedMarkets);
+        expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
+        expect(onDataAfterReconnect).not.toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[PerpsStreamManager] Failed to fetch markets',
           expect.any(Error),
