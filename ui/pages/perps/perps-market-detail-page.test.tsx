@@ -143,6 +143,7 @@ jest.mock('../../hooks/perps', () => ({
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
+  usePerpsMarketFills: () => ({ fills: [], isInitialLoading: false }),
 }));
 
 // Mock the perps stream hooks

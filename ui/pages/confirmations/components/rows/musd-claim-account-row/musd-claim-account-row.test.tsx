@@ -14,7 +14,7 @@ import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_DISTRIBUTOR_ADDRESS,
 } from '../../../../../components/app/musd/constants';
-import { MusdClaimInfo } from './musd-claim-info';
+import { MusdClaimAccountRow } from './musd-claim-account-row';
 
 const MOCK_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
@@ -60,19 +60,10 @@ jest.mock('../../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('../../../../../components/app/musd/merkl-client', () => ({
-  getClaimedAmountFromContract: jest.fn().mockResolvedValue(null),
-}));
-
-jest.mock('../../../hooks/tokens/useTokenFiatRates', () => ({
-  useTokenFiatRate: () => 1.0,
-  useTokenFiatRates: () => [1.0],
-}));
-
 const buildMusdClaimTransaction = (): TransactionMeta =>
   ({
     actionId: String(400855682),
-    chainId: '0xe708', // Linea
+    chainId: '0xe708',
     id: 'musd-claim-tx-id',
     status: TransactionStatus.unapproved,
     type: TransactionType.musdClaim,
@@ -99,8 +90,8 @@ const buildMusdClaimTransaction = (): TransactionMeta =>
     origin: 'metamask',
   }) as unknown as TransactionMeta;
 
-describe('MusdClaimInfo', () => {
-  it('renders the musd claim heading, details section, and gas fees', async () => {
+describe('MusdClaimAccountRow', () => {
+  it('renders the account address', async () => {
     const transaction = buildMusdClaimTransaction();
     const state = getMockConfirmState({
       metamask: {
@@ -117,16 +108,12 @@ describe('MusdClaimInfo', () => {
 
     let result: ReturnType<typeof renderWithConfirmContextProvider>;
     await act(async () => {
-      result = renderWithConfirmContextProvider(<MusdClaimInfo />, mockStore);
+      result = renderWithConfirmContextProvider(
+        <MusdClaimAccountRow />,
+        mockStore,
+      );
 
-      // Hero heading is rendered
-      expect(result.getByTestId('musd-claim-heading-amount')).toBeDefined();
-
-      // Details section is rendered
-      expect(result.getByTestId('musd-claim-details-section')).toBeDefined();
-
-      // Gas fee section is rendered
-      expect(result.getByTestId('gas-fee-section')).toBeDefined();
+      expect(result.getByTestId('musd-claim-account-address')).toBeDefined();
     });
   });
 });

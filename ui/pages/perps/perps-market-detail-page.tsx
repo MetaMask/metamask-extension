@@ -32,6 +32,7 @@ import {
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -46,10 +47,11 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsMarketFills } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
@@ -67,6 +69,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
@@ -403,6 +406,18 @@ const PerpsMarketDetailPage: React.FC = () => {
     duration: TimeDuration.YearToDate,
     throttleMs: 1000,
   });
+
+  // Fetch market-specific fills (WebSocket + REST) for Recent Activity
+  const { fills: marketFills, isInitialLoading: fillsLoading } =
+    usePerpsMarketFills({
+      symbol: decodedSymbol ?? '',
+      throttleMs: 0,
+    });
+
+  const recentActivityTransactions = useMemo(() => {
+    const transactions = transformFillsToTransactions(marketFills);
+    return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
+  }, [marketFills]);
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
@@ -788,6 +803,46 @@ const PerpsMarketDetailPage: React.FC = () => {
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}
       />
+    );
+  };
+
+  const renderRecentActivityContent = () => {
+    if (fillsLoading && recentActivityTransactions.length === 0) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="overflow-hidden rounded-xl"
+        >
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[62px] w-full rounded-none" />
+          ))}
+        </Box>
+      );
+    }
+
+    if (recentActivityTransactions.length === 0) {
+      return (
+        <Box paddingBottom={4}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsNoTransactions')}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="overflow-hidden rounded-xl"
+      >
+        {recentActivityTransactions.map((transaction) => (
+          <TransactionCard
+            key={transaction.id}
+            transaction={transaction}
+            variant="muted"
+          />
+        ))}
+      </Box>
     );
   };
 
@@ -1458,70 +1513,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               {t('perpsRecentActivity')}
             </Text>
           </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            className="overflow-hidden rounded-xl"
-          >
-            {[
-              {
-                label: t('perpsOpenedLong'),
-                amount: '2.50000',
-                pnl: '+$125.00',
-                pnlColor: TextColor.SuccessDefault,
-              },
-              {
-                label: t('perpsIncreasedPosition'),
-                amount: '0.50000',
-                pnl: '+$45.20',
-                pnlColor: TextColor.SuccessDefault,
-              },
-              {
-                label: t('perpsClosedShort'),
-                amount: '1.25000',
-                pnl: '-$32.50',
-                pnlColor: TextColor.ErrorDefault,
-              },
-            ].map((item) => (
-              <Box
-                key={item.label}
-                className="w-full bg-muted px-4 py-3"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-              >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  className="min-w-0 flex-1"
-                  gap={1}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {item.label}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    {item.amount} {displayName}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={item.pnlColor}
-                >
-                  {item.pnl}
-                </Text>
-              </Box>
-            ))}
-          </Box>
+          {renderRecentActivityContent()}
 
           {/* Learn Section */}
           <Box
