@@ -298,6 +298,9 @@
     "ui/components/app/perps/order-entry/order-entry.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
+      "MetaMask: Background connection not initialized": 4
+    },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
       "React: Component update warnings": 1
     },

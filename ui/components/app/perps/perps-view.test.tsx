@@ -68,10 +68,15 @@ jest.mock('../../../hooks/perps/stream', () => {
   };
 });
 
+jest.mock('./perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
     isTestnet: false,
+    isFirstTimeUser: { testnet: false, mainnet: false },
     watchlistMarkets: {
       testnet: [],
       mainnet: ['BTC', 'ETH'],
