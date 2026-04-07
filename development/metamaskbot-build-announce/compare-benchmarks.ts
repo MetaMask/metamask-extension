@@ -27,6 +27,7 @@ import type {
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
+import type { StatisticalTestResult } from '../../test/e2e/benchmarks/utils/mann-whitney';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
@@ -283,6 +284,23 @@ export function printReport(result: {
         for (const line of issueLines) {
           const details = line.details ? ` | ${line.details}` : '';
           console.log(`${line.icon} ${line.metric}${details}`);
+        }
+      }
+    }
+
+    // Layer 3: Statistical significance (informational)
+    if ((comparison.statisticalTests ?? []).length > 0) {
+      const sigTests = (comparison.statisticalTests ?? []).filter(
+        (t: StatisticalTestResult) => t.verdict !== 'pass',
+      );
+      if (sigTests.length > 0) {
+        console.log('  Statistical significance (Mann-Whitney U):');
+        for (const t of sigTests) {
+          const icon = t.verdict === 'fail' ? '🔺' : '🔼';
+          const delta = formatDeltaPercent(t.deltaPercent);
+          console.log(
+            `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
+          );
         }
       }
     }
