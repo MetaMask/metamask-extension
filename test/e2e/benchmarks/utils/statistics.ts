@@ -725,8 +725,9 @@ export function logThresholdResult(violations: ThresholdViolation[]): void {
     console.log('\n  Threshold Violations:');
     violations.forEach((v) => {
       const icon = v.severity === THRESHOLD_SEVERITY.Fail ? '🔺' : '🔼';
+      const unit = v.metricId === 'cls' ? '' : 'ms';
       console.log(
-        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}${unit} > ${v.threshold}${unit}`,
       );
     });
   } else {
