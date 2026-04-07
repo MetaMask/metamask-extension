@@ -76,7 +76,7 @@ export function collectTimerResults(): TimerResult[] {
     .filter((t) => t.duration !== null)
     .map((t) => ({
       id: t.id,
-      duration: t.duration as number,
+      value: t.duration as number,
     }));
 }
 
