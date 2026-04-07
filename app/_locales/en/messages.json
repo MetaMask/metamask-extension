@@ -1171,9 +1171,6 @@
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
   },
-  "bridgeQuoteExpired": {
-    "message": "Your quote timed out."
-  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
   },
