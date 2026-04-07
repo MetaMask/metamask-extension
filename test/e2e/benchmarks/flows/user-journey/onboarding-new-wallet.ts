@@ -29,10 +29,10 @@ import {
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  collectWebVitals,
-} from '../../utils';
-import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
-import type { BenchmarkRunResult } from '../../utils';
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import { collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
 export const persona = BENCHMARK_PERSONA.STANDARD;

@@ -12,19 +12,16 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
   BENCHMARK_PERSONA,
-  WITH_STATE_POWER_USER,
-  runPageLoadBenchmark,
-  collectWebVitals,
-} from '../../utils';
-import type {
-  BenchmarkResults,
-  WebVitalsMetrics,
+  type BenchmarkResults,
+  type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
   MeasurePageResult,
-} from '../../utils';
+} from '../../utils/types';
 
 async function measurePagePowerUser(
   pageName: string,
