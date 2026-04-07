@@ -247,6 +247,44 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
+  # Phase 2: continue-on-error: true (non-blocking, informational).
+  # Phase 3: continue-on-error: false (red X in checks, not required).
+  # Phase 4: continue-on-error: false + added to branch protection required checks.
+  quality-gate:
+    name: quality-gate
+    continue-on-error: true # Phase 2 — non-blocking, informational
+    needs:
+      - benchmarks
+      - benchmarks-page-load
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name != 'merge_group'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download all benchmark artifacts
+        id: download-benchmarks
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Run quality gate
+        if: steps.download-benchmarks.outcome == 'success'
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        shell: bash
+
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
   store-benchmark-stats:
