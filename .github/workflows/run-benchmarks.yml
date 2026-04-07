@@ -184,8 +184,8 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
-      BENCHMARK_BROWSER_LOADS: "10"
-      BENCHMARK_PAGE_LOADS: "10"
+      BENCHMARK_BROWSER_LOADS: '10'
+      BENCHMARK_PAGE_LOADS: '10'
       DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
     steps:
       - name: Checkout and setup environment
