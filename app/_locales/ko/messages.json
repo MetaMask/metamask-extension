@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "브릿지 수수료"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "새로 가져올까요?"
-  },
   "bridgeFromTo": {
     "message": "$3(으)로 $1 $2 브릿지",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "가격 영향 경고"
-  },
-  "bridgeQuoteExpired": {
-    "message": "견적이 만료되었습니다."
   },
   "bridgeQuotesSortedByCost": {
     "message": "견적은 환율과 네트워크 수수료가 포함된 예상 총비용 순으로 정렬됩니다."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "승인 사항:"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "트랜잭션을 거부했습니다."
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."

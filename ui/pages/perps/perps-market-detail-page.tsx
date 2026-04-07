@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Navigate,
   useLocation,
@@ -88,6 +88,8 @@ import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
 } from '../../selectors/perps-controller';
+import { setTutorialModalOpen } from '../../ducks/perps';
+import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -228,6 +230,7 @@ const parsePerpsToastRouteState = (
  */
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
@@ -1526,9 +1529,8 @@ const PerpsMarketDetailPage: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            onClick={() => {
-              // TODO: Navigate to learn page
-            }}
+            data-testid="perps-learn-basics"
+            onClick={() => dispatch(setTutorialModalOpen(true))}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsLearnBasics')}
@@ -1735,6 +1737,9 @@ const PerpsMarketDetailPage: React.FC = () => {
           currentPrice={currentPrice}
         />
       )}
+
+      {/* Tutorial modal — opened via "Learn the basics of perps" */}
+      <PerpsTutorialModal />
     </Box>
   );
 };
