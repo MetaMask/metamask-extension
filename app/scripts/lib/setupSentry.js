@@ -85,10 +85,7 @@ function getClientOptions() {
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
+        shouldCreateSpanForRequest,
       }),
       metaMetricsIntegration({
         getMetaMetricsState,
@@ -275,6 +272,22 @@ export function beforeBreadcrumb() {
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
     return newBreadcrumb;
   };
+}
+
+/**
+ * Returns whether a span should be created for a given request URL.
+ * Filters out Sentry domain requests.
+ *
+ * @param {string} url - The request URL.
+ * @returns {boolean} Whether to create a span for the request.
+ */
+export function shouldCreateSpanForRequest(url) {
+  // Do not create spans for outgoing requests to a 'sentry.io' domain.
+  if (url.match(/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u)) {
+    return false;
+  }
+  // Create spans for all other requests.
+  return true;
 }
 
 /**
