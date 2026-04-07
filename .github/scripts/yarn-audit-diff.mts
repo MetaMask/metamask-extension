@@ -31,6 +31,7 @@ const repository = process.env.GITHUB_REPOSITORY ?? '';
 // On `pull_request` events GITHUB_SHA is the ephemeral merge commit, not the
 // PR head. The workflow step passes the real head SHA via GITHUB_HEAD_SHA.
 const headSha = process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA || '';
+const runId = process.env.GITHUB_RUN_ID ?? '';
 
 const [repoOwner, repoName] = repository.split('/');
 
@@ -94,6 +95,30 @@ async function postCheckRunQuietly(
   }
 }
 
+async function getCheckSuiteId(): Promise<number | null> {
+  if (!repoOwner || !repoName || !runId) {
+    return null;
+  }
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${repoOwner}/${repoName}/actions/runs/${runId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'User-Agent': 'yarn-audit-diff',
+        },
+      },
+    );
+    if (!resp.ok) return null;
+    const data = (await resp.json()) as { check_suite_id?: number };
+    return data.check_suite_id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function postCheckRun(
   conclusion: 'success' | 'failure',
   title: string,
@@ -107,8 +132,10 @@ async function postCheckRun(
     return;
   }
 
+  const checkSuiteId = await getCheckSuiteId();
+
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/check-runs`;
-  const body = {
+  const body: Record<string, unknown> = {
     name: 'Audit: no new vulnerabilities',
     head_sha: headSha,
     status: 'completed',
@@ -119,6 +146,9 @@ async function postCheckRun(
       annotations,
     },
   };
+  if (checkSuiteId !== null) {
+    body.check_suite_id = checkSuiteId;
+  }
 
   const resp = await fetch(url, {
     method: 'POST',
