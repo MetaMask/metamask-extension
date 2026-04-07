@@ -18,10 +18,9 @@ import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  runUserActionBenchmark,
-  collectWebVitals,
-} from '../../utils';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils';
+} from '../../../../../shared/constants/benchmarks';
+import { runUserActionBenchmark, collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;

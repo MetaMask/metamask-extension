@@ -162,14 +162,6 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
-      - name: Download page load benchmark results
-        if: ${{ github.event_name == 'pull_request' }}
-        continue-on-error: true
-        uses: actions/download-artifact@v7
-        with:
-          name: dapp-page-load-benchmark-results
-          path: test-artifacts/benchmarks
-
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts
