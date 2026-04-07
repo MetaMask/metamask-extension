@@ -1743,6 +1743,15 @@ const PerpsMarketDetailPage: React.FC = () => {
         />
       )}
 
+      {/* Cancel order modal */}
+      {cancelOrderTarget && (
+        <CancelOrderModal
+          isOpen={cancelOrderTarget !== null}
+          onClose={() => setCancelOrderTarget(null)}
+          order={cancelOrderTarget}
+        />
+      )}
+
       {/* Tutorial modal — opened via "Learn the basics of perps" */}
       <PerpsTutorialModal />
     </Box>
