@@ -3,6 +3,7 @@ import { CarouselSlide } from '../../../shared/constants/app-state';
 import { isProduction } from '../../../shared/lib/environment';
 import { captureException } from '../../../shared/lib/sentry';
 import packageJson from '../../../package.json';
+import { getNormalizedLocale } from '../../../shared/constants/locales';
 
 const APP_VERSION = packageJson.version;
 const CONTENT_TYPE = 'promotionalBanner';
@@ -92,7 +93,7 @@ async function fetchEntries(
 ): Promise<ContentfulBannerResponse> {
   const url = new URL(baseUrl.toString());
   if (locale) {
-    url.searchParams.set('locale', locale);
+    url.searchParams.set('locale', getNormalizedLocale(locale));
   }
   const res = await fetch(url);
   const json = await res.json();
