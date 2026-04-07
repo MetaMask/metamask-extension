@@ -276,14 +276,22 @@ export function beforeBreadcrumb() {
 
 /**
  * Returns whether a span should be created for a given request URL.
- * Filters out Sentry domain requests.
+ * Filters out Sentry domain requests and local extension file fetches.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url) {
   // Do not create spans for outgoing requests to a 'sentry.io' domain.
-  if (url.match(/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u)) {
+  if (/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u.test(url)) {
+    return false;
+  }
+  // Block span creation on fetches for preinstalled snap manifest and locale files.
+  // Snap manifests are fetched on every MV3 SW restart,
+  // and locale files are fetched on every popup open.
+  // These are high volume, local file reads with no diagnostic value.
+  // TODO: Consider blocking all local extension file fetches.
+  if (/^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url)) {
     return false;
   }
   // Create spans for all other requests.
