@@ -188,11 +188,12 @@ async function main() {
       current
         .map((a) => `- [${sevLabel(a)}] \`${a.moduleName}\` — ${a.title}`)
         .join('\n');
+    // The Checks API rejects requests with more than 50 annotations.
     await postCheckRunQuietly(
       'failure',
       'New vulnerabilities found',
       summary,
-      current.map(toAnnotation),
+      current.slice(0, 50).map(toAnnotation),
     );
     return;
   }
@@ -238,11 +239,12 @@ async function main() {
       )
       .join('\n');
 
+  // The Checks API rejects requests with more than 50 annotations.
   await postCheckRunQuietly(
     'failure',
     'New vulnerabilities found',
     summaryBody,
-    newAdvisories.map(toAnnotation),
+    newAdvisories.slice(0, 50).map(toAnnotation),
   );
 }
 
