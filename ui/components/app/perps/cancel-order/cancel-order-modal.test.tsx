@@ -342,7 +342,7 @@ describe('CancelOrderModal', () => {
       const onClose = jest.fn();
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
-        error: 'Something went wrong',
+        error: 'Cancel request rejected',
       });
 
       renderWithProvider(
@@ -353,7 +353,7 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+        expect(screen.getByText('Cancel request rejected')).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();
     });
