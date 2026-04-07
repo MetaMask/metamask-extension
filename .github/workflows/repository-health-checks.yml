@@ -120,8 +120,6 @@ jobs:
 
       - name: Run audit diff
         if: ${{ github.event_name == 'pull_request' }}
-        env:
-          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: yarn tsx .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json
 
       # - name: Detect yarn lock deduplications

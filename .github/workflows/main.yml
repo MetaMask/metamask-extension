@@ -139,9 +139,7 @@ jobs:
       contents: read
       issues: write
       pull-requests: write
-      checks: write
       actions: read
-      statuses: write
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
