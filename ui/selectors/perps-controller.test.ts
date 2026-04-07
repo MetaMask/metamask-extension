@@ -228,11 +228,8 @@ describe('perps-controller selectors', () => {
       ).toBe(value);
     });
 
-    it('defaults to both true', () => {
-      expect(selectPerpsIsFirstTimeUser(buildState())).toEqual({
-        testnet: true,
-        mainnet: true,
-      });
+    it('returns undefined when absent', () => {
+      expect(selectPerpsIsFirstTimeUser(buildState())).toBeUndefined();
     });
   });
 
