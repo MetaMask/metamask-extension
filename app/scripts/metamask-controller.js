@@ -439,6 +439,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { PriceApiServiceInit } from './controller-init/price-api-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -679,6 +680,7 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
+      PriceApiService: PriceApiServiceInit,
     };
 
     const {
