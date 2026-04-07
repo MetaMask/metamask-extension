@@ -5949,6 +5949,9 @@
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
   },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Enter a valid destination address."
+  },
   "perpsWithdrawInvalidAmount": {
     "message": "Enter a valid amount."
   },
