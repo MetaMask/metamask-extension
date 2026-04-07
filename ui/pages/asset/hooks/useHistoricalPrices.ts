@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@metamask/react-data-query';
 import { CaipChainId, Hex, parseCaipAssetType } from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
-import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { apiClient } from '../../../helpers/api-client';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -90,24 +88,6 @@ const transformPricesToPoints = (
   data: { prices?: number[][] } | undefined,
 ): Point[] => data?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
 
-type PricesClientFetch = {
-  fetch: (
-    baseUrl: string,
-    path: string,
-    options?: {
-      signal?: AbortSignal;
-      params?: Record<string, string | undefined>;
-    },
-  ) => Promise<{ prices?: [number, number][] }>;
-};
-
-/** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
-const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
-  'metamask-extension',
-  'assetHistoricalPrices',
-  'v3',
-] as const;
-
 /**
  * CAIP-2 chain id and asset-type segment for `/v3/historical-prices/{chainId}/{assetId}`.
  *
@@ -115,10 +95,10 @@ const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
  * @param address - Token address or CAIP-19 asset type.
  * @returns Parsed segments, or null if a CAIP asset id cannot be derived.
  */
-function getV3HistoricalPricesCaipParams(
+function getFetchHistoricalPricesV3Params(
   chainId: Hex | CaipChainId,
   address: string,
-): { caipChainId: CaipChainId; assetType: string } | null {
+): { chainId: CaipChainId; assetType: string } | null {
   const caipAssetType = toAssetId(address, chainId);
   if (!caipAssetType) {
     return null;
@@ -129,7 +109,7 @@ function getV3HistoricalPricesCaipParams(
     assetReference,
   } = parseCaipAssetType(caipAssetType);
   return {
-    caipChainId,
+    chainId: caipChainId,
     assetType: `${assetNamespace}:${assetReference}`,
   };
 }
@@ -151,8 +131,8 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const v3Params = useMemo(
-    () => getV3HistoricalPricesCaipParams(chainId, address),
+  const params = useMemo(
+    () => getFetchHistoricalPricesV3Params(chainId, address),
     [chainId, address],
   );
 
@@ -161,49 +141,22 @@ export const useHistoricalPrices = ({
     [timeRange],
   );
 
-  const queryKey = useMemo(() => {
-    if (!v3Params) {
-      return [...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT, 'disabled'] as const;
-    }
-    return [
-      ...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT,
-      v3Params.caipChainId,
-      v3Params.assetType,
-      currency,
-      timePeriod,
-    ] as const;
-  }, [v3Params, currency, timePeriod]);
-
   const { data: prices = [], isFetching } = useQuery({
-    // @ts-expect-error - fix once extension in react-query v5
-    queryKey,
-    queryFn: async ({ queryKey: qk, signal }) => {
-      if (qk[3] === 'disabled') {
-        return { prices: [] as [number, number][] };
-      }
-      const caipChainId = qk[3] as CaipChainId;
-      const assetType = qk[4] as string;
-      const curr = qk[5] as string;
-      const period = qk[6] as string;
-      return (apiClient.prices as unknown as PricesClientFetch).fetch(
-        API_URLS.PRICES,
-        `/v3/historical-prices/${caipChainId}/${assetType}`,
-        {
-          signal,
-          params: {
-            vsCurrency: curr,
-            timePeriod: period,
-          },
+    queryKey: [
+      'PriceApiService:fetchHistoricalPricesV3' as const,
+      {
+        params,
+        options: {
+          currency,
+          timePeriod,
         },
-      );
-    },
-    enabled: Boolean(v3Params),
+      },
+    ],
+    enabled: params !== null,
     keepPreviousData: true,
-    retry: false,
-    staleTime: STALE_TIMES.PRICES,
-    gcTime: GC_TIMES.DEFAULT,
     select: transformPricesToPoints,
   });
+  console.log('Got historical prices', prices);
 
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
