@@ -62,10 +62,11 @@ describe('usePerpsMarketFills', () => {
   });
 
   describe('initialization', () => {
-    it('returns empty fills, not loading, and a refresh function', () => {
-      const { result } = renderHook(() =>
+    it('returns empty fills, not loading, and a refresh function once REST resolves', async () => {
+      const { result, waitForNextUpdate } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
+      await waitForNextUpdate();
 
       expect(result.current).toEqual(
         expect.objectContaining({
@@ -77,14 +78,42 @@ describe('usePerpsMarketFills', () => {
       expect(typeof result.current.refresh).toBe('function');
     });
 
-    it('forwards isInitialLoading from the WebSocket fills hook', () => {
-      setLiveFills([], true);
+    it('reports isInitialLoading while REST fetch is still in-flight', () => {
+      setLiveFills([], false);
+      mockSubmitRequestToBackground.mockReturnValue(
+        // Intentionally never-resolving promise to simulate in-flight request
+        new Promise(() => undefined),
+      );
 
       const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
 
       expect(result.current.isInitialLoading).toBe(true);
+    });
+
+    it('reports isInitialLoading when WebSocket is still loading', async () => {
+      setLiveFills([], true);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(result.current.isInitialLoading).toBe(true);
+    });
+
+    it('clears isInitialLoading once both WebSocket and REST complete', async () => {
+      setLiveFills([], false);
+      setRestFillsResponse([]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+
+      expect(result.current.isInitialLoading).toBe(true);
+      await waitForNextUpdate();
+      expect(result.current.isInitialLoading).toBe(false);
     });
   });
 
@@ -110,19 +139,22 @@ describe('usePerpsMarketFills', () => {
         new Error('Network error'),
       );
 
-      const { result } = renderHook(() =>
+      const { result, waitForNextUpdate } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
+      await waitForNextUpdate();
 
       expect(result.current.fills).toEqual([]);
+      expect(result.current.isInitialLoading).toBe(false);
     });
 
     it('keeps fills empty when REST API returns null', async () => {
       setRestFillsResponse(null);
 
-      const { result } = renderHook(() =>
+      const { result, waitForNextUpdate } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
+      await waitForNextUpdate();
 
       expect(result.current.fills).toEqual([]);
     });

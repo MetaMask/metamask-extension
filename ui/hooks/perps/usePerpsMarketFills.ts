@@ -41,11 +41,12 @@ export function usePerpsMarketFills({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
 
-  const { fills: liveFills, isInitialLoading } = usePerpsLiveFills({
+  const { fills: liveFills, isInitialLoading: wsLoading } = usePerpsLiveFills({
     throttleMs,
   });
 
   const [restFills, setRestFills] = useState<OrderFill[]>([]);
+  const [isRestLoading, setIsRestLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchRestFills = useCallback(async () => {
@@ -60,6 +61,7 @@ export function usePerpsMarketFills({
   useEffect(() => {
     let cancelled = false;
     setRestFills([]);
+    setIsRestLoading(true);
 
     fetchRestFills()
       .then((result) => {
@@ -69,6 +71,11 @@ export function usePerpsMarketFills({
       })
       .catch(() => {
         // REST fetch failed silently — WebSocket fills still work
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsRestLoading(false);
+        }
       });
 
     return () => {
@@ -109,6 +116,8 @@ export function usePerpsMarketFills({
       (a, b) => b.timestamp - a.timestamp,
     );
   }, [restFills, liveFills, symbol]);
+
+  const isInitialLoading = wsLoading || isRestLoading;
 
   return {
     fills,
