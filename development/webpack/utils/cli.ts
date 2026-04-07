@@ -27,6 +27,8 @@ const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
 type AutoNumberOption = 'auto' | number;
+type ParserOptions = NonNullable<Parameters<typeof parser>[1]>;
+type ParserCoerceMap = NonNullable<ParserOptions['coerce']>;
 
 function coerceAutoNumber(
   value: string,
@@ -178,8 +180,7 @@ const prerequisites = {
  */
 function preParse(argv: string[]) {
   const aliases: Record<string, string[]> = {};
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const coerces: Record<string, (value: any) => any> = {};
+  const coerces: ParserCoerceMap = {};
   const defaults: Record<string, unknown> = {};
   const booleanOptions: string[] = [];
   const stringOptions: string[] = [];
