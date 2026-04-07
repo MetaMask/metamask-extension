@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_FILE,
+  POPUP_INIT_FILE,
+  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -154,6 +157,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -1837,18 +1841,29 @@ export function setupController(
     onTransactionFailed,
   );
 
-  function onTransactionFailed() {
-    failedTxCount += 1;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
+  function setClientOpenOptions(tab) {
+    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
+    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
+
     try {
       if (isManifestV3) {
-        browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.action.setPopup({ popup });
+        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
       } else {
-        browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.browserAction.setPopup({ popup });
       }
     } catch (e) {
-      console.error('Error setting failed tx badge popup:', e);
+      console.error('Error setting extension action URLs:', e);
     }
+  }
+
+  function onTransactionFailed() {
+    if (isClientOpenStatus()) {
+      return;
+    }
+
+    failedTxCount += 1;
+    setClientOpenOptions('activity');
     updateBadge();
   }
 
@@ -1856,17 +1871,9 @@ export function setupController(
     if (!failedTxCount) {
       return;
     }
+
     failedTxCount = 0;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
-    try {
-      if (isManifestV3) {
-        browser.action.setPopup({ popup: popupFile });
-      } else {
-        browser.browserAction.setPopup({ popup: popupFile });
-      }
-    } catch (e) {
-      console.error('Error clearing failed tx badge popup:', e);
-    }
+    setClientOpenOptions();
     updateBadge();
   }
 
