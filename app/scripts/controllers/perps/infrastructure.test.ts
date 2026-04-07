@@ -252,7 +252,6 @@ describe('createPerpsInfrastructure', () => {
           tracer.setMeasurement('test', 100, 'millisecond'),
         ).not.toThrow();
       });
-
     });
 
     describe('when sentry is available', () => {
@@ -386,7 +385,6 @@ describe('createPerpsInfrastructure', () => {
           'millisecond',
         );
       });
-
     });
   });
 
