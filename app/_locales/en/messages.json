@@ -5952,6 +5952,9 @@
   "perpsWithdrawInvalidAmount": {
     "message": "Enter a valid amount."
   },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Enter a valid destination address."
+  },
   "perpsWithdrawMinNotice": {
     "message": "Minimum withdrawal: $1 USDC",
     "description": "$1 is the minimum amount (e.g. 1.01)"

@@ -89,6 +89,18 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     ).toBe('perpsWithdrawInsufficient');
   });
 
+  it('maps WITHDRAW_INVALID_DESTINATION to perpsWithdrawInvalidAddress', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.WITHDRAW_INVALID_DESTINATION],
+    ).toBe('perpsWithdrawInvalidAddress');
+  });
+
+  it('maps INVALID_ADDRESS_FORMAT to perpsWithdrawInvalidAddress', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.INVALID_ADDRESS_FORMAT],
+    ).toBe('perpsWithdrawInvalidAddress');
+  });
+
   it('maps NO_ACCOUNT_SELECTED to perpsWithdrawNoAccount', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.NO_ACCOUNT_SELECTED]).toBe(
       'perpsWithdrawNoAccount',

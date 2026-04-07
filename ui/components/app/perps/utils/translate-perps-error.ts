@@ -35,7 +35,7 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.WITHDRAW_AMOUNT_REQUIRED]: 'perpsWithdrawInvalidAmount',
   [PERPS_ERROR_CODES.WITHDRAW_AMOUNT_POSITIVE]: 'perpsWithdrawInvalidAmount',
   [PERPS_ERROR_CODES.WITHDRAW_INVALID_DESTINATION]:
-    'perpsWithdrawInvalidAmount',
+    'perpsWithdrawInvalidAddress',
   [PERPS_ERROR_CODES.WITHDRAW_ASSET_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.WITHDRAW_INSUFFICIENT_BALANCE]:
     'perpsWithdrawInsufficient',
@@ -67,7 +67,7 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.NO_ACCOUNT_SELECTED]: 'perpsWithdrawNoAccount',
   // KEYRING_LOCKED is handled silently and never surfaced to the user
   [PERPS_ERROR_CODES.KEYRING_LOCKED]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.INVALID_ADDRESS_FORMAT]: 'perpsWithdrawInvalidAmount',
+  [PERPS_ERROR_CODES.INVALID_ADDRESS_FORMAT]: 'perpsWithdrawInvalidAddress',
 
   // Transfer / swap
   [PERPS_ERROR_CODES.TRANSFER_FAILED]: 'somethingWentWrong',
