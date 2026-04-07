@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
@@ -283,6 +283,10 @@ describe('CancelOrderModal', () => {
           [{ orderId: baseOrder.orderId, symbol: baseOrder.symbol }],
         );
       });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
     });
 
     it('calls onClose after a successful cancel', async () => {
@@ -297,6 +301,10 @@ describe('CancelOrderModal', () => {
 
       await waitFor(() => {
         expect(onClose).toHaveBeenCalledTimes(1);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
@@ -316,6 +324,7 @@ describe('CancelOrderModal', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Order not found')).toBeInTheDocument();
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
@@ -334,6 +343,7 @@ describe('CancelOrderModal', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
@@ -354,12 +364,12 @@ describe('CancelOrderModal', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Cancel request rejected')).toBeInTheDocument();
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
       expect(onClose).not.toHaveBeenCalled();
     });
 
     it('shows loading state while canceling', async () => {
-      // Delay resolution so we can catch the loading state
       let resolveCancel!: (value: { success: boolean }) => void;
       mockSubmitRequestToBackground.mockReturnValue(
         new Promise((resolve) => {
@@ -378,8 +388,9 @@ describe('CancelOrderModal', () => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeDisabled();
       });
 
-      // Cleanup: resolve the pending promise
-      resolveCancel({ success: true });
+      await act(async () => {
+        resolveCancel({ success: true });
+      });
     });
 
     it('clears error state when modal reopens', () => {
@@ -420,6 +431,7 @@ describe('CancelOrderModal', () => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCancelOrderSuccess',
         });
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
@@ -442,6 +454,7 @@ describe('CancelOrderModal', () => {
           key: 'perpsToastCancelOrderFailed',
           description: 'Order not found',
         });
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
@@ -463,6 +476,7 @@ describe('CancelOrderModal', () => {
           key: 'perpsToastCancelOrderFailed',
           description: 'Network error',
         });
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
   });
