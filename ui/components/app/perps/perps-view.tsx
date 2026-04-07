@@ -68,10 +68,24 @@ export const PerpsView: React.FC = () => {
   } = usePerpsLiveMarketData();
 
   const {
-    transactions: recentActivityTransactions,
+    transactions: allRecentActivityTransactions,
     isLoading: recentActivityLoading,
     error: recentActivityError,
   } = usePerpsTransactionHistory();
+
+  // Recent Activity shows only trade executions, deposits, and withdrawals.
+  // Open orders are already surfaced in PerpsPositionsOrders above.
+  // Funding payments belong in the full activity page.
+  const recentActivityTransactions = useMemo(
+    () =>
+      allRecentActivityTransactions.filter(
+        (tx) =>
+          tx.type === 'trade' ||
+          tx.type === 'deposit' ||
+          tx.type === 'withdrawal',
+      ),
+    [allRecentActivityTransactions],
+  );
 
   // Show only user-placed limit orders resting on the orderbook.
   // Excludes:

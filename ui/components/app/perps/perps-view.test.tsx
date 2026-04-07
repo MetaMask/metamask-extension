@@ -203,6 +203,31 @@ describe('PerpsView', () => {
       ).toBeInTheDocument();
     });
 
+    it('filters out order and funding transactions from Recent Activity', () => {
+      // mockTransactions contains trades (tx-001, tx-002, tx-002b),
+      // a funding entry (tx-003), orders (tx-004 to tx-004d), and a deposit (tx-005)
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // Trade and deposit cards should be shown
+      expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-005')).toBeInTheDocument();
+
+      // Funding and order cards must not appear in Recent Activity
+      expect(
+        screen.queryByTestId('transaction-card-tx-003'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transaction-card-tx-004'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows watchlist when mock watchlist symbols match market data', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
