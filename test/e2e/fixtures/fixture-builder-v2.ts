@@ -762,8 +762,6 @@ class FixtureBuilderV2 {
               },
               version: '2.2.0',
             },
-            // Required for migration 193: fixtures start at meta v74; 193 copies this into
-            // StorageService. Without it, migration overwrites primed storage with undefined.
             sourceCode: LIFECYCLE_HOOKS_EXAMPLE_SNAP_SOURCE_CODE,
             status: 'stopped',
             version: '2.2.0',
@@ -982,12 +980,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * Snap bundle source for a given snap id (migration 193; written to
-   * `browser.storage.local` by FixtureExtensionStore — see PR #40998).
-   * @param snapId
-   * @param sourceCode
-   */
   withSnapControllerStorageServiceSourceCode(
     snapId: string,
     sourceCode: string,
