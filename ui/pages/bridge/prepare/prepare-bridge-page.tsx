@@ -22,6 +22,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -671,6 +672,9 @@ const PrepareBridgePage = ({
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
+                if (wasTxDeclined) {
+                  dispatch(setWasTxDeclined(false));
+                }
                 if (!quoteParams) {
                   return;
                 }

@@ -181,7 +181,6 @@ export type HistoricalBaselineMetrics = Omit<
 export type RelativeThresholds = {
   regressionPercent: number;
   warnPercent: number;
-  improvementPercent: number;
 };
 
 /**
@@ -192,7 +191,6 @@ export type RelativeThresholds = {
 export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   regressionPercent: 0.1,
   warnPercent: 0.05,
-  improvementPercent: 0.1,
 };
 
 export const BENCHMARK_PLATFORMS = {
@@ -219,28 +217,46 @@ export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[ke
 export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
   [BENCHMARK_BUILD_TYPES.BROWSERIFY];
 
-export const BENCHMARK_ANNOUNCE_SECTIONS = {
-  interaction: { title: '🎯 Interaction' },
-  startup: { title: '🔌 Startup' },
-  userJourney: { title: '🧭 User Journey' },
-  dappPageLoad: { title: '🌐 Dapp page load' },
-} as const;
-
-/**
- * Default `--iterations` for benchmarks aggregated via iteration (interaction, user journey, etc.).
- * Startup and dapp page-load flows use browser/page loads instead.
- * @see test/e2e/benchmarks/flows/README.md
- */
 export const DEFAULT_BENCHMARK_ITERATIONS = 5;
 
-/**
- * Default `--browserLoads` for startup and page-load benchmarks.
- * @see `.github/workflows/run-benchmarks.yml` (`BENCHMARK_BROWSER_LOADS`)
- */
 export const DEFAULT_BENCHMARK_BROWSER_LOADS = 10;
-
-/**
- * Default `--pageLoads` per browser for startup and page-load benchmarks.
- * @see `.github/workflows/run-benchmarks.yml` (`BENCHMARK_PAGE_LOADS`)
- */
 export const DEFAULT_BENCHMARK_PAGE_LOADS = 10;
+
+export const DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT =
+  DEFAULT_BENCHMARK_BROWSER_LOADS * DEFAULT_BENCHMARK_PAGE_LOADS;
+
+export type BenchmarkAnnounceSamples = {
+  sampleQuantity: number;
+};
+
+export type BenchmarkAnnounceSection = {
+  title: string;
+  announceSamples: BenchmarkAnnounceSamples;
+};
+
+export const BENCHMARK_ANNOUNCE_SECTIONS = {
+  interaction: {
+    title: 'Interaction Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_ITERATIONS,
+    },
+  },
+  startup: {
+    title: 'Startup Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+    },
+  },
+  userJourney: {
+    title: 'User Journey Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_ITERATIONS,
+    },
+  },
+  dappPageLoad: {
+    title: 'Dapp Page Load Benchmarks',
+    announceSamples: {
+      sampleQuantity: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+    },
+  },
+} as const satisfies Record<string, BenchmarkAnnounceSection>;

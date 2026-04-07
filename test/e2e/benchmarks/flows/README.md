@@ -33,18 +33,29 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `userJourneyAssets`            | Asset detail page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
 | `userJourneyAccountManagement` | Login from home (import SRP)    | `import-srp-home.ts`                                             |
 | `userJourneyTransactions`      | Send and swap transaction flows | `send-transactions.ts`, `swap.ts`                                |
-| `pageLoadBenchmark`            | Playwright dapp page load       | `flows/dapp-page-load/dapp-page-load-benchmark.spec.ts`          |
+| `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/`                                                |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
 ### User journey benchmarks
 
-- User journey presets run on **Chrome and Firefox** with the **webpack** test build (`build-test-webpack` / `build-test-mv2-webpack` in CI), same as startup and interaction benchmarks.
+- User journey presets run on **Chrome and Firefox** with the **Browserify** test build (`build-test` / `build-test-mv2` in CI), same as startup and interaction benchmarks.
 
 ### Special CI Requirements
 
 | Preset                         | Requirement                                                                       |
 | ------------------------------ | --------------------------------------------------------------------------------- |
 | `userJourneyAccountManagement` | Requires `TEST_SRP_2` secret (12-word seed phrase). Set as a CI secret in GitHub. |
+
+### Benchmark Categories and Types
+
+Each benchmark belongs to a category and has a `BENCHMARK_TYPE`:
+
+| Category           | Directory         | BENCHMARK_TYPE | Description                                               |
+| ------------------ | ----------------- | -------------- | --------------------------------------------------------- |
+| **Startup**        | `startup/`        | `BENCHMARK`    | Extension cold-start and initialization times             |
+| **Interaction**    | `interaction/`    | `USER_ACTION`  | Single discrete user interaction timings                  |
+| **User Journey**   | `user-journey/`   | `PERFORMANCE`  | Multi-step E2E user flows with multiple timers            |
+| **Dapp Page Load** | `dapp-page-load/` | `PERFORMANCE`  | Playwright-based dapp page load metrics (Core Web Vitals) |
 
 ### 1. Create a new file in the appropriate subdirectory
 
@@ -53,6 +64,7 @@ Choose the category that best fits your benchmark:
 - `startup/` - For measuring extension cold-start and page load times
 - `interaction/` - For measuring single discrete user interaction timings
 - `user-journey/` - For E2E multi-step user flows with multiple timers
+- `dapp-page-load/` - For Playwright-based dapp page load benchmarks (Core Web Vitals); not a Selenium `run()` flow. The Playwright `benchmark` project sets `testDir` to this folder.
 
 ### 2. Export a `run` function
 
@@ -140,7 +152,7 @@ Each benchmark entry becomes a **Sentry Structured Log** (`Sentry.logger.info`):
 - **Message:** `<benchmarkType>.<presetName>` — e.g. `performance.userJourneyOnboardingImport`, `userAction.interactionUserActions`, `benchmark.startupStandardHome`
 - **Attributes:**
   - `ci.branch`, `ci.commitHash`, `ci.prNumber` — Git/CI context
-  - `ci.browser` — e.g. `chrome` or `firefox`
+  - `ci.browser`, `ci.buildType` — e.g. `chrome` / `browserify`
   - `ci.persona` — `standard` or `powerUser`
   - `ci.testTitle` — human-readable test name from the benchmark file
   - Metric values, namespaced by stat type:
@@ -155,6 +167,7 @@ attributes: {
   "ci.branch":      "main",
   "ci.commitHash":  "abc1234",
   "ci.browser":     "chrome",
+  "ci.buildType":   "browserify",
   "ci.persona":     "standard",
   "ci.testTitle":   "benchmark-standard-home",
   "benchmark.mean.uiStartup":          1443,

@@ -11,10 +11,7 @@ import type {
   WebVitalsRun,
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
-import {
-  BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PERSONA,
-} from '../../../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -146,7 +143,7 @@ export async function runBenchmarkWithIterations(
       MAX_EXCLUSION_RATE,
     );
 
-    if (!exclusionCheck.passed && stats.dataQuality !== 'unreliable') {
+    if (exclusionCheck.passed === false && stats.dataQuality !== 'unreliable') {
       // Mark as unreliable if too many exclusions (only if not already unreliable)
       stats.dataQuality = 'unreliable';
       excludedDueToQuality += 1;
@@ -186,6 +183,8 @@ export async function runBenchmarkWithIterations(
       aggregated: aggregateWebVitals(webVitalsRuns),
     };
   }
+  // Extract benchmarkType from the first result (same across all iterations)
+  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
     name,
@@ -200,18 +199,21 @@ export async function runBenchmarkWithIterations(
     thresholdViolations: thresholdResult?.violations ?? [],
     thresholdsPassed: thresholdResult?.passed ?? true,
     ...(webVitalsSummary && { webVitals: webVitalsSummary }),
+    benchmarkType,
   };
 }
 
 /**
- * Builds {@link BenchmarkResults} from aggregated timer rows (shared by iteration-based
- * benchmarks and the Playwright dapp page-load pipeline).
- * @param timers
- * @param testTitle
- * @param persona
- * @param benchmarkType
- * @param platform
- * @param webVitals
+ * Maps aggregated timer statistics to `BenchmarkResults` (shared with send-to-sentry and CI JSON).
+ * Used by Selenium benchmarks and Playwright dapp page-load benchmarks.
+ *
+ * @param timers - One {@link TimerStatistics} per metric id (e.g. timer name or web vital key)
+ * @param testTitle - Benchmark label written to JSON
+ * @param persona - Wallet persona for this run
+ * @param benchmarkType - Optional benchmark category
+ * @param platform - Optional platform label
+ * @param buildType - Optional build label
+ * @param webVitals - Optional aggregated web vitals (from {@link BenchmarkSummary.webVitals})
  */
 export function convertTimerStatisticsToBenchmarkResults(
   timers: TimerStatistics[],
@@ -219,6 +221,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   persona: Persona = BENCHMARK_PERSONA.STANDARD,
   benchmarkType?: BenchmarkType,
   platform?: string,
+  buildType?: string,
   webVitals?: WebVitalsSummary,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
@@ -240,9 +243,9 @@ export function convertTimerStatisticsToBenchmarkResults(
   return {
     testTitle,
     persona,
-    ...(benchmarkType === undefined ? {} : { benchmarkType }),
+    benchmarkType,
     platform,
-    buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
+    buildType,
     mean,
     min,
     max,
@@ -255,25 +258,30 @@ export function convertTimerStatisticsToBenchmarkResults(
 
 /**
  * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
- * for consistent output with send-to-sentry.ts. `buildType` is always webpack.
+ * for consistent output with send-to-sentry.ts
  *
  * @param summary
  * @param testTitle
  * @param persona
+ * @param benchmarkType
  * @param platform
+ * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona: Persona = BENCHMARK_PERSONA.STANDARD,
+  benchmarkType?: BenchmarkType,
   platform?: string,
+  buildType?: string,
 ): BenchmarkResults {
   return convertTimerStatisticsToBenchmarkResults(
     summary.timers,
     testTitle,
     persona,
-    undefined,
+    benchmarkType,
     platform,
+    buildType,
     summary.webVitals,
   );
 }
@@ -325,14 +333,13 @@ export async function runPageLoadBenchmark(
 
   if (runResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
-  } else if (
-    runResults.some((result) => result.navigation[0].type !== 'navigate')
-  ) {
+  }
+  const firstNonNavigate = runResults.find(
+    (result) => result.navigation[0].type !== 'navigate',
+  );
+  if (firstNonNavigate !== undefined) {
     throw new Error(
-      `Navigation type ${
-        runResults.find((result) => result.navigation[0].type !== 'navigate')
-          ?.navigation[0].type
-      } not supported`,
+      `Navigation type ${firstNonNavigate.navigation[0].type} not supported`,
     );
   }
 

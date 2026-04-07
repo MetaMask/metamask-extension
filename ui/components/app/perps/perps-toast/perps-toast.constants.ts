@@ -1,0 +1,21 @@
+export type PerpsToastVariant = 'info' | 'success' | 'error';
+
+export const PERPS_TOAST_KEYS = {
+  CLOSE_FAILED: 'perpsToastCloseFailed',
+  CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+  MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+  MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
+  MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
+  ORDER_FAILED: 'perpsToastOrderFailed',
+  ORDER_FILLED: 'perpsToastOrderFilled',
+  ORDER_PLACED: 'perpsToastOrderPlaced',
+  ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
+  SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
+  TRADE_SUCCESS: 'perpsToastTradeSuccess',
+  UPDATE_FAILED: 'perpsToastUpdateFailed',
+  UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',
+  UPDATE_SUCCESS: 'perpsToastUpdateSuccess',
+} as const;
+
+export type PerpsToastKey =
+  (typeof PERPS_TOAST_KEYS)[keyof typeof PERPS_TOAST_KEYS];

@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Hex } from '@metamask/utils';
+import { Key } from 'selenium-webdriver';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
@@ -37,11 +38,11 @@ class BridgeQuotePage {
 
   public tokenButton = '[data-testid^="bridge-asset--"]';
 
-  private submitButton = { text: 'Swap', tag: 'button' };
+  private submitButton = '[data-testid="bridge-cta-button"]';
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
   };
 
   private backButton = '[aria-label="Back"]';
@@ -324,6 +325,10 @@ class BridgeQuotePage {
   async setCustomSlippage(value: string): Promise<void> {
     await this.driver.clickElement(this.slippageEditButton);
     await this.driver.clickElement(this.slippageCustomButton);
+    const input = await this.driver.waitForSelector(this.slippageCustomInput, {
+      timeout: 1000,
+    });
+    await input.sendKeys(Key.BACK_SPACE);
     await this.driver.fill(this.slippageCustomInput, value);
     await this.driver.executeScript(`
       const input = document.querySelector('${this.slippageCustomInput}');

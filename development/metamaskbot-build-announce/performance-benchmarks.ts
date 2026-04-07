@@ -1,17 +1,19 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import {
-  ENTRY_BENCHMARK_PLATFORMS,
-  ENTRY_BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
   ALL_BENCHMARK_COMBOS,
   BENCHMARK_ANNOUNCE_SECTIONS,
-  STAT_KEY,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
   DEFAULT_RELATIVE_THRESHOLDS,
+  ENTRY_BENCHMARK_BUILD_TYPES,
+  ENTRY_BENCHMARK_PLATFORMS,
+  STAT_KEY,
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
+  BenchmarkAnnounceSamples,
+  BenchmarkAnnounceSection,
   BenchmarkResults,
   ComparisonKey,
   StatisticalResult,
@@ -37,6 +39,7 @@ import type {
 } from './historical-comparison';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
+  EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
   resolveBaseline,
   buildEntryKey,
   buildCombo,
@@ -48,8 +51,7 @@ export type BenchmarkEntry = {
   benchmarkName: string;
   presetName: string;
   platform: string;
-  /** Bundler dimension (e.g. webpack, browserify). Defaults to webpack when omitted. */
-  buildType?: string;
+  buildType: string;
   mean: StatisticalResult;
   stdDev: StatisticalResult;
   p75: StatisticalResult;
@@ -93,17 +95,40 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
   [EntryHealth.Pass]: COMPARISON_SEVERITY.Pass.icon,
 };
 
-function entryBuildType(entry: BenchmarkEntry): string {
-  return entry.buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK;
+const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
+
+/**
+ * Build types to fetch for user-journey presets in this workflow run.
+ * Mirrors whether webpack user-journey matrix rows run (push to main/release only;
+ */
+export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
+  const eventName = process.env.GITHUB_EVENT_NAME;
+  const ref = process.env.GITHUB_REF ?? '';
+  const webpackUserJourneyArtifactsExist =
+    eventName === 'push' &&
+    (ref === 'refs/heads/main' || ref.startsWith('refs/heads/release/'));
+
+  if (webpackUserJourneyArtifactsExist) {
+    return [BENCHMARK_BUILD_TYPES.BROWSERIFY, BENCHMARK_BUILD_TYPES.WEBPACK];
+  }
+
+  return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
 }
 
-const USER_JOURNEY_BENCHMARK_PLATFORMS = [
+const STARTUP_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
   BENCHMARK_PLATFORMS.FIREFOX,
+] as const;
+const STARTUP_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
+  BENCHMARK_BUILD_TYPES.WEBPACK,
 ] as const;
 
 const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
+] as const;
+const DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
 ] as const;
 
 /**
@@ -113,8 +138,8 @@ const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @param platform - Browser platform (e.g. 'chrome').
+ * @param buildType - Build type (e.g. 'browserify').
  * @param preset - Benchmark preset name.
- * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Parsed JSON or null.
  */
 export async function fetchBenchmarkJson<
@@ -122,8 +147,8 @@ export async function fetchBenchmarkJson<
 >(
   hostUrl: string,
   platform: string,
+  buildType: string,
   preset: string,
-  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): Promise<Result | null> {
   const fileName = buildArtifactFilename(platform, preset, buildType);
   const localDir = process.env.BENCHMARK_RESULTS_DIR;
@@ -155,16 +180,16 @@ export async function fetchBenchmarkJson<
  * @param data - Raw parsed JSON from a benchmark artifact.
  * @param presetName - The preset name these entries were fetched under.
  * @param platform - Browser platform (e.g. 'chrome').
+ * @param buildType - Build type (e.g. 'browserify').
  * @param artifactUrl
- * @param [buildType] - Bundler id for this artifact; also used when JSON rows omit `buildType`.
  * @returns Flat BenchmarkEntry array with only the fields we render.
  */
 export function extractEntries(
   data: Record<string, BenchmarkResults | null>,
   presetName = '',
   platform = '',
+  buildType = '',
   artifactUrl?: string,
-  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): BenchmarkEntry[] {
   const hasValidMean = (
     entry: [string, BenchmarkResults | null],
@@ -179,7 +204,7 @@ export function extractEntries(
       benchmarkName: name,
       presetName,
       platform,
-      buildType: raw.buildType ?? buildType,
+      buildType,
       mean: raw.mean,
       stdDev: raw.stdDev,
       p75: raw.p75,
@@ -190,19 +215,20 @@ export function extractEntries(
 }
 
 /**
- * Fetches and aggregates benchmark entries for a given set of presets and platforms.
+ * Fetches and aggregates benchmark entries for a given set of presets,
+ * platforms, and build types.
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @param presets - Preset names to fetch.
  * @param platforms - Platforms to fetch (defaults to ENTRY_BENCHMARK_PLATFORMS).
- * @param buildTypes - Bundler ids to fetch per platform (defaults to webpack only).
+ * @param buildTypes - Build types to fetch (defaults to ENTRY_BENCHMARK_BUILD_TYPES).
  * @returns Entries and a list of missing preset descriptions.
  */
 export async function fetchBenchmarkEntries(
   hostUrl: string,
   presets: string[],
   platforms: readonly string[] = ENTRY_BENCHMARK_PLATFORMS,
-  buildTypes: readonly string[] = [BENCHMARK_BUILD_TYPES.WEBPACK],
+  buildTypes: readonly string[] = ENTRY_BENCHMARK_BUILD_TYPES,
 ): Promise<FetchBenchmarkResult> {
   const fetches = platforms.flatMap((platform) =>
     buildTypes.flatMap((buildType) =>
@@ -210,10 +236,10 @@ export async function fetchBenchmarkEntries(
         const data = await fetchBenchmarkJson(
           hostUrl,
           platform,
-          preset,
           buildType,
+          preset,
         );
-        return { platform, preset, buildType, data };
+        return { platform, buildType, preset, data };
       }),
     ),
   );
@@ -222,13 +248,13 @@ export async function fetchBenchmarkEntries(
   const allEntries: BenchmarkEntry[] = [];
   const missingPresets: string[] = [];
 
-  for (const { platform, preset, buildType, data } of results) {
+  for (const { platform, buildType, preset, data } of results) {
     if (data) {
       const artifactUrl = process.env.BENCHMARK_RESULTS_DIR
         ? undefined
-        : buildArtifactUrl(hostUrl, platform, preset, buildType);
+        : buildArtifactUrl(hostUrl, platform, buildType, preset);
       allEntries.push(
-        ...extractEntries(data, preset, platform, artifactUrl, buildType),
+        ...extractEntries(data, preset, platform, buildType, artifactUrl),
       );
     } else {
       missingPresets.push(`${platform}/${buildType}/${preset}`);
@@ -411,7 +437,7 @@ function getEntryRegressions(
  *
  * @param entries - Benchmark entries to aggregate.
  * @param baseline - Historical baseline (optional).
- * @returns Map from entry key to worst EntryHealth.
+ * @returns Map from "preset|platform-buildType" to worst EntryHealth.
  */
 function buildHealthMap(
   entries: BenchmarkEntry[],
@@ -420,19 +446,13 @@ function buildHealthMap(
   const map = new Map<string, EntryHealth>();
   for (const entry of entries) {
     const baselineMetrics = baseline
-      ? resolveBaseline(
-          baseline,
-          entry.presetName,
-          entry.benchmarkName,
-          entry.platform,
-          entryBuildType(entry),
-        )
+      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
     const key = buildEntryKey(
       entry.benchmarkName,
       entry.platform,
-      entryBuildType(entry),
+      entry.buildType,
     );
     const existing = map.get(key);
     if (!existing || HEALTH_ORDER[health] > HEALTH_ORDER[existing]) {
@@ -444,15 +464,14 @@ function buildHealthMap(
 
 /**
  * Extracts the display name from a benchmark name.
- * For startup benchmarks with platform prefix (e.g., 'chrome-webpack-startupStandardHome'),
+ * For startup benchmarks with platform prefix (e.g., 'chrome-browserify-startupStandardHome'),
  * returns just the metric name (e.g., 'startupStandardHome').
  * For other benchmarks, returns the name as-is.
  * @param benchmarkName
  */
 function extractDisplayName(benchmarkName: string): string {
-  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
   const match = benchmarkName.match(
-    new RegExp(`^(?:chrome|firefox)-(?:${buildTypes})-(.+)$`, 'u'),
+    /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
   );
   return match ? match[1] : benchmarkName;
 }
@@ -556,10 +575,10 @@ function formatTimerDetails(
 }
 
 /**
- * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
+ * Builds an outer collapsible benchmark subsection.
  *
  * @param result - Fetched entries and missing preset descriptions.
- * @param summary - The collapsible header text.
+ * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no announced samples).
  * @param baseline - Historical baseline for relative delta annotations.
  * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
  * @returns HTML string or empty string if no data.
@@ -567,6 +586,56 @@ function formatTimerDetails(
 
 /** Minimum absolute delta (%) to include a metric in the relative summary. */
 const RELATIVE_DELTA_MIN_PCT = 0.1;
+
+export type {
+  BenchmarkAnnounceSamples,
+  BenchmarkAnnounceSection,
+} from '../../shared/constants/benchmarks';
+export { BENCHMARK_ANNOUNCE_SECTIONS };
+
+/**
+ * User journey benchmarks use the real API on `main` and `release/*` branches; other
+ * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
+ */
+export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
+  const branch = (
+    process.env.BRANCH ??
+    process.env.GITHUB_HEAD_REF ??
+    process.env.GITHUB_REF_NAME ??
+    ''
+  ).trim();
+  if (branch === 'main' || branch.startsWith('release/')) {
+    return 'real';
+  }
+  return 'mock';
+}
+
+type SectionSamplesLabelOptions = {
+  /** When set (User Journey section only), appends ` · mock API` or ` · real API`. */
+  userJourneyApi?: 'mock' | 'real';
+};
+
+/**
+ * Collapsible section title suffix: ` · Samples: N` (and User Journey API mode when applicable).
+ *
+ * @param announceSamples - When set (named announce sections), appends the Samples line.
+ * @param options - User Journey subsection only: mock vs real API from branch env.
+ */
+function formatSectionSamplesLabel(
+  announceSamples?: BenchmarkAnnounceSamples,
+  options?: SectionSamplesLabelOptions,
+): string {
+  if (!announceSamples) {
+    return '';
+  }
+  let label = ` · Samples: ${announceSamples.sampleQuantity}`;
+  if (options?.userJourneyApi === 'real') {
+    label += ' · real API';
+  } else if (options?.userJourneyApi === 'mock') {
+    label += ' · mock API';
+  }
+  return label;
+}
 
 /**
  * Builds a bullet-point summary of notable relative deltas vs the 5-commit baseline.
@@ -589,20 +658,12 @@ function buildRelativeDeltaSection(
 
   for (const entry of entries) {
     const baselineMetrics =
-      resolveBaseline(
-        baseline,
-        entry.presetName,
-        entry.benchmarkName,
-        entry.platform,
-        entryBuildType(entry),
-      ) ??
+      resolveBaseline(baseline, entry.presetName, entry.benchmarkName) ??
       (entry.presetName.startsWith('startup')
         ? resolveBaseline(
             baseline,
             entry.presetName,
-            `${buildCombo(entry.platform, entryBuildType(entry))}-${
-              entry.benchmarkName
-            }`,
+            `${entry.platform}-${entry.buildType}-${entry.benchmarkName}`,
           )
         : undefined);
     if (!baselineMetrics) {
@@ -679,10 +740,14 @@ function buildCwvSection(entries: BenchmarkEntry[]): string {
 
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
-  summary: string,
+  section: string | BenchmarkAnnounceSection,
   baseline?: HistoricalBaselineReference,
   runUrl?: string,
 ): string {
+  const summary = typeof section === 'string' ? section : section.title;
+  const announceSamples =
+    typeof section === 'string' ? undefined : section.announceSamples;
+
   try {
     const { entries, missingPresets } = result;
     if (entries.length === 0 && missingPresets.length === 0) {
@@ -695,6 +760,13 @@ export function buildBenchmarkSection(
         : '';
 
     const sectionCounts = countHealthEntries(entries, baseline);
+    const isUserJourneySection =
+      summary === BENCHMARK_ANNOUNCE_SECTIONS.userJourney.title;
+    const samplesLabel = formatSectionSamplesLabel(announceSamples, {
+      userJourneyApi: isUserJourneySection
+        ? getUserJourneyBenchmarkApiModeFromBranch()
+        : undefined,
+    });
     const sectionBadge =
       sectionCounts.failures > 0
         ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
@@ -703,18 +775,14 @@ export function buildBenchmarkSection(
     const entryLookup = new Map<string, BenchmarkEntry>();
     for (const entry of entries) {
       entryLookup.set(
-        buildEntryKey(
-          entry.benchmarkName,
-          entry.platform,
-          entryBuildType(entry),
-        ),
+        buildEntryKey(entry.benchmarkName, entry.platform, entry.buildType),
         entry,
       );
     }
 
     const benchmarkNames = [...new Set(entries.map((e) => e.benchmarkName))];
     const usedCombos = new Set(
-      entries.map((e) => buildCombo(e.platform, entryBuildType(e))),
+      entries.map((e) => buildCombo(e.platform, e.buildType)),
     );
     const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
@@ -733,13 +801,7 @@ export function buildBenchmarkSection(
                 return `<td align="left">–</td>`;
               }
               const baselineMetrics = baseline
-                ? resolveBaseline(
-                    baseline,
-                    entry.presetName,
-                    benchmarkName,
-                    entry.platform,
-                    entryBuildType(entry),
-                  )
+                ? resolveBaseline(baseline, entry.presetName, benchmarkName)
                 : undefined;
               const health = computeEntryHealth(entry, baselineMetrics);
               const icon = HEALTH_ICON[health];
@@ -784,7 +846,7 @@ export function buildBenchmarkSection(
     const sectionContent =
       warningHtml + sectionBody + deltaSection + cwvSection;
     return sectionContent
-      ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
+      ? `<details><summary><b>${summary}${samplesLabel}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
@@ -813,19 +875,13 @@ function buildHealthMatrixHtml(
   const cellMap = new Map<string, MatrixCellData>();
   for (const entry of allEntries) {
     const baselineMetrics = baseline
-      ? resolveBaseline(
-          baseline,
-          entry.presetName,
-          entry.benchmarkName,
-          entry.platform,
-          entryBuildType(entry),
-        )
+      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
     const key = buildEntryKey(
       entry.benchmarkName,
       entry.platform,
-      entryBuildType(entry),
+      entry.buildType,
     );
     const existing = cellMap.get(key);
     if (existing && HEALTH_ORDER[health] <= HEALTH_ORDER[existing.health]) {
@@ -851,7 +907,7 @@ function buildHealthMatrixHtml(
   }
 
   const usedCombos = new Set(
-    allEntries.map((e) => buildCombo(e.platform, entryBuildType(e))),
+    allEntries.map((e) => `${e.platform}-${e.buildType}`),
   );
   const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
@@ -883,7 +939,7 @@ function buildHealthMatrixHtml(
           const entry = allEntries.find(
             (e) =>
               e.benchmarkName === benchmark &&
-              buildCombo(e.platform, entryBuildType(e)) === combo,
+              `${e.platform}-${e.buildType}` === combo,
           );
           const logHref = entry?.artifactUrl;
           const label = data.label ? `${icon} ${data.label}` : icon;
@@ -966,13 +1022,7 @@ function buildFailingItemsHtml(
   const listItems = allEntries
     .flatMap((entry) => {
       const baselineMetrics = baseline
-        ? resolveBaseline(
-            baseline,
-            entry.presetName,
-            entry.benchmarkName,
-            entry.platform,
-            entryBuildType(entry),
-          )
+        ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
         : undefined;
       if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
         return [];
@@ -982,10 +1032,7 @@ function buildFailingItemsHtml(
       const logHref = entry.artifactUrl ?? runUrl;
       const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
       return [
-        `<li><b>${entry.benchmarkName}</b> · ${buildCombo(
-          entry.platform,
-          entryBuildType(entry),
-        )}${labelPart}${logAnchor}</li>`,
+        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
       ];
     })
     .join('');
@@ -1036,17 +1083,20 @@ export async function buildPerformanceBenchmarksSection(
     fetchBenchmarkEntries(
       hostUrl,
       Object.values(STARTUP_PRESETS),
-      Object.values(BENCHMARK_PLATFORMS),
+      STARTUP_BENCHMARK_PLATFORMS,
+      STARTUP_BENCHMARK_BUILD_TYPES,
     ),
     fetchBenchmarkEntries(
       hostUrl,
       Object.values(USER_JOURNEY_PRESETS),
       USER_JOURNEY_BENCHMARK_PLATFORMS,
+      getUserJourneyBenchmarkBuildTypesForCurrentRun(),
     ),
     fetchBenchmarkEntries(
       hostUrl,
       Object.values(DAPP_PAGE_LOAD_PRESETS),
       DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS,
+      DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES,
     ),
     fetchHistoricalPerformanceDataFromMain(),
   ]);
@@ -1074,25 +1124,25 @@ export async function buildPerformanceBenchmarksSection(
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
-    BENCHMARK_ANNOUNCE_SECTIONS.interaction.title,
+    BENCHMARK_ANNOUNCE_SECTIONS.interaction,
     resolvedBaseline,
     runUrl,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
-    BENCHMARK_ANNOUNCE_SECTIONS.startup.title,
+    BENCHMARK_ANNOUNCE_SECTIONS.startup,
     resolvedBaseline,
     runUrl,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
-    BENCHMARK_ANNOUNCE_SECTIONS.userJourney.title,
+    BENCHMARK_ANNOUNCE_SECTIONS.userJourney,
     resolvedBaseline,
     runUrl,
   );
   const dappPageLoadHtml = buildBenchmarkSection(
     dappPageLoadResult,
-    BENCHMARK_ANNOUNCE_SECTIONS.dappPageLoad.title,
+    BENCHMARK_ANNOUNCE_SECTIONS.dappPageLoad,
     resolvedBaseline,
     runUrl,
   );
@@ -1127,9 +1177,7 @@ export async function buildPerformanceBenchmarksSection(
   const pipelineLink = runUrl
     ? `<a href="${runUrl}">${benchmarkRunId}</a>`
     : (benchmarkRunId ?? '');
-  const baselineLogsUrl =
-    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
-  const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
+  const baselineLogsLink = `<a href="${EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL}">Baseline logs</a>`;
   const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   // Plain text only inside <summary> (no block elements like <p>).

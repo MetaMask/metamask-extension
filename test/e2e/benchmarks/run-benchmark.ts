@@ -14,10 +14,9 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import {
-  BENCHMARK_BUILD_TYPES,
-  type BenchmarkResults,
-  type ThresholdViolation,
+import type {
+  BenchmarkResults,
+  ThresholdViolation,
 } from '../../../shared/constants/benchmarks';
 import {
   DEFAULT_BENCHMARK_BROWSER_LOADS,
@@ -223,12 +222,19 @@ async function runBenchmarkFile(
     );
 
     violations = summary.thresholdViolations;
-    result = convertSummaryToResults(summary, testTitle, persona, platform);
+    result = convertSummaryToResults(
+      summary,
+      testTitle,
+      persona,
+      summary.benchmarkType,
+      platform,
+      buildType,
+    );
   } else {
     result = (await runFn({
       ...options,
       platform,
-      buildType: buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK,
+      buildType,
     })) as BenchmarkResults;
     violations = validateResultThresholds(result, thresholdConfig).violations;
   }
