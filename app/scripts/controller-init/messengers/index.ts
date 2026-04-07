@@ -209,6 +209,7 @@ import { getProfileMetricsControllerMessenger } from './profile-metrics-controll
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
+import { getAccountsApiServiceMessenger } from './accounts-api-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -787,6 +788,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ProfileMetricsService: {
     getMessenger: getProfileMetricsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  AccountsApiService: {
+    getMessenger: getAccountsApiServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;

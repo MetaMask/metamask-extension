@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@metamask/react-data-query';
 import type { CaipChainId } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -66,22 +67,22 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
     [evmAddress, internalTxHashes],
   );
 
-  const queryOptions =
-    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
-      accountAddresses,
-      networks,
-      includeTxMetadata: true,
-    });
-
-  // @ts-expect-error apiClient returns v5 types, repo still in v4
   return useInfiniteQuery({
-    ...queryOptions,
+    queryKey: [
+      'AccountsApiService:fetchMultiAccountTransactionsV4',
+      {
+        accountAddresses,
+      },
+      {
+        networks,
+        includeTxMetadata: true,
+      },
+    ],
     select: selectFn,
     enabled:
       Boolean(useExternalServices) &&
       networks.length > 0 &&
       accountAddresses.length > 0,
-    retry: false,
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,

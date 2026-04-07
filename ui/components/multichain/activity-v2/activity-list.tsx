@@ -72,6 +72,7 @@ export const ActivityList = ({ filter }: Props) => {
     hasNextPage,
     isFetchingNextPage,
   } = useTransactionsQuery(filter);
+  console.log('Got transactions data!', data);
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);

@@ -5571,6 +5571,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/accounts-api@npm:0.0.0-preview-0fc9da15f":
+  version: 0.0.0-preview-0fc9da15f
+  resolution: "@metamask-previews/accounts-api@npm:0.0.0-preview-0fc9da15f"
+  dependencies:
+    "@metamask/base-data-service": "npm:^0.1.1"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+  checksum: 10/f73fd0a1f0b3e93c8f9ac2e39d1cfef5c7f6513236c537bff3d4430a43ea4c806ddfd9c37eee4d57a17e7ed061577cbdb5e38a054c2f0c49f90eaf1d5ce95e13
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/7715-permission-types@npm:0.5.0"
@@ -5910,6 +5924,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-data-service@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@metamask/base-data-service@npm:0.1.1"
+  dependencies:
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/b746cfaad6625d61e0d5e3202488d1f3139ef1e4b8f04c7b07a3e0fbe474c1307c73bacb1cf5d9288e946719137c52f1bc1fd40e9e44800f65b8729bbed7311d
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^1.10.1":
   version: 1.10.1
   resolution: "@metamask/bitcoin-wallet-snap@npm:1.10.1"
@@ -6093,6 +6120,27 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/d66ff170a6c2fb5726aa34c94e4870d79e96737043d3450f87d34eec8b24209b27a09df9935aad9e3e5bb685ebb3ee2c918e6d4cfbeec497c2fa823a177fc227
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^11.20.0":
+  version: 11.20.0
+  resolution: "@metamask/controller-utils@npm:11.20.0"
+  dependencies:
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/a2ba778d00508a606ef4657cd6591a89f8f54136b3dd41f4f96f8effa2e9ad20de347e3c554f643cb248a002a17b478f95eafd4e3b4c3eca4bb40ae2e6bf7fdc
   languageName: node
   linkType: hard
 
@@ -7122,6 +7170,20 @@ __metadata:
   version: 1.0.0
   resolution: "@metamask/messenger@npm:1.0.0"
   checksum: 10/ab1219a922d5acc86f2b1b557d79c75ca0c5f42572f50da8a2337bc5c8feb1ae95c0aaa2d2ee55b677acd4401fb2cc9c2dbacca7513edcddf20d88fb73fa7bea
+  languageName: node
+  linkType: hard
+
+"@metamask/messenger@npm:^1.1.0, @metamask/messenger@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/messenger@npm:1.1.1"
+  dependencies:
+    "@metamask/utils": "npm:^11.9.0"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    typescript: ">=5.0.0"
+  bin:
+    messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
+  checksum: 10/a959af95e9e117aa0f7ad1c280f7817fef2c0b575c76837b1a6c884c9c9ef1dd0faeaef0c2c0c2035f68c7638d1f87cd172956ee962dec97d8ab6176fa6964e3
   languageName: node
   linkType: hard
 
@@ -34044,6 +34106,7 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/accounts-api": "npm:0.0.0-preview-0fc9da15f"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.0"
     "@metamask/account-tree-controller": "npm:^7.0.0"
@@ -34118,7 +34181,7 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/messenger": "npm:^1.1.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^8.0.1"
     "@metamask/multichain-api-client": "npm:^0.10.1"
