@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Biaya bridge"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Ambil yang baru?"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 ke $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Peringatan dampak harga"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Waktu kuotasi telah habis."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Kuotasi diurutkan berdasarkan estimasi biaya total, yang mencakup nilai tukar dan biaya jaringan."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "Anda menyetujui"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Anda menolak transaksi tersebut."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda harus mengizinkan akses kamera untuk menggunakan fitur ini."

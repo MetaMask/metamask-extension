@@ -204,6 +204,9 @@
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
+    "test/integration/notifications&auth/notifications-activation.test.tsx": {
+      "React: State updates on unmounted components": 1
+    },
     "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
       "Test errors: Uncaught Errors": 1
     },
