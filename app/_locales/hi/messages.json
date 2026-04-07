@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "ब्रिज फीस"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "एक नया लाएं?"
-  },
   "bridgeFromTo": {
     "message": "$1 $2 को $3 से ब्रिज करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "कीमत के असर को लेकर चेतावनी"
-  },
-  "bridgeQuoteExpired": {
-    "message": "आपका कोट करने का समय समाप्त हो गया है"
   },
   "bridgeQuotesSortedByCost": {
     "message": "कोटेशन को अनुमानित कुल लागत के आधार पर क्रमबद्ध किया जाता है, जिसमें एक्सचेंज रेट और नेटवर्क शुल्क शामिल होते हैं।"
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "आप एप्रूव करते हैं"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "आपने ट्रांसेक्शन अस्वीकार कर दिया।"
   },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का इस्तेमाल करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"
