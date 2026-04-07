@@ -93,7 +93,12 @@ async function fetchEntries(
 ): Promise<ContentfulBannerResponse> {
   const url = new URL(baseUrl.toString());
   if (locale) {
-    url.searchParams.set('locale', getNormalizedLocale(locale));
+    try {
+      url.searchParams.set('locale', getNormalizedLocale(locale));
+    } catch (error) {
+      // If locale normalization fails (invalid BCP 47 tag), pass the original locale to Contentful
+      url.searchParams.set('locale', locale);
+    }
   }
   const res = await fetch(url);
   const json = await res.json();
