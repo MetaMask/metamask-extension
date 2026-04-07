@@ -464,8 +464,7 @@ function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
   // Rules:
   // - high sev development dependency advisory:
   //   - if Issue includes `ReDoS` or `DoS`, recategorize as low
-  //   - otherwise: fork PRs exit non-zero; internal PRs get a failing check
-  //     run posted by yarn-audit-diff.mts via the Checks API
+  //   - otherwise: yarn-audit-diff.mts exits non-zero if it's a new advisory
   // - low/medium sev development dependency advisory OR any deprecation:
   //   - Create issue (push to main only), highlight in daily Slack message
   // - Any severity production dependency advisory:
@@ -584,8 +583,11 @@ async function main() {
     githubAnnotate('warning', `[deprecation] ${dep.message}`);
   }
 
+  const summaryTitle = `All advisories on this branch: ${advisories.length} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;  
+
   const summaryLines: string[] = [];
-  summaryLines.push(`## Yarn audit triage`);
+  summaryLines.push(`<details>`);
+  summaryLines.push(`<summary>${summaryTitle}</summary>`);
   summaryLines.push('');
   summaryLines.push(`- Branch: \`${triage.branch}\``);
   summaryLines.push(`- Release branch: \`${triage.isReleaseBranch}\``);
@@ -620,14 +622,18 @@ async function main() {
     summaryLines.push('');
   }
 
-  summaryLines.push('### Decision');
-  summaryLines.push('');
-  summaryLines.push(
-    triage.decisions.blockReleaseCandidate
-      ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
-      : '- No blocking conditions met.',
-  );
-  summaryLines.push('');
+  if (triage.isReleaseBranch) {
+    summaryLines.push('### Release branch decision');
+    summaryLines.push('');
+    summaryLines.push(
+      triage.decisions.blockReleaseCandidate
+        ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
+        : '- No production advisories on a release branch — RC not blocked.',
+    );
+    summaryLines.push('');
+  }
+
+  summaryLines.push('</details>');
 
   writeStepSummary(summaryLines.join('\n'));
 
@@ -743,8 +749,8 @@ async function main() {
     }
   }
 
-  // Fork PRs: exit non-zero if any advisory exists (no Checks API available).
-  // Internal PRs: always exit 0; the audit-diff step gates them via check run.
+  // Fork PRs: exit non-zero if any advisory exists (no token to post statuses).
+  // Internal PRs: always exit 0; the audit-diff step gates them by exiting non-zero.
   if (IS_FORK_PR && advisories.length > 0) {
     process.exitCode = 1;
   } else if (triage.decisions.blockReleaseCandidate) {
