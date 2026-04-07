@@ -416,3 +416,41 @@ export const isHip3Market = (
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
+
+/**
+ * Computes the PnL ratio for a position, returning `undefined` when it
+ * cannot be determined.
+ *
+ * Primary: unrealizedPnl / marginUsed.
+ * Fallback: returnOnEquity (percent) converted to a ratio.
+ *
+ * @param position - Position values used to compute the PnL ratio.
+ * @param position.unrealizedPnl - Unrealized profit and loss as a string.
+ * @param position.marginUsed - Margin used as a string.
+ * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
+ */
+export const getPositionPnlRatio = (position: {
+  unrealizedPnl: string;
+  marginUsed: string;
+  returnOnEquity: string;
+}): number | undefined => {
+  const unrealizedPnl = Number.parseFloat(position.unrealizedPnl);
+  const marginUsed = Number.parseFloat(position.marginUsed);
+
+  if (
+    !Number.isNaN(unrealizedPnl) &&
+    !Number.isNaN(marginUsed) &&
+    marginUsed !== 0
+  ) {
+    return unrealizedPnl / marginUsed;
+  }
+
+  const returnOnEquity = parseFloat(position.returnOnEquity);
+  if (!Number.isNaN(returnOnEquity)) {
+    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
+    return returnOnEquity / 100;
+  }
+
+  return undefined;
+};
