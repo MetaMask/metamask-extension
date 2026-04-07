@@ -161,7 +161,7 @@ export default function FoxAppearAnimation({
       ref={containerRef}
       className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
     >
-      <RiveComponent />
+      <RiveComponent className="riv-animation__canvas" />
       {isLoader && (
         <img
           data-testid="loading-indicator"
