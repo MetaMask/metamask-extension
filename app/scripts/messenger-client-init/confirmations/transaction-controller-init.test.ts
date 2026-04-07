@@ -10,6 +10,8 @@ import {
   TransactionControllerOptions,
   TransactionStatus,
   PublishHook,
+  PublishBatchHookRequest,
+  PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
 import {
@@ -579,6 +581,167 @@ describe('Transaction Controller Init', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         properties: { transaction_submission_method: 'sentinel_stx' },
       });
+    });
+  });
+
+  describe('publishBatch hook', () => {
+    const mockTransactionMeta: TransactionMeta = {
+      id: 'batch-tx-last',
+      chainId: CHAIN_ID_MOCK,
+      status: TransactionStatus.approved,
+      time: Date.now(),
+      txParams: {
+        from: '0x0000000000000000000000000000000000000000',
+      },
+      networkClientId: 'test-network',
+    };
+
+    it('calls upsertTransactionUIMetricsFragment with sentinel_stx for each batch tx with an id on STX success', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue({ results: [] });
+
+      const upsertFragmentMock = jest.fn();
+      const requestMock = buildInitRequestMock();
+      requestMock.getTransactionMetricsRequest.mockReturnValue({
+        upsertTransactionUIMetricsFragment: upsertFragmentMock,
+      } as unknown as ReturnType<
+        typeof requestMock.getTransactionMetricsRequest
+      >);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+      const controllerInstance =
+        transactionControllerClassMock.mock.instances[0];
+      // @ts-expect-error Partial mock state
+      controllerInstance.state = {
+        transactions: [mockTransactionMeta],
+      };
+
+      await hooks?.publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-1' } as unknown as PublishBatchHookTransaction,
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(upsertFragmentMock).toHaveBeenCalledTimes(2);
+      expect(upsertFragmentMock).toHaveBeenCalledWith('batch-tx-1', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
+      expect(upsertFragmentMock).toHaveBeenCalledWith('batch-tx-last', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
+    });
+
+    it('skips upsertTransactionUIMetricsFragment for batch txs without an id', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue({ results: [] });
+
+      const upsertFragmentMock = jest.fn();
+      const requestMock = buildInitRequestMock();
+      requestMock.getTransactionMetricsRequest.mockReturnValue({
+        upsertTransactionUIMetricsFragment: upsertFragmentMock,
+      } as unknown as ReturnType<
+        typeof requestMock.getTransactionMetricsRequest
+      >);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+      const controllerInstance =
+        transactionControllerClassMock.mock.instances[0];
+      // @ts-expect-error Partial mock state
+      controllerInstance.state = {
+        transactions: [mockTransactionMeta],
+      };
+
+      await hooks?.publishBatch?.({
+        transactions: [
+          {} as unknown as PublishBatchHookTransaction,
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(upsertFragmentMock).toHaveBeenCalledTimes(1);
+      expect(upsertFragmentMock).toHaveBeenCalledWith('batch-tx-last', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
+    });
+
+    it('does not call upsertTransactionUIMetricsFragment when publishBatchHook returns undefined', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: false,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const upsertFragmentMock = jest.fn();
+      const requestMock = buildInitRequestMock();
+      requestMock.getTransactionMetricsRequest.mockReturnValue({
+        upsertTransactionUIMetricsFragment: upsertFragmentMock,
+      } as unknown as ReturnType<
+        typeof requestMock.getTransactionMetricsRequest
+      >);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+      const controllerInstance =
+        transactionControllerClassMock.mock.instances[0];
+      // @ts-expect-error Partial mock state
+      controllerInstance.state = {
+        transactions: [mockTransactionMeta],
+      };
+
+      await hooks?.publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(upsertFragmentMock).not.toHaveBeenCalled();
     });
   });
 });
