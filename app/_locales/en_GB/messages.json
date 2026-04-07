@@ -5449,9 +5449,6 @@
   "perpsCloseShort": {
     "message": "Close Short"
   },
-  "perpsClosedShort": {
-    "message": "Closed short"
-  },
   "perpsConfirmCloseLong": {
     "message": "Close Long"
   },
@@ -5547,9 +5544,6 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Increased position"
-  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5636,9 +5630,6 @@
   "perpsOpenShort": {
     "message": "Open Short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Opened long"
   },
   "perpsOraclePrice": {
     "message": "Oracle Price"

@@ -5360,9 +5360,6 @@
   "perpsCloseShort": {
     "message": "Fermer la position courte"
   },
-  "perpsClosedShort": {
-    "message": "Fermer la position courte"
-  },
   "perpsConfirmCloseLong": {
     "message": "Fermer la position longue"
   },
@@ -5450,9 +5447,6 @@
   "perpsIncludesPnl": {
     "message": "comprend les profits et pertes $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Position augmentée"
-  },
   "perpsLearnBasics": {
     "message": "Apprenez les bases des contrats perpétuels"
   },
@@ -5530,9 +5524,6 @@
   "perpsOpenShort": {
     "message": "Ouvrir une position courte $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Position longue ouverte"
   },
   "perpsOraclePrice": {
     "message": "Prix de l’Oracle"

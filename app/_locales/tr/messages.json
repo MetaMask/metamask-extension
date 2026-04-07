@@ -5360,9 +5360,6 @@
   "perpsCloseShort": {
     "message": "Short pozisyonu kapat"
   },
-  "perpsClosedShort": {
-    "message": "Short pozisyon kapatıldı"
-  },
   "perpsConfirmCloseLong": {
     "message": "Long pozisyonu kapat"
   },
@@ -5450,9 +5447,6 @@
   "perpsIncludesPnl": {
     "message": "K&Z dahil $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Pozisyon artırıldı"
-  },
   "perpsLearnBasics": {
     "message": "Sürekli vadeli işlem sözleşmeleri hakkındaki temel bilgileri öğrenin"
   },
@@ -5530,9 +5524,6 @@
   "perpsOpenShort": {
     "message": "$1 değerinde Short pozisyon aç",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Long pozisyon açıldı"
   },
   "perpsOraclePrice": {
     "message": "Oracle Fiyatı"

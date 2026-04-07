@@ -5360,9 +5360,6 @@
   "perpsCloseShort": {
     "message": "Tutup posisi Short"
   },
-  "perpsClosedShort": {
-    "message": "Short tertutup"
-  },
   "perpsConfirmCloseLong": {
     "message": "Tutup posisi Long"
   },
@@ -5450,9 +5447,6 @@
   "perpsIncludesPnl": {
     "message": "termasuk P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Peningkatan posisi"
-  },
   "perpsLearnBasics": {
     "message": "Pelajari dasar-dasar perp"
   },
@@ -5530,9 +5524,6 @@
   "perpsOpenShort": {
     "message": "Buka posisi Short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Long terbuka"
   },
   "perpsOraclePrice": {
     "message": "Harga Oracle"

@@ -5360,9 +5360,6 @@
   "perpsCloseShort": {
     "message": "Isara ang Short"
   },
-  "perpsClosedShort": {
-    "message": "Naisara ang short"
-  },
   "perpsConfirmCloseLong": {
     "message": "Isara ang Long"
   },
@@ -5450,9 +5447,6 @@
   "perpsIncludesPnl": {
     "message": "kasama ang P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Dinagdagan ang posisyon"
-  },
   "perpsLearnBasics": {
     "message": "Matutunan ang mga pangunahing kaalaman tungkol sa perps"
   },
@@ -5530,9 +5524,6 @@
   "perpsOpenShort": {
     "message": "Magbukas ng Short na $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Bukas na long"
   },
   "perpsOraclePrice": {
     "message": "Oracle Price"

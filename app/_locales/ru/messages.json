@@ -5360,9 +5360,6 @@
   "perpsCloseShort": {
     "message": "Закрыть короткую позицию"
   },
-  "perpsClosedShort": {
-    "message": "Закрыта короткая позиция"
-  },
   "perpsConfirmCloseLong": {
     "message": "Закрыть длинную позицию"
   },
@@ -5450,9 +5447,6 @@
   "perpsIncludesPnl": {
     "message": "включая П/У $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Увеличенная политика"
-  },
   "perpsLearnBasics": {
     "message": "Изучите основы перпов"
   },
@@ -5530,9 +5524,6 @@
   "perpsOpenShort": {
     "message": "Открыть короткую позицию $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Открыта длинная позиция"
   },
   "perpsOraclePrice": {
     "message": "Цена Oracle"
