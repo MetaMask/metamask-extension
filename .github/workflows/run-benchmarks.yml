@@ -280,8 +280,21 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
-      - name: Run quality gate
+      - name: Check for skip label
+        id: skip-check
         if: steps.download-benchmarks.outcome == 'success'
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'skip-benchmark-gate') }}" == "true" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Run quality gate
+        if: >-
+          ${{
+            steps.download-benchmarks.outcome == 'success' &&
+            steps.skip-check.outputs.skip != 'true'
+          }}
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
         shell: bash
 
