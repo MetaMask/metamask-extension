@@ -582,7 +582,7 @@ export const validateResultThresholds = (
   return { violations, passed };
 };
 
-const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
+export const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
 
 type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
 

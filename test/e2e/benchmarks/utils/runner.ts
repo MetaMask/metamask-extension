@@ -7,6 +7,7 @@ import type {
   StatisticalResult,
   ThresholdConfig,
   TimerStatistics,
+  WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRun,
   WebVitalsSummary,
@@ -29,6 +30,7 @@ import {
   MAX_EXCLUSION_RATE,
   MAX_TOTAL_DURATION_MS,
   validateThresholds,
+  WEB_VITALS_NUMERIC_KEYS,
 } from './statistics';
 import type {
   BenchmarkFunction,
@@ -38,10 +40,7 @@ import type {
   Metrics,
   UserActionMeasurement,
 } from './types';
-import type { WebVitalsAggregated } from '../../../../shared/constants/benchmarks';
 import { performanceTracker } from './performance-tracker';
-
-const WEB_VITALS_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -52,7 +51,7 @@ function extractWebVitalsAsTimerStats(
   aggregated: WebVitalsAggregated,
 ): TimerStatistics[] {
   const stats: TimerStatistics[] = [];
-  for (const key of WEB_VITALS_KEYS) {
+  for (const key of WEB_VITALS_NUMERIC_KEYS) {
     const metric = aggregated[key];
     if (metric) {
       stats.push(metric);
