@@ -248,9 +248,10 @@ jobs:
           if-no-files-found: ignore
 
   # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
-  # Phase 2: continue-on-error: true (non-blocking, informational).
-  # Phase 3: continue-on-error: false (red X in checks, not required).
-  # Phase 4: continue-on-error: false + added to branch protection required checks.
+  # Rollout across 4 phases:
+  # - Phase 2: continue-on-error: true (non-blocking, informational).
+  # - Phase 3: continue-on-error: false (red X in checks, not required).
+  # - Phase 4: continue-on-error: false + added to branch protection required checks.
   quality-gate:
     name: quality-gate
     continue-on-error: true # Phase 2 — non-blocking, informational
