@@ -8,6 +8,9 @@ import {
 } from '../../shared/constants/benchmarks';
 import type { HistoricalBaselineReference } from './historical-comparison';
 
+export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =
+  'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+
 /**
  * Runs a section builder and returns its result, or a "data not available"
  * message for `sectionName` if the builder returns null/undefined/'' or throws.

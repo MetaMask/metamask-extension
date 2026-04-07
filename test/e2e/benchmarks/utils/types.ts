@@ -39,6 +39,13 @@ export type Metrics = {
   numNetworkReqs: number;
 };
 
+export type MeasurePageResult = {
+  metrics: Metrics[];
+  title: string;
+  persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
+};
+
 /** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
@@ -88,6 +95,44 @@ export type BenchmarkSummary = {
   benchmarkType?: BenchmarkType;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
+};
+
+/**
+ * Web vitals–style metrics for one Playwright dapp page-load sample (ms unless noted).
+ */
+export type DappPageLoadMetric = {
+  /** Navigation start → load event end */
+  pageLoadTime: number;
+  domContentLoaded: number;
+  firstPaint: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint: number;
+  memoryUsage?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+};
+
+/**
+ * One raw measurement from a Playwright dapp page-load benchmark run.
+ */
+export type DappPageLoadSample = {
+  page: string;
+  run: number;
+  metrics: DappPageLoadMetric;
+  timestamp: number;
+};
+
+/**
+ * Aggregated web-vitals per URL for the Playwright dapp benchmark, using the same
+ * {@link TimerStatistics} concept as {@link BenchmarkSummary} (`timers` array).
+ * Aggregate with `aggregateDappPageLoadStatistics` in `test/e2e/benchmarks/flows/dapp-page-load/dapp-page-load-stats.ts`,
+ * then convert via `dappPageLoadStatsToBenchmarkResults`.
+ */
+export type DappPageLoadStats = {
+  page: string;
+  timers: TimerStatistics[];
 };
 
 export type PerformanceBenchmarkResults = {

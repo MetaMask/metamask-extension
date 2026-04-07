@@ -1082,15 +1082,15 @@
   "bridgeFee": {
     "message": "Bridge fee"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Fetch a new one?"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
   },
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
+  },
+  "bridgeGetNewQuote": {
+    "message": "Get new quote"
   },
   "bridgeLowestCost": {
     "message": "Lowest cost"
@@ -1170,9 +1170,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Your quote timed out."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
@@ -9448,9 +9445,6 @@
   },
   "youApprove": {
     "message": "You approve"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "You declined the transaction."
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

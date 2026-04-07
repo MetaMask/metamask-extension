@@ -17,10 +17,9 @@ import { Driver } from '../../../webdriver/driver';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  runUserActionBenchmark,
-  collectWebVitals,
-} from '../../utils';
-import type { BenchmarkRunResult } from '../../utils';
+} from '../../../../../shared/constants/benchmarks';
+import { runUserActionBenchmark, collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
