@@ -169,15 +169,16 @@ describe('usePerpsMarketFills', () => {
       expect(result.current.fills.every((f) => f.symbol === 'BTC')).toBe(true);
     });
 
-    it('only includes live fills matching the requested symbol', () => {
+    it('only includes live fills matching the requested symbol', async () => {
       setLiveFills([
         makeFill({ orderId: 'live-btc', symbol: 'BTC', timestamp: 5000 }),
         makeFill({ orderId: 'live-eth', symbol: 'ETH', timestamp: 4000 }),
       ]);
 
-      const { result } = renderHook(() =>
+      const { result, waitForNextUpdate } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
+      await waitForNextUpdate();
 
       expect(result.current.fills).toHaveLength(1);
       expect(result.current.fills[0].orderId).toBe('live-btc');
