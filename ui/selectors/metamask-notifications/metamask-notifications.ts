@@ -6,7 +6,7 @@ import {
   TRIGGER_TYPES,
   defaultState,
 } from '@metamask/notification-services-controller/notification-services';
-import { createParameterizedSelector } from '../../../shared/lib/selectors/util';
+import { createParameterizedSelector } from '../../../shared/lib/selectors/selector-creators';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
