@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Frais de passerelle"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Trouver une nouvelle cotation ?"
-  },
   "bridgeFromTo": {
     "message": "Établir une passerelle pour transférer $1 $2 vers $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Avertissement d’impact sur les prix"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Votre cotation a expiré."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Les cotations sont triées par coût total estimé, qui comprend le taux de change et les frais de réseau."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "Vous acceptez"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Vous avez refusé la transaction."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Vous devez autoriser l’accès à votre appareil pour utiliser cette fonctionnalité."

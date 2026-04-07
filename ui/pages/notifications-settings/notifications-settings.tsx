@@ -71,6 +71,7 @@ export function NotificationsSettingsContent() {
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
       paddingTop={3}
+      paddingHorizontal={4}
       gap={6}
     >
       <NotificationsSettingsAllowNotifications

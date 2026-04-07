@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "ブリッジ手数料"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "新しいものを取得しますか？"
-  },
   "bridgeFromTo": {
     "message": "$1 $2を$3にブリッジ",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "プライスインパクトに関する警告"
-  },
-  "bridgeQuoteExpired": {
-    "message": "クォートがタイムアウトしました。"
   },
   "bridgeQuotesSortedByCost": {
     "message": "クォートは、為替レートとネットワーク手数料を含む推定総コストで並べ替えられています。"
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "以下を承認します"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "トランザクションを拒否しました。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"

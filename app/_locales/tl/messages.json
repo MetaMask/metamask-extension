@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Bayad sa bridge"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Mag-fetch ng bago?"
-  },
   "bridgeFromTo": {
     "message": "I-bridge ang $1 $2 sa $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Babala sa epekto ng presyo"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Nag-time out ang quote mo."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Nakaayos ang mga quote ayon sa tinatayang kabuuang halaga, kasama ang rate ng palitan at bayad sa network."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "Inaaprubahan mo"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Tinanggihan mo ang transaksyon."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

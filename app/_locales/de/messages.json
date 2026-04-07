@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Bridge-Gebühr"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Eine neue suchen?"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 auf $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Warnung vor Preiseinfluss"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Ihr Angebot ist abgelaufen."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Die Angebote sind nach den geschätzten Gesamtkosten einschließlich des Wechselkurses und der Netzwerkgebühr sortiert."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "Sie genehmigen"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Sie haben die Transaktion abgelehnt."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Sie müssen Zugriff auf die Kamera erlauben, um diese Funktion nutzen zu können."

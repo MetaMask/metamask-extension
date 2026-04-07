@@ -39,6 +39,13 @@ const HideZeroBalanceTokensToggleItem = createToggleItem({
   selector: getShouldHideZeroBalanceTokens,
   action: setHideZeroBalanceTokens,
   dataTestId: 'toggle-zero-balance-button',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      hide_zero_balance_tokens: newValue,
+    }),
+  },
 });
 
 const AutodetectTokensToggleItem = createToggleItem({

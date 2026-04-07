@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Phí cầu nối"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Tìm nạp báo giá mới?"
-  },
   "bridgeFromTo": {
     "message": "Cầu nối $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Cảnh báo tác động giá"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Báo giá của bạn đã hết hạn."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Các báo giá được sắp xếp theo tổng chi phí ước tính, bao gồm tỷ giá và phí mạng."
@@ -9206,9 +9200,6 @@
   },
   "youApprove": {
     "message": "Bạn phê duyệt"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Bạn đã từ chối giao dịch."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."
