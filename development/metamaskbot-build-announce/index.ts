@@ -1,7 +1,6 @@
 import { version as VERSION } from '../../package.json';
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
 import { buildBundleSizeDiffSection } from './bundle-size';
-import { getDappBenchmarkComment } from './dapp-benchmarks';
 import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
 import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
@@ -60,11 +59,6 @@ async function start(): Promise<void> {
   commentBody += await buildSectionWithFallback(
     () => buildPerformanceBenchmarksSection(HOST_URL),
     'Performance benchmarks',
-  );
-
-  commentBody += await buildSectionWithFallback(
-    () => getDappBenchmarkComment(),
-    'Dapp page load benchmarks',
   );
 
   commentBody += await buildSectionWithFallback(

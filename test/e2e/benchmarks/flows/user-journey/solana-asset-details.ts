@@ -18,11 +18,11 @@ import {
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  WITH_STATE_POWER_USER,
-  collectWebVitals,
-} from '../../utils';
-import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
-import type { BenchmarkRunResult } from '../../utils';
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
