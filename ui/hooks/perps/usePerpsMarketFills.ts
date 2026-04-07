@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
-import { PERPS_CONSTANTS } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
+import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsLiveFills } from './stream';

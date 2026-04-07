@@ -32,7 +32,7 @@ import {
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { Position, PriceUpdate } from '@metamask/perps-controller';
-import { PERPS_CONSTANTS } from '@metamask/perps-controller';
+import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';

@@ -2,12 +2,6 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import type { OrderFill } from '@metamask/perps-controller';
 import { usePerpsMarketFills } from './usePerpsMarketFills';
 
-jest.mock('@metamask/perps-controller', () => ({
-  PERPS_CONSTANTS: {
-    FillsLookbackMs: 90 * 24 * 60 * 60 * 1000,
-  },
-}));
-
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
