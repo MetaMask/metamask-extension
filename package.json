@@ -154,7 +154,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controller": "file:../core/packages/assets-controller",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "napi-postinstall": "npm:npm-empty-package@1.0.0",
@@ -272,7 +271,7 @@
   "previewBuilds": {
     "@metamask/assets-controller": {
       "type": "non-breaking",
-      "previewVersion": "3.1.1-preview-dbd93752f"
+      "previewVersion": "4.0.0-preview-c5f25f9"
     }
   },
   "dependencies": {
