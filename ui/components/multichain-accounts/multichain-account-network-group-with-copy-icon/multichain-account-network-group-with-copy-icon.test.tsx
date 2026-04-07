@@ -1,6 +1,5 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import type { AccountGroupId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
@@ -43,23 +42,23 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     mockUseCopyToClipboard.mockReturnValue([false, mockHandleCopy, jest.fn()]);
   });
 
-  it('renders default-address-container when default address is available', () => {
+  it('renders default address when showDefaultAddress preference is true', () => {
     renderWithProvider(
       <MultichainAccountNetworkGroupWithCopyIcon {...defaultProps} />,
       createStore(),
     );
 
-    const container = screen.getByTestId('default-address-container');
+    const container = screen.getByTestId('default-address');
     expect(container).toBeInTheDocument();
   });
 
-  it('calls copy handler with normalized address when container is clicked', () => {
+  it('calls copy handler with normalized address when default address is clicked', () => {
     renderWithProvider(
       <MultichainAccountNetworkGroupWithCopyIcon {...defaultProps} />,
       createStore(),
     );
 
-    const container = screen.getByTestId('default-address-container');
+    const container = screen.getByTestId('default-address');
     fireEvent.click(container);
 
     expect(mockHandleCopy).toHaveBeenCalledTimes(1);
@@ -106,9 +105,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
         createStoreWithPrefOff(),
       );
 
-      expect(
-        screen.queryByTestId('default-address-container'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('default-address')).not.toBeInTheDocument();
     });
 
     it('does not call copy handler when container is clicked', () => {

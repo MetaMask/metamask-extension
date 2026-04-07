@@ -142,7 +142,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               class="min-w-0"
             >
               <div
-                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg h-6"
+                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg h-6 cursor-pointer"
                 data-testid="network-group-with-copy-icon"
               >
                 <div
@@ -215,6 +215,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     </div>
                   </div>
                 </div>
+                <p
+                  class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate flex-1"
+                  data-testid="default-address"
+                >
+                  0x0DCD5...3E7bc
+                </p>
                 <svg
                   class="inline-block w-4 h-4 text-icon-alternative"
                   fill="currentColor"

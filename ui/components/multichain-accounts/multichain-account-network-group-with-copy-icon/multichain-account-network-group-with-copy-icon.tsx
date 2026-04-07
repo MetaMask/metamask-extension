@@ -24,9 +24,14 @@ import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/mu
 import {
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
+  getDefaultAddressScope,
 } from '../../../selectors/selectors';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import {
+  DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
+  DefaultAddressScope,
+} from '../../../../shared/constants/default-address';
 
 const MAX_NETWORK_AVATARS = 4;
 
@@ -50,10 +55,13 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
   const showDefaultAddressPreference = useSelector(
     getShowDefaultAddressPreference,
   );
+  const defaultAddressScope = useSelector(
+    getDefaultAddressScope,
+  ) as DefaultAddressScope;
   const { defaultAddress } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
-  const shouldShowDefaultAddress =
+  const displayDefaultAddress =
     isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
   const [addressCopied, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
@@ -67,7 +75,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
 
   return (
     <Box
-      onClick={shouldShowDefaultAddress ? handleDefaultAddressClick : undefined}
+      onClick={displayDefaultAddress ? handleDefaultAddressClick : undefined}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       backgroundColor={
@@ -79,7 +87,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       gap={1}
       className={classnames(
         'rounded-lg h-6',
-        shouldShowDefaultAddress && 'cursor-pointer',
+        displayDefaultAddress && 'cursor-pointer',
       )}
       data-testid="network-group-with-copy-icon"
     >
@@ -87,7 +95,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
         groupId={groupId}
         limit={MAX_NETWORK_AVATARS}
       />
-      {shouldShowDefaultAddress && (
+      {displayDefaultAddress && (
         <Text
           ellipsis
           variant={TextVariant.BodySm}
@@ -96,10 +104,10 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
             addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
           }
           className="flex-1"
-          data-testid="default-address-container"
+          data-testid="default-address"
         >
           {addressCopied
-            ? t('addressCopied')
+            ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
             : shortenAddress(normalizeSafeAddress(defaultAddress))}
         </Text>
       )}
