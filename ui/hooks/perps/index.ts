@@ -1,5 +1,7 @@
 export { usePerpsOrderForm } from './usePerpsOrderForm';
 export { usePerpsEligibility } from './usePerpsEligibility';
+export { usePerpsMeasurement } from './usePerpsMeasurement';
+export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
