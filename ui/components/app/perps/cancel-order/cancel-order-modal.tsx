@@ -33,6 +33,7 @@ import { getCurrentLocale } from '../../../../ducks/locale/locale';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
+import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Order } from '../types';
 
 export type CancelOrderModalProps = {
@@ -57,6 +58,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentLocale = useSelector(getCurrentLocale);
+  const { replacePerpsToastByKey } = usePerpsToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,13 +117,20 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       if (!result?.success) {
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('somethingWentWrong'));
+      const errorMessage =
+        err instanceof Error ? err.message : t('somethingWentWrong');
+      setError(errorMessage);
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
+        description: errorMessage,
+      });
       setIsSubmitting(false);
     }
-  }, [order.orderId, order.symbol, onClose, t]);
+  }, [order.orderId, order.symbol, onClose, replacePerpsToastByKey, t]);
 
   return (
     <Modal

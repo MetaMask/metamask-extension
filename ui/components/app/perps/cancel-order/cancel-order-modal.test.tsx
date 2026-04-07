@@ -10,10 +10,21 @@ import type { Order } from '../types';
 import { CancelOrderModal } from './cancel-order-modal';
 
 const mockSubmitRequestToBackground = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
+    CANCEL_ORDER_SUCCESS: 'perpsToastCancelOrderSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -392,6 +403,67 @@ describe('CancelOrderModal', () => {
 
       // Error should not be visible since it was never triggered in this open session
       expect(screen.queryByText('Some error')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('toast emission', () => {
+    it('emits cancel order success toast after a successful cancel', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCancelOrderSuccess',
+        });
+      });
+    });
+
+    it('emits cancel order failed toast when perpsCancelOrder returns success: false', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Order not found',
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCancelOrderFailed',
+          description: 'Order not found',
+        });
+      });
+    });
+
+    it('emits cancel order failed toast when perpsCancelOrder throws', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCancelOrderFailed',
+          description: 'Network error',
+        });
+      });
     });
   });
 });

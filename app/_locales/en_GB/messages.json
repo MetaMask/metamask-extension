@@ -5791,6 +5791,14 @@
     "message": "Take Profit",
     "description": "Label for take profit price input"
   },
+  "perpsToastCancelOrderFailed": {
+    "message": "Failed to cancel order",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Order cancelled",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",
     "description": "Error toast text shown when closing a perps position fails"
