@@ -69,7 +69,7 @@ jobs:
 
   prep-deps:
     name: Prepare dependencies
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    # if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     runs-on: ubuntu-latest
     needs:
       - get-requirements
@@ -141,6 +141,7 @@ jobs:
       pull-requests: write
       checks: write
       actions: read
+      statuses: write
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:

@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
+import { getGitHubToken } from './shared/github-token.mts';
 
 // ---------------------------------------------------------------------------
 // CLI args
@@ -21,10 +22,17 @@ const currentFile = (() => {
 // artifact. Remove this flag after the first successful main push.
 const skipIfNoBaseline = args.includes('--skip-if-no-baseline');
 
-const resultFile = (() => {
-  const i = args.indexOf('--result-file');
-  return i !== -1 ? (args[i + 1] ?? null) : null;
-})();
+// ---------------------------------------------------------------------------
+// Environment
+// ---------------------------------------------------------------------------
+
+const token = getGitHubToken();
+const repository = process.env.GITHUB_REPOSITORY ?? '';
+// On `pull_request` events GITHUB_SHA is the ephemeral merge commit, not the
+// PR head. The workflow step passes the real head SHA via GITHUB_HEAD_SHA.
+const headSha = process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA || '';
+
+const [repoOwner, repoName] = repository.split('/');
 
 // ---------------------------------------------------------------------------
 // Types (subset of ParsedAdvisory from yarn-audit-and-triage.mts)
@@ -61,30 +69,49 @@ function sevLabel(a: ParsedAdvisory): string {
   return (a.effectiveSeverity ?? 'unknown').toUpperCase();
 }
 
-function toAnnotation(a: ParsedAdvisory): object {
-  return {
-    path: '.github',
-    start_line: 1,
-    end_line: 1,
-    annotation_level: 'failure',
-    message: `New advisory: [${sevLabel(a)}] ${a.moduleName} \u2014 ${a.title} (${a.url})`,
-  };
-}
-
 // ---------------------------------------------------------------------------
-// Result file
+// Commit status
 // ---------------------------------------------------------------------------
 
-type DiffResult = {
-  conclusion: 'success' | 'failure';
-  title: string;
-  summary: string;
-  annotations: object[];
-};
-
-function writeResult(result: DiffResult): void {
-  if (resultFile) {
-    writeFileSync(resultFile, JSON.stringify(result, null, 2), 'utf8');
+// Commit statuses have no check suite concept so they are never misattributed
+// to another app's suite in the PR sidebar. The tradeoff vs check runs is no
+// inline file annotations, but our annotations only pointed to .github#L1
+// which was not useful. The summary text carries all relevant information.
+async function postCommitStatusQuietly(
+  state: 'success' | 'failure',
+  description: string,
+): Promise<void> {
+  try {
+    if (!repoOwner || !repoName || !headSha) {
+      console.log('::notice::Missing repo/sha — skipping commit status post.');
+      return;
+    }
+    const url = `https://api.github.com/repos/${repoOwner}/${repoName}/statuses/${headSha}`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json',
+        'User-Agent': 'yarn-audit-diff',
+      },
+      body: JSON.stringify({
+        state,
+        context: 'Audit: no new vulnerabilities',
+        description: description.slice(0, 140), // GitHub limit
+      }),
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      console.log(
+        `::notice::Could not post commit status (fork token?): ${resp.status} ${text}`,
+      );
+    }
+  } catch (e) {
+    console.log(
+      `::notice::Could not post commit status (fork token?): ${String(e)}`,
+    );
   }
 }
 
@@ -123,7 +150,8 @@ async function main() {
       writeResult({
         conclusion: 'success',
         title: 'No baseline yet',
-        summary: 'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
+        summary:
+          'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
         annotations: [],
       });
       return;
@@ -138,13 +166,10 @@ async function main() {
       current
         .map((a) => `- [${sevLabel(a)}] \`${a.moduleName}\` — ${a.title}`)
         .join('\n');
-    // The Checks API rejects requests with more than 50 annotations.
-    writeResult({
-      conclusion: 'failure',
-      title: 'New vulnerabilities found',
-      summary,
-      annotations: current.slice(0, 50).map(toAnnotation),
-    });
+    await postCommitStatusQuietly(
+      'failure',
+      `No baseline — ${current.length} advisories treated as new.`,
+    );
     return;
   }
 
@@ -163,12 +188,10 @@ async function main() {
     console.log(
       `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
     );
-    writeResult({
-      conclusion: 'success',
-      title: 'No new vulnerabilities',
-      summary: `Compared **${current.length}** current advisory/advisories against **${baseline.length}** baseline. No new advisories introduced by this PR.`,
-      annotations: [],
-    });
+    await postCommitStatusQuietly(
+      'success',
+      `No new advisories. ${current.length} current vs ${baseline.length} baseline.`,
+    );
     return;
   }
 
@@ -189,13 +212,12 @@ async function main() {
       )
       .join('\n');
 
-  // The Checks API rejects requests with more than 50 annotations.
-  writeResult({
-    conclusion: 'failure',
-    title: 'New vulnerabilities found',
-    summary: summaryBody,
-    annotations: newAdvisories.slice(0, 50).map(toAnnotation),
-  });
+  const newDesc = newAdvisories
+    .slice(0, 3)
+    .map((a) => `${a.moduleName} (${sevLabel(a)})`)
+    .join(', ');
+  const description = `${newAdvisories.length} new: ${newDesc}${newAdvisories.length > 3 ? ', …' : ''}`;
+  await postCommitStatusQuietly('failure', description);
 }
 
 try {
