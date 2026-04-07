@@ -334,6 +334,7 @@ const CancelSpeedupContent = ({
   const {
     effectiveTransaction,
     gasFeeEstimates,
+    isGasEstimatesLoading,
     cancelTransaction,
     speedUpTransaction,
     updateTransactionToTenPercentIncreasedGasFee,
@@ -343,6 +344,7 @@ const CancelSpeedupContent = ({
   const { isInitialGasReady } = useCancelSpeedupInitialGas({
     effectiveTransaction,
     gasFeeEstimates,
+    isGasEstimatesLoading,
     updateTransactionUsingEstimate,
     updateTransactionToTenPercentIncreasedGasFee,
     appIsLoading,

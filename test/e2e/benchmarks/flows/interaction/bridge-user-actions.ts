@@ -14,9 +14,12 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
+import { runUserActionBenchmark, collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -45,6 +48,7 @@ export async function run(): Promise<BenchmarkRunResult> {
     let loadPage: number = 0;
     let loadAssetPicker: number = 0;
     let searchToken: number = 0;
+    let webVitals;
 
     const fixtureBuilder = new FixtureBuilder()
       .withNetworkControllerOnMainnet()
@@ -94,13 +98,22 @@ export async function run(): Promise<BenchmarkRunResult> {
         searchToken =
           timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
-    return [
-      { id: 'bridge_load_page', duration: loadPage },
-      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-      { id: 'bridge_search_token', duration: searchToken },
-    ];
+    return {
+      timers: [
+        { id: 'bridge_load_page', duration: loadPage },
+        { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
+        { id: 'bridge_search_token', duration: searchToken },
+      ],
+      webVitals,
+    };
   }, BENCHMARK_TYPE.USER_ACTION);
 }

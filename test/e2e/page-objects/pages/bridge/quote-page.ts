@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Hex } from '@metamask/utils';
+import { Key } from 'selenium-webdriver';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
@@ -35,16 +36,22 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  public tokenButton = '[data-testid="bridge-asset"]';
+  public tokenButton = '[data-testid^="bridge-asset--"]';
 
-  private submitButton = { text: 'Swap', tag: 'button' };
+  private submitButton = '[data-testid="bridge-cta-button"]';
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
   };
 
   private backButton = '[aria-label="Back"]';
+
+  private gasIncludedIndicator = '[data-testid="network-fees-included"]';
+
+  private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
+
+  private maxButton = { text: 'Max' };
 
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
@@ -304,6 +311,36 @@ class BridgeQuotePage {
     console.log('Price matches expected format');
   }
 
+  async checkGasIncludedIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasIncludedIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees included" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees included indicator is displayed');
+  }
+
+  async checkGasSponsoredIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasSponsoredIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees sponsored" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees sponsored indicator is displayed');
+  }
+
+  async clickMaxButton(): Promise<void> {
+    await this.driver.waitForSelector(this.maxButton, { timeout: 30000 });
+    await this.driver.clickElement(this.maxButton);
+    console.log('Clicked Max button');
+  }
+
   checkDestAmount = async (amount: string) => {
     const destAmount = await this.driver.findElement(this.destinationAmount);
     assert.equal(await destAmount.getAttribute('value'), amount);
@@ -324,11 +361,35 @@ class BridgeQuotePage {
   async setCustomSlippage(value: string): Promise<void> {
     await this.driver.clickElement(this.slippageEditButton);
     await this.driver.clickElement(this.slippageCustomButton);
+    const input = await this.driver.waitForSelector(this.slippageCustomInput, {
+      timeout: 1000,
+    });
+    await input.sendKeys(Key.BACK_SPACE);
     await this.driver.fill(this.slippageCustomInput, value);
     await this.driver.executeScript(`
       const input = document.querySelector('${this.slippageCustomInput}');
       if (input) { input.blur(); }
     `);
+  }
+
+  async selectSrcToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.sourceAssetPickerButton);
+    await this.driver.clickElement(this.sourceAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
+  }
+
+  async selectDestToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.destinationAssetPickerButton);
+    await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
   }
 
   async selectNetwork(network: string): Promise<void> {
