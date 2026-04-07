@@ -73,7 +73,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { trace } from '../../shared/lib/trace';
+import { trace as extensionTrace } from '../../shared/lib/trace';
 import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -282,7 +282,9 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       (accountsById ?? {}) as Parameters<
         typeof getAggregatedBalanceForAccount
       >[5],
-      trace as unknown as TraceCallback,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((req: any, fn?: any) =>
+        Promise.resolve(extensionTrace(req, fn))) as unknown as TraceCallback,
     );
   },
 );

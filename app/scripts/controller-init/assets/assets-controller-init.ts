@@ -2,6 +2,7 @@ import {
   AssetsController,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
+import type { TraceCallback } from '@metamask/controller-utils';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import {
@@ -15,7 +16,7 @@ import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import { trace } from '../../../../shared/lib/trace';
+import { trace as extensionTrace } from '../../../../shared/lib/trace';
 
 /**
  * Cached API client instance.
@@ -178,8 +179,9 @@ export const AssetsControllerInit: ControllerInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    // @ts-expect-error: Type of `TraceRequest` is different.
-    trace,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    trace: ((req: any, fn?: any) =>
+      Promise.resolve(extensionTrace(req, fn))) as unknown as TraceCallback,
   });
 
   return { controller };
