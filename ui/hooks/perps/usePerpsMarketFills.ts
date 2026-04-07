@@ -14,8 +14,6 @@ type UsePerpsMarketFillsParams = {
 type UsePerpsMarketFillsReturn = {
   fills: OrderFill[];
   isInitialLoading: boolean;
-  refresh: () => Promise<void>;
-  isRefreshing: boolean;
 };
 
 /**
@@ -32,7 +30,7 @@ type UsePerpsMarketFillsReturn = {
  * @param params - Configuration options including symbol filter
  * @param params.symbol - Market symbol to filter fills for (e.g., "BTC", "ETH")
  * @param params.throttleMs - Throttle interval for WebSocket updates in ms (default: 0)
- * @returns Object containing fills array, loading states, and refresh function
+ * @returns Object containing fills array and loading state
  */
 export function usePerpsMarketFills({
   symbol,
@@ -47,7 +45,6 @@ export function usePerpsMarketFills({
 
   const [restFills, setRestFills] = useState<OrderFill[]>([]);
   const [isRestLoading, setIsRestLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchRestFills = useCallback(async () => {
     const startTime = Date.now() - PERPS_CONSTANTS.FillsLookbackMs;
@@ -83,18 +80,6 @@ export function usePerpsMarketFills({
     };
   }, [fetchRestFills, selectedAddress]);
 
-  const refresh = useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      const result = await fetchRestFills();
-      setRestFills(result);
-    } catch {
-      // Refresh failed silently — existing fills remain
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [fetchRestFills]);
-
   const fills = useMemo(() => {
     const fillsMap = new Map<string, OrderFill>();
 
@@ -122,7 +107,5 @@ export function usePerpsMarketFills({
   return {
     fills,
     isInitialLoading,
-    refresh,
-    isRefreshing,
   };
 }

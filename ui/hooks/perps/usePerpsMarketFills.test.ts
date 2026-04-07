@@ -62,7 +62,7 @@ describe('usePerpsMarketFills', () => {
   });
 
   describe('initialization', () => {
-    it('returns empty fills, not loading, and a refresh function once REST resolves', async () => {
+    it('returns empty fills and not loading once REST resolves', async () => {
       const { result, waitForNextUpdate } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
@@ -72,10 +72,8 @@ describe('usePerpsMarketFills', () => {
         expect.objectContaining({
           fills: [],
           isInitialLoading: false,
-          isRefreshing: false,
         }),
       );
-      expect(typeof result.current.refresh).toBe('function');
     });
 
     it('reports isInitialLoading while REST fetch is still in-flight', () => {
@@ -274,50 +272,6 @@ describe('usePerpsMarketFills', () => {
       expect(result.current.fills.map((f) => f.timestamp)).toEqual([
         3000, 2000, 1000,
       ]);
-    });
-  });
-
-  describe('refresh', () => {
-    it('tracks isRefreshing through the refresh lifecycle', async () => {
-      let resolveRefresh!: (v: OrderFill[]) => void;
-      mockSubmitRequestToBackground.mockReturnValue(
-        new Promise<OrderFill[]>((resolve) => {
-          resolveRefresh = resolve;
-        }),
-      );
-
-      const { result } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-
-      let refreshPromise!: Promise<void>;
-      act(() => {
-        refreshPromise = result.current.refresh();
-      });
-      expect(result.current.isRefreshing).toBe(true);
-
-      await act(async () => {
-        resolveRefresh([]);
-        await refreshPromise;
-      });
-      expect(result.current.isRefreshing).toBe(false);
-    });
-
-    it('resets isRefreshing even when the fetch fails', async () => {
-      mockSubmitRequestToBackground
-        .mockResolvedValueOnce([])
-        .mockRejectedValueOnce(new Error('Refresh failed'));
-
-      const { result, waitForNextUpdate } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitForNextUpdate();
-
-      await act(async () => {
-        await result.current.refresh();
-      });
-
-      expect(result.current.isRefreshing).toBe(false);
     });
   });
 
