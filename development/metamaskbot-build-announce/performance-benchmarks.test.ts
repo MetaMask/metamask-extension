@@ -910,6 +910,125 @@ describe('buildBenchmarkSection', () => {
       expect(html).not.toContain('<ul');
     });
   });
+
+  describe('artifact and Sentry links', () => {
+    const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+    let savedBranch: string | undefined;
+    let savedRefName: string | undefined;
+    let savedSentryDsn: string | undefined;
+
+    beforeEach(() => {
+      savedBranch = process.env.BRANCH;
+      savedRefName = process.env.GITHUB_REF_NAME;
+      savedSentryDsn = process.env.SENTRY_DSN_PERFORMANCE;
+    });
+
+    afterEach(() => {
+      if (savedBranch === undefined) {
+        delete process.env.BRANCH;
+      } else {
+        process.env.BRANCH = savedBranch;
+      }
+      if (savedRefName === undefined) {
+        delete process.env.GITHUB_REF_NAME;
+      } else {
+        process.env.GITHUB_REF_NAME = savedRefName;
+      }
+      if (savedSentryDsn === undefined) {
+        delete process.env.SENTRY_DSN_PERFORMANCE;
+      } else {
+        process.env.SENTRY_DSN_PERFORMANCE = savedSentryDsn;
+      }
+    });
+
+    it('includes [Sentry log] when BRANCH and SENTRY_DSN_PERFORMANCE are set', () => {
+      process.env.BRANCH = 'feat/test';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('[Show logs]');
+      expect(html).toContain('[Sentry log]');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+    });
+
+    it('uses GITHUB_REF_NAME for Sentry when BRANCH is unset', () => {
+      delete process.env.BRANCH;
+      process.env.GITHUB_REF_NAME = 'release/1.0.0';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('[Sentry log]');
+    });
+
+    it('omits [Sentry log] when SENTRY_DSN_PERFORMANCE is unset', () => {
+      process.env.BRANCH = 'feat/test';
+      delete process.env.SENTRY_DSN_PERFORMANCE;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('[Show logs]');
+      expect(html).not.toContain('[Sentry log]');
+    });
+
+    it('omits [Sentry log] when branch env vars are unset', () => {
+      delete process.env.BRANCH;
+      delete process.env.GITHUB_REF_NAME;
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const html = buildBenchmarkSection(
+        withEntries([
+          makeEntry({ artifactUrl: 'https://cdn.example.com/benchmark.json' }),
+        ]),
+        'Test',
+        BASELINE_PASS,
+      );
+      expect(html).toContain('[Show logs]');
+      expect(html).not.toContain('[Sentry log]');
+    });
+
+    it('includes Sentry links in timer details when env and DSN are set', () => {
+      process.env.BRANCH = 'main';
+      process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+      const entry = makeEntry({
+        benchmarkName: 'swap',
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 4500,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 5500,
+        },
+        artifactUrl: 'https://cdn.example.com/swap.json',
+      });
+      const html = buildBenchmarkSection(
+        withEntries([entry]),
+        'Test',
+        undefined,
+        'https://github.com/actions/runs/999',
+      );
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
+      expect(html).toContain('[Show logs]');
+      expect(html).toContain('[Sentry log]');
+    });
+  });
 });
 
 describe('buildPerformanceBenchmarksSection', () => {
@@ -1124,6 +1243,36 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       expect(html).toContain('Regressions');
       expect(html).toContain('startupStandardHome');
+    });
+
+    it('includes [Sentry log] in matrix and regression list when BRANCH and SENTRY_DSN_PERFORMANCE are set', async () => {
+      const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
+      const savedBranch = process.env.BRANCH;
+      const savedSentry = process.env.SENTRY_DSN_PERFORMANCE;
+      try {
+        process.env.BRANCH = 'main';
+        process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(FAILING_PAYLOAD),
+        } as unknown as Response);
+
+        const html = await buildPerformanceBenchmarksSection(HOST);
+
+        expect(html).toContain('[Sentry log]');
+        expect(html).toContain('metamask.sentry.io/explore/logs');
+      } finally {
+        if (savedBranch === undefined) {
+          delete process.env.BRANCH;
+        } else {
+          process.env.BRANCH = savedBranch;
+        }
+        if (savedSentry === undefined) {
+          delete process.env.SENTRY_DSN_PERFORMANCE;
+        } else {
+          process.env.SENTRY_DSN_PERFORMANCE = savedSentry;
+        }
+      }
     });
 
     it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {

@@ -46,6 +46,7 @@ import {
   buildArtifactFilename,
   buildArtifactUrl,
 } from './utils';
+import { buildSentryLogsUrl } from './sentry-utils';
 
 export type BenchmarkEntry = {
   benchmarkName: string;
@@ -477,6 +478,53 @@ function extractDisplayName(benchmarkName: string): string {
 }
 
 /**
+ * Builds HTML for an artifact log link and optional Sentry Logs Explorer link.
+ *
+ * @param logHref - Optional artifact log URL
+ * @param entry - Benchmark entry (for Sentry filters)
+ * @param logLinkInnerHtml - Inner HTML for the artifact log anchor (e.g. '[Show logs]')
+ */
+function buildArtifactAndSentryLinksHtml(
+  logHref: string | undefined,
+  entry: BenchmarkEntry | undefined,
+  logLinkInnerHtml: string,
+): string {
+  const branchName = process.env.BRANCH || process.env.GITHUB_REF_NAME;
+  const sentryUrl =
+    branchName && entry
+      ? buildSentryLogsUrl(branchName, undefined, {
+          browser: entry.platform,
+          buildType: entry.buildType,
+          benchmarkName: entry.benchmarkName,
+        })
+      : null;
+
+  const logsLink = logHref
+    ? `<a href="${logHref}">${logLinkInnerHtml}</a>`
+    : '';
+  const sentryLinkHtml = sentryUrl
+    ? `<a href="${sentryUrl}">[Sentry log]</a>`
+    : '';
+
+  return [logsLink, sentryLinkHtml].filter(Boolean).join(' ');
+}
+
+/**
+ * Builds table cell content with health icon and links (CI artifact + Sentry).
+ * @param icon
+ * @param logHref
+ * @param entry
+ */
+function buildCellContent(
+  icon: string,
+  logHref: string | undefined,
+  entry: BenchmarkEntry | undefined,
+): string {
+  const links = buildArtifactAndSentryLinksHtml(logHref, entry, '[Show logs]');
+  return links ? `${icon} ${links}` : icon;
+}
+
+/**
  * Counts the number of failing and warning benchmark entries.
  *
  * @param allEntries - All benchmark entries to count.
@@ -561,9 +609,12 @@ function formatTimerDetails(
         return null;
       }
 
-      const logsLine = logHref
-        ? `<br><a href="${logHref}">[Show logs]</a>`
-        : '';
+      const linksHtml = buildArtifactAndSentryLinksHtml(
+        logHref,
+        entry,
+        '[Show logs]',
+      );
+      const logsLine = linksHtml ? `<br>${linksHtml}` : '';
       return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
     })
     .filter((item) => item !== null)
@@ -813,17 +864,20 @@ export function buildBenchmarkSection(
                 logHref,
               );
 
-              const logsLink = logHref
-                ? `<a href="${logHref}">[Show logs]</a>`
-                : '';
-
               let cell: string;
               switch (true) {
-                case Boolean(timerDetails):
-                  cell = timerDetails;
+                case Boolean(timerDetails): {
+                  const links = buildArtifactAndSentryLinksHtml(
+                    logHref,
+                    entry,
+                    '[Show logs]',
+                  );
+                  const linkLine = links ? `${icon} ${links}` : icon;
+                  cell = `${linkLine}<br>${timerDetails}`;
                   break;
+                }
                 case Boolean(logHref):
-                  cell = `${icon} ${logsLink}`;
+                  cell = buildCellContent(icon, logHref, entry);
                   break;
                 default:
                   cell = icon;
@@ -943,9 +997,12 @@ function buildHealthMatrixHtml(
           );
           const logHref = entry?.artifactUrl;
           const label = data.label ? `${icon} ${data.label}` : icon;
-          const cell = logHref
-            ? `${label} <a href="${logHref}">[logs]</a>`
-            : label;
+          const links = buildArtifactAndSentryLinksHtml(
+            logHref,
+            entry,
+            '[logs]',
+          );
+          const cell = links ? `${label} ${links}` : label;
           return `<td align="center">${cell}</td>`;
         })
         .join('');
@@ -1030,7 +1087,12 @@ function buildFailingItemsHtml(
       const worstLabel = getWorstViolationLabel(entry, baselineMetrics);
       const labelPart = worstLabel ? ` — ${worstLabel}` : '';
       const logHref = entry.artifactUrl ?? runUrl;
-      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+      const links = buildArtifactAndSentryLinksHtml(
+        logHref,
+        entry,
+        '[Show logs]',
+      );
+      const logAnchor = links ? ` ${links}` : '';
       return [
         `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
       ];
