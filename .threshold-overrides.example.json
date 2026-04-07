@@ -1,0 +1,19 @@
+{
+  "overrides": [
+    {
+      "benchmark": "startupStandardHome",
+      "metric": "uiStartup",
+      "percentile": "p75",
+      "warn": 2800,
+      "fail": 3500,
+      "justification": "PR #12345: Adding dashboard widget increases startup bundle by ~200ms"
+    },
+    {
+      "benchmark": "loadNewAccount",
+      "metric": "load_new_account",
+      "percentile": "p95",
+      "fail": 2500,
+      "justification": "PR #12345: New account creation flow adds additional validation step"
+    }
+  ]
+}
