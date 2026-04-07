@@ -64,6 +64,19 @@ export const WITH_STATE_POWER_USER = {
  */
 export const DEFAULT_CI_MULTIPLIER = 1.5;
 
+/**
+ * CLS (Cumulative Layout Shift) canary thresholds.
+ * Extension pages produce CLS ≈ 0. Any non-zero value is a real signal
+ * (layout shift from lazy-loaded component, dynamic banner, skeleton screen).
+ * Unitless — no CI multiplier needed. Google thresholds applied.
+ */
+const CLS_THRESHOLDS = {
+  cls: {
+    p75: { warn: 0.05, fail: 0.1 },
+    p95: { warn: 0.1, fail: 0.25 },
+  },
+} satisfies ThresholdConfig;
+
 const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
   importWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
@@ -100,6 +113,7 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
     p95: { warn: 50000, fail: 60000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const ONBOARDING_NEW_WALLET: ThresholdConfig = {
@@ -133,6 +147,7 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
     p95: { warn: 16000, fail: 21000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const IMPORT_SRP_HOME: ThresholdConfig = {
@@ -151,6 +166,7 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
     p95: { warn: 32000, fail: 40000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const SWAP: ThresholdConfig = {
@@ -164,6 +180,7 @@ const SWAP: ThresholdConfig = {
     p95: { warn: 3500, fail: 6000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const SEND_TRANSACTIONS: ThresholdConfig = {
@@ -182,6 +199,7 @@ const SEND_TRANSACTIONS: ThresholdConfig = {
     p95: { warn: 5000, fail: 7000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const ASSET_DETAILS: ThresholdConfig = {
@@ -190,6 +208,7 @@ const ASSET_DETAILS: ThresholdConfig = {
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const SOLANA_ASSET_DETAILS: ThresholdConfig = {
@@ -198,6 +217,7 @@ const SOLANA_ASSET_DETAILS: ThresholdConfig = {
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const STANDARD_HOME: ThresholdConfig = {
@@ -216,6 +236,7 @@ const STANDARD_HOME: ThresholdConfig = {
     p95: { warn: 1800, fail: 2400 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 const POWER_USER_HOME: ThresholdConfig = {
@@ -234,10 +255,14 @@ const POWER_USER_HOME: ThresholdConfig = {
     p95: { warn: 2800, fail: 3800 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  ...CLS_THRESHOLDS,
 };
 
 // Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
 /* eslint-disable @typescript-eslint/naming-convention */
+// Interaction benchmarks: no CLS thresholds. Short single-action measurements
+// capture layout shifts from the benchmark harness (INP probe, navigation),
+// not from application rendering behavior. CLS applies to startup + journey only.
 const LOAD_NEW_ACCOUNT: ThresholdConfig = {
   load_new_account: {
     p75: { warn: 800, fail: 1200 },
