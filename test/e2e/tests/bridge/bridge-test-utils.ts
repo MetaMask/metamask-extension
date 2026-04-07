@@ -40,7 +40,6 @@ import {
   SSE_RESPONSE_HEADER,
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
-  DEFAULT_BRIDGE_FEATURE_FLAGS,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
