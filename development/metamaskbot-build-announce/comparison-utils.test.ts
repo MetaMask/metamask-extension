@@ -6,7 +6,7 @@ import {
   BENCHMARK_PERSONA,
   DEFAULT_RELATIVE_THRESHOLDS,
 } from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
   compareMetric,
