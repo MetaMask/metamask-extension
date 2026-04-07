@@ -524,6 +524,16 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
   /**
+   * The raw Google Analytics cookie value read at install time.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  cookie_id?: string;
+  /**
+   * The parsed Google Analytics client identifier read at install time.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ga_client_id?: string;
+  /**
    * The persistence storage kind currently in use.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -542,6 +552,18 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   token_sort_preference?: string;
   /**
+   * Whether privacy mode is enabled.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  privacy_mode_toggle?: boolean;
+  /**
+   * The selected token network filters.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  selected_network_filter?: string[];
+  /**
    * The number of petname addresses
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -553,6 +575,11 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
+  /**
+   * The configured EVM and non-EVM chain ids in CAIP-2 format.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  chain_id_list?: string[];
   /**
    * Whether the user has opted into Rewards.
    */
@@ -610,6 +637,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identified from the raw Google Analytics cookie value captured at install time.
+   */
+  CookieId = 'cookie_id',
+  /**
+   * Identified from the Google Analytics client identifier captured at install time.
+   */
+  GaClientId = 'ga_client_id',
   /**
    * Identifies which persistence storage kind is in use.
    */

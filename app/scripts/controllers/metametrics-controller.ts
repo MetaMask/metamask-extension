@@ -427,6 +427,8 @@ export default class MetaMetricsController extends BaseController<
   MetaMetricsControllerState,
   MetaMetricsControllerMessenger
 > {
+  #installAttributionReady: Promise<void>;
+
   #captureException: CaptureException;
 
   chainId: Hex;
@@ -472,6 +474,8 @@ export default class MetaMetricsController extends BaseController<
       },
       messenger,
     });
+
+    this.#installAttributionReady = Promise.resolve();
 
     this.#captureException = (err: unknown) => {
       const message = getErrorMessage(err);
@@ -929,6 +933,10 @@ export default class MetaMetricsController extends BaseController<
     // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
     const metaMetricsId = existingMetaMetricsId ?? this.generateMetaMetricsId();
 
+    if (participateInMetaMetrics) {
+      await this.#installAttributionReady;
+    }
+
     this.update((state) => {
       state.participateInMetaMetrics = participateInMetaMetrics;
       state.metaMetricsId = metaMetricsId;
@@ -953,6 +961,18 @@ export default class MetaMetricsController extends BaseController<
     }
 
     return metaMetricsId;
+  }
+
+  /**
+   * Sets the promise that must resolve before the initial MetaMetrics opt-in
+   * transition can complete.
+   *
+   * @param promise - The install attribution persistence promise.
+   */
+  setInstallAttributionReadyPromise(promise: Promise<void>): void {
+    this.#installAttributionReady = promise.catch((error) => {
+      this.#captureException(error);
+    });
   }
 
   setDataCollectionForMarketing(
@@ -1385,8 +1405,10 @@ export default class MetaMetricsController extends BaseController<
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
+    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
+    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
 
-    const currentTraits = {
+    const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
@@ -1463,6 +1485,14 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
       [MetaMetricsUserTrait.Os]: getOs(),
     };
+
+    if (cookieIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
+    }
+
+    if (gaClientIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
+    }
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.previousUserTraits = currentTraits;

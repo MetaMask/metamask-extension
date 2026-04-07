@@ -54,7 +54,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   CorruptionHandler,
   hasVault,
@@ -1998,34 +1998,29 @@ async function triggerUi() {
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = async () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
+const addAppInstalledEvent = async (installAttributionPromise) => {
+  const { deferredDeepLink, traits: installAttributionTraits } =
+    await installAttributionPromise;
 
-    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
-    const eventProperties = {};
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.InstallDateExt]: new Date()
+      .toISOString()
+      .split('T')[0], // yyyy-mm-dd
+    ...installAttributionTraits,
+  });
+  const eventProperties = {};
 
-    if (deferredDeepLink) {
-      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-      eventProperties.install_source = 'deeplink';
-      eventProperties.deeplink_path = deferredDeepLink.referringLink;
-    }
-
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: eventProperties,
-    });
-    return;
+  if (deferredDeepLink) {
+    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+    eventProperties.install_source = 'deeplink';
+    eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }
-  setTimeout(async () => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    await addAppInstalledEvent();
-  }, 500);
+
+  controller.metaMetricsController.addEventBeforeMetricsOptIn({
+    category: MetaMetricsEventCategory.App,
+    event: MetaMetricsEventName.AppInstalled,
+    properties: eventProperties,
+  });
 };
 
 /**
@@ -2051,10 +2046,23 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
+  const installAttributionPromise = getInstallAttribution();
+
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  await addAppInstalledEvent();
+
+  // The controller must exist before we can persist install attribution or
+  // register the opt-in barrier that prevents first identify from racing ahead.
+  await isInitialized;
+
+  const appInstalledEventPromise = addAppInstalledEvent(
+    installAttributionPromise,
+  );
+  controller.metaMetricsController.setInstallAttributionReadyPromise(
+    appInstalledEventPromise,
+  );
+  await appInstalledEventPromise;
 }
 
 /**

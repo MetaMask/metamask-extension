@@ -13,6 +13,7 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
+import { createDeferredPromise } from '@metamask/utils';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -86,6 +87,8 @@ const MOCK_TRAITS = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   test_boolean_array: [1, 2, 3],
+  [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+  [MetaMetricsUserTrait.GaClientId]: '12345.67890',
 } as MetaMetricsUserTraits;
 
 const MOCK_INVALID_TRAITS = {
@@ -620,6 +623,32 @@ describe('MetaMetricsController', function () {
         );
       });
     });
+    it('waits for install attribution readiness before opting in', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: null,
+            },
+          },
+        },
+        async ({ controller }) => {
+          const { promise, resolve } = createDeferredPromise<void>();
+          controller.setInstallAttributionReadyPromise(promise);
+
+          const optInPromise = controller.setParticipateInMetaMetrics(true);
+          await flushPromises();
+
+          expect(controller.state.participateInMetaMetrics).toStrictEqual(null);
+
+          resolve();
+          await optInPromise;
+
+          expect(controller.state.participateInMetaMetrics).toStrictEqual(true);
+        },
+      );
+    });
     it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
       await withController(
         {
@@ -639,6 +668,79 @@ describe('MetaMetricsController', function () {
           await controller.setParticipateInMetaMetrics(false);
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
             null,
+          );
+        },
+      );
+    });
+  });
+
+  describe('handleMetaMaskStateUpdate', function () {
+    it('includes install attribution traits in the first identify payload after opt-in when marketing consent is off', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: false,
+              traits: {
+                [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+                [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.setParticipateInMetaMetrics(true);
+          const identifySpy = jest
+            .spyOn(controller, 'identify')
+            .mockImplementation(() => undefined);
+
+          controller.handleMetaMaskStateUpdate({
+            addressBook: {},
+            allNfts: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            multichainNetworkConfigurationsByChainId: {},
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            names: {
+              ethereumAddress: {},
+            },
+            participateInMetaMetrics: true,
+            currentCurrency: 'usd',
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: true,
+            } as Preferences,
+            srpSessionData: undefined,
+            keyrings: [],
+          });
+
+          expect(identifySpy).toHaveBeenCalledTimes(1);
+          expect(identifySpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+              [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+              [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            }),
           );
         },
       );
