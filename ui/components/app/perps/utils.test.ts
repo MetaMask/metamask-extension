@@ -527,14 +527,20 @@ describe('Perps Utils', () => {
       expect(hasVolume(createMockMarket({ volume: '$500K' }))).toBe(true);
       expect(hasVolume(createMockMarket({ volume: '$1' }))).toBe(true);
       expect(hasVolume(createMockMarket({ volume: '$<1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$0.5' }))).toBe(true);
     });
 
     it('returns false for markets with zero volume', () => {
       expect(hasVolume(createMockMarket({ volume: '$0' }))).toBe(false);
+      expect(hasVolume(createMockMarket({ volume: '$0.00' }))).toBe(false);
     });
 
     it('returns false for markets with empty volume string', () => {
       expect(hasVolume(createMockMarket({ volume: '' }))).toBe(false);
+    });
+
+    it('returns false for markets with unparseable volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
     });
   });
 });

@@ -1,5 +1,6 @@
 import { TextColor } from '@metamask/design-system-react';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { parseVolume } from '../../../pages/perps/utils/sortMarkets';
 import type {
   Order,
   PerpsMarketData,
@@ -419,7 +420,7 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
 
 /**
  * Check if a market has meaningful trading volume (non-zero).
- * Markets with "$0" or missing volume are considered inactive and
+ * Markets with zero, negative, or missing volume are considered inactive and
  * should be hidden from market lists.
  *
  * @param market - The market data to check
@@ -430,9 +431,5 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
  * hasVolume({ volume: '' })      // → false
  */
 export const hasVolume = (market: PerpsMarketData): boolean => {
-  const vol = market.volume;
-  if (!vol || vol === '$0') {
-    return false;
-  }
-  return true;
+  return parseVolume(market.volume) > 0;
 };
