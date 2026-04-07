@@ -280,6 +280,9 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
+      # skip-benchmark-gate label: convenience escape hatch for Phase 2–3.
+      # Remove when graduating to Phase 4 (required check) — at that point,
+      # use admin bypass or update thresholds instead.
       - name: Check for skip label
         id: skip-check
         if: steps.download-benchmarks.outcome == 'success'
