@@ -119,7 +119,7 @@ function createManifestTasks({
       ];
       loadManifestKey(manifest);
     },
-    { setBuildId: true, watchBuildId: true },
+    { setBuildId: true, watch: true },
   );
 
   // test: add permissions
@@ -173,7 +173,7 @@ function createManifestTasks({
   // helper for modifying each platform's manifest.json in place
   function createTaskForModifyManifestForEnvironment(
     transformFn,
-    { setBuildId = false, watchBuildId = false } = {},
+    { setBuildId = false, watch: shouldWatch = false } = {},
   ) {
     let updateQueue = Promise.resolve();
 
@@ -205,7 +205,7 @@ function createManifestTasks({
     return async () => {
       await queueManifestUpdate();
 
-      if (!watchBuildId) {
+      if (!shouldWatch) {
         return;
       }
 
