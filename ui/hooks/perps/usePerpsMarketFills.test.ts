@@ -310,5 +310,33 @@ describe('usePerpsMarketFills', () => {
       expect(result.current.fills[0].orderId).toBe('b-1');
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
+
+    it('discards stale REST response when account changes before fetch completes', async () => {
+      let resolveFirstFetch!: (v: OrderFill[]) => void;
+      mockSubmitRequestToBackground.mockReturnValueOnce(
+        new Promise<OrderFill[]>((resolve) => {
+          resolveFirstFetch = resolve;
+        }),
+      );
+
+      const { result, waitForNextUpdate, rerender } = renderHook(
+        ({ address }: { address: string }) => {
+          mockGetSelectedInternalAccount.mockReturnValue({ address });
+          return usePerpsMarketFills({ symbol: 'BTC' });
+        },
+        { initialProps: { address: '0xaaa' } },
+      );
+
+      setRestFillsResponse([makeFill({ orderId: 'b-1', timestamp: 2000 })]);
+      rerender({ address: '0xbbb' });
+      await waitForNextUpdate();
+
+      await act(async () => {
+        resolveFirstFetch([makeFill({ orderId: 'stale-a', timestamp: 500 })]);
+      });
+
+      expect(result.current.fills).toHaveLength(1);
+      expect(result.current.fills[0].orderId).toBe('b-1');
+    });
   });
 });

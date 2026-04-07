@@ -49,27 +49,40 @@ export function usePerpsMarketFills({
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchRestFills = useCallback(async () => {
-    try {
-      const startTime = Date.now() - PERPS_CONSTANTS.FillsLookbackMs;
-      const result = await submitRequestToBackground<OrderFill[]>(
-        'perpsGetOrderFills',
-        [{ aggregateByTime: false, startTime }],
-      );
-      setRestFills(Array.isArray(result) ? result : []);
-    } catch {
-      // REST fetch failed silently — WebSocket fills still work
-    }
+    const startTime = Date.now() - PERPS_CONSTANTS.FillsLookbackMs;
+    const result = await submitRequestToBackground<OrderFill[]>(
+      'perpsGetOrderFills',
+      [{ aggregateByTime: false, startTime }],
+    );
+    return Array.isArray(result) ? result : [];
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     setRestFills([]);
-    fetchRestFills();
+
+    fetchRestFills()
+      .then((result) => {
+        if (!cancelled) {
+          setRestFills(result);
+        }
+      })
+      .catch(() => {
+        // REST fetch failed silently — WebSocket fills still work
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [fetchRestFills, selectedAddress]);
 
   const refresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      await fetchRestFills();
+      const result = await fetchRestFills();
+      setRestFills(result);
+    } catch {
+      // Refresh failed silently — existing fills remain
     } finally {
       setIsRefreshing(false);
     }
