@@ -13,7 +13,7 @@ export type {
   PermissionSchemaRegistry,
   SchemaElement,
   SchemaSection,
-  SigningInWithField,
+  AccountField,
   TextField,
   TokenResolution,
   TokenVariant,

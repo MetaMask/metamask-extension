@@ -196,7 +196,7 @@ function renderElement(
       );
     }
 
-    case 'signingInWith': {
+    case 'account': {
       return <SigningInWithRow key={index} />;
     }
 

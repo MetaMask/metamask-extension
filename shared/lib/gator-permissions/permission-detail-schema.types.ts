@@ -50,8 +50,8 @@ export type TokenVariant = 'native' | 'erc20';
 export type AmountField = {
   type: 'amount';
   labelKey: string;
-  /** Raw hex or BigNumber value. Each renderer formats this for its view. */
-  getValue: (ctx: PermissionRenderContext) => Hex | BigNumber;
+  /** BigNumber value. Each renderer formats this for its view. */
+  getValue: (ctx: PermissionRenderContext) => BigNumber;
   /** For ERC20 amounts, returns the token contract address. */
   getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
   tooltip?: string;
@@ -112,9 +112,9 @@ export type JustificationField = {
   visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
-/** Displays the "signing in with" row (account selector). */
-export type SigningInWithField = {
-  type: 'signingInWith';
+/** Displays the account row (account selector). */
+export type AccountField = {
+  type: 'account';
 };
 
 /** Displays the request origin URL. */
@@ -145,7 +145,7 @@ export type SchemaElement =
   | TotalExposureField
   | DividerElement
   | JustificationField
-  | SigningInWithField
+  | AccountField
   | OriginField
   | AddressField
   | NetworkField;

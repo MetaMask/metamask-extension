@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import { PERMISSION_SCHEMAS } from './permission-detail-schemas';
 import type { PermissionRenderContext } from './permission-detail-schema.types';
 import { MAX_UINT256 } from './typed-sign-permission-util';
@@ -60,8 +61,8 @@ describe('PERMISSION_SCHEMAS', () => {
       }
     });
 
-    it('signingInWith field is always present', () => {
-      expect(justificationSection.elements[1].type).toBe('signingInWith');
+    it('account field is always present', () => {
+      expect(justificationSection.elements[1].type).toBe('account');
     });
 
     it('origin field is first in permission info section', () => {
@@ -141,7 +142,7 @@ describe('PERMISSION_SCHEMAS', () => {
       const allowanceField = schema.sections[2].elements[0];
       expect(allowanceField.type).toBe('amount');
       if (allowanceField.type === 'amount') {
-        expect(allowanceField.getValue(ctx)).toBe('0xabc');
+        expect(allowanceField.getValue(ctx)).toEqual(new BigNumber('0xabc'));
       }
     });
 
@@ -307,7 +308,7 @@ describe('PERMISSION_SCHEMAS', () => {
       const field = schema.sections[2].elements[0];
       if (field.type === 'amount') {
         expect(field.getTokenAddress?.(ctx)).toBe('0xTok');
-        expect(field.getValue(ctx)).toBe('0x1');
+        expect(field.getValue(ctx)).toEqual(new BigNumber('0x1'));
       }
     });
   });

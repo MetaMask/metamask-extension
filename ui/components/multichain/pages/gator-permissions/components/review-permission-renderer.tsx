@@ -71,16 +71,11 @@ function formatHexAmount(
 }
 
 function formatRawAmount(
-  rawValue: Hex | import('bignumber.js').BigNumber,
+  rawValue: import('bignumber.js').BigNumber,
   decimals: number | undefined,
   symbol: string,
 ): string {
-  let hexValue: Hex;
-  if (typeof rawValue === 'string') {
-    hexValue = rawValue;
-  } else {
-    hexValue = `0x${rawValue.toString(16)}` as Hex;
-  }
+  const hexValue = `0x${rawValue.toString(16)}` as Hex;
   return formatHexAmount(hexValue, decimals, symbol);
 }
 
@@ -172,7 +167,7 @@ function renderElement(
     case 'totalExposure':
     case 'divider':
     case 'justification':
-    case 'signingInWith':
+    case 'account':
     case 'origin':
     case 'address':
     case 'network':
