@@ -290,7 +290,7 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 9
+      "React: Act warnings (component updates not wrapped)": 13
     },
     "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
