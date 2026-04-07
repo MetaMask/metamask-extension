@@ -46,6 +46,8 @@ import { performanceTracker } from './performance-tracker';
  * Promote web vitals aggregated stats into a TimerStatistics array.
  * This allows web vitals to flow through the same threshold validation
  * pipeline as traditional timers.
+ *
+ * @param aggregated - Aggregated web vitals from {@link aggregateWebVitals}
  */
 function extractWebVitalsAsTimerStats(
   aggregated: WebVitalsAggregated,
