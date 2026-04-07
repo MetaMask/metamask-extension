@@ -388,12 +388,14 @@ jobs:
 
       - name: Compute just-repository-health-checks flag
         id: set-just-repository-health-checks
-        if: >-
-          ${{
-            steps.check-skip-merge-queue.outputs.up-to-date != 'true' &&
-            steps.filter.outputs.repository_health_checks_related_count != '0' &&
-            steps.filter.outputs.all_changes_count == steps.filter.outputs.repository_health_checks_related_count
-          }}
+        # TEST OVERRIDE: always run only repository-health-checks, skip everything else.
+        # Remove this step before merging to main.
+        # if: >-
+        #   ${{
+        #     steps.check-skip-merge-queue.outputs.up-to-date != 'true' &&
+        #     steps.filter.outputs.repository_health_checks_related_count != '0' &&
+        #     steps.filter.outputs.all_changes_count == steps.filter.outputs.repository_health_checks_related_count
+        #   }}
         run: echo "just-repository-health-checks=true" >> "$GITHUB_OUTPUT"
 
       # If the only change is in package.json, and the only line changed is "version", then we can skip everything
