@@ -565,24 +565,7 @@ async function main() {
   // Console output (machine readable)
   console.log(JSON.stringify(triage, null, 2));
 
-  // Human output (GitHub annotations + step summary)
-  for (const advisory of advisories) {
-    if (advisory.affectsProduction) {
-      githubAnnotate('warning', formatAdvisoryLine(advisory));
-    } else if (
-      advisory.originalSeverity === 'high' &&
-      advisory.matchedIssueRule === 'none'
-    ) {
-      githubAnnotate('error', formatAdvisoryLine(advisory));
-    } else {
-      githubAnnotate('warning', formatAdvisoryLine(advisory));
-    }
-  }
-
-  for (const dep of deprecations) {
-    githubAnnotate('warning', `[deprecation] ${dep.message}`);
-  }
-
+  // Step summary
   const summaryTitle = `All advisories on this branch: ${advisories.length} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;  
 
   const summaryLines: string[] = [];

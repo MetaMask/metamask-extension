@@ -50,7 +50,7 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
-        run: node .github/scripts/yarn-audit-and-triage.mts --output-file /tmp/audit-current.json
+        run: yarn tsx .github/scripts/yarn-audit-and-triage.mts --output-file /tmp/audit-current.json
 
       # We move to audit-baseline.json first so that when PRs download the
       # artifact to /tmp, it lands directly at /tmp/audit-baseline.json
