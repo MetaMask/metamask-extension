@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Beli mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Mengeklaim ke",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Klaim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"

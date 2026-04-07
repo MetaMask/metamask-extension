@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
-  "musdClaimClaimingTo": {
-    "message": "इसमें क्लेम किया जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",
     "description": "Title for the mUSD bonus claim confirmation screen"

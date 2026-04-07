@@ -1088,8 +1088,8 @@
     "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/rows/account-row/account-row.test.tsx": {
-      "Reselect: Identity function warnings": 4
+    "ui/pages/confirmations/components/rows/account-flow-row/account-flow-row.test.tsx": {
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1100,6 +1100,12 @@
     },
     "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/components/rows/musd-claim-account-row/musd-claim-account-row.test.tsx": {
+      "Reselect: Identity function warnings": 4
+    },
+    "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
       "Reselect: Identity function warnings": 3

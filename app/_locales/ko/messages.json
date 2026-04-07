@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimClaimingTo": {
-    "message": "다음으로 수령:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"

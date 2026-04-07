@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "领取并存入",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"

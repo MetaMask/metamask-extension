@@ -87,7 +87,7 @@ describe('MultichainAccountServiceInit', () => {
       });
     });
 
-    it('passes Solana provider config with maxConcurrency 1 and discovery/createAccounts timeouts', () => {
+    it('passes Solana provider config with maxConcurrency 1, discovery/createAccounts timeouts, and batched true', () => {
       const requestMock = buildInitRequestMock();
       MultichainAccountServiceInit(requestMock);
 
@@ -102,6 +102,7 @@ describe('MultichainAccountServiceInit', () => {
           },
           createAccounts: {
             timeoutMs: 3000,
+            batched: true,
           },
         },
       });

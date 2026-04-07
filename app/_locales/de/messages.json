@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD kaufen"
   },
-  "musdClaimClaimingTo": {
-    "message": "Einfordern auf",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Bonus einfordern",
     "description": "Title for the mUSD bonus claim confirmation screen"

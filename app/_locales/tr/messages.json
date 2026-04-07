@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD al"
   },
-  "musdClaimClaimingTo": {
-    "message": "Alıcı hesap",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Bonusu al",
     "description": "Title for the mUSD bonus claim confirmation screen"

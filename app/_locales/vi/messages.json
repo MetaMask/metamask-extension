@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Nhận vào",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"

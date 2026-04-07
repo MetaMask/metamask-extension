@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Купить mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Зачисление на",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Получить бонус",
     "description": "Title for the mUSD bonus claim confirmation screen"
