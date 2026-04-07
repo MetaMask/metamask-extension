@@ -8,18 +8,16 @@ import {
   YEAR,
 } from '../../constants/time';
 
-import type { I18nFunction } from './permission-detail-schema.types';
+import type { I18nValue } from './permission-detail-schema.types';
 
 /**
- * Formats a period duration in seconds to a human-readable string for permission UIs.
- * Same behavior as the confirmation typed-sign util; lives in shared for schema reuse.
- * @param t
+ * Returns an i18n key (and optional args) for a period duration in seconds.
+ * Each renderer translates the returned value via its own i18n function.
  * @param periodSeconds
  */
 export function formatPermissionPeriodDuration(
-  t: I18nFunction,
   periodSeconds: number,
-): string {
+): I18nValue {
   if (periodSeconds === 0) {
     throw new Error('Cannot format period duration of 0 seconds');
   }
@@ -32,18 +30,21 @@ export function formatPermissionPeriodDuration(
 
   switch (periodMilliseconds) {
     case HOUR:
-      return t('confirmFieldPeriodDurationHourly');
+      return { key: 'confirmFieldPeriodDurationHourly' };
     case DAY:
-      return t('confirmFieldPeriodDurationDaily');
+      return { key: 'confirmFieldPeriodDurationDaily' };
     case WEEK:
-      return t('confirmFieldPeriodDurationWeekly');
+      return { key: 'confirmFieldPeriodDurationWeekly' };
     case FORTNIGHT:
-      return t('confirmFieldPeriodDurationBiWeekly');
+      return { key: 'confirmFieldPeriodDurationBiWeekly' };
     case MONTH:
-      return t('confirmFieldPeriodDurationMonthly');
+      return { key: 'confirmFieldPeriodDurationMonthly' };
     case YEAR:
-      return t('confirmFieldPeriodDurationYearly');
+      return { key: 'confirmFieldPeriodDurationYearly' };
     default:
-      return `${periodSeconds} ${t('confirmFieldPeriodDurationSeconds')}`;
+      return {
+        key: 'confirmFieldPeriodDurationSeconds',
+        args: [periodSeconds],
+      };
   }
 }

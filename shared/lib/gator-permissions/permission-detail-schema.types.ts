@@ -6,6 +6,12 @@ export type I18nFunction = (
   args?: (string | number | undefined | null)[],
 ) => string;
 
+/** A translatable value: an i18n key with optional interpolation args. */
+export type I18nValue = {
+  key: string;
+  args?: (string | number)[];
+};
+
 /**
  * The context object passed to all accessor functions in the schema.
  * Built by each renderer from decoded permission data plus pre-resolved async data.
@@ -25,8 +31,6 @@ export type PermissionRenderContext = {
   origin: string;
   /** The recipient / delegate address, if present. */
   to?: string;
-  /** i18n translation function. */
-  t: I18nFunction;
   /** Pre-resolved token info. Present when tokenResolution.kind is 'native' or 'erc20'. */
   tokenInfo?: {
     symbol: string;
@@ -62,7 +66,7 @@ export type AmountField = {
 export type TextField = {
   type: 'text';
   labelKey: string;
-  getValue: (ctx: PermissionRenderContext) => string;
+  getValue: (ctx: PermissionRenderContext) => I18nValue;
   tooltip?: string;
   visible?: (ctx: PermissionRenderContext) => boolean;
 };

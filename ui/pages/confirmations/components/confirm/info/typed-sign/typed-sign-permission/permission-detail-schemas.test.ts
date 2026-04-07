@@ -3,8 +3,6 @@ import { PERMISSION_SCHEMAS } from './permission-detail-schemas';
 import type { PermissionRenderContext } from './permission-detail-schema.types';
 import { MAX_UINT256 } from './typed-sign-permission-util';
 
-const mockT = ((key: string) => key) as PermissionRenderContext['t'];
-
 function buildCtx(
   overrides: Partial<PermissionRenderContext> = {},
 ): PermissionRenderContext {
@@ -13,7 +11,6 @@ function buildCtx(
     expiry: null,
     chainId: '0x1',
     origin: 'https://example.com',
-    t: mockT,
     tokenInfo: { symbol: 'ETH', decimals: 18, imageUrl: 'eth.png' },
     ...overrides,
   };
@@ -146,19 +143,18 @@ describe('PERMISSION_SCHEMAS', () => {
       }
     });
 
-    it('frequency field calls formatPeriodDuration', () => {
-      const tSpy = jest.fn((key: string) => key);
+    it('frequency field returns daily i18n key', () => {
       const ctx = buildCtx({
         permission: {
           type: 'native-token-periodic',
           data: { periodAmount: '0x1', periodDuration: 86400, startTime: 1 },
         },
-        t: tSpy as unknown as PermissionRenderContext['t'],
       });
       const freqField = schema.sections[2].elements[1];
       if (freqField.type === 'text') {
-        freqField.getValue(ctx);
-        expect(tSpy).toHaveBeenCalledWith('confirmFieldPeriodDurationDaily');
+        expect(freqField.getValue(ctx)).toEqual({
+          key: 'confirmFieldPeriodDurationDaily',
+        });
       }
     });
 

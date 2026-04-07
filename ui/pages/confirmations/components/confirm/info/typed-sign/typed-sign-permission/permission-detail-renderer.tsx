@@ -27,6 +27,7 @@ import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row
 import type {
   AmountField,
   I18nFunction,
+  I18nValue,
   PermissionRenderContext,
   PermissionSchemaEntry,
   SchemaElement,
@@ -91,12 +92,21 @@ function useErc20DecimalsResolved(
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function translateValue(t: I18nFunction, value: I18nValue): string {
+  return t(value.key, value.args);
+}
+
+// ---------------------------------------------------------------------------
 // Element renderer — pure function, no hooks
 // ---------------------------------------------------------------------------
 
 function renderAmountField(
   element: AmountField,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   index: number,
 ): React.ReactNode {
   // If the field has getTokenAddress, it's an ERC20 amount
@@ -104,7 +114,7 @@ function renderAmountField(
     return (
       <TokenAmountRow
         key={index}
-        label={ctx.t(element.labelKey)}
+        label={t(element.labelKey)}
         value={element.getValue(ctx)}
         tokenAddress={element.getTokenAddress(ctx)}
         chainId={ctx.chainId}
@@ -121,7 +131,7 @@ function renderAmountField(
   return (
     <NativeAmountRow
       key={index}
-      label={ctx.t(element.labelKey)}
+      label={t(element.labelKey)}
       value={element.getValue(ctx)}
       symbol={tokenInfo.symbol}
       decimals={tokenInfo.decimals as number}
@@ -134,6 +144,7 @@ function renderAmountField(
 function renderElement(
   element: SchemaElement,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   schemaEntry: PermissionSchemaEntry,
   ownerId: string,
   index: number,
@@ -145,16 +156,18 @@ function renderElement(
 
   switch (element.type) {
     case 'amount':
-      return renderAmountField(element, ctx, index);
+      return renderAmountField(element, ctx, t, index);
 
     case 'text': {
       return (
         <ConfirmInfoRow
           key={index}
-          label={ctx.t(element.labelKey)}
+          label={t(element.labelKey)}
           tooltip={element.tooltip}
         >
-          <Text variant={TextVariant.BodyMd}>{element.getValue(ctx)}</Text>
+          <Text variant={TextVariant.BodyMd}>
+            {translateValue(t, element.getValue(ctx))}
+          </Text>
         </ConfirmInfoRow>
       );
     }
@@ -164,7 +177,7 @@ function renderElement(
         <DateAndTimeRow
           key={index}
           timestamp={element.getTimestamp(ctx)}
-          label={ctx.t(element.labelKey)}
+          label={t(element.labelKey)}
           tooltip={element.tooltip}
         />
       );
@@ -187,7 +200,7 @@ function renderElement(
         <ConfirmInfoRow
           key={index}
           label="Justification"
-          tooltip={ctx.t('confirmFieldTooltipJustification')}
+          tooltip={t('confirmFieldTooltipJustification')}
         >
           <Text variant={TextVariant.BodyMd}>
             {ctx.permission.justification}
@@ -202,15 +215,15 @@ function renderElement(
 
     case 'origin': {
       const tooltipMessage = isSnapId(ctx.origin)
-        ? ctx.t('requestFromInfoSnap')
-        : ctx.t('requestFromInfo');
+        ? t('requestFromInfoSnap')
+        : t('requestFromInfo');
 
       return (
         <ConfirmInfoAlertRow
           key={index}
           alertKey={RowAlertKey.RequestFrom}
           ownerId={ownerId}
-          label={ctx.t('requestFrom')}
+          label={t('requestFrom')}
           tooltip={tooltipMessage}
         >
           <ConfirmInfoRowUrl url={ctx.origin} />
@@ -224,7 +237,7 @@ function renderElement(
         return null;
       }
       return (
-        <ConfirmInfoRow key={index} label={ctx.t(element.labelKey)}>
+        <ConfirmInfoRow key={index} label={t(element.labelKey)}>
           <ConfirmInfoRowAddress address={address} chainId={ctx.chainId} />
         </ConfirmInfoRow>
       );
@@ -291,13 +304,14 @@ function renderTotalExposure(
 function renderSection(
   section: SchemaSection,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   schemaEntry: PermissionSchemaEntry,
   ownerId: string,
 ): React.ReactNode {
   return (
     <ConfirmInfoSection key={section.testId} data-testid={section.testId}>
       {section.elements.map((element, index) =>
-        renderElement(element, ctx, schemaEntry, ownerId, index),
+        renderElement(element, ctx, t, schemaEntry, ownerId, index),
       )}
     </ConfirmInfoSection>
   );
@@ -353,14 +367,13 @@ export const PermissionDetailRenderer: React.FC<{
     chainId,
     origin,
     to,
-    t,
     tokenInfo,
   };
 
   return (
     <>
       {schemaEntry.sections.map((section) =>
-        renderSection(section, ctx, schemaEntry, ownerId),
+        renderSection(section, ctx, t, schemaEntry, ownerId),
       )}
     </>
   );

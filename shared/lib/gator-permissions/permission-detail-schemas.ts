@@ -79,7 +79,6 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldFrequency',
           getValue: (ctx) =>
             formatPermissionPeriodDuration(
-              ctx.t,
               getData(ctx).periodDuration as number,
             ),
         },
@@ -183,7 +182,6 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldFrequency',
           getValue: (ctx) =>
             formatPermissionPeriodDuration(
-              ctx.t,
               getData(ctx).periodDuration as number,
             ),
         },

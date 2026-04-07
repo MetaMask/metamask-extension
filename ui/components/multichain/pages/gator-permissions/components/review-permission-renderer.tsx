@@ -4,6 +4,7 @@ import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissio
 import type {
   AmountField,
   I18nFunction,
+  I18nValue,
   PermissionRenderContext,
   SchemaElement,
   SchemaSection,
@@ -96,6 +97,14 @@ function schemaElementDomKey(
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function translateValue(t: I18nFunction, value: I18nValue): string {
+  return t(value.key, value.args);
+}
+
+// ---------------------------------------------------------------------------
 // Element renderer
 // ---------------------------------------------------------------------------
 
@@ -103,6 +112,7 @@ function renderElement(
   sectionTestId: string,
   element: SchemaElement,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -125,6 +135,7 @@ function renderElement(
         rowKey,
         element,
         ctx,
+        t,
         tokenSymbol,
         tokenDecimals,
         loading,
@@ -139,8 +150,8 @@ function renderElement(
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={ctx.t(mapping.labelKey)}
-          value={element.getValue(ctx)}
+          label={t(mapping.labelKey)}
+          value={translateValue(t, element.getValue(ctx))}
           testId={mapping.testId}
         />
       );
@@ -154,7 +165,7 @@ function renderElement(
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={ctx.t(mapping.labelKey)}
+          label={t(mapping.labelKey)}
           value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
           testId={mapping.testId}
         />
@@ -162,7 +173,7 @@ function renderElement(
     }
 
     case 'expiry':
-      return renderExpiryElement(rowKey, ctx, rules);
+      return renderExpiryElement(rowKey, ctx, t, rules);
 
     case 'totalExposure':
     case 'divider':
@@ -182,6 +193,7 @@ function renderAmountElement(
   rowKey: string,
   element: AmountField,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -197,7 +209,7 @@ function renderAmountElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={ctx.t(mapping?.labelKey ?? element.labelKey)}
+      label={t(mapping?.labelKey ?? element.labelKey)}
       value={displayValue}
       testId={mapping?.testId}
       isLoading={loading}
@@ -208,14 +220,15 @@ function renderAmountElement(
 function renderExpiryElement(
   rowKey: string,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   let displayValue: string;
   if (rules?.length) {
     const expiryDate = extractExpiryToReadableDate(rules);
-    displayValue = expiryDate || ctx.t('gatorPermissionNoExpiration');
+    displayValue = expiryDate || t('gatorPermissionNoExpiration');
   } else if (ctx.expiry === null) {
-    displayValue = ctx.t('gatorPermissionNoExpiration');
+    displayValue = t('gatorPermissionNoExpiration');
   } else {
     displayValue = convertTimestampToReadableDate(ctx.expiry);
   }
@@ -223,7 +236,7 @@ function renderExpiryElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={ctx.t('gatorPermissionsExpirationDate')}
+      label={t('gatorPermissionsExpirationDate')}
       value={displayValue}
       testId="review-gator-permission-expiration-date"
     />
@@ -237,6 +250,7 @@ function renderExpiryElement(
 function renderSection(
   section: SchemaSection,
   ctx: PermissionRenderContext,
+  t: I18nFunction,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -249,6 +263,7 @@ function renderSection(
           section.testId,
           element,
           ctx,
+          t,
           tokenSymbol,
           tokenDecimals,
           loading,
@@ -310,7 +325,6 @@ export const ReviewPermissionRenderer: React.FC<
     expiry,
     chainId,
     origin: '',
-    t,
     tokenInfo: {
       symbol: tokenInfo.symbol,
       decimals: tokenInfo.decimals,
@@ -323,6 +337,7 @@ export const ReviewPermissionRenderer: React.FC<
         renderSection(
           section,
           ctx,
+          t,
           tokenInfo.symbol,
           tokenInfo.decimals,
           loading,

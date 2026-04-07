@@ -5,6 +5,7 @@ export type {
   DividerElement,
   ExpiryField,
   I18nFunction,
+  I18nValue,
   JustificationField,
   NetworkField,
   OriginField,
