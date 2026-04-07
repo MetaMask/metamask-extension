@@ -115,8 +115,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        # TODO: remove --skip-if-no-baseline after first main push deposits the baseline artifact
-        run: node .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json --skip-if-no-baseline
+        run: node .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json
 
       # - name: Detect yarn lock deduplications
       #   if: ${{ !cancelled() }}
