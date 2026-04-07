@@ -1922,20 +1922,11 @@ describe('MetaMetricsController', function () {
 
     it('should remove event from store when callback is invoked', async function () {
       const segmentInstance = createSegmentMock(2);
-      const stubFn = (...args: unknown[]) => {
-        const cb = args[1] as () => void;
-        cb();
+      const stubFn = (payload: unknown, callback?: () => void) => {
+        callback?.();
       };
-      jest
-        .spyOn(segmentInstance, 'track')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(stubFn as any);
-      jest
-        .spyOn(segmentInstance, 'page')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(stubFn as any);
+      jest.spyOn(segmentInstance, 'track').mockImplementation(stubFn);
+      jest.spyOn(segmentInstance, 'page').mockImplementation(stubFn);
 
       await withController(
         {
