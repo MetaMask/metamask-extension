@@ -1075,13 +1075,10 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                   class="mm-box dropdown-editor__item-dropdown mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <input
-                    autocomplete="off"
-                    class="mm-box mm-text mm-input dropdown-editor__item-placeholder mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                    class="w-full rounded border bg-default text-default outline-none transition-colors border-transparent focus:border-primary-default focus:outline-none placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular dropdown-editor__item-placeholder py-3"
                     placeholder="Add a URL"
                     readonly=""
                     tabindex="-1"
-                    type="text"
-                    value=""
                   />
                   <button
                     aria-label="Default RPC URL"
@@ -1157,13 +1154,10 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                   class="mm-box dropdown-editor__item-dropdown mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <input
-                    autocomplete="off"
-                    class="mm-box mm-text mm-input dropdown-editor__item-placeholder mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                    class="w-full rounded border bg-default text-default outline-none transition-colors border-transparent focus:border-primary-default focus:outline-none placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular dropdown-editor__item-placeholder py-3"
                     placeholder="Add a URL"
                     readonly=""
                     tabindex="-1"
-                    type="text"
-                    value=""
                   />
                   <button
                     aria-label="Block explorer URL"
