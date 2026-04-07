@@ -130,7 +130,7 @@ async function main() {
       `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
     );
     writeStepSummary(
-      `\n> No new advisories introduced by this PR. (${current.length} current vs ${baseline.length} baseline)\n`,
+      `\n### No new advisories introduced by this PR\n\n(${current.length} current vs ${baseline.length} baseline)\n`,
     );
     return;
   }
