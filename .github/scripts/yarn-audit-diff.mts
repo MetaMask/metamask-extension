@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs';
-import { getGitHubToken } from './shared/github-token.mts';
+import { readFileSync, writeFileSync } from 'fs';
 
 // ---------------------------------------------------------------------------
 // CLI args
@@ -22,17 +21,10 @@ const currentFile = (() => {
 // artifact. Remove this flag after the first successful main push.
 const skipIfNoBaseline = args.includes('--skip-if-no-baseline');
 
-// ---------------------------------------------------------------------------
-// Environment
-// ---------------------------------------------------------------------------
-
-const token = getGitHubToken();
-const repository = process.env.GITHUB_REPOSITORY ?? '';
-// On `pull_request` events GITHUB_SHA is the ephemeral merge commit, not the
-// PR head. The workflow step passes the real head SHA via GITHUB_HEAD_SHA.
-const headSha = process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA || '';
-
-const [repoOwner, repoName] = repository.split('/');
+const resultFile = (() => {
+  const i = args.indexOf('--result-file');
+  return i !== -1 ? (args[i + 1] ?? null) : null;
+})();
 
 // ---------------------------------------------------------------------------
 // Types (subset of ParsedAdvisory from yarn-audit-and-triage.mts)
@@ -79,64 +71,20 @@ function toAnnotation(a: ParsedAdvisory): object {
   };
 }
 
-async function postCheckRunQuietly(
-  conclusion: 'success' | 'failure',
-  title: string,
-  summary: string,
-  annotations: object[],
-): Promise<void> {
-  try {
-    await postCheckRun(conclusion, title, summary, annotations);
-  } catch (e) {
-    console.log(
-      `::notice::Could not post check run (fork token?): ${String(e)}`,
-    );
-  }
-}
+// ---------------------------------------------------------------------------
+// Result file
+// ---------------------------------------------------------------------------
 
-async function postCheckRun(
-  conclusion: 'success' | 'failure',
-  title: string,
-  summary: string,
-  annotations: object[],
-): Promise<void> {
-  if (!repoOwner || !repoName) {
-    console.log(
-      '::notice::GITHUB_REPOSITORY not set — skipping check run post.',
-    );
-    return;
-  }
+type DiffResult = {
+  conclusion: 'success' | 'failure';
+  title: string;
+  summary: string;
+  annotations: object[];
+};
 
-  const url = `https://api.github.com/repos/${repoOwner}/${repoName}/check-runs`;
-  const body = {
-    // Prefix matches the workflow job name so GitHub groups this check run
-    // under the "repository-health-checks" section in the PR sidebar.
-    name: 'repository-health-checks / Audit: no new vulnerabilities',
-    head_sha: headSha,
-    status: 'completed',
-    conclusion,
-    output: {
-      title,
-      summary,
-      annotations,
-    },
-  };
-
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json',
-      'User-Agent': 'yarn-audit-diff',
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`Failed to post check run: ${resp.status} ${text}`);
+function writeResult(result: DiffResult): void {
+  if (resultFile) {
+    writeFileSync(resultFile, JSON.stringify(result, null, 2), 'utf8');
   }
 }
 
@@ -172,12 +120,12 @@ async function main() {
       console.log(
         '::notice::No baseline found — posting success (skip-if-no-baseline mode).',
       );
-      await postCheckRunQuietly(
-        'success',
-        'No baseline yet',
-        'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
-        [],
-      );
+      writeResult({
+        conclusion: 'success',
+        title: 'No baseline yet',
+        summary: 'Baseline artifact not yet available. Diff skipped (rollout mode — `--skip-if-no-baseline` flag is set).',
+        annotations: [],
+      });
       return;
     }
 
@@ -191,12 +139,12 @@ async function main() {
         .map((a) => `- [${sevLabel(a)}] \`${a.moduleName}\` — ${a.title}`)
         .join('\n');
     // The Checks API rejects requests with more than 50 annotations.
-    await postCheckRunQuietly(
-      'failure',
-      'New vulnerabilities found',
+    writeResult({
+      conclusion: 'failure',
+      title: 'New vulnerabilities found',
       summary,
-      current.slice(0, 50).map(toAnnotation),
-    );
+      annotations: current.slice(0, 50).map(toAnnotation),
+    });
     return;
   }
 
@@ -215,12 +163,12 @@ async function main() {
     console.log(
       `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
     );
-    await postCheckRunQuietly(
-      'success',
-      'No new vulnerabilities',
-      `Compared **${current.length}** current advisory/advisories against **${baseline.length}** baseline. No new advisories introduced by this PR.`,
-      [],
-    );
+    writeResult({
+      conclusion: 'success',
+      title: 'No new vulnerabilities',
+      summary: `Compared **${current.length}** current advisory/advisories against **${baseline.length}** baseline. No new advisories introduced by this PR.`,
+      annotations: [],
+    });
     return;
   }
 
@@ -242,12 +190,12 @@ async function main() {
       .join('\n');
 
   // The Checks API rejects requests with more than 50 annotations.
-  await postCheckRunQuietly(
-    'failure',
-    'New vulnerabilities found',
-    summaryBody,
-    newAdvisories.slice(0, 50).map(toAnnotation),
-  );
+  writeResult({
+    conclusion: 'failure',
+    title: 'New vulnerabilities found',
+    summary: summaryBody,
+    annotations: newAdvisories.slice(0, 50).map(toAnnotation),
+  });
 }
 
 try {

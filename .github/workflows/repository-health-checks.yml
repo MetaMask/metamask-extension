@@ -122,7 +122,46 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: yarn tsx .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json
+        run: yarn tsx .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json --result-file /tmp/audit-diff-result.json
+
+      # Post the audit check run via actions/github-script so it uses the
+      # Octokit client with check_suite_id from the current workflow run.
+      # This anchors the check run to the correct check suite, causing GitHub
+      # to group it under "repository-health-checks" in the PR sidebar rather
+      # than under an unrelated app's suite.
+      - name: Post audit check run
+        if: ${{ github.event_name == 'pull_request' && !cancelled() }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const resultPath = '/tmp/audit-diff-result.json';
+            if (!fs.existsSync(resultPath)) {
+              core.notice('No audit diff result file found — skipping check run post.');
+              return;
+            }
+            const result = JSON.parse(fs.readFileSync(resultPath, 'utf8'));
+            // Fetch the check_suite_id for this workflow run so our check run
+            // lands in the same check suite as the workflow's other jobs.
+            const { data: run } = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Audit: no new vulnerabilities',
+              head_sha: context.payload.pull_request.head.sha,
+              check_suite_id: run.check_suite_id,
+              status: 'completed',
+              conclusion: result.conclusion,
+              output: {
+                title: result.title,
+                summary: result.summary,
+                annotations: result.annotations,
+              },
+            });
 
       # - name: Detect yarn lock deduplications
       #   if: ${{ !cancelled() }}
