@@ -104,6 +104,7 @@ export async function runBenchmarkWithIterations(
 
   // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
+  const zeroAllowedTimers = new Set<string>();
   const webVitalsRuns: WebVitalsRun[] = [];
 
   for (let idx = 0; idx < allResults.length; idx++) {
@@ -115,7 +116,10 @@ export async function runBenchmarkWithIterations(
         }
         const timerDurations = timerMap.get(timer.id);
         if (timerDurations) {
-          timerDurations.push(timer.duration);
+          timerDurations.push(timer.value);
+        }
+        if (timer.unit) {
+          zeroAllowedTimers.add(timer.id);
         }
       }
 
@@ -129,7 +133,9 @@ export async function runBenchmarkWithIterations(
   let excludedDueToQuality = 0;
 
   for (const [timerId, durations] of timerMap) {
-    const stats = calculateTimerStatistics(timerId, durations);
+    const stats = calculateTimerStatistics(timerId, durations, {
+      ...(zeroAllowedTimers.has(timerId) ? { minDurationMs: 0 } : {}),
+    });
     timerStats.push(stats);
 
     if (stats.dataQuality === 'unreliable') {
@@ -155,7 +161,12 @@ export async function runBenchmarkWithIterations(
   const perRunTotalDurations: number[] = [];
   for (const result of allResults) {
     if (result.success && result.timers.length > 0) {
-      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      // Exclude long task diagnostic metrics (tagged with unit) from the
+      // per-run total. They represent blocking time already captured within
+      // the timed steps and would double-count if summed.
+      const runTotal = result.timers
+        .filter((t) => !t.unit)
+        .reduce((acc, t) => acc + t.value, 0);
       perRunTotalDurations.push(runTotal);
     }
   }

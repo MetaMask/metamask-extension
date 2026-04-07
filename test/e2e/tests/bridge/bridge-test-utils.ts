@@ -40,8 +40,12 @@ import {
   SSE_RESPONSE_HEADER,
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
+import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
+import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
+import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
 
 export class BridgePage {
   driver: Driver;
@@ -1771,6 +1775,239 @@ export const checkInputChangedEvents = async (
     });
 
   return expectedInputChanges.length;
+};
+
+async function mockSentinelNetworks(
+  mockServer: Mockttp,
+  sendBundle: boolean = true,
+) {
+  return await mockServer
+    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '1': {
+          network: 'ethereum-mainnet',
+          explorer: 'https://etherscan.io',
+          confirmations: true,
+          smartTransactions: true,
+          relayTransactions: true,
+          hidden: false,
+          sendBundle,
+        },
+      },
+    }));
+}
+
+async function mockGasIncludedSwapETHtoUSDC(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .once()
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .once()
+    .withQuery({
+      srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+export const getGasIncludedSwapFixtures = (title?: string) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
+    });
+
+  return {
+    forceBip44Version: false,
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockGasIncludedSwapETHtoUSDC(mockServer),
+        await mockGasIncludedSwapUSDCtoDAI(mockServer),
+        await mockFeatureFlags(
+          mockServer,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          STX_MAINNET_NETWORK_CONFIG,
+        ),
+        await mockAccountsTransactions(mockServer),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockHistoricalPrices(mockServer),
+        await mockSentinelNetworks(mockServer),
+        ...(await mockSearchTokens(mockServer)),
+      ];
+
+      await mockSmartTransactionsForBridge(mockServer);
+
+      return mocks;
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        ...STX_MAINNET_NETWORK_CONFIG,
+      },
+    },
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil' as const,
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+          loadState:
+            './test/e2e/seeder/network-states/with100Usdc100Usdt50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .once()
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
+  return mockSentinelNetworks(mockServer, false);
+}
+
+export const getGasless7702SwapFixtures = (title?: string) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
+    });
+
+  return {
+    forceBip44Version: false,
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockGasSponsoredSwapETHtoUSDC(mockServer),
+        await mockFeatureFlags(
+          mockServer,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          {
+            smartTransactionsNetworks: {
+              '0x1': {
+                maxDeadline: 160,
+                sentinelUrl: STX_MAINNET_SENTINEL_URL,
+                expectedDeadline: 45,
+                extensionActive: true,
+                gaslessBridgeWith7702Enabled: true,
+              },
+            },
+          },
+        ),
+        await mockAccountsTransactions(mockServer),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockHistoricalPrices(mockServer),
+        await mockSentinelNetworksRelayOnly(mockServer),
+        ...(await mockSearchTokens(mockServer)),
+      ];
+
+      await mockSmartTransactionsForBridge(mockServer);
+
+      return mocks;
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        smartTransactionsNetworks: {
+          '0x1': {
+            maxDeadline: 160,
+            sentinelUrl: STX_MAINNET_SENTINEL_URL,
+            expectedDeadline: 45,
+            extensionActive: true,
+            gaslessBridgeWith7702Enabled: true,
+          },
+        },
+      },
+    },
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil' as const,
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+          loadState:
+            './test/e2e/seeder/network-states/with100Usdc100Usdt50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
 };
 
 export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (

@@ -40,24 +40,15 @@ export function useTransactionLifecycle<
       if (!previous) {
         if (isNowPending) {
           handlers.onPending?.(tx);
-        } else if (isNowSuccess) {
-          handlers.onSuccess?.(tx);
-        } else if (isNowFailed) {
-          handlers.onFailure?.(tx);
         }
+
         continue;
       }
 
       const wasPending = isPending(previous.status);
 
-      if (!wasPending && isNowPending) {
-        handlers.onPending?.(tx);
-        continue;
-      }
-
       if (wasPending && isNowSuccess) {
         handlers.onSuccess?.(tx);
-        continue;
       }
 
       if ((wasPending || previous.status === 'signed') && isNowFailed) {

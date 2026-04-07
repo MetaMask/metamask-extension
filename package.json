@@ -94,7 +94,7 @@
     "lint:changelog:rc": "auto-changelog validate --prettier --rc",
     "slack:rc-notify": "tsx ./.github/scripts/slack-rc-notification.ts",
     "lint:debug": "DEBUG=eslint:cli-engine yarn lint",
-    "lint:eslint": "eslint . --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
+    "lint:eslint": "NODE_OPTIONS='--max-old-space-size=6144' eslint . --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:eslint:fix": "yarn lint:eslint --fix --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe",
