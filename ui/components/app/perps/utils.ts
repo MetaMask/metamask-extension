@@ -416,3 +416,23 @@ export const isHip3Market = (
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
+
+/**
+ * Check if a market has meaningful trading volume (non-zero).
+ * Markets with "$0" or missing volume are considered inactive and
+ * should be hidden from market lists.
+ *
+ * @param market - The market data to check
+ * @returns True if the market has non-zero volume
+ * @example
+ * hasVolume({ volume: '$1.2M' }) // → true
+ * hasVolume({ volume: '$0' })    // → false
+ * hasVolume({ volume: '' })      // → false
+ */
+export const hasVolume = (market: PerpsMarketData): boolean => {
+  const vol = market.volume;
+  if (!vol || vol === '$0') {
+    return false;
+  }
+  return true;
+};
