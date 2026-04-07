@@ -184,8 +184,8 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
-      BENCHMARK_BROWSER_LOADS: '10'
-      BENCHMARK_PAGE_LOADS: '10'
+      BENCHMARK_BROWSER_LOADS: "10"
+      BENCHMARK_PAGE_LOADS: "10"
       DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
     steps:
       - name: Checkout and setup environment
@@ -194,10 +194,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-test-webpack'
+      - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v7
         with:
-          name: build-test-webpack
+          name: build-test-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 
