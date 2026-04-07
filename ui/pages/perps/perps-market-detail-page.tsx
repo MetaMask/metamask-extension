@@ -416,7 +416,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const recentActivityTransactions = useMemo(() => {
     const transactions = transformFillsToTransactions(marketFills);
-    return transactions.slice(0, PERPS_CONSTANTS.RecentActivityLimit);
+    return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
   }, [marketFills]);
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)

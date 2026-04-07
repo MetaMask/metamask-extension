@@ -47,7 +47,7 @@ export function usePerpsMarketFills({
   const [isRestLoading, setIsRestLoading] = useState(true);
 
   const fetchRestFills = useCallback(async () => {
-    const startTime = Date.now() - PERPS_CONSTANTS.FillsLookbackMs;
+    const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
     const result = await submitRequestToBackground<OrderFill[]>(
       'perpsGetOrderFills',
       [{ aggregateByTime: false, startTime }],
