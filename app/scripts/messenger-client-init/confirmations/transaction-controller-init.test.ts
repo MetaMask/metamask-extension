@@ -24,7 +24,10 @@ import * as smartTransactionsModule from '../../lib/smart-transaction/smart-tran
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
-import { TransactionControllerInit } from './transaction-controller-init';
+import {
+  TransactionControllerInit,
+  publishHook,
+} from './transaction-controller-init';
 
 jest.mock('@metamask/transaction-controller');
 jest.mock('@metamask/transaction-pay-controller');
@@ -482,6 +485,100 @@ describe('Transaction Controller Init', () => {
       } as TransactionMeta);
 
       expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalled();
+    });
+
+    it('records sentinel_relay submission via metrics fragment on delegation hook success', async () => {
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+
+      const upsertFragmentMock = jest.fn();
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: upsertFragmentMock,
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'HD Key Tree' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {
+          isAtomicBatchSupported: jest.fn(),
+        } as unknown as PHArgs['transactionController'],
+        transactionMeta: {
+          ...mockTransactionMeta,
+          isExternalSign: true,
+        } as TransactionMeta,
+      });
+
+      expect(upsertFragmentMock).toHaveBeenCalledWith(mockTransactionMeta.id, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_relay' },
+      });
+    });
+
+    it('records sentinel_stx submission via metrics fragment on STX hook success', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockResolvedValue({ transactionHash: '0xstxHash' });
+
+      const upsertFragmentMock = jest.fn();
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: upsertFragmentMock,
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'Ledger Hardware' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {} as PHArgs['transactionController'],
+        transactionMeta: mockTransactionMeta,
+      });
+
+      expect(upsertFragmentMock).toHaveBeenCalledWith(mockTransactionMeta.id, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
     });
   });
 });
