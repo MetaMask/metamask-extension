@@ -1,6 +1,7 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import {
@@ -27,6 +28,7 @@ const NetworkDetailsCheckToggleItem = createToggleItem({
     state.metamask.useSafeChainsListValidation,
   action: setUseSafeChainsListValidation,
   dataTestId: 'network-details-check-toggle',
+  containerDataTestId: 'useSafeChainsListValidation',
 });
 
 const ShowENSDomainsToggleItem = createToggleItem({
@@ -46,6 +48,7 @@ const ShowENSDomainsToggleItem = createToggleItem({
     state.metamask.useAddressBarEnsResolution,
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
+  containerDataTestId: 'ipfs-gateway-resolution-container',
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
@@ -65,6 +68,13 @@ const ProposedNicknamesToggleItem = createToggleItem({
     state.metamask.useExternalNameSources,
   action: setUseExternalNameSources,
   dataTestId: 'proposed-nicknames-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_external_name_sources: newValue,
+    }),
+  },
 });
 
 /** Registry of setting items for the Third-party APIs sub-page */

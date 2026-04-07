@@ -311,6 +311,12 @@ module.exports = {
         },
       },
     },
+    {
+      files: ['.agents/**/*.ts'],
+      rules: {
+        'import-x/no-nodejs-modules': 'off',
+      },
+    },
     /**
      * == Everything else ==
      *
@@ -510,7 +516,7 @@ module.exports = {
         'test/unit-global/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
-        'shared/lib/error-utils.test.js',
+        'shared/lib/error-utils.test.ts',
       ],
       extends: ['@metamask/eslint-config-jest'],
       parserOptions: {

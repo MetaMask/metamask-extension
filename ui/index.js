@@ -48,6 +48,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -207,6 +208,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
+
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
   const store = await trace(
@@ -240,7 +244,7 @@ async function startApp(metamaskState, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
@@ -283,7 +287,9 @@ async function runInitialActions(store) {
     const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
       }
     };
     await validateSeedlessPasswordOutdated(initialState);

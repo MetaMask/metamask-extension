@@ -130,7 +130,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
   });
 

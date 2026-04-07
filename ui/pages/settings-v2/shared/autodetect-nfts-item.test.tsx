@@ -59,7 +59,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeEnabled);
 
-    expect(screen.getByTestId('use-nft-detection')).toHaveAttribute(
+    expect(screen.getByTestId('use-nft-detection-input')).toHaveAttribute(
       'value',
       'true',
     );
@@ -72,7 +72,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeDisabled);
 
-    expect(screen.getByTestId('use-nft-detection')).toHaveAttribute(
+    expect(screen.getByTestId('use-nft-detection-input')).toHaveAttribute(
       'value',
       'false',
     );
@@ -85,7 +85,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeEnabled);
 
-    fireEvent.click(screen.getByTestId('use-nft-detection'));
+    fireEvent.click(screen.getByTestId('use-nft-detection-input'));
 
     expect(mockSetUseNftDetection).toHaveBeenCalledWith(false);
   });
@@ -97,7 +97,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeDisabled);
 
-    fireEvent.click(screen.getByTestId('use-nft-detection'));
+    fireEvent.click(screen.getByTestId('use-nft-detection-input'));
 
     expect(mockSetUseNftDetection).toHaveBeenCalledWith(true);
   });
@@ -113,7 +113,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeWithBothDisabled);
 
-    fireEvent.click(screen.getByTestId('use-nft-detection'));
+    fireEvent.click(screen.getByTestId('use-nft-detection-input'));
 
     expect(mockSetOpenSeaEnabled).toHaveBeenCalledWith(true);
     expect(mockSetUseNftDetection).toHaveBeenCalledWith(true);
@@ -130,7 +130,7 @@ describe('AutodetectNftsToggleItem', () => {
     });
     renderWithProvider(<AutodetectNftsToggleItem />, storeWithOpenSeaEnabled);
 
-    fireEvent.click(screen.getByTestId('use-nft-detection'));
+    fireEvent.click(screen.getByTestId('use-nft-detection-input'));
 
     expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
     expect(mockSetUseNftDetection).toHaveBeenCalledWith(true);

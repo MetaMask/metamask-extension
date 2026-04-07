@@ -6,7 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  getMultichainRouterMessenger,
+  getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -14,7 +14,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsNameProviderMessenger,
-  getSnapsRegistryMessenger,
+  getSnapRegistryControllerMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
 import {
@@ -179,7 +179,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
@@ -235,15 +234,11 @@ export type { AppStateControllerMessenger } from './app-state-controller-messeng
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
-export type {
-  BridgeControllerMessenger,
-  BridgeControllerInitMessenger,
-} from './bridge-controller-messenger';
+export type { BridgeControllerInitMessenger } from './bridge-controller-messenger';
 export {
   getBridgeControllerMessenger,
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
-export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
@@ -278,8 +273,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
-export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export type { StorageServiceMessenger } from './storage-service-messenger';
 export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
@@ -524,10 +517,6 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
   },
-  ErrorReportingService: {
-    getMessenger: getErrorReportingServiceMessenger,
-    getInitMessenger: noop,
-  },
   StorageService: {
     getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
@@ -584,8 +573,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  MultichainRouter: {
-    getMessenger: getMultichainRouterMessenger,
+  MultichainRoutingService: {
+    getMessenger: getMultichainRoutingServiceMessenger,
     getInitMessenger: noop,
   },
   NameController: {
@@ -660,8 +649,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapsNameProviderMessenger,
     getInitMessenger: noop,
   },
-  SnapsRegistry: {
-    getMessenger: getSnapsRegistryMessenger,
+  SnapRegistryController: {
+    getMessenger: getSnapRegistryControllerMessenger,
     getInitMessenger: noop,
   },
   SnapController: {

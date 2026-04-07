@@ -42,9 +42,12 @@ export function useTransactionCustomAmount({
     null,
   );
 
-  const debounceSetAmountDelayed = useMemo(() => {
+  // Create and update debounced function
+  useEffect(() => {
+    // Cancel any existing debounced calls
     debounceRef.current?.cancel();
 
+    // Create new debounced function
     const debouncedFn = debounce((value: string) => {
       setAmountHumanDebounced(value);
       if (!disableUpdate) {
@@ -52,8 +55,13 @@ export function useTransactionCustomAmount({
       }
     }, DEBOUNCE_DELAY);
 
+    // Store in ref
     debounceRef.current = debouncedFn;
-    return debouncedFn;
+
+    // Cleanup: cancel on unmount or when dependencies change
+    return () => {
+      debouncedFn.cancel();
+    };
   }, [disableUpdate, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
@@ -85,14 +93,11 @@ export function useTransactionCustomAmount({
   );
 
   useEffect(() => {
-    debounceSetAmountDelayed(amountHuman);
-  }, [amountHuman, debounceSetAmountDelayed]);
-
-  useEffect(() => {
-    return () => {
-      debounceRef.current?.cancel();
-    };
-  }, []);
+    // Use ref directly to avoid re-running when callback is recreated
+    if (debounceRef.current) {
+      debounceRef.current(amountHuman);
+    }
+  }, [amountHuman]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {

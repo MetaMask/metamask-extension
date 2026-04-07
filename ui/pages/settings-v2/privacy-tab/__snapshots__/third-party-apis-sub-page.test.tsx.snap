@@ -3,16 +3,16 @@
 exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto"
   >
     <p
-      class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default py-2"
+      class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default py-2 px-4"
     >
       Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience.
     </p>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -22,7 +22,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Network details check
           </p>
-          <div>
+          <div
+            data-testid="useSafeChainsListValidation"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -74,7 +76,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -84,7 +86,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Show ENS domains in address bar
           </p>
-          <div>
+          <div
+            data-testid="ipfs-gateway-resolution-container"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -139,7 +143,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -196,7 +200,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
         class="mb-4"
       >
         <div
-          class="flex flex-col gap-1 py-3"
+          class="flex flex-col gap-1 px-4 py-3"
         >
           <div
             class="flex flex-row items-center justify-between"
@@ -206,7 +210,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             >
               IPFS gateway
             </p>
-            <div>
+            <div
+              data-testid="ipfsToggle"
+            >
               <label
                 class="toggle-button toggle-button--on"
                 tabindex="0"
@@ -248,7 +254,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           </p>
         </div>
         <div
-          class="flex flex-col gap-1"
+          class="flex flex-col gap-1 mx-4"
         >
           <div
             class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
@@ -270,11 +276,11 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -328,7 +334,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -338,7 +344,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Autodetect NFTs
           </p>
-          <div>
+          <div
+            data-testid="use-nft-detection"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -364,7 +372,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="use-nft-detection"
+                  data-testid="use-nft-detection-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="true"
@@ -381,11 +389,11 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"

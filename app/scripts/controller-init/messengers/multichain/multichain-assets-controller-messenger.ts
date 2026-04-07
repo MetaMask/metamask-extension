@@ -1,30 +1,10 @@
 import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerAccountAssetListUpdatedEvent,
-  AccountsControllerAccountRemovedEvent,
-  AccountsControllerListMultichainAccountsAction,
-} from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/messenger';
-import { GetPermissions } from '@metamask/permission-controller';
-import { GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
-import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { MultichainAssetsControllerMessenger } from '@metamask/assets-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | HandleSnapRequest
-  | GetAllSnaps
-  | GetPermissions
-  | AccountsControllerListMultichainAccountsAction
-  | PhishingControllerBulkScanTokensAction;
-
-type Events =
-  | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent
-  | AccountsControllerAccountAssetListUpdatedEvent;
-
-export type MultichainAssetsControllerMessenger = ReturnType<
-  typeof getMultichainAssetsControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Multichain Assets controller. This is scoped to the
@@ -34,17 +14,17 @@ export type MultichainAssetsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAssetsControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<MultichainAssetsControllerMessenger>,
+    MessengerEvents<MultichainAssetsControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'MultichainAssetsController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'MultichainAssetsController',
-    parent: messenger,
-  });
+  const controllerMessenger: MultichainAssetsControllerMessenger =
+    new Messenger({
+      namespace: 'MultichainAssetsController',
+      parent: messenger,
+    });
+
   messenger.delegate({
     messenger: controllerMessenger,
     events: [
@@ -55,10 +35,11 @@ export function getMultichainAssetsControllerMessenger(
     actions: [
       'PermissionController:getPermissions',
       'SnapController:handleRequest',
-      'SnapController:getAll',
+      'SnapController:getRunnableSnaps',
       'AccountsController:listMultichainAccounts',
       'PhishingController:bulkScanTokens',
     ],
   });
+
   return controllerMessenger;
 }
