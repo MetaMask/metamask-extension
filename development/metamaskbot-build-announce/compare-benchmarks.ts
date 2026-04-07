@@ -25,6 +25,7 @@ import type {
   ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
+  ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
@@ -35,6 +36,12 @@ import {
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
+import {
+  loadOverrides,
+  applyOverrides,
+  formatOverrideSummary,
+  type AppliedOverride,
+} from './threshold-overrides';
 import { resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
@@ -76,17 +83,19 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
  *
  * @param benchmarks - Loaded benchmark files.
  * @param baseline - Historical baseline reference.
+ * @param registry - Threshold registry to use (defaults to THRESHOLD_REGISTRY).
  */
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
+  registry: Record<string, ThresholdConfig> = THRESHOLD_REGISTRY,
 ): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
   const comparisons: BenchmarkEntryComparison[] = [];
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
     for (const [entryName, results] of Object.entries(data)) {
-      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
+      const thresholdConfig = registry[entryName];
 
       if (!thresholdConfig) {
         console.warn(
@@ -258,11 +267,20 @@ export function buildMetricLines(
  * @param result - Comparison results.
  * @param result.comparisons
  * @param result.anyFailed
+ * @param appliedOverrides - List of applied threshold overrides.
  */
-export function printReport(result: {
-  comparisons: BenchmarkEntryComparison[];
-  anyFailed: boolean;
-}): void {
+export function printReport(
+  result: {
+    comparisons: BenchmarkEntryComparison[];
+    anyFailed: boolean;
+  },
+  appliedOverrides: AppliedOverride[] = [],
+): void {
+  const overrideSummary = formatOverrideSummary(appliedOverrides);
+  if (overrideSummary) {
+    console.log(overrideSummary);
+  }
+
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Comparison');
   console.log('═══════════════════════════════════════\n');
@@ -328,12 +346,23 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
+  // Load threshold overrides (if .threshold-overrides.json exists)
+  let registry = THRESHOLD_REGISTRY;
+  let appliedOverrides: AppliedOverride[] = [];
+
+  const overrideFile = await loadOverrides();
+  if (overrideFile) {
+    const result = applyOverrides(THRESHOLD_REGISTRY, overrideFile);
+    registry = result.effectiveRegistry;
+    appliedOverrides = result.applied;
+  }
+
   const baseline = await loadBaseline();
 
-  const result = runComparison(benchmarks, baseline);
-  printReport(result);
+  const comparisonResult = runComparison(benchmarks, baseline, registry);
+  printReport(comparisonResult, appliedOverrides);
 
-  process.exit(result.anyFailed ? 1 : 0);
+  process.exit(comparisonResult.anyFailed ? 1 : 0);
 }
 
 if (require.main === module) {
