@@ -372,6 +372,64 @@ describe('createPerpsInfrastructure', () => {
         expect(mockSpan.end).toHaveBeenCalledTimes(1);
       });
 
+      it('ends the previous span when trace is called with a duplicate key', () => {
+        const firstSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const secondSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        let callCount = 0;
+        const startSpanManual = jest.fn((_opts, cb) => {
+          cb(callCount === 0 ? firstSpan : secondSpan);
+          callCount += 1;
+        });
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure();
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'dup',
+          op: 'perps.order',
+        });
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'dup',
+          op: 'perps.order',
+        });
+
+        expect(firstSpan.end).toHaveBeenCalledTimes(1);
+      });
+
+      it('evicts the oldest span when the pending map reaches capacity', () => {
+        const spans: { setAttribute: jest.Mock; end: jest.Mock }[] = [];
+        const startSpanManual = jest.fn((_opts, cb) => {
+          const span = { setAttribute: jest.fn(), end: jest.fn() };
+          spans.push(span);
+          cb(span);
+        });
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure();
+
+        // Fill the map to capacity (MAX_PENDING_SPANS = 50)
+        for (let i = 0; i < 50; i++) {
+          tracer.trace({
+            name: 'Perps Place Order' as never,
+            id: String(i),
+            op: 'perps.order',
+          });
+        }
+
+        // The first span should still be pending — map is exactly at capacity
+        expect(spans[0].end).not.toHaveBeenCalled();
+
+        // One more trace pushes the map over capacity, evicting span[0]
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: '50',
+          op: 'perps.order',
+        });
+
+        expect(spans[0].end).toHaveBeenCalledTimes(1);
+      });
+
       it('calls setMeasurement on sentry', () => {
         const setMeasurement = jest.fn();
         (globalThis as Record<string, unknown>).sentry = { setMeasurement };

@@ -77,6 +77,8 @@ function createPerformance(): PerpsPerformance {
   };
 }
 
+const MAX_PENDING_SPANS = 50;
+
 function createTracer(): PerpsTracer {
   const pendingSpans = new Map<
     string,
@@ -98,6 +100,28 @@ function createTracer(): PerpsTracer {
       if (!startSpanManual) {
         return;
       }
+
+      const key = `${params.name}:${params.id}`;
+
+      // End any existing span with the same key before overwriting to avoid
+      // leaking the old span reference when trace() is called twice with the
+      // same name/id pair.
+      const existing = pendingSpans.get(key);
+      if (existing) {
+        existing.end();
+        pendingSpans.delete(key);
+      }
+
+      // Evict the oldest pending span when the map is at capacity so the map
+      // cannot grow unboundedly over long browser sessions.
+      if (pendingSpans.size >= MAX_PENDING_SPANS) {
+        const oldestKey = pendingSpans.keys().next().value;
+        if (oldestKey !== undefined) {
+          pendingSpans.get(oldestKey)?.end();
+          pendingSpans.delete(oldestKey);
+        }
+      }
+
       startSpanManual(
         {
           name: params.name,
@@ -108,7 +132,7 @@ function createTracer(): PerpsTracer {
           setAttribute: (key: string, value: PerpsTraceValue) => void;
           end: () => void;
         }) => {
-          pendingSpans.set(`${params.name}:${params.id}`, span);
+          pendingSpans.set(key, span);
         },
       );
     },
