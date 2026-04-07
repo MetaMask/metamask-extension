@@ -1,3 +1,4 @@
+import { BENCHMARK_BUILD_TYPES } from '../../shared/constants/benchmarks';
 import {
   buildSectionWithFallback,
   postCommentWithMetamaskBot,
@@ -156,13 +157,18 @@ describe('artifact utilities', () => {
     expect(buildEntryKey('loadNewAccount', 'chrome')).toBe(
       'loadNewAccount|chrome-webpack',
     );
-    expect(buildArtifactFilename('chrome', 'interactionUserActions')).toBe(
-      'benchmark-chrome-webpack-interactionUserActions.json',
-    );
+    expect(
+      buildArtifactFilename(
+        'chrome',
+        BENCHMARK_BUILD_TYPES.WEBPACK,
+        'interactionUserActions',
+      ),
+    ).toBe('benchmark-chrome-webpack-interactionUserActions.json');
     expect(
       buildArtifactUrl(
         'https://ci.example.com',
         'chrome',
+        BENCHMARK_BUILD_TYPES.WEBPACK,
         'interactionUserActions',
       ),
     ).toBe(
@@ -176,7 +182,11 @@ describe('artifact utilities', () => {
       'loadNewAccount|chrome-browserify',
     );
     expect(
-      buildArtifactFilename('chrome', 'interactionUserActions', 'browserify'),
+      buildArtifactFilename(
+        'chrome',
+        BENCHMARK_BUILD_TYPES.BROWSERIFY,
+        'interactionUserActions',
+      ),
     ).toBe('benchmark-chrome-browserify-interactionUserActions.json');
   });
 });

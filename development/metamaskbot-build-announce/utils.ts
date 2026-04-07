@@ -133,14 +133,14 @@ export function buildEntryKey(
  * Builds a CI artifact filename.
  *
  * @param platform - Browser platform (e.g., 'chrome').
+ * @param buildType - Bundler id (e.g., 'webpack', 'browserify').
  * @param preset - Preset name (e.g., 'interactionUserActions').
- * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Artifact filename (e.g., 'benchmark-chrome-webpack-interactionUserActions.json').
  */
 export function buildArtifactFilename(
   platform: string,
+  buildType: string,
   preset: string,
-  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): string {
   return `benchmark-${platform}-${buildType}-${preset}.json`;
 }
@@ -150,17 +150,17 @@ export function buildArtifactFilename(
  *
  * @param hostUrl - Base URL for artifacts (e.g., 'https://ci.example.com').
  * @param platform - Browser platform (e.g., 'chrome').
+ * @param buildType - Bundler id (e.g., 'webpack', 'browserify').
  * @param preset - Preset name (e.g., 'interactionUserActions').
- * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Full artifact URL.
  */
 export function buildArtifactUrl(
   hostUrl: string,
   platform: string,
+  buildType: string,
   preset: string,
-  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): string {
-  return `${hostUrl}/benchmarks/${buildArtifactFilename(platform, preset, buildType)}`;
+  return `${hostUrl}/benchmarks/${buildArtifactFilename(platform, buildType, preset)}`;
 }
 
 /**

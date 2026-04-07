@@ -75,7 +75,10 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
-      BENCHMARK_GATED: ${{ !matrix.mainOnly || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))) }}
+      # Run core benchmark steps (checkout, run, GH artifact) for every matrix job.
+      BENCHMARK_GATED: 'true'
+      # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
+      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
         if: ${{ env.BENCHMARK_GATED == 'true' }}
@@ -111,8 +114,15 @@ jobs:
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
         shell: bash
 
-      - name: Install AWS CLI (needed in the container)
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
+      - name: Install AWS CLI (needed for S3 upload on main/release only)
+        if: >-
+          ${{
+            env.BENCHMARK_GATED == 'true' &&
+            env.MAIN_OR_RELEASE == 'true' &&
+            vars.AWS_REGION != '' &&
+            vars.AWS_IAM_ROLE != '' &&
+            vars.AWS_S3_BUCKET != ''
+          }}
         run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
         shell: bash
 
@@ -126,7 +136,7 @@ jobs:
         if: >-
           ${{
             vars.SENTRY_DSN_PERFORMANCE &&
-            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+            env.MAIN_OR_RELEASE == 'true'
           }}
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
@@ -143,6 +153,7 @@ jobs:
         if: >-
           ${{
             env.BENCHMARK_GATED == 'true' &&
+            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
@@ -179,6 +190,7 @@ jobs:
       BENCHMARK_BROWSER_LOADS: '10'
       BENCHMARK_PAGE_LOADS: '10'
       DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
+      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -203,7 +215,7 @@ jobs:
         if: >-
           ${{
             vars.SENTRY_DSN_PERFORMANCE &&
-            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+            env.MAIN_OR_RELEASE == 'true'
           }}
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
@@ -219,6 +231,7 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
+            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''

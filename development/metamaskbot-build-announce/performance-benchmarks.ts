@@ -150,7 +150,7 @@ export async function fetchBenchmarkJson<
   buildType: string,
   preset: string,
 ): Promise<Result | null> {
-  const fileName = buildArtifactFilename(platform, preset, buildType);
+  const fileName = buildArtifactFilename(platform, buildType, preset);
   const localDir = process.env.BENCHMARK_RESULTS_DIR;
 
   if (localDir) {
