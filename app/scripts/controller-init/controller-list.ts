@@ -91,6 +91,8 @@ import {
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { AccountsApiService } from '@metamask-previews/accounts-api';
+
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -211,7 +213,8 @@ export type Controller =
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
-  | ConnectivityController;
+  | ConnectivityController
+  | AccountsApiService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

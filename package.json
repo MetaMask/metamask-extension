@@ -265,7 +265,7 @@
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
-    "@metamask/messenger@npm:^0.3.0": "^1.0.0"
+    "@metamask/messenger@npm:^0.3.0": "^1.1.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -291,6 +291,7 @@
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
+    "@metamask-previews/accounts-api": "0.0.0-preview-0fc9da15f",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.0",
     "@metamask/account-tree-controller": "^7.0.0",
@@ -351,7 +352,7 @@
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
-    "@metamask/messenger": "^1.0.0",
+    "@metamask/messenger": "^1.1.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^8.0.1",
     "@metamask/multichain-api-client": "^0.10.1",
