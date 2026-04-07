@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
-  "musdClaimClaimingTo": {
-    "message": "इसमें क्लेम किया जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "शॉर्ट क्लोज़ करें"
   },
-  "perpsClosedShort": {
-    "message": "शॉर्ट को क्लोज़ किया गया"
-  },
   "perpsConfirmCloseLong": {
     "message": "लॉन्ग क्लोज़ करें"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "इसमें P&L $1 शामिल है"
   },
-  "perpsIncreasedPosition": {
-    "message": "पोज़िशन बढ़ाई गई"
-  },
   "perpsLearnBasics": {
     "message": "पर्प्स की मूल बातें सीखें"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "शॉर्ट $1 को ओपन करें",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "खुला लॉन्ग"
   },
   "perpsOraclePrice": {
     "message": "Oracle प्राइस"
