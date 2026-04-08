@@ -1,9 +1,9 @@
 {
   "files": {
-    "app/scripts/controller-init/core-backend/backend-websocket-service-init.test.ts": {
+    "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
-    "app/scripts/controller-init/snaps/snap-controller-init.test.ts": {
+    "app/scripts/messenger-client-init/snaps/snap-controller-init.test.ts": {
       "error: Error: A handler for SnapController:setClientActive": 2
     },
     "app/scripts/controllers/metametrics-controller.test.ts": {
