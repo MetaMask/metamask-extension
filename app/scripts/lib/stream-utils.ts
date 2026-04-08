@@ -1,15 +1,27 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline } from 'readable-stream';
+// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+import { pipeline, Duplex } from 'readable-stream';
+
+/**
+ * A stream-like object that exposes the internal properties accessed by
+ * {@link isStreamWritable} across different stream implementations (node:stream,
+ * readable-stream v2/v3/v4 and @metamask/object-multiplex).
+ */
+type StreamLike = {
+  writable?: boolean;
+  destroyed?: boolean;
+  _writableState?: { ended: boolean };
+};
 
 /**
  * Sets up stream multiplexing for the given stream
  *
- * @param {any} connectionStream - the stream to mux
- * @returns {stream.Stream} the multiplexed stream
+ * @param connectionStream - the stream to mux
+ * @returns the multiplexed stream
  */
-export function setupMultiplex(connectionStream) {
+export function setupMultiplex(connectionStream: Duplex): ObjectMultiplex {
   const mux = new ObjectMultiplex();
-  pipeline(connectionStream, mux, connectionStream, (err) => {
+  pipeline(connectionStream, mux, connectionStream, (err: Error | null) => {
     // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
     if (err && !err.message?.match('Premature close')) {
       console.error(err);
@@ -21,11 +33,11 @@ export function setupMultiplex(connectionStream) {
 /**
  * Checks if a stream is writable and usable
  *
- * @param {stream.Stream} stream - the stream to check
- * @returns {boolean} if the stream can be written to
+ * @param stream - the stream to check
+ * @returns if the stream can be written to
  */
-export function isStreamWritable(stream) {
-  /**
+export function isStreamWritable(stream: StreamLike): boolean {
+  /*
    * Roughly:
    *   stream.writable:
    *     readable-stream-3 (confusingly: not mentioned in docs for streamsv2 and not consistently implemented there, despite v3 docs mentioning it as older)
