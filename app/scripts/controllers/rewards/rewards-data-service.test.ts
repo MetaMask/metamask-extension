@@ -6,7 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
+import { RewardsDataServiceMessenger } from '../../messenger-client-init/messengers/reward-data-service-messenger';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,

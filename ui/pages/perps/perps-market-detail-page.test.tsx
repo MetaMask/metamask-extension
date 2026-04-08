@@ -341,6 +341,10 @@ describe('PerpsMarketDetailPage', () => {
       const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivatePriceStream',
+        [{ symbols: ['ETH'], includeMarketData: true }],
+      );
     });
 
     it('renders return using percent semantics from controller values', async () => {
