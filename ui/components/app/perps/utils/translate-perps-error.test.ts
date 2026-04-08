@@ -226,7 +226,9 @@ describe('translatePerpsError', () => {
 
   it('resolves an error code used as the message (e.g. WithdrawResult.error)', () => {
     const error = new Error('WITHDRAW_INSUFFICIENT_BALANCE');
-    expect(translatePerpsError(error, mockT)).toBe('[perpsWithdrawInsufficient]');
+    expect(translatePerpsError(error, mockT)).toBe(
+      '[perpsWithdrawInsufficient]',
+    );
   });
 
   it('resolves WITHDRAW_FAILED code string used as message', () => {
