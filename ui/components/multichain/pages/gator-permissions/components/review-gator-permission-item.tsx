@@ -547,7 +547,6 @@ export const ReviewGatorPermissionItem = ({
               iconName={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
               color={IconColor.IconMuted}
               size={ButtonIconSize.Sm}
-              onClick={toggle}
               ariaLabel="expand"
             />
           </Box>
