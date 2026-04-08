@@ -1,5 +1,4 @@
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
@@ -784,17 +783,6 @@ export type Patch = {
   op: 'replace' | 'add' | 'remove';
   path: string[];
   value?: unknown;
-};
-
-/**
- * Action for updating state with opt-in response
- */
-export type RewardsControllerOptInAction = {
-  type: 'RewardsController:optIn';
-  handler: (
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ) => Promise<string | null>;
 };
 
 /**
