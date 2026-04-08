@@ -153,7 +153,7 @@ export const MultichainAccountCellDefaultAddress = ({
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
         >
-          No default address // todo
+          {t('noDefaultAddress', [`${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])}`] )}
         </Text>
       )}
     </Box>
