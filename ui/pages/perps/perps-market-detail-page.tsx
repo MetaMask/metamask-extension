@@ -282,8 +282,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
 
-  usePerpsMeasurement('PerpsMarketDetailLoaded', !marketsLoading);
-
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
     if (!symbol) {
@@ -421,6 +419,11 @@ const PerpsMarketDetailPage: React.FC = () => {
     const transactions = transformFillsToTransactions(marketFills);
     return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
   }, [marketFills]);
+
+  usePerpsMeasurement(
+    'PerpsMarketDetailLoaded',
+    !marketsLoading && !isCandleLoading && !fillsLoading,
+  );
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
