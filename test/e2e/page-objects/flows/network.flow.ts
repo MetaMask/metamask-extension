@@ -15,8 +15,11 @@ export const switchToNetworkFromNetworkSelect = async (
   const networkManager = new NetworkManager(driver);
   const homePage = new HomePage(driver);
 
-  // Wait for snap accounts to be ready before switching networks, to prevent race conditions
-  await homePage.waitForNonEvmAccountsLoaded();
+  const nonEvmNetworks = ['Bitcoin', 'Solana', 'Tron'];
+  if (nonEvmNetworks.includes(networkName)) {
+    // Wait for snap accounts to be ready before switching networks, to prevent race conditions
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
   await assetListPage.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
