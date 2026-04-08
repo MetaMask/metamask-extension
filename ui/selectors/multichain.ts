@@ -515,12 +515,6 @@ export const getMultichainNetworkConfigurationsByChainId = (
   };
 };
 
-export const getMemoizedMultichainNetworkConfigurationsByChainId =
-  createDeepEqualSelector(
-    [getMultichainNetworkConfigurationsByChainId],
-    (networkConfigurations) => networkConfigurations,
-  );
-
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,
   (nonEvmAccounts) => {
