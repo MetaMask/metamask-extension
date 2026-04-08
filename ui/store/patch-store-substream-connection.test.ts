@@ -1,6 +1,6 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 
-import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import randomId from '../../shared/lib/random-id';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import {
@@ -52,7 +52,7 @@ describe('PatchStoreSubstreamConnection', () => {
       new PatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
       const notification = {
         jsonrpc: '2.0',
-        method: SEND_UPDATE,
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [[{ op: 'replace', path: ['x'], value: 1 }]],
       };
 
@@ -75,7 +75,7 @@ describe('PatchStoreSubstreamConnection', () => {
       new PatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
       const notification = {
         jsonrpc: '2.0',
-        method: SEND_UPDATE,
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [[{ op: 'replace', path: ['x'], value: undefined }]],
       };
 
@@ -99,7 +99,7 @@ describe('PatchStoreSubstreamConnection', () => {
       });
       const notification = {
         jsonrpc: '2.0',
-        method: SEND_UPDATE,
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [[{ op: 'replace' as const, path: ['x'], value: 1 }]],
       };
 
@@ -180,7 +180,7 @@ describe('PatchStoreSubstreamConnection', () => {
         expect.objectContaining({
           id: 42,
           jsonrpc: '2.0',
-          method: GET_STATE_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
         }),
       );
 

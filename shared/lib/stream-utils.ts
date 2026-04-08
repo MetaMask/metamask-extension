@@ -1,3 +1,4 @@
+// @ts-expect-error The types do not include `finished`, but it is there.
 import { finished } from 'readable-stream';
 
 /**

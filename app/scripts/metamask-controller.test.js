@@ -73,11 +73,7 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-import {
-  GET_STATE_PATCHES,
-  SEND_UPDATE,
-  START_SENDING_PATCHES,
-} from '../../shared/constants/patches';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -3536,7 +3532,9 @@ describe('MetaMaskController', () => {
         await flushBufferedWrites();
 
         expect(messages).not.toContainEqual(
-          expect.objectContaining({ method: SEND_UPDATE }),
+          expect.objectContaining({
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+          }),
         );
       });
 
@@ -3546,14 +3544,14 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 1,
-          method: START_SENDING_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
         });
         await flushBufferedWrites();
 
         expect(messages).toContainEqual(
           expect.objectContaining({
             jsonrpc: '2.0',
-            method: SEND_UPDATE,
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
             params: [expect.any(Array)],
           }),
         );
@@ -3565,7 +3563,7 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 1,
-          method: START_SENDING_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
         });
         await flushBufferedWrites();
 
@@ -3575,7 +3573,7 @@ describe('MetaMaskController', () => {
         expect(messages).toContainEqual(
           expect.objectContaining({
             jsonrpc: '2.0',
-            method: SEND_UPDATE,
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
             params: [expect.any(Array)],
           }),
         );
@@ -3587,7 +3585,7 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 1,
-          method: START_SENDING_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
         });
         await flushBufferedWrites();
         messages.length = 0;
@@ -3598,7 +3596,7 @@ describe('MetaMaskController', () => {
 
         expect(messages).not.toContainEqual(
           expect.objectContaining({
-            method: SEND_UPDATE,
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
           }),
         );
       });
@@ -3609,7 +3607,7 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 42,
-          method: GET_STATE_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
         });
         await flushBufferedWrites();
 
@@ -3633,7 +3631,7 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 42,
-          method: GET_STATE_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
         });
         await flushBufferedWrites();
 
@@ -3649,7 +3647,10 @@ describe('MetaMaskController', () => {
       it('responds with an invalidRequest error for a non-JSON-RPC message', async () => {
         const { patchStream, messages } = setupPatchStoreConnection();
 
-        patchStream.write({ id: 1, method: START_SENDING_PATCHES });
+        patchStream.write({
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
         await flushBufferedWrites();
 
         expect(messages).toContainEqual(
@@ -3669,7 +3670,7 @@ describe('MetaMaskController', () => {
         patchStream.write({
           jsonrpc: '2.0',
           id: 'string-id',
-          method: START_SENDING_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
         });
         await flushBufferedWrites();
 
@@ -3739,7 +3740,7 @@ describe('MetaMaskController', () => {
         firstConnectionPatchStream.write({
           jsonrpc: '2.0',
           id: 1,
-          method: GET_STATE_PATCHES,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
         });
         await flushBufferedWrites();
         const firstConnectionResponse = firstConnectionMessages.find(

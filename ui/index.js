@@ -22,7 +22,7 @@ import {
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
-import { START_SENDING_PATCHES } from '../shared/constants/patches';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../shared/constants/patch-store-substream-methods';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
@@ -127,7 +127,7 @@ export async function launchMetamaskUi(opts) {
 
   patchSubstream.write({
     jsonrpc: '2.0',
-    method: START_SENDING_PATCHES,
+    method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
   });
 
   setupStateHooks(store);

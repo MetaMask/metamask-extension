@@ -46,7 +46,7 @@ jest.mock(
       api: {},
     }),
   }),
-}));
+);
 jest.mock('./patch-store-substream-connection');
 
 const getStatePatchesMock = jest.mocked(getStatePatches);
