@@ -184,12 +184,12 @@ export function translatePerpsError(
     errorObj &&
     'code' in errorObj &&
     typeof (errorObj as { code?: unknown }).code === 'string'
-      ? ((errorObj as { code: string }).code as PerpsErrorCode)
+      ? (errorObj as { code: string }).code
       : null;
 
-  // 1. Code-first lookup
+  // 1. Code-first lookup — narrow to PerpsErrorCode only after membership check
   if (errorCode && errorCode in ERROR_CODE_TO_I18N_KEY) {
-    const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode];
+    const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode as PerpsErrorCode];
     return t(i18nKey);
   }
 
