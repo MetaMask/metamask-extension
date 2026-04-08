@@ -266,9 +266,7 @@ export class TestDappMmConnect {
    * Set the exact set of networks to be selected before connecting.
    *
    * Compares each featured chain's current checkbox state against the desired
-   * list and clicks only when they differ. After each click it waits for the
-   * DOM to reflect the change, preventing React stale-closure races that can
-   * drop previously-checked scopes when clicks arrive before re-render.
+   * list and clicks only when they differ.
    *
    * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
    * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
@@ -296,20 +294,6 @@ export class TestDappMmConnect {
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
-        // Wait for React state to reflect the click before moving to the next
-        // checkbox. Without this, rapid sequential clicks can hit a stale
-        // closure in handleCheckboxChange and lose previously-checked scopes.
-        await this.driver.waitUntil(
-          async () => {
-            try {
-              const element = await this.driver.findElement(selector);
-              return (await element.isSelected()) === shouldBeChecked;
-            } catch {
-              return false;
-            }
-          },
-          { interval: 100, timeout: this.driver.timeout },
-        );
       }
     }
   }

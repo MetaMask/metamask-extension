@@ -196,9 +196,12 @@ export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 /* Solana Mainnet scope in CAIP-2 format */
 export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
 
-/* CAIP-2 EVM chain scopes used in MM Connect Multichain tests */
+/* CAIP-2 EVM chain scopes used in MM Connect Multichain tests.
+ * On localhost the playground pre-checks eip155:1337, so we use that
+ * instead of eip155:1 to avoid unchecking it (which triggers a React
+ * stale-closure race in handleCheckboxChange). */
 export const MM_CONNECT_EVM_CHAINS = {
-  ETHEREUM: 'eip155:1',
+  LOCALHOST: 'eip155:1337',
   POLYGON: 'eip155:137',
   LINEA: 'eip155:59144',
 } as const;

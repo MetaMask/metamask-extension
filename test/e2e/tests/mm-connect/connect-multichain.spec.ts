@@ -22,11 +22,6 @@ const MM_CONNECT_TEST_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
 };
 
-// Solana scopes require Snap communication during wallet_createSession,
-// which adds variable latency.  Use a longer timeout when confirming
-// connections that include non-EVM scopes to avoid flaky failures.
-const SOLANA_CONFIRM_TIMEOUT = 10_000;
-
 describe('MM Connect — Multichain E2E', function (this: Suite) {
   it('connects to 3 EVM chains and Solana simultaneously and verifies all ScopeCards are active', async function () {
     await withFixtures(
@@ -47,7 +42,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         // Include Solana in the multichain session request (not the
         // wallet-standard adapter — just the Connect (Multichain) button).
         await testDapp.selectNetworks([
-          MM_CONNECT_EVM_CHAINS.ETHEREUM,
+          MM_CONNECT_EVM_CHAINS.LOCALHOST,
           MM_CONNECT_EVM_CHAINS.POLYGON,
           MM_CONNECT_EVM_CHAINS.LINEA,
           SOLANA_MAINNET_SCOPE,
@@ -55,15 +50,14 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         await testDapp.clickConnect();
 
         // Approve the wallet_createSession dialog in the extension.
-        // Use a longer timeout because Solana Snap communication adds latency.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new ConnectAccountConfirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.confirmConnect(SOLANA_CONFIRM_TIMEOUT);
+        await confirmation.confirmConnect();
 
         // All 4 ScopeCards should now be visible (3 EVM + Solana Mainnet)
         await testDapp.switchTo();
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LOCALHOST);
         await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
         await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
         await testDapp.checkScopeCardVisible(SOLANA_MAINNET_SCOPE);
@@ -87,7 +81,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // Connect to 3 EVM chains + Solana
         await testDapp.selectNetworks([
-          MM_CONNECT_EVM_CHAINS.ETHEREUM,
+          MM_CONNECT_EVM_CHAINS.LOCALHOST,
           MM_CONNECT_EVM_CHAINS.POLYGON,
           MM_CONNECT_EVM_CHAINS.LINEA,
           SOLANA_MAINNET_SCOPE,
@@ -97,7 +91,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new ConnectAccountConfirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.confirmConnect(SOLANA_CONFIRM_TIMEOUT);
+        await confirmation.confirmConnect();
 
         await testDapp.switchTo();
 
@@ -156,7 +150,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // eth_chainId must return the hex chain ID specific to each scope
         const expectedChainIds: [string, string][] = [
-          [MM_CONNECT_EVM_CHAINS.ETHEREUM, '0x1'],
+          [MM_CONNECT_EVM_CHAINS.LOCALHOST, '0x539'],
           [MM_CONNECT_EVM_CHAINS.POLYGON, '0x89'],
           [MM_CONNECT_EVM_CHAINS.LINEA, '0xe708'],
         ];
@@ -196,7 +190,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // All 3 chains connected — verify
         await testDapp.switchTo();
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LOCALHOST);
         await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
         await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
 
@@ -216,7 +210,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         await testDapp.checkScopeCardNotVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
 
         // Ethereum and Linea ScopeCards should still be present
-        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LOCALHOST);
         await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
       },
     );
