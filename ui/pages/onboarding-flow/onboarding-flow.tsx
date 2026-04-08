@@ -49,6 +49,8 @@ import {
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
   setCompletedOnboarding,
+  setUseSidePanelAsDefault,
+  setCompletedOnboardingWithSidepanel,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -71,6 +73,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -107,6 +110,7 @@ export default function OnboardingFlow() {
   const { pathname, search } = location;
   const navigate = useNavigate();
   const theme = useTheme();
+  const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
@@ -232,6 +236,21 @@ export default function OnboardingFlow() {
     }
   };
 
+  const handleSocialLoginRehydration = async () => {
+    if (isSidePanelEnabled) {
+      await dispatch(setUseSidePanelAsDefault(true));
+      await dispatch(setCompletedOnboardingWithSidepanel());
+
+      // for sidepanel, we need to navigate to the next route (i.e. Home)
+      navigate(nextRoute, { replace: true });
+    } else {
+      // For existing social login users, set onboarding complete
+      // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
+      // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
+      await dispatch(setCompletedOnboarding());
+    }
+  };
+
   const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
@@ -254,10 +273,7 @@ export default function OnboardingFlow() {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        // For existing social login users, set onboarding complete
-        // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
-        await dispatch(setCompletedOnboarding());
-        // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
+        await handleSocialLoginRehydration();
         return;
       }
       navigate(nextRoute, { replace: true });
