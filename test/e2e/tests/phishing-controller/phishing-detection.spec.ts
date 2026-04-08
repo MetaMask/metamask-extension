@@ -2,11 +2,7 @@ import { strict as assert } from 'assert';
 import { until } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  createWebSocketConnection,
-  veryLargeDelayMs,
-} from '../../helpers';
+import { withFixtures, createWebSocketConnection } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -68,8 +64,10 @@ describe('Phishing Detection', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
-        // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
-        await driver.delay(veryLargeDelayMs);
+        // In MV3 the phishing redirect is async (non-blocking onBeforeRequest),
+        // so the dapp page may load before browser.tabs.update fires. Wait for
+        // the redirect to land before looking for the window by title.
+        await driver.wait(until.urlContains('localhost:9999'), 15000);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
@@ -123,8 +121,9 @@ describe('Phishing Detection', function (this: Suite) {
           await homePage.checkPageIsLoaded();
           await waitForPhishingBlocklistToBeLoaded(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
-          // we don't expect the iframe because early-phishing-detection redirects
-          // the top level frame automatically.
+          // early-phishing-detection redirects the top level frame automatically.
+          // In MV3 this redirect is async, so wait for it to land.
+          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -239,6 +238,7 @@ describe('Phishing Detection', function (this: Suite) {
         await waitForPhishingBlocklistToBeLoaded(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await driver.wait(until.urlContains('localhost:9999'), 15000);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
@@ -281,6 +281,7 @@ describe('Phishing Detection', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
         await driver.openNewPage(phishingSite.href);
+        await driver.wait(until.urlContains('localhost:9999'), 15000);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
@@ -369,6 +370,7 @@ describe('Phishing Detection', function (this: Suite) {
         await driver.openNewPage(testPageURL);
 
         await createWebSocketConnection(driver, 'malicious.localhost');
+        await driver.wait(until.urlContains('localhost:9999'), 15000);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);

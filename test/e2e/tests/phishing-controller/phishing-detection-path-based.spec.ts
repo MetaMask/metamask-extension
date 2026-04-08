@@ -1,7 +1,7 @@
 import { until } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { withFixtures, veryLargeDelayMs } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -43,6 +43,10 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
+          // In MV3 the phishing redirect is async (non-blocking onBeforeRequest),
+          // so the dapp page may load before browser.tabs.update fires. Wait for
+          // the redirect to land before looking for the window by title.
+          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -77,7 +81,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-
+          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -117,6 +121,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
+          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -164,8 +169,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-          // Note: unsure why it's needed but it stabilizes the test
-          await driver.delay(veryLargeDelayMs);
+          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
