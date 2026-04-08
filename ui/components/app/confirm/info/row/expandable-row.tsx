@@ -25,7 +25,7 @@ export const ConfirmInfoExpandableRow = (
 
   const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
 
-  const { value: expanded, toggle } = useBoolean();
+  const { value: expanded, toggle } = useBoolean(startExpanded);
   const [, setLoaded] = useState<boolean>(false);
 
   // Required to force a re-render so the content height can be calculated.
