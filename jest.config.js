@@ -68,6 +68,9 @@ module.exports = {
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@nktkas/hyperliquid|@noble/hashes)/)',
+  ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the

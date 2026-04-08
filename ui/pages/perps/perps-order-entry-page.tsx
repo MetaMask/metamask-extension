@@ -685,9 +685,15 @@ const PerpsOrderEntryPage: React.FC = () => {
         hidePerpsToast();
       }
       const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+      const translatedError = translatePerpsError(
+        error,
+        t as (key: string) => string,
+      );
       const failedToastDescription =
-        translatePerpsError(error, t as (key: string) => string) ??
-        t('perpsToastOrderFailedDescriptionFallback');
+        translatedError ??
+        (failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED
+          ? t('perpsToastOrderFailedDescriptionFallback')
+          : t('somethingWentWrong'));
 
       replacePerpsToastByKey({
         key: failedToastKey,
