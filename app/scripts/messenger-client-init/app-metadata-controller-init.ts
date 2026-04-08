@@ -1,6 +1,7 @@
-import AppMetadataController from '../controllers/app-metadata';
+import AppMetadataController, {
+  AppMetadataControllerMessenger,
+} from '../controllers/app-metadata';
 import { ControllerInitFunction } from './types';
-import { AppMetadataControllerMessenger } from './messengers';
 
 /**
  * Initialize the appMetadata controller.

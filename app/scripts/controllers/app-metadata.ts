@@ -5,6 +5,7 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
+import { AppMetadataControllerMethodActions } from './app-metadata-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'AppMetadataController';
@@ -65,7 +66,9 @@ export type AppMetadataControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link AppMetadataController}.
  */
-export type AppMetadataControllerActions = AppMetadataControllerGetStateAction;
+export type AppMetadataControllerActions =
+  | AppMetadataControllerGetStateAction
+  | AppMetadataControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link AppMetadataController} changes.
@@ -90,7 +93,7 @@ type AllowedEvents = never;
 /**
  * Messenger type for the {@link AppMetadataController}.
  */
-type AppMetadataControllerMessenger = Messenger<
+export type AppMetadataControllerMessenger = Messenger<
   typeof controllerName,
   AppMetadataControllerActions | AllowedActions,
   AppMetadataControllerEvents | AllowedEvents
@@ -137,6 +140,11 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
 };
 
 /**
+ * Methods exposed by the {@link AlertController} messenger.
+ */
+const MESSENGER_EXPOSED_METHODS = ['maybeRecordFirstTimeInfo'] as const;
+
+/**
  * The AppMetadata controller stores metadata about the current extension instance,
  * including the currently and previously installed versions, and the most recently
  * run migration.
@@ -175,6 +183,11 @@ export default class AppMetadataController extends BaseController<
     this.#maybeUpdateAppVersion(currentAppVersion);
 
     this.#maybeUpdateMigrationVersion(currentMigrationVersion);
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
