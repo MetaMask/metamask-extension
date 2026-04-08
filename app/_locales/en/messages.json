@@ -1452,6 +1452,10 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Community contributed",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
   "completed": {
     "message": "Completed"
   },
@@ -8480,6 +8484,10 @@
   },
   "supportMultiRpcInformation": {
     "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
+  "supportedLanguagesSectionTitle": {
+    "message": "Supported languages",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "Take our survey"
