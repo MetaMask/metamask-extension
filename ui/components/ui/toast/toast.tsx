@@ -22,7 +22,6 @@ const statusMap = {
 
 export function Toaster() {
   const t = useI18nContext();
-  const { pathname } = useLocation();
 
   if (!isInteractiveUI() || process.env.IN_TEST) {
     return null;
