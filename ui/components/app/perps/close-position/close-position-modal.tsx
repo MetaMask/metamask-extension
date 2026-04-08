@@ -380,6 +380,14 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
         [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
       });
+      replacePerpsToastByKey(
+        getCloseSuccessToastConfig({
+          isPartialClose,
+          position,
+          t,
+          formatPercentWithMinThreshold,
+        }),
+      );
       onClose();
     } catch (err) {
       const errMessage =
@@ -389,21 +397,14 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
       });
 
-      replacePerpsToastByKey(
-        getCloseSuccessToastConfig({
-          isPartialClose,
-          position,
-          t,
-          formatPercentWithMinThreshold,
-        }),
-      );
       const { errorMessage, toast } = getCloseFailureToastConfig({
         error: err,
         isPartialClose,
         t,
         formatCurrencyWithMinThreshold,
       });
-      onClose();
+      setError(errorMessage);
+      replacePerpsToastByKey(toast);
     } finally {
       setIsSubmitting(false);
     }
