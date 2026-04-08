@@ -2,6 +2,13 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Box,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
 import {
   selectIsBackupAndSyncEnabled,
@@ -10,23 +17,17 @@ import {
 import { BACKUPANDSYNC_ROUTE } from '../../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
-  Box,
+  AlignItems,
+  FlexDirection,
+} from '../../../../../helpers/constants/design-system';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
-  Text,
   ModalFooter,
 } from '../../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  FlexDirection,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useBackupAndSync } from '../../../../../hooks/identity/useBackupAndSync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../../../selectors';
@@ -119,49 +120,59 @@ export function TurnOnBackupAndSyncModal() {
           {t('backupAndSyncEnable')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
+          <img
             src="./images/turn-on-backup-and-sync.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
+            className="w-full rounded-md mb-4"
+            alt=""
           />
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            marginBottom={4}
-            as="div"
-          >
-            {t('backupAndSyncEnableDescription', [
-              <Text
-                as="a"
-                variant={TextVariant.bodySm}
-                href={ZENDESK_URLS.PROFILE_PRIVACY}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="privacy-link"
-                color={TextColor.infoDefault}
-              >
-                {t('backupAndSyncPrivacyLink')}
-              </Text>,
-            ])}
-          </Text>
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            marginBottom={4}
-            as="div"
-          >
-            {t('backupAndSyncEnableDescriptionUpdatePreferences', [
-              <Text
-                as="span"
-                key="backup-and-sync-enable-preferences"
-                variant={TextVariant.bodySmBold}
-              >
-                {t('backupAndSyncEnableDescriptionUpdatePreferencesPath')}
-              </Text>,
-            ])}
-          </Text>
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              asChild
+            >
+              <div>
+                {t('backupAndSyncEnableDescription', [
+                  <Text
+                    asChild
+                    variant={TextVariant.BodySm}
+                    key="privacy-link"
+                    color={TextColor.InfoDefault}
+                  >
+                    <a
+                      href={ZENDESK_URLS.PROFILE_PRIVACY}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('backupAndSyncPrivacyLink')}
+                    </a>
+                  </Text>,
+                ])}
+              </div>
+            </Text>
+          </Box>
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              asChild
+            >
+              <div>
+                {t('backupAndSyncEnableDescriptionUpdatePreferences', [
+                  <Text
+                    asChild
+                    key="backup-and-sync-enable-preferences"
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Bold}
+                  >
+                    <span>
+                      {t('backupAndSyncEnableDescriptionUpdatePreferencesPath')}
+                    </span>
+                  </Text>,
+                ])}
+              </div>
+            </Text>
+          </Box>
         </ModalBody>
         <ModalFooter
           paddingTop={4}
@@ -180,8 +191,8 @@ export function TurnOnBackupAndSyncModal() {
           }}
         />
         {error && (
-          <Box paddingLeft={4} paddingRight={4}>
-            <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
+          <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
+            <Text color={TextColor.ErrorDefault}>
               {t('notificationsSettingsBoxError')}
             </Text>
           </Box>
