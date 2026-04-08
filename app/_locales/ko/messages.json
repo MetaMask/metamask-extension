@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimClaimingTo": {
-    "message": "다음으로 수령:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "숏 청산"
   },
-  "perpsClosedShort": {
-    "message": "청산된 숏"
-  },
   "perpsConfirmCloseLong": {
     "message": "롱 청산"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "손익 $1 포함"
   },
-  "perpsIncreasedPosition": {
-    "message": "포지션 증가"
-  },
   "perpsLearnBasics": {
     "message": "무기한 선물 기초 배우기"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "$1 숏 포지션 열기",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "오픈한 롱"
   },
   "perpsOraclePrice": {
     "message": "오라클 가격"

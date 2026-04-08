@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Comprar mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Resgatando para",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Resgatar bônus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Encerrar short"
   },
-  "perpsClosedShort": {
-    "message": "Posição short fechada"
-  },
   "perpsConfirmCloseLong": {
     "message": "Encerrar long"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "inclui P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Posição aumentada"
-  },
   "perpsLearnBasics": {
     "message": "Aprenda o básico sobre perps"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Abrir short de $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Abriu posição long"
   },
   "perpsOraclePrice": {
     "message": "Preço da Oracle"

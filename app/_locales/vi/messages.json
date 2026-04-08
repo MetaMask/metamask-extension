@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Nhận vào",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
   },
-  "perpsClosedShort": {
-    "message": "Đã đóng vị thế bán khống"
-  },
   "perpsConfirmCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "bao gồm Lãi/Lỗ $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Đã tăng vị thế"
-  },
   "perpsLearnBasics": {
     "message": "Tìm hiểu những kiến thức cơ bản về hợp đồng vĩnh cửu"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Mở vị thế bán khống $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Đã mở vị thế mua khống"
   },
   "perpsOraclePrice": {
     "message": "Giá nguồn cấp dữ liệu"
