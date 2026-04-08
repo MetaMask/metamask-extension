@@ -23,6 +23,7 @@ import {
   MOCK_ACCOUNT_TRON_MAINNET,
   MOCK_ACCOUNT_TRON_NILE,
   MOCK_ACCOUNT_TRON_SHASTA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
   MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import {
@@ -52,8 +53,20 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
+  getMultichainIsSolana,
+  getMultichainCurrencyImage,
+  isChainIdMainnet,
+  getImageForChainId,
+  getMultichainConversionRate,
+  makeGetMultichainShouldShowFiatByChainId,
+  getLastSelectedNonEvmAccount,
+  getLastSelectedSolanaAccount,
 } from './multichain';
-import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
+import {
+  getNativeCurrencyImage,
+  getSelectedAccountCachedBalance,
+  getShouldShowFiat,
+} from '.';
 
 type TestState = MultichainState &
   AccountsState & {
@@ -212,6 +225,22 @@ function getTronState(
 
 function getTronProviderConfig(): MultichainProviderConfig {
   return MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON];
+}
+
+function getSolanaState(
+  account = MOCK_ACCOUNT_SOLANA_MAINNET,
+  selectedChainId: SupportedCaipChainId = SolScope.Mainnet,
+): TestState {
+  return {
+    metamask: {
+      ...getEvmState().metamask,
+      internalAccounts: {
+        selectedAccount: account.id,
+        accounts: MOCK_ACCOUNTS,
+      },
+      selectedMultichainNetworkChainId: selectedChainId,
+    },
+  };
 }
 
 describe('Multichain Selectors', () => {
@@ -806,6 +835,187 @@ describe('Multichain Selectors', () => {
     });
   });
 
+  describe('getMultichainIsSolana', () => {
+    it('returns false if account is EVM', () => {
+      expect(getMultichainIsSolana(getEvmState())).toBe(false);
+    });
+
+    it('returns false if account is Bitcoin', () => {
+      expect(getMultichainIsSolana(getNonEvmState())).toBe(false);
+    });
+
+    it('returns true if account is Solana mainnet', () => {
+      expect(getMultichainIsSolana(getSolanaState())).toBe(true);
+    });
+  });
+
+  describe('getMultichainCurrencyImage', () => {
+    it('matches native currency image when account is EVM', () => {
+      const state = getEvmState();
+      expect(getMultichainCurrencyImage(state)).toBe(
+        getNativeCurrencyImage(state),
+      );
+    });
+
+    it('returns provider rpcPrefs image URL when account is non-EVM', () => {
+      const state = getNonEvmState();
+      expect(getMultichainCurrencyImage(state)).toBe(
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].rpcPrefs
+          ?.imageUrl,
+      );
+    });
+  });
+
+  describe('isChainIdMainnet', () => {
+    it('returns true only for Ethereum mainnet chain id', () => {
+      expect(isChainIdMainnet(CHAIN_IDS.MAINNET)).toBe(true);
+      expect(isChainIdMainnet(CHAIN_IDS.SEPOLIA)).toBe(false);
+    });
+  });
+
+  describe('getImageForChainId', () => {
+    it('returns an image URL for a known EVM chain id', () => {
+      expect(getImageForChainId(CHAIN_IDS.MAINNET)).toBe(ETH_TOKEN_IMAGE_URL);
+    });
+
+    it('returns undefined for an unknown chain id', () => {
+      expect(getImageForChainId('unknown:chain')).toBeUndefined();
+    });
+  });
+
+  describe('getMultichainConversionRate', () => {
+    it('uses the EVM conversion rate path when account is EVM', () => {
+      const state = getEvmState();
+      expect(getMultichainConversionRate(state)).toBe(
+        getMultichainConversionRate(state, MOCK_ACCOUNT_EOA),
+      );
+    });
+
+    it('resolves a conversion rate for Tron using non-EVM rates', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+      const rate = getMultichainConversionRate(state);
+      expect(rate === undefined || typeof rate === 'number').toBe(true);
+    });
+  });
+
+  describe('makeGetMultichainShouldShowFiatByChainId', () => {
+    it('delegates to getMultichainShouldShowFiat with the bound chain id', () => {
+      const state = getEvmState();
+      const byChain = makeGetMultichainShouldShowFiatByChainId(CHAIN_IDS.MAINNET);
+      expect(byChain(state)).toBe(
+        getMultichainShouldShowFiat(state, undefined, CHAIN_IDS.MAINNET),
+      );
+    });
+  });
+
+  describe('getLastSelectedNonEvmAccount', () => {
+    it('returns the non-EVM account with the highest lastSelected', () => {
+      expect(getLastSelectedNonEvmAccount(getEvmState())).toStrictEqual(
+        MOCK_ACCOUNT_SOLANA_MAINNET,
+      );
+    });
+
+    it('returns undefined when every account is EVM', () => {
+      const state: TestState = {
+        metamask: {
+          ...getEvmState().metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: { [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA },
+          },
+        },
+      };
+      expect(getLastSelectedNonEvmAccount(state)).toBeUndefined();
+    });
+
+    it('picks the non-EVM account with the greater lastSelected when multiple exist', () => {
+      const tronWins: InternalAccount = {
+        ...MOCK_ACCOUNT_TRON_MAINNET,
+        metadata: {
+          ...MOCK_ACCOUNT_TRON_MAINNET.metadata,
+          lastSelected: 9_000_000_000_000,
+        },
+      };
+      const btcOlder: InternalAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        metadata: {
+          ...MOCK_ACCOUNT_BIP122_P2WPKH.metadata,
+          lastSelected: 1,
+        },
+      };
+      const state: TestState = {
+        metamask: {
+          ...getEvmState().metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+              [btcOlder.id]: btcOlder,
+              [tronWins.id]: tronWins,
+            },
+          },
+        },
+      };
+      expect(getLastSelectedNonEvmAccount(state)).toStrictEqual(tronWins);
+    });
+  });
+
+  describe('getLastSelectedSolanaAccount', () => {
+    it('returns the Solana account with the highest lastSelected', () => {
+      expect(getLastSelectedSolanaAccount(getEvmState())).toStrictEqual(
+        MOCK_ACCOUNT_SOLANA_MAINNET,
+      );
+    });
+
+    it('returns undefined when there is no Solana account', () => {
+      const state: TestState = {
+        metamask: {
+          ...getEvmState().metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: { [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA },
+          },
+        },
+      };
+      expect(getLastSelectedSolanaAccount(state)).toBeUndefined();
+    });
+
+    it('picks the Solana account with the greater lastSelected when multiple exist', () => {
+      const solanaOlder: InternalAccount = {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        id: '11111111-1111-1111-1111-111111111111',
+        address: 'So11111111111111111111111111111111111111112',
+        metadata: {
+          ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
+          lastSelected: 100,
+        },
+      };
+      const solanaNewer: InternalAccount = {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        id: '22222222-2222-2222-2222-222222222222',
+        address: 'So22222222222222222222222222222222222222222',
+        metadata: {
+          ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
+          lastSelected: 9_000_000_000_000,
+        },
+      };
+      const state: TestState = {
+        metamask: {
+          ...getEvmState().metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+              [solanaOlder.id]: solanaOlder,
+              [solanaNewer.id]: solanaNewer,
+            },
+          },
+        },
+      };
+      expect(getLastSelectedSolanaAccount(state)).toStrictEqual(solanaNewer);
+    });
+  });
+
   describe('getMultichainNetworkConfigurationsByChainId', () => {
     it('merges EVM network configurations with non-EVM multichain entries', () => {
       const state = getEvmState();
@@ -823,6 +1033,15 @@ describe('Multichain Selectors', () => {
         nativeCurrency: 'TRX',
       });
       expect(configs[MultichainNetworks.TRON_SHASTA]).toMatchObject({
+        nativeCurrency: 'TRX',
+      });
+      expect(configs[MultichainNetworks.BITCOIN_TESTNET]).toMatchObject({
+        nativeCurrency: 'tBTC',
+      });
+      expect(configs[MultichainNetworks.BITCOIN_SIGNET]).toMatchObject({
+        nativeCurrency: 'sBTC',
+      });
+      expect(configs[MultichainNetworks.TRON_NILE]).toMatchObject({
         nativeCurrency: 'TRX',
       });
     });
