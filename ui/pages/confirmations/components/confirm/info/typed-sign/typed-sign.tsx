@@ -8,7 +8,6 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -35,7 +34,6 @@ const useTokenContract = () => {
 
   const {
     domain: { verifyingContract },
-    message: { spender },
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
@@ -43,14 +41,13 @@ const useTokenContract = () => {
   const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
   const chainId = currentConfirmation.chainId as string;
 
-  return { tokenContract, verifyingContract, spender, isPermit, chainId };
+  return { tokenContract, verifyingContract, chainId };
 };
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-  const { tokenContract, verifyingContract, spender, isPermit, chainId } =
-    useTokenContract();
+  const { tokenContract, verifyingContract, chainId } = useTokenContract();
   const { decimalsNumber } = useGetTokenStandardAndDetails(
     tokenContract,
     chainId,
@@ -70,18 +67,6 @@ const TypedSignInfo: React.FC = () => {
     <>
       {isSimulationSupported && <TypedSignV4Simulation />}
       <ConfirmInfoSection data-testid="confirmation_request-section">
-        {isPermit && (
-          <>
-            <ConfirmInfoAlertRow
-              alertKey={RowAlertKey.Spender}
-              ownerId={currentConfirmation.id}
-              label={t('spender')}
-            >
-              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
-            </ConfirmInfoAlertRow>
-            <ConfirmInfoRowDivider />
-          </>
-        )}
         <NetworkRow />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}

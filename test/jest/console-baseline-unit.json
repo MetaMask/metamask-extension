@@ -1004,7 +1004,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 49,
+      "React: Act warnings (component updates not wrapped)": 52,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/ledger-info/ledger-info.test.tsx": {

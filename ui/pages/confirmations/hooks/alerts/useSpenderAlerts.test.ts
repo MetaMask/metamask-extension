@@ -271,7 +271,7 @@ describe('useSpenderAlerts', () => {
   });
 
   describe('permit signatures', () => {
-    it('returns alert for malicious spender in permit signature', () => {
+    it('returns empty array for permit signature (spender row not shown in UI)', () => {
       setupDefaultMocks();
       const mockSignatureRequest = buildPermitSignatureRequest();
       setupConfirmContext(mockSignatureRequest);
@@ -279,23 +279,7 @@ describe('useSpenderAlerts', () => {
 
       const { result } = renderHook(() => useSpenderAlerts());
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual(expectedMaliciousAlert);
-    });
-
-    it('returns warning alert for warning spender in permit signature', () => {
-      setupDefaultMocks();
-      const mockSignatureRequest = buildPermitSignatureRequest();
-      setupConfirmContext(mockSignatureRequest);
-      setupTrustSignal(
-        TrustSignalDisplayState.Warning,
-        'Suspicious activity detected',
-      );
-
-      const { result } = renderHook(() => useSpenderAlerts());
-
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual(expectedWarningAlert);
+      expect(result.current).toHaveLength(0);
     });
 
     it('returns empty array for non-permit signature', () => {

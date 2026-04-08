@@ -1,4 +1,5 @@
 import React from 'react';
+import { within } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
   TransactionStatus,
@@ -99,6 +100,23 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('does not render the Spender row for permit signature requests', () => {
+    const state = getMockTypedSignConfirmStateForRequest(permitSignatureMsg, {
+      metamask: {
+        useTransactionSimulations: true,
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+    const requestSection = getByTestId('confirmation_request-section');
+    expect(
+      within(requestSection).queryByText('Spender'),
+    ).not.toBeInTheDocument();
   });
 
   it('display simulation details for permit signature if flag useTransactionSimulations is set', () => {

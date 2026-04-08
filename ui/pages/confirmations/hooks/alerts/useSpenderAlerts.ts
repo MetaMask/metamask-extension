@@ -4,13 +4,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
-import { isSignatureTransactionType } from '../../utils';
 import { SignatureRequestType } from '../../types/confirm';
-import {
-  parseTypedDataMessage,
-  parseApprovalTransactionData,
-} from '../../../../../shared/lib/transaction.utils';
-import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
+import { parseApprovalTransactionData } from '../../../../../shared/lib/transaction.utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -19,14 +14,9 @@ import {
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
-import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-
-function isZeroAmount(amount: string | number | undefined): boolean {
-  return amount === '0' || amount === 0;
-}
 
 enum AlertSkipReason {
   None = 'none',
@@ -56,41 +46,13 @@ function getAlertSkipReason(
     return AlertSkipReason.None;
   }
 
-  // Permit signatures
-  if (
-    !isSignatureTransactionType(currentConfirmation) ||
-    currentConfirmation.type !== 'eth_signTypedData'
-  ) {
-    return AlertSkipReason.None;
-  }
-
-  const signatureRequest = currentConfirmation as SignatureRequestType;
-  const msgData = signatureRequest.msgParams?.data as string;
-  if (!msgData) {
-    return AlertSkipReason.None;
-  }
-
-  const { primaryType, message, domain } = parseTypedDataMessage(msgData);
-  const isPermit = PRIMARY_TYPES_PERMIT.some((type) => type === primaryType);
-  if (!isPermit) {
-    return AlertSkipReason.None;
-  }
-
-  const isDaiPermit =
-    domain?.verifyingContract?.toLowerCase() ===
-    DAI_CONTRACT_ADDRESS.toLowerCase();
-
-  const isZeroValuePermit = isDaiPermit
-    ? message?.allowed === false // DAI uses `allowed` boolean
-    : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
-
-  return isZeroValuePermit ? AlertSkipReason.ZeroValue : AlertSkipReason.None;
+  return AlertSkipReason.None;
 }
 
 /**
- * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
+ * Hook to generate alerts for spender addresses in approval transactions.
  * Supports both warning and malicious states using the trust signals system.
- * Skips alerts for zero-value operations (revocations or zero-amount permits) since they pose no risk.
+ * Skips alerts for zero-value operations (revocations) since they pose no risk.
  *
  * @returns Array of alerts for spender addresses
  */
@@ -178,23 +140,6 @@ export function useSpenderAlerts(): Alert[] {
       );
       if (approvalData?.spender) {
         return approvalData.spender;
-      }
-    }
-    // Handle permit signatures
-    else if (
-      isSignatureTransactionType(currentConfirmation) &&
-      currentConfirmation.type === 'eth_signTypedData'
-    ) {
-      const signatureRequest = currentConfirmation as SignatureRequestType;
-      const msgData = signatureRequest.msgParams?.data as string;
-
-      if (msgData) {
-        const typedDataMessage = parseTypedDataMessage(msgData);
-        const { primaryType } = typedDataMessage;
-
-        if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
-          return typedDataMessage.message?.spender || null;
-        }
       }
     }
 
