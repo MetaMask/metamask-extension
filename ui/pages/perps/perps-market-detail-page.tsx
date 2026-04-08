@@ -467,10 +467,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Falls back to market.price string during initial candle load.
   const displayPrice = useMemo(() => {
     if (chartCurrentPrice > 0) {
-      return `$${formatNumber(chartCurrentPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      return formatCurrencyWithMinThreshold(chartCurrentPrice, 'USD');
     }
     return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market, formatNumber]);
+  }, [chartCurrentPrice, market, formatCurrencyWithMinThreshold]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange =
@@ -954,7 +954,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               alignItems={BoxAlignItems.Start}
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {`$${formatNumber(parseFloat(value), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`}
+                {formatCurrencyWithMinThreshold(parseFloat(value), 'USD')}
               </Text>
               <Text
                 variant={TextVariant.BodyXs}
@@ -1193,7 +1193,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                       fontWeight={FontWeight.Medium}
                     >
                       {position.takeProfitPrice
-                        ? `$${position.takeProfitPrice}`
+                        ? formatCurrencyWithMinThreshold(
+                            parseFloat(
+                              position.takeProfitPrice.replace(/,/gu, ''),
+                            ),
+                            'USD',
+                          )
                         : '-'}
                     </Text>
                     <Text
@@ -1207,7 +1212,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                       fontWeight={FontWeight.Medium}
                     >
                       {position.stopLossPrice
-                        ? `$${position.stopLossPrice}`
+                        ? formatCurrencyWithMinThreshold(
+                            parseFloat(
+                              position.stopLossPrice.replace(/,/gu, ''),
+                            ),
+                            'USD',
+                          )
                         : '-'}
                     </Text>
                   </Box>
@@ -1274,7 +1284,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
-                    ${position.entryPrice}
+                    {formatCurrencyWithMinThreshold(
+                      parseFloat(position.entryPrice.replace(/,/gu, '')),
+                      'USD',
+                    )}
                   </Text>
                 </Box>
 
@@ -1296,7 +1309,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                   >
                     {position.liquidationPrice
-                      ? `$${position.liquidationPrice}`
+                      ? formatCurrencyWithMinThreshold(
+                          parseFloat(
+                            position.liquidationPrice.replace(/,/gu, ''),
+                          ),
+                          'USD',
+                        )
                       : '-'}
                   </Text>
                 </Box>
@@ -1318,7 +1336,15 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
-                    ${position.cumulativeFunding.sinceOpen}
+                    {formatCurrencyWithMinThreshold(
+                      parseFloat(
+                        String(position.cumulativeFunding.sinceOpen).replace(
+                          /,/gu,
+                          '',
+                        ),
+                      ),
+                      'USD',
+                    )}
                   </Text>
                 </Box>
               </Box>

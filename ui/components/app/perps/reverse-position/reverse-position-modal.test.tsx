@@ -114,7 +114,7 @@ describe('ReversePositionModal', () => {
     it('displays correct estimated size', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('2.50 ETH')).toBeInTheDocument();
+      expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
     });
   });
 
@@ -143,7 +143,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('0.50 BTC')).toBeInTheDocument();
+      expect(screen.getByText('0.500 BTC')).toBeInTheDocument();
     });
   });
 

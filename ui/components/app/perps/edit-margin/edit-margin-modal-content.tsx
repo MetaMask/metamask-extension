@@ -139,11 +139,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            $
-            {formatNumber(anchorLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatCurrencyWithMinThreshold(anchorLiquidationPrice, 'USD')}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
@@ -153,11 +149,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
           >
-            $
-            {formatNumber(estimatedLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatCurrencyWithMinThreshold(estimatedLiquidationPrice, 'USD')}
           </Text>
         </Box>
       );
@@ -168,18 +160,17 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
       >
-        $
-        {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatCurrencyWithMinThreshold(
+          estimatedLiquidationPrice ?? anchorLiquidationPrice,
+          'USD',
+        )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
     showLiquidationComparison,
-    formatNumber,
+    formatCurrencyWithMinThreshold,
   ]);
 
   const formatAmount = useCallback(

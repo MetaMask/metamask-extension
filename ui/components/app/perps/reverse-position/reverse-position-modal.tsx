@@ -20,6 +20,7 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
@@ -68,6 +69,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { formatTokenQuantity } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
+  const estSizeLabel = formatTokenQuantity(sizeNum, position.symbol);
 
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),
