@@ -2,21 +2,9 @@ import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-
 import { Messenger } from '@metamask/messenger';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
-import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
+
+import { InstitutionalSnapControllerMethodActions } from '../../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
-
-const controllerName = 'InstitutionalSnapController';
-
-export type InstitutionalSnapControllerPublishHookAction = {
-  type: `${typeof controllerName}:publishHook`;
-  handler: InstitutionalSnapController['deferPublicationHook'];
-};
-
-export type InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction =
-  {
-    type: `${typeof controllerName}:beforeCheckPendingTransactionHook`;
-    handler: InstitutionalSnapController['beforeCheckPendingTransactionHook'];
-  };
 
 export type InstitutionalSnapRequestSearchParameters = {
   from: string;
@@ -26,20 +14,14 @@ export type InstitutionalSnapRequestSearchParameters = {
   chainId: string;
 };
 
-type AllowedActions =
+type Actions =
   | SnapControllerHandleRequestAction
   | AccountsControllerGetAccountByAddressAction
-  | TransactionControllerUpdateCustodialTransactionAction;
+  | TransactionControllerUpdateCustodialTransactionAction
+  | InstitutionalSnapControllerMethodActions;
 
-type Actions =
-  | AllowedActions
-  | InstitutionalSnapControllerPublishHookAction
-  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction;
-
-export type InstitutionalSnapControllerMessenger = Messenger<
-  'InstitutionalSnapControllerMessenger',
-  Actions,
-  never
+export type InstitutionalSnapControllerMessenger = ReturnType<
+  typeof getInstitutionalSnapControllerMessenger
 >;
 
 /**
@@ -54,7 +36,7 @@ export function getInstitutionalSnapControllerMessenger(
   messenger: RootMessenger<Actions, never>,
 ) {
   const institutionalSnapControllerMessenger = new Messenger<
-    typeof controllerName,
+    'InstitutionalSnapController',
     Actions,
     never,
     typeof messenger

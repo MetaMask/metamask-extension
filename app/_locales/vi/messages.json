@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Nâng cao"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Khi các giao dịch của bạn được đưa vào khối, mọi phần chênh lệch giữa phí cơ sở tối đa và phí cơ sở thực tế đều sẽ được hoàn lại. Tổng số tiền sẽ được tính bằng phí cơ sở tối đa (theo GWEI) * hạn mức phí gas."
-  },
   "advancedDetailsDataDesc": {
     "message": "Dữ liệu"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Phí mạng nâng cao"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Lưu các giá trị này làm giá trị mặc định cho mạng $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Phí mạng nâng cao"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "quyền nâng cao"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Phí ưu tiên (hay còn được gọi là \"tiền thưởng cho thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
   "airDropPatternDescription": {
     "message": "Lịch sử trên chuỗi của token cho thấy trước đây đã từng có hoạt động tặng thưởng đáng ngờ."
@@ -1080,9 +1070,6 @@
   "bridgeFee": {
     "message": "Phí cầu nối"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Tìm nạp báo giá mới?"
-  },
   "bridgeFromTo": {
     "message": "Cầu nối $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Cảnh báo tác động giá"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Báo giá của bạn đã hết hạn."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Các báo giá được sắp xếp theo tổng chi phí ước tính, bao gồm tỷ giá và phí mạng."
@@ -1996,9 +1980,6 @@
   "currentQuestion": {
     "message": "Câu hỏi $1/2"
   },
-  "currentTitle": {
-    "message": "Hiện tại:"
-  },
   "currentlyUnavailable": {
     "message": "Không có sẵn trên mạng này"
   },
@@ -2051,12 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Trang web đề xuất"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Trang web (cao)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Trang web"
   },
   "dappSwapAdvantage": {
     "message": "Tiết kiệm và kiếm tiền với MetaMask Hoán đổi"
@@ -2422,9 +2397,6 @@
   "dontShowThisAgain": {
     "message": "Không hiển thị lại"
   },
-  "downArrow": {
-    "message": "mũi tên xuống"
-  },
   "download": {
     "message": "Tải xuống"
   },
@@ -2517,19 +2489,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Hạn mức phí gas ít nhất phải là $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Hạn mức phí gas phải lớn hơn $1 và nhỏ hơn $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Phí cơ sở tối đa không thể thấp hơn phí ưu tiên"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Phí cơ sở tối đa cao hơn cần thiết"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Phí cơ sở tối đa thấp so với tình trạng mạng hiện tại"
-  },
   "editGasMaxFeeHigh": {
     "message": "Phí tối đa cao hơn cần thiết"
   },
@@ -2542,20 +2501,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Phí ưu tiên tối đa phải lớn hơn 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Phí ưu tiên phải lớn hơn 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Phí ưu tiên tối đa cao hơn cần thiết. Bạn có thể phải trả nhiều hơn mức cần thiết."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Phí ưu tiên cao hơn cần thiết. Bạn có thể phải trả nhiều hơn mức cần thiết"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Phí ưu tiên tối đa thấp so với tình trạng mạng hiện tại"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Phí ưu tiên thấp so với tình trạng mạng hiện tại"
   },
   "editGasPriceTooLow": {
     "message": "Giá gas phải lớn hơn 0"
@@ -2977,9 +2927,6 @@
   },
   "gasLimitTooLow": {
     "message": "Hạn mức phí gas ít nhất phải là 21000"
-  },
-  "gasLimitV2": {
-    "message": "Hạn mức phí gas"
   },
   "gasPrice": {
     "message": "Giá gas"
@@ -3741,9 +3688,6 @@
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấp lại vào \"Tiếp tục\" và chấp thuận kết nối HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "levelArrow": {
-    "message": "mũi tên cấp độ"
-  },
   "lightTheme": {
     "message": "Sáng"
   },
@@ -4113,10 +4057,6 @@
   },
   "musdBuyMusd": {
     "message": "Mua mUSD"
-  },
-  "musdClaimClaimingTo": {
-    "message": "Nhận vào",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
@@ -5391,9 +5331,6 @@
     "message": "khả dụng",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Số dư khả dụng"
-  },
   "perpsAvailableToClose": {
     "message": "Có sẵn để đóng"
   },
@@ -5418,9 +5355,6 @@
   },
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
-  },
-  "perpsClosedShort": {
-    "message": "Đã đóng vị thế bán khống"
   },
   "perpsConfirmCloseLong": {
     "message": "Đóng vị thế mua khống"
@@ -5509,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "bao gồm Lãi/Lỗ $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Đã tăng vị thế"
-  },
   "perpsLearnBasics": {
     "message": "Tìm hiểu những kiến thức cơ bản về hợp đồng vĩnh cửu"
   },
@@ -5555,12 +5486,6 @@
   "perpsMarkets": {
     "message": "Thị trường"
   },
-  "perpsMax": {
-    "message": "Tối đa"
-  },
-  "perpsMaxRemovable": {
-    "message": "Mức tối đa có thể rút"
-  },
   "perpsMid": {
     "message": "Giá trung bình"
   },
@@ -5596,9 +5521,6 @@
     "message": "Mở vị thế bán khống $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Đã mở vị thế mua khống"
-  },
   "perpsOraclePrice": {
     "message": "Giá nguồn cấp dữ liệu"
   },
@@ -5613,9 +5535,6 @@
   },
   "perpsPosition": {
     "message": "Vị thế"
-  },
-  "perpsPositionSize": {
-    "message": "Kích thước vị thế"
   },
   "perpsPositions": {
     "message": "Vị thế"
@@ -8505,9 +8424,6 @@
   "swapSource": {
     "message": "Nguồn thanh khoản"
   },
-  "swapSuggested": {
-    "message": "Hoán đổi gợi ý"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Hoán đổi là các giao dịch phức tạp và nhạy cảm với thời gian. Chúng tôi đề xuất mức phí gas này để có sự cân bằng tốt giữa chi phí và tỉ lệ Hoán đổi thành công."
   },
@@ -8927,9 +8843,6 @@
   "tutorial": {
     "message": "Hướng dẫn"
   },
-  "twelveHrTitle": {
-    "message": "12 giờ:"
-  },
   "txAlertTitle": {
     "message": "Giao dịch này sẽ được hoàn tác"
   },
@@ -9015,9 +8928,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Giá token không ổn định"
-  },
-  "upArrow": {
-    "message": "mũi tên lên"
   },
   "update": {
     "message": "Cập nhật"
@@ -9277,9 +9187,6 @@
   },
   "youApprove": {
     "message": "Bạn phê duyệt"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Bạn đã từ chối giao dịch."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."

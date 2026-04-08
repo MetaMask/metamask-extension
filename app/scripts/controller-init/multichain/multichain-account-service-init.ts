@@ -49,7 +49,13 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
     providerConfigs: {
-      [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [SOL_ACCOUNT_PROVIDER_NAME]: {
+        ...snapAccountProviderConfig,
+        createAccounts: {
+          ...snapAccountProviderConfig.createAccounts,
+          batched: true,
+        },
+      },
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },

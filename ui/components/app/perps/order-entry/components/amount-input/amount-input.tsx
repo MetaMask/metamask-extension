@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Text,
@@ -12,15 +11,18 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
-import { PerpsSlider } from '../../../perps-slider';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import { PerpsSlider } from '../../../perps-slider';
 import type { AmountInputProps } from '../../order-entry.types';
+import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -60,8 +62,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [balancePercent]);
 
   const tokenAmount = useMemo(() => {
-    const cleanAmount = amount.replace(/,/gu, '');
-    const numAmount = parseFloat(cleanAmount) || 0;
+    const numAmount = Number.parseFloat(amount) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
@@ -78,32 +79,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     });
   }, [tokenAmount, formatNumber]);
 
-  const handleAmountChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        onAmountChange(value);
-        const cleanValue = value.replace(/,/gu, '');
-        const maxSize = availableBalance * leverage;
-        if (cleanValue && maxSize > 0) {
-          const numValue = parseFloat(cleanValue);
-          if (!isNaN(numValue) && numValue > 0) {
-            const pct = Math.min(Math.round((numValue / maxSize) * 100), 100);
-            onBalancePercentChange(pct);
-            setPercentInputValue(String(pct));
-          } else {
-            onBalancePercentChange(0);
-            setPercentInputValue('0');
-          }
-        } else {
-          onBalancePercentChange(0);
-          setPercentInputValue('0');
-        }
-      }
-    },
-    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
-  );
-
   const formatAmount = useCallback(
     (value: number): string =>
       formatNumber(value, {
@@ -113,19 +88,53 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     [formatNumber],
   );
 
-  const handleAmountBlur = useCallback(() => {
-    if (amount) {
-      const numValue = parseFloat(amount.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onAmountChange(formatAmount(numValue));
+  const handleAmountChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
+        return;
       }
+
+      onAmountChange(value);
+
+      const maxSize = availableBalance * leverage;
+      if (value && maxSize > 0) {
+        const numValue = Number.parseFloat(value);
+        if (!Number.isNaN(numValue) && numValue > 0) {
+          const pct = Math.min(Math.round((numValue / maxSize) * 100), 100);
+          onBalancePercentChange(pct);
+          setPercentInputValue(String(pct));
+        } else {
+          onBalancePercentChange(0);
+          setPercentInputValue('0');
+        }
+      } else {
+        onBalancePercentChange(0);
+        setPercentInputValue('0');
+      }
+    },
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
+  );
+
+  const handleAmountBlur = useCallback(() => {
+    if (!amount) {
+      onAmountChange('');
+      return;
     }
-  }, [amount, onAmountChange, formatAmount]);
+
+    const numValue = Number.parseFloat(amount);
+    if (Number.isFinite(numValue) && numValue > 0) {
+      onAmountChange(numValue.toFixed(2));
+      return;
+    }
+
+    onAmountChange('');
+  }, [amount, onAmountChange]);
 
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d+(\.\d*)?$|^\.\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         if (value === '' || value === '.') {
           onAmountChange('');
           onBalancePercentChange(0);
@@ -191,7 +200,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handlePercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*$/u.test(value)) {
+      if (value === '' || isDigitsOnlyInput(value)) {
         setPercentInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= 0 && num <= 100) {
@@ -237,8 +246,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     leverage,
     formatAmount,
   ]);
-
-  const formattedPlaceholder = useMemo(() => formatAmount(0), [formatAmount]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -289,7 +296,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             value={amount}
             onChange={handleAmountChange}
             onBlur={handleAmountBlur}
-            placeholder={formattedPlaceholder}
+            placeholder="0.00"
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}

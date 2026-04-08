@@ -3,11 +3,11 @@
 exports[`TransactionsTab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto"
   >
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -74,7 +74,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -84,7 +84,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Security alerts
           </p>
-          <div>
+          <div
+            data-testid="securityAlert"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -141,7 +143,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -208,7 +210,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -262,7 +264,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -315,11 +317,11 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -329,7 +331,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Show hex data
           </p>
-          <div>
+          <div
+            data-testid="transactions-settings-hex-data-toggle"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
