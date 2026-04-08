@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -35,6 +35,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useBoolean } from '../../hooks/useBoolean';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,14 +49,10 @@ export default function ResetPasswordModal({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const [resetWallet, setResetWallet] = useState(false);
+  const { value: resetWallet, toggle: handleResetWallet } = useBoolean();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-
-  const handleResetWallet = () => {
-    setResetWallet((prev) => !prev);
-  };
 
   const handleResetWalletConfirm = async () => {
     onClose();

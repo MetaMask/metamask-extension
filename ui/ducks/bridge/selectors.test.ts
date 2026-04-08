@@ -3,6 +3,7 @@ import {
   ChainId,
   type QuoteMetadata,
   type QuoteResponse,
+  QuoteStreamCompleteReason,
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -65,6 +66,7 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getIsQuoteExpired,
+  getBridgeUnavailableQuoteReason,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -3351,6 +3353,100 @@ describe('Bridge selectors', () => {
       });
       const result = getIsQuoteExpired(state as never, Date.now());
       expect(typeof result).toBe('boolean');
+    });
+  });
+
+  describe('getBridgeUnavailableQuoteReason', () => {
+    it('returns noOptionsAvailableMessage when quoteStreamComplete is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: null,
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
+    });
+
+    it('returns noOptionsAvailableMessage when quoteStreamComplete has no reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
+    });
+
+    it('returns bridgeQuoteStreamCompleteAmountTooHigh for AMOUNT_TOO_HIGH reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteAmountTooHigh');
+    });
+
+    it('returns bridgeQuoteStreamCompleteAmountTooLow for AMOUNT_TOO_LOW reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.AMOUNT_TOO_LOW,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteAmountTooLow');
+    });
+
+    it('returns bridgeQuoteStreamCompleteRetry for RETRY reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.RETRY,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteRetry');
+    });
+
+    it('returns bridgeQuoteStreamCompleteTokenNotSupported for TOKEN_NOT_SUPPORTED reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.TOKEN_NOT_SUPPORTED,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteTokenNotSupported');
+    });
+
+    it('returns noOptionsAvailableMessage when quoteStreamComplete has quotes', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 2,
+            hasQuotes: true,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
     });
   });
 });
