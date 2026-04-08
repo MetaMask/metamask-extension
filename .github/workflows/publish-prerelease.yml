@@ -163,15 +163,6 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
-      - name: Log SENTRY_DSN_PERFORMANCE presence (value not printed — DSN is sensitive)
-        if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
-        run: |
-          if [ -z "${SENTRY_DSN_PERFORMANCE:-}" ]; then
-            echo "SENTRY_DSN_PERFORMANCE: NOT SET — metamaskbot PR comment will omit [Sentry log] links"
-          else
-            echo "SENTRY_DSN_PERFORMANCE: SET (length ${#SENTRY_DSN_PERFORMANCE} chars; value not logged)"
-          fi
-
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts

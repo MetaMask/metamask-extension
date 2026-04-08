@@ -10,19 +10,24 @@ export function parseSentryDSN(
   try {
     const url = new URL(dsn);
     const { hostname } = url;
-
-    const orgMatch = hostname.match(/^([^.]+)\.(?:ingest\.)?sentry\.io$/u);
-    if (!orgMatch) {
+    const normalizedHost = hostname.toLowerCase();
+    if (!normalizedHost.endsWith('.sentry.io')) {
       return null;
     }
 
-    const projectId = url.pathname.replace(/^\//u, '');
+    const projectId =
+      url.pathname.replace(/^\//u, '').split('/')[0]?.trim() ?? '';
     if (!projectId) {
       return null;
     }
 
+    const organization = hostname.split('.')[0];
+    if (!organization) {
+      return null;
+    }
+
     return {
-      organization: orgMatch[1],
+      organization,
       projectId,
     };
   } catch {

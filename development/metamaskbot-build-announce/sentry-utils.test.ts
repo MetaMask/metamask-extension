@@ -21,6 +21,17 @@ describe('parseSentryDSN', () => {
     });
   });
 
+  it('parses US regional ingest hostname (o*.ingest.us.sentry.io)', () => {
+    const dsn =
+      'https://public@o1234567890123456.ingest.us.sentry.io/4510302346608640';
+    const result = parseSentryDSN(dsn);
+
+    expect(result).toStrictEqual({
+      organization: 'o1234567890123456',
+      projectId: '4510302346608640',
+    });
+  });
+
   it('returns null for invalid URL', () => {
     const dsn = 'not-a-valid-url';
     const result = parseSentryDSN(dsn);
