@@ -29,9 +29,10 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import type { Position, PriceUpdate, Order } from '@metamask/perps-controller';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
@@ -39,6 +40,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -80,6 +82,7 @@ import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
+import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
@@ -436,6 +439,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
+    null,
+  );
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
   const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
@@ -706,9 +712,10 @@ const PerpsMarketDetailPage: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [selectedAddress]);
 
-  // No-op handler for order cards - orders on detail page are already
-  // filtered to current market, so clicking should not navigate anywhere
-  const handleOrderClick = useCallback(() => undefined, []);
+  // Opens the cancel order modal for the selected order
+  const handleOrderClick = useCallback((order: Order) => {
+    setCancelOrderTarget(order);
+  }, []);
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -859,6 +866,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     >
       {/* Header */}
       <Box
+        className="sticky top-0 z-10 bg-background-default"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         paddingLeft={4}
@@ -1511,13 +1519,33 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Recent Activity Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <Box paddingTop={4} paddingBottom={2}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            paddingTop={4}
+            paddingBottom={2}
+          >
             <Text
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
             >
               {t('perpsRecentActivity')}
             </Text>
+            {recentActivityTransactions.length > 0 && (
+              <ButtonBase
+                onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
+                className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
+                data-testid="perps-market-detail-view-all-activity"
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsSeeAll')}
+                </Text>
+              </ButtonBase>
+            )}
           </Box>
           {renderRecentActivityContent()}
 
@@ -1733,6 +1761,15 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+        />
+      )}
+
+      {/* Cancel order modal */}
+      {cancelOrderTarget && (
+        <CancelOrderModal
+          isOpen={cancelOrderTarget !== null}
+          onClose={() => setCancelOrderTarget(null)}
+          order={cancelOrderTarget}
         />
       )}
 

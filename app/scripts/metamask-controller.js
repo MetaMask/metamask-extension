@@ -439,6 +439,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1015,6 +1016,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        const addTransactionExtraOptions =
+          await getAddTransactionSendCallExtraOptions({
+            req,
+            networkController: this.networkController,
+            keyringController: this.keyringController,
+          });
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
@@ -1023,12 +1030,16 @@ export default class MetamaskController extends EventEmitter {
           processSendCalls: processSendCalls.bind(
             null,
             {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
+              addTransaction: async (txParams, options) =>
+                this.txController.addTransaction(txParams, {
+                  ...options,
+                  ...addTransactionExtraOptions,
+                }),
+              addTransactionBatch: async (request) =>
+                this.txController.addTransactionBatch({
+                  ...request,
+                  ...addTransactionExtraOptions,
+                }),
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,
@@ -6258,6 +6269,7 @@ export default class MetamaskController extends EventEmitter {
         transactionParams.from,
       ),
       transactionController: this.txController,
+      keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,

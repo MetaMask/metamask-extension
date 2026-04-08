@@ -1452,6 +1452,10 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Community contributed",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
   "completed": {
     "message": "Completed"
   },
@@ -4559,11 +4563,18 @@
   "nickname": {
     "message": "Nickname"
   },
+  "no": {
+    "message": "No"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
+  },
+  "noDefaultAddress": {
+    "message": "No $1 address",
+    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4954,6 +4965,9 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Open multichain account address menu"
   },
   "openSettings": {
     "message": "Open settings"
@@ -5416,12 +5430,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsBatchCancelFailed": {
-    "message": "Failed to cancel one or more orders. Try again."
-  },
-  "perpsBatchCloseFailed": {
-    "message": "Failed to close one or more positions. Try again."
-  },
   "perpsAvailableBalance": {
     "message": "Available Perps balance: "
   },
@@ -5438,8 +5446,17 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Failed to cancel one or more orders. Try again."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Failed to close one or more positions. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
+  },
+  "perpsCancelOrder": {
+    "message": "Cancel order"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5480,11 +5497,11 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
-  "perpsDepositTitle": {
-    "message": "Funded perps account"
-  },
   "perpsDepositFailed": {
     "message": "Deposit could not be completed. Try again."
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -5659,11 +5676,23 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderDate": {
+    "message": "Date"
+  },
   "perpsOrderFailed": {
     "message": "Order could not be placed. Try again."
   },
+  "perpsOrderOriginalSize": {
+    "message": "Original size"
+  },
   "perpsOrderRejected": {
     "message": "Your order was rejected. Try again."
+  },
+  "perpsOrderStatus": {
+    "message": "Status"
+  },
+  "perpsOrderValue": {
+    "message": "Order value"
   },
   "perpsOrders": {
     "message": "Orders"
@@ -5691,6 +5720,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsReduceOnly": {
+    "message": "Reduce only"
   },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
@@ -5720,20 +5752,20 @@
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
-  "perpsServiceUnavailable": {
-    "message": "Service temporarily unavailable. Please try again later."
-  },
-  "perpsSlippageExceeded": {
-    "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
-  },
   "perpsSeeAll": {
     "message": "See All"
+  },
+  "perpsServiceUnavailable": {
+    "message": "Service temporarily unavailable. Please try again later."
   },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
@@ -5800,6 +5832,14 @@
   "perpsTakeProfit": {
     "message": "Take Profit",
     "description": "Label for take profit price input"
+  },
+  "perpsToastCancelOrderFailed": {
+    "message": "Failed to cancel order",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Order cancelled",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
   },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",
@@ -8480,6 +8520,10 @@
   },
   "supportMultiRpcInformation": {
     "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
+  "supportedLanguagesSectionTitle": {
+    "message": "Supported languages",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "Take our survey"
