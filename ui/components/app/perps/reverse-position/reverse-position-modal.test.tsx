@@ -312,7 +312,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText('Insufficient margin to place this order.'),
+          screen.getByText(messages.perpsInsufficientMargin.message),
         ).toBeInTheDocument();
       });
     });
@@ -385,7 +385,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText('A network error occurred. Please try again.'),
+          screen.getByText(messages.perpsNetworkError.message),
         ).toBeInTheDocument();
       });
     });
