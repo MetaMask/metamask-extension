@@ -439,7 +439,8 @@ describe('MM Connect-EVM', function (this: Suite) {
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
           await testDapp.connectWagmi();
-          await approveConnect(driver);
+
+          await approveConnect(driver, { extraNetworks: ['Optimism'] });
           await testDapp.switchTo();
           await testDapp.checkWagmiCardVisible();
 
