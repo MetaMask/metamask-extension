@@ -420,11 +420,12 @@ export function getMultichainConversionRate(
 }
 
 // TODO get this from the multichain network controller
-export const getMultichainNetworkConfigurationsByChainId = (
-  state: MultichainState,
-): Record<Hex | CaipChainId, NetworkConfiguration> => {
-  return {
-    ...getNetworkConfigurationsByChainId(state),
+export const getMultichainNetworkConfigurationsByChainId = createDeepEqualSelector(
+  [getNetworkConfigurationsByChainId],
+  (
+    networkConfigurationsByChainId,
+  ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
+    ...networkConfigurationsByChainId,
     [MultichainNetworks.SOLANA]: {
       ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
       blockExplorerUrls: [],
@@ -512,8 +513,8 @@ export const getMultichainNetworkConfigurationsByChainId = (
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
     },
-  };
-};
+  }),
+);
 
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,

@@ -68,7 +68,10 @@ export const useSnapAssetSelectorData = ({
   const locale = useSelector(getIntlLocale);
   const { formatTokenQuantity } = useFormatters();
 
-  const parsedAccounts = addresses.map(parseCaipAccountId);
+  const parsedAccounts = useMemo(
+    () => addresses.map(parseCaipAccountId),
+    [addresses],
+  );
 
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, parsedAccounts[0].address),
