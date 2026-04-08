@@ -5416,6 +5416,12 @@
     "message": "available",
     "description": "is the available balance amount"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Failed to cancel one or more orders. Try again."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Failed to close one or more positions. Try again."
+  },
   "perpsAvailableBalance": {
     "message": "Available Perps balance: "
   },
@@ -5459,6 +5465,9 @@
   "perpsConfirmCloseShort": {
     "message": "Close Short"
   },
+  "perpsConnectionTimeout": {
+    "message": "Connection timed out. Please try again."
+  },
   "perpsContactSupport": {
     "message": "Contact support"
   },
@@ -5473,6 +5482,9 @@
   },
   "perpsDepositTitle": {
     "message": "Funded perps account"
+  },
+  "perpsDepositFailed": {
+    "message": "Deposit could not be completed. Try again."
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -5548,6 +5560,9 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientMargin": {
+    "message": "Insufficient margin to place this order."
+  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5612,6 +5627,9 @@
   "perpsMore": {
     "message": "More"
   },
+  "perpsNetworkError": {
+    "message": "A network error occurred. Please try again."
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
@@ -5641,6 +5659,12 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderFailed": {
+    "message": "Order could not be placed. Try again."
+  },
+  "perpsOrderRejected": {
+    "message": "Your order was rejected. Try again."
+  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5652,6 +5676,9 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsRateLimitExceeded": {
+    "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
     "message": "Recent Activity"
@@ -5692,6 +5719,12 @@
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
+  },
+  "perpsServiceUnavailable": {
+    "message": "Service temporarily unavailable. Please try again later."
+  },
+  "perpsSlippageExceeded": {
+    "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
   "perpsSeeAll": {
     "message": "See All"
