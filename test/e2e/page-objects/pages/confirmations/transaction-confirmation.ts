@@ -88,6 +88,11 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
 
+  private readonly recipientAddressDisplay = (address: string): RawLocator => ({
+    css: '[data-testid="recipient-address"]',
+    text: address,
+  });
+
   private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
     testId: 'gas-timing-time',
     text: estimatedTime,
@@ -234,6 +239,16 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkGasFeeLabel(label: string): Promise<void> {
+    console.log(`Checking gas fee label is ${label}`);
+    await this.driver.waitForSelector({ text: label });
+  }
+
+  async checkInlineAlertIsDisplayed(): Promise<void> {
+    console.log('Checking if inline alert is displayed');
+    await this.driver.waitForSelector(this.inlineAlert);
+  }
+
   async checkGasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
@@ -278,6 +293,18 @@ class TransactionConfirmation extends Confirmation {
       css: this.senderAccount,
       text: account,
     });
+  }
+
+  async checkRecipientAddressDisplayed(address: string): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed on confirmation screen`,
+    );
+    await this.driver.waitForSelector(
+      this.recipientAddressDisplay(address.substring(0, 6)),
+      {
+        timeout: 10000,
+      },
+    );
   }
 
   /**

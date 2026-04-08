@@ -7,7 +7,7 @@ import {
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import { mockSpotPrices } from '../tokens/utils/mocks';
@@ -33,37 +33,34 @@ describe('Editing Confirm Transaction', function () {
 
         await createInternalTransaction({ driver });
 
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
-        await sendTokenConfirmationPage.checkTokenAmountTransfer({
-          amount: '1',
-          tokenName: 'ETH',
-        });
+        await transactionConfirmation.checkSendAmount('1 ETH');
 
         // update estimates to high
-        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.selectHighGasFee();
 
-        await sendTokenConfirmationPage.checkGasFee('Aggressive');
+        await transactionConfirmation.checkGasFeeLabel('Aggressive');
 
         // update estimates to medium
-        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.selectMediumGasFee();
 
-        await sendTokenConfirmationPage.checkGasFee('Market');
+        await transactionConfirmation.checkGasFeeLabel('Market');
 
         // update estimates to low
-        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.selectLowGasFee();
 
-        await sendTokenConfirmationPage.checkGasFee('Slow');
+        await transactionConfirmation.checkGasFeeLabel('Slow');
 
-        await sendTokenConfirmationPage.checkGasFeeAlert();
+        await transactionConfirmation.checkInlineAlertIsDisplayed();
 
         // confirms the transaction
-        await sendTokenConfirmationPage.clickOnConfirm();
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         // check transaction in activity tab
         await activityListPage.openActivityTab();
@@ -96,17 +93,14 @@ describe('Editing Confirm Transaction', function () {
         await login(driver);
         await createInternalTransaction({ driver });
 
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
-        await sendTokenConfirmationPage.checkTokenAmountTransfer({
-          amount: '1',
-          tokenName: 'ETH',
-        });
+        await transactionConfirmation.checkSendAmount('1 ETH');
 
         // open gas fee modal and set custom values
-        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.setCustomEIP1559GasFee({
           maxBaseFee: '8.5',
           priorityFee: '8.5',
@@ -114,10 +108,10 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkNativeCurrency('$0.30');
+        await transactionConfirmation.checkGasFeeFiat('$0.30');
 
         // confirms the transaction
-        await sendTokenConfirmationPage.clickOnConfirm();
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         await activityListPage.openActivityTab();
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -156,27 +150,27 @@ describe('Editing Confirm Transaction', function () {
           maxPriorityFeePerGas: '0x1000000000',
         });
 
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
         // check transaction in extension popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await sendTokenConfirmationPage.checkNetworkSpeed('Site suggested');
+        await driver.waitForSelector({ text: 'Site suggested' });
 
-        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         // -- should render the popover with no error
         // this is to test in MV3 a racing issue when request for suggestedGasFees is not fetched properly
         // some data would not be defined yet
         await gasFeeModal.selectSiteSuggestedGasFee();
 
-        await sendTokenConfirmationPage.checkGasFee('0.001 ETH');
+        await transactionConfirmation.checkGasFee('0.001 ETH');
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkNativeCurrency('$3.15');
+        await transactionConfirmation.checkGasFeeFiat('$3.15');
 
         // confirms the transaction
-        await sendTokenConfirmationPage.clickMetaMaskDialogConfirm();
+        await transactionConfirmation.clickFooterConfirmButton();
 
         // transaction should correct values in activity tab
         await driver.switchToWindowWithTitle(
