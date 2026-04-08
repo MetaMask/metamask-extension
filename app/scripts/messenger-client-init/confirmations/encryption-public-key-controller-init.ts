@@ -1,5 +1,5 @@
 import EncryptionPublicKeyController from '../../controllers/encryption-public-key';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerInitMessenger,
@@ -15,7 +15,7 @@ import {
  * @param request.getUIState - Function to get the UI state.
  * @returns The initialized controller.
  */
-export const EncryptionPublicKeyControllerInit: ControllerInitFunction<
+export const EncryptionPublicKeyControllerInit: MessengerClientInitFunction<
   EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerInitMessenger

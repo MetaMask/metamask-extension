@@ -2,7 +2,7 @@ import {
   SubscriptionController,
   SubscriptionService,
 } from '@metamask/subscription-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
@@ -17,7 +17,7 @@ import { SubscriptionControllerInit } from './subscription-controller-init';
 jest.mock('@metamask/subscription-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SubscriptionControllerMessenger,
     SubscriptionControllerInitMessenger
   >

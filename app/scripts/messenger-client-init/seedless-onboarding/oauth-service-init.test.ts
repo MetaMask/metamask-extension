@@ -1,4 +1,4 @@
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getOAuthServiceMessenger,
   OAuthServiceMessenger,
@@ -9,7 +9,7 @@ import OAuthService from '../../services/oauth/oauth-service';
 import { OAuthServiceInit } from './oauth-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<OAuthServiceMessenger>
+  MessengerClientInitRequest<OAuthServiceMessenger>
 > {
   const baseControllerMessenger = getRootMessenger<never, never>();
 

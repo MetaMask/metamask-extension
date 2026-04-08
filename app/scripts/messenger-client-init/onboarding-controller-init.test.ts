@@ -1,6 +1,6 @@
 import OnboardingController from '../controllers/onboarding';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getOnboardingControllerMessenger,
@@ -11,7 +11,7 @@ import { OnboardingControllerInit } from './onboarding-controller-init';
 jest.mock('../controllers/onboarding');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<OnboardingControllerMessenger>
+  MessengerClientInitRequest<OnboardingControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 

@@ -112,9 +112,9 @@ import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 
 /**
- * Union of all controllers supporting or required by modular initialization.
+ * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
  */
-export type Controller =
+export type MessengerClient =
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
@@ -214,10 +214,10 @@ export type Controller =
   | ConnectivityController;
 
 /**
- * Flat state object for all controllers supporting or required by modular initialization.
+ * Flat state object for all messenger clients supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type ControllerFlatState = AccountOrderController['state'] &
+export type MessengerClientFlatState = AccountOrderController['state'] &
   AccountsController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &

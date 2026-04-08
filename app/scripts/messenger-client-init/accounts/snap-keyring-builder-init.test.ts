@@ -1,5 +1,5 @@
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
@@ -13,7 +13,7 @@ import { SnapKeyringBuilderInit } from './snap-keyring-builder-init';
 jest.mock('../../lib/snap-keyring/snap-keyring');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SnapKeyringBuilderMessenger,
     SnapKeyringBuilderInitMessenger
   >

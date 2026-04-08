@@ -1,5 +1,5 @@
 import { AlertController } from '../controllers/alert-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { AlertControllerMessenger } from './messengers';
 
 /**
@@ -11,7 +11,7 @@ import { AlertControllerMessenger } from './messengers';
  * controller.
  * @returns The initialized controller.
  */
-export const AlertControllerInit: ControllerInitFunction<
+export const AlertControllerInit: MessengerClientInitFunction<
   AlertController,
   AlertControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

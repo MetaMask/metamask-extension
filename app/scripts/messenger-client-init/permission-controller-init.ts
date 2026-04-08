@@ -13,7 +13,7 @@ import {
   PermissionControllerInitMessenger,
   PermissionControllerMessenger,
 } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the permission controller.
@@ -25,7 +25,7 @@ import { ControllerInitFunction } from './types';
  * @param request.getController
  * @returns The initialized controller.
  */
-export const PermissionControllerInit: ControllerInitFunction<
+export const PermissionControllerInit: MessengerClientInitFunction<
   PermissionController<
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint

@@ -1,5 +1,5 @@
 import DecryptMessageController from '../../controllers/decrypt-message';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { DecryptMessageControllerMessenger } from '../messengers';
 import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-message-controller-messenger';
 
@@ -13,7 +13,7 @@ import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-mes
  * @param request.getUIState - Function to get the UI state.
  * @returns The initialized controller.
  */
-export const DecryptMessageControllerInit: ControllerInitFunction<
+export const DecryptMessageControllerInit: MessengerClientInitFunction<
   DecryptMessageController,
   DecryptMessageControllerMessenger,
   DecryptMessageControllerInitMessenger

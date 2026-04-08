@@ -1,5 +1,5 @@
 import DecryptMessageController from '../../controllers/decrypt-message';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getDecryptMessageControllerMessenger,
@@ -13,7 +13,7 @@ import { DecryptMessageControllerInit } from './decrypt-message-controller-init'
 jest.mock('../../controllers/decrypt-message');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     DecryptMessageControllerMessenger,
     DecryptMessageControllerInitMessenger
   >

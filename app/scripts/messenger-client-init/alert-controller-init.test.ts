@@ -1,6 +1,6 @@
 import { AlertController } from '../controllers/alert-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAlertControllerMessenger,
@@ -11,7 +11,7 @@ import { AlertControllerInit } from './alert-controller-init';
 jest.mock('../controllers/alert-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AlertControllerMessenger>
+  MessengerClientInitRequest<AlertControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 

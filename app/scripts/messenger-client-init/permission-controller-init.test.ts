@@ -1,6 +1,6 @@
 import { PermissionController } from '@metamask/permission-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPermissionControllerInitMessenger,
@@ -13,7 +13,7 @@ import { PermissionControllerInit } from './permission-controller-init';
 jest.mock('@metamask/permission-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     PermissionControllerMessenger,
     PermissionControllerInitMessenger
   >

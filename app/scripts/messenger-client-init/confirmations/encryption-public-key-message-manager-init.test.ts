@@ -1,5 +1,5 @@
 import { EncryptionPublicKeyManager } from '@metamask/message-manager';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEncryptionPublicKeyManagerMessenger,
@@ -11,7 +11,7 @@ import { EncryptionPublicKeyManagerInit } from './encryption-public-key-message-
 jest.mock('@metamask/message-manager');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<EncryptionPublicKeyManagerMessenger>
+  MessengerClientInitRequest<EncryptionPublicKeyManagerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

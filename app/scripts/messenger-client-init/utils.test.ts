@@ -5,7 +5,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
-import { ControllerApi, ControllerName } from './types';
+import { MessengerClientApi, MessengerClientName } from './types';
 import { initControllers } from './utils';
 
 type InitFunctions = Parameters<typeof initControllers>[0]['initFunctions'];
@@ -24,7 +24,7 @@ function buildControllerInitResultMock({
   memStateKey,
 }: {
   name?: string;
-  api?: Record<string, ControllerApi>;
+  api?: Record<string, MessengerClientApi>;
   persistedStateKey?: string | null;
   memStateKey?: string | null;
 } = {}) {
@@ -114,7 +114,7 @@ describe('Controller Init Utils', () => {
         const { getController } = initMock.mock.calls[0][0];
 
         expect(
-          getController(CONTROLLER_NAME_MOCK as ControllerName),
+          getController(CONTROLLER_NAME_MOCK as MessengerClientName),
         ).toStrictEqual({ name: CONTROLLER_NAME_MOCK });
       });
 
@@ -133,7 +133,7 @@ describe('Controller Init Utils', () => {
         const { getController } = initMock.mock.calls[0][0];
 
         expect(() =>
-          getController('InvalidController' as ControllerName),
+          getController('InvalidController' as MessengerClientName),
         ).toThrow(
           'Controller requested before it was initialized: InvalidController',
         );
@@ -155,7 +155,7 @@ describe('Controller Init Utils', () => {
         const { getController } = initMock.mock.calls[0][0];
 
         expect(
-          getController(CONTROLLER_NAME_2_MOCK as ControllerName),
+          getController(CONTROLLER_NAME_2_MOCK as MessengerClientName),
         ).toStrictEqual({ name: CONTROLLER_NAME_2_MOCK });
       });
     });

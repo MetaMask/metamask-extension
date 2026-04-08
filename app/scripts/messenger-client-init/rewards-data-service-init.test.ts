@@ -5,7 +5,7 @@ import {
 } from '@metamask/messenger';
 import type { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import {
   getRewardsDataServiceMessenger,
   RewardsDataServiceMessenger,
@@ -35,7 +35,7 @@ function buildInitRequestMock() {
     ),
     initMessenger: undefined,
   } as unknown as jest.Mocked<
-    ControllerInitRequest<RewardsDataServiceMessenger>
+    MessengerClientInitRequest<RewardsDataServiceMessenger>
   >;
 }
 

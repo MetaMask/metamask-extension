@@ -1,6 +1,6 @@
 import { AppStateController } from '../controllers/app-state-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAppStateControllerMessenger,
@@ -11,7 +11,7 @@ import { AppStateControllerInit } from './app-state-controller-init';
 jest.mock('../controllers/app-state-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AppStateControllerMessenger>
+  MessengerClientInitRequest<AppStateControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 
