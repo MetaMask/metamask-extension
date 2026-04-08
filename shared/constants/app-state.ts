@@ -43,6 +43,7 @@ export type CarouselSlide = {
   cardPlacement?: string;
 };
 
+/** @deprecated */
 export enum PasswordChangeToastType {
   Success = 'success',
   Errored = 'errored',
