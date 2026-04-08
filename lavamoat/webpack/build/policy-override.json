@@ -387,21 +387,6 @@
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
-    },
-    "yazl": {
-      "builtin": {
-        "events.errorMonitor": true
-      }
-    },
-    "yazl>buffer-crc32": {
-      "builtin": {
-        "buffer.Buffer": true
-      },
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
-      }
     }
   }
 }
