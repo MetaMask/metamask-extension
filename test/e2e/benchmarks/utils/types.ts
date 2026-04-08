@@ -9,7 +9,19 @@ import type {
 
 export type TimerResult = {
   id: string;
+  /** Numeric value: duration in ms, or a count when unit is 'count'. */
+  value: number;
+  /** Defaults to 'ms'. Non-duration entries (e.g. counts) use 'count'. */
+  unit?: 'ms' | 'count';
+};
+
+export type LongTaskStepResult = {
+  id: string;
   duration: number;
+  longTaskCount: number;
+  longTaskTotalDuration: number;
+  longTaskMaxDuration: number;
+  tbt: number;
 };
 
 export type PageLoadBenchmarkOptions = {
@@ -37,6 +49,17 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
+  longTaskCount?: number;
+  longTaskTotalDuration?: number;
+  longTaskMaxDuration?: number;
+  tbt?: number;
+};
+
+export type MeasurePageResult = {
+  metrics: Metrics[];
+  title: string;
+  persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
 };
 
 /** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
@@ -88,6 +111,44 @@ export type BenchmarkSummary = {
   benchmarkType?: BenchmarkType;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
+};
+
+/**
+ * Web vitals–style metrics for one Playwright dapp page-load sample (ms unless noted).
+ */
+export type DappPageLoadMetric = {
+  /** Navigation start → load event end */
+  pageLoadTime: number;
+  domContentLoaded: number;
+  firstPaint: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint: number;
+  memoryUsage?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+};
+
+/**
+ * One raw measurement from a Playwright dapp page-load benchmark run.
+ */
+export type DappPageLoadSample = {
+  page: string;
+  run: number;
+  metrics: DappPageLoadMetric;
+  timestamp: number;
+};
+
+/**
+ * Aggregated web-vitals per URL for the Playwright dapp benchmark, using the same
+ * {@link TimerStatistics} concept as {@link BenchmarkSummary} (`timers` array).
+ * Aggregate with `aggregateDappPageLoadStatistics` in `test/e2e/benchmarks/flows/dapp-page-load/dapp-page-load-stats.ts`,
+ * then convert via `dappPageLoadStatsToBenchmarkResults`.
+ */
+export type DappPageLoadStats = {
+  page: string;
+  timers: TimerStatistics[];
 };
 
 export type PerformanceBenchmarkResults = {

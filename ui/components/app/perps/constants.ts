@@ -37,6 +37,9 @@ export const PERPS_CONSTANTS = {
   FALLBACK_DATA_DISPLAY: '--',
   ZERO_AMOUNT_DISPLAY: '$0',
   ZERO_AMOUNT_DETAILED_DISPLAY: '$0.00',
+
+  RECENT_ACTIVITY_LIMIT: 3,
+  FILLS_LOOKBACK_MS: 90 * 24 * 60 * 60 * 1000, // 3 months in milliseconds
 } as const;
 
 /**
