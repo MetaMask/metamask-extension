@@ -565,9 +565,6 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
-    "ui/hooks/accounts/useAccountsOperationsLoadingStates.test.ts": {
-      "MetaMask: Background connection not initialized": 2
-    },
     "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1
@@ -901,7 +898,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx": {
-      "MetaMask: Background connection not initialized": 416,
+      "MetaMask: Background connection not initialized": 364,
       "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-row/gas-fees-row.test.tsx": {
@@ -1427,7 +1424,6 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/musd/index.test.tsx": {
@@ -1453,16 +1449,7 @@
     "ui/pages/notifications/notifications.test.tsx": {
       "Reselect: Input stability warnings": 3
     },
-    "ui/pages/onboarding-flow/account-exist/account-exist.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/metametrics/metametrics.test.tsx": {
