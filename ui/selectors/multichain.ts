@@ -420,101 +420,104 @@ export function getMultichainConversionRate(
 }
 
 // TODO get this from the multichain network controller
-export const getMultichainNetworkConfigurationsByChainId = createDeepEqualSelector(
-  [getNetworkConfigurationsByChainId],
-  (
-    networkConfigurationsByChainId,
-  ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
-    ...networkConfigurationsByChainId,
-    [MultichainNetworks.SOLANA]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
-      nativeCurrency: 'sol',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.SOLANA as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].nickname ?? '',
-      nativeCurrency: 'BTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN_TESTNET]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET]
-          .nickname ?? '',
-      nativeCurrency: 'tBTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN_TESTNET as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN_SIGNET]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET]
-          .nickname ?? '',
-      nativeCurrency: 'sBTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
-    },
-    [MultichainNetworks.TRON]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
-      blockExplorerUrls: [],
-      name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname ?? '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON as unknown as Hex,
-    },
-    [MultichainNetworks.TRON_NILE]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE].nickname ??
-        '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON_NILE as unknown as Hex,
-    },
-    [MultichainNetworks.TRON_SHASTA]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA].nickname ??
-        '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
-    },
-  }),
-);
+export const getMultichainNetworkConfigurationsByChainId =
+  createDeepEqualSelector(
+    [getNetworkConfigurationsByChainId],
+    (
+      networkConfigurationsByChainId,
+    ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
+      ...networkConfigurationsByChainId,
+      [MultichainNetworks.SOLANA]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
+        nativeCurrency: 'sol',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.SOLANA as unknown as Hex,
+      },
+      [MultichainNetworks.BITCOIN]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].nickname ??
+          '',
+        nativeCurrency: 'BTC',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.BITCOIN as unknown as Hex,
+      },
+      [MultichainNetworks.BITCOIN_TESTNET]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET]
+            .nickname ?? '',
+        nativeCurrency: 'tBTC',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.BITCOIN_TESTNET as unknown as Hex,
+      },
+      [MultichainNetworks.BITCOIN_SIGNET]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET]
+            .nickname ?? '',
+        nativeCurrency: 'sBTC',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
+      },
+      [MultichainNetworks.TRON]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname ?? '',
+        nativeCurrency: 'TRX',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.TRON as unknown as Hex,
+      },
+      [MultichainNetworks.TRON_NILE]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE].nickname ??
+          '',
+        nativeCurrency: 'TRX',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.TRON_NILE as unknown as Hex,
+      },
+      [MultichainNetworks.TRON_SHASTA]: {
+        ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA],
+        blockExplorerUrls: [],
+        name:
+          MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA]
+            .nickname ?? '',
+        nativeCurrency: 'TRX',
+        rpcEndpoints: [
+          { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+        ],
+        defaultRpcEndpointIndex: 0,
+        chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
+      },
+    }),
+  );
 
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,
