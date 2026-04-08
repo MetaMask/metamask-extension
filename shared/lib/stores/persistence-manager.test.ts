@@ -50,6 +50,17 @@ describe('PersistenceManager', () => {
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
+  describe('events', () => {
+    it('supports SafeEventEmitter on and off without throwing', () => {
+      const listener = jest.fn();
+      expect(() => {
+        manager.events.on('earlySegmentEventToTrack', listener);
+        manager.events.off('earlySegmentEventToTrack', listener);
+        manager.events.off('vaultCorruptionEventToTrack', listener);
+      }).not.toThrow();
+    });
+  });
+
   describe('set', () => {
     beforeEach(() => {
       manager.storageKind = 'data';

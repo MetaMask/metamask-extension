@@ -34,12 +34,14 @@ function createLocalStore() {
 const localStore = createLocalStore();
 
 // Single PersistenceManager per context: one in background, one per UI context.
-export const persistenceManager = new PersistenceManager({
-  localStore,
-  segmentHooks: {
-    onVaultCorruptionEvent: trackVaultCorruptionEvent,
-    onEarlySegmentEvent: trackEarlySegmentEvent,
-  },
+export const persistenceManager = new PersistenceManager({ localStore });
+
+persistenceManager.events.on('vaultCorruptionEventToTrack', (args) => {
+  trackVaultCorruptionEvent(args.backup, args.event, args.corruptionType);
+});
+
+persistenceManager.events.on('earlySegmentEventToTrack', (args) => {
+  trackEarlySegmentEvent(args);
 });
 
 /**

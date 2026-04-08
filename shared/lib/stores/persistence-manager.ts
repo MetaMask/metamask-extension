@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
+import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
@@ -42,25 +43,27 @@ export const backedUpStateKeys = [
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
-/**
- * Optional hooks for emitting Segment events.
- */
-export type PersistenceManagerSegmentHooks = {
-  onVaultCorruptionEvent?: (
-    backup: Backup | null,
-    eventName: MetaMetricsEventName,
-    corruptionType: VaultCorruptionType,
-  ) => void;
-  onEarlySegmentEvent?: (args: {
-    state: MetaMaskStateType;
-    event: MetaMetricsEventName;
-    category: MetaMetricsEventCategory;
-  }) => void;
+export type VaultCorruptionEventToTrackPayload = {
+  backup: Backup | null;
+  event: MetaMetricsEventName;
+  corruptionType: VaultCorruptionType;
 };
+
+export type EarlySegmentEventToTrackPayload = {
+  state: MetaMaskStateType;
+  event: MetaMetricsEventName;
+  category: MetaMetricsEventCategory;
+};
+
+export type PersistenceManagerEventMap = {
+  vaultCorruptionEventToTrack: VaultCorruptionEventToTrackPayload;
+  earlySegmentEventToTrack: EarlySegmentEventToTrackPayload;
+};
+
+export type PersistenceManagerEventName = keyof PersistenceManagerEventMap;
 
 export type PersistenceManagerOptions = {
   localStore: BaseStore;
-  segmentHooks?: PersistenceManagerSegmentHooks;
 };
 
 /**
@@ -232,11 +235,10 @@ export class PersistenceManager {
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  #segmentHooks?: PersistenceManagerSegmentHooks;
+  readonly events = new SafeEventEmitter();
 
-  constructor({ localStore, segmentHooks }: PersistenceManagerOptions) {
+  constructor({ localStore }: PersistenceManagerOptions) {
     this.#localStore = localStore;
-    this.#segmentHooks = segmentHooks;
   }
 
   /**
@@ -743,11 +745,11 @@ export class PersistenceManager {
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
-              this.#segmentHooks?.onVaultCorruptionEvent?.(
+              this.events.emit('vaultCorruptionEventToTrack', {
                 backup,
-                MetaMetricsEventName.VaultCorruptionDetected,
+                event: MetaMetricsEventName.VaultCorruptionDetected,
                 corruptionType,
-              );
+              });
 
               // We've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now).
@@ -946,14 +948,14 @@ export class PersistenceManager {
       );
 
       if (migrationStatus === 'succeeded') {
-        this.#segmentHooks?.onEarlySegmentEvent?.({
+        this.events.emit('earlySegmentEventToTrack', {
           state,
           event: MetaMetricsEventName.StateMigrationSucceeded,
           category: MetaMetricsEventCategory.StateMigration,
         });
       }
     } catch (error) {
-      this.#segmentHooks?.onEarlySegmentEvent?.({
+      this.events.emit('earlySegmentEventToTrack', {
         state,
         event: MetaMetricsEventName.StateMigrationFailed,
         category: MetaMetricsEventCategory.StateMigration,
