@@ -1,14 +1,15 @@
 {
   "data": {
     "AccountOrderController": {
-      "hiddenAccountList": {},
-      "pinnedAccountList": {}
+      "hiddenAccountList": "object",
+      "pinnedAccountList": "object"
     },
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
-      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "selectedAccountGroup": "string"
     },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
@@ -152,15 +153,7 @@
       "nativeAssetIdentifiers": "object"
     },
     "NetworkOrderController": {
-      "orderedNetworkList": {
-        "0": "object",
-        "1": "object",
-        "2": "object",
-        "3": "object",
-        "4": "object",
-        "5": "object",
-        "6": "object"
-      }
+      "orderedNetworkList": "object"
     },
     "NftController": {
       "allNftContracts": "object",
@@ -184,7 +177,7 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": {} },
+    "PPOMController": { "storageMetadata": "object" },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",
@@ -237,7 +230,6 @@
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": "boolean",
       "useExternalServices": "boolean",

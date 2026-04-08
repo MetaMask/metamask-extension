@@ -3,11 +3,11 @@
 exports[`PrivacyTab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto"
   >
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -59,7 +59,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
              
             Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our 
             <a
-              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
               href="https://consensys.io/privacy-policy/"
               rel="noopener noreferrer"
               target="_blank"
@@ -73,20 +73,20 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div>
-      <div
-        class="flex flex-col gap-1 py-3"
+      <a
+        href="/settings/privacy/third-party-apis"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-col gap-1 px-4 py-3 rounded-none hover:bg-background-default-hover"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row items-center justify-between"
           >
-            Third-party APIs
-          </p>
-          <a
-            href="/settings-v2/privacy/third-party-apis"
-          >
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Third-party APIs
+            </p>
             <svg
               class="inline-block w-4 h-4 text-icon-alternative"
               fill="currentColor"
@@ -97,18 +97,18 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
                 d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
               />
             </svg>
-          </a>
+          </div>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          >
+            Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience.
+          </p>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Choose how you share your IP address or Ethereum address with third-party APIs. Changes will impact your MetaMask experience.
-        </p>
-      </div>
+      </a>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -162,7 +162,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -215,11 +215,11 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -229,7 +229,9 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           >
             Participate in MetaMetrics
           </p>
-          <div>
+          <div
+            data-testid="participate-in-meta-metrics-toggle"
+          >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
@@ -255,7 +257,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="participate-in-meta-metrics-toggle"
+                  data-testid="participate-in-meta-metrics-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"
@@ -273,7 +275,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -283,7 +285,9 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           >
             Data collection for marketing
           </p>
-          <div>
+          <div
+            data-testid="data-collection-for-marketing-toggle"
+          >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
@@ -309,7 +313,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="data-collection-for-marketing-toggle"
+                  data-testid="data-collection-for-marketing-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"
@@ -327,8 +331,8 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <button
-        class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-error-default !bg-transparent p-0 text-left"
-        data-testid="delete-metametrics-button"
+        class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-error-default !bg-transparent p-0 text-left mx-4"
+        data-testid="delete-metametrics-data-button"
         disabled=""
         role="button"
       >
@@ -340,12 +344,12 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
       </button>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <button
-        class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
-        data-testid="download-state-logs-button"
+        class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left mx-4"
+        data-testid="advanced-setting-state-logs-button"
         role="button"
       >
         <span
@@ -354,6 +358,23 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           Download state logs
         </span>
       </button>
+    </div>
+    <div>
+      <div
+        class="mx-4 mt-2"
+      >
+        <button
+          class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
+          data-testid="privacy-tab-export-your-data-button"
+          role="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Export your data
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

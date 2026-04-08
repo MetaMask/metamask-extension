@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -18,21 +18,15 @@ import {
   MOCK_CLAIMS_3_PENDING,
 } from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 // Local fixture for this spec file
 function createShieldFixture() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-      },
-    })
-    .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-        },
       },
     })
     .withTokensController({
@@ -49,16 +43,13 @@ function createShieldFixture() {
           ],
         },
       },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
     });
 }
 
 // Local fixture for cancelled subscription test - prevents entry modal from showing
 function createShieldFixtureCancelled() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -80,60 +71,23 @@ function createShieldFixtureCancelled() {
       },
     })
     .withAppStateController({
-      showShieldEntryModalOnce: {
-        show: false,
-        hasUserInteractedWithModal: true,
-      }, // Prevent entry modal from showing since subscription exists (even if cancelled)
+      showShieldEntryModalOnce: true, // Prevent entry modal from showing since subscription exists (even if cancelled)
     });
 }
 
 // Local fixture for crypto payment tests with USDC and USDT
 function createShieldFixtureCrypto() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-            amount: '100',
-          },
-          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-            amount: '100',
-          },
-        },
-      },
-      assetsInfo: {
-        'eip155:1/slip44:60': {
-          type: 'native',
-          symbol: 'ETH',
-          name: 'Ether',
-          decimals: 18,
-        },
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-          type: 'erc20',
-          symbol: 'USDC',
-          name: 'USD Coin',
-          decimals: 6,
-          image: 'https://assets.metamask.io/usdc.png',
-        },
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-          type: 'erc20',
-          symbol: 'USDT',
-          name: 'Tether USD',
-          decimals: 6,
-          image: 'https://assets.metamask.io/usdt.png',
-        },
-      },
-    })
     .withTokensController({
       allTokens: {
         '0x1': {
+          // USDC and USDT tokens on Mainnet
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -152,9 +106,6 @@ function createShieldFixtureCrypto() {
           ],
         },
       },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null,
     });
 }
 
@@ -703,77 +654,26 @@ describe('Shield Plan Stripe Integration', function () {
     await withFixtures(
       {
         fixtures: createShieldFixtureCrypto()
-          .withAssetsController({
-            // Override balances to 1000 for this specific test scenario
-            assetsBalance: {
-              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-                'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-                  amount: '1000',
-                },
-                'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-                  amount: '1000',
+          .withTokenBalancesController({
+            tokenBalances: {
+              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                '0x1': {
+                  // 1000 USDT (6 decimals)
+                  '0xdac17f958d2ee523a2206206994597c13d831ec7': '0x3B9ACA00',
+                  // 1000 USDC (6 decimals)
+                  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '0x3B9ACA00',
                 },
               },
             },
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
+        testSpecificMock: (server: Mockttp) => {
           const shieldMockttpService = new ShieldMockttpService();
-          await shieldMockttpService.setup(server, {
+          return shieldMockttpService.setup(server, {
             isActiveUser: true,
             defaultPaymentMethod: 'crypto',
           });
-
-          // Tell AssetsController's AccountsApiDataSource that mainnet is supported,
-          // so it calls v5/multiaccount/balances instead of falling back to RPC.
-          await server
-            .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
-            .always()
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-                partialSupport: { balances: [42220, 43114] },
-              },
-            }));
-
-          // Return ETH + USDC + USDT balances so AssetsController's full-mode
-          // update doesn't wipe the tokens that aren't in the RPC response.
-          return server
-            .forGet(
-              'https://accounts.api.cx.metamask.io/v5/multiaccount/balances',
-            )
-            .always()
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                count: 3,
-                unprocessedNetworks: [],
-                balances: [
-                  {
-                    accountId:
-                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    assetId: 'eip155:1/slip44:60',
-                    balance: '25',
-                  },
-                  {
-                    accountId:
-                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    assetId:
-                      'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-                    balance: '1000',
-                  },
-                  {
-                    accountId:
-                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    assetId:
-                      'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
-                    balance: '1000',
-                  },
-                ],
-              },
-            }));
         },
         localNodeOptions: [
           {

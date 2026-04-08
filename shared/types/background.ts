@@ -38,7 +38,7 @@ import type { PermissionLogControllerState } from '@metamask/permission-log-cont
 import type {
   SnapControllerState,
   CronjobControllerState,
-  SnapsRegistryState,
+  SnapRegistryControllerState,
   SnapInterfaceControllerState,
   SnapInsightsControllerState,
 } from '@metamask/snaps-controllers';
@@ -162,6 +162,7 @@ export type ControllerStatePropertiesEnumerated = {
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  tokenWarnings: BridgeControllerState['tokenWarnings'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];
@@ -252,7 +253,6 @@ export type ControllerStatePropertiesEnumerated = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
-  useBlockie: PreferencesControllerState['useBlockie'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
   overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];
@@ -295,10 +295,10 @@ export type ControllerStatePropertiesEnumerated = {
   unencryptedSnapStates: SnapControllerState['unencryptedSnapStates'];
   interfaces: SnapInterfaceControllerState['interfaces'];
   insights: SnapInsightsControllerState['insights'];
-  database: SnapsRegistryState['database'];
-  lastUpdated: SnapsRegistryState['lastUpdated'];
-  databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
-  signature: SnapsRegistryState['signature'];
+  database: SnapRegistryControllerState['database'];
+  lastUpdated: SnapRegistryControllerState['lastUpdated'];
+  databaseUnavailable: SnapRegistryControllerState['databaseUnavailable'];
+  signature: SnapRegistryControllerState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
@@ -380,7 +380,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SnapControllerState &
   SnapInterfaceControllerState &
   SnapInsightsControllerState &
-  SnapsRegistryState &
+  SnapRegistryControllerState &
   SubjectMetadataControllerState &
   TokenBalancesControllerState &
   TokensControllerState &

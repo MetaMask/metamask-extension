@@ -1,0 +1,67 @@
+/**
+ * This symbol matches all object properties when used in a mask
+ */
+export const AllProperties: unique symbol = Symbol('*');
+
+type MaskValue = boolean | ObjectMask | readonly unknown[];
+
+export type ObjectMask = {
+  [key: string]: MaskValue;
+} & {
+  [AllProperties]?: MaskValue;
+};
+
+/**
+ * Return a "masked" copy of the given object. The returned object includes
+ * only the properties present in the mask.
+ *
+ * The mask is an object that mirrors the structure of the given object, except
+ * the only values are `true`, `false`, a sub-mask, or the `AllProperties`
+ * symbol. `true` implies the property should be included, and `false` will
+ * exclude it. A sub-mask implies the property should be further masked
+ * according to that sub-mask. The "AllProperties" symbol is used for objects
+ * with dynamic keys, and applies a rule (either `true`, `false`, or a
+ * sub-mask`) to every property in that object.
+ *
+ * If a property is excluded, its type is included instead.
+ *
+ * @param object - The object to mask
+ * @param mask - The mask to apply to the object
+ * @returns A masked copy of the given object
+ */
+export function maskObject(
+  object: unknown,
+  mask: ObjectMask,
+): Record<string, unknown> | string | null {
+  // make sure the object is actually an object, if not, just return its type
+  if (typeof object !== 'object' || object === null) {
+    // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
+    return object === null ? null : typeof object;
+  }
+  const obj = object as Record<string, unknown>;
+  const maskKeys = Reflect.ownKeys(mask);
+  const maskAllProperties = maskKeys.includes(AllProperties);
+
+  if (maskAllProperties) {
+    if (maskKeys.length > 1) {
+      throw new Error('AllProperties mask key does not support sibling keys');
+    }
+  }
+  return Object.keys(obj).reduce<Record<string, unknown>>((state, key) => {
+    const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];
+    if (maskKey === true) {
+      state[key] = obj[key];
+    } else if (Array.isArray(maskKey)) {
+      // Array masks (e.g. empty `[]` in Sentry state) — surface typeof only, like `false`.
+      state[key] = obj[key] === null ? null : typeof obj[key];
+    } else if (maskKey && typeof maskKey === 'object') {
+      state[key] = maskObject(obj[key], maskKey as ObjectMask);
+    } else if (maskKey === undefined || maskKey === false) {
+      // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
+      state[key] = obj[key] === null ? null : typeof obj[key];
+    } else {
+      throw new Error(`Unsupported mask entry: ${String(maskKey)}`);
+    }
+    return state;
+  }, {});
+}

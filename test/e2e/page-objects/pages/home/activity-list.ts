@@ -334,6 +334,88 @@ class ActivityListPage {
   }
 
   /**
+   * This function checks a swap or bridge transaction's details
+   *
+   * @param action - The expected action text for the Activity List item
+   * @param isBridge - Whether the transaction is a bridge or swap
+   * @param expectedStatus - The expected status of the transaction
+   * @param expectedSrcAmount - The expected source amount
+   * @param expectedSrcToken - The expected source token
+   * @param expectedDestAmount - The expected destination amount
+   * @param expectedDestToken - The expected destination token
+   * @returns A promise that resolves when the expected transaction details are displayed within the timeout period.
+   */
+  async checkBridgeTransactionDetails(
+    action: string,
+    isBridge: boolean,
+    expectedStatus: 'success' | 'failed' | 'pending',
+    expectedSrcAmount?: string,
+    expectedSrcToken?: string,
+    expectedDestAmount?: string,
+    expectedDestToken?: string,
+  ): Promise<void> {
+    console.log(`Open bridge transaction details`);
+    const [completedTx] = await this.driver.findElements({
+      text: action,
+    });
+    await completedTx.click();
+    await this.driver.waitForUrlContaining({
+      url: '/cross-chain/tx-details',
+    });
+    await this.driver.waitForSelector({
+      text: `${isBridge ? 'Bridge' : 'Swap'} details`,
+    });
+
+    console.log('Checking scanner links');
+    const scannerLinks = await this.driver.findElements({
+      tag: 'button',
+      text: 'View on',
+    });
+    assert.equal(
+      scannerLinks.length,
+      isBridge && expectedStatus === 'success' ? 2 : 1,
+      'Scanner links are displayed',
+    );
+
+    console.log(`Checking ${isBridge ? 'bridge' : 'swap'} status`);
+    const BRIDGE_STATUSES = {
+      success: 'complete',
+      failed: 'failed',
+      pending: 'pending',
+    };
+    const SWAP_STATUSES = {
+      success: 'confirmed',
+      failed: 'failed',
+      pending: 'pending',
+    };
+    const expectedStatusText = isBridge
+      ? BRIDGE_STATUSES[expectedStatus]
+      : SWAP_STATUSES[expectedStatus];
+    const statusElement = await this.driver.findElement({
+      text: expectedStatusText,
+    });
+    assert.equal(
+      (await statusElement.getText()).toLowerCase(),
+      expectedStatusText,
+      `Status is displayed as ${expectedStatusText}`,
+    );
+
+    console.log('Checking displayed amounts');
+    await this.driver.waitForSelector({
+      text: `${expectedSrcAmount} ${expectedSrcToken} on`,
+    });
+    if (expectedDestAmount) {
+      await this.driver.waitForSelector({
+        text: `${expectedDestAmount} ${expectedDestToken}`,
+      });
+    }
+
+    console.log('Navigating back to activity list');
+    const backButton = await this.driver.findElement('.mm-button-icon');
+    await backButton.click();
+  }
+
+  /**
    * This function checks if a specified transaction amount at the specified index matches the expected one.
    *
    * @param expectedAmount - The expected transaction amount to be displayed. Defaults to '-1 ETH'.

@@ -1,151 +1,84 @@
 import { Mockttp } from 'mockttp';
+import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
-import {
-  mockTokensV2SupportedNetworks,
-  mockTokensV3Assets,
-} from '../btc/mocks';
-import {
-  mockAccountsApiV2SupportedNetworks,
-  mockAccountsApiV5MultiaccountBalances,
-} from '../solana/mocks/accounts-api';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 // Local fixture for card payment tests
 function createShieldFixtureCard() {
-  return (
-    new FixtureBuilder()
-      // Tokens API mocks (e.g. Navigation tests) populate rates; without this,
-      // AggregatedBalance shows fiat and loginWithBalanceValidation never sees "25".
-      .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
-      .withNetworkControllerOnMainnet()
-      .withEnabledNetworks({
-        eip155: {
-          '0x1': true,
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              symbol: 'WETH',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
         },
-      })
-      .withTokensController({
-        allTokens: {
-          '0x1': {
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-              {
-                address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                symbol: 'WETH',
-                decimals: 18,
-                isERC721: false,
-                aggregators: [],
-              },
-            ],
-          },
-        },
-      })
-      .withAssetsController({
-        assetsBalance: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            'eip155:1/slip44:60': { amount: '25' },
-          },
-        },
-      })
-      .withAppStateController({
-        showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
-      })
-  );
+      },
+    });
 }
 
 // Local fixture for crypto payment tests
 function createShieldFixtureCrypto() {
-  return (
-    new FixtureBuilder()
-      // mockTokensV3Assets supplies conversion rates; keep native ETH in the overview
-      // so loginWithBalanceValidation can match "25" from eth-overview__primary-currency.
-      .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
-      .withNetworkControllerOnMainnet()
-      .withEnabledNetworks({
-        eip155: {
-          '0x1': true,
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          // USDC and USDT tokens on Mainnet
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 6,
+              isERC721: false,
+              aggregators: [],
+            },
+            {
+              address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+              symbol: 'USDT',
+              decimals: 6,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
         },
-      })
-      .withTokensController({
-        allTokens: {
+      },
+    })
+    .withTokenBalancesController({
+      tokenBalances: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           '0x1': {
-            // USDC and USDT tokens on Mainnet
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
-              {
-                address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                symbol: 'USDC',
-                decimals: 6,
-                isERC721: false,
-                aggregators: [],
-              },
-              {
-                address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-                symbol: 'USDT',
-                decimals: 6,
-                isERC721: false,
-                aggregators: [],
-              },
-            ],
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': toHex(100000000), // 100 USDC (6 decimals)
+            '0xdac17f958d2ee523a2206206994597c13d831ec7': toHex(100000000), // 100 USDT (6 decimals)
           },
         },
-      })
-      .withAssetsController({
-        // With assets-unify, virtual token balances + the token list come from
-        // `assetsBalance` + `assetsInfo` (see shared/lib/selectors/assets-migration).
-        // Rows are skipped if `assetsInfo` is missing for that assetId.
-        assetsInfo: {
-          'eip155:1/slip44:60': {
-            aggregators: [],
-            decimals: 18,
-            image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            type: 'native',
-          },
-          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-            aggregators: [],
-            decimals: 6,
-            image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-            name: 'USD Coin',
-            symbol: 'USDC',
-            type: 'erc20',
-          },
-          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-            aggregators: [],
-            decimals: 6,
-            image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xdac17f958d2ee523a2206206994597c13d831ec7.png',
-            name: 'Tether USD',
-            symbol: 'USDT',
-            type: 'erc20',
-          },
-        },
-        assetsBalance: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            'eip155:1/slip44:60': { amount: '25' },
-            // ERC-20 keys must match `normalizeAssetId()` (checksummed) or
-            // AccountsApiDataSource's filterResponseToKnownAssets drops API updates.
-            'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-              amount: '1000',
-            },
-            'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-              amount: '1000',
-            },
-          },
-        },
-      })
-      .withAppStateController({
-        showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
-      })
-  );
+      },
+    });
 }
 
 describe('Shield Subscription Tests', function () {
@@ -289,20 +222,12 @@ describe('Shield Subscription Tests', function () {
 
   describe('Crypto Payment', function () {
     describe('Shield Entry Modal', function () {
-      // eslint-disable-next-line mocha/no-exclusive-tests -- focus single test during shield/crypto debugging
       it('should get started on entry modal - annual plan', async function () {
         await withFixtures(
           {
             fixtures: createShieldFixtureCrypto().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (server: Mockttp) => {
-              // Accounts API: active chains + v5 balances (see AccountsApiDataSource
-              // in @metamask/assets-controller). Fixture `assetsBalance` keys must be
-              // checksummed erc20 IDs so filterResponseToKnownAssets keeps updates.
-              mockAccountsApiV2SupportedNetworks(server);
-              mockAccountsApiV5MultiaccountBalances(server);
-              mockTokensV2SupportedNetworks(server);
-              mockTokensV3Assets(server);
+            testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
               return shieldMockttpService.setup(server);
             },
@@ -356,11 +281,7 @@ describe('Shield Subscription Tests', function () {
           {
             fixtures: createShieldFixtureCrypto().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (server: Mockttp) => {
-              mockAccountsApiV2SupportedNetworks(server);
-              mockAccountsApiV5MultiaccountBalances(server);
-              mockTokensV2SupportedNetworks(server);
-              mockTokensV3Assets(server);
+            testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
               return shieldMockttpService.setup(server, {
                 mockNotEligible: true,
@@ -418,10 +339,8 @@ describe('Shield Subscription Tests', function () {
         {
           fixtures: createShieldFixtureCard().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
+          testSpecificMock: (server: Mockttp) => {
             const shieldMockttpService = new ShieldMockttpService();
-            await mockTokensV2SupportedNetworks(server);
-            await mockTokensV3Assets(server);
             return shieldMockttpService.setup(server);
           },
         },
@@ -445,10 +364,8 @@ describe('Shield Subscription Tests', function () {
         {
           fixtures: createShieldFixtureCard().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
+          testSpecificMock: (server: Mockttp) => {
             const shieldMockttpService = new ShieldMockttpService();
-            await mockTokensV2SupportedNetworks(server);
-            await mockTokensV3Assets(server);
             return shieldMockttpService.setup(server, {
               mockNotEligible: true,
             });

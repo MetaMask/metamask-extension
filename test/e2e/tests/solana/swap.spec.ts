@@ -1,12 +1,11 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks';
 import {
   mockGetMultipleAccounts,
   mockSolanaBalanceQuote,
@@ -34,7 +33,6 @@ import {
   mockGetFailedTransaction,
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
-  mockTokensV3Assets,
 } from './common-solana';
 
 async function mockSwapUSDCtoSOL(
@@ -63,8 +61,6 @@ async function mockSwapUSDCtoSOL(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -86,8 +82,6 @@ async function mockSwapNoQuotes(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -115,8 +109,6 @@ async function mockSwapSOLtoUSDCFailed(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -143,68 +135,14 @@ async function mockSwapSOLtoUSDC(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
   ];
 }
-
-/** Matches default multichain fixture account IDs + unified AssetsController state for Solana swap E2E. */
-const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
-  assetsInfo: {
-    'eip155:1337/slip44:60': {
-      aggregators: [],
-      decimals: 18,
-      image:
-        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-      name: 'Ethereum',
-      symbol: 'ETH',
-      type: 'native',
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-      decimals: 9,
-      image:
-        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-      name: 'Solana',
-      symbol: 'SOL',
-      type: 'native',
-    },
-  },
-  assetsBalance: {
-    'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-      'eip155:1337/slip44:60': {
-        amount: '25',
-      },
-    },
-    'd3d3a7c8-9a21-4606-93d9-b0e045cdaca2': {
-      'tron:728126428/slip44:195': {
-        amount: '0',
-      },
-      'tron:728126428/slip44:bandwidth': {
-        amount: '0',
-      },
-      'tron:728126428/slip44:maximum-bandwidth': {
-        amount: '0',
-      },
-      'tron:728126428/slip44:energy': {
-        amount: '0',
-      },
-      'tron:728126428/slip44:maximum-energy': {
-        amount: '0',
-      },
-    },
-    'fcaabb71-a0e3-4c2c-9292-972da4be2536': {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        amount: '50',
-      },
-    },
-  },
-};
 
 describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withConversionRates({
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               conversionTime: 1770832998.066,
@@ -223,7 +161,6 @@ describe('Swap on Solana', function () {
               usdConversionRate: 1932.163232734,
             },
           })
-          // .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDC,
@@ -231,13 +168,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap
@@ -275,8 +214,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
-        // await driver.delay(15000);
-
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -289,14 +227,15 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapUSDCtoSOL,
       },
       async ({ driver }) => {
         await login(driver);
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -304,7 +243,6 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap USDC → SOL
@@ -325,6 +263,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -338,14 +277,15 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapNoQuotes,
       },
       async ({ driver }) => {
         await login(driver);
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -353,7 +293,6 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap and verify no quotes message
@@ -374,14 +313,15 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },
       async ({ driver }) => {
         await login(driver);
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -389,7 +329,6 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap SOL → USDC
@@ -411,6 +350,7 @@ describe('Swap on Solana', function () {
         });
 
         // After failure, the bridge navigates to home/activity with the failed tx
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },
