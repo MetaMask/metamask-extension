@@ -2,13 +2,18 @@ import { strict as assert } from 'assert';
 import { until } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { withFixtures, createWebSocketConnection } from '../../helpers';
+import {
+  withFixtures,
+  createWebSocketConnection,
+  veryLargeDelayMs,
+} from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -60,17 +65,11 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
-        // In MV3 the phishing redirect is async (non-blocking
-        // onBeforeRequest). Using driver.get() or Selenium URL-polling can
-        // hang because they wait for page-load, which the mid-flight
-        // redirect prevents from completing. Navigate via executeScript
-        // (non-blocking) then use switchToWindowWithTitle which relies on
-        // the background-socket chrome.tabs.query polling instead.
-        await driver.openNewPage('about:blank');
-        await driver.executeScript(
-          `window.location.href = 'http://127.0.0.1:8080'`,
-        );
+        // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+        await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
@@ -238,10 +237,9 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
-        await driver.openNewPage('about:blank');
-        await driver.executeScript(
-          `window.location.href = 'http://127.0.0.1:8080'`,
-        );
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
@@ -282,10 +280,8 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
-        await driver.openNewPage('about:blank');
-        await driver.executeScript(
-          `window.location.href = '${phishingSite.href}'`,
-        );
+        await driver.openNewPage(phishingSite.href);
+
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
@@ -373,6 +369,7 @@ describe('Phishing Detection', function (this: Suite) {
         await driver.openNewPage(testPageURL);
 
         await createWebSocketConnection(driver, 'malicious.localhost');
+
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
