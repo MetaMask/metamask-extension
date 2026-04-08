@@ -95,13 +95,13 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
 
 /**
  * Distinct platform–build combos present in entries, in {@link ALL_BENCHMARK_COMBOS} order.
+ *
+ * @param entries - Benchmark rows (platform and buildType only).
  */
 function orderedCombosFromEntries(
   entries: Pick<BenchmarkEntry, 'platform' | 'buildType'>[],
 ): string[] {
-  const used = new Set(
-    entries.map((e) => buildCombo(e.platform, e.buildType)),
-  );
+  const used = new Set(entries.map((e) => buildCombo(e.platform, e.buildType)));
   return ALL_BENCHMARK_COMBOS.filter((combo) => used.has(combo));
 }
 
@@ -420,7 +420,13 @@ function buildHealthMap(
   const map = new Map<string, EntryHealth>();
   for (const entry of entries) {
     const baselineMetrics = baseline
-      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+      ? resolveBaseline(
+          baseline,
+          entry.presetName,
+          entry.benchmarkName,
+          entry.platform,
+          entry.buildType,
+        )
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
     const key = buildEntryKey(
@@ -632,12 +638,20 @@ function buildRelativeDeltaSection(
 
   for (const entry of entries) {
     const baselineMetrics =
-      resolveBaseline(baseline, entry.presetName, entry.benchmarkName) ??
+      resolveBaseline(
+        baseline,
+        entry.presetName,
+        entry.benchmarkName,
+        entry.platform,
+        entry.buildType,
+      ) ??
       (entry.presetName.startsWith('startup')
         ? resolveBaseline(
             baseline,
             entry.presetName,
             `${entry.platform}-${entry.buildType}-${entry.benchmarkName}`,
+            entry.platform,
+            entry.buildType,
           )
         : undefined);
     if (!baselineMetrics) {
@@ -772,7 +786,13 @@ export function buildBenchmarkSection(
                 return `<td align="left">–</td>`;
               }
               const baselineMetrics = baseline
-                ? resolveBaseline(baseline, entry.presetName, benchmarkName)
+                ? resolveBaseline(
+                    baseline,
+                    entry.presetName,
+                    benchmarkName,
+                    entry.platform,
+                    entry.buildType,
+                  )
                 : undefined;
               const health = computeEntryHealth(entry, baselineMetrics);
               const icon = HEALTH_ICON[health];
@@ -846,7 +866,13 @@ function buildHealthMatrixHtml(
   const cellMap = new Map<string, MatrixCellData>();
   for (const entry of allEntries) {
     const baselineMetrics = baseline
-      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+      ? resolveBaseline(
+          baseline,
+          entry.presetName,
+          entry.benchmarkName,
+          entry.platform,
+          entry.buildType,
+        )
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
     const key = buildEntryKey(
@@ -990,7 +1016,13 @@ function buildFailingItemsHtml(
   const listItems = allEntries
     .flatMap((entry) => {
       const baselineMetrics = baseline
-        ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+        ? resolveBaseline(
+            baseline,
+            entry.presetName,
+            entry.benchmarkName,
+            entry.platform,
+            entry.buildType,
+          )
         : undefined;
       if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
         return [];
