@@ -231,16 +231,24 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactions: _request.transactions as PublishBatchHookTransaction[],
         });
         if (result) {
-          const { upsertTransactionUIMetricsFragment } =
-            getTransactionMetricsRequest();
           for (const batchTx of _request.transactions) {
             if (batchTx.id) {
-              upsertTransactionUIMetricsFragment(batchTx.id, {
-                properties: {
-                  [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
-                    TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
-                },
-              });
+              try {
+                getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+                  batchTx.id,
+                  {
+                    properties: {
+                      [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                        TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+                    },
+                  },
+                );
+              } catch (e) {
+                console.error(
+                  'Failed to record sentinel_stx metrics fragment for batch tx',
+                  e,
+                );
+              }
             }
           }
         }
@@ -442,15 +450,19 @@ export async function publishHook({
 
     const result = await hook(transactionMeta, signedTx);
     if (result?.transactionHash) {
-      getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
-        transactionMeta.id,
-        {
-          properties: {
-            [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
-              TRANSACTION_SUBMISSION_METHOD.SENTINEL_RELAY,
+      try {
+        getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+          transactionMeta.id,
+          {
+            properties: {
+              [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                TRANSACTION_SUBMISSION_METHOD.SENTINEL_RELAY,
+            },
           },
-        },
-      );
+        );
+      } catch (e) {
+        console.error('Failed to record sentinel_relay metrics fragment', e);
+      }
       return result;
     }
     // else, fall back to regular regular transaction submission
@@ -471,15 +483,19 @@ export async function publishHook({
     });
 
     if (result?.transactionHash) {
-      getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
-        transactionMeta.id,
-        {
-          properties: {
-            [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
-              TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+      try {
+        getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+          transactionMeta.id,
+          {
+            properties: {
+              [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+            },
           },
-        },
-      );
+        );
+      } catch (e) {
+        console.error('Failed to record sentinel_stx metrics fragment', e);
+      }
       return result;
     }
     // else, fall back to regular regular transaction submission

@@ -582,6 +582,98 @@ describe('Transaction Controller Init', () => {
         properties: { transaction_submission_method: 'sentinel_stx' },
       });
     });
+
+    it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on sentinel_relay path', async () => {
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      const result = await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: jest
+              .fn()
+              .mockImplementation(() => {
+                throw new Error('metrics error');
+              }),
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'HD Key Tree' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {
+          isAtomicBatchSupported: jest.fn(),
+        } as unknown as PHArgs['transactionController'],
+        transactionMeta: {
+          ...mockTransactionMeta,
+          isExternalSign: true,
+        } as TransactionMeta,
+      });
+
+      expect(result).toStrictEqual({ transactionHash: '0xdelHash' });
+    });
+
+    it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on sentinel_stx path', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockResolvedValue({ transactionHash: '0xstxHash' });
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      const result = await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: jest
+              .fn()
+              .mockImplementation(() => {
+                throw new Error('metrics error');
+              }),
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'Ledger Hardware' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {} as PHArgs['transactionController'],
+        transactionMeta: mockTransactionMeta,
+      });
+
+      expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
+    });
   });
 
   describe('publishBatch hook', () => {
@@ -742,6 +834,107 @@ describe('Transaction Controller Init', () => {
       } as unknown as PublishBatchHookRequest);
 
       expect(upsertFragmentMock).not.toHaveBeenCalled();
+    });
+
+    it('returns the result even if getTransactionMetricsRequest throws', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const expectedResult = { results: [] };
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue(expectedResult);
+
+      const requestMock = buildInitRequestMock();
+      // getTransactionMetricsRequest is called once eagerly during init
+      // (addTransactionControllerListeners); let that succeed, then throw on
+      // the hook invocation to cover the try-catch guard.
+      requestMock.getTransactionMetricsRequest
+        .mockReturnValueOnce(
+          {} as unknown as ReturnType<
+            typeof requestMock.getTransactionMetricsRequest
+          >,
+        )
+        .mockImplementation(() => {
+          throw new Error('metrics request error');
+        });
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+      const controllerInstance =
+        transactionControllerClassMock.mock.instances[0];
+      // @ts-expect-error Partial mock state
+      controllerInstance.state = {
+        transactions: [mockTransactionMeta],
+      };
+
+      const result = await hooks?.publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(result).toStrictEqual(expectedResult);
+    });
+
+    it('returns the result even if upsertTransactionUIMetricsFragment throws', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const expectedResult = { results: [] };
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue(expectedResult);
+
+      const requestMock = buildInitRequestMock();
+      requestMock.getTransactionMetricsRequest.mockReturnValue({
+        upsertTransactionUIMetricsFragment: jest.fn().mockImplementation(() => {
+          throw new Error('metrics error');
+        }),
+      } as unknown as ReturnType<
+        typeof requestMock.getTransactionMetricsRequest
+      >);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+      const controllerInstance =
+        transactionControllerClassMock.mock.instances[0];
+      // @ts-expect-error Partial mock state
+      controllerInstance.state = {
+        transactions: [mockTransactionMeta],
+      };
+
+      const result = await hooks?.publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(result).toStrictEqual(expectedResult);
     });
   });
 });
