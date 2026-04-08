@@ -5,10 +5,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import {
-  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-  DEFAULT_BRIDGE_FEATURE_FLAGS,
-} from './constants';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   bridgeTransaction,
   checkQuoteRequestsAreNotMadeAfterTimestamp,
@@ -21,7 +18,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver }) => {
@@ -29,7 +26,6 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
-
         await bridgeTransaction({
           driver,
           quote: {
@@ -94,7 +90,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver, mockedEndpoint }) => {
@@ -179,7 +175,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver }) => {
@@ -209,7 +205,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver }) => {
@@ -242,7 +238,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver }) => {
@@ -279,7 +275,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
       async ({ driver }) => {

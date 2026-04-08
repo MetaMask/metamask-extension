@@ -177,6 +177,15 @@ class PerpsStreamManager {
           })
           .catch((err) => {
             console.error('[PerpsStreamManager] Failed to fetch markets', err);
+            const cachedMarkets = this.markets.getCachedData();
+            const hasCachedMarkets = this.markets.hasCachedData();
+
+            // Preserve the last known good market list when refresh fails.
+            if (hasCachedMarkets) {
+              push(cachedMarkets);
+              return;
+            }
+
             push(EMPTY_MARKETS);
           });
         // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function

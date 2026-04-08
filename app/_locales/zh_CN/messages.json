@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "跨链桥费用"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "获取一个新的？"
-  },
   "bridgeFromTo": {
     "message": "将 $1 $2 桥接到 $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "价格影响警告"
-  },
-  "bridgeQuoteExpired": {
-    "message": "您的报价已超时。"
   },
   "bridgeQuotesSortedByCost": {
     "message": "报价按预估总成本排序，该成本包括汇率及网络费用。"
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "领取并存入",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "平仓空头仓位"
   },
-  "perpsClosedShort": {
-    "message": "平仓空头仓位"
-  },
   "perpsConfirmCloseLong": {
     "message": "平仓多头仓位"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "含盈亏 $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "已加仓"
-  },
   "perpsLearnBasics": {
     "message": "了解永续合约的基础知识"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "开立空头仓位 $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "已开设多头仓位"
   },
   "perpsOraclePrice": {
     "message": "预言机价格"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "您批准"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "您拒绝了该交易。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
