@@ -217,7 +217,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                 </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate flex-1"
-                  data-testid="default-address"
+                  data-testid="default-address-container"
                 >
                   0x0DCD5...3E7bc
                 </p>

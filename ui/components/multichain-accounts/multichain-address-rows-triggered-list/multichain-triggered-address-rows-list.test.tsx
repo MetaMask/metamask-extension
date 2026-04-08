@@ -1089,4 +1089,5 @@ describe('MultichainTriggeredAddressRowsList', () => {
         ).not.toBeInTheDocument();
       });
     });
+  });
 });

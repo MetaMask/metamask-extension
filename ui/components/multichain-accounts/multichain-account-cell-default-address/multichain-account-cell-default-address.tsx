@@ -131,7 +131,7 @@ export const MultichainAccountCellDefaultAddress = ({
                 : TextColor.TextAlternative
             }
             className="flex-1"
-            data-testid="default-address"
+            data-testid="default-address-container"
           >
             {addressCopied
               ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`

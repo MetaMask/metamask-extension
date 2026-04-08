@@ -374,6 +374,7 @@ export const MultichainTriggeredAddressRowsList = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
+        className="min-w-0"
       >
         {children}
       </Box>

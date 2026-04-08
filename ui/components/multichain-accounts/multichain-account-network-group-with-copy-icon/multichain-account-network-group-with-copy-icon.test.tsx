@@ -48,7 +48,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
       createStore(),
     );
 
-    const container = screen.getByTestId('default-address');
+    const container = screen.getByTestId('default-address-container');
     expect(container).toBeInTheDocument();
   });
 
@@ -58,7 +58,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
       createStore(),
     );
 
-    const container = screen.getByTestId('default-address');
+    const container = screen.getByTestId('default-address-container');
     fireEvent.click(container);
 
     expect(mockHandleCopy).toHaveBeenCalledTimes(1);
@@ -86,7 +86,9 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     );
 
     expect(
-      screen.getByText(messages.addressCopied.message),
+      screen.getByText(
+        `${messages.networkNameEthereum.message} ${messages.addressCopied.message.toLowerCase()}`,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -105,7 +107,9 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
         createStoreWithPrefOff(),
       );
 
-      expect(screen.queryByTestId('default-address')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('default-address-container'),
+      ).not.toBeInTheDocument();
     });
 
     it('does not call copy handler when container is clicked', () => {
