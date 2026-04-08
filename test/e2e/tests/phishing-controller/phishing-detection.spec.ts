@@ -9,7 +9,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
-import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -61,17 +60,17 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
 
-        // In MV3 the phishing redirect is async (non-blocking onBeforeRequest),
-        // so the dapp page may load before browser.tabs.update fires. Wait for
-        // the redirect to land before looking for the window by title.
+        // In MV3 the phishing redirect is async (non-blocking
+        // onBeforeRequest). If it fires during driver.get() the navigation
+        // hangs, so open about:blank first then navigate without blocking.
+        await driver.openNewPage('about:blank');
+        await driver.executeScript(
+          `window.location.href = 'http://127.0.0.1:8080'`,
+        );
         await driver.wait(until.urlContains('localhost:9999'), 15000);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
-        // we need to wait for this selector to mitigate a race condition on the phishing page site
-        // see more here https://github.com/MetaMask/phishing-warning/pull/173
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
         await phishingWarningPage.clickProceedAnywayButton();
@@ -236,8 +235,10 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+        await driver.openNewPage('about:blank');
+        await driver.executeScript(
+          `window.location.href = 'http://127.0.0.1:8080'`,
+        );
         await driver.wait(until.urlContains('localhost:9999'), 15000);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -280,7 +281,10 @@ describe('Phishing Detection', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await waitForPhishingBlocklistToBeLoaded(driver);
-        await driver.openNewPage(phishingSite.href);
+        await driver.openNewPage('about:blank');
+        await driver.executeScript(
+          `window.location.href = '${phishingSite.href}'`,
+        );
         await driver.wait(until.urlContains('localhost:9999'), 15000);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
