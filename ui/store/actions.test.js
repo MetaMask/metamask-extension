@@ -34,7 +34,7 @@ import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
-jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
+jest.mock('../../app/scripts/messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
     controller: {
       state: {},
