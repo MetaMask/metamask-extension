@@ -246,7 +246,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   position,
   currentPrice,
 }) => {
-  const t = useI18nContext();
+  const t = useI18nContext() as CloseToastTranslation;
   const { track } = usePerpsEventTracking();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,

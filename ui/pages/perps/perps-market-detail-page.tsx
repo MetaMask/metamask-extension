@@ -89,6 +89,7 @@ import { ReversePositionModal } from '../../components/app/perps/reverse-positio
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
+import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
