@@ -150,7 +150,7 @@ const MESSENGER_EXPOSED_METHODS = ['maybeRecordFirstTimeInfo'] as const;
  * run migration.
  *
  */
-export default class AppMetadataController extends BaseController<
+export class AppMetadataController extends BaseController<
   typeof controllerName,
   AppMetadataControllerState,
   AppMetadataControllerMessenger
@@ -240,3 +240,5 @@ export default class AppMetadataController extends BaseController<
     }
   }
 }
+
+export default AppMetadataController;
