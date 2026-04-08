@@ -150,7 +150,7 @@ function renderElement(
   index: number,
 ): React.ReactNode {
   // Check visibility predicate
-  if ('visible' in element && element.visible && !element.visible(ctx)) {
+  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
     return null;
   }
 

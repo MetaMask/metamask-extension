@@ -40,7 +40,7 @@ const justificationSection: SchemaSection = {
   elements: [
     {
       type: 'justification',
-      visible: (ctx) => Boolean(ctx.permission.justification),
+      isVisible: (ctx) => Boolean(ctx.permission.justification),
       views: ['confirmation'],
     },
     { type: 'account', views: ['confirmation'] },
@@ -55,7 +55,7 @@ const permissionInfoSection: SchemaSection = {
       type: 'address',
       labelKey: 'recipient',
       getAddress: (ctx) => ctx.to,
-      visible: (ctx) => Boolean(ctx.to),
+      isVisible: (ctx) => Boolean(ctx.to),
       views: ['confirmation'],
     },
     { type: 'network', views: ['confirmation'] },
@@ -154,7 +154,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldInitialAllowance',
           getValue: (ctx) =>
             new BigNumber(getData(ctx).initialAmount as string),
-          visible: (ctx) => Boolean(getData(ctx).initialAmount),
+          isVisible: (ctx) => Boolean(getData(ctx).initialAmount),
           reviewLabelKey: 'gatorPermissionsInitialAllowance',
           reviewTestId: 'review-gator-permission-initial-allowance',
         },
@@ -162,7 +162,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'confirmFieldMaxAllowance',
           getValue: (ctx) => new BigNumber(getData(ctx).maxAmount as string),
-          visible: (ctx) => {
+          isVisible: (ctx) => {
             const max = getData(ctx).maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() !== MAX_UINT256);
           },
@@ -315,7 +315,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           getValue: (ctx) =>
             new BigNumber(getData(ctx).initialAmount as string),
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as Hex,
-          visible: (ctx) => Boolean(getData(ctx).initialAmount),
+          isVisible: (ctx) => Boolean(getData(ctx).initialAmount),
           reviewLabelKey: 'gatorPermissionsInitialAllowance',
           reviewTestId: 'review-gator-permission-initial-allowance',
         },
@@ -324,7 +324,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldMaxAllowance',
           getValue: (ctx) => new BigNumber(getData(ctx).maxAmount as string),
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as Hex,
-          visible: (ctx) => {
+          isVisible: (ctx) => {
             const max = getData(ctx).maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() !== MAX_UINT256);
           },

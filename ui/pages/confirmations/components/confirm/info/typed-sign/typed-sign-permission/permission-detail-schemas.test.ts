@@ -115,8 +115,8 @@ describe('PERMISSION_SCHEMAS', () => {
         permission: { type: 'test', data: {} },
       });
       const field = justificationSection.elements[0];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(false);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(false);
       }
     });
 
@@ -129,8 +129,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = justificationSection.elements[0];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(true);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(true);
       }
     });
 
@@ -145,16 +145,16 @@ describe('PERMISSION_SCHEMAS', () => {
     it('address field is hidden when to is not present', () => {
       const ctx = buildCtx();
       const field = permissionInfoSection.elements[1];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(false);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(false);
       }
     });
 
     it('address field is visible when to is present', () => {
       const ctx = buildCtx({ to: '0x1234' });
       const field = permissionInfoSection.elements[1];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(true);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(true);
       }
     });
 
@@ -275,8 +275,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = schema.sections[2].elements[0];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(false);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(false);
       }
     });
 
@@ -288,8 +288,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = schema.sections[2].elements[0];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(true);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(true);
       }
     });
 
@@ -305,8 +305,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = schema.sections[2].elements[1];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(false);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(false);
       }
     });
 
@@ -318,8 +318,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = schema.sections[2].elements[1];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(true);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(true);
       }
     });
 
@@ -405,8 +405,8 @@ describe('PERMISSION_SCHEMAS', () => {
         },
       });
       const field = schema.sections[2].elements[1];
-      if ('visible' in field && field.visible) {
-        expect(field.visible(ctx)).toBe(false);
+      if ('isVisible' in field && field.isVisible) {
+        expect(field.isVisible(ctx)).toBe(false);
       }
     });
 

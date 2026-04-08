@@ -62,7 +62,7 @@ export type AmountField = {
   /** For ERC20 amounts, returns the token contract address. */
   getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
   tooltip?: string;
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   /** Which views this field appears in. Omit for all views. */
   views?: FieldView[];
   /** Alternative label key for the review page. */
@@ -79,7 +79,7 @@ export type TextField = {
   labelKey: string;
   getValue: (ctx: PermissionRenderContext) => I18nValue;
   tooltip?: string;
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
   reviewLabelKey?: string;
   reviewTestId?: string;
@@ -91,7 +91,7 @@ export type DateField = {
   labelKey: string;
   getTimestamp: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
   reviewLabelKey?: string;
   reviewTestId?: string;
@@ -100,7 +100,7 @@ export type DateField = {
 /** An expiry row. Renderers handle the "never expires" case. */
 export type ExpiryField = {
   type: 'expiry';
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
   reviewTestId?: string;
 };
@@ -117,7 +117,7 @@ export type TotalExposureStreamParams = {
 export type TotalExposureField = {
   type: 'totalExposure';
   getStreamParams: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
 };
 
@@ -134,7 +134,7 @@ export type DividerElement = {
 /** Displays the justification text. */
 export type JustificationField = {
   type: 'justification';
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
 };
 
@@ -156,7 +156,7 @@ export type AddressField = {
   type: 'address';
   labelKey: string;
   getAddress: (ctx: PermissionRenderContext) => string | undefined;
-  visible?: (ctx: PermissionRenderContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
   views?: FieldView[];
 };
 

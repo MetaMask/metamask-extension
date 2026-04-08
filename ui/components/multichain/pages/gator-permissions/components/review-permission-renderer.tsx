@@ -93,7 +93,7 @@ function renderElement(
 
   const rowKey = schemaElementDomKey(sectionTestId, element, index);
 
-  if ('visible' in element && element.visible && !element.visible(ctx)) {
+  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
     return null;
   }
 
