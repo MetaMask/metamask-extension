@@ -5571,6 +5571,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/design-system-shared@npm:0.7.0-preview.4ce710b":
+  version: 0.7.0-preview.4ce710b
+  resolution: "@metamask-previews/design-system-shared@npm:0.7.0-preview.4ce710b"
+  dependencies:
+    "@metamask/utils": "npm:^11.11.0"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+  checksum: 10/a30f3805c8fe9dd6a2dd364a39b2d490dc4ff9f9846e9c858f93b43a3167a360048201e9f428e67e817433f93456d1c119e4bd55058325f408e8d6cad35eac06
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/7715-permission-types@npm:0.5.0"
@@ -6161,11 +6172,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "@metamask/design-system-react@npm:0.12.0"
+"@metamask/design-system-react@npm:@metamask-previews/design-system-react@0.14.0-preview.4ce710b":
+  version: 0.14.0-preview.4ce710b
+  resolution: "@metamask-previews/design-system-react@npm:0.14.0-preview.4ce710b"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.5.0"
+    "@metamask-previews/design-system-shared": "npm:0.7.0-preview.4ce710b"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6173,43 +6184,27 @@ __metadata:
   peerDependencies:
     "@metamask/design-system-tailwind-preset": ^0.6.0
     "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.10.0
+    "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/f3b839c442645c97401e928cb6f4831ec507331df1527e39659593ee163366d9ebc916ce402d5056e0112af684cdbe7158525c784f3aa25c010d55546c5346a0
+  checksum: 10/a2c71a67efb6a4bd7332063d552db578f198f5e3b9fa25eac1c7c3aeebe321ad256662bd9866acaf7aa2a0bdb0b87379108e7e57c7a6eadf9e641e06a5435c89
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/design-system-shared@npm:0.5.0"
-  dependencies:
-    "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/9b37df0e330429ecee6bc8fabe7aef0b9575383d5a86808b34ae76283c8938540a27c32f0cde9b72fdf076fbba1b926f00b58b8ec5699f3c87631b502972c870
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-tailwind-preset@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.6.1"
+"@metamask/design-system-tailwind-preset@npm:@metamask-previews/design-system-tailwind-preset@0.6.1-preview.4ce710b":
+  version: 0.6.1-preview.4ce710b
+  resolution: "@metamask-previews/design-system-tailwind-preset@npm:0.6.1-preview.4ce710b"
   peerDependencies:
     "@metamask/design-tokens": ^8.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/04914d04f7ab3e7433dae294b9245e3525d1306ea02ac2a8974db7e3958cfa4b1a2c866445f0b02e46435cb342378ace41dd747eb28614641fcd17fdf5c8d95c
+  checksum: 10/45091e5d4a995bf1a7139fd7c569cd3d9dde3d89b4a4900e8d0958ddea66e9f5e15dea8cc385df935c1efb59eb498dad8c4068f6cf1273ec852eee37070f6afe
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/design-tokens@npm:7.1.0"
-  checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^8.2.2":
-  version: 8.2.2
-  resolution: "@metamask/design-tokens@npm:8.2.2"
-  checksum: 10/2ab9e2c148f55874819c550a2e038c050d906709c33315edd200ddaeb7677b5f121f50fa2f43c06ce94b5fc66b59450c81b8927088721d8ad6ee559cf864f442
+"@metamask/design-tokens@npm:@metamask-previews/design-tokens@8.3.0-preview.4ce710b":
+  version: 8.3.0-preview.4ce710b
+  resolution: "@metamask-previews/design-tokens@npm:8.3.0-preview.4ce710b"
+  checksum: 10/3e1322cb89d2054a9ef1b88a16bb5ba254cb0d0de055d5e8cdd50bbf62d468db30cdb7a6d425a1ddb06893e3dce8acc85ff592f384e4605c9145dc6736aa2181
   languageName: node
   linkType: hard
 
@@ -8508,6 +8503,25 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/691a268af66593b60e9807a069127993cea3cdc941f99d5d7ca4664868754f08945821f1787b2f3e99e4497df63ceb0af37a2419ad494da29a1fddffe94f5797
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.11.0":
+  version: 11.11.0
+  resolution: "@metamask/utils@npm:11.11.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/c4381b9e451a9616bde84ac659bc0d1848ef06b6e605f877bfa065b78c8ed5015706683ea88a3387de5eaeb3a50d1af9af0994f04f9e06258d992598fe2be3bf
   languageName: node
   linkType: hard
 
@@ -34120,9 +34134,9 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.2"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^1.0.0"
-    "@metamask/design-system-react": "npm:^0.12.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
-    "@metamask/design-tokens": "npm:^8.2.2"
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.14.0-preview.4ce710b"
+    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.6.1-preview.4ce710b"
+    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@8.3.0-preview.4ce710b"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.0"
