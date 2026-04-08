@@ -16,10 +16,6 @@ module.exports = {
   moduleNameMapper: {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
-    // Real package pulls ESM-only deps (e.g. @noble/hashes); stub for unit tests.
-    // Suite-specific `jest.mock('@metamask/perps-controller', ...)` overrides this.
-    '^@metamask/perps-controller$':
-      '<rootDir>/test/mocks/metamask-perps-controller.js',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
