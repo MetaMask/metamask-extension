@@ -154,6 +154,11 @@ function renderElement(
     return null;
   }
 
+  // Skip elements not intended for the confirmation view
+  if ('views' in element && element.views && !element.views.includes('confirmation')) {
+    return null;
+  }
+
   switch (element.type) {
     case 'amount':
       return renderAmountField(element, ctx, t, index);

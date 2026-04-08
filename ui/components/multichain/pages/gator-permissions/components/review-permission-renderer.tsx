@@ -21,43 +21,6 @@ import {
 import { GatorPermissionDetailRow } from './gator-permission-detail-row';
 
 // ---------------------------------------------------------------------------
-// Mapping from schema labelKeys to review-page i18n keys and testIds
-// ---------------------------------------------------------------------------
-
-type ReviewFieldMapping = {
-  labelKey: string;
-  testId: string;
-  /** If true, append "/sec" to the formatted amount. */
-  isRatePerSecond?: boolean;
-};
-
-/**
- * Maps schema field labelKeys to review-page-specific labels and testIds.
- * Fields not listed here are omitted on the review page (see comments below).
- */
-const REVIEW_FIELD_MAP: Record<string, ReviewFieldMapping> = {
-  confirmFieldInitialAllowance: {
-    labelKey: 'gatorPermissionsInitialAllowance',
-    testId: 'review-gator-permission-initial-allowance',
-  },
-  confirmFieldMaxAllowance: {
-    labelKey: 'gatorPermissionsMaxAllowance',
-    testId: 'review-gator-permission-max-allowance',
-  },
-  confirmFieldStartDate: {
-    labelKey: 'gatorPermissionsStartDate',
-    testId: 'review-gator-permission-start-date',
-  },
-  confirmFieldStreamRate: {
-    labelKey: 'gatorPermissionsStreamRate',
-    testId: 'review-gator-permission-stream-rate',
-    isRatePerSecond: true,
-  },
-  // confirmFieldAllowance, confirmFieldFrequency, confirmFieldAvailablePerDay:
-  // shown in the collapsed summary or skipped on purpose.
-};
-
-// ---------------------------------------------------------------------------
 // Format helpers
 // ---------------------------------------------------------------------------
 
@@ -119,6 +82,15 @@ function renderElement(
   index: number,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
+  // Skip elements not intended for the review detail view
+  if (
+    'views' in element &&
+    element.views &&
+    !element.views.includes('reviewDetail')
+  ) {
+    return null;
+  }
+
   const rowKey = schemaElementDomKey(sectionTestId, element, index);
 
   if ('visible' in element && element.visible && !element.visible(ctx)) {
@@ -126,11 +98,7 @@ function renderElement(
   }
 
   switch (element.type) {
-    case 'amount': {
-      const mapping = REVIEW_FIELD_MAP[element.labelKey];
-      if (!mapping) {
-        return null;
-      }
+    case 'amount':
       return renderAmountElement(
         rowKey,
         element,
@@ -140,40 +108,29 @@ function renderElement(
         tokenDecimals,
         loading,
       );
-    }
 
-    case 'text': {
-      const mapping = REVIEW_FIELD_MAP[element.labelKey];
-      if (!mapping) {
-        return null;
-      }
+    case 'text':
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(mapping.labelKey)}
+          label={t(element.reviewLabelKey ?? element.labelKey)}
           value={translateValue(t, element.getValue(ctx))}
-          testId={mapping.testId}
+          testId={element.reviewTestId}
         />
       );
-    }
 
-    case 'date': {
-      const mapping = REVIEW_FIELD_MAP[element.labelKey];
-      if (!mapping) {
-        return null;
-      }
+    case 'date':
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(mapping.labelKey)}
+          label={t(element.reviewLabelKey ?? element.labelKey)}
           value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
-          testId={mapping.testId}
+          testId={element.reviewTestId}
         />
       );
-    }
 
     case 'expiry':
-      return renderExpiryElement(rowKey, ctx, t, rules);
+      return renderExpiryElement(rowKey, ctx, t, element.reviewTestId, rules);
 
     case 'totalExposure':
     case 'divider':
@@ -198,20 +155,19 @@ function renderAmountElement(
   tokenDecimals: number | undefined,
   loading: boolean,
 ): React.ReactNode {
-  const mapping = REVIEW_FIELD_MAP[element.labelKey];
   const rawValue = element.getValue(ctx);
   let displayValue = formatRawAmount(rawValue, tokenDecimals, tokenSymbol);
 
-  if (mapping?.isRatePerSecond) {
+  if (element.isRatePerSecond) {
     displayValue = `${displayValue}/sec`;
   }
 
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(mapping?.labelKey ?? element.labelKey)}
+      label={t(element.reviewLabelKey ?? element.labelKey)}
       value={displayValue}
-      testId={mapping?.testId}
+      testId={element.reviewTestId}
       isLoading={loading}
     />
   );
@@ -221,6 +177,7 @@ function renderExpiryElement(
   rowKey: string,
   ctx: PermissionRenderContext,
   t: I18nFunction,
+  testId: string | undefined,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   let displayValue: string;
@@ -238,7 +195,7 @@ function renderExpiryElement(
       key={rowKey}
       label={t('gatorPermissionsExpirationDate')}
       value={displayValue}
-      testId="review-gator-permission-expiration-date"
+      testId={testId}
     />
   );
 }

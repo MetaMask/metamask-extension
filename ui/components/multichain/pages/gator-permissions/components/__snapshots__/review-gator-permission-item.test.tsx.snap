@@ -445,7 +445,6 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
         </div>
       </div>
-      
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"

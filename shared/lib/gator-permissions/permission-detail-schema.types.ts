@@ -12,6 +12,9 @@ export type I18nValue = {
   args?: (string | number)[];
 };
 
+/** Views in which a schema element can appear. */
+export type FieldView = 'confirmation' | 'reviewDetail';
+
 /**
  * The context object passed to all accessor functions in the schema.
  * Built by each renderer from decoded permission data plus pre-resolved async data.
@@ -59,7 +62,15 @@ export type AmountField = {
   /** For ERC20 amounts, returns the token contract address. */
   getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
   tooltip?: string;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
+  visible?: (ctx: PermissionRenderContext) => boolean;
+  /** Which views this field appears in. Omit for all views. */
+  views?: FieldView[];
+  /** Alternative label key for the review page. */
+  reviewLabelKey?: string;
+  /** Test ID for the review-page row. */
+  reviewTestId?: string;
+  /** If true, the review renderer appends "/sec" to the formatted value. */
+  isRatePerSecond?: boolean;
 };
 
 /** A plain text row. */
@@ -69,6 +80,9 @@ export type TextField = {
   getValue: (ctx: PermissionRenderContext) => I18nValue;
   tooltip?: string;
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
+  reviewLabelKey?: string;
+  reviewTestId?: string;
 };
 
 /** A date/time row. */
@@ -78,12 +92,17 @@ export type DateField = {
   getTimestamp: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
+  reviewLabelKey?: string;
+  reviewTestId?: string;
 };
 
 /** An expiry row. Renderers handle the "never expires" case. */
 export type ExpiryField = {
   type: 'expiry';
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
+  reviewTestId?: string;
 };
 
 /** Stream parameters for total exposure calculation. */
@@ -99,11 +118,13 @@ export type TotalExposureField = {
   type: 'totalExposure';
   getStreamParams: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
 };
 
 /** A visual divider between rows. */
 export type DividerElement = {
   type: 'divider';
+  views?: FieldView[];
 };
 
 // ---------------------------------------------------------------------------
@@ -114,17 +135,20 @@ export type DividerElement = {
 export type JustificationField = {
   type: 'justification';
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
 };
 
 /** Displays the account row (account selector). */
 export type AccountField = {
   type: 'account';
+  views?: FieldView[];
 };
 
 /** Displays the request origin URL. */
 export type OriginField = {
   type: 'origin';
   tooltip?: string;
+  views?: FieldView[];
 };
 
 /** Displays a recipient / delegate address. */
@@ -133,11 +157,13 @@ export type AddressField = {
   labelKey: string;
   getAddress: (ctx: PermissionRenderContext) => string | undefined;
   visible?: (ctx: PermissionRenderContext) => boolean;
+  views?: FieldView[];
 };
 
 /** Displays the network row. */
 export type NetworkField = {
   type: 'network';
+  views?: FieldView[];
 };
 
 /** Union of all renderable items within a section. */
@@ -176,6 +202,32 @@ export type TokenResolution =
   | { kind: 'none' };
 
 // ---------------------------------------------------------------------------
+// Summary — declares collapsed-card data for the review page
+// ---------------------------------------------------------------------------
+
+/** Summary amount — either a hex token value or a translatable text. */
+export type SummaryAmount = {
+  labelKey: string;
+  testId: string;
+} & (
+  | { getHexValue: (ctx: PermissionRenderContext) => Hex }
+  | { getI18nValue: (ctx: PermissionRenderContext) => I18nValue }
+);
+
+/** Summary frequency row. */
+export type SummaryFrequency = {
+  labelKey: string;
+  testId: string;
+  getValueKey: (ctx: PermissionRenderContext) => string;
+};
+
+/** Full summary for a schema entry's collapsed review card. */
+export type SchemaSummary = {
+  amount: SummaryAmount;
+  frequency?: SummaryFrequency;
+};
+
+// ---------------------------------------------------------------------------
 // Schema entry and registry
 // ---------------------------------------------------------------------------
 
@@ -189,6 +241,8 @@ export type PermissionSchemaEntry = {
   validate?: (permission: { data: Record<string, unknown> }) => void;
   /** Sections to render. */
   sections: SchemaSection[];
+  /** Collapsed-card summary for the review page. */
+  summary?: SchemaSummary;
 };
 
 /** Maps permission type strings to their schema entries. */

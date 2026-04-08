@@ -18,22 +18,15 @@ import {
   IconName,
   Button,
 } from '@metamask/design-system-react';
-import {
-  Erc20TokenPeriodicPermission,
-  Erc20TokenStreamPermission,
-  PermissionInfoWithMetadata,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getInternalAccountByAddress } from '../../../../../selectors';
-import {
-  convertAmountPerSecondToAmountPerPeriod,
-  formatDecimalShiftedValue,
-  getPeriodFrequencyValueTranslationKey,
-} from '../../../../../../shared/lib/gator-permissions';
+import { formatDecimalShiftedValue } from '../../../../../../shared/lib/gator-permissions';
+import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
@@ -84,19 +77,6 @@ type ReviewGatorPermissionItemProps = {
    * Whether this permission has a pending revoke click (temporary UI state)
    */
   hasRevokeBeenClicked?: boolean;
-};
-
-type CollapsedSummary = {
-  amountLabel: {
-    translationKey: string;
-    value: string;
-    testId: string;
-  };
-  frequencyLabel: {
-    translationKey: string;
-    valueTranslationKey: string;
-    testId: string;
-  };
 };
 
 export const ReviewGatorPermissionItem = ({
@@ -151,89 +131,55 @@ export const ReviewGatorPermissionItem = ({
     setIsExpanded(!isExpanded);
   };
 
-  const formatValue = useCallback(
+  const schemaEntry = PERMISSION_SCHEMAS[permissionType];
+  const summary = schemaEntry?.summary;
+
+  const summaryCtx = useMemo(
+    () => ({
+      permission: {
+        type: permissionType,
+        data: permissionDataForReview(permissionResponse.permission),
+      },
+      expiry: null as number | null,
+      chainId,
+      origin: '',
+      tokenInfo: {
+        symbol: tokenMetadata.symbol,
+        decimals: tokenMetadata.decimals,
+      },
+    }),
+    [permissionType, permissionResponse.permission, chainId, tokenMetadata],
+  );
+
+  const formatHexValue = useCallback(
     (value: Hex | null | undefined, placeholder: string = 'Unknown') => {
       if (!value) {
         return placeholder;
       }
-
       const { symbol, decimals } = tokenMetadata;
-
       const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
       if (typeof decimals === 'number') {
         return formattedValueWithSymbol;
       }
-
       return `${formattedValueWithSymbol} (raw units)`;
     },
     [tokenMetadata],
   );
 
-  /**
-   * Returns the collapsed summary for the permission (amount + frequency).
-   * This is a view-level concern specific to the review page layout.
-   */
-  const collapsedSummary = useMemo((): CollapsedSummary => {
-    switch (permissionType) {
-      case 'native-token-stream':
-      case 'erc20-token-stream': {
-        const permission =
-          permissionResponse.permission as Erc20TokenStreamPermission;
-        const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
-          permission.data.amountPerSecond,
-          'weekly',
-        );
-        return {
-          amountLabel: {
-            translationKey: 'gatorPermissionsStreamingAmountLabel',
-            value: formatValue(amountPerPeriod),
-            testId: 'review-gator-permission-amount-label',
-          },
-          frequencyLabel: {
-            translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
-            valueTranslationKey: 'gatorPermissionWeeklyFrequency',
-            testId: 'review-gator-permission-frequency-label',
-          },
-        };
-      }
-      case 'native-token-periodic':
-      case 'erc20-token-periodic': {
-        const permission =
-          permissionResponse.permission as Erc20TokenPeriodicPermission;
-        return {
-          amountLabel: {
-            translationKey: 'amount',
-            value: formatValue(permission.data.periodAmount),
-            testId: 'review-gator-permission-amount-label',
-          },
-          frequencyLabel: {
-            translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-            valueTranslationKey: getPeriodFrequencyValueTranslationKey(
-              permission.data.periodDuration,
-            ),
-            testId: 'review-gator-permission-frequency-label',
-          },
-        };
-      }
-      case 'erc20-token-revocation':
-        return {
-          amountLabel: {
-            translationKey: 'revokeTokenApprovals',
-            value: t('allTokens'),
-            testId: 'review-gator-permission-amount-label',
-          },
-          frequencyLabel: {
-            translationKey: '',
-            valueTranslationKey: '',
-            testId: 'review-gator-permission-frequency-label',
-          },
-        };
-      default:
-        throw new Error(
-          `Invalid permission type: ${permissionType as unknown as string}`,
-        );
+  const summaryAmountValue = useMemo(() => {
+    if (!summary) {
+      return '';
     }
-  }, [permissionType, permissionResponse.permission, formatValue, t]);
+    if ('getHexValue' in summary.amount) {
+      return formatHexValue(summary.amount.getHexValue(summaryCtx));
+    }
+    const i18nVal = summary.amount.getI18nValue(summaryCtx);
+    return t(i18nVal.key, i18nVal.args);
+  }, [summary, summaryCtx, formatHexValue, t]);
+
+  const summaryFrequencyValueKey = useMemo(() => {
+    return summary?.frequency?.getValueKey(summaryCtx) ?? '';
+  }, [summary, summaryCtx]);
 
   return (
     <Card
@@ -283,17 +229,19 @@ export const ReviewGatorPermissionItem = ({
 
       {/* Permission details */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
-        <GatorPermissionDetailRow
-          label={t(collapsedSummary.amountLabel.translationKey)}
-          value={collapsedSummary.amountLabel.value}
-          testId={collapsedSummary.amountLabel.testId}
-          isLoading={loading}
-        />
-        {collapsedSummary.frequencyLabel.translationKey && (
+        {summary && (
           <GatorPermissionDetailRow
-            label={t(collapsedSummary.frequencyLabel.translationKey)}
-            value={t(collapsedSummary.frequencyLabel.valueTranslationKey)}
-            testId={collapsedSummary.frequencyLabel.testId}
+            label={t(summary.amount.labelKey)}
+            value={summaryAmountValue}
+            testId={summary.amount.testId}
+            isLoading={loading}
+          />
+        )}
+        {summary?.frequency && (
+          <GatorPermissionDetailRow
+            label={t(summary.frequency.labelKey)}
+            value={t(summaryFrequencyValueKey)}
+            testId={summary.frequency.testId}
           />
         )}
         {/* Account row - custom layout with avatar and copy icon */}

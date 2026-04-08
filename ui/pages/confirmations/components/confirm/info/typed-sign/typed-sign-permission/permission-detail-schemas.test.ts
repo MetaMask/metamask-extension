@@ -29,6 +29,82 @@ describe('PERMISSION_SCHEMAS', () => {
     });
   });
 
+  describe('views annotations', () => {
+    it('common section elements are confirmation-only', () => {
+      const schema = PERMISSION_SCHEMAS['native-token-periodic'];
+      // justification section
+      for (const el of schema.sections[0].elements) {
+        expect('views' in el && el.views).toEqual(['confirmation']);
+      }
+      // permission info section
+      for (const el of schema.sections[1].elements) {
+        expect('views' in el && el.views).toEqual(['confirmation']);
+      }
+    });
+
+    it('dividers are confirmation-only', () => {
+      const schema = PERMISSION_SCHEMAS['native-token-periodic'];
+      const dividers = schema.sections
+        .flatMap((s) => s.elements)
+        .filter((e) => e.type === 'divider');
+      for (const d of dividers) {
+        expect(d.views).toEqual(['confirmation']);
+      }
+    });
+
+    it('fields with reviewLabelKey appear in all views (no views restriction)', () => {
+      const schema = PERMISSION_SCHEMAS['native-token-stream'];
+      const fieldsWithReviewKey = schema.sections
+        .flatMap((s) => s.elements)
+        .filter((e) => 'reviewLabelKey' in e && e.reviewLabelKey);
+      expect(fieldsWithReviewKey.length).toBeGreaterThan(0);
+      for (const f of fieldsWithReviewKey) {
+        expect('views' in f ? f.views : undefined).toBeUndefined();
+      }
+    });
+  });
+
+  describe('summary', () => {
+    it('native-token-periodic has hex amount and frequency', () => {
+      const schema = PERMISSION_SCHEMAS['native-token-periodic'];
+      expect(schema.summary).toBeDefined();
+      expect(schema.summary?.amount.labelKey).toBe('amount');
+      expect('getHexValue' in schema.summary!.amount).toBe(true);
+      expect(schema.summary?.frequency).toBeDefined();
+
+      const ctx = buildCtx({
+        permission: {
+          type: 'native-token-periodic',
+          data: { periodAmount: '0xabc', periodDuration: 86400, startTime: 1 },
+        },
+      });
+      if ('getHexValue' in schema.summary!.amount) {
+        expect(schema.summary!.amount.getHexValue(ctx)).toBe('0xabc');
+      }
+    });
+
+    it('native-token-stream has hex amount and weekly frequency', () => {
+      const schema = PERMISSION_SCHEMAS['native-token-stream'];
+      expect(schema.summary).toBeDefined();
+      expect('getHexValue' in schema.summary!.amount).toBe(true);
+      expect(schema.summary?.frequency?.getValueKey(buildCtx())).toBe(
+        'gatorPermissionWeeklyFrequency',
+      );
+    });
+
+    it('erc20-token-revocation has i18n amount and no frequency', () => {
+      const schema = PERMISSION_SCHEMAS['erc20-token-revocation'];
+      expect(schema.summary).toBeDefined();
+      expect('getI18nValue' in schema.summary!.amount).toBe(true);
+      if ('getI18nValue' in schema.summary!.amount) {
+        expect(schema.summary!.amount.getI18nValue(buildCtx())).toEqual({
+          key: 'allTokens',
+        });
+      }
+      expect(schema.summary?.frequency).toBeUndefined();
+    });
+  });
+
   describe('common sections', () => {
     const schema = PERMISSION_SCHEMAS['native-token-periodic'];
     const justificationSection = schema.sections[0];
