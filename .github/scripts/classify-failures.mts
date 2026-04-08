@@ -49,13 +49,13 @@
  *   - Sends a structured log to Sentry (when SENTRY_DSN_PERFORMANCE is set)
  */
 
-import { execFileSync } from 'node:child_process';
 import { readFileSync, appendFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { getGitHubToken } from './shared/github-token.mts';
+import { ghApi } from './shared/gh-api.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -252,35 +252,11 @@ const transientErrorRegexes = config.transientErrorPatterns.map(
 const blockerRegexes = config.blockerPatterns.map((p) => new RegExp(p, 'i'));
 
 // ---------------------------------------------------------------------------
-// GitHub API helpers (gh CLI — no npm dependencies)
+// GitHub API helpers
 // ---------------------------------------------------------------------------
 
-const ghEnv = { ...process.env, GH_TOKEN: GITHUB_TOKEN };
-
-/** Call a GitHub REST API endpoint via `gh api`. Supports optional POST body and token override. */
-function ghApi(
-  path: string,
-  opts?: {
-    paginate?: boolean;
-    jq?: string;
-    method?: string;
-    body?: Record<string, unknown>;
-    token?: string;
-  },
-): string {
-  const args = ['api', path];
-  if (opts?.paginate) args.push('--paginate');
-  if (opts?.jq) args.push('--jq', opts.jq);
-  if (opts?.method) args.push('--method', opts.method);
-  if (opts?.body) args.push('--input', '-');
-  const env = opts?.token ? { ...process.env, GH_TOKEN: opts.token } : ghEnv;
-  return execFileSync('gh', args, {
-    encoding: 'utf8',
-    ...(opts?.body ? { input: JSON.stringify(opts.body) } : {}),
-    maxBuffer: 10 * 1024 * 1024,
-    env,
-  });
-}
+// Set GH_TOKEN so the shared ghApi helper authenticates all calls.
+process.env.GH_TOKEN = GITHUB_TOKEN;
 
 let _headShaCache: string | undefined;
 function getRunHeadSha(): string {
