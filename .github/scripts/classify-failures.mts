@@ -304,9 +304,12 @@ function getRunHeadSha(): string {
 }
 
 function getFailedJobs(): Job[] {
+  // The attempt-specific endpoint is scoped to a single attempt.
+  // The default endpoint needs filter=latest to avoid returning jobs
+  // from all previous attempts of re-run workflows.
   const jobsPath = ATTEMPT
     ? `${repoApi}/actions/runs/${MAIN_RUN_ID}/attempts/${ATTEMPT}/jobs?per_page=100`
-    : `${repoApi}/actions/runs/${MAIN_RUN_ID}/jobs?per_page=100`;
+    : `${repoApi}/actions/runs/${MAIN_RUN_ID}/jobs?per_page=100&filter=latest`;
   // --jq '.jobs[]' emits each job as a separate JSON object on its own
   // line.  With --paginate, gh applies the jq filter per page and
   // concatenates the output — using '.jobs[]' (not '.jobs') avoids the
