@@ -1,6 +1,16 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
@@ -15,15 +25,7 @@ import {
 } from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { showModal } from '../../../../store/actions';
-import { Box, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import {
   getExternalServicesOnboardingToggleState,
@@ -199,12 +201,12 @@ export const BackupAndSyncToggle = () => {
       data-testid={backupAndSyncToggleTestIds.container}
     >
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.flexStart}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Start}
         marginBottom={1}
       >
-        <Text variant={TextVariant.bodyMdMedium}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('backupAndSyncEnable')}
         </Text>
 
@@ -227,32 +229,33 @@ export const BackupAndSyncToggle = () => {
       </Box>
       <div className="privacy-settings__setting__description">
         <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          as="div"
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          asChild
         >
-          {t('backupAndSyncEnableDescription', [
-            <Text
-              as="a"
-              variant={TextVariant.bodyMd}
-              href={ZENDESK_URLS.PROFILE_PRIVACY}
-              target="_blank"
-              rel="noopener noreferrer"
-              key="privacy-link"
-              color={TextColor.infoDefault}
-            >
-              {t('backupAndSyncPrivacyLink')}
-            </Text>,
-          ])}
+          <div>
+            {t('backupAndSyncEnableDescription', [
+              <Text
+                asChild
+                variant={TextVariant.BodyMd}
+                key="privacy-link"
+                color={TextColor.InfoDefault}
+              >
+                <a
+                  href={ZENDESK_URLS.PROFILE_PRIVACY}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('backupAndSyncPrivacyLink')}
+                </a>
+              </Text>,
+            ])}
+          </div>
         </Text>
 
         {error && (
           <Box marginTop={4} paddingBottom={4}>
-            <Text
-              as="p"
-              color={TextColor.errorDefault}
-              variant={TextVariant.bodySm}
-            >
+            <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
               {t('notificationsSettingsBoxError')}
             </Text>
           </Box>

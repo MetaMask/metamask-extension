@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BoxFlexDirection,
@@ -32,6 +32,7 @@ import { BackgroundColor } from '../../../../../helpers/constants/design-system'
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,
@@ -98,7 +99,7 @@ export const ReviewGatorPermissionItem = ({
     from: permissionAccount = '0x',
   } = permissionResponse;
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { value: isExpanded, toggle } = useBoolean();
   const pendingRevocations = useSelector(getPendingRevocations);
   const internalAccount = useSelector((state) =>
     getInternalAccountByAddress(state, permissionAccount),
@@ -123,13 +124,6 @@ export const ReviewGatorPermissionItem = ({
       )
     );
   }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
-
-  /**
-   * Handles the click event for the expand/collapse button
-   */
-  const handleExpandClick = () => {
-    setIsExpanded(!isExpanded);
-  };
 
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];
   const summary = schemaEntry?.summary;
@@ -296,7 +290,7 @@ export const ReviewGatorPermissionItem = ({
             justifyContent={BoxJustifyContent.Between}
             style={{ flex: '1', alignSelf: 'center', cursor: 'pointer' }}
             gap={2}
-            onClick={handleExpandClick}
+            onClick={toggle}
           >
             <Text color={TextColor.PrimaryDefault} variant={TextVariant.BodyMd}>
               {isExpanded
@@ -307,7 +301,6 @@ export const ReviewGatorPermissionItem = ({
               iconName={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
               color={IconColor.IconMuted}
               size={ButtonIconSize.Sm}
-              onClick={handleExpandClick}
               ariaLabel="expand"
             />
           </Box>

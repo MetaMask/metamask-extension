@@ -20,6 +20,10 @@ export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+export const POPUP_FILE = 'popup.html';
+export const POPUP_INIT_FILE = 'popup-init.html';
+export const SIDEPANEL_FILE = 'sidepanel.html';
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_CHROMIUM = 'Chromium';

@@ -5950,6 +5950,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/bridge-controller@npm:^70.0.0":
+  version: 70.0.0
+  resolution: "@metamask/bridge-controller@npm:70.0.0"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^37.1.1"
+    "@metamask/assets-controller": "npm:^3.2.1"
+    "@metamask/assets-controllers": "npm:^103.0.0"
+    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/gas-fee-controller": "npm:^26.1.1"
+    "@metamask/keyring-api": "npm:^21.6.0"
+    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-network-controller": "npm:^3.0.6"
+    "@metamask/network-controller": "npm:^30.0.1"
+    "@metamask/polling-controller": "npm:^16.0.4"
+    "@metamask/profile-sync-controller": "npm:^28.0.2"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/transaction-controller": "npm:^63.3.1"
+    "@metamask/utils": "npm:^11.9.0"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
+    uuid: "npm:^8.3.2"
+  checksum: 10/14d5e79f64b7a2a52c84191f654d2d58ab70c2302c0fbc4dc1231354c0743c28081a9666961e21645f7b1072017c83c476ccf3b770cf7eef69cd4a2a7ef1094f
+  languageName: node
+  linkType: hard
+
 "@metamask/bridge-status-controller@npm:^70.0.3":
   version: 70.0.3
   resolution: "@metamask/bridge-status-controller@npm:70.0.3"
@@ -7118,10 +7151,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/messenger@npm:1.0.0"
-  checksum: 10/ab1219a922d5acc86f2b1b557d79c75ca0c5f42572f50da8a2337bc5c8feb1ae95c0aaa2d2ee55b677acd4401fb2cc9c2dbacca7513edcddf20d88fb73fa7bea
+"@metamask/messenger-cli@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/messenger-cli@npm:0.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.9.0"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    eslint: ">=8"
+    typescript: ">=5.0.0"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  bin:
+    messenger-action-types: ./dist/cli.mjs
+  checksum: 10/dd359df00f2eba98dcfe5f3d8352d859f2e814220e709efe989ecb68c611ba32ea515fd6099a770a706066f1820abd07a134a2acf5fc6b883518c5d19991a8e2
+  languageName: node
+  linkType: hard
+
+"@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/messenger@npm:1.1.1"
+  dependencies:
+    "@metamask/utils": "npm:^11.9.0"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    typescript: ">=5.0.0"
+  bin:
+    messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
+  checksum: 10/a959af95e9e117aa0f7ad1c280f7817fef2c0b575c76837b1a6c884c9c9ef1dd0faeaef0c2c0c2035f68c7638d1f87cd172956ee962dec97d8ab6176fa6964e3
   languageName: node
   linkType: hard
 
@@ -8415,10 +8473,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.25.0":
-  version: 1.25.0
-  resolution: "@metamask/tron-wallet-snap@npm:1.25.0"
-  checksum: 10/f87a48d2c21b9ea72dfba368ef2a66c73e692d7dfadde60e2606d7f631defcf9b6481c23e2ce17404028c58906c9245e8a60e22921155dd0f747d8330dd2c118
+"@metamask/tron-wallet-snap@npm:^1.25.1":
+  version: 1.25.1
+  resolution: "@metamask/tron-wallet-snap@npm:1.25.1"
+  checksum: 10/9a610ac38957988cdb8f6eb0544cb312ed3ca336fc2f80481781c40ca7af027e2fae976c91ba57381dd8dd3ecd0cf5bd74ecbc6407d5dc1a10a29697ccbfced0
   languageName: node
   linkType: hard
 
@@ -34079,7 +34137,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
-    "@metamask/bridge-controller": "npm:^69.2.3"
+    "@metamask/bridge-controller": "npm:^70.0.0"
     "@metamask/bridge-status-controller": "npm:^70.0.3"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.3.0"
@@ -34139,7 +34197,8 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/messenger": "npm:^1.1.1"
+    "@metamask/messenger-cli": "npm:^0.1.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^8.0.1"
     "@metamask/multichain-api-client": "npm:^0.10.1"
@@ -34198,7 +34257,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.4.1"
     "@metamask/transaction-controller": "npm:^64.0.0"
     "@metamask/transaction-pay-controller": "npm:^19.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.25.0"
+    "@metamask/tron-wallet-snap": "npm:^1.25.1"
     "@metamask/user-operation-controller": "npm:^41.1.0"
     "@metamask/utils": "npm:^11.10.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"

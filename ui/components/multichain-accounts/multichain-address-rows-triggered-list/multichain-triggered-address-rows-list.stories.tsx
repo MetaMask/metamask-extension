@@ -16,7 +16,7 @@ import {
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
+import { MultichainTriggeredAddressRowsList } from './multichain-triggered-address-rows-list';
 
 const mockStore = configureStore([]);
 
@@ -287,9 +287,9 @@ const createMockState = () => ({
   },
 });
 
-const meta: Meta<typeof MultichainHoveredAddressRowsList> = {
-  title: 'Components/MultichainAccounts/MultichainHoveredAddressRowsList',
-  component: MultichainHoveredAddressRowsList,
+const meta: Meta<typeof MultichainTriggeredAddressRowsList> = {
+  title: 'Components/MultichainAccounts/MultichainTriggeredAddressRowsList',
+  component: MultichainTriggeredAddressRowsList,
   parameters: {
     docs: {
       description: {
@@ -301,7 +301,7 @@ const meta: Meta<typeof MultichainHoveredAddressRowsList> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof MultichainHoveredAddressRowsList>;
+type Story = StoryObj<typeof MultichainTriggeredAddressRowsList>;
 
 export const MultipleDifferentAccounts: Story = {
   args: {
@@ -488,6 +488,40 @@ export const AllAccounts: Story = {
       const state = createMockState();
       state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
         Object.values(accounts).map((acc) => acc.id);
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
+};
+
+export const ClickTriggerMode: Story = {
+  args: {
+    groupId: GROUP_ID,
+    triggerMode: 'click',
+    children: <button>Click to see accounts</button>,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Uses click trigger mode instead of hover. The popover opens on click and closes when clicking outside.',
+      },
+    },
+  },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [
+          accounts.ethereum.id,
+          accounts.solana.id,
+          accounts.bitcoin.id,
+        ];
       return (
         <Provider store={mockStore(state)}>
           <div style={{ width: '400px', padding: '16px' }}>
