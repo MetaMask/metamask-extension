@@ -18,7 +18,7 @@ import {
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
+import { MultichainTriggeredAddressRowsList } from './multichain-triggered-address-rows-list';
 
 const mockStore = configureStore([]);
 const mockUseNavigate = jest.fn();
@@ -324,17 +324,19 @@ const renderComponent = (
   onViewAllClick?: () => void,
   showViewAllButton?: boolean,
   showDefaultAddressSection?: boolean,
+  triggerMode?: 'hover' | 'click',
 ) => {
   const store = mockStore(createMockState());
   return renderWithProvider(
-    <MultichainHoveredAddressRowsList
+    <MultichainTriggeredAddressRowsList
       groupId={groupId}
       onViewAllClick={onViewAllClick}
       showViewAllButton={showViewAllButton}
       showDefaultAddressSection={showDefaultAddressSection}
+      triggerMode={triggerMode}
     >
       <div data-testid="hover-trigger">Hover Me</div>
-    </MultichainHoveredAddressRowsList>,
+    </MultichainTriggeredAddressRowsList>,
     store,
   );
 };
@@ -354,7 +356,7 @@ const mockedSelectBalanceForAllWallets =
     typeof selectBalanceForAllWallets
   >;
 
-describe('MultichainHoveredAddressRowsList', () => {
+describe('MultichainTriggeredAddressRowsList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -1025,6 +1027,67 @@ describe('MultichainHoveredAddressRowsList', () => {
       expect(
         screen.queryByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Click Trigger Mode', () => {
+    it('shows address list on click when triggerMode is click', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+
+      expect(
+        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(triggerElement.parentElement as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('does not show address list on hover when triggerMode is click', async () => {
+      jest.useFakeTimers();
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+
+      await act(async () => {
+        jest.advanceTimersByTime(100);
+      });
+
+      expect(
+        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+      ).not.toBeInTheDocument();
+
+      jest.useRealTimers();
+    });
+
+    it('toggles address list visibility on subsequent clicks', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+
+      fireEvent.click(triggerElement.parentElement as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(triggerElement.parentElement as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });

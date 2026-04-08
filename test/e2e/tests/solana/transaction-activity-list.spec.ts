@@ -27,6 +27,7 @@ describe('Transaction activity list', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
 
@@ -67,8 +68,9 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);

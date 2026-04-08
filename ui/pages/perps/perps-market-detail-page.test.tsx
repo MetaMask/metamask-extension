@@ -13,6 +13,7 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
+import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
 const mockPriceLine = { options: jest.fn() };
@@ -137,13 +138,17 @@ jest.mock('../../components/app/perps/perps-toast', () => {
   };
 });
 
+const mockUsePerpsMarketFills = jest
+  .fn()
+  .mockReturnValue({ fills: [], isInitialLoading: false });
+
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
-  usePerpsMarketFills: () => ({ fills: [], isInitialLoading: false }),
+  usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
 }));
 
 // Mock the perps stream hooks
@@ -245,6 +250,10 @@ describe('PerpsMarketDetailPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockReplacePerpsToastByKey.mockReset();
+    mockUsePerpsMarketFills.mockReturnValue({
+      fills: [],
+      isInitialLoading: false,
+    });
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     latestPriceSubscriber = undefined;
     mockUseLocation.mockReturnValue({
@@ -492,6 +501,50 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         getByText(messages.perpsRecentActivity.message),
       ).toBeInTheDocument();
+    });
+
+    it('does not show View All button when there are no fills', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.queryByTestId('perps-market-detail-view-all-activity'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows View All button when there are fills and navigates to activity page', () => {
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [
+          {
+            orderId: 'fill-1',
+            symbol: 'ETH',
+            side: 'buy',
+            size: '1.0',
+            price: '2500.00',
+            pnl: '0',
+            direction: 'Open Long',
+            fee: '0.50',
+            feeToken: 'USDC',
+            timestamp: Date.now(),
+          },
+        ],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const viewAllButton = screen.getByTestId(
+        'perps-market-detail-view-all-activity',
+      );
+      expect(viewAllButton).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsSeeAll.message),
+      ).toBeInTheDocument();
+
+      fireEvent.click(viewAllButton);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
     it('displays learn section', () => {
