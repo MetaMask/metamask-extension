@@ -170,13 +170,13 @@ const AssetPage = ({
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
-      item.assetId.toLowerCase() === address.toLowerCase() ||
+      item.address.toLowerCase() === address.toLowerCase() ||
       // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
       (!address && !isEvm && item.isNative),
   );
 
   // Display historical data for non-evm token without a balance
-  address = assetWithBalance?.assetId || address;
+  address = assetWithBalance?.address || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;

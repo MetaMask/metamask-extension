@@ -60,8 +60,8 @@ export const useSendQueryParams = () => {
     if (value !== undefined && paramAmount !== value) {
       queryParams.set('amount', value);
     }
-    if (asset?.address !== undefined && paramAsset !== asset.address) {
-      queryParams.set('asset', asset.assetId ?? asset.address);
+    if (asset?.assetId !== undefined && paramAsset !== asset.assetId) {
+      queryParams.set('asset', asset.assetId);
     }
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());

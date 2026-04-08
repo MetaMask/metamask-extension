@@ -77,8 +77,7 @@ export function useMusdBalance(): UseMusdBalanceResult {
         }
 
         for (const asset of assets) {
-          const address = 'address' in asset ? asset.address : null;
-          if (address && isMusdToken(address)) {
+          if (isMusdToken(asset.address)) {
             const balance = asset.balance || '0';
             if (balance !== '0') {
               hasBalance = true;
