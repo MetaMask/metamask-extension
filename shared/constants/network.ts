@@ -226,7 +226,6 @@ export const CHAIN_IDS = {
   TEMPO_TESTNET: '0xa5bf',
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
-  WAN: '0x378',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -498,7 +497,6 @@ export const CURRENCY_SYMBOLS = {
   TEMPO_MAINNET: 'USD',
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
-  WAN: 'WAN'
 } as const;
 
 // Non-EVM currency symbols
