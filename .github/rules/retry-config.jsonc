@@ -57,7 +57,7 @@
     // it always fails when any upstream job fails, so classifying it separately
     // would double-count every failure.
     "optional": {
-      "patterns": ["^CI status gate", "^dapp-page-load", "^run-benchmarks"]
+      "patterns": ["^ci-status-gate", "^dapp-page-load", "^run-benchmarks"]
     }
   },
 
