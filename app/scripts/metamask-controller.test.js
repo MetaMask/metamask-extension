@@ -85,7 +85,7 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
-jest.mock('./controller-init/perps-controller-init', () => ({
+jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
     controller: {
       state: {},
@@ -1009,6 +1009,7 @@ describe('MetaMaskController', () => {
               transactionParams.from,
             ),
           transactionController: expect.any(Object),
+          keyringController: expect.any(Object),
           transactionOptions,
           transactionParams,
           userOperationController: expect.any(Object),

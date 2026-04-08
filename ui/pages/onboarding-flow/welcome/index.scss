@@ -69,12 +69,12 @@
     justify-content: center;
     align-items: flex-end;
     pointer-events: none;
+    overflow: hidden;
 
     @include design-system.screen-md-max {
-      height: 300px;
-      width: 400px;
-      max-width: 400px;
-      margin-bottom: -70px;
+      height: clamp(200px, 35vh, 350px);
+      width: 100%;
+      max-width: 100%;
     }
 
     &--loader {
