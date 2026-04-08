@@ -210,7 +210,6 @@ import { getProfileMetricsServiceMessenger } from './profile-metrics-service-mes
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
-export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
   AccountTrackerControllerMessenger,
