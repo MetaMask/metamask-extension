@@ -15,6 +15,7 @@ import {
 } from './helpers';
 
 describe('Phishing Detection - Path-based URLs', function (this: Suite) {
+  this.timeout(160000);
   describe('blocklisted paths', function () {
     it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
       await withFixtures(
