@@ -14,7 +14,7 @@ import {
   waitForPhishingBlocklistToBeLoaded,
 } from './helpers';
 
-describe('Phishing Detection - Path-based URLs', function (this: Suite) {
+describe('Phishing Detection - Path-based URLs TEST', function (this: Suite) {
   describe('blocklisted paths', function () {
     it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
       await withFixtures(
