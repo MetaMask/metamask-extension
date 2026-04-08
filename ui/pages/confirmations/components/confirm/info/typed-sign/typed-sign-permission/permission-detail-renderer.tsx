@@ -155,7 +155,11 @@ function renderElement(
   }
 
   // Skip elements not intended for the confirmation view
-  if ('views' in element && element.views && !element.views.includes('confirmation')) {
+  if (
+    'views' in element &&
+    element.views &&
+    !element.views.includes('confirmation')
+  ) {
     return null;
   }
 
