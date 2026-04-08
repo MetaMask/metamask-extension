@@ -96,7 +96,7 @@ export const MultichainAccountCellDefaultAddress = ({
             size: IconSize.Sm,
           }}
           ariaLabel="Open multichain account address menu"
-          className="text-icon-alternative rounded-md"
+          className="text-icon-alternative rounded-lg"
           data-testid="default-address-menu-button"
         />
       </MultichainTriggeredAddressRowsList>
@@ -116,7 +116,7 @@ export const MultichainAccountCellDefaultAddress = ({
           paddingHorizontal={2}
           gap={1}
           className={classnames(
-            'rounded-md h-6 min-w-0',
+            'rounded-lg h-6 min-w-0',
             displayDefaultAddress && 'cursor-pointer',
           )}
           data-testid="network-group-with-copy-icon"
