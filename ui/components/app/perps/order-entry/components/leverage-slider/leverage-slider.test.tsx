@@ -6,6 +6,18 @@ import mockState from '../../../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { LeverageSlider } from './leverage-slider';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {
+    INTERACTION_TYPE: 'interaction_type',
+    LEVERAGE: 'leverage',
+  },
+  PERPS_EVENT_VALUE: {
+    INTERACTION_TYPE: {
+      LEVERAGE_CHANGED: 'leverage_changed',
+    },
+  },
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

@@ -19,6 +19,31 @@ import {
 } from '../../components/app/perps/mocks';
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {
+    SCREEN_TYPE: 'screen_type',
+    ASSET: 'asset',
+    INTERACTION_TYPE: 'interaction_type',
+    SELECTED_ORDER_TYPE: 'selected_order_type',
+    DIRECTION: 'direction',
+    STATUS: 'status',
+    FAILURE_REASON: 'failure_reason',
+    ORDER_TYPE: 'order_type',
+    ERROR_TYPE: 'error_type',
+    ERROR_MESSAGE: 'error_message',
+  },
+  PERPS_EVENT_VALUE: {
+    SCREEN_TYPE: { TRADING: 'trading' },
+    INTERACTION_TYPE: {
+      ORDER_TYPE_SELECTED: 'order_type_selected',
+      TAP: 'tap',
+    },
+    DIRECTION: { LONG: 'long', SHORT: 'short' },
+    STATUS: { FAILED: 'failed', SUCCESS: 'success' },
+    ERROR_TYPE: { BACKEND: 'backend' },
+  },
+}));
+
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));

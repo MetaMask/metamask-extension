@@ -7,6 +7,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { OrderEntry } from './order-entry';
 
+jest.mock('@metamask/perps-controller', () =>
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('../../../../../test/mocks/metamask-perps-controller.js'),
+);
+
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],

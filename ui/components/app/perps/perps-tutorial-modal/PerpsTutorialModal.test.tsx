@@ -6,6 +6,11 @@ import { PerpsTutorialStep } from '../../../../ducks/perps';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import PerpsTutorialModal from './PerpsTutorialModal';
 
+jest.mock('@metamask/perps-controller', () =>
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('../../../../../test/mocks/metamask-perps-controller.js'),
+);
+
 const mockDispatch = jest.fn();
 
 jest.mock('react-redux', () => ({

@@ -7,6 +7,10 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions, mockAccountState } from '../mocks';
 import { EditMarginExpandable } from './edit-margin-expandable';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {},
+}));
+
 const mockGetPerpsStreamManager = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();

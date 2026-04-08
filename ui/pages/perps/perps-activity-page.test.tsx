@@ -12,6 +12,15 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import PerpsActivityPage from './perps-activity-page';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {
+    SCREEN_TYPE: 'screen_type',
+  },
+  PERPS_EVENT_VALUE: {
+    SCREEN_TYPE: { ACTIVITY: 'activity' },
+  },
+}));
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({

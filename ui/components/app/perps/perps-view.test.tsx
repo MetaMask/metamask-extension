@@ -8,6 +8,10 @@ import * as streamHooks from '../../../hooks/perps/stream';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {},
+}));
+
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
 

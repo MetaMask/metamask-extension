@@ -5,6 +5,10 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import mockState from '../../../test/data/mock-state.json';
 import PerpsLayout from './perps-layout';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {},
+}));
+
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));

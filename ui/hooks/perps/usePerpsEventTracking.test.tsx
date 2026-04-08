@@ -10,6 +10,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from './usePerpsEventTracking';
 
+jest.mock('@metamask/perps-controller', () =>
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('../../../test/mocks/metamask-perps-controller.js'),
+);
+
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 const mockMetaMetricsContext = {

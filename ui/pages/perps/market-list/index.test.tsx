@@ -9,6 +9,23 @@ import {
 } from '../../../components/app/perps/mocks';
 import { MarketListView } from '.';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_EVENT_PROPERTY: {
+    SCREEN_TYPE: 'screen_type',
+    INTERACTION_TYPE: 'interaction_type',
+    TAB_NAME: 'tab_name',
+    ASSET: 'asset',
+  },
+  PERPS_EVENT_VALUE: {
+    SCREEN_TYPE: { MARKET_LIST: 'market_list' },
+    INTERACTION_TYPE: {
+      BUTTON_CLICKED: 'button_clicked',
+      TAP: 'tap',
+      SEARCH_CLICKED: 'search_clicked',
+    },
+  },
+}));
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
