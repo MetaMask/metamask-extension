@@ -17,9 +17,20 @@ export type {
   UsePerpsTransactionHistoryResult,
 } from './usePerpsTransactionHistory';
 
+export { usePerpsMarketFills } from './usePerpsMarketFills';
+
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
   UsePerpsMarginCalculationsParams,
   UsePerpsMarginCalculationsReturn,
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
+
+export {
+  estimateLiquidationPrice,
+  liquidationDistancePercent,
+  maintenanceMarginRateFromMaxLeverage,
+  safeDenominator,
+  MARGIN_ADJUSTMENT_CONFIG,
+} from './marginUtils';
+export type { EstimateLiquidationPriceParams } from './marginUtils';

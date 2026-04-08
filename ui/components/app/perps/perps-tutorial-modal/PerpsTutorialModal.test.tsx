@@ -219,6 +219,9 @@ describe('PerpsTutorialModal', () => {
       fireEvent.click(screen.getByTestId('perps-tutorial-skip-button'));
 
       expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'perpsTutorial/markTutorialCompleted',
+      });
+      expect(mockDispatch).not.toHaveBeenCalledWith({
         type: 'perpsTutorial/setTutorialModalOpen',
         payload: false,
       });
@@ -285,7 +288,7 @@ describe('PerpsTutorialModal', () => {
       expect(onClose).toHaveBeenCalled();
     });
 
-    it('resets to first step when modal is closed', () => {
+    it('marks tutorial completed when modal header close is clicked', () => {
       const store = createStore(true, PerpsTutorialStep.ChooseLeverage);
       render(
         <Provider store={store}>
@@ -300,6 +303,9 @@ describe('PerpsTutorialModal', () => {
       fireEvent.click(closeButton as HTMLElement);
 
       expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'perpsTutorial/markTutorialCompleted',
+      });
+      expect(mockDispatch).not.toHaveBeenCalledWith({
         type: 'perpsTutorial/setTutorialActiveStep',
         payload: PerpsTutorialStep.WhatArePerps,
       });

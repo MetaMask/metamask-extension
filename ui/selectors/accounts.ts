@@ -1,3 +1,4 @@
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   EthAccountType,
   BtcAccountType,
@@ -8,9 +9,10 @@ import {
   isEvmAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { createSelector } from 'reselect';
+
+import { EMPTY_OBJECT } from './shared';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -50,8 +52,10 @@ export const getInternalAccounts = createSelector(
   (accounts) => Object.values(accounts),
 );
 
+// Uses EMPTY_OBJECT to preserve referential equality when accountIdByAddress
+// is undefined, so downstream createSelector consumers don't recompute.
 export const getAccountIdByAddress = (state: AccountsState) =>
-  state.metamask.accountIdByAddress;
+  state.metamask.accountIdByAddress ?? EMPTY_OBJECT;
 
 export const getInternalAccountByAddress = createSelector(
   [

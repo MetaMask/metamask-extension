@@ -9,7 +9,7 @@ import {
   toCaipAccountId,
 } from '@metamask/utils';
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { detectSIWE } from '@metamask/controller-utils';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import {
@@ -662,7 +662,7 @@ export class RewardsController extends BaseController<
         this.messenger.call.bind(
           this.messenger,
           'SnapController:handleRequest',
-        ) as unknown as HandleSnapRequest['handler'],
+        ) as unknown as SnapControllerHandleRequestAction['handler'],
         account.id,
         Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
@@ -682,7 +682,7 @@ export class RewardsController extends BaseController<
         this.messenger.call.bind(
           this.messenger,
           'SnapController:handleRequest',
-        ) as unknown as HandleSnapRequest['handler'],
+        ) as unknown as SnapControllerHandleRequestAction['handler'],
         account.id,
         Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
@@ -700,7 +700,7 @@ export class RewardsController extends BaseController<
         this.messenger.call.bind(
           this.messenger,
           'SnapController:handleRequest',
-        ) as unknown as HandleSnapRequest['handler'],
+        ) as unknown as SnapControllerHandleRequestAction['handler'],
         account.id,
         Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );

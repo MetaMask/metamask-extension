@@ -5,11 +5,6 @@ import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 class NotificationsSettingsPage {
   private driver: Driver;
 
-  private readonly notificationsSettingsPageTitle = {
-    text: 'Notifications',
-    css: '.tab-bar__tab__content__title',
-  };
-
   private readonly allowNotificationsToggle =
     '[data-testid="notifications-settings-allow-toggle-box"]';
 
@@ -48,7 +43,6 @@ class NotificationsSettingsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.notificationsSettingsPageTitle,
         this.allowNotificationsToggle,
       ]);
     } catch (e) {

@@ -438,7 +438,7 @@ class SettingsPage extends PureComponent {
 
     if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
       tabs.splice(-1, 0, {
-        content: t('developerOptions'),
+        content: t('debug'),
         icon: <Icon name={IconName.CodeCircle} />,
         key: DEVELOPER_OPTIONS_ROUTE,
       });

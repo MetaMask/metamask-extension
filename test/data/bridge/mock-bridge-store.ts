@@ -169,6 +169,9 @@ export const MOCK_BITCOIN_ACCOUNT = {
   },
 };
 
+export const MOCK_EXTERNAL_SOLANA_ADDRESS =
+  '8sKQHfjNhvmAw94PhfvfMcytmqW6jmxvwieYyzXCCPu';
+
 export const createBridgeMockStore = ({
   featureFlagOverrides = { bridgeConfig: {} },
   bridgeSliceOverrides = {},

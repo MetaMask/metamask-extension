@@ -14,8 +14,11 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
@@ -23,9 +26,11 @@ import {
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  WITH_STATE_POWER_USER,
-} from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -33,6 +38,8 @@ export const testTitle = 'benchmark-send-transactions-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
       {
@@ -52,12 +59,6 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
-        const timerAssetPicker = new TimerHelper('selectTokenToSendFormLoaded');
-        const timerReviewTransaction = new TimerHelper(
-          'reviewTransactionToConfirmationPage',
-        );
-
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
@@ -73,13 +74,19 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         } else {
           await assetListPage.waitForTokenToBeDisplayed('SOL');
         }
+
         // Measure: Open send page
         await homePage.startSendFlow();
-        await timerOpenSendPage.measure(async () => {
-          const sendPage = new SendPage(driver);
-          await sendPage.checkNetworkFilterToggleIsDisplayed();
-        });
-        performanceTracker.addTimer(timerOpenSendPage);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'openSendPageFromHome',
+            async () => {
+              const sendPage = new SendPage(driver);
+              await sendPage.checkNetworkFilterToggleIsDisplayed();
+            },
+          ),
+        );
 
         // Measure: Select token and load form
         const sendPage = new SendPage(driver);
@@ -87,31 +94,49 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
-        await timerAssetPicker.measure(async () => {
-          await sendPage.checkSendFormIsLoaded();
-        });
-        performanceTracker.addTimer(timerAssetPicker);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'selectTokenToSendFormLoaded',
+            async () => {
+              await sendPage.checkSendFormIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Review transaction
         await sendPage.fillRecipient(RECIPIENT_ADDRESS);
         await sendPage.fillAmount('0.00001');
         await sendPage.pressContinueButton();
-        await timerReviewTransaction.measure(async () => {
-          const confirmation = new SnapTransactionConfirmation(driver);
-          await confirmation.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerReviewTransaction);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'reviewTransactionToConfirmationPage',
+            async () => {
+              const confirmation = new SnapTransactionConfirmation(driver);
+              await confirmation.checkPageIsLoaded();
+            },
+          ),
+        );
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
