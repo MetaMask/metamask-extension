@@ -231,6 +231,13 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (args.bundleAnalyzer) {
+  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+  plugins.push(
+    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+  );
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
