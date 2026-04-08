@@ -22,6 +22,11 @@ const MM_CONNECT_TEST_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
 };
 
+// Solana scopes require Snap communication during wallet_createSession,
+// which adds variable latency.  Use a longer timeout when confirming
+// connections that include non-EVM scopes to avoid flaky failures.
+const SOLANA_CONFIRM_TIMEOUT = 10_000;
+
 describe('MM Connect — Multichain E2E', function (this: Suite) {
   it('connects to 3 EVM chains and Solana simultaneously and verifies all ScopeCards are active', async function () {
     await withFixtures(
@@ -49,11 +54,12 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         ]);
         await testDapp.clickConnect();
 
-        // Approve the wallet_createSession dialog in the extension
+        // Approve the wallet_createSession dialog in the extension.
+        // Use a longer timeout because Solana Snap communication adds latency.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new ConnectAccountConfirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.confirmConnect();
+        await confirmation.confirmConnect(SOLANA_CONFIRM_TIMEOUT);
 
         // All 4 ScopeCards should now be visible (3 EVM + Solana Mainnet)
         await testDapp.switchTo();
@@ -91,7 +97,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new ConnectAccountConfirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.confirmConnect();
+        await confirmation.confirmConnect(SOLANA_CONFIRM_TIMEOUT);
 
         await testDapp.switchTo();
 

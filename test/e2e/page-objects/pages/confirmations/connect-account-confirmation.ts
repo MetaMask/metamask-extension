@@ -76,11 +76,17 @@ class ConnectAccountConfirmation {
     );
   }
 
-  async confirmConnect(): Promise<void> {
+  async confirmConnect(timeout?: number): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.connectAccountConfirmationButton,
-    );
+    if (timeout) {
+      const handle = await this.driver.getCurrentWindowHandle();
+      await this.driver.clickElement(this.connectAccountConfirmationButton);
+      await this.driver.waitForWindowToClose(handle, timeout);
+    } else {
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.connectAccountConfirmationButton,
+      );
+    }
   }
 
   async goToPermissionsTab(): Promise<void> {
