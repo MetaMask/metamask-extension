@@ -190,6 +190,8 @@ export const BackupAndSyncFeaturesToggles = () => {
     <Box
       marginTop={4}
       marginBottom={4}
+      paddingLeft={4}
+      paddingRight={4}
       className="privacy-settings__setting__wrapper"
       data-testid={backupAndSyncFeaturesTogglesTestIds.container}
     >

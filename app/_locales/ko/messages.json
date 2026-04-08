@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "브릿지 수수료"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "새로 가져올까요?"
-  },
   "bridgeFromTo": {
     "message": "$3(으)로 $1 $2 브릿지",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "가격 영향 경고"
-  },
-  "bridgeQuoteExpired": {
-    "message": "견적이 만료되었습니다."
   },
   "bridgeQuotesSortedByCost": {
     "message": "견적은 환율과 네트워크 수수료가 포함된 예상 총비용 순으로 정렬됩니다."
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimClaimingTo": {
-    "message": "다음으로 수령:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "숏 청산"
   },
-  "perpsClosedShort": {
-    "message": "청산된 숏"
-  },
   "perpsConfirmCloseLong": {
     "message": "롱 청산"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "손익 $1 포함"
   },
-  "perpsIncreasedPosition": {
-    "message": "포지션 증가"
-  },
   "perpsLearnBasics": {
     "message": "무기한 선물 기초 배우기"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "$1 숏 포지션 열기",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "오픈한 롱"
   },
   "perpsOraclePrice": {
     "message": "오라클 가격"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "승인 사항:"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "트랜잭션을 거부했습니다."
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."

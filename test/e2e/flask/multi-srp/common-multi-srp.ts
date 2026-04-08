@@ -51,6 +51,8 @@ export async function withMultiSrp(
       await accountListPage.checkPageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
       await homePage.checkNewSrpAddedToastIsDisplayed();
+      await homePage.dismissSrpAddedToast();
+      await homePage.checkPageIsLoaded();
       await test(driver);
     },
   );

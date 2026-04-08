@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Köprü ücreti"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Yeni bir tanesi alınsın mı?"
-  },
   "bridgeFromTo": {
     "message": "$1 $2, $3 ağına köprülensin",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Fiyat etkisi uyarısı"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Teklifiniz zaman aşımına uğradı."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Teklifler, döviz kurunu ve ağ ücretini içeren tahmini toplam maliyete göre sıralanır."
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSD al"
   },
-  "musdClaimClaimingTo": {
-    "message": "Alıcı hesap",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Bonusu al",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Short pozisyonu kapat"
   },
-  "perpsClosedShort": {
-    "message": "Short pozisyon kapatıldı"
-  },
   "perpsConfirmCloseLong": {
     "message": "Long pozisyonu kapat"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "K&Z dahil $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Pozisyon artırıldı"
-  },
   "perpsLearnBasics": {
     "message": "Sürekli vadeli işlem sözleşmeleri hakkındaki temel bilgileri öğrenin"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "$1 değerinde Short pozisyon aç",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Long pozisyon açıldı"
   },
   "perpsOraclePrice": {
     "message": "Oracle Fiyatı"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "Onaylıyorsunuz"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "İşlemi reddettiniz."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."

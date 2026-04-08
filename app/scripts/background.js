@@ -671,7 +671,6 @@ function saveTimestamp() {
  * @property {object} marketData - A map from chain ID -> contract address -> an object containing the token's market data.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
- * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
@@ -1844,9 +1843,6 @@ export function setupController(
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
-        browser.sidePanel?.setOptions?.({
-          path: 'sidepanel.html?tab=activity',
-        });
       } else {
         browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
       }
@@ -1865,7 +1861,6 @@ export function setupController(
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup: popupFile });
-        browser.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
       } else {
         browser.browserAction.setPopup({ popup: popupFile });
       }
