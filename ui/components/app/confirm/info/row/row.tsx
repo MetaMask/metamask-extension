@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
