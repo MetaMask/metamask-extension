@@ -478,6 +478,25 @@ function extractDisplayName(benchmarkName: string): string {
 }
 
 /**
+ * Resolves the git branch for Sentry filters and PR comment tooling.
+ * Empty strings count as unset (so tests/CI can clear branch without `??` sticking on `''`).
+ */
+function getCiBranchName(): string {
+  const candidates = [
+    process.env.BRANCH,
+    process.env.GITHUB_HEAD_REF,
+    process.env.GITHUB_REF_NAME,
+  ];
+  for (const candidate of candidates) {
+    const trimmed = candidate?.trim();
+    if (trimmed) {
+      return trimmed;
+    }
+  }
+  return '';
+}
+
+/**
  * Builds HTML for an artifact log link and optional Sentry Logs Explorer link.
  *
  * @param logHref - Optional artifact log URL
@@ -489,7 +508,7 @@ function buildArtifactAndSentryLinksHtml(
   entry: BenchmarkEntry | undefined,
   logLinkInnerHtml: string,
 ): string {
-  const branchName = process.env.BRANCH || process.env.GITHUB_REF_NAME;
+  const branchName = getCiBranchName();
   const sentryUrl =
     branchName && entry
       ? buildSentryLogsUrl(branchName, undefined, {
@@ -507,21 +526,6 @@ function buildArtifactAndSentryLinksHtml(
     : '';
 
   return [logsLink, sentryLinkHtml].filter(Boolean).join(' ');
-}
-
-/**
- * Builds table cell content with health icon and links (CI artifact + Sentry).
- * @param icon
- * @param logHref
- * @param entry
- */
-function buildCellContent(
-  icon: string,
-  logHref: string | undefined,
-  entry: BenchmarkEntry | undefined,
-): string {
-  const links = buildArtifactAndSentryLinksHtml(logHref, entry, '[Show logs]');
-  return links ? `${icon} ${links}` : icon;
 }
 
 /**
@@ -649,12 +653,7 @@ export { BENCHMARK_ANNOUNCE_SECTIONS };
  * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
  */
 export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
-  const branch = (
-    process.env.BRANCH ??
-    process.env.GITHUB_HEAD_REF ??
-    process.env.GITHUB_REF_NAME ??
-    ''
-  ).trim();
+  const branch = getCiBranchName();
   if (branch === 'main' || branch.startsWith('release/')) {
     return 'real';
   }
@@ -864,20 +863,21 @@ export function buildBenchmarkSection(
                 logHref,
               );
 
+              const rowLinks = buildArtifactAndSentryLinksHtml(
+                logHref,
+                entry,
+                '[Show logs]',
+              );
+
               let cell: string;
               switch (true) {
                 case Boolean(timerDetails): {
-                  const links = buildArtifactAndSentryLinksHtml(
-                    logHref,
-                    entry,
-                    '[Show logs]',
-                  );
-                  const linkLine = links ? `${icon} ${links}` : icon;
+                  const linkLine = rowLinks ? `${icon} ${rowLinks}` : icon;
                   cell = `${linkLine}<br>${timerDetails}`;
                   break;
                 }
-                case Boolean(logHref):
-                  cell = buildCellContent(icon, logHref, entry);
+                case Boolean(rowLinks):
+                  cell = `${icon} ${rowLinks}`;
                   break;
                 default:
                   cell = icon;

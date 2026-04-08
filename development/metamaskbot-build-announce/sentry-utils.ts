@@ -74,7 +74,7 @@ export function buildSentryLogsUrl(
   }
 
   if (options?.benchmarkName) {
-    filters.push(`message:Containsbenchmark.${options.benchmarkName}`);
+    filters.push(`message:Contains benchmark.${options.benchmarkName}`);
   }
 
   const params = new URLSearchParams({

@@ -914,11 +914,13 @@ describe('buildBenchmarkSection', () => {
   describe('artifact and Sentry links', () => {
     const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
     let savedBranch: string | undefined;
+    let savedHeadRef: string | undefined;
     let savedRefName: string | undefined;
     let savedSentryDsn: string | undefined;
 
     beforeEach(() => {
       savedBranch = process.env.BRANCH;
+      savedHeadRef = process.env.GITHUB_HEAD_REF;
       savedRefName = process.env.GITHUB_REF_NAME;
       savedSentryDsn = process.env.SENTRY_DSN_PERFORMANCE;
     });
@@ -928,6 +930,11 @@ describe('buildBenchmarkSection', () => {
         delete process.env.BRANCH;
       } else {
         process.env.BRANCH = savedBranch;
+      }
+      if (savedHeadRef === undefined) {
+        delete process.env.GITHUB_HEAD_REF;
+      } else {
+        process.env.GITHUB_HEAD_REF = savedHeadRef;
       }
       if (savedRefName === undefined) {
         delete process.env.GITHUB_REF_NAME;
@@ -958,6 +965,7 @@ describe('buildBenchmarkSection', () => {
 
     it('uses GITHUB_REF_NAME for Sentry when BRANCH is unset', () => {
       delete process.env.BRANCH;
+      delete process.env.GITHUB_HEAD_REF;
       process.env.GITHUB_REF_NAME = 'release/1.0.0';
       process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
       const html = buildBenchmarkSection(
@@ -985,8 +993,10 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('omits [Sentry log] when branch env vars are unset', () => {
-      delete process.env.BRANCH;
-      delete process.env.GITHUB_REF_NAME;
+      // Force-empty so CI-injected GITHUB_HEAD_REF cannot satisfy `||` chain (delete is not always enough).
+      process.env.BRANCH = '';
+      process.env.GITHUB_HEAD_REF = '';
+      process.env.GITHUB_REF_NAME = '';
       process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
       const html = buildBenchmarkSection(
         withEntries([
