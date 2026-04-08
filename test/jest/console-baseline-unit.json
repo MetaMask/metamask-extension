@@ -48,7 +48,7 @@
       "error: Error occurred while creating snap": 1
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
-      "Test errors: Fetch failures": 2
+      "Test errors: Fetch failures": 6
     },
     "app/scripts/lib/stores/browser-storage-adapter.test.ts": {
       "error: StorageService: Failed to clear namespace": 1,
@@ -832,8 +832,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
-      "MetaMask: Background connection not initialized": 84,
-      "Reselect: Identity function warnings": 3
+      "MetaMask: Background connection not initialized": 96,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useIsUpgradeTransaction.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -902,8 +903,9 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 126,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 138,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 12,
@@ -933,8 +935,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 84,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -1204,7 +1207,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 84,
+      "MetaMask: Background connection not initialized": 90,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
