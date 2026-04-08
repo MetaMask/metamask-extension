@@ -172,7 +172,7 @@ const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
     hidden: getBrowserName() !== PLATFORM_FIREFOX,
   },
-  // advanced settingsRefs[11]
+  // advanced settingsRefs[10]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showERC8213Digests'),

@@ -639,7 +639,6 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
