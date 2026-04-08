@@ -43,6 +43,7 @@ export const TRANSACTION_ITEMS = {
   'smart-account-requests-from-dapps': 'smartAccountRequestsFromDapps',
   'proposed-nicknames': 'externalNameSourcesSetting',
   'show-hex-data': 'showHexData',
+  'show-erc8213-digests': 'showERC8213Digests',
 } as const;
 
 export const PREFERENCES_ITEMS = {

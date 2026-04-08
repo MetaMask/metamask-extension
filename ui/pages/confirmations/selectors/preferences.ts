@@ -4,6 +4,7 @@ export type RootState = {
     preferences?: {
       showConfirmationAdvancedDetails?: boolean;
       dismissSmartAccountSuggestionEnabled?: boolean;
+      showERC8213Digests?: boolean;
     };
   };
 };
@@ -19,4 +20,9 @@ export function selectConfirmationAdvancedDetailsOpen(state: RootState) {
 export function getDismissSmartAccountSuggestionEnabled(state: RootState) {
   const { metamask } = state;
   return Boolean(metamask.preferences?.dismissSmartAccountSuggestionEnabled);
+}
+
+export function selectShowERC8213Digests(state: RootState) {
+  const { metamask } = state;
+  return Boolean(metamask.preferences?.showERC8213Digests);
 }

@@ -7655,6 +7655,24 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
+  "showERC8213Digests": {
+    "message": "Show ERC-8213 digests"
+  },
+  "showERC8213DigestsDescription": {
+    "message": "Display Calldata Digest and EIP-712 Digest on transaction and signature confirmations for independent verification"
+  },
+  "calldataDigest": {
+    "message": "Calldata Digest"
+  },
+  "eip712Digest": {
+    "message": "EIP-712 Digest"
+  },
+  "domainHash": {
+    "message": "Domain Hash"
+  },
+  "messageHash": {
+    "message": "Message Hash"
+  },
   "showLess": {
     "message": "Show less"
   },

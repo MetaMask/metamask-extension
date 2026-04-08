@@ -4383,6 +4383,10 @@ export function setDismissSmartAccountSuggestionEnabled(
   };
 }
 
+export function setShowERC8213Digests(value: boolean) {
+  return setPreference('showERC8213Digests', value, false);
+}
+
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }

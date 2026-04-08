@@ -1,6 +1,7 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
@@ -37,6 +38,8 @@ import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { hasTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
+import { computeCalldataDigest } from '../../../../../../../../shared/lib/digest';
+import { selectShowERC8213Digests } from '../../../../../selectors/preferences';
 
 export const TransactionData = ({
   data,
@@ -84,6 +87,7 @@ export const TransactionData = ({
     return (
       <Container noPadding={noPadding} transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
+        <CalldataDigestRow transactionData={transactionData} />
       </Container>
     );
   }
@@ -123,6 +127,7 @@ export const TransactionData = ({
             </React.Fragment>
           );
         })}
+        <CalldataDigestRow transactionData={transactionData} />
       </>
     </Container>
   );
@@ -159,6 +164,33 @@ export function Container({
         {children}
       </ConfirmInfoSection>
     </>
+  );
+}
+
+function CalldataDigestRow({ transactionData }: { transactionData: string }) {
+  const t = useI18nContext();
+  const showDigests = useSelector(selectShowERC8213Digests);
+
+  const digest = useMemo(() => {
+    if (!showDigests || !transactionData) {
+      return null;
+    }
+    return computeCalldataDigest(transactionData as Hex);
+  }, [showDigests, transactionData]);
+
+  if (!digest) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoRow
+      label={t('calldataDigest')}
+      copyEnabled
+      copyText={digest}
+      data-testid="calldata-digest-row"
+    >
+      <ConfirmInfoRowText text={digest} />
+    </ConfirmInfoRow>
   );
 }
 

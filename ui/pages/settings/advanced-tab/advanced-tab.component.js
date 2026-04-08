@@ -61,6 +61,8 @@ export default class AdvancedTab extends PureComponent {
     setManageInstitutionalWallets: PropTypes.func.isRequired,
     dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
     setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
+    showERC8213Digests: PropTypes.bool,
+    setShowERC8213Digests: PropTypes.func.isRequired,
   };
 
   state = {
@@ -631,6 +633,38 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderShowERC8213Digests() {
+    const { t } = this.context;
+    const { showERC8213Digests, setShowERC8213Digests } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[11]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={[null, 4]}
+        data-testid="advanced-setting-show-erc8213-digests"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('showERC8213Digests')}</span>
+          <div className="settings-page__content-description">
+            {t('showERC8213DigestsDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={showERC8213Digests}
+            onToggle={(value) => setShowERC8213Digests(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
@@ -651,6 +685,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderShowERC8213Digests()}
       </div>
     );
   }

@@ -172,6 +172,14 @@ const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
     hidden: getBrowserName() !== PLATFORM_FIREFOX,
   },
+  // advanced settingsRefs[11]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('showERC8213Digests'),
+    descriptionMessage: (t) => t('showERC8213DigestsDescription'),
+    route: `${ADVANCED_ROUTE}#show-erc8213-digests`,
+    icon: 'fas fa-sliders-h',
+  },
   {
     tabMessage: (t) => t('backupAndSync'),
     sectionMessage: (t) => t('backupAndSyncEnable'),
