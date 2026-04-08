@@ -280,6 +280,18 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
+  // MMDS Checkbox.onChange type is an intersection:
+  // React.FormEventHandler<HTMLLabelElement> & ((isSelected: boolean) => void)
+  // Provide a handler that satisfies both call signatures.
+  const handleCheckboxChange: React.FormEventHandler<HTMLLabelElement> &
+    ((isSelected: boolean) => void) = (
+    arg: boolean | React.FormEvent<HTMLLabelElement>,
+  ) => {
+    const nextIsSelected =
+      typeof arg === 'boolean' ? arg : !skipDeepLinkInterstitialChecked;
+    onRemindMeStateChanged(nextIsSelected);
+  };
+
   return (
     <Container
       display={Display.Flex}
@@ -381,7 +393,7 @@ export const DeepLink = () => {
                     id="dont-remind-me-checkbox"
                     data-testid="deep-link-checkbox"
                     isSelected={skipDeepLinkInterstitialChecked}
-                    onChange={onRemindMeStateChanged}
+                    onChange={handleCheckboxChange}
                   ></Checkbox>
                   <Label
                     htmlFor="dont-remind-me-checkbox"
