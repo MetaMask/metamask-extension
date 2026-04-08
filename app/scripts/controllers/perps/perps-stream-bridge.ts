@@ -12,6 +12,7 @@ type EmitFn = (
 
 type ActivateStreamingParams = {
   priceSymbols?: string[];
+  includePriceMarketData?: boolean;
   orderBookSymbol?: string;
   candle?: { symbol: string; interval: CandlePeriod; duration?: TimeDuration };
 };
@@ -109,10 +110,16 @@ export class PerpsStreamBridge {
         }
         return 'ok';
       },
-      perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
+      perpsActivatePriceStream: async ({
+        symbols,
+        includeMarketData,
+      }: {
+        symbols: string[];
+        includeMarketData?: boolean;
+      }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols);
+          this.#activatePriceStream(symbols, includeMarketData);
         }
         return 'ok';
       },
@@ -230,6 +237,7 @@ export class PerpsStreamBridge {
       this.#addDynamicSubscription('prices', () =>
         this.#controller.subscribeToPrices({
           symbols: priceSymbols,
+          includeMarketData: params.includePriceMarketData,
           callback: (data: unknown) => this.#emit('prices', data),
         }),
       );
@@ -262,12 +270,16 @@ export class PerpsStreamBridge {
     }
   }
 
-  #activatePriceStream(symbols: string[]): void {
+  #activatePriceStream(
+    symbols: string[],
+    includeMarketData?: boolean,
+  ): void {
     this.#tearDownChannel('prices');
     if (symbols.length) {
       this.#addDynamicSubscription('prices', () =>
         this.#controller.subscribeToPrices({
           symbols,
+          includeMarketData,
           callback: (data: unknown) => this.#emit('prices', data),
         }),
       );
