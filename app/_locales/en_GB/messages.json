@@ -4955,6 +4955,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openMultichainAccountAddressMenu": {
+    "message": "Open multichain account address menu"
+  },
   "openSettings": {
     "message": "Open settings"
   },

@@ -70,7 +70,7 @@ export const MultichainAccountCellDefaultAddress = ({
           iconProps={{
             size: IconSize.Sm,
           }}
-          ariaLabel="Open multichain account address menu"
+          ariaLabel={t('openMultichainAccountAddressMenu')}
           className="text-icon-alternative rounded-lg"
           data-testid="default-address-menu-button"
         />
