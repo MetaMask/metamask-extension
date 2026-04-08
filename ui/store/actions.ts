@@ -89,10 +89,6 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-// import type {
-//   Features as TrezorFeatures,
-//   Response as TrezorResponse,
-// } from '@trezor/connect-web';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
