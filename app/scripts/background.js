@@ -1177,8 +1177,9 @@ export async function loadStateFromPersistence(backup) {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
+ * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
  */
-function emitDappViewedMetricEvent(origin) {
+function emitDappViewedMetricEvent(origin, mainFrameOrigin) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1197,6 +1198,9 @@ function emitDappViewedMetricEvent(origin) {
     accountsState.internalAccounts.accounts,
   ).length;
 
+  const isIframe =
+    typeof mainFrameOrigin === 'string' && origin !== mainFrameOrigin;
+
   controller.metaMetricsController.trackEvent(
     {
       event: MetaMetricsEventName.DappViewed,
@@ -1208,6 +1212,9 @@ function emitDappViewedMetricEvent(origin) {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
+        is_iframe: isIframe,
+        iframe_origin: isIframe ? origin : null,
+        top_level_origin: isIframe ? mainFrameOrigin : null,
       },
     },
     {
@@ -1256,7 +1263,7 @@ function trackDappView(remotePort) {
   // - refresh the dapp
   // - open dapp in a new tab
   if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin);
+    emitDappViewedMetricEvent(origin, tabOrigin);
   }
 }
 
@@ -2082,7 +2089,7 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(currentOrigin);
+          emitDappViewedMetricEvent(currentOrigin, currentTabOrigin);
         }
       }
 

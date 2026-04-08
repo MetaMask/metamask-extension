@@ -257,7 +257,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -312,8 +312,14 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const isIframe =
+      typeof mainFrameOrigin === 'string' && origin !== mainFrameOrigin;
+
     const eventProperties = {
       api_source: requestedThrough,
+      is_iframe: isIframe,
+      iframe_origin: isIframe ? origin : null,
+      top_level_origin: isIframe ? mainFrameOrigin : null,
     };
 
     if (multichainApiRequestScope) {

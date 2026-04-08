@@ -147,6 +147,13 @@ async function requestEthereumAccountsHandler<
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
+    const { mainFrameOrigin } = req as JsonRpcRequest<Params> & {
+      origin: OriginString;
+      mainFrameOrigin?: string;
+    };
+    const isIframe =
+      typeof mainFrameOrigin === 'string' && origin !== mainFrameOrigin;
+
     sendMetrics(
       {
         event: MetaMetricsEventName.DappViewed,
@@ -163,6 +170,12 @@ async function requestEthereumAccountsHandler<
           ).length,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: ethAccounts.length,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_iframe: isIframe,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          iframe_origin: isIframe ? origin : null,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          top_level_origin: isIframe ? mainFrameOrigin : null,
         },
       },
       {
