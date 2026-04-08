@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Αγοράστε mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Κατάθεση σε",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Εξαργύρωση μπόνους",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Κλείσιμο θέσης πώλησης"
   },
-  "perpsClosedShort": {
-    "message": "Κλειστή θέση πώλησης (short)"
-  },
   "perpsConfirmCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "περιλαμβάνει Κ&Ζ $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Αυξημένη θέση"
-  },
   "perpsLearnBasics": {
     "message": "Μάθετε τα βασικά για τα perpetual συμβόλαια"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Άνοιγμα θέσης πώλησης στο $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Άνοιξε θέση αγοράς (long)"
   },
   "perpsOraclePrice": {
     "message": "Τιμή Oracle"
