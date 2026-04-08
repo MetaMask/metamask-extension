@@ -9,10 +9,6 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
-  moduleNameMapper: {
-    '^@metamask/perps-controller$':
-      '<rootDir>/test/mocks/metamask-perps-controller.js',
-  },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
