@@ -1084,9 +1084,13 @@ describe('rpcErrorUtils', () => {
       expect(extractMessageFromUnknownError(undefined)).toBe('undefined');
     });
 
-    it('returns string representation for non-string message', () => {
-      expect(extractMessageFromUnknownError({ message: 123 })).toBe(
-        '[object Object]',
+    it('stringifies numeric message property', () => {
+      expect(extractMessageFromUnknownError({ message: 123 })).toBe('123');
+    });
+
+    it('serializes plain objects without string message as JSON', () => {
+      expect(extractMessageFromUnknownError({ code: 'Device_NotFound' })).toBe(
+        '{"code":"Device_NotFound"}',
       );
     });
   });
@@ -1120,6 +1124,26 @@ describe('rpcErrorUtils', () => {
       const error = new Error('something went wrong');
       error.stack = 'Error: something went wrong\n    at popup closed handler';
       expect(hasUserRejectedMessage(error)).toBe(true);
+    });
+
+    it('handles non-string stack values without default object stringification', () => {
+      expect(
+        hasUserRejectedMessage({
+          message: 'device disconnected',
+          stack: { reason: 'popup closed' },
+        }),
+      ).toBe(true);
+    });
+
+    it('honors custom stack stringification when provided', () => {
+      expect(
+        hasUserRejectedMessage({
+          message: 'device disconnected',
+          stack: {
+            toString: () => 'user rejected the request',
+          },
+        }),
+      ).toBe(true);
     });
 
     it('returns false for unrelated errors', () => {

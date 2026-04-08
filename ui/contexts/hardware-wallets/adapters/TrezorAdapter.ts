@@ -81,8 +81,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       );
     }
 
-    // After the try/catch above, isDeviceConnected is definitely assigned
-    isDeviceConnected = isDeviceConnected as boolean;
     if (!isDeviceConnected) {
       this.#handleConnectionError(
         createHardwareWalletError(

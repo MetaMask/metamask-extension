@@ -454,9 +454,27 @@ export function extractMessageFromUnknownError(error: unknown): string {
     return error.message;
   }
 
-  const message = (error as { message?: unknown })?.message;
-  if (typeof message === 'string') {
-    return message;
+  if (typeof error === 'object' && error !== null) {
+    const errorLike = error as { message?: unknown };
+    const { message } = errorLike;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (
+      typeof message === 'number' ||
+      typeof message === 'boolean' ||
+      typeof message === 'bigint'
+    ) {
+      return String(message);
+    }
+
+    try {
+      return JSON.stringify(error, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      );
+    } catch {
+      return String(error);
+    }
   }
 
   return String(error);
@@ -470,9 +488,31 @@ export function extractMessageFromUnknownError(error: unknown): string {
  */
 export function hasUserRejectedMessage(error: unknown): boolean {
   const message = extractMessageFromUnknownError(error).toLowerCase();
-  const stack = ((error as { stack?: unknown })?.stack ?? '')
-    .toString()
-    .toLowerCase();
+  const rawStack =
+    typeof error === 'object' && error !== null
+      ? (error as { stack?: unknown }).stack
+      : undefined;
+  let stack = '';
+
+  if (rawStack !== null && rawStack !== undefined) {
+    if (
+      typeof rawStack === 'number' ||
+      typeof rawStack === 'boolean' ||
+      typeof rawStack === 'bigint'
+    ) {
+      stack = String(rawStack);
+    } else if (typeof rawStack === 'string') {
+      stack = rawStack;
+    } else {
+      const stringifiedStack = rawStack.toString();
+      stack =
+        stringifiedStack === '[object Object]'
+          ? extractMessageFromUnknownError(rawStack)
+          : stringifiedStack;
+    }
+  }
+
+  stack = stack.toLowerCase();
 
   return (
     message.includes('popup closed') ||
