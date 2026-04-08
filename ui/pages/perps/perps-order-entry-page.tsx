@@ -30,7 +30,11 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type { OrderType, OrderParams, PriceUpdate } from '@metamask/perps-controller';
+import type {
+  OrderType,
+  OrderParams,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,

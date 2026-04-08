@@ -1,8 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../shared/constants/perps-events';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +11,10 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
 import {
   ButtonIcon,
   ButtonIconSize,

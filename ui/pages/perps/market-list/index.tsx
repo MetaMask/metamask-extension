@@ -1,8 +1,4 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../shared/constants/perps-events';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
@@ -21,6 +17,10 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
 import {
