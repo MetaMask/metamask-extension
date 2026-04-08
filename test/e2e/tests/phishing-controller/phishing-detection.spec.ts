@@ -73,6 +73,8 @@ describe('Phishing Detection', function (this: Suite) {
         );
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
         await phishingWarningPage.clickProceedAnywayButton();
@@ -122,6 +124,8 @@ describe('Phishing Detection', function (this: Suite) {
           await homePage.checkPageIsLoaded();
           await waitForPhishingBlocklistToBeLoaded(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
+          // we don't expect the iframe because early-phishing-detection redirects
+          // the top level frame automatically.
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -369,8 +373,6 @@ describe('Phishing Detection', function (this: Suite) {
         await driver.openNewPage(testPageURL);
 
         await createWebSocketConnection(driver, 'malicious.localhost');
-        await driver.wait(until.urlContains('localhost:9999'), 15000);
-
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
