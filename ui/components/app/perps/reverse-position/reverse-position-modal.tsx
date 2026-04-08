@@ -23,6 +23,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
+import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -67,6 +68,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { replacePerpsToastByKey } = usePerpsToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,6 +88,9 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const handleSave = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
+
+    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
+
     try {
       const flipResult = await submitRequestToBackground<{
         success: boolean;
@@ -102,15 +107,21 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         [{ skipCache: true }],
       );
       streamManager.pushPositionsWithOverrides(freshPositions);
+
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
       onClose();
     } catch (err) {
       const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
       setError(raw);
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+        description: raw,
+      });
     } finally {
       setIsSubmitting(false);
     }
-  }, [onClose, position.symbol, positionForFlip]);
+  }, [onClose, position.symbol, positionForFlip, replacePerpsToastByKey]);
 
   return (
     <Modal

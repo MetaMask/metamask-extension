@@ -4058,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
-  "musdClaimClaimingTo": {
-    "message": "入金先:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "ボーナスを請求する",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5360,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "ショートをクローズ"
   },
-  "perpsClosedShort": {
-    "message": "ショートをクローズしました"
-  },
   "perpsConfirmCloseLong": {
     "message": "ロングをクローズ"
   },
@@ -5450,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "損益込み $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "拡大したポジション"
-  },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
   },
@@ -5530,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "$1のショートをオープン",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "ロングをオープンしました"
   },
   "perpsOraclePrice": {
     "message": "オラクル価格"

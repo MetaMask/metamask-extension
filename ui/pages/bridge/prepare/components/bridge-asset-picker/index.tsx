@@ -78,7 +78,7 @@ export const BridgeAssetPicker = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, accountGroup.id),
+    getBridgeSortedAssets(state, accountGroup?.id),
   );
 
   const t = useI18nContext();
@@ -117,7 +117,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, accountGroup.id, accountAddress],
+    [chainIdsSet, accountGroup?.id, accountAddress],
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
