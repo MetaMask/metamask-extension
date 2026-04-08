@@ -155,13 +155,7 @@ describe('MM Connect-EVM', function (this: Suite) {
       );
     });
 
-    // TODO(wenfix): Change this test to approve eth_sendTransaction
-    // Currently our testdapp hardcodes the recipient and value for the transaction
-    // which causes several alerts to be shown during confirmation,
-    // making it difficult to approve the transaction.
-    // We should change the testdapp to allow a dynamic recipient and value.
-    // Ticket: https://consensyssoftware.atlassian.net/browse/WAPI-1258
-    it('rejects eth_sendTransaction', async function () {
+    it('completes eth_sendTransaction successfully', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -178,19 +172,17 @@ describe('MM Connect-EVM', function (this: Suite) {
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
-          // Trigger eth_sendTransaction (the card uses a fixed recipient/value).
+          // Trigger eth_sendTransaction.
           await testDapp.clickLegacySendTransaction();
 
           // Approve the transaction in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
-          await txConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+          await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
-          // Back on the dapp: the transaction should be rejected.
+          // Back on the dapp: verify the response contains a tx hash.
           await testDapp.switchTo();
-          await testDapp.checkLegacyResponse(
-            'User denied transaction signature',
-          );
+          await testDapp.checkLegacyResponse('0x');
         },
       );
     });
@@ -346,7 +338,7 @@ describe('MM Connect-EVM', function (this: Suite) {
       );
     });
 
-    it('rejects eth_sendTransaction', async function () {
+    it('completes eth_sendTransaction successfully', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -363,22 +355,20 @@ describe('MM Connect-EVM', function (this: Suite) {
           await testDapp.switchTo();
           await testDapp.checkWagmiCardVisible();
 
-          // Submit the send-transaction form. Use a tiny amount to the zero address.
+          // Submit the send-transaction form.
           await testDapp.sendWagmiTransaction(
-            '0x0000000000000000000000000000000000000000',
-            '0.0001',
+            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            '0.00001',
           );
 
-          // TODO: Change this test to accept the tx once https://consensyssoftware.atlassian.net/browse/WAPI-1258
-          // is resolved. See the comment in the same test on the Legacy EVM test suite above for more details.
-
-          // Reject the transaction in the extension.
+          // Approve the transaction in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
-          await txConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+          await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
+          // Back on the dapp: verify the tx hash is shown.
           await testDapp.switchTo();
-          await testDapp.checkWagmiTxError('unknown RPC error');
+          await testDapp.checkWagmiTxHash('0x');
         },
       );
     });

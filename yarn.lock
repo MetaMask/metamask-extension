@@ -6132,10 +6132,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-playground@npm:0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/browser-playground@npm:0.3.0"
-  checksum: 10/87eb5f9f623afea58dcf2eaeb46795ce595ecc3462b5976a4ab35d04c1eff0edde05ccaf52681fe1f02f840cf7d06b29ca6a71ce581cf1b2df2bc1b2e7acd28b
+"@metamask/browser-playground@npm:0.6.1":
+  version: 0.6.1
+  resolution: "@metamask/browser-playground@npm:0.6.1"
+  checksum: 10/4b5ede07c35663bc7553f75697f5e013d5cfd63fd51fe7e7e7a991c5c26a2017efb65851e036b452d4cd51393fd89caa1c43ac69ef4fac5d0082c83b5f850cc6
   languageName: node
   linkType: hard
 
@@ -34030,7 +34030,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^68.0.0"
     "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@patch%3A@metamask/bridge-status-controller@npm%253A69.0.0%23~/.yarn/patches/@metamask-bridge-status-controller-npm-69.0.0-15106ec5e0.patch%3A%3Aversion=69.0.0&hash=ca26bd#~/.yarn/patches/@metamask-bridge-status-controller-patch-b9566c90d6.patch"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/browser-playground": "npm:0.3.0"
+    "@metamask/browser-playground": "npm:0.6.1"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.4.0"
     "@metamask/claims-controller": "npm:^0.4.2"
