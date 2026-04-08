@@ -1,6 +1,7 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
+import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
@@ -73,7 +74,11 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
+    // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
+    // which would otherwise make the next error look like a different stack (background timers
+    // usually run after beforeSend finished; rapid UI captures often dedupe first).
+    beforeSend: (report) => rewriteReport(cloneDeep(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
