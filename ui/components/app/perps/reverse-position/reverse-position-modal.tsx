@@ -23,6 +23,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
+import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
 
@@ -111,17 +112,16 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
       onClose();
     } catch (err) {
-      const raw =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError(raw);
+      const message = handlePerpsError(err, t as (key: string) => string);
+      setError(message);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: raw,
+        description: message,
       });
     } finally {
       setIsSubmitting(false);
     }
-  }, [onClose, position.symbol, positionForFlip, replacePerpsToastByKey]);
+  }, [onClose, position.symbol, positionForFlip, replacePerpsToastByKey, t]);
 
   return (
     <Modal

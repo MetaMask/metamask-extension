@@ -50,6 +50,7 @@ import { usePerpsEligibility } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
@@ -247,12 +248,23 @@ const PerpsWithdrawPage: React.FC = () => {
         return;
       }
 
-      setSubmitError(result?.error ?? t('perpsWithdrawFailed'));
+      const withdrawError = result?.error;
+      setSubmitError(
+        withdrawError
+          ? (translatePerpsError(
+              new Error(withdrawError),
+              t as (key: string) => string,
+            ) ?? t('perpsWithdrawFailed'))
+          : t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
-    } catch {
-      setSubmitError(t('perpsWithdrawFailed'));
+    } catch (error) {
+      setSubmitError(
+        translatePerpsError(error, t as (key: string) => string) ??
+          t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });

@@ -52,6 +52,7 @@ import {
 } from '../../components/app/perps/constants/chartConfig';
 import { usePerpsEligibility } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
+import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -103,29 +104,6 @@ const ORDER_MODE_TOAST_KEYS: Record<
     failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
   },
 };
-
-const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
-  /^an unknown error occurred$/iu,
-  /^failed to place order$/iu,
-  /^unknown error$/iu,
-  /^error$/iu,
-];
-
-const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
-  /insufficient margin/iu,
-  /insufficient balance/iu,
-  /insufficient liquidity|IOC.*cancel/iu,
-  /\bno liquidity\b/iu,
-  /rate limit/iu,
-  /timeout/iu,
-  /network error/iu,
-  /slippage/iu,
-  /order rejected/iu,
-  /reduce only|reduceOnly/iu,
-  /position would flip/iu,
-  /service unavailable|503|temporarily unavailable/iu,
-  /fetch failed|connection failed/iu,
-];
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -706,22 +684,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (inProgressToastKey) {
         hidePerpsToast();
       }
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
       const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
-      const normalizedErrorMessage = errorMessage.trim();
-      const shouldUseOrderFailedFallback =
-        failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
-        (normalizedErrorMessage.length === 0 ||
-          ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          ) ||
-          !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          ));
-      const failedToastDescription = shouldUseOrderFailedFallback
-        ? t('perpsToastOrderFailedDescriptionFallback')
-        : normalizedErrorMessage;
+      const failedToastDescription =
+        translatePerpsError(error, t as (key: string) => string) ??
+        t('perpsToastOrderFailedDescriptionFallback');
 
       replacePerpsToastByKey({
         key: failedToastKey,

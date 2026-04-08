@@ -32,6 +32,7 @@ import {
   getPositionDirection,
   getPositionPnlRatio,
 } from '../utils';
+import { handlePerpsError } from '../utils/translate-perps-error';
 import {
   PERPS_MARKET_ORDER_FEE_RATE,
   PERPS_MIN_MARKET_ORDER_USD,
@@ -198,15 +199,11 @@ const getCloseFailureToastConfig = ({
   const isOrderSizeMinError =
     error instanceof Error && error.message === 'ORDER_SIZE_MIN';
 
-  let errorMessage = 'An unknown error occurred';
-
-  if (isOrderSizeMinError) {
-    errorMessage = t('perpsClosePartialMinNotional', [
-      formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
-    ]);
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  }
+  const errorMessage = isOrderSizeMinError
+    ? t('perpsClosePartialMinNotional', [
+        formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+      ])
+    : handlePerpsError(error, t as (key: string) => string);
 
   if (isPartialClose) {
     return {
