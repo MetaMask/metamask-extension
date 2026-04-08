@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -385,7 +385,9 @@ export const CancelSpeedup = ({
   const { currentModal, closeModal } =
     useTransactionModalContext() as TransactionModalContextType;
 
-  const onClose = () => closeModal(['cancelSpeedUpTransaction']);
+  const onClose = useCallback(() => {
+    closeModal(['cancelSpeedUpTransaction']);
+  }, [closeModal]);
   const { error, clearError, submitTransaction } =
     useCancelSpeedupActions(onClose);
 
