@@ -33,32 +33,37 @@ async function withWatching<T>(
 ) {
   const compiler = webpack(config);
   // @ts-expect-error - Node types need to be updated.
-  const initialBuild = Promise.withResolvers<void>();
+  let build = Promise.withResolvers<void>();
   const watchHandle = compiler.watch({}, (error, stats) => {
     if (error) {
-      initialBuild.reject(error);
+      build.reject(error);
       return;
     }
     if (!stats) {
-      initialBuild.reject(
+      build.reject(
         new Error('Webpack finished watch build without returning stats.'),
       );
       return;
     }
-    initialBuild.resolve();
+    if (stats.hasErrors()) {
+      build.reject(new Error('Webpack watch build failed.'));
+      return;
+    }
+    build.resolve();
   });
   assert(watchHandle, 'Webpack did not return a watch handle.');
   const watching = watchHandle;
 
-  const waitForBuild = (trigger?: () => void) =>
-    trigger
-      ? new Promise<void>((resolveBuild, rejectBuild) => {
-          trigger();
-          watching.invalidate((error) =>
-            error ? rejectBuild(error) : resolveBuild(),
-          );
-        })
-      : initialBuild.promise;
+  const waitForBuild = (trigger?: () => void) => {
+    if (!trigger) {
+      return build.promise;
+    }
+    // @ts-expect-error - Node types need to be updated.
+    build = Promise.withResolvers<void>();
+    trigger();
+    watching.invalidate();
+    return build.promise;
+  };
 
   try {
     return await callback(waitForBuild);
