@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,

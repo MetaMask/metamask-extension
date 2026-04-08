@@ -11,7 +11,7 @@ import {
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { detectSIWE } from '@metamask/controller-utils';
-import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
+import { RewardsControllerMessenger } from '../../messenger-client-init/messengers/rewards-controller-messenger';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
