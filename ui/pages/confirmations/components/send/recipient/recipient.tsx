@@ -42,7 +42,7 @@ export const Recipient = ({
 }) => {
   const {
     recipientError,
-    recipientErrorAllowAcknowledge,
+    hasUnacknowledgedAlerts,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -104,7 +104,7 @@ export const Recipient = ({
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('to')}
         </Text>
-        {to === toAddressValidated && recipientErrorAllowAcknowledge && (
+        {to === toAddressValidated && hasUnacknowledgedAlerts && (
           <Icon
             name={IconName.Danger}
             size={IconSize.Sm}
@@ -122,7 +122,7 @@ export const Recipient = ({
       />
       {to === toAddressValidated &&
         recipientError &&
-        !recipientErrorAllowAcknowledge && (
+        !hasUnacknowledgedAlerts && (
           <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
             {recipientError}
           </HelpText>

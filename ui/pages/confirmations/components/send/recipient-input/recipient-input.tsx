@@ -52,11 +52,11 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
-    recipientErrorAllowAcknowledge,
+    hasUnacknowledgedAlerts,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
-  const isWarning = Boolean(recipientErrorAllowAcknowledge);
+  const isWarning = Boolean(hasUnacknowledgedAlerts);
   const isHardError = Boolean(recipientError) && !isWarning;
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||

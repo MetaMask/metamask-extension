@@ -3,6 +3,7 @@ import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
+  getAccountAddressRelationship,
   SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
@@ -260,6 +261,26 @@ function getApi(
       controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
+    checkFirstTimeInteraction: async ({
+      from,
+      to,
+      chainId,
+    }: {
+      from: string;
+      to: string;
+      chainId: number;
+    }): Promise<boolean | undefined> => {
+      try {
+        const result = await getAccountAddressRelationship({
+          from,
+          to,
+          chainId,
+        });
+        return result.count === undefined ? undefined : result.count === 0;
+      } catch {
+        return undefined;
+      }
+    },
   };
 }
 

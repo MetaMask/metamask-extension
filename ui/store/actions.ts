@@ -2129,6 +2129,17 @@ export async function getTransactions(
   ]);
 }
 
+export async function checkFirstTimeInteraction(request: {
+  from: string;
+  to: string;
+  chainId: number;
+}): Promise<boolean | undefined> {
+  return submitRequestToBackground<boolean | undefined>(
+    'checkFirstTimeInteraction',
+    [request],
+  );
+}
+
 function completedTx(
   txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

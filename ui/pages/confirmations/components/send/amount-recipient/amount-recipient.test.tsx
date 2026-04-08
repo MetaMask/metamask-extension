@@ -106,6 +106,9 @@ describe('AmountRecipient', () => {
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
@@ -269,6 +272,9 @@ describe('AmountRecipient', () => {
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
@@ -346,6 +352,9 @@ describe('AmountRecipient', () => {
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
@@ -370,8 +379,14 @@ describe('AmountRecipient', () => {
     expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
   });
 
-  describe('token contract address alert modal', () => {
-    it('shows alert modal instead of submitting when recipient is acknowledgeable', () => {
+  describe('send alert modal', () => {
+    const TOKEN_CONTRACT_ALERT = {
+      key: 'tokenContract',
+      title: 'Smart contract address',
+      message: 'This may result in fund loss.',
+    };
+
+    it('shows alert modal instead of submitting when there are unacknowledged alerts', () => {
       const mockHandleSubmit = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
@@ -395,9 +410,9 @@ describe('AmountRecipient', () => {
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
           recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: jest.fn(),
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
+          alerts: [TOKEN_CONTRACT_ALERT],
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -420,7 +435,7 @@ describe('AmountRecipient', () => {
 
     it('proceeds with submit after acknowledging in modal', async () => {
       const mockHandleSubmit = jest.fn();
-      const mockAcknowledgeError = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -460,9 +475,9 @@ describe('AmountRecipient', () => {
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
           recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: mockAcknowledgeError,
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
+          alerts: [TOKEN_CONTRACT_ALERT],
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -477,13 +492,13 @@ describe('AmountRecipient', () => {
 
       await new Promise(process.nextTick);
 
-      expect(mockAcknowledgeError).toHaveBeenCalled();
+      expect(mockAcknowledgeAlerts).toHaveBeenCalled();
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
 
     it('does not submit when acknowledging from icon-triggered modal', async () => {
       const mockHandleSubmit = jest.fn();
-      const mockAcknowledgeError = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
       } as unknown as ReturnType<typeof SendActions.useSendActions>);
@@ -506,9 +521,9 @@ describe('AmountRecipient', () => {
         .spyOn(RecipientValidation, 'useRecipientValidation')
         .mockReturnValue({
           recipientError: 'tokenContractError',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: mockAcknowledgeError,
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
+          alerts: [TOKEN_CONTRACT_ALERT],
           recipientWarning: null,
           recipientResolvedLookup: null,
           recipientConfusableCharacters: [],
@@ -523,7 +538,7 @@ describe('AmountRecipient', () => {
 
       await new Promise(process.nextTick);
 
-      expect(mockAcknowledgeError).toHaveBeenCalled();
+      expect(mockAcknowledgeAlerts).toHaveBeenCalled();
       expect(mockHandleSubmit).not.toHaveBeenCalled();
     });
   });

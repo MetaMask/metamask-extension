@@ -1,16 +1,20 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React, { useCallback, useState } from 'react';
 
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  IconColor,
   Text,
-  TextVariant,
   TextAlign,
-  BoxFlexDirection,
-  BoxAlignItems,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   Modal,
@@ -20,18 +24,129 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../../../components/component-library';
-import { JustifyContent } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { JustifyContent } from '../../../../../helpers/constants/design-system';
 import { SendAlertModalProps } from './send-alert-modal.types';
+
+function PreviousButton({
+  safeIndex,
+  onBack,
+}: {
+  safeIndex: number;
+  onBack: () => void;
+}) {
+  const t = useI18nContext();
+  if (safeIndex === 0) {
+    return null;
+  }
+  return (
+    <ButtonIcon
+      iconName={IconName.ArrowLeft}
+      ariaLabel={t('back')}
+      size={ButtonIconSize.Sm}
+      onClick={onBack}
+      className="confirm_nav__left_btn"
+      data-testid="send-alert-modal-prev-button"
+    />
+  );
+}
+
+function NextButton({
+  safeIndex,
+  alertsLength,
+  onNext,
+}: {
+  safeIndex: number;
+  alertsLength: number;
+  onNext: () => void;
+}) {
+  const t = useI18nContext();
+  if (safeIndex >= alertsLength - 1) {
+    return null;
+  }
+  return (
+    <ButtonIcon
+      iconName={IconName.ArrowRight}
+      ariaLabel={t('next')}
+      size={ButtonIconSize.Sm}
+      onClick={onNext}
+      className="confirm_nav__right_btn"
+      data-testid="send-alert-modal-next-button"
+    />
+  );
+}
+
+function PageNumber({
+  safeIndex,
+  alertsLength,
+}: {
+  safeIndex: number;
+  alertsLength: number;
+}) {
+  const t = useI18nContext();
+  return (
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.TextAlternative}
+      className="whitespace-nowrap mx-1"
+      data-testid="send-alert-modal-page-counter"
+    >
+      {`${safeIndex + 1} ${t('ofTextNofM')} ${alertsLength}`}
+    </Text>
+  );
+}
+
+function PageNavigation({
+  alertsLength,
+  safeIndex,
+  onBack,
+  onNext,
+}: {
+  alertsLength: number;
+  safeIndex: number;
+  onBack: () => void;
+  onNext: () => void;
+}) {
+  if (alertsLength <= 1) {
+    return null;
+  }
+  return (
+    <Box alignItems={BoxAlignItems.Center} className="flex">
+      <PreviousButton safeIndex={safeIndex} onBack={onBack} />
+      <PageNumber safeIndex={safeIndex} alertsLength={alertsLength} />
+      <NextButton
+        safeIndex={safeIndex}
+        alertsLength={alertsLength}
+        onNext={onNext}
+      />
+    </Box>
+  );
+}
 
 export const SendAlertModal = ({
   isOpen,
-  title,
-  errorMessage,
+  alerts,
   onAcknowledge,
   onClose,
 }: SendAlertModalProps) => {
   const t = useI18nContext();
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
+  const currentAlert = alerts[safeIndex];
+  const hasMultiple = alerts.length > 1;
+
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  }, []);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
+  }, [alerts.length]);
+
+  if (!currentAlert) {
+    return null;
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} data-testid="send-alert-modal">
@@ -41,6 +156,16 @@ export const SendAlertModal = ({
           onClose={onClose}
           paddingBottom={0}
           justifyContent={JustifyContent.flexEnd}
+          startAccessory={
+            hasMultiple ? (
+              <PageNavigation
+                alertsLength={alerts.length}
+                safeIndex={safeIndex}
+                onBack={goToPrevious}
+                onNext={goToNext}
+              />
+            ) : null
+          }
           closeButtonProps={{
             'data-testid': 'send-alert-modal-close-button',
           }}
@@ -60,23 +185,26 @@ export const SendAlertModal = ({
             textAlign={TextAlign.Center}
             className="mt-2"
           >
-            {title}
+            {currentAlert.title}
           </Text>
         </Box>
         <ModalBody>
           <Text
             variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
             textAlign={TextAlign.Center}
             data-testid="send-alert-modal-message"
+            className="break-words max-w-full"
+            style={{ overflowWrap: 'anywhere' }}
           >
-            {errorMessage}
+            {currentAlert.message}
           </Text>
         </ModalBody>
         <ModalFooter
           onCancel={onClose}
           onSubmit={onAcknowledge}
           submitButtonProps={{
-            children: t('iUnderstand'),
+            children: currentAlert.acknowledgeButtonLabel ?? t('iUnderstand'),
             'data-testid': 'send-alert-modal-acknowledge-button',
           }}
           cancelButtonProps={{

@@ -35,13 +35,13 @@ export const AmountRecipient = () => {
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipientValidationResult = useRecipientValidation();
 
-  const { recipientErrorAllowAcknowledge, acknowledgeError } =
+  const { hasUnacknowledgedAlerts, acknowledgeAlerts, alerts } =
     recipientValidationResult;
 
   const hasBlockingError =
     Boolean(amountError) ||
     (Boolean(recipientValidationResult.recipientError) &&
-      !recipientErrorAllowAcknowledge) ||
+      !hasUnacknowledgedAlerts) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
   const isDisabled = hasBlockingError || !toResolved;
@@ -60,8 +60,6 @@ export const AmountRecipient = () => {
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {
-      // Non EVM flows need an extra validation because "value" can be empty dependent on the blockchain (e.g it's fine for Solana but not for Bitcoin)
-      // Hence we do a call for `validateNonEvmAmountAsync` here to raise UI validation errors if exists
       const nonEvmAmountError = await validateNonEvmAmountAsync();
       if (nonEvmAmountError) {
         return;
@@ -80,20 +78,20 @@ export const AmountRecipient = () => {
 
   const handleAlertModalAcknowledge = useCallback(async () => {
     setIsAlertModalOpen(false);
-    acknowledgeError();
+    acknowledgeAlerts();
     if (shouldSubmitOnAcknowledge) {
       await proceedWithSubmit();
     }
-  }, [acknowledgeError, shouldSubmitOnAcknowledge, proceedWithSubmit]);
+  }, [acknowledgeAlerts, shouldSubmitOnAcknowledge, proceedWithSubmit]);
 
   const onClick = useCallback(async () => {
-    if (recipientErrorAllowAcknowledge) {
+    if (hasUnacknowledgedAlerts) {
       setShouldSubmitOnAcknowledge(true);
       setIsAlertModalOpen(true);
       return;
     }
     await proceedWithSubmit();
-  }, [recipientErrorAllowAcknowledge, proceedWithSubmit]);
+  }, [hasUnacknowledgedAlerts, proceedWithSubmit]);
 
   if (!asset) {
     return <LoadingScreen />;
@@ -126,8 +124,7 @@ export const AmountRecipient = () => {
       </Button>
       <SendAlertModal
         isOpen={isAlertModalOpen}
-        title={t('smartContractAddress')}
-        errorMessage={t('smartContractAddressWarning')}
+        alerts={alerts}
         onAcknowledge={handleAlertModalAcknowledge}
         onClose={handleAlertModalClose}
       />

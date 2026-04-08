@@ -6946,6 +6946,13 @@
   "send": {
     "message": "Send"
   },
+  "sendAlertNewAddressMessage": {
+    "message": "You're sending to this address for the first time. Make sure that it's correct before you continue: $1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "New address"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },

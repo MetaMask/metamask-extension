@@ -255,7 +255,7 @@ describe('Recipient', () => {
   describe('acknowledge', () => {
     const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
 
-    it('hides inline error when recipientErrorAllowAcknowledge is true', () => {
+    it('hides inline error when hasUnacknowledgedAlerts is true', () => {
       mockUseSendContext.mockReturnValue({
         to: tokenContractAddress,
         updateTo: mockUpdateTo,
@@ -265,9 +265,8 @@ describe('Recipient', () => {
       const { queryByText } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: jest.fn(),
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
       });
@@ -275,7 +274,7 @@ describe('Recipient', () => {
       expect(queryByText('Token contract error')).not.toBeInTheDocument();
     });
 
-    it('renders alert icon next to To label when address is acknowledgeable', () => {
+    it('renders alert icon next to To label when there are unacknowledged alerts', () => {
       mockUseSendContext.mockReturnValue({
         to: tokenContractAddress,
         updateTo: mockUpdateTo,
@@ -285,9 +284,8 @@ describe('Recipient', () => {
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: jest.fn(),
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
       });
@@ -307,9 +305,8 @@ describe('Recipient', () => {
       const { getByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: true,
-
-          acknowledgeError: jest.fn(),
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
         onAlertIconClick: mockOnAlertIconClick,
@@ -319,7 +316,7 @@ describe('Recipient', () => {
       expect(mockOnAlertIconClick).toHaveBeenCalledTimes(1);
     });
 
-    it('does not render alert icon when address is not acknowledgeable', () => {
+    it('does not render alert icon when there are no unacknowledged alerts', () => {
       mockUseSendContext.mockReturnValue({
         to: tokenContractAddress,
         updateTo: mockUpdateTo,
@@ -329,9 +326,8 @@ describe('Recipient', () => {
       const { queryByTestId } = renderComponent({
         recipientValidationResult: {
           recipientError: 'Token contract error',
-          recipientErrorAllowAcknowledge: false,
-
-          acknowledgeError: jest.fn(),
+          hasUnacknowledgedAlerts: false,
+          acknowledgeAlerts: jest.fn(),
           toAddressValidated: tokenContractAddress,
         },
       });
