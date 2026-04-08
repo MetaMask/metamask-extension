@@ -40,16 +40,16 @@ describe('LanguageSubPage', () => {
     renderWithProvider(<LanguageSubPage />, mockStore);
 
     expect(screen.getByText('English')).toBeInTheDocument();
-    expect(screen.getByText('Español')).toBeInTheDocument();
+    expect(screen.getByText('Español (Latinoamérica)')).toBeInTheDocument();
     expect(screen.getByText('Deutsch')).toBeInTheDocument();
   });
 
   it('calls updateCurrentLocale and navigates when a language is clicked', () => {
     renderWithProvider(<LanguageSubPage />, mockStore);
 
-    fireEvent.click(screen.getByText('Español'));
+    fireEvent.click(screen.getByText('Español (Latinoamérica)'));
 
-    expect(mockUpdateCurrentLocale).toHaveBeenCalledWith('es');
+    expect(mockUpdateCurrentLocale).toHaveBeenCalledWith('es_419');
     expect(mockNavigate).toHaveBeenCalledWith(PREFERENCES_AND_DISPLAY_ROUTE);
   });
 
