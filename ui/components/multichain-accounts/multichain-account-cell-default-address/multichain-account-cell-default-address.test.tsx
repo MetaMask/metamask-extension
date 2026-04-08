@@ -70,9 +70,7 @@ describe('MultichainAccountCellDefaultAddress', () => {
       createStore(),
     );
 
-    expect(
-      screen.getByTestId('default-address-container'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('default-address-container')).toBeInTheDocument();
   });
 
   it('calls copy handler with normalized address when default address is clicked', () => {
