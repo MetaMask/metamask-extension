@@ -398,10 +398,10 @@
       "MetaMask: Background connection not initialized": 73,
       "Reselect: Identity function warnings": 1
     },
-    "ui/components/multichain-accounts/multichain-address-rows-hovered-list/default-address.test.tsx": {
+    "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.test.tsx": {
+    "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
@@ -461,6 +461,7 @@
       "React: DOM nesting violations": 1
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
     },
