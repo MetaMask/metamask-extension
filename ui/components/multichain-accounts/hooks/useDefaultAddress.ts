@@ -18,7 +18,6 @@ type UseDefaultAddressReturn = {
   displayDefaultAddress: string | false | null;
   addressCopied: boolean;
   handleDefaultAddressClick: () => void;
-  isDefaultAddressEnabled: boolean;
 };
 
 export const useDefaultAddress = (
@@ -54,6 +53,5 @@ export const useDefaultAddress = (
     displayDefaultAddress,
     addressCopied,
     handleDefaultAddressClick,
-    isDefaultAddressEnabled,
   };
 };

@@ -71,7 +71,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
         groupId={groupId}
         limit={MAX_NETWORK_AVATARS}
       />
-      {displayDefaultAddress && (
+      {displayDefaultAddress && defaultAddress && (
         <Text
           ellipsis
           variant={TextVariant.BodySm}
@@ -84,7 +84,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
         >
           {addressCopied
             ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
-            : shortenAddress(normalizeSafeAddress(defaultAddress as string))}
+            : shortenAddress(normalizeSafeAddress(defaultAddress))}
         </Text>
       )}
       <Icon

@@ -75,7 +75,7 @@ export const MultichainAccountCellDefaultAddress = ({
           data-testid="default-address-menu-button"
         />
       </MultichainTriggeredAddressRowsList>
-      {displayDefaultAddress ? (
+      {displayDefaultAddress && defaultAddress ? (
         <Box
           onClick={handleDefaultAddressClick}
           flexDirection={BoxFlexDirection.Row}
@@ -104,7 +104,7 @@ export const MultichainAccountCellDefaultAddress = ({
           >
             {addressCopied
               ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
-              : shortenAddress(normalizeSafeAddress(defaultAddress as string))}
+              : shortenAddress(normalizeSafeAddress(defaultAddress))}
           </Text>
           <Icon
             name={addressCopied ? IconName.CopySuccess : IconName.Copy}
