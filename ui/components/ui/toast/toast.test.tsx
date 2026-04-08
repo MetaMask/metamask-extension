@@ -21,7 +21,7 @@ describe('ToastContent', () => {
         onActionClick={onActionClick}
       />,
     );
-    fireEvent.click(screen.getByText('View'));
+    fireEvent.click(screen.getByText('test-action'));
     expect(onActionClick).toHaveBeenCalledTimes(1);
   });
 
@@ -29,6 +29,6 @@ describe('ToastContent', () => {
     render(
       <ToastContent title="Transaction confirmed" actionText="test-action" />,
     );
-    expect(screen.queryByText('View')).not.toBeInTheDocument();
+    expect(screen.queryByText('test-action')).not.toBeInTheDocument();
   });
 });

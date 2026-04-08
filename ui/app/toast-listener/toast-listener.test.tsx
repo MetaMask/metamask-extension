@@ -30,7 +30,9 @@ jest.mock('../../ducks/bridge-status/selectors', () => ({
   selectBridgeHistoryForToast: jest.fn(),
 }));
 
-jest.mock('../../components/ui/toast/toast', () => ({ ToastContent: () => null }));
+jest.mock('../../components/ui/toast/toast', () => ({
+  ToastContent: () => null,
+}));
 
 const mockUseSelector = jest.mocked(useSelector);
 
