@@ -15,7 +15,10 @@ import {
   type BenchmarkResults,
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
-import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import {
+  WITH_STATE_POWER_USER,
+  POWER_USER_NUM_BROWSER_LOADS,
+} from '../../utils/constants';
 import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
@@ -87,5 +90,8 @@ async function measurePagePowerUser(
 export async function run(
   options: PageLoadBenchmarkOptions,
 ): Promise<BenchmarkResults> {
-  return runPageLoadBenchmark(measurePagePowerUser, options);
+  return runPageLoadBenchmark(measurePagePowerUser, {
+    ...options,
+    browserLoads: options.browserLoads ?? POWER_USER_NUM_BROWSER_LOADS,
+  });
 }
