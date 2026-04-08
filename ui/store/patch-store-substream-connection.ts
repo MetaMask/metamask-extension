@@ -137,7 +137,7 @@ export class PatchStoreSubstreamConnection {
       // `getStatePatches` request. (These responses can be quite large so we
       // avoid a runtime check for performance reasons.)
       this.#resolvePendingGetStatePatchesRequest(
-        message as unknown as {
+        message as {
           id: number;
           result: Patch[];
         },
