@@ -17,6 +17,7 @@ import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
+  WARMUP_RUNS,
 } from './constants';
 import {
   aggregateWebVitals,
@@ -27,6 +28,7 @@ import {
   calcStdDevResult,
   calculateTimerStatistics,
   checkExclusionRate,
+  detectOutliersIQR,
   MAX_EXCLUSION_RATE,
   MAX_TOTAL_DURATION_MS,
   validateThresholds,
@@ -264,6 +266,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   const stdDev: StatisticalResult = {};
   const p75: StatisticalResult = {};
   const p95: StatisticalResult = {};
+  const trimmedCount: StatisticalResult = {};
 
   // timers already includes promoted web vitals from runBenchmarkWithIterations
   for (const timer of timers) {
@@ -273,7 +276,12 @@ export function convertTimerStatisticsToBenchmarkResults(
     stdDev[timer.id] = timer.stdDev;
     p75[timer.id] = timer.p75;
     p95[timer.id] = timer.p95;
+    if (timer.trimmedCount !== undefined) {
+      trimmedCount[timer.id] = timer.trimmedCount;
+    }
   }
+
+  const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
 
   return {
     testTitle,
@@ -287,6 +295,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     stdDev,
     p75,
     p95,
+    ...(hasTrimmedCounts && { trimmedCount }),
     ...(webVitals && { webVitals }),
   };
 }
@@ -366,10 +375,16 @@ export async function runPageLoadBenchmark(
     resultPersona = persona;
   }
 
-  if (runResults.some((result) => result.navigation.length > 1)) {
+  // Discard the first WARMUP_RUNS browser-load sessions before computing stats.
+  // Each session contributes exactly pageLoads metric objects to runResults.
+  const warmupSize = WARMUP_RUNS * pageLoads;
+  const measuredResults = runResults.slice(warmupSize);
+  const measuredWebVitalsRuns = allWebVitalsRuns.slice(warmupSize);
+
+  if (measuredResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
   }
-  const firstNonNavigate = runResults.find(
+  const firstNonNavigate = measuredResults.find(
     (result) => result.navigation[0].type !== 'navigate',
   );
   if (firstNonNavigate !== undefined) {
@@ -379,17 +394,19 @@ export async function runPageLoadBenchmark(
   }
 
   const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    result[key] = runResults
-      .map((m) => get(m, tracePath) as number)
-      .sort((a, b) => a - b);
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
   }
 
   let webVitals: WebVitalsSummary | undefined;
-  if (allWebVitalsRuns.length > 0) {
+  if (measuredWebVitalsRuns.length > 0) {
     webVitals = {
-      runs: allWebVitalsRuns,
-      aggregated: aggregateWebVitals(allWebVitalsRuns),
+      runs: measuredWebVitalsRuns,
+      aggregated: aggregateWebVitals(measuredWebVitalsRuns),
     };
   }
 
@@ -423,6 +440,7 @@ export async function runPageLoadBenchmark(
     stdDev: stdDevResult,
     p75,
     p95,
+    trimmedCount: trimmedCounts,
     ...(webVitals && { webVitals }),
   };
 }
