@@ -1,8 +1,8 @@
 import React from 'react';
+import { TextAlign } from '@metamask/design-system-react';
 import {
   BorderColor,
   BorderRadius,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { AccountPicker } from '.';
 
