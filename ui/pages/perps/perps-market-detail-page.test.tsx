@@ -529,9 +529,6 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-<<<<<<< HEAD
-    it('displays learn section', async () => {
-=======
     it('does not show View All button when there are no fills', () => {
       const store = mockStore(createMockState(true));
 
@@ -577,7 +574,6 @@ describe('PerpsMarketDetailPage', () => {
     });
 
     it('displays learn section', () => {
->>>>>>> main
       const store = mockStore(createMockState(true));
 
       const { getByText } = await renderPage(store);
