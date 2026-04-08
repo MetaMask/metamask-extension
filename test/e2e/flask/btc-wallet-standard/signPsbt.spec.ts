@@ -1,19 +1,21 @@
-import { withBtcAccountSnap } from '../btc/common-btc';
-import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
+import {
+  TestDappBitcoin,
+  availableConnectionTypes,
+} from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
 import { WINDOW_TITLES } from '../../constants';
 import {
+  clickConfirmButton,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   psbt,
-  signedPsbt
+  signedPsbt,
+  withBtcWalletStandardSnap,
 } from './testHelpers';
 
 describe('Bitcoin Wallet Standard - Sign psbt - e2e tests', function () {
-  const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['sats-connect', 'wallet-standard'];
-
-  connectionLibraryOptions.forEach((connectionLibrary) => {
+  availableConnectionTypes.forEach((connectionLibrary) => {
     it(`Signs a psbt with ${connectionLibrary}`, async function () {
-      await withBtcAccountSnap(
+      await withBtcWalletStandardSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
@@ -31,11 +33,15 @@ describe('Bitcoin Wallet Standard - Sign psbt - e2e tests', function () {
           await testDapp.setPsbt(psbt);
           await testDapp.signPsbt();
 
+          // Approve the confirmation dialog
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await clickConfirmButton(driver);
+
           await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
 
           await testDapp.verifySignedPsbt(signedPsbt);
         },
       );
     });
-  })
+  });
 });

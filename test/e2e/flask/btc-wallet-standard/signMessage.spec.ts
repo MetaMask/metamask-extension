@@ -1,19 +1,22 @@
-import { SIGNED_MESSAGES_MOCK, withBtcAccountSnap } from '../btc/common-btc';
-import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
+import {
+  TestDappBitcoin,
+  availableConnectionTypes,
+} from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
 import { WINDOW_TITLES } from '../../constants';
 import {
   clickConfirmButton,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+  SIGNED_MESSAGES_MOCK,
+  withBtcWalletStandardSnap,
 } from './testHelpers';
 
 describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
-  const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['sats-connect'];
   const messageToSign = 'Hello, world! This is a test message.';
 
-  connectionLibraryOptions.forEach((connectionLibrary) => {
+  availableConnectionTypes.forEach((connectionLibrary) => {
     it(`Signs a message with ${connectionLibrary}`, async function () {
-      await withBtcAccountSnap(
+      await withBtcWalletStandardSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
@@ -31,13 +34,15 @@ describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          
+
           // 3. Verify the signed message
           await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
 
-          await testDapp.verifySignedMessage(SIGNED_MESSAGES_MOCK[connectionLibrary]);
+          await testDapp.verifySignedMessage(
+            SIGNED_MESSAGES_MOCK[connectionLibrary],
+          );
         },
       );
     });
-  })
+  });
 });

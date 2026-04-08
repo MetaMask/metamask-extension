@@ -1,7 +1,14 @@
-import { dataTestIds } from '@metamask/test-dapp-bitcoin';
+import { dataTestIds, WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { consoleLoggingIntegration } from '@sentry/node';
+
+export { WalletConnectionType };
+
+export const availableConnectionTypes: WalletConnectionType[] = [
+  WalletConnectionType.Standard,
+  WalletConnectionType.SatsConnectV3,
+  WalletConnectionType.SatsConnectV4,
+];
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -48,7 +55,9 @@ export class TestDappBitcoin {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      const element = await this.driver.waitForSelector({testId: this.bitcoinChainDisplay.selector});
+      const element = await this.driver.waitForSelector({
+        testId: this.bitcoinChainDisplay.selector,
+      });
       await element.getAttribute('value');
     } catch (e) {
       console.log(
@@ -79,18 +88,22 @@ export class TestDappBitcoin {
    * Find the header not connected state.
    */
   async findHeaderNotConnectedState() {
-    await this.driver.findElement(this.headerConnectionNotConnectedStateSelector);
+    await this.driver.findElement(
+      this.headerConnectionNotConnectedStateSelector,
+    );
   }
 
   async connectToWallet(
-    lib: 'sats-connect' | 'wallet-standard' = 'sats-connect',
+    lib: WalletConnectionType = WalletConnectionType.SatsConnectV3,
   ) {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.header.connect,
       tag: 'button',
-    })
+    });
 
-    const walletButtons = await this.driver.findElements({testId: dataTestIds.testPage.walletSelectionModal.walletOption});
+    const walletButtons = await this.driver.findElements({
+      testId: dataTestIds.testPage.walletSelectionModal.walletOption,
+    });
 
     const metaMaskButton = walletButtons[0]; // Assuming MetaMask is always the first button
 
@@ -100,9 +113,14 @@ export class TestDappBitcoin {
 
     await metaMaskButton.click();
 
-    if (lib === 'sats-connect') {
+    if (lib === WalletConnectionType.SatsConnectV3) {
       await this.driver.clickElement({
-        testId: dataTestIds.testPage.walletSelectionModal.satsConnectButton,
+        testId: dataTestIds.testPage.walletSelectionModal.satsConnectV3Button,
+        tag: 'button',
+      });
+    } else if (lib === WalletConnectionType.SatsConnectV4) {
+      await this.driver.clickElement({
+        testId: dataTestIds.testPage.walletSelectionModal.satsConnectV4Button,
         tag: 'button',
       });
     } else {
@@ -117,9 +135,9 @@ export class TestDappBitcoin {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.header.disconnect,
       tag: 'button',
-    })
+    });
   }
-  
+
   /**
    * Find the connected account.
    *
@@ -138,16 +156,20 @@ export class TestDappBitcoin {
    * @param label - The network to select.
    */
   async selectNetwork(label: 'Mainnet' | 'Testnet') {
-    const selectEl = await this.driver.findElement({testId: dataTestIds.testPage.header.network});
+    const selectEl = await this.driver.findElement({
+      testId: dataTestIds.testPage.header.network,
+    });
     await selectEl.sendKeys(label);
   }
 
-  async setMessage (message: string) {
-    await this.setInputValue(dataTestIds.testPage.signMessage.message, message)
+  async setMessage(message: string) {
+    await this.setInputValue(dataTestIds.testPage.signMessage.message, message);
   }
-  
-  async signMessage () {
-    await this.driver.clickElement(dataTestIds.testPage.signMessage.signMessage)
+
+  async signMessage() {
+    await this.driver.clickElement(
+      dataTestIds.testPage.signMessage.signMessage,
+    );
   }
 
   async verifySignedMessage(signedMessage: string) {
@@ -156,21 +178,24 @@ export class TestDappBitcoin {
       text: signedMessage,
     });
   }
-  
-  async setRecepient (message: string) {
-    await this.setInputValue(dataTestIds.testPage.sendTransaction.recipient, message);
+
+  async setRecepient(message: string) {
+    await this.setInputValue(
+      dataTestIds.testPage.sendTransaction.recipient,
+      message,
+    );
   }
 
-  async setAmount (message: string) {
+  async setAmount(message: string) {
     this.setInputValue(dataTestIds.testPage.sendTransaction.amout, message);
   }
 
   async sendTransaction() {
     await this.driver.clickElement(
       dataTestIds.testPage.sendTransaction.sendTransaction,
-    )
+    );
   }
-  
+
   async verifyTransactionHash(transactionHash: string) {
     await this.driver.findElement({
       css: `[data-testid="${dataTestIds.testPage.sendTransaction.txId}"]`,
@@ -178,12 +203,11 @@ export class TestDappBitcoin {
     });
   }
 
-
   async setPsbt(psbt: string) {
     await this.setInputValue(dataTestIds.testPage.signTransaction.psbt, psbt);
   }
 
-  async signPsbt () {
+  async signPsbt() {
     await this.driver.clickElement(
       dataTestIds.testPage.signTransaction.signTransaction,
     );
@@ -200,13 +224,11 @@ export class TestDappBitcoin {
    * Switch to the mainnet network.
    */
   async switchToMainnet() {
-    await this.driver.clickElement(
-      dataTestIds.testPage.header.network,
-    )
-    
+    await this.driver.clickElement(dataTestIds.testPage.header.network);
+
     await this.driver.clickElement(
       dataTestIds.testPage.header.networks.mainnet,
-    )
+    );
   }
 
   /**
@@ -216,6 +238,6 @@ export class TestDappBitcoin {
    * @param value - The value to set in the input element.
    */
   private async setInputValue(id: string, value: string) {
-    await this.driver.fill({testId: id}, value);
+    await this.driver.fill({ testId: id }, value);
   }
 }
