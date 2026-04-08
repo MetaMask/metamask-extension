@@ -4,6 +4,7 @@ import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import randomId from '../../shared/lib/random-id';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import {
+  PatchStoreSubstreamConnection,
   getStatePatches,
   setupPatchStoreSubstreamConnection,
 } from './patch-store-substream-connection';
@@ -37,16 +38,18 @@ async function flushBufferedWrites() {
   await flushPromises();
 }
 
-describe('patch-store substream connection', () => {
+describe('PatchStoreSubstreamConnection', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    randomIdMock.mockReturnValue(99999999999);
   });
 
-  describe('setupPatchStoreSubstreamConnection', () => {
+  describe('constructor', () => {
     it('calls handleSendUpdate when a valid sendUpdate notification is received', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const handleSendUpdate = jest.fn();
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
       const notification = {
         jsonrpc: '2.0',
         method: SEND_UPDATE,
@@ -61,13 +64,15 @@ describe('patch-store substream connection', () => {
       );
     });
 
-    it('calls handleSendUpdate when a sendUpdate notification contains a patch with not quite valid JSON (a value is undefined)', async () => {
+    it('calls handleSendUpdate when the sendUpdate notification data contains undefined (invalid JSON)', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       const handleSendUpdate = jest.fn();
-      setupPatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, { handleSendUpdate });
       const notification = {
         jsonrpc: '2.0',
         method: SEND_UPDATE,
@@ -81,13 +86,15 @@ describe('patch-store substream connection', () => {
       expect(handleSendUpdate).toHaveBeenCalled();
     });
 
-    it('logs an error if handleSendUpdate throws', async () => {
+    it('logs an error when handleSendUpdate throws', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       const error = new Error('handleSendUpdate failed');
-      setupPatchStoreSubstreamConnection(uiStream, {
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn().mockRejectedValue(error),
       });
       const notification = {
@@ -110,7 +117,9 @@ describe('patch-store substream connection', () => {
       const consoleSpy = jest
         .spyOn(console, 'warn')
         .mockImplementation(() => undefined);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
       const notification = {
@@ -131,13 +140,15 @@ describe('patch-store substream connection', () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
-      // Responses aren't supposed to contain methods
       const message = {
         id: 42,
         jsonrpc: '2.0',
+        // Responses aren't supposed to contain methods
         method: 'unknown',
         result: [],
       };
@@ -153,45 +164,16 @@ describe('patch-store substream connection', () => {
   });
 
   describe('getStatePatches', () => {
-    it('logs an error and returns an empty array when the patch-store substream has not been initialized', async () => {
-      const originalInTest = process.env.IN_TEST;
-      delete process.env.IN_TEST;
-      try {
-        // We have to isolate the module here because there's no way to reset
-        // `patchStoreSubstreamSingleton` once it's set.
-        await jest.isolateModulesAsync(async () => {
-          const consoleSpy = jest
-            .spyOn(console, 'error')
-            .mockImplementation(() => undefined);
-          // We have to use `require` rather than `import`: TypeScript requires
-          // that we specify `.ts` as an extension, but Jest doesn't know how to
-          // resolve it. Finally we have to prevent the line from getting broken
-          // up so that we can apply these ignores.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-          const { getStatePatches: isolatedGetStatePatches } = require('./patch-store-substream-connection'); // prettier-ignore
-          const patches = await isolatedGetStatePatches();
-          expect(patches).toStrictEqual([]);
-          expect(consoleSpy).toHaveBeenCalledWith(
-            'Patch-store substream has not been initialized, not sending message',
-          );
-        });
-      } finally {
-        if (originalInTest !== undefined) {
-          process.env.IN_TEST = originalInTest;
-        }
-      }
-    });
-
-    it('writes a getStatePatches JSON-RPC request to the substream', async () => {
+    it('writes a request to the stream', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const sentMessages: unknown[] = [];
       backgroundStream.on('data', (msg) => sentMessages.push(msg));
       randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
 
-      const patchesPromise = getStatePatches();
+      const patchesPromise = connection.getStatePatches();
       await flushBufferedWrites();
 
       expect(sentMessages).toContainEqual(
@@ -207,15 +189,15 @@ describe('patch-store substream connection', () => {
       await patchesPromise;
     });
 
-    it('returns the patches from the background response', async () => {
+    it('returns patches read from the stream', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
       randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
 
-      const patchesPromise = getStatePatches();
+      const patchesPromise = connection.getStatePatches();
       backgroundStream.write({
         jsonrpc: '2.0',
         id: 42,
@@ -226,31 +208,31 @@ describe('patch-store substream connection', () => {
       expect(actualPatches).toStrictEqual(expectedPatches);
     });
 
-    it('throws when the background responds with an error', async () => {
+    it('throws when receiving an error through the stream', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const rpcError = { code: -32000, message: 'Internal error' };
       randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
 
-      const patchesPromise = getStatePatches();
+      const patchesPromise = connection.getStatePatches();
       backgroundStream.write({ jsonrpc: '2.0', id: 42, error: rpcError });
 
       await expect(patchesPromise).rejects.toStrictEqual(rpcError);
     });
 
-    it('does not log an error and resolves when a getStatePatches response contains a patch with not quite valid JSON (contains undefined)', async () => {
+    it('resolves without logging an error when the response contains undefined (invalid JSON)', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
 
-      const patchesPromise = getStatePatches();
+      const patchesPromise = connection.getStatePatches();
       backgroundStream.write({
         jsonrpc: '2.0',
         id: 42,
@@ -264,16 +246,16 @@ describe('patch-store substream connection', () => {
       ]);
     });
 
-    it('does not throw when a getStatePatches response result is not an array of patches', async () => {
+    it('does not throw when the response data is not an array of patches', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
-      const patchesPromise = getStatePatches();
+      const patchesPromise = connection.getStatePatches();
       backgroundStream.write({
         jsonrpc: '2.0',
         id: 42,
@@ -284,18 +266,88 @@ describe('patch-store substream connection', () => {
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(patches).toStrictEqual('not-an-array');
     });
+  });
 
-    it('rejects pending requests when the stream is destroyed', async () => {
-      const { uiMux, uiStream } = createPatchStreamPair();
-      randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
+  describe('rejectAllPendingRequests', () => {
+    it('rejects all pending getStatePatches requests with a "closed" error', async () => {
+      const { uiStream } = createPatchStreamPair();
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
-      // Suppress the 'error' event that fires alongside 'close' on destroy
-      uiStream.on('error', () => {
-        // Do nothing
+
+      const patchesPromise = connection.getStatePatches();
+      connection.rejectAllPendingRequests();
+
+      await expect(patchesPromise).rejects.toThrow(
+        'Patch-store substream closed, aborting request',
+      );
+    });
+
+    it('does not throw when there are no pending requests', () => {
+      const { uiStream } = createPatchStreamPair();
+      const connection = new PatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
       });
 
+      expect(() => connection.rejectAllPendingRequests()).not.toThrow();
+    });
+  });
+});
+
+describe('setupPatchStoreSubstreamConnection', () => {
+  it('logs an error and returns an empty array when the patch-store substream has not been initialized', async () => {
+    const originalInTest = process.env.IN_TEST;
+    delete process.env.IN_TEST;
+    try {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const patches = await getStatePatches();
+      expect(patches).toStrictEqual([]);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Patch-store substream has not been initialized, not sending message',
+      );
+    } finally {
+      if (originalInTest !== undefined) {
+        process.env.IN_TEST = originalInTest;
+      }
+    }
+  });
+
+  it('does not log an error and returns an empty array when the patch-store substream has not been initialized and IN_TEST is set', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const patches = await getStatePatches();
+    expect(patches).toStrictEqual([]);
+    expect(consoleSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('getStatePatches', () => {
+  beforeEach(() => {
+    randomIdMock.mockReturnValue(99999999999);
+  });
+
+  it('returns patches read from the stream after making a request', async () => {
+    await withPatchStoreSubstreamConnection(async ({ backgroundStream }) => {
+      randomIdMock.mockReturnValue(42);
+      const expectedPatches = [{ op: 'replace', path: ['foo'], value: 'bar' }];
+
+      const patchesPromise = getStatePatches();
+      backgroundStream.write({
+        jsonrpc: '2.0',
+        id: 42,
+        result: expectedPatches,
+      });
+
+      const actualPatches = await patchesPromise;
+      expect(actualPatches).toStrictEqual(expectedPatches);
+    });
+  });
+
+  it('rejects when the stream is destroyed while a request is in flight', async () => {
+    await withPatchStoreSubstreamConnection(async ({ uiMux }) => {
       const patchesPromise = getStatePatches();
       uiMux.destroy();
 
@@ -303,26 +355,20 @@ describe('patch-store substream connection', () => {
         'Patch-store substream closed, aborting request',
       );
     });
+  });
 
-    it('throws if the stream has already ended', async () => {
-      const { uiStream } = createPatchStreamPair();
-      randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
-        handleSendUpdate: jest.fn(),
-      });
+  it('throws if the stream has already ended before a request is written', async () => {
+    await withPatchStoreSubstreamConnection(async ({ uiStream }) => {
       uiStream.end();
 
       await expect(getStatePatches()).rejects.toThrow(
         'Patch-store substream closed',
       );
     });
+  });
 
-    it('returns an empty array if the stream is already destroyed', async () => {
-      const { uiMux, uiStream } = createPatchStreamPair();
-      randomIdMock.mockReturnValue(42);
-      setupPatchStoreSubstreamConnection(uiStream, {
-        handleSendUpdate: jest.fn(),
-      });
+  it('returns an empty array if the stream is already destroyed before a request is written', async () => {
+    await withPatchStoreSubstreamConnection(async ({ uiMux, uiStream }) => {
       let caughtError;
       uiStream.on('error', (error) => {
         caughtError = error;
@@ -337,3 +383,29 @@ describe('patch-store substream connection', () => {
     });
   });
 });
+
+/**
+ * Sets up the patch-store substream connection singleton, calls the given
+ * function with the stream pair, then always tears down the singleton
+ * afterward.
+ *
+ * @param fn - The function to call with the stream pair.
+ */
+async function withPatchStoreSubstreamConnection(
+  fn: (streams: ReturnType<typeof createPatchStreamPair>) => Promise<void>,
+) {
+  const streams = createPatchStreamPair();
+  setupPatchStoreSubstreamConnection(streams.uiStream, {
+    handleSendUpdate: jest.fn(),
+  });
+  try {
+    await fn(streams);
+  } finally {
+    // Suppress the error that may occur when destroying the stream
+    streams.uiStream.on('error', () => {
+      // Do nothing
+    });
+    streams.uiMux.destroy();
+    await flushBufferedWrites();
+  }
+}
