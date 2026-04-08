@@ -107,7 +107,8 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
-          getValue: (ctx) => new BigNumber(getData(ctx).initialAmount as string),
+          getValue: (ctx) =>
+            new BigNumber(getData(ctx).initialAmount as string),
           visible: (ctx) => Boolean(getData(ctx).initialAmount),
         },
         {
@@ -134,7 +135,8 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldStreamRate',
-          getValue: (ctx) => new BigNumber(getData(ctx).amountPerSecond as string),
+          getValue: (ctx) =>
+            new BigNumber(getData(ctx).amountPerSecond as string),
         },
         {
           type: 'amount',
@@ -213,7 +215,8 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
-          getValue: (ctx) => new BigNumber(getData(ctx).initialAmount as string),
+          getValue: (ctx) =>
+            new BigNumber(getData(ctx).initialAmount as string),
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
           visible: (ctx) => Boolean(getData(ctx).initialAmount),
         },
@@ -242,7 +245,8 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldStreamRate',
-          getValue: (ctx) => new BigNumber(getData(ctx).amountPerSecond as string),
+          getValue: (ctx) =>
+            new BigNumber(getData(ctx).amountPerSecond as string),
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
         },
         {
