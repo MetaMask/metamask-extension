@@ -7,16 +7,6 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
-jest.mock('@metamask/perps-controller', () => ({
-  PERPS_EVENT_PROPERTY: {
-    SCREEN_TYPE: 'screen_type',
-    ASSET: 'asset',
-  },
-  PERPS_EVENT_VALUE: {
-    SCREEN_TYPE: { INCREASE_EXPOSURE: 'increase_exposure' },
-  },
-}));
-
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();

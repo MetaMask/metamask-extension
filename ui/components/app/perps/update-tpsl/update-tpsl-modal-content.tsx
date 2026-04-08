@@ -16,11 +16,11 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-  type Position as PerpsPosition,
-} from '@metamask/perps-controller';
+} from '../../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {

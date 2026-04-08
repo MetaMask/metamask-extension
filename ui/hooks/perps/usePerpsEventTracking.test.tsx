@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
-import { PERPS_EVENT_PROPERTY } from '@metamask/perps-controller';
+import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -9,11 +9,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from './usePerpsEventTracking';
-
-jest.mock('@metamask/perps-controller', () =>
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../test/mocks/metamask-perps-controller.js'),
-);
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 

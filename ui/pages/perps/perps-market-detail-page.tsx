@@ -32,12 +32,11 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
+import type { Position, PriceUpdate } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-  type Position,
-  type PriceUpdate,
-} from '@metamask/perps-controller';
+} from '../../../shared/constants/perps-events';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';

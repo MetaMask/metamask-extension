@@ -17,10 +17,6 @@ import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
 const mockPriceLine = { options: jest.fn() };
-jest.mock('@metamask/perps-controller', () =>
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../test/mocks/metamask-perps-controller.js'),
-);
 jest.mock('lightweight-charts', () => ({
   createChart: () => ({
     addSeries: () => ({

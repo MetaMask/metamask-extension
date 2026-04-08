@@ -7,11 +7,6 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
 
-jest.mock('@metamask/perps-controller', () =>
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('../../../../../test/mocks/metamask-perps-controller.js'),
-);
-
 /** Matches rendered `perpsClosePartialMinNotional` after $1 is replaced with a formatted USD amount */
 const PARTIAL_MIN_NOTIONAL_PATTERN =
   /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or set the slider to 100%\./u;

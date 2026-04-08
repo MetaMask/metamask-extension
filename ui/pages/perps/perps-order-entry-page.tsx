@@ -30,13 +30,11 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type { OrderType, OrderParams, PriceUpdate } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-  type OrderType,
-  type OrderParams,
-  type PriceUpdate,
-} from '@metamask/perps-controller';
+} from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';

@@ -16,7 +16,7 @@ import {
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-} from '@metamask/perps-controller';
+} from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   usePerpsEligibility,

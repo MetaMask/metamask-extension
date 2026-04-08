@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-} from '@metamask/perps-controller';
+} from '../../../../../shared/constants/perps-events';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,

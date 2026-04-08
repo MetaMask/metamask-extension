@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-} from '@metamask/perps-controller';
+} from '../../../../../shared/constants/perps-events';
 import {
   twMerge,
   Box,

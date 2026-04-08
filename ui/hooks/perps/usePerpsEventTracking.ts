@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { Json } from '@metamask/utils';
-import { PERPS_EVENT_PROPERTY } from '@metamask/perps-controller';
+import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

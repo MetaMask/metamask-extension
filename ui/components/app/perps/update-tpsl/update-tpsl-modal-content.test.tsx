@@ -10,20 +10,6 @@ import {
   type UpdateTPSLSubmitState,
 } from './update-tpsl-modal-content';
 
-jest.mock('@metamask/perps-controller', () => ({
-  PERPS_EVENT_PROPERTY: {
-    ASSET: 'asset',
-    STATUS: 'status',
-    FAILURE_REASON: 'failure_reason',
-  },
-  PERPS_EVENT_VALUE: {
-    STATUS: {
-      FAILED: 'failed',
-      SUCCESS: 'success',
-    },
-  },
-}));
-
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
