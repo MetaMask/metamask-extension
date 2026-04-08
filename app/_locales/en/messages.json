@@ -5518,6 +5518,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
+  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
@@ -6015,6 +6018,9 @@
   },
   "perpsWithdrawFee": {
     "message": "Provider Fee"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."

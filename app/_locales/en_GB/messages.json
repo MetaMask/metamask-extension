@@ -5521,6 +5521,9 @@
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
+  },
   "perpsDeposits": {
     "message": "Deposits"
   },
@@ -6005,6 +6008,9 @@
     "message": "Watchlist"
   },
   "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsWithdrawFundsTitle": {
     "message": "Withdraw"
   },
   "perpsWithdrawEstimatedTime": {
