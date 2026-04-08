@@ -858,6 +858,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     >
       {/* Header */}
       <Box
+        className="sticky top-0 z-10 bg-background-default"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         paddingLeft={4}
