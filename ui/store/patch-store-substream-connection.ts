@@ -151,7 +151,7 @@ export class PatchStoreSubstreamConnection {
         `Invalid method '${String(message.method)}' for patch-store notification`,
       );
     } else {
-      // Ignore noise which can cause processing errors.
+      console.error('Unknown patch-store message', message);
     }
   }
 

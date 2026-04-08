@@ -43,7 +43,7 @@ describe('PatchStoreSubstreamConnection', () => {
     randomIdMock.mockReturnValue(99999999999);
   });
 
-  describe('constructor', () => {
+  describe('when a message is received', () => {
     it('calls handleSendUpdate when a valid sendUpdate notification is received', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const handleSendUpdate = jest.fn();
@@ -158,6 +158,51 @@ describe('PatchStoreSubstreamConnection', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         "Encountered response for unexpected patch-store stream request '42'",
+        message,
+      );
+    });
+
+    it('logs an error when an object without a "id" or "method" property is received', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      const message = {
+        jsonrpc: '2.0',
+        result: [],
+      };
+
+      backgroundStream.write(message);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Unknown patch-store message',
+        message,
+      );
+    });
+
+    it('logs an error when a non-object is received', async () => {
+      const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      // We just need to listen for messages.
+      // eslint-disable-next-line no-new
+      new PatchStoreSubstreamConnection(uiStream, {
+        handleSendUpdate: jest.fn(),
+      });
+      const message = 'some-message';
+
+      backgroundStream.write(message);
+      await flushBufferedWrites();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Unknown patch-store message',
         message,
       );
     });
