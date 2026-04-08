@@ -240,5 +240,3 @@ export class AppMetadataController extends BaseController<
     }
   }
 }
-
-export default AppMetadataController;

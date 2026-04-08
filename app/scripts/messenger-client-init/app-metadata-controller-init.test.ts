@@ -1,4 +1,5 @@
-import AppMetadataController, {
+import {
+  AppMetadataController,
   AppMetadataControllerMessenger,
 } from '../controllers/app-metadata';
 import { getRootMessenger } from '../lib/messenger';
