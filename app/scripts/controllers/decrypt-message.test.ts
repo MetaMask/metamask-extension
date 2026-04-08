@@ -38,6 +38,7 @@ const createKeyringControllerMock = () => ({
 const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
+    registerMethodActionHandlers: jest.fn(),
     registerInitialEventPayload: jest.fn(),
     subscribe: jest.fn(),
     publish: jest.fn(),
