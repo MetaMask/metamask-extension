@@ -8,18 +8,15 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
   BENCHMARK_PERSONA,
-  runPageLoadBenchmark,
-  collectWebVitals,
-} from '../../utils';
-import type {
-  BenchmarkResults,
-  WebVitalsMetrics,
+  type BenchmarkResults,
+  type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
   MeasurePageResult,
-} from '../../utils';
+} from '../../utils/types';
 
 async function measurePageStandard(
   pageName: string,

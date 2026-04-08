@@ -81,6 +81,36 @@ const ToastHarness = () => {
         type="button"
         onClick={() => {
           replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS,
+          });
+        }}
+      >
+        Show Key Partial Close In Progress
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
+          });
+        }}
+      >
+        Show Key Partial Close Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS,
+          });
+        }}
+      >
+        Show Key Partial Close Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
           });
         }}
@@ -424,6 +454,89 @@ describe('PerpsToastProvider', () => {
 
     expect(
       screen.queryByText(messages.perpsToastCloseFailed.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('maps partial close in-progress key to info variant without auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Show Key Partial Close In Progress',
+      }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastPartialCloseInProgress.message),
+    ).toBeInTheDocument();
+    expectLoadingToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(10000);
+    });
+
+    expect(
+      screen.getByText(messages.perpsToastPartialCloseInProgress.message),
+    ).toBeInTheDocument();
+  });
+
+  it('maps partial close success key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Partial Close Success' }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastPartialCloseSuccess.message),
+    ).toBeInTheDocument();
+    expectSuccessToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(
+      screen.queryByText(messages.perpsToastPartialCloseSuccess.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('maps partial close failed key to avatar warning error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Partial Close Failed' }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastPartialCloseFailed.message),
+    ).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText(messages.perpsToastPartialCloseFailed.message),
     ).not.toBeInTheDocument();
   });
 
