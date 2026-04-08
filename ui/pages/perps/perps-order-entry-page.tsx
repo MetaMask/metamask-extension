@@ -59,6 +59,7 @@ import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
   getChangeColor,
+  getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
@@ -283,7 +284,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     // Activate background price stream for this symbol
     submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [decodedSymbol] },
+      { symbols: [decodedSymbol], includeMarketData: true },
     ]).catch(() => {
       // Controller not ready
     });
@@ -306,7 +307,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           symbol: update.symbol,
           price: update.price,
           timestamp: ts ?? Date.now(),
-          markPrice: mark ?? update.price,
+          markPrice: mark,
           percentChange24h,
         });
       }
@@ -539,24 +540,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const unrealizedPnl = Number.parseFloat(position.unrealizedPnl);
-    const marginUsed = Number.parseFloat(position.marginUsed);
-    let pnlRatio: number | undefined;
-
-    if (
-      !Number.isNaN(unrealizedPnl) &&
-      !Number.isNaN(marginUsed) &&
-      marginUsed !== 0
-    ) {
-      pnlRatio = unrealizedPnl / marginUsed;
-    } else {
-      const returnOnEquity = parseFloat(position.returnOnEquity);
-      if (!Number.isNaN(returnOnEquity)) {
-        // Controller/mobile ROE is a percent value (e.g. 15.79), while formatter expects a ratio.
-        pnlRatio = returnOnEquity / 100;
-      }
-    }
-
+    const pnlRatio = getPositionPnlRatio(position);
     if (pnlRatio === undefined || Number.isNaN(pnlRatio)) {
       return undefined;
     }

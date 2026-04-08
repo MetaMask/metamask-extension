@@ -49,7 +49,7 @@ import {
 } from '../../shared/lib/selectors/networks';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   AccountsState,
   getInternalAccounts,

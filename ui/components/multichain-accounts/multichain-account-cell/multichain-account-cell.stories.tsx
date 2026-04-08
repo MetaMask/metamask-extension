@@ -79,7 +79,7 @@ export default {
       control: 'boolean',
       description: 'Whether the account is selected',
     },
-    showHoverableNetworkGroup: {
+    showDefaultAddress: {
       control: 'boolean',
       description:
         'Whether to show the network avatars and copy functionality with optional default address',
@@ -228,7 +228,7 @@ WithHoverableNetworkGroup.args = {
   accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account with Networks',
   balance: '$2,400.00',
-  showHoverableNetworkGroup: true,
+  showDefaultAddress: true,
 };
 WithHoverableNetworkGroup.parameters = {
   docs: {

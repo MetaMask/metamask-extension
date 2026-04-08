@@ -26,7 +26,7 @@ import type {
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
@@ -90,7 +90,7 @@ export function runComparison(
 
       if (!thresholdConfig) {
         console.warn(
-          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
         );
         continue;
       }

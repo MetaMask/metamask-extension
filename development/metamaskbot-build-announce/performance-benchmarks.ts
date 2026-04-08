@@ -24,8 +24,8 @@ import {
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
   DAPP_PAGE_LOAD_PRESETS,
-  THRESHOLD_REGISTRY,
 } from '../../test/e2e/benchmarks/utils/constants';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 import {
   compareMetric,

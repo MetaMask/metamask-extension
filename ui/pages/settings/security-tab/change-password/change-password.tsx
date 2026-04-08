@@ -40,6 +40,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useBoolean } from '../../../../hooks/useBoolean';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -67,7 +68,7 @@ const ChangePassword = ({
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
 
-  const [termsChecked, setTermsChecked] = useState(false);
+  const { value: termsChecked, toggle } = useBoolean();
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
@@ -262,9 +263,7 @@ const ChangePassword = ({
                   id="change-password-terms"
                   data-testid="change-password-terms"
                   isSelected={termsChecked}
-                  onChange={() => {
-                    setTermsChecked(!termsChecked);
-                  }}
+                  onChange={toggle}
                   label={
                     <>
                       {isSocialLoginFlow
