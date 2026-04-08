@@ -278,7 +278,7 @@ export function printReport(result: {
     } else {
       const issueLines = lines.filter((line) => line.hasIssue);
       if (issueLines.length === 0) {
-        console.log(`${COMPARISON_SEVERITY.Pass.icon} [Show logs]`);
+        console.log(`${COMPARISON_SEVERITY.Pass.icon} [CI log]`);
       } else {
         for (const line of issueLines) {
           const details = line.details ? ` | ${line.details}` : '';

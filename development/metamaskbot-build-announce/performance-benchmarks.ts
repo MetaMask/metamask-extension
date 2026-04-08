@@ -5,6 +5,7 @@ import {
   BENCHMARK_ANNOUNCE_SECTIONS,
   BENCHMARK_BUILD_TYPES,
   BENCHMARK_PLATFORMS,
+  BENCHMARK_TYPE,
   DEFAULT_RELATIVE_THRESHOLDS,
   ENTRY_BENCHMARK_BUILD_TYPES,
   ENTRY_BENCHMARK_PLATFORMS,
@@ -15,6 +16,7 @@ import type {
   BenchmarkAnnounceSamples,
   BenchmarkAnnounceSection,
   BenchmarkResults,
+  BenchmarkType,
   ComparisonKey,
   StatisticalResult,
   WebVitalsSummary,
@@ -46,10 +48,28 @@ import {
   buildArtifactFilename,
   buildArtifactUrl,
 } from './utils';
-import { buildSentryLogsUrl } from './sentry-utils';
+import { buildPerformanceSentryLogsUrl } from './sentry-utils';
+
+const BENCHMARK_LINK_CI_LOG = '[CI log]';
+
+const BENCHMARK_ROW_SENTRY_LINK = '[Sentry log · main/release]';
+
+const BENCHMARK_CI_LOG_TITLE =
+  'Open the benchmark artifact log for this CI run';
+
+const BENCHMARK_ROW_SENTRY_TITLE =
+  'Sentry Logs Explorer: ci.branch:main and message matching CI structured logs (e.g. benchmark.* or userAction.*).';
+
+function escapeHtmlAttr(value: string): string {
+  return value
+    .replace(/&/gu, '&amp;')
+    .replace(/"/gu, '&quot;')
+    .replace(/</gu, '&lt;');
+}
 
 export type BenchmarkEntry = {
   benchmarkName: string;
+  benchmarkType?: BenchmarkType;
   presetName: string;
   platform: string;
   buildType: string;
@@ -203,6 +223,7 @@ export function extractEntries(
     .filter(hasValidMean)
     .map(([name, raw]) => ({
       benchmarkName: name,
+      benchmarkType: raw.benchmarkType,
       presetName,
       platform,
       buildType,
@@ -497,35 +518,33 @@ function getCiBranchName(): string {
 }
 
 /**
- * Builds HTML for an artifact log link and optional Sentry Logs Explorer link.
+ * CI artifact link only (used in table cells and timer detail lines).
  *
  * @param logHref - Optional artifact log URL
- * @param entry - Benchmark entry (for Sentry filters)
- * @param logLinkInnerHtml - Inner HTML for the artifact log anchor (e.g. '[Show logs]')
  */
-function buildArtifactAndSentryLinksHtml(
-  logHref: string | undefined,
-  entry: BenchmarkEntry | undefined,
-  logLinkInnerHtml: string,
+function buildCiLogLinkHtml(logHref: string | undefined): string {
+  return logHref
+    ? `<a href="${logHref}" title="${escapeHtmlAttr(BENCHMARK_CI_LOG_TITLE)}">${BENCHMARK_LINK_CI_LOG}</a>`
+    : '';
+}
+
+/**
+ * One Sentry Logs Explorer link per benchmark row: matches send-to-sentry message + `ci.branch:main`.
+ *
+ * @param entry - Any row entry for this benchmark (same benchmarkName / benchmarkType).
+ */
+function buildBenchmarkRowSentryLinkHtml(
+  entry: Pick<BenchmarkEntry, 'benchmarkName' | 'benchmarkType'>,
 ): string {
-  const branchName = getCiBranchName();
-  const sentryUrl =
-    branchName && entry
-      ? buildSentryLogsUrl(branchName, undefined, {
-          browser: entry.platform,
-          buildType: entry.buildType,
-          benchmarkName: entry.benchmarkName,
-        })
-      : null;
-
-  const logsLink = logHref
-    ? `<a href="${logHref}">${logLinkInnerHtml}</a>`
-    : '';
-  const sentryLinkHtml = sentryUrl
-    ? `<a href="${sentryUrl}">[Sentry log]</a>`
-    : '';
-
-  return [logsLink, sentryLinkHtml].filter(Boolean).join(' ');
+  const type = entry.benchmarkType ?? BENCHMARK_TYPE.BENCHMARK;
+  const logMessage = `${type}.${entry.benchmarkName}`;
+  const url = buildPerformanceSentryLogsUrl('main', {
+    logMessage,
+  });
+  if (!url) {
+    return '';
+  }
+  return `<a href="${url}" title="${escapeHtmlAttr(BENCHMARK_ROW_SENTRY_TITLE)}">${BENCHMARK_ROW_SENTRY_LINK}</a>`;
 }
 
 /**
@@ -613,11 +632,7 @@ function formatTimerDetails(
         return null;
       }
 
-      const linksHtml = buildArtifactAndSentryLinksHtml(
-        logHref,
-        entry,
-        '[Show logs]',
-      );
+      const linksHtml = buildCiLogLinkHtml(logHref);
       const logsLine = linksHtml ? `<br>${linksHtml}` : '';
       return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
     })
@@ -635,7 +650,7 @@ function formatTimerDetails(
  * @param result - Fetched entries and missing preset descriptions.
  * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no announced samples).
  * @param baseline - Historical baseline for relative delta annotations.
- * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
+ * @param runUrl - GitHub Actions run URL for CI log links (optional).
  * @returns HTML string or empty string if no data.
  */
 
@@ -863,11 +878,7 @@ export function buildBenchmarkSection(
                 logHref,
               );
 
-              const rowLinks = buildArtifactAndSentryLinksHtml(
-                logHref,
-                entry,
-                '[Show logs]',
-              );
+              const rowLinks = buildCiLogLinkHtml(logHref);
 
               let cell: string;
               switch (true) {
@@ -886,7 +897,16 @@ export function buildBenchmarkSection(
             })
             .join('');
           const displayName = extractDisplayName(benchmarkName);
-          return `<tr><td>${displayName}</td>${cells}</tr>`;
+          const sampleEntry = orderedCombos
+            .map((combo) => entryLookup.get(`${benchmarkName}|${combo}`))
+            .find((e): e is BenchmarkEntry => Boolean(e));
+          const rowSentryHtml = sampleEntry
+            ? buildBenchmarkRowSentryLinkHtml(sampleEntry)
+            : '';
+          const benchmarkCell = rowSentryHtml
+            ? `<td align="left">${displayName}<br>${rowSentryHtml}</td>`
+            : `<td align="left">${displayName}</td>`;
+          return `<tr>${benchmarkCell}${cells}</tr>`;
         })
         .join('');
 
@@ -990,23 +1010,28 @@ function buildHealthMatrixHtml(
             return `<td align="center">–</td>`;
           }
           const icon = HEALTH_ICON[data.health];
+          const entryKey = `${benchmark}|${combo}`;
           const entry = allEntries.find(
             (e) =>
-              e.benchmarkName === benchmark &&
-              `${e.platform}-${e.buildType}` === combo,
+              buildEntryKey(e.benchmarkName, e.platform, e.buildType) ===
+              entryKey,
           );
           const logHref = entry?.artifactUrl;
           const label = data.label ? `${icon} ${data.label}` : icon;
-          const links = buildArtifactAndSentryLinksHtml(
-            logHref,
-            entry,
-            '[logs]',
-          );
+          const links = buildCiLogLinkHtml(logHref);
           const cell = links ? `${label} ${links}` : label;
           return `<td align="center">${cell}</td>`;
         })
         .join('');
-      return `<tr><td>${benchmark}</td>${cells}</tr>`;
+      const displayName = extractDisplayName(benchmark);
+      const rowEntry = allEntries.find((e) => e.benchmarkName === benchmark);
+      const rowSentryHtml = rowEntry
+        ? buildBenchmarkRowSentryLinkHtml(rowEntry)
+        : '';
+      const benchmarkCell = rowSentryHtml
+        ? `<td>${displayName}<br>${rowSentryHtml}</td>`
+        : `<td>${displayName}</td>`;
+      return `<tr>${benchmarkCell}${cells}</tr>`;
     })
     .join('');
 
@@ -1087,14 +1112,12 @@ function buildFailingItemsHtml(
       const worstLabel = getWorstViolationLabel(entry, baselineMetrics);
       const labelPart = worstLabel ? ` — ${worstLabel}` : '';
       const logHref = entry.artifactUrl ?? runUrl;
-      const links = buildArtifactAndSentryLinksHtml(
-        logHref,
-        entry,
-        '[Show logs]',
-      );
+      const links = buildCiLogLinkHtml(logHref);
+      const rowSentry = buildBenchmarkRowSentryLinkHtml(entry.benchmarkName);
+      const sentryAnchor = rowSentry ? ` ${rowSentry}` : '';
       const logAnchor = links ? ` ${links}` : '';
       return [
-        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
+        `<li><b>${entry.benchmarkName}</b>${sentryAnchor} · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
       ];
     })
     .join('');

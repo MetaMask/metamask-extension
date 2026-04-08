@@ -1,62 +1,90 @@
+/** Parsed DSN for Sentry Logs Explorer URLs. */
+export type ParsedSentryDsn = {
+  projectId: string;
+  organization: string;
+  useRootSentryHost: boolean;
+};
+
+function projectIdFromPathname(pathname: string): string | null {
+  const id = pathname.replace(/^\//u, '').split('/')[0]?.trim() ?? '';
+  return id || null;
+}
+
 /**
- * Parses a Sentry DSN and extracts the organization and project ID.
- *
- * @param dsn - Sentry DSN URL
- * @returns Object containing organization and projectId, or null if parsing fails
+ * Maps DSN hostname to org subdomain + whether to use `https://sentry.io/explore/logs/`.
+ * Returns null if the host is not a supported Sentry cloud shape.
+ * @param hostname
  */
-export function parseSentryDSN(
-  dsn: string,
-): { organization: string; projectId: string } | null {
+function sentryHostForExplorer(hostname: string): {
+  organization: string;
+  useRootSentryHost: boolean;
+} | null {
+  const lower = hostname.toLowerCase();
+  if (lower === 'sentry.io') {
+    return { organization: '', useRootSentryHost: true };
+  }
+  if (!lower.endsWith('.sentry.io')) {
+    return null;
+  }
+  const organization = hostname.split('.')[0];
+  return organization ? { organization, useRootSentryHost: false } : null;
+}
+
+/**
+ * Parses a Sentry DSN string for use with {@link buildPerformanceSentryLogsUrl}.
+ * @param dsn
+ */
+export function parseSentryDSN(dsn: string): ParsedSentryDsn | null {
   try {
     const url = new URL(dsn);
-    const { hostname } = url;
-    const normalizedHost = hostname.toLowerCase();
-    if (!normalizedHost.endsWith('.sentry.io')) {
-      return null;
-    }
-
-    const projectId =
-      url.pathname.replace(/^\//u, '').split('/')[0]?.trim() ?? '';
+    const projectId = projectIdFromPathname(url.pathname);
     if (!projectId) {
       return null;
     }
-
-    const organization = hostname.split('.')[0];
-    if (!organization) {
+    const host = sentryHostForExplorer(url.hostname);
+    if (!host) {
       return null;
     }
-
-    return {
-      organization,
-      projectId,
-    };
+    return { projectId, ...host };
   } catch {
     return null;
   }
 }
 
 /**
- * Generates a Sentry Logs Explorer URL pre-filtered for a specific branch.
- *
- * @param branchName - Git branch name to filter logs by
- * @param [sentryDsn] - Optional Sentry DSN to extract org/project from (defaults to SENTRY_DSN_PERFORMANCE env var)
- * @param [options] - Additional filter options
- * @param [options.browser] - Browser platform (e.g., 'chrome', 'firefox')
- * @param [options.buildType] - Build type (e.g., 'browserify', 'webpack')
- * @param [options.benchmarkName] - Specific benchmark name to filter by (uses message:Contains filter)
- * @returns Sentry Logs Explorer URL with filters, or null if DSN is not available or invalid
+ * Branch token for `ci.branch:` in Logs Explorer (quote if `/` or spaces).
+ * @param branch
  */
-export function buildSentryLogsUrl(
+function formatCiBranchFilterToken(branch: string): string {
+  const trimmed = branch.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+  return /[/\s]/u.test(trimmed)
+    ? `"${trimmed.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"')}"`
+    : trimmed;
+}
+
+/**
+ * Sentry Logs Explorer URL for the performance project (`SENTRY_DSN_PERFORMANCE`), with branch and optional CI filters.
+ *
+ * @param branchName
+ * @param options
+ * @param options.browser
+ * @param options.buildType
+ * @param options.logMessage - Exact log message string to match (same as send-to-sentry: `${benchmarkType}.${jsonKey}`).
+ * @param options.orBranches - Extra `ci.branch` values OR'd with `branchName` (deduped).
+ */
+export function buildPerformanceSentryLogsUrl(
   branchName: string,
-  sentryDsn?: string,
   options?: {
     browser?: string;
     buildType?: string;
-    benchmarkName?: string;
+    logMessage?: string;
+    orBranches?: string[];
   },
 ): string | null {
-  const dsn = sentryDsn || process.env.SENTRY_DSN_PERFORMANCE;
-
+  const dsn = process.env.SENTRY_DSN_PERFORMANCE;
   if (!dsn) {
     return null;
   }
@@ -66,20 +94,30 @@ export function buildSentryLogsUrl(
     return null;
   }
 
-  const { organization, projectId } = parsed;
+  const { organization, projectId, useRootSentryHost } = parsed;
 
-  const filters: string[] = [`ci.branch:${branchName}`];
+  const branchParts = [
+    branchName,
+    ...(options?.orBranches ?? []).map((b) => b.trim()),
+  ].filter(Boolean);
+  const uniqueBranches = [...new Set(branchParts)];
 
+  const branchFilter =
+    uniqueBranches.length === 1
+      ? `ci.branch:${formatCiBranchFilterToken(uniqueBranches[0])}`
+      : `(${uniqueBranches
+          .map((b) => `ci.branch:${formatCiBranchFilterToken(b)}`)
+          .join(' OR ')})`;
+
+  const filters: string[] = [branchFilter];
   if (options?.browser) {
     filters.push(`ci.browser:${options.browser}`);
   }
-
   if (options?.buildType) {
     filters.push(`ci.buildType:${options.buildType}`);
   }
-
-  if (options?.benchmarkName) {
-    filters.push(`message:Contains benchmark.${options.benchmarkName}`);
+  if (options?.logMessage) {
+    filters.push(`message:${options.logMessage}`);
   }
 
   const params = new URLSearchParams({
@@ -88,9 +126,12 @@ export function buildSentryLogsUrl(
     project: projectId,
     statsPeriod: '2w',
   });
-
   params.append('logsFields', 'timestamp');
   params.append('logsFields', 'message');
 
-  return `https://${organization}.sentry.io/explore/logs/?${params.toString()}`;
+  const base = useRootSentryHost
+    ? 'https://sentry.io/explore/logs/'
+    : `https://${organization}.sentry.io/explore/logs/`;
+
+  return `${base}?${params.toString()}`;
 }

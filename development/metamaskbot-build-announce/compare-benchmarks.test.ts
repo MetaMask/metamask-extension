@@ -304,7 +304,7 @@ describe('printReport', () => {
     );
   });
 
-  it('prints pass icon with [Show logs] when all metrics pass', () => {
+  it('prints pass icon with CI log when all metrics pass', () => {
     const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
       './comparison-utils',
     ) as typeof import('./comparison-utils');
@@ -329,7 +329,7 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('[Show logs]');
+    expect(allCalls).toContain('[CI log]');
   });
 
   it('prints issue metric lines for comparisons with violations', () => {

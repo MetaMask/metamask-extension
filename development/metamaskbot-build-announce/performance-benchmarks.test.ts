@@ -487,8 +487,8 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
-    expect(html).toContain('<td>loadNewAccount</td>');
-    expect(html).toContain('<td>confirmTx</td>');
+    expect(html).toContain('<td align="left">loadNewAccount</td>');
+    expect(html).toContain('<td align="left">confirmTx</td>');
   });
 
   it('shows 🟢 in the cell when p95 is above baseline but within absolute threshold', () => {
@@ -662,7 +662,7 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('–');
   });
 
-  it('links each cell to the entry artifact URL as [Show logs]', () => {
+  it('links each cell to the entry artifact URL as CI log', () => {
     const ARTIFACT =
       'https://cdn.example.com/benchmark-chrome-browserify-foo.json';
     const html = buildBenchmarkSection(
@@ -672,10 +672,10 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${ARTIFACT}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
-  it('falls back to runUrl for [Show logs] when entry has no artifactUrl', () => {
+  it('falls back to runUrl for CI log when entry has no artifactUrl', () => {
     const RUN_URL = 'https://github.com/actions/runs/123';
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
@@ -685,7 +685,7 @@ describe('buildBenchmarkSection', () => {
     );
 
     expect(html).toContain(`href="${RUN_URL}"`);
-    expect(html).toContain('[Show logs]');
+    expect(html).toContain('>[CI log]</a>');
   });
 
   it('resolves startup baseline via pageLoad/* key format and shows delta in bullet section', () => {
@@ -832,7 +832,7 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows [Show logs] without icon when timers are present', () => {
+    it('shows CI log without icon when timers are present', () => {
       const entry = makeEntry({
         benchmarkName: 'swap',
         mean: { timer1: 100, timer2: 200 },
@@ -846,10 +846,10 @@ describe('buildBenchmarkSection', () => {
         undefined,
         'https://github.com/actions/runs/123',
       );
-      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/u);
+      expect(html).not.toMatch(/🟢 <a href=.*>\[CI log\]<\/a><br\/>/u);
     });
 
-    it('shows icon with [Show logs] when no timers present', () => {
+    it('shows icon with CI log when no timers present', () => {
       const entry = makeEntry({
         benchmarkName: 'loadNewAccount',
         mean: {},
@@ -860,7 +860,7 @@ describe('buildBenchmarkSection', () => {
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
       expect(html).not.toContain('<ul');
     });
@@ -905,7 +905,7 @@ describe('buildBenchmarkSection', () => {
       );
 
       expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
-      expect(html).toContain('[Show logs]');
+      expect(html).toContain('>[CI log]</a>');
       expect(html).not.toContain('<code>uiStartup</code>');
       expect(html).not.toContain('<ul');
     });
@@ -948,7 +948,7 @@ describe('buildBenchmarkSection', () => {
       }
     });
 
-    it('includes [Sentry log] when BRANCH and SENTRY_DSN_PERFORMANCE are set', () => {
+    it('includes Sentry Logs Explorer link when BRANCH and SENTRY_DSN_PERFORMANCE are set', () => {
       process.env.BRANCH = 'feat/test';
       process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
       const html = buildBenchmarkSection(
@@ -958,8 +958,8 @@ describe('buildBenchmarkSection', () => {
         'Test',
         BASELINE_PASS,
       );
-      expect(html).toContain('[Show logs]');
-      expect(html).toContain('[Sentry log]');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
       expect(html).toContain('metamask.sentry.io/explore/logs');
     });
 
@@ -975,10 +975,10 @@ describe('buildBenchmarkSection', () => {
         'Test',
         BASELINE_PASS,
       );
-      expect(html).toContain('[Sentry log]');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
     });
 
-    it('omits [Sentry log] when SENTRY_DSN_PERFORMANCE is unset', () => {
+    it('omits Sentry Logs Explorer link when SENTRY_DSN_PERFORMANCE is unset', () => {
       process.env.BRANCH = 'feat/test';
       delete process.env.SENTRY_DSN_PERFORMANCE;
       const html = buildBenchmarkSection(
@@ -988,11 +988,11 @@ describe('buildBenchmarkSection', () => {
         'Test',
         BASELINE_PASS,
       );
-      expect(html).toContain('[Show logs]');
-      expect(html).not.toContain('[Sentry log]');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).not.toContain('metamask.sentry.io/explore/logs');
     });
 
-    it('omits [Sentry log] when branch env vars are unset', () => {
+    it('still includes Sentry row link when branch env vars are unset (uses ci.branch:main in URL)', () => {
       // Force-empty so CI-injected GITHUB_HEAD_REF cannot satisfy `||` chain (delete is not always enough).
       process.env.BRANCH = '';
       process.env.GITHUB_HEAD_REF = '';
@@ -1005,11 +1005,13 @@ describe('buildBenchmarkSection', () => {
         'Test',
         BASELINE_PASS,
       );
-      expect(html).toContain('[Show logs]');
-      expect(html).not.toContain('[Sentry log]');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('metamask.sentry.io/explore/logs');
+      expect(html).toContain('ci.branch%3Amain');
+      expect(html).toContain('message%3Abenchmark.loadNewAccount');
     });
 
-    it('includes Sentry links in timer details when env and DSN are set', () => {
+    it('puts row Sentry under the benchmark name and CI log only in timer detail lines', () => {
       process.env.BRANCH = 'main';
       process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
       const entry = makeEntry({
@@ -1035,8 +1037,15 @@ describe('buildBenchmarkSection', () => {
         'https://github.com/actions/runs/999',
       );
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
-      expect(html).toContain('[Show logs]');
-      expect(html).toContain('[Sentry log]');
+      expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain(
+        'swap<br><a href="https://metamask.sentry.io/explore/logs/',
+      );
+      expect(html).toContain('message%3Abenchmark.swap');
+      expect(html).toContain('>[Sentry log · main/release]</a>');
+      expect(html).not.toMatch(
+        /<code>fetchAndDisplaySwapQuotes<\/code><br>\[Sentry log/u,
+      );
     });
   });
 });
@@ -1255,7 +1264,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       expect(html).toContain('startupStandardHome');
     });
 
-    it('includes [Sentry log] in matrix and regression list when BRANCH and SENTRY_DSN_PERFORMANCE are set', async () => {
+    it('includes Sentry Logs Explorer links in matrix and regression list when BRANCH and SENTRY_DSN_PERFORMANCE are set', async () => {
       const mockDsn = 'https://fake@metamask.sentry.io/4510302346608640';
       const savedBranch = process.env.BRANCH;
       const savedSentry = process.env.SENTRY_DSN_PERFORMANCE;
@@ -1269,7 +1278,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
         const html = await buildPerformanceBenchmarksSection(HOST);
 
-        expect(html).toContain('[Sentry log]');
+        expect(html).toContain('>[Sentry log · main/release]</a>');
         expect(html).toContain('metamask.sentry.io/explore/logs');
       } finally {
         if (savedBranch === undefined) {
