@@ -454,6 +454,7 @@ export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
       KnownSessionProperties.SolanaAccountChangedNotifications,
     accountType: SolAccountType.DataAccount,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   {
     network: MultichainNetworks.TRON,
     chains: TRON_CHAINS,
