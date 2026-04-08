@@ -2026,6 +2026,34 @@ describe('Bridge selectors', () => {
       );
     });
 
+    it('does not crash and falls back to the selected account when fromToken is on a network not yet enabled', () => {
+      // Regression test: deeplinks can set fromToken to a chain (e.g. HyperEVM eip155:999)
+      // that the user has not yet added to their networks. When getFromChain returns undefined
+      // for that chain, getFromAccount must not pass undefined to getInternalAccountBySelectedAccountGroupAndCaip,
+      // which would crash with "Cannot read properties of undefined (reading 'startsWith')" in getSanitizedChainId.
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            chainId: 'eip155:999', // HyperEVM — not in the user's enabled networks
+            symbol: 'USDC',
+            name: 'USDC',
+            decimals: 6,
+            address: '0xb88339CB7199b77E23DB6E890353E22632Ba630f',
+            balance: '0',
+          },
+        },
+      });
+
+      expect(getFromChain(state as never)).toBeUndefined();
+      // Must not throw
+      const result = getFromAccount(state as never);
+      // Should fall back to the selected EVM account rather than crashing
+      expect(result).toMatchObject({
+        id: MOCK_EVM_ACCOUNT.id,
+        address: MOCK_EVM_ACCOUNT.address,
+      });
+    });
+
     it('should return the selected internal account if accountGroup does not have account for scope', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -2363,6 +2391,30 @@ describe('Bridge selectors', () => {
       });
 
       const result = getIsGasIncluded(state as never, false);
+      expect(result).toBe(false);
+    });
+
+    it('does not crash and returns false when fromToken is on a network not yet enabled', () => {
+      // Regression test: deeplinks can set fromToken to a chain (e.g. HyperEVM eip155:999)
+      // that the user has not yet added. getFromChain returns undefined, so fromChainId is
+      // undefined. isNonEvmChainId(undefined) crashes with "Cannot read properties of
+      // undefined (reading 'toString')" in isSolanaChainId.
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            chainId: 'eip155:999', // HyperEVM — not in the user's enabled networks
+            symbol: 'USDC',
+            name: 'USDC',
+            decimals: 6,
+            address: '0xb88339CB7199b77E23DB6E890353E22632Ba630f',
+            balance: '0',
+          },
+        },
+      });
+
+      expect(getFromChain(state as never)).toBeUndefined();
+      // Must not throw
+      const result = getIsGasIncluded(state as never, true);
       expect(result).toBe(false);
     });
   });

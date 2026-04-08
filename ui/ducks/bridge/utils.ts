@@ -15,7 +15,10 @@ import {
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import {
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+} from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import type { TokenPayload, BridgeToken } from './types';
 
@@ -240,4 +243,23 @@ export const getDefaultToToken = (
 
   // Last resort: native token
   return toBridgeToken(getNativeAssetForChainId(toChainId));
+};
+
+/**
+ * Returns true when the chain is in the set of chains MetaMask supports for
+ * bridge/swap, false for any malformed, unknown, or unsupported chain ID.
+ *
+ * formatChainIdToHex succeeds for EVM CAIP chains (eip155:*) and throws for
+ * non-EVM ones, cleanly separating the two code paths.
+ *
+ * @param caipChainId - CAIP chain ID to validate (e.g. "eip155:1", "solana:mainnet").
+ */
+export const isSupportedBridgeChain = (caipChainId: CaipChainId): boolean => {
+  try {
+    return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
+      formatChainIdToHex(caipChainId),
+    );
+  } catch {
+    return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
+  }
 };

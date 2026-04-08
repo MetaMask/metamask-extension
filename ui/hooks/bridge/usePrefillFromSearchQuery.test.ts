@@ -6,8 +6,9 @@ import {
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import * as actions from '../../store/actions';
 
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
@@ -458,6 +459,194 @@ describe('usePrefillFromSearchQuery', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('auto-enables a featured network when the fromToken chain is not yet added', async () => {
+    // Regression test: deeplinks like
+    // https://link.metamask.io/swap?from=eip155:999/erc20:0xb883...&to=eip155:1/slip44:60
+    // can reference a chain the user hasn't added yet. When fromTokenMetadata is resolved,
+    // usePrefillFromSearchQuery should call addNetwork + setEnabledNetworks so that
+    // getFromChain returns a value and quotes can be fetched.
+    //
+    // We use Arbitrum (0xa4b1 / eip155:42161) as the test chain: it's in FEATURED_RPCS and
+    // ALLOWED_BRIDGE_CHAIN_IDS but is absent from the default createBridgeMockStore networks
+    // (which only includes mainnet, linea, and optimism).
+    const arbitrum = FEATURED_RPCS.find(
+      (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
+    );
+    expect(arbitrum).toBeDefined();
+
+    const addNetworkSpy = jest
+      .spyOn(actions, 'addNetwork')
+      // The thunk action creator — return a no-op thunk so dispatch doesn't fail
+      .mockReturnValue((() => Promise.resolve(undefined)) as never);
+    // setEnabledNetworks must NOT be called — it would change the user's active
+    // network selection in the dashboard.
+    const setEnabledNetworksSpy = jest.spyOn(actions, 'setEnabledNetworks');
+
+    jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds').mockResolvedValue({
+      'eip155:42161/slip44:60': {
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ethereum',
+        assetId: 'eip155:42161/slip44:60',
+      },
+    });
+
+    // Default mock store does NOT include Arbitrum in networkConfigurations
+    const mockStoreState = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(
+                bridgeControllerUtils.ChainId.ARBITRUM,
+              ),
+            },
+          ],
+        },
+      },
+    });
+
+    const searchParams = new URLSearchParams({
+      from: 'eip155:42161/slip44:60',
+    });
+
+    const { waitForNextUpdate } = renderUseBridgeQueryParams(
+      mockStoreState,
+      // eslint-disable-next-line prefer-template
+      '/?' + searchParams.toString(),
+    );
+
+    await waitForNextUpdate();
+
+    // Should have called addNetwork with the Arbitrum featured RPC config
+    expect(addNetworkSpy).toHaveBeenCalledTimes(1);
+    expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
+
+    // Must NOT have called setEnabledNetworks — that would change the active network
+    expect(setEnabledNetworksSpy).not.toHaveBeenCalled();
+  });
+
+  describe('malformed or unknown chain/token params', () => {
+    it('does not throw and skips metadata fetch when the from param is completely malformed', () => {
+      // CaipAssetTypeStruct.create('not-a-caip-id') throws → parseAsset returns null
+      // → the search-params effect condition (from || to || amount) is false
+      // → the block is skipped entirely: no resetSearchParams, no fetch, no state update.
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({ from: 'not-a-caip-id' });
+      const { store, result } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      // Effect block was skipped → no fetch and URL was NOT cleared
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(result.current.location.search).toContain('from=not-a-caip-id');
+      const { fromToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.chainId).not.toBe('not-a-caip-id');
+    });
+
+    it('does not throw and skips metadata fetch when the to param is completely malformed', () => {
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({ to: ':::invalid:::' });
+      const { store, result } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(result.current.location.search).toContain('to=');
+      const { toToken } = store?.getState().bridge ?? {};
+      expect(toToken?.chainId).toBeUndefined();
+    });
+
+    it('does not throw and leaves state unchanged when both from and to are malformed', () => {
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({
+        from: 'garbage-from',
+        to: 'garbage-to',
+      });
+      const { store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      const { fromToken, toToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.chainId).toBeUndefined();
+      expect(toToken?.chainId).toBeUndefined();
+    });
+
+    it('does not set fromToken when metadata is not found for the from token address', async () => {
+      // Valid CAIP format and supported chain, but the token address is unknown —
+      // fetchAssetMetadataForAssetIds returns an empty object, so fromTokenMetadata
+      // is undefined and the effect returns early before dispatching setFromToken.
+      jest
+        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+        .mockResolvedValue({});
+
+      const mockStoreState = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      });
+
+      const searchParams = new URLSearchParams({
+        from: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      });
+
+      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      await waitForNextUpdate();
+
+      const { fromToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.address).not.toBe(
+        '0x0000000000000000000000000000000000000001',
+      );
+    });
+
+    it('does not set toToken when metadata is not found for the to token address', async () => {
+      jest
+        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+        .mockResolvedValue({});
+
+      const mockStoreState = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      });
+
+      const searchParams = new URLSearchParams({
+        to: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      });
+
+      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      await waitForNextUpdate();
+
+      const { toToken } = store?.getState().bridge ?? {};
+      expect(toToken?.address).not.toBe(
+        '0x0000000000000000000000000000000000000001',
+      );
+    });
   });
 
   it('should unset amount', async () => {
