@@ -961,6 +961,8 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Web Vitals (ESM — "type": "module" in package.json)
+            './**/node_modules/web-vitals',
             // Perps controller ESM dependencies
             './**/node_modules/valibot',
             './**/node_modules/@nktkas',

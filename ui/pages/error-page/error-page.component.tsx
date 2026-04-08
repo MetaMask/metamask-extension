@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 
 import { getParticipateInMetaMetrics } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -37,6 +36,7 @@ import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
 import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
 type ErrorPageProps = {
   error: {
@@ -107,6 +107,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             color={TextColor.inherit}
             variant={TextVariant.headingMd}
             marginBottom={4}
+            data-testid="error-page-title"
           >
             {t('errorPageTitle')}
           </Text>
@@ -300,8 +301,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-try-again-button"
-            // TODO: should this be a safe reload via the `WriteManager`?
-            onClick={() => browser.runtime.reload()}
+            onClick={async () => {
+              await reloadExtensionFromUi();
+            }}
           >
             {t('errorPageTryAgain')}
           </Button>

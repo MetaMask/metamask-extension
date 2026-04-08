@@ -35,6 +35,7 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 type NetworkFees = {
   transactionFee: {
@@ -89,7 +90,7 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { value: isOpen, toggle } = useBoolean();
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
@@ -144,7 +145,7 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
         },
       });
     }
-    setIsOpen(!isOpen);
+    toggle();
   };
 
   if (!networkFees && !networkFeesError) {

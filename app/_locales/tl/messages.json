@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Kapag nakasama ang iyong transaksyon sa block, ire-refund ang anumang difference sa pagitan ng iyong pinakamataas na batayang bayad at ang aktwal na batayang bayad. Ang kabuuang halaga ay kinakalkula bilang pinakamataas na batayang bayad (sa GWEI) * ng limitasyon ng gas."
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Advanced na bayad sa network"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "I-save ang mga value na ito bilang default ko para sa $1 network.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced na bayad sa network"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "mga advanced na pahintulot"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
@@ -1080,9 +1070,6 @@
   "bridgeFee": {
     "message": "Bayad sa bridge"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Mag-fetch ng bago?"
-  },
   "bridgeFromTo": {
     "message": "I-bridge ang $1 $2 sa $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Babala sa epekto ng presyo"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Nag-time out ang quote mo."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Nakaayos ang mga quote ayon sa tinatayang kabuuang halaga, kasama ang rate ng palitan at bayad sa network."
@@ -1996,9 +1980,6 @@
   "currentQuestion": {
     "message": "Tanong $1 sa 2"
   },
-  "currentTitle": {
-    "message": "Current:"
-  },
   "currentlyUnavailable": {
     "message": "Hindi available sa network na ito"
   },
@@ -2051,12 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Iminungkahing site"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (mataas)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "Makatipid at kumita sa MetaMask Swaps"
@@ -2422,9 +2397,6 @@
   "dontShowThisAgain": {
     "message": "Huwag itong ipaklita ulit"
   },
-  "downArrow": {
-    "message": "arrow pababa"
-  },
   "download": {
     "message": "I-download"
   },
@@ -2517,19 +2489,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Ang limitasyon ng gas ay dapat na mas mataas sa $1 at hindi bababa sa $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Ang pinakamataas na batayang bayad ay hindi dapat na mas mababa sa bayad sa priyoridad"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Ang pinakamataas na batayang bayad ay mas mataas kaysa kinakailangan"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Ang pinakamataas na batayang bayad ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
   "editGasMaxFeeHigh": {
     "message": "Ang pinakamataas na bayad ay mas mataas kaysa kinakailangan"
   },
@@ -2542,20 +2501,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay dapat na mas mataas sa 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Ang bayad sa priyoridad ay dapat na mas mataas sa 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay mas mataas sa kinakailangan. Maaari kang magbayad nang higit sa kinakailangan."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Ang bayad sa priyoridad ay mas mataas sa kinakailangan. Maaari kang magbayad nang higit sa kinakailangan"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Ang bayad sa priyoridad ay mababa para sa kasalukuyang mga kundisyon ng network"
   },
   "editGasPriceTooLow": {
     "message": "Ang presyo ng gas ay dapat na mas mataas sa 0"
@@ -2977,9 +2927,6 @@
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitV2": {
-    "message": "Gas limit"
   },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
@@ -3741,9 +3688,6 @@
     "message": "Hindi nakakonekta ang ledger device. Kung nais mong ikonekta ang iyong Ledger, mangyaring i-click muli ang 'Magpatuloy' at aprubahan ang HID na koneksyon",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "levelArrow": {
-    "message": "arrow ng level"
-  },
   "lightTheme": {
     "message": "Maliwanag"
   },
@@ -4113,10 +4057,6 @@
   },
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
-  },
-  "musdClaimClaimingTo": {
-    "message": "Ikini-claim sa",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdClaimTitle": {
     "message": "I-claim ang bonus",
@@ -5391,9 +5331,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Available na balanse"
-  },
   "perpsAvailableToClose": {
     "message": "Available para isara"
   },
@@ -5418,9 +5355,6 @@
   },
   "perpsCloseShort": {
     "message": "Isara ang Short"
-  },
-  "perpsClosedShort": {
-    "message": "Naisara ang short"
   },
   "perpsConfirmCloseLong": {
     "message": "Isara ang Long"
@@ -5509,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "kasama ang P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Dinagdagan ang posisyon"
-  },
   "perpsLearnBasics": {
     "message": "Matutunan ang mga pangunahing kaalaman tungkol sa perps"
   },
@@ -5555,12 +5486,6 @@
   "perpsMarkets": {
     "message": "Market"
   },
-  "perpsMax": {
-    "message": "Pinakamataas"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max na puwedeng alisin"
-  },
   "perpsMid": {
     "message": "Mid"
   },
@@ -5596,9 +5521,6 @@
     "message": "Magbukas ng Short na $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Bukas na long"
-  },
   "perpsOraclePrice": {
     "message": "Oracle Price"
   },
@@ -5613,9 +5535,6 @@
   },
   "perpsPosition": {
     "message": "Posisyon"
-  },
-  "perpsPositionSize": {
-    "message": "Laki ng Posisyon"
   },
   "perpsPositions": {
     "message": "Mga Posisyon"
@@ -8481,9 +8400,6 @@
   "swapSource": {
     "message": "Pinagmumulan ng liquidity"
   },
-  "swapSuggested": {
-    "message": "Iminungkahi ang pag-swap"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa gas na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
@@ -8903,9 +8819,6 @@
   "tutorial": {
     "message": "Pagtuturo"
   },
-  "twelveHrTitle": {
-    "message": "12 oras:"
-  },
   "txAlertTitle": {
     "message": "Ibabalik ang transaksyong ito"
   },
@@ -8991,9 +8904,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Pabago-bagong presyo ng token"
-  },
-  "upArrow": {
-    "message": "arrow pataas"
   },
   "update": {
     "message": "I-update"
@@ -9253,9 +9163,6 @@
   },
   "youApprove": {
     "message": "Inaaprubahan mo"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Tinanggihan mo ang transaksyon."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

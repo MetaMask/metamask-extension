@@ -1,0 +1,4 @@
+interface:
+  display_name: "A/B Test Implementation"
+  short_description: "Implement and validate extension A/B tests."
+  default_prompt: "Use $ab-testing-implementation to implement or review an A/B test with the extension's canonical useABTest and active_ab_tests standards."
