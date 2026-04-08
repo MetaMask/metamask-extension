@@ -226,6 +226,7 @@ export const CHAIN_IDS = {
   TEMPO_TESTNET: '0xa5bf',
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
+  WAN: '0x378',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -301,7 +302,6 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
   HYPE: '0x3e7',
-  WAN: '0x378',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -497,6 +497,7 @@ export const CURRENCY_SYMBOLS = {
   TEMPO_MAINNET: 'USD',
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
+  WAN: 'WAN',
 } as const;
 
 // Non-EVM currency symbols
@@ -575,7 +576,6 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   XRPLEVM_TESTNET: 'XRP',
   XRPLEVM: 'XRP',
   SOPHON: 'SOPH',
-  WAN: 'WAN',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
