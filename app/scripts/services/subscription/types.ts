@@ -25,12 +25,12 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
-  AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
   AppStateControllerSetPendingRedirectRouteAction,
   AppStateControllerSetShieldSubscriptionErrorAction,
-} from '../../controllers/app-state-controller';
+} from '../../controllers/app-state-controller-method-action-types';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import {
   RewardsControllerGetHasAccountOptedInAction,

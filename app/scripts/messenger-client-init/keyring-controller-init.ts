@@ -60,6 +60,7 @@ export const KeyringControllerInit: ControllerInitFunction<
       keyringOverrides?.qrBridge || QrKeyringScannerBridge,
       {
         requestScan: async (request) =>
+          // @ts-expect-error type mismatch
           initMessenger.call('AppStateController:requestQrCodeScan', request),
       },
     ),
