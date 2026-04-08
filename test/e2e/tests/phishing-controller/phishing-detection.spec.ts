@@ -26,7 +26,7 @@ import {
   waitForPhishingBlocklistToBeLoaded,
 } from './helpers';
 
-describe('Phishing Detection TEST', function (this: Suite) {
+describe('Phishing Detection', function (this: Suite) {
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
       // Update the fixture in phishing-controller/mocks.js if this test fails
