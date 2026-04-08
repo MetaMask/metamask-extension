@@ -12,6 +12,7 @@ import ar from '../../../../app/_locales/ar/messages.json';
 import da from '../../../../app/_locales/da/messages.json';
 import de from '../../../../app/_locales/de/messages.json';
 import en from '../../../../app/_locales/en/messages.json';
+// eslint-disable-next-line camelcase
 import es_419 from '../../../../app/_locales/es_419/messages.json';
 import hi from '../../../../app/_locales/hi/messages.json';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -22,6 +23,7 @@ const selectors = {
   currentLanguageDansk: { tag: 'p', text: en.language.message },
   currentLanguageDeutsch: { tag: 'p', text: de.language.message },
   currentLanguageEnglish: { tag: 'p', text: en.language.message },
+  // eslint-disable-next-line camelcase
   currentLanguageSpanish: { tag: 'p', text: es_419.language.message },
   currentLanguageवर्तमान: { tag: 'p', text: hi.language.message },
   advanceTextDansk: { text: da.advanced.message, tag: 'div' },

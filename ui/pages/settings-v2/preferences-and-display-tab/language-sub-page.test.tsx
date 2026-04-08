@@ -6,6 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import LanguageSubPage from './language-sub-page';
 
 const mockNavigate = jest.fn();
@@ -36,9 +37,15 @@ describe('LanguageSubPage', () => {
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
-  it('renders language options', () => {
+  it('renders language options and section headings', () => {
     renderWithProvider(<LanguageSubPage />, mockStore);
 
+    expect(
+      screen.getByText(tEn('supportedLanguagesSectionTitle')),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(tEn('communityContributedLanguagesSectionTitle')),
+    ).toBeInTheDocument();
     expect(screen.getByText('English')).toBeInTheDocument();
     expect(screen.getByText('Español (Latinoamérica)')).toBeInTheDocument();
     expect(screen.getByText('Deutsch')).toBeInTheDocument();

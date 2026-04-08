@@ -6,7 +6,7 @@ export const MAINTAINED_LOCALE_CODES: ReadonlySet<string> = new Set([
   'de',
   'el',
   'en',
-  'es-419', // We are maintaining the Latin America Spanish locale
+  // We are maintaining the Latin America Spanish locale  'es_419',
   'fr',
   'hi',
   'id',
