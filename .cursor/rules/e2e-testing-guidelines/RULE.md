@@ -6,7 +6,10 @@ alwaysApply: false
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
 
-**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+**See also:**
+
+- [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+- [Extension CI Flakiness Patterns](../extension-flakiness-patterns/RULE.md) - Known flakiness patterns and anti-patterns to avoid
 
 # MetaMask Extension E2E Testing Guidelines
 
