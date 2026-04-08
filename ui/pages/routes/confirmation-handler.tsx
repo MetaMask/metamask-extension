@@ -31,8 +31,10 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import { useModalState } from '../../hooks/useModalState';
-import { isMerklClaimTransaction } from '../../hooks/musd';
-import { isMusdConversionTransaction } from '../../components/app/musd/utils';
+import {
+  isMerklClaimTransaction,
+  isMusdConversionTransaction,
+} from '../../components/app/musd/utils';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,

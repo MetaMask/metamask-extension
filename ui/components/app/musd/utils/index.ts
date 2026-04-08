@@ -23,3 +23,5 @@ export type {
   MusdTransferDetails,
   TransactionControllerCallbacks,
 } from './transaction-utils';
+
+export { isMerklClaimTransaction } from './merkl-claim-transaction';
