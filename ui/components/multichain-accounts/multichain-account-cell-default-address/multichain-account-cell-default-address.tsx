@@ -1,6 +1,4 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import classnames from 'clsx';
+import React from 'react';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
   Box,
@@ -23,27 +21,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  getDefaultAddressScope,
-  getIsDefaultAddressEnabled,
-  getShowDefaultAddressPreference,
-} from '../../../selectors/selectors';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainTriggeredAddressRowsList } from '../multichain-address-rows-triggered-list/multichain-triggered-address-rows-list';
-import {
-  DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
-  DefaultAddressScope,
-} from '../../../../shared/constants/default-address';
+import { DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE } from '../../../../shared/constants/default-address';
+import { useDefaultAddress } from '../hooks/useDefaultAddress';
 
 export type MultichainAccountCellDefaultAddressProps = {
   groupId: AccountGroupId;
 };
 
 /**
- * Displays network avatars with a copy icon. When the showDefaultAddress
- * preference is enabled, also displays the shortened default address.
- * Click copies the default address and shows "Copied" briefly.
+ * Displays a dropdown button and the default address with copy functionality.
+ * When a default address for an account is available, displays the shortened
+ * default address. Click copies the default address and shows "Copied" briefly.
  *
  * @param options0
  * @param options0.groupId
@@ -52,27 +41,13 @@ export const MultichainAccountCellDefaultAddress = ({
   groupId,
 }: MultichainAccountCellDefaultAddressProps) => {
   const t = useI18nContext();
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddressPreference = useSelector(
-    getShowDefaultAddressPreference,
-  );
-  const defaultAddressScope = useSelector(
-    getDefaultAddressScope,
-  ) as DefaultAddressScope;
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, groupId),
-  );
-  const displayDefaultAddress =
-    isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-
-  const handleDefaultAddressClick = useCallback(() => {
-    if (defaultAddress) {
-      handleCopy(normalizeSafeAddress(defaultAddress));
-    }
-  }, [defaultAddress, handleCopy]);
+  const {
+    defaultAddress,
+    defaultAddressScope,
+    displayDefaultAddress,
+    addressCopied,
+    handleDefaultAddressClick,
+  } = useDefaultAddress(groupId);
 
   return (
     <Box
@@ -102,9 +77,7 @@ export const MultichainAccountCellDefaultAddress = ({
       </MultichainTriggeredAddressRowsList>
       {displayDefaultAddress ? (
         <Box
-          onClick={
-            displayDefaultAddress ? handleDefaultAddressClick : undefined
-          }
+          onClick={handleDefaultAddressClick}
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           backgroundColor={
@@ -115,10 +88,7 @@ export const MultichainAccountCellDefaultAddress = ({
           paddingVertical={1}
           paddingHorizontal={2}
           gap={1}
-          className={classnames(
-            'rounded-lg h-6 min-w-0',
-            displayDefaultAddress && 'cursor-pointer',
-          )}
+          className="rounded-lg h-6 min-w-0"
           data-testid="default-address-container"
         >
           <Text
@@ -134,7 +104,7 @@ export const MultichainAccountCellDefaultAddress = ({
           >
             {addressCopied
               ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
-              : shortenAddress(normalizeSafeAddress(defaultAddress))}
+              : shortenAddress(normalizeSafeAddress(defaultAddress as string))}
           </Text>
           <Icon
             name={addressCopied ? IconName.CopySuccess : IconName.Copy}

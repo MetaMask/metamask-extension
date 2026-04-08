@@ -88,16 +88,6 @@ describe('MultichainAccountCellDefaultAddress', () => {
     );
   });
 
-  it('has cursor-pointer class when showDefaultAddress preference is true', () => {
-    renderWithProvider(
-      <MultichainAccountCellDefaultAddress {...defaultProps} />,
-      createStore(),
-    );
-
-    const container = screen.getByTestId('default-address-container');
-    expect(container).toHaveClass('cursor-pointer');
-  });
-
   it('shows copied state when addressCopied is true', () => {
     mockUseCopyToClipboard.mockReturnValue([true, mockHandleCopy, jest.fn()]);
 
