@@ -31,7 +31,7 @@ import {
   RewardsControllerActions,
   RewardsControllerEvents,
   RewardsControllerMessenger,
-} from '../../controller-init/messengers';
+} from '../../messenger-client-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   EstimatedPointsDto,

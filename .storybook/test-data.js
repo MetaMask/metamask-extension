@@ -764,7 +764,6 @@ const state = {
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
-    useBlockie: false,
     featureFlags: {},
     slides: [],
     currentLocale: 'en',

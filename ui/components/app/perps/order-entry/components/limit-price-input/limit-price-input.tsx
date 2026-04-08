@@ -1,4 +1,3 @@
-import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Text,
@@ -15,18 +14,20 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useMemo } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { TextField, TextFieldSize } from '../../../../../component-library';
 import type { OrderDirection } from '../../order-entry.types';
 import {
   isLimitPriceUnfavorable,
   isNearLiquidationPrice,
 } from '../../limit-price-warnings';
+import { isUnsignedDecimalInput } from '../../utils';
 
 /**
  * Props for LimitPriceInput component
@@ -65,23 +66,12 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   liquidationPrice,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
-
-  const formatPrice = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
-
   const midPrice = midPriceProp ?? currentPrice;
 
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onLimitPriceChange(value);
       }
     },
@@ -89,19 +79,25 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   );
 
   const handlePriceBlur = useCallback(() => {
-    if (limitPrice) {
-      const numValue = Number.parseFloat(limitPrice.replaceAll(',', ''));
-      if (!Number.isNaN(numValue) && numValue > 0) {
-        onLimitPriceChange(formatPrice(numValue));
-      }
+    if (!limitPrice) {
+      onLimitPriceChange('');
+      return;
     }
-  }, [limitPrice, onLimitPriceChange, formatPrice]);
+
+    const parsed = Number.parseFloat(limitPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onLimitPriceChange(parsed.toString());
+      return;
+    }
+
+    onLimitPriceChange('');
+  }, [limitPrice, onLimitPriceChange]);
 
   const handleMidClick = useCallback(() => {
     if (midPrice > 0) {
-      onLimitPriceChange(formatPrice(midPrice));
+      onLimitPriceChange(midPrice.toString());
     }
-  }, [midPrice, onLimitPriceChange, formatPrice]);
+  }, [midPrice, onLimitPriceChange]);
 
   const limitPriceWarning = useMemo(() => {
     if (!isLimitPriceUnfavorable(limitPrice, currentPrice, direction)) {
@@ -144,6 +140,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         backgroundColor={BackgroundColor.backgroundMuted}
         className="w-full"
         data-testid="limit-price-input"
+        inputProps={{ inputMode: 'decimal' }}
         startAccessory={
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             $

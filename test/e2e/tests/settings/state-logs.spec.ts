@@ -7,7 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
@@ -137,10 +137,10 @@ describe('State logs', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.downloadStateLogs();
+        await settingsPage.goToPrivacySettings();
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.checkPageIsLoaded();
+        await privacySettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
@@ -194,10 +194,10 @@ describe('State logs', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.downloadStateLogs();
+        await settingsPage.goToPrivacySettings();
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.checkPageIsLoaded();
+        await privacySettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);

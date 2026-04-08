@@ -18,6 +18,7 @@ export type UseCancelSpeedupInitialGasParams = {
     | LegacyGasPriceEstimate
     | Record<string, never>
     | null;
+  isGasEstimatesLoading: boolean;
   updateTransactionUsingEstimate: (level: string) => void;
   updateTransactionToTenPercentIncreasedGasFee: (
     initTransaction?: boolean,
@@ -36,6 +37,7 @@ const CANCEL_SPEEDUP_MODAL = 'cancelSpeedUpTransaction';
  * @param options0
  * @param options0.effectiveTransaction
  * @param options0.gasFeeEstimates
+ * @param options0.isGasEstimatesLoading
  * @param options0.updateTransactionUsingEstimate
  * @param options0.updateTransactionToTenPercentIncreasedGasFee
  * @param options0.appIsLoading
@@ -44,11 +46,12 @@ const CANCEL_SPEEDUP_MODAL = 'cancelSpeedUpTransaction';
 export function useCancelSpeedupInitialGas({
   effectiveTransaction,
   gasFeeEstimates,
+  isGasEstimatesLoading,
   updateTransactionUsingEstimate,
   updateTransactionToTenPercentIncreasedGasFee,
   appIsLoading,
   currentModal,
-}: UseCancelSpeedupInitialGasParams): void {
+}: UseCancelSpeedupInitialGasParams): { isInitialGasReady: boolean } {
   const appliedInitialGasForTransactionIdRef = useRef<string | null>(null);
   const storedPreviousGasForTransactionIdRef = useRef<string | null>(null);
   const dispatch = useDispatch();
@@ -59,7 +62,11 @@ export function useCancelSpeedupInitialGas({
       return;
     }
 
-    if (effectiveTransaction.previousGas || appIsLoading) {
+    if (
+      effectiveTransaction.previousGas ||
+      appIsLoading ||
+      isGasEstimatesLoading
+    ) {
       return;
     }
 
@@ -123,9 +130,14 @@ export function useCancelSpeedupInitialGas({
     effectiveTransaction.previousGas,
     effectiveTransaction.txParams,
     appIsLoading,
+    isGasEstimatesLoading,
     currentModal,
     gasFeeEstimates,
     updateTransactionUsingEstimate,
     updateTransactionToTenPercentIncreasedGasFee,
   ]);
+
+  return {
+    isInitialGasReady: Boolean(effectiveTransaction.previousGas),
+  };
 }

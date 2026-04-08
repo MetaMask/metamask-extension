@@ -35,13 +35,16 @@ import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 import { getStatePatches } from './patch-store-substream-connection';
 
-jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
-      state: {},
-      name: 'PerpsController',
-    },
-    api: {},
+jest.mock(
+  '../../app/scripts/messenger-client-init/perps-controller-init',
+  () => ({
+    PerpsControllerInit: jest.fn().mockReturnValue({
+      controller: {
+        state: {},
+        name: 'PerpsController',
+      },
+      api: {},
+    }),
   }),
 }));
 jest.mock('./patch-store-substream-connection');
@@ -915,12 +918,22 @@ describe('Actions', () => {
   });
 
   describe('#connectHardware', () => {
+    const translateHardwareMessage = (key, substitutions = []) =>
+      key === 'hardwareWalletLookingForDevice'
+        ? enLocale.hardwareWalletLookingForDevice.message.replace(
+            '$1',
+            substitutions[0],
+          )
+        : `translated_${key}`;
+
     afterEach(() => {
       sinon.restore();
     });
 
     it('calls connectHardware in background', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       const connectHardware = background.connectHardware.resolves();
 
@@ -929,15 +942,25 @@ describe('Actions', () => {
       await store.dispatch(
         actions.connectHardware(
           HardwareDeviceNames.ledger,
-          0,
-          `m/44'/60'/0'/0`,
+          page,
+          hdPath,
+          false,
+          translateHardwareMessage,
         ),
       );
-      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(
+        connectHardware.calledOnceWith(
+          HardwareDeviceNames.ledger,
+          page,
+          hdPath,
+        ),
+      ).toStrictEqual(true);
     });
 
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       background.connectHardware.rejects(new Error('error'));
 
@@ -953,7 +976,15 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -1001,7 +1032,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1046,8 +1077,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1055,7 +1084,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
@@ -1104,7 +1133,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           false,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1153,8 +1182,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1162,7 +1189,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerDeviceOpenFailureMessage');
@@ -1205,7 +1232,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1237,6 +1264,30 @@ describe('Actions', () => {
         ),
       );
       expect(unlockHardwareWalletAccount.callCount).toStrictEqual(1);
+    });
+
+    it('forwards a null hd path to the background handler', async () => {
+      const store = mockStore();
+      const unlockHardwareWalletAccount =
+        background.unlockHardwareWalletAccount.resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.unlockHardwareWalletAccounts(
+          [0],
+          HardwareDeviceNames.trezor,
+          null,
+          '',
+        ),
+      );
+
+      expect(unlockHardwareWalletAccount.firstCall.args).toStrictEqual([
+        0,
+        HardwareDeviceNames.trezor,
+        null,
+        '',
+      ]);
     });
 
     it('shows loading indicator and displays error', async () => {
@@ -2789,37 +2840,6 @@ describe('Actions', () => {
       expect(
         addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
       ).toBe(true);
-    });
-  });
-
-  describe('#setUseBlockie', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setUseBlockie in background', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().resolves();
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockieStub.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setUseBlockie in background throws', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().rejects(new Error('error'));
-
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 

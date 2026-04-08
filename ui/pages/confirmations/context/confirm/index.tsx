@@ -65,7 +65,7 @@ export const ConfirmContextProvider: React.FC<{
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [
     currentConfirmationOverride,

@@ -9,11 +9,13 @@ import {
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
+  normalizeTpslPrices,
   filterMarketsByQuery,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  hasVolume,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
@@ -198,6 +200,39 @@ describe('Perps Utils', () => {
 
     it('handles empty string', () => {
       expect(safeDecodeURIComponent('')).toBe('');
+    });
+  });
+
+  describe('normalizeTpslPrices', () => {
+    it('strips commas and whitespace from TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' 12,345.67 ',
+          stopLossPrice: ' 9,876.54 ',
+        }),
+      ).toEqual({
+        takeProfitPrice: '12345.67',
+        stopLossPrice: '9876.54',
+      });
+    });
+
+    it('returns undefined for empty TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' ',
+          stopLossPrice: '',
+        }),
+      ).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
+    });
+
+    it('handles missing TP/SL values', () => {
+      expect(normalizeTpslPrices({})).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
     });
   });
 
@@ -482,6 +517,30 @@ describe('Perps Utils', () => {
     it('returns TextDefault for amounts without prefix', () => {
       expect(getTransactionAmountColor('100.00')).toBe(TextColor.TextDefault);
       expect(getTransactionAmountColor('0')).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('hasVolume', () => {
+    it('returns true for markets with non-zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$1.2B' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$850M' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$500K' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$<1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$0.5' }))).toBe(true);
+    });
+
+    it('returns false for markets with zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$0' }))).toBe(false);
+      expect(hasVolume(createMockMarket({ volume: '$0.00' }))).toBe(false);
+    });
+
+    it('returns false for markets with empty volume string', () => {
+      expect(hasVolume(createMockMarket({ volume: '' }))).toBe(false);
+    });
+
+    it('returns false for markets with unparseable volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
     });
   });
 });

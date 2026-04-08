@@ -68,9 +68,10 @@ export function NotificationsSettingsContent() {
 
   return (
     <Box
-      className="settings-page__body"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
+      paddingTop={3}
+      paddingHorizontal={4}
       gap={6}
     >
       <NotificationsSettingsAllowNotifications

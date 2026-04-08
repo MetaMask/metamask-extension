@@ -39,6 +39,7 @@ describe('TransactionsTab', () => {
         'transactions-smart-account-requests-toggle',
         'transactions-proposed-nicknames-toggle',
         'transactions-show-hex-data-toggle',
+        'transactions-settings-hex-data-toggle',
       ];
 
       for (const testId of expectedTestIds) {
