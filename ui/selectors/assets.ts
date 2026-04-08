@@ -42,7 +42,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';

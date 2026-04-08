@@ -10,7 +10,7 @@ import {
 import { Controller } from './controller-list';
 import { CONTROLLER_MESSENGERS } from './messengers';
 
-const log = createProjectLogger('controller-init');
+const log = createProjectLogger('messenger-client-init');
 
 /** Result of initializing controllers. */
 export type InitControllersResult = {
