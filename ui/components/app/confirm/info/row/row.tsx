@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -25,6 +25,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { SizeNumber } from '../../../../ui/box/box';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -103,7 +104,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   onClick,
   labelChildrenStyleOverride,
 }) => {
-  const [expanded, setExpanded] = useState(!collapsed);
+  const { value: expanded, toggle } = useBoolean(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
 
@@ -153,7 +154,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               position: 'absolute',
               right: 8,
             }}
-            onClick={() => setExpanded(!expanded)}
+            onClick={toggle}
             data-testid="sectionCollapseButton"
             ariaLabel="collapse-button"
           />

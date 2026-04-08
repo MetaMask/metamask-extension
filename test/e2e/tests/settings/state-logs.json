@@ -1224,6 +1224,7 @@
     "quoteRequest": {
       "srcTokenAddress": "string"
     },
+    "quoteStreamComplete": "null",
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
