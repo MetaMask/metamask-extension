@@ -144,6 +144,7 @@ jest.mock('../../hooks/perps', () => ({
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
+  usePerpsMarketFills: () => ({ fills: [], isInitialLoading: false }),
 }));
 
 // Mock the perps stream hooks
@@ -195,6 +196,10 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
     error: null,
     refetch: jest.fn(),
   }),
+}));
+
+jest.mock('../../components/app/perps/perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
 }));
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
@@ -954,6 +959,93 @@ describe('PerpsMarketDetailPage', () => {
           replace: true,
         }),
       );
+    });
+  });
+
+  describe('cancel order modal', () => {
+    it('does not render cancel order modal before an order card is clicked', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(
+        screen.queryByTestId('perps-cancel-order-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('opens cancel order modal when an order card is clicked', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      // ETH has order-001 (buy limit) in mockOrders
+      const orderCard = screen.getByTestId('order-card-order-001');
+      fireEvent.click(orderCard);
+
+      expect(
+        screen.getByTestId('perps-cancel-order-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays "Cancel order" button inside the modal', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-card-order-001'));
+
+      expect(
+        screen.getByTestId('perps-cancel-order-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('closes the cancel order modal when the close button is pressed', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-card-order-001'));
+      expect(
+        screen.getByTestId('perps-cancel-order-modal'),
+      ).toBeInTheDocument();
+
+      // ModalHeader renders a close button with localized aria-label
+      const closeButton = screen.getByLabelText(messages.close.message);
+      fireEvent.click(closeButton);
+
+      expect(
+        screen.queryByTestId('perps-cancel-order-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('submits perpsCancelOrder with the correct orderId and symbol', async () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-card-order-001'));
+      fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsCancelOrder',
+          [{ orderId: 'order-001', symbol: 'ETH' }],
+        );
+      });
+    });
+
+    it('closes modal after successful cancel', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-card-order-001'));
+      expect(
+        screen.getByTestId('perps-cancel-order-modal'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('perps-cancel-order-modal'),
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });

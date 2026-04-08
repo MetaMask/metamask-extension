@@ -17,6 +17,8 @@ export type {
   UsePerpsTransactionHistoryResult,
 } from './usePerpsTransactionHistory';
 
+export { usePerpsMarketFills } from './usePerpsMarketFills';
+
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
   UsePerpsMarginCalculationsParams,

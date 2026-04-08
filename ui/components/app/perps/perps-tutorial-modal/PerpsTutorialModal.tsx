@@ -20,7 +20,6 @@ import {
 import {
   selectTutorialModalOpen,
   selectTutorialActiveStep,
-  setTutorialModalOpen,
   setTutorialActiveStep,
   markTutorialCompleted,
   PerpsTutorialStep,
@@ -32,6 +31,7 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -81,8 +81,8 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   );
 
   const handleClose = useCallback(() => {
-    dispatch(setTutorialModalOpen(false));
-    dispatch(setTutorialActiveStep(PerpsTutorialStep.WhatArePerps));
+    dispatch(markTutorialCompleted());
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
     onClose?.();
   }, [dispatch, onClose]);
 
@@ -93,6 +93,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
           PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_COMPLETED,
       });
       dispatch(markTutorialCompleted());
+      submitRequestToBackground('perpsMarkTutorialCompleted', []);
     } else {
       const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -106,7 +107,8 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   }, [dispatch, isLastStep, currentStepIndex, activeStep, track]);
 
   const handleSkip = useCallback(() => {
-    dispatch(setTutorialModalOpen(false));
+    dispatch(markTutorialCompleted());
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
   }, [dispatch]);
 
   const renderContent = useCallback(() => {

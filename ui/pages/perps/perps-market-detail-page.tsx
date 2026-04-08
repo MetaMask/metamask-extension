@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Navigate,
   useLocation,
@@ -37,6 +37,7 @@ import {
   type Position,
   type PriceUpdate,
 } from '@metamask/perps-controller';
+import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -51,10 +52,15 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsMarketFills,
+  usePerpsEventTracking,
+} from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
@@ -72,6 +78,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
@@ -81,6 +88,7 @@ import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
+import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
@@ -94,6 +102,8 @@ import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
 } from '../../selectors/perps-controller';
+import { setTutorialModalOpen } from '../../ducks/perps';
+import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -234,6 +244,7 @@ const parsePerpsToastRouteState = (
  */
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
@@ -421,6 +432,18 @@ const PerpsMarketDetailPage: React.FC = () => {
     throttleMs: 1000,
   });
 
+  // Fetch market-specific fills (WebSocket + REST) for Recent Activity
+  const { fills: marketFills, isInitialLoading: fillsLoading } =
+    usePerpsMarketFills({
+      symbol: decodedSymbol ?? '',
+      throttleMs: 0,
+    });
+
+  const recentActivityTransactions = useMemo(() => {
+    const transactions = transformFillsToTransactions(marketFills);
+    return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
+  }, [marketFills]);
+
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
 
@@ -432,6 +455,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
+    null,
+  );
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
   const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
@@ -707,9 +733,10 @@ const PerpsMarketDetailPage: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [selectedAddress]);
 
-  // No-op handler for order cards - orders on detail page are already
-  // filtered to current market, so clicking should not navigate anywhere
-  const handleOrderClick = useCallback(() => undefined, []);
+  // Opens the cancel order modal for the selected order
+  const handleOrderClick = useCallback((order: Order) => {
+    setCancelOrderTarget(order);
+  }, []);
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -810,6 +837,46 @@ const PerpsMarketDetailPage: React.FC = () => {
         onNeedMoreHistory={fetchMoreHistory}
         // onCrosshairMove={setHoveredCandle}
       />
+    );
+  };
+
+  const renderRecentActivityContent = () => {
+    if (fillsLoading && recentActivityTransactions.length === 0) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="overflow-hidden rounded-xl"
+        >
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[62px] w-full rounded-none" />
+          ))}
+        </Box>
+      );
+    }
+
+    if (recentActivityTransactions.length === 0) {
+      return (
+        <Box paddingBottom={4}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsNoTransactions')}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="overflow-hidden rounded-xl"
+      >
+        {recentActivityTransactions.map((transaction) => (
+          <TransactionCard
+            key={transaction.id}
+            transaction={transaction}
+            variant="muted"
+          />
+        ))}
+      </Box>
     );
   };
 
@@ -1480,70 +1547,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               {t('perpsRecentActivity')}
             </Text>
           </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            className="overflow-hidden rounded-xl"
-          >
-            {[
-              {
-                label: t('perpsOpenedLong'),
-                amount: '2.50000',
-                pnl: '+$125.00',
-                pnlColor: TextColor.SuccessDefault,
-              },
-              {
-                label: t('perpsIncreasedPosition'),
-                amount: '0.50000',
-                pnl: '+$45.20',
-                pnlColor: TextColor.SuccessDefault,
-              },
-              {
-                label: t('perpsClosedShort'),
-                amount: '1.25000',
-                pnl: '-$32.50',
-                pnlColor: TextColor.ErrorDefault,
-              },
-            ].map((item) => (
-              <Box
-                key={item.label}
-                className="w-full bg-muted px-4 py-3"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-              >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  className="min-w-0 flex-1"
-                  gap={1}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {item.label}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    {item.amount} {displayName}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={item.pnlColor}
-                >
-                  {item.pnl}
-                </Text>
-              </Box>
-            ))}
-          </Box>
+          {renderRecentActivityContent()}
 
           {/* Learn Section */}
           <Box
@@ -1551,9 +1555,8 @@ const PerpsMarketDetailPage: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            onClick={() => {
-              // TODO: Navigate to learn page
-            }}
+            data-testid="perps-learn-basics"
+            onClick={() => dispatch(setTutorialModalOpen(true))}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsLearnBasics')}
@@ -1760,6 +1763,18 @@ const PerpsMarketDetailPage: React.FC = () => {
           currentPrice={currentPrice}
         />
       )}
+
+      {/* Cancel order modal */}
+      {cancelOrderTarget && (
+        <CancelOrderModal
+          isOpen={cancelOrderTarget !== null}
+          onClose={() => setCancelOrderTarget(null)}
+          order={cancelOrderTarget}
+        />
+      )}
+
+      {/* Tutorial modal — opened via "Learn the basics of perps" */}
+      <PerpsTutorialModal />
     </Box>
   );
 };

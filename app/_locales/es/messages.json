@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Tarifa de puente"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "¿Obtener una nueva?"
-  },
   "bridgeFromTo": {
     "message": "Puentear $1 $2 a $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Advertencia sobre el impacto en el precio"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Su cotización caducó."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Las cotizaciones se ordenan según el costo total estimado, que incluye el tipo de cambio y la tarifa de red."
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Comprar mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Reclamando a",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Reclamar bono",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Cerrar posición corta"
   },
-  "perpsClosedShort": {
-    "message": "Posición corta cerrada"
-  },
   "perpsConfirmCloseLong": {
     "message": "Cerrar posición larga"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "incluye P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Posición aumentada"
-  },
   "perpsLearnBasics": {
     "message": "Aprende los conceptos básicos de los contratos perpetuos"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Abrir posición corta en $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Posición larga abierta"
   },
   "perpsOraclePrice": {
     "message": "Precio de Oracle"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "Apruebas"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Usted rechazó la transacción."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
