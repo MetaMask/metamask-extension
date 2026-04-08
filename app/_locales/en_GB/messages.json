@@ -5518,11 +5518,11 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
-  "perpsDepositTitle": {
-    "message": "Funded perps account"
-  },
   "perpsDepositFundsTitle": {
     "message": "Deposit funds to Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -6010,9 +6010,6 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
-  "perpsWithdrawFundsTitle": {
-    "message": "Withdraw"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
   },
@@ -6021,6 +6018,9 @@
   },
   "perpsWithdrawFee": {
     "message": "Provider Fee"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
