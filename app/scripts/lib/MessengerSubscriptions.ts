@@ -1,6 +1,6 @@
 import { Duplex } from 'readable-stream';
 import { NamespacedName } from '@metamask/messenger';
-import { BaseControllerMessenger } from '../controller-init/types';
+import { BaseControllerMessenger } from '../messenger-client-init/types';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
 import { isStreamWritable } from './stream-utils';
 

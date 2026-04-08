@@ -22,6 +22,7 @@ import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import {
@@ -59,7 +60,8 @@ import {
   getFromAmountInCurrency,
   getValidatedFromValue,
   getPriceImpact,
-  getFormattedPriceImpact,
+  getFormattedPriceImpactPercentage,
+  getFormattedPriceImpactFiat,
   getIsStockMarketClosed,
   getWarningLabels,
   getIsQuoteExpired,
@@ -3116,7 +3118,7 @@ describe('Bridge selectors', () => {
           })) as unknown as QuoteResponse[],
         },
       });
-      const result = getFormattedPriceImpact(state as never);
+      const result = getFormattedPriceImpactPercentage(state as never);
       expect(result).toBe('15%');
     });
 
@@ -3124,8 +3126,73 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getFormattedPriceImpact(state as never);
+      const result = getFormattedPriceImpactPercentage(state as never);
       expect(result).toBe('0%');
+    });
+  });
+
+  describe('getFormattedPriceImpactFiat', () => {
+    it('returns a formatted fiat string when active quote has both fiat amounts', () => {
+      // ETH (native, OP) → ETH (native, ARB); quoteRequest srcChainId/destChainId must be set
+      // so selectBridgeQuotesWithMetadata can look up exchange rates and compute valueInCurrency.
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes:
+            DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as unknown as QuoteResponse[],
+          quoteRequest: {
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: 42161,
+            destTokenAddress: zeroAddress(),
+          },
+        },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+          },
+        },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+    });
+
+    it('returns undefined when there are no quotes', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when sentAmount.valueInCurrency is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
+            ...quote,
+            sentAmount: { ...quote.sentAmount, valueInCurrency: null },
+          })) as unknown as QuoteResponse[],
+        },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
+            ...quote,
+            toTokenAmount: { ...quote.toTokenAmount, valueInCurrency: null },
+          })) as unknown as QuoteResponse[],
+        },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
     });
   });
 
