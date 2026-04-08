@@ -16,8 +16,8 @@ import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
@@ -33,16 +33,22 @@ const MM_CONNECT_TEST_DAPP_OPTIONS = {
 
 /**
  * Approve the MetaMask connect dialog after the dapp has initiated a
- * connection. Switches to the dialog, optionally adds extra accounts, then
- * confirms. The caller is responsible for triggering the connect action on the
- * dapp and for switching focus back to it afterwards.
+ * connection. Switches to the dialog, optionally adds extra accounts and
+ * extra permitted networks, then confirms. The caller is responsible for
+ * triggering the connect action on the dapp and for switching focus back
+ * to it afterwards.
  *
- * @param driver        - Selenium driver
- * @param totalAccounts - Total number of accounts to connect (default: 1)
+ * @param driver - Selenium driver
+ * @param options - Options object with totalAccounts and extraNetworks
+ * @param options.totalAccounts - Total number of accounts to connect (default: 1)
+ * @param options.extraNetworks - Additional network display names to permit (e.g. ['Polygon'])
  */
 async function approveConnect(
   driver: Driver,
-  totalAccounts: number = 1,
+  {
+    totalAccounts = 1,
+    extraNetworks = [],
+  }: { totalAccounts?: number; extraNetworks?: string[] } = {},
 ): Promise<void> {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new ConnectAccountConfirmation(driver);
@@ -55,6 +61,18 @@ async function approveConnect(
     for (let i = 1; i < totalAccounts; i++) {
       await editAccountsModal.addNewAccount();
     }
+  }
+
+  if (extraNetworks.length > 0) {
+    await confirmation.goToPermissionsTab();
+    await confirmation.openEditNetworksModal();
+    const networkModal = new NetworkPermissionSelectModal(driver);
+    await networkModal.checkPageIsLoaded();
+    for (const networkName of extraNetworks) {
+      await networkModal.selectNetwork({ networkName, shouldBeSelected: true });
+    }
+    await networkModal.clickConfirmEditButton();
+    await confirmation.checkPageIsLoaded();
   }
 
   await confirmation.confirmConnect();
@@ -99,7 +117,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           await testDapp.openPage();
 
           await testDapp.connectLegacy();
-          await approveConnect(driver, 2);
+          await approveConnect(driver, { totalAccounts: 2 });
           await testDapp.switchTo();
 
           // Account 1 should appear in the card after the connect event fires.
@@ -146,6 +164,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           // Approve the signing dialog in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
+          await signingConfirmation.checkPageIsLoaded();
           await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
           // Back on the dapp: verify the response is a hex signature.
@@ -178,6 +197,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           // Approve the transaction in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
+          await txConfirmation.checkPageIsLoaded();
           await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
           // Back on the dapp: verify the response contains a tx hash.
@@ -236,19 +256,14 @@ describe('MM Connect-EVM', function (this: Suite) {
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
           await testDapp.connectLegacy();
-          await approveConnect(driver);
+          // Pre-permit Polygon so the switch only tests chain-switching, not
+          // the combined "approve new network + switch" flow.
+          await approveConnect(driver, { extraNetworks: ['Polygon'] });
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
           // Click "Switch to Polygon" in the card — triggers wallet_switchEthereumChain.
           await testDapp.clickLegacySwitchToPolygon();
-
-          // Polygon isn't in the default network list, so MetaMask first shows
-          // a "Review permissions" modal before the switch confirmation.
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const reviewPermissions = new ReviewPermissionsConfirmation(driver);
-          await reviewPermissions.checkPageIsLoaded();
-          await reviewPermissions.confirmReviewPermissions();
 
           // Back on the dapp: chain-ID display must show Polygon's hex chain ID.
           await testDapp.switchTo();
@@ -282,7 +297,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           await testDapp.openPage();
 
           await testDapp.connectWagmi();
-          await approveConnect(driver, 2);
+          await approveConnect(driver, { totalAccounts: 2 });
           await testDapp.switchTo();
 
           // Account 1 should appear in the wagmi card after the connect event fires.
@@ -329,6 +344,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           // Approve the signing dialog in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
+          await signingConfirmation.checkPageIsLoaded();
           await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
           // Back on the dapp: verify the signature result element shows 0x...
@@ -364,6 +380,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           // Approve the transaction in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
+          await txConfirmation.checkPageIsLoaded();
           await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
           // Back on the dapp: verify the tx hash is shown.
