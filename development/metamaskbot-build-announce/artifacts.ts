@@ -141,7 +141,7 @@ export function getBuildLinks({
       firefox: `${hostUrl}/build-test-mv2-webpack/builds/metamask-firefox-${version}.zip`,
     },
     'test-flask': {
-      chrome: `${hostUrl}/build-test-flask-webpack/builds/metamask-flask-chrome-${version}-flask.${releaseVersion}.zip`,
+      chrome: `${hostUrl}/build-test-flask-webpack/builds/metamask-chrome-${version}-flask.${releaseVersion}.zip`,
       firefox: `${hostUrl}/build-test-flask-mv2-webpack/builds/metamask-firefox-${version}-flask.${releaseVersion}.zip`,
     },
   };

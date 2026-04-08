@@ -175,20 +175,6 @@ describe('artifact utilities', () => {
       'https://ci.example.com/benchmarks/benchmark-chrome-webpack-interactionUserActions.json',
     );
   });
-
-  it('accepts an explicit buildType (e.g. browserify)', () => {
-    expect(buildCombo('chrome', 'browserify')).toBe('chrome-browserify');
-    expect(buildEntryKey('loadNewAccount', 'chrome', 'browserify')).toBe(
-      'loadNewAccount|chrome-browserify',
-    );
-    expect(
-      buildArtifactFilename(
-        'chrome',
-        BENCHMARK_BUILD_TYPES.BROWSERIFY,
-        'interactionUserActions',
-      ),
-    ).toBe('benchmark-chrome-browserify-interactionUserActions.json');
-  });
 });
 
 describe('extractPresetFromArtifactName', () => {

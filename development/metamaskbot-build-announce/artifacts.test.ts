@@ -15,6 +15,9 @@ describe('getArtifactLinks', () => {
     expect(links.bundleSizeStats.url).toBe(
       `${HOST}/bundle-size/bundle_size.json`,
     );
+    expect(links.interactionStats.url).toBe(
+      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
+    );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
       'https://github.com/MetaMask/metamask-extension/actions/runs/42#artifacts',

@@ -23,41 +23,42 @@ jobs:
         # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
-        # Startup + interaction: chrome/firefox × browserify. User journeys: same matrix.
+        # Startup + interaction: chrome/firefox × webpack (test build: build-test-webpack / build-test-mv2-webpack).
+        # User journeys: same matrix.
         browser: [chrome, firefox]
-        buildType: [browserify]
+        buildType: [webpack]
         pageType:
           [startupStandardHome, startupPowerUserHome, interactionUserActions]
         include:
           - browser: chrome
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyOnboardingImport
           - browser: chrome
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyOnboardingNew
           - browser: chrome
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyAssets
           - browser: chrome
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyTransactions
           - browser: chrome
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyAccountManagement
           - browser: firefox
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyOnboardingImport
           - browser: firefox
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyOnboardingNew
           - browser: firefox
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyAssets
           - browser: firefox
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyTransactions
           - browser: firefox
-            buildType: browserify
+            buildType: webpack
             pageType: userJourneyAccountManagement
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -176,7 +177,7 @@ jobs:
 
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
-    name: chrome-browserify-pageLoadBenchmark
+    name: chrome-webpack-pageLoadBenchmark
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -189,7 +190,7 @@ jobs:
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       BENCHMARK_BROWSER_LOADS: '10'
       BENCHMARK_PAGE_LOADS: '10'
-      DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
+      DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
@@ -198,10 +199,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-test-browserify'
+      - name: Download artifact 'build-test-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-test-browserify
+          name: build-test-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 
@@ -222,7 +223,7 @@ jobs:
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results "test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}" \
             --browser "chrome" \
-            --buildType "browserify"
+            --buildType "webpack"
         shell: bash
         env:
           GH_HEAD_REF: ${{ github.head_ref }}

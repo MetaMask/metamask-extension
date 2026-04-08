@@ -102,7 +102,7 @@ const COMBO_SEPARATOR = '-';
  * Builds a platform–bundler combo string.
  *
  * @param platform - Browser platform (e.g., 'chrome', 'firefox').
- * @param [buildType] - Bundler id (e.g., 'webpack', 'browserify'). Defaults to webpack.
+ * @param [buildType] - Bundler id (e.g. 'webpack'). Defaults to webpack.
  * @returns Combo string (e.g., 'chrome-webpack').
  */
 export function buildCombo(
@@ -133,7 +133,7 @@ export function buildEntryKey(
  * Builds a CI artifact filename.
  *
  * @param platform - Browser platform (e.g., 'chrome').
- * @param buildType - Bundler id (e.g., 'webpack', 'browserify').
+ * @param buildType - Bundler id (e.g. 'webpack').
  * @param preset - Preset name (e.g., 'interactionUserActions').
  * @returns Artifact filename (e.g., 'benchmark-chrome-webpack-interactionUserActions.json').
  */
@@ -150,7 +150,7 @@ export function buildArtifactFilename(
  *
  * @param hostUrl - Base URL for artifacts (e.g., 'https://ci.example.com').
  * @param platform - Browser platform (e.g., 'chrome').
- * @param buildType - Bundler id (e.g., 'webpack', 'browserify').
+ * @param buildType - Bundler id (e.g. 'webpack').
  * @param preset - Preset name (e.g., 'interactionUserActions').
  * @returns Full artifact URL.
  */

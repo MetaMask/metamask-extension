@@ -40,11 +40,11 @@ export const DAPP_PAGE_LOAD_BENCHMARK_DIR =
 export const DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH = `${DAPP_PAGE_LOAD_BENCHMARK_DIR}/${DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME}`;
 
 /**
- * Default filename for the merged page-load benchmark JSON (Chrome + Browserify).
+ * Default filename for the merged page-load benchmark JSON (Chrome + Webpack test build).
  * Keep in sync with `.github/workflows/run-benchmarks.yml` (`DAPP_BENCHMARK_JSON`).
  */
 export const DAPP_PAGE_LOAD_BENCHMARK_ARTIFACT_FILENAME =
-  'benchmark-chrome-browserify-pageLoadBenchmark.json';
+  'benchmark-chrome-webpack-pageLoadBenchmark.json';
 
 /** Same as {@link DEFAULT_BENCHMARK_BROWSER_LOADS} in `shared/constants/benchmarks`. */
 export const DEFAULT_NUM_BROWSER_LOADS = DEFAULT_BENCHMARK_BROWSER_LOADS;
@@ -323,7 +323,7 @@ const BENCHMARK_THRESHOLDS = {
   confirmTx: CONFIRM_TX,
   bridgeUserActions: BRIDGE_USER_ACTIONS,
 
-  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  // User journey benchmarks (chrome-webpack test build)
   onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
   onboardingNewWallet: ONBOARDING_NEW_WALLET,
   importSrpHome: IMPORT_SRP_HOME,
@@ -332,7 +332,7 @@ const BENCHMARK_THRESHOLDS = {
   sendTransactions: SEND_TRANSACTIONS,
   swap: SWAP,
 
-  // Dapp page load benchmarks (chrome-browserify)
+  // Dapp page load benchmarks (chrome-webpack test build)
   dappPageLoad: DAPP_PAGE_LOAD,
 
   // Startup benchmarks (platform/buildType now stored in data, not in key)
