@@ -6808,7 +6808,7 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    outStream.on('data', (message) => {
+    const handleIncomingMessage = (message) => {
       if (!isStreamWritable(outStream)) {
         log.debug('Stream is closed, ignoring incoming message.');
         return;
@@ -6847,11 +6847,14 @@ export default class MetamaskController extends EventEmitter {
           }),
         });
       }
-    });
+    };
+
+    outStream.on('data', handleIncomingMessage);
 
     this.on('update', handleUpdate);
 
     onStreamClosed(outStream, () => {
+      outStream.removeListener('data', handleIncomingMessage);
       this.removeListener('update', handleUpdate);
       patchStore.destroy();
     });
