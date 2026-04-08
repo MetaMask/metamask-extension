@@ -17,7 +17,7 @@ describe('ToastContent', () => {
     render(
       <ToastContent
         title="Transaction confirmed"
-        actionText="View"
+        actionText="test-action"
         onActionClick={onActionClick}
       />,
     );
@@ -26,7 +26,9 @@ describe('ToastContent', () => {
   });
 
   it('does not render an action button when onActionClick is not provided', () => {
-    render(<ToastContent title="Transaction confirmed" actionText="View" />);
+    render(
+      <ToastContent title="Transaction confirmed" actionText="test-action" />,
+    );
     expect(screen.queryByText('View')).not.toBeInTheDocument();
   });
 });
