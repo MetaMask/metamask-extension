@@ -1,6 +1,20 @@
 import React, { useState, useContext, useCallback } from 'react';
 import type { AccountWalletId } from '@metamask/account-api';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -11,23 +25,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 
 import Card from '../../../ui/card';
-import {
-  Box,
-  IconName,
-  Icon,
-  Text,
-  IconSize,
-} from '../../../component-library';
-import {
-  JustifyContent,
-  Display,
-  TextColor,
-  FlexDirection,
-  AlignItems,
-  BlockSize,
-  TextVariant,
-  IconColor,
-} from '../../../../helpers/constants/design-system';
 import { SrpListItem } from './srp-list-item';
 
 /**
@@ -92,19 +89,18 @@ export const SrpCard = ({
       marginBottom={3}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
       >
         <Box>
-          <Text variant={TextVariant.bodyMdMedium}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('srpListName', [index + 1])}
           </Text>
           {!hideShowAccounts && (
             <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.primaryDefault}
+              variant={TextVariant.BodySm}
+              color={TextColor.PrimaryDefault}
               className="srp-list__show-accounts"
               data-testid={`srp-list-show-accounts-${index}`}
               onClick={(event: React.MouseEvent) => {
@@ -125,14 +121,19 @@ export const SrpCard = ({
             </Text>
           )}
         </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
           {isSettingsPage && (
             <Text
-              variant={TextVariant.bodyMdMedium}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
               color={
                 shouldTriggerBackup
-                  ? TextColor.errorDefault
-                  : TextColor.textAlternative
+                  ? TextColor.ErrorDefault
+                  : TextColor.TextAlternative
               }
             >
               {shouldTriggerBackup
@@ -145,8 +146,8 @@ export const SrpCard = ({
             size={IconSize.Sm}
             color={
               shouldTriggerBackup && isSettingsPage
-                ? IconColor.errorDefault
-                : IconColor.iconAlternative
+                ? IconColor.ErrorDefault
+                : IconColor.IconAlternative
             }
           />
         </Box>
@@ -154,8 +155,7 @@ export const SrpCard = ({
       {showAccounts && (
         <Box>
           <Box
-            width={BlockSize.Full}
-            className="srp-list__divider"
+            className="srp-list__divider w-full"
             marginTop={2}
             marginBottom={2}
           />
