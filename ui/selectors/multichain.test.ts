@@ -51,6 +51,7 @@ import {
   getMultichainIsTron,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
+  getMultichainNetworkConfigurationsByChainId,
 } from './multichain';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
@@ -802,6 +803,78 @@ describe('Multichain Selectors', () => {
     it('returns true if account is Tron Shasta testnet', () => {
       const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
       expect(getMultichainIsTron(state)).toBe(true);
+    });
+  });
+
+  describe('getMultichainNetworkConfigurationsByChainId', () => {
+    it('merges EVM network configurations with non-EVM multichain entries', () => {
+      const state = getEvmState();
+      const configs = getMultichainNetworkConfigurationsByChainId(state);
+
+      expect(configs[CHAIN_IDS.MAINNET]).toBeDefined();
+      expect(configs[MultichainNetworks.SOLANA]).toMatchObject({
+        nativeCurrency: 'sol',
+        chainId: MultichainNetworks.SOLANA,
+      });
+      expect(configs[MultichainNetworks.BITCOIN]).toMatchObject({
+        nativeCurrency: 'BTC',
+      });
+      expect(configs[MultichainNetworks.TRON]).toMatchObject({
+        nativeCurrency: 'TRX',
+      });
+      expect(configs[MultichainNetworks.TRON_SHASTA]).toMatchObject({
+        nativeCurrency: 'TRX',
+      });
+    });
+
+    it('returns the same reference when called repeatedly with the same state', () => {
+      const state = getEvmState();
+      const first = getMultichainNetworkConfigurationsByChainId(state);
+      const second = getMultichainNetworkConfigurationsByChainId(state);
+      expect(second).toBe(first);
+    });
+
+    it('returns the same merged reference when networkConfigurationsByChainId is deep-equal', () => {
+      const state = getEvmState();
+      const before = getMultichainNetworkConfigurationsByChainId(state);
+
+      const modifiedState: TestState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          networkConfigurationsByChainId: {
+            ...state.metamask.networkConfigurationsByChainId,
+          },
+        },
+      };
+
+      const after = getMultichainNetworkConfigurationsByChainId(modifiedState);
+      expect(after).toBe(before);
+    });
+
+    it('returns a new reference when an EVM network configuration changes', () => {
+      const state = getEvmState();
+      const before = getMultichainNetworkConfigurationsByChainId(state);
+
+      const mainnetConfig =
+        state.metamask.networkConfigurationsByChainId[CHAIN_IDS.MAINNET];
+      const modifiedState: TestState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          networkConfigurationsByChainId: {
+            ...state.metamask.networkConfigurationsByChainId,
+            [CHAIN_IDS.MAINNET]: {
+              ...mainnetConfig,
+              name: 'Ethereum Mainnet Modified',
+            },
+          },
+        },
+      };
+
+      const after = getMultichainNetworkConfigurationsByChainId(modifiedState);
+      expect(after).not.toBe(before);
+      expect(after[CHAIN_IDS.MAINNET].name).toBe('Ethereum Mainnet Modified');
     });
   });
 });
