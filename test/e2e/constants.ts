@@ -205,7 +205,8 @@ export const MM_CONNECT_EVM_CHAINS = {
 
 /* All featured CAIP-2 chain IDs available in the MM Connect playground */
 export const MM_CONNECT_FEATURED_CHAIN_IDS = [
-  'eip155:1', // Ethereum Mainnet (pre-checked on page load)
+  'eip155:1337', // Localhost 8545 (pre-checked on page load in local E2E env)
+  'eip155:1', // Ethereum Mainnet
   'eip155:59144', // Linea Mainnet
   'eip155:42161', // Arbitrum One
   'eip155:43114', // Avalanche C-Chain

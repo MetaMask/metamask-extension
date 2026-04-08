@@ -14,7 +14,7 @@ import { Driver } from '../../webdriver/driver';
  * Their testId is: createTestId('dynamic-inputs', 'checkbox', chainId)
  * - app-section-connected is always in the DOM; use app-section-scopes to
  * confirm a multichain session is active.
- * - Ethereum (eip155:1) is pre-checked when the page first loads.
+ * - On localhost/127.0.0.1, eip155:1337 is pre-checked on page load (≥0.6.1).
  * - The method selector in each ScopeCard is a native HTML <select>.
  * - Solana is included in the multichain session via selectNetworks() and
  * appears as a ScopeCard (not a separate wallet-standard flow).
@@ -265,9 +265,10 @@ export class TestDappMmConnect {
   /**
    * Set the exact set of networks to be selected before connecting.
    *
-   * Handles the pre-checked Ethereum case: eip155:1 is checked on page load,
-   * so we only click a checkbox when its current state differs from the desired
-   * state. This prevents accidentally toggling Ethereum off.
+   * Compares each featured chain's current checkbox state against the desired
+   * list and clicks only when they differ. After each click it waits for the
+   * DOM to reflect the change, preventing React stale-closure races that can
+   * drop previously-checked scopes when clicks arrive before re-render.
    *
    * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
    * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
@@ -295,6 +296,20 @@ export class TestDappMmConnect {
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
+        // Wait for React state to reflect the click before moving to the next
+        // checkbox. Without this, rapid sequential clicks can hit a stale
+        // closure in handleCheckboxChange and lose previously-checked scopes.
+        await this.driver.waitUntil(
+          async () => {
+            try {
+              const element = await this.driver.findElement(selector);
+              return (await element.isSelected()) === shouldBeChecked;
+            } catch {
+              return false;
+            }
+          },
+          { interval: 100, timeout: this.driver.timeout },
+        );
       }
     }
   }
