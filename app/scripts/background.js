@@ -1843,9 +1843,6 @@ export function setupController(
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
-        browser.sidePanel?.setOptions?.({
-          path: 'sidepanel.html?tab=activity',
-        });
       } else {
         browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
       }
@@ -1864,7 +1861,6 @@ export function setupController(
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup: popupFile });
-        browser.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
       } else {
         browser.browserAction.setPopup({ popup: popupFile });
       }
