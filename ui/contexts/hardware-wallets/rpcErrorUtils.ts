@@ -437,8 +437,10 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
  * Handles common formats from TrezorError.toString() and wrapped error messages.
  * @param message
  */
+
 export function extractTrezorCodeFromMessage(message: string): string | null {
-  const match = message.match(/(?:code:\s*)([A-Za-z]+_[A-Za-z0-9_]+)/u);
+  const TREZOR_CODE_REGEX = /code:\s*([A-Za-z]+_\w+)/u;
+  const match = TREZOR_CODE_REGEX.exec(message);
   return match?.[1] ?? null;
 }
 
