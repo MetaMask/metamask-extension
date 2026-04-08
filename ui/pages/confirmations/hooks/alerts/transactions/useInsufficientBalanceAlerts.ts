@@ -25,7 +25,8 @@ export function useInsufficientBalanceAlerts({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { selectedGasFeeToken, gasFeeTokens } = currentConfirmation ?? {};
+  const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation ?? {};
   const { hasInsufficientBalance, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
@@ -54,7 +55,14 @@ export function useInsufficientBalanceAlerts({
   const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
 
   // Check if user has selected a gas fee token (or we're ignoring that check)
-  const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
+  // Note: In the case of chains with no native token (ex: Tempo), `selectedGasFeeToken`
+  // may be populated despite no gas token being available.
+  // For those chains, `excludeNativeTokenForFee` will always be `true`, hence we can
+  // rely on the combination of `excludeNativeTokenForFee` and `isGasFeeTokensEmpty`.
+  const hasNoGasFeeTokenSelected =
+    ignoreGasFeeToken ||
+    !selectedGasFeeToken ||
+    (excludeNativeTokenForFee && isGasFeeTokensEmpty);
 
   // Gasless check is complete AND one of:
   //  - Gasless is NOT supported (native currency needed for gas)
