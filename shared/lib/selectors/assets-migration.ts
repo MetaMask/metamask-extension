@@ -892,11 +892,6 @@ export const getRatesControllerRates = createDeepEqualSelector(
       state.metamask?.assetsPrice ?? {},
   ],
   (isAssetsUnifyStateEnabled, rates, assetsInfo, assetsPrice) => {
-    console.log('DEBUG SJKAKJHDHJKDJHKDHJKAJHKDJKHAD', {
-      rates,
-      assetsInfo,
-      assetsPrice,
-    });
     if (!isAssetsUnifyStateEnabled) {
       return rates;
     }
