@@ -573,7 +573,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
-    it('displays learn section', () => {
+    it('displays learn section', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByText } = await renderPage(store);
