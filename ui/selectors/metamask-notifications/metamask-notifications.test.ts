@@ -6,6 +6,7 @@ import { createMockNotificationEthReceived } from '@metamask/notification-servic
 import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
+  getMetamaskNotificationById,
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
   selectIsFeatureAnnouncementsEnabled,
@@ -79,5 +80,26 @@ describe('Metamask Notifications Selectors', () => {
     const state = mockState();
     state.metamask.subscriptionAccountsSeen = ['0x1111'];
     expect(getValidNotificationAccounts(state)).toStrictEqual(['0x1111']);
+  });
+
+  describe('getMetamaskNotificationById', () => {
+    it('returns the notification when the id matches', () => {
+      const state = mockState();
+      const [first] = mockNotifications;
+      expect(getMetamaskNotificationById(state, first.id)).toStrictEqual(first);
+    });
+
+    it('returns undefined when the id is not in the list', () => {
+      const state = mockState();
+      expect(
+        getMetamaskNotificationById(state, 'non-existent-id'),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when the notifications list is empty', () => {
+      const state = mockState();
+      state.metamask.metamaskNotificationsList = [];
+      expect(getMetamaskNotificationById(state, 'any-id')).toBeUndefined();
+    });
   });
 });
