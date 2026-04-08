@@ -1,30 +1,32 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ToastContent } from './toast';
-
-jest.mock('../../../helpers/utils/transaction-display', () => ({
-  useTransactionDisplay: (variant: string) => ({
-    title: `${variant} title`,
-  }),
-}));
 
 jest.mock('../icon/status-icon', () => ({
   StatusIcon: () => null,
 }));
 
 describe('ToastContent', () => {
-  it('renders the title for the pending variant', () => {
-    render(<ToastContent status="pending" />);
-    expect(screen.getByText('pending title')).toBeInTheDocument();
+  it('renders the title', () => {
+    render(<ToastContent title="Transaction pending" />);
+    expect(screen.getByText('Transaction pending')).toBeInTheDocument();
   });
 
-  it('renders the title for the success variant', () => {
-    render(<ToastContent status="success" />);
-    expect(screen.getByText('success title')).toBeInTheDocument();
+  it('renders an action button when onActionClick is provided', () => {
+    const onActionClick = jest.fn();
+    render(
+      <ToastContent
+        title="Transaction confirmed"
+        actionText="View"
+        onActionClick={onActionClick}
+      />,
+    );
+    fireEvent.click(screen.getByText('View'));
+    expect(onActionClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the title for the failed variant', () => {
-    render(<ToastContent status="failed" />);
-    expect(screen.getByText('failed title')).toBeInTheDocument();
+  it('does not render an action button when onActionClick is not provided', () => {
+    render(<ToastContent title="Transaction confirmed" actionText="View" />);
+    expect(screen.queryByText('View')).not.toBeInTheDocument();
   });
 });
