@@ -10,6 +10,7 @@ import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
 } from '../../shared/constants/benchmarks';
+import { EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL } from './utils';
 
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 
@@ -39,9 +40,9 @@ export type HistoricalBaselineResult = {
  */
 export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineResult | null> {
   try {
-    const STATS_PERFORMANCE_DATA_URL =
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
-    const response = await fetch(STATS_PERFORMANCE_DATA_URL);
+    const response = await fetch(
+      EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
+    );
     if (!response.ok) {
       return null;
     }

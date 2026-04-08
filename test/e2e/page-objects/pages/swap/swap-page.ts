@@ -81,7 +81,7 @@ class SwapPage {
     '[data-testid="swap-smart-transaction-status-description"]';
 
   private readonly swapButton = {
-    tag: 'button',
+    css: '[data-testid="bridge-cta-button"]',
     text: 'Swap',
   };
 

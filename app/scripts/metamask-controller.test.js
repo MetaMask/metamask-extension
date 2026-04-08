@@ -1009,6 +1009,7 @@ describe('MetaMaskController', () => {
               transactionParams.from,
             ),
           transactionController: expect.any(Object),
+          keyringController: expect.any(Object),
           transactionOptions,
           transactionParams,
           userOperationController: expect.any(Object),
