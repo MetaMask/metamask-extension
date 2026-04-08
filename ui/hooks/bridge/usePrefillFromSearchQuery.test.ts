@@ -614,8 +614,8 @@ describe('usePrefillFromSearchQuery', () => {
       await waitForNextUpdate();
 
       const { fromToken } = store?.getState().bridge ?? {};
-      expect(fromToken?.address).not.toBe(
-        '0x0000000000000000000000000000000000000001',
+      expect(fromToken?.assetId).not.toBe(
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
       );
     });
 
@@ -643,8 +643,8 @@ describe('usePrefillFromSearchQuery', () => {
       await waitForNextUpdate();
 
       const { toToken } = store?.getState().bridge ?? {};
-      expect(toToken?.address).not.toBe(
-        '0x0000000000000000000000000000000000000001',
+      expect(toToken?.assetId).not.toBe(
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
       );
     });
   });
