@@ -15,21 +15,19 @@ import type { Position, Order } from '../types';
 export type PerpsPositionsOrdersProps = {
   positions: Position[];
   orders: Order[];
-  // TODO: TAT-2852 - Unhide when batch close/cancel is implemented
-  // onCloseAllPositions?: () => void;
-  // onCancelAllOrders?: () => void;
-  // isCloseAllPending?: boolean;
-  // isCancelAllPending?: boolean;
+  onCloseAllPositions?: () => void;
+  onCancelAllOrders?: () => void;
+  isCloseAllPending?: boolean;
+  isCancelAllPending?: boolean;
 };
 
 export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
   positions,
   orders,
-  // TODO: TAT-2852 - Unhide when batch close/cancel is implemented
-  // onCloseAllPositions,
-  // onCancelAllOrders,
-  // isCloseAllPending = false,
-  // isCancelAllPending = false,
+  onCloseAllPositions,
+  onCancelAllOrders,
+  isCloseAllPending = false,
+  isCancelAllPending = false,
 }) => {
   const t = useI18nContext();
   const hasPositions = positions.length > 0;
