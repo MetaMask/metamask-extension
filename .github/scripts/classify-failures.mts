@@ -86,7 +86,6 @@ interface JobClassification {
 
 interface CategoryConfig {
   patterns: string[];
-  transientErrorPatterns?: string[];
 }
 
 interface RetryConfig {
@@ -250,14 +249,6 @@ const transientErrorRegexes = config.transientErrorPatterns.map(
   (p) => new RegExp(p, 'i'),
 );
 
-const categoryTransientRegexes: Partial<Record<Category, RegExp[]>> = {};
-for (const cat of Object.keys(config.jobClassification) as Category[]) {
-  const extra = config.jobClassification[cat].transientErrorPatterns;
-  if (extra?.length) {
-    categoryTransientRegexes[cat] = extra.map((p) => new RegExp(p, 'i'));
-  }
-}
-
 const blockerRegexes = config.blockerPatterns.map((p) => new RegExp(p, 'i'));
 
 // ---------------------------------------------------------------------------
@@ -365,15 +356,8 @@ function matchCategory(jobName: string): {
   return { category: config.defaults.unmatchedCategory, unmatched: true };
 }
 
-function findTransientError(
-  text: string,
-  category?: Category,
-): string | undefined {
-  const regexes = [
-    ...transientErrorRegexes,
-    ...(category ? (categoryTransientRegexes[category] ?? []) : []),
-  ];
-  for (const re of regexes) {
+function findTransientError(text: string): string | undefined {
+  for (const re of transientErrorRegexes) {
     const match = re.exec(text);
     if (match) return match[0];
   }
@@ -419,7 +403,7 @@ function classifyJob(job: Job): JobClassification {
     .map((a) => `${a.message ?? ''} ${a.title ?? ''}`)
     .join('\n');
 
-  let transientMatch = findTransientError(annotationText, category);
+  let transientMatch = findTransientError(annotationText);
   if (transientMatch) {
     return {
       jobName,
@@ -436,7 +420,7 @@ function classifyJob(job: Job): JobClassification {
   console.log(`  Downloading logs for ${jobName} (${jobId})...`);
   const logs = getJobLogs(jobId);
   if (logs) {
-    transientMatch = findTransientError(logs, category);
+    transientMatch = findTransientError(logs);
     if (transientMatch) {
       return {
         jobName,
@@ -933,7 +917,7 @@ if (Sentry) {
   const drilldownParams = new URLSearchParams({
     logsQuery: drilldownQuery,
     logsSortBys: '-timestamp',
-    statsPeriod: '14dh',
+    statsPeriod: '14d',
   });
   drilldownParams.append('logsFields', 'timestamp');
   drilldownParams.append('logsFields', 'message');
@@ -941,7 +925,7 @@ if (Sentry) {
 
   const parentTriageParams = new URLSearchParams({
     logsQuery: `message:"Triage and Retry System:" ci.retry.runId:${MAIN_RUN_ID}`,
-    statsPeriod: '14dh',
+    statsPeriod: '14d',
   });
   const parentTriageLink = `${drilldownBase}?${parentTriageParams.toString()}`;
 
