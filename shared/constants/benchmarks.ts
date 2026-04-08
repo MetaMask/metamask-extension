@@ -71,6 +71,7 @@ export type TimerStatistics = {
   p99: number;
   samples: number;
   outliers: number;
+  trimmedCount?: number;
   dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
@@ -108,6 +109,7 @@ export type BenchmarkResults = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  trimmedCount?: StatisticalResult;
   webVitals?: WebVitalsSummary;
 };
 
