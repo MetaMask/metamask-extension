@@ -72,3 +72,14 @@ export const PERPS_EVENT_VALUE = {
     BACKEND: 'backend',
   },
 } as const;
+
+export enum PerpsAnalyticsEvent {
+  WithdrawalTransaction = 'Perp Withdrawal Transaction',
+  TradeTransaction = 'Perp Trade Transaction',
+  PositionCloseTransaction = 'Perp Position Close Transaction',
+  OrderCancelTransaction = 'Perp Order Cancel Transaction',
+  ScreenViewed = 'Perp Screen Viewed',
+  UiInteraction = 'Perp UI Interaction',
+  RiskManagement = 'Perp Risk Management',
+  PerpsError = 'Perp Error',
+}

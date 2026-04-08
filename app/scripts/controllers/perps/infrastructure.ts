@@ -5,8 +5,6 @@
  * Several dependencies are stubbed pending integration with extension services.
  */
 
-import { createProjectLogger } from '@metamask/utils';
-import { PERPS_EVENT_PROPERTY } from '@metamask/perps-controller';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -23,6 +21,8 @@ import type {
   PerpsTraceValue,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
+import { createProjectLogger } from '@metamask/utils';
+import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
   type MetaMetricsEventPayload,

@@ -2,7 +2,7 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
-} from '@metamask/perps-controller';
+} from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   createPerpsInfrastructure,
