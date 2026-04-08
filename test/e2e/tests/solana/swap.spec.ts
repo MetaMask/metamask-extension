@@ -134,6 +134,7 @@ async function mockSwapSOLtoUSDC(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockQuoteFromSoltoUSDC(mockServer),
     await mockMultiCoinPrice(mockServer),
+    await mockPriceApiSpotPriceSwap(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
     await mockGetSOLUSDCTransaction(mockServer, signatureHolder),
