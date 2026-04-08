@@ -62,13 +62,15 @@ describe('Phishing Detection', function (this: Suite) {
         await waitForPhishingBlocklistToBeLoaded(driver);
 
         // In MV3 the phishing redirect is async (non-blocking
-        // onBeforeRequest). If it fires during driver.get() the navigation
-        // hangs, so open about:blank first then navigate without blocking.
+        // onBeforeRequest). Using driver.get() or Selenium URL-polling can
+        // hang because they wait for page-load, which the mid-flight
+        // redirect prevents from completing. Navigate via executeScript
+        // (non-blocking) then use switchToWindowWithTitle which relies on
+        // the background-socket chrome.tabs.query polling instead.
         await driver.openNewPage('about:blank');
         await driver.executeScript(
           `window.location.href = 'http://127.0.0.1:8080'`,
         );
-        await driver.wait(until.urlContains('localhost:9999'), 15000);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         const phishingWarningPage = new PhishingWarningPage(driver);
@@ -120,9 +122,6 @@ describe('Phishing Detection', function (this: Suite) {
           await homePage.checkPageIsLoaded();
           await waitForPhishingBlocklistToBeLoaded(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
-          // early-phishing-detection redirects the top level frame automatically.
-          // In MV3 this redirect is async, so wait for it to land.
-          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -239,8 +238,6 @@ describe('Phishing Detection', function (this: Suite) {
         await driver.executeScript(
           `window.location.href = 'http://127.0.0.1:8080'`,
         );
-        await driver.wait(until.urlContains('localhost:9999'), 15000);
-
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();
@@ -285,8 +282,6 @@ describe('Phishing Detection', function (this: Suite) {
         await driver.executeScript(
           `window.location.href = '${phishingSite.href}'`,
         );
-        await driver.wait(until.urlContains('localhost:9999'), 15000);
-
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
         await phishingWarningPage.checkPageIsLoaded();

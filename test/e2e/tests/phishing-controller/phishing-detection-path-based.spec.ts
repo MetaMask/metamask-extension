@@ -15,7 +15,6 @@ import {
 } from './helpers';
 
 describe('Phishing Detection - Path-based URLs', function (this: Suite) {
-  this.timeout(160000);
   describe('blocklisted paths', function () {
     it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
       await withFixtures(
@@ -44,13 +43,15 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           // In MV3 the phishing redirect is async (non-blocking
-          // onBeforeRequest). If it fires during driver.get() the navigation
-          // hangs, so open about:blank first then navigate without blocking.
+          // onBeforeRequest). Using driver.get() or Selenium URL-polling can
+          // hang because they wait for page-load, which the mid-flight
+          // redirect prevents from completing. Navigate via executeScript
+          // (non-blocking) then use switchToWindowWithTitle which relies on
+          // the background-socket chrome.tabs.query polling instead.
           await driver.openNewPage('about:blank');
           await driver.executeScript(
             `window.location.href = 'http://127.0.0.1:8080/path1/'`,
           );
-          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -88,7 +89,6 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await driver.executeScript(
             `window.location.href = 'http://127.0.0.1:8080/path1/path2'`,
           );
-          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
@@ -131,13 +131,11 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await driver.executeScript(
             `window.location.href = 'http://127.0.0.1:8080/path1/'`,
           );
-          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
 
-          // Wait for navigation to complete
           await driver.waitForWindowWithTitleToBePresent(
             'Mock E2E Phishing Page: Path 1',
             15000,
@@ -182,7 +180,6 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await driver.executeScript(
             `window.location.href = 'http://127.0.0.1:8080/path1/path2'`,
           );
-          await driver.wait(until.urlContains('localhost:9999'), 15000);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
