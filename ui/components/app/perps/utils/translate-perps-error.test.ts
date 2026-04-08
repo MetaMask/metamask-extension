@@ -224,6 +224,16 @@ describe('translatePerpsError', () => {
     expect(translatePerpsError(error, mockT)).toBe('[perpsWithdrawFailed]');
   });
 
+  it('resolves an error code used as the message (e.g. WithdrawResult.error)', () => {
+    const error = new Error('WITHDRAW_INSUFFICIENT_BALANCE');
+    expect(translatePerpsError(error, mockT)).toBe('[perpsWithdrawInsufficient]');
+  });
+
+  it('resolves WITHDRAW_FAILED code string used as message', () => {
+    const error = new Error('WITHDRAW_FAILED');
+    expect(translatePerpsError(error, mockT)).toBe('[perpsWithdrawFailed]');
+  });
+
   it('falls back to pattern matching when no code property is present', () => {
     const error = new Error('Order rejected by the exchange');
     expect(translatePerpsError(error, mockT)).toBe('[perpsOrderRejected]');

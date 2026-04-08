@@ -168,8 +168,9 @@ export const API_ERROR_PATTERNS: {
  * Resolution order:
  * 1. If the error has a `code` property matching a known PerpsErrorCode, use
  * `ERROR_CODE_TO_I18N_KEY` to look up the message key.
- * 2. If the error message matches an API error pattern, use the mapped code's key.
- * 3. Fall back to `null` (caller should show a generic fallback).
+ * 2. If the error message itself is a known PerpsErrorCode string, use it directly.
+ * 3. If the error message matches an API error pattern, use the mapped code's key.
+ * 4. Fall back to `null` (caller should show a generic fallback).
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
@@ -193,8 +194,14 @@ export function translatePerpsError(
     return t(i18nKey);
   }
 
-  // 2. Pattern match against raw error message
+  // 2. Message-as-code lookup — handles plain strings that ARE error codes
+  //    (e.g. WithdrawResult.error wrapped in `new Error(code)`)
   const message = errorObj?.message ?? '';
+  if (message && message in ERROR_CODE_TO_I18N_KEY) {
+    return t(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
+  }
+
+  // 3. Pattern match against raw error message
   if (message) {
     for (const { pattern, code } of API_ERROR_PATTERNS) {
       if (pattern.test(message)) {
@@ -204,7 +211,7 @@ export function translatePerpsError(
     }
   }
 
-  // 3. No match
+  // 4. No match
   return null;
 }
 
