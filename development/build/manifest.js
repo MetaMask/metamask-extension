@@ -209,13 +209,11 @@ function createManifestTasks({
         return;
       }
 
-      watch('./dist/*/**/*', { ignoreInitial: true }, (event) => {
-        if (path.basename(event.path) === 'manifest.json') {
-          return;
-        }
-
-        queueManifestUpdate().catch(console.error);
-      });
+      watch(
+        './dist/*/**/*',
+        { ignoreInitial: true, ignored: '**/manifest.json' },
+        () => queueManifestUpdate().catch(console.error),
+      );
     };
   }
 
