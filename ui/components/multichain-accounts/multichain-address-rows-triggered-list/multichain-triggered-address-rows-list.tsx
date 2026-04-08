@@ -54,7 +54,7 @@ export type MultichainAddressRowsListProps = {
    */
   groupId: AccountGroupId;
   /**
-   * The child element that triggers the popover on hover.
+   * The child element that triggers the popover.
    */
   children: React.ReactNode;
   /**
@@ -80,6 +80,11 @@ export type MultichainAddressRowsListProps = {
    * Used e.g. on the account list page.
    */
   showDefaultAddressSection?: boolean;
+  /**
+   * How the popover is triggered: 'hover' (default) or 'click'.
+   * When 'click', the popover toggles on click and closes when clicking outside.
+   */
+  triggerMode?: 'hover' | 'click';
 };
 
 const Divider = () => (
@@ -119,7 +124,7 @@ const ViewAllButton = ({
     </>
   );
 
-export const MultichainHoveredAddressRowsList = ({
+export const MultichainTriggeredAddressRowsList = ({
   children,
   groupId,
   hoverCloseDelay = 50,
@@ -127,13 +132,14 @@ export const MultichainHoveredAddressRowsList = ({
   onViewAllClick,
   showViewAllButton = true,
   showDefaultAddressSection = true,
+  triggerMode = 'hover',
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
-  const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
@@ -180,19 +186,43 @@ export const MultichainHoveredAddressRowsList = ({
   }, [referenceElement]);
 
   const handleMouseEnter = useCallback(() => {
+    if (triggerMode !== 'hover') {
+      return;
+    }
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
     setDynamicPosition(calculatePopoverPosition());
-    setIsHoverOpen(true);
-  }, [calculatePopoverPosition]);
+    setIsOpen(true);
+  }, [calculatePopoverPosition, triggerMode]);
 
   const handleMouseLeave = useCallback(() => {
+    if (triggerMode !== 'hover') {
+      return;
+    }
     hoverTimeoutRef.current = setTimeout(() => {
-      setIsHoverOpen(false);
+      setIsOpen(false);
     }, hoverCloseDelay);
-  }, [hoverCloseDelay]);
+  }, [hoverCloseDelay, triggerMode]);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (triggerMode !== 'click') {
+        return;
+      }
+      e.stopPropagation();
+      setDynamicPosition(calculatePopoverPosition());
+      setIsOpen((prev) => !prev);
+    },
+    [calculatePopoverPosition, triggerMode],
+  );
+
+  const handlePopoverClose = useCallback(() => {
+    if (triggerMode === 'click') {
+      setIsOpen(false);
+    }
+  }, [triggerMode]);
 
   useEffect(() => {
     return () => {
@@ -343,18 +373,19 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="min-w-0"
+        onClick={handleClick}
       >
         {children}
       </Box>
       <Popover
         referenceElement={referenceElement}
-        isOpen={isHoverOpen}
+        isOpen={isOpen}
         position={dynamicPosition}
         hasArrow={true}
         backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClickOutside={handlePopoverClose}
         preventOverflow
         isPortal={true}
         offset={[0, 3]}
@@ -409,4 +440,4 @@ export const MultichainHoveredAddressRowsList = ({
   );
 };
 
-export default MultichainHoveredAddressRowsList;
+export default MultichainTriggeredAddressRowsList;
