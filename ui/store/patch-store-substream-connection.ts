@@ -3,7 +3,7 @@ import { createDeferredPromise, hasProperty, isObject } from '@metamask/utils';
 import type { JsonRpcNotification } from '@metamask/utils';
 import type { Patch } from 'immer';
 
-import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import getNextId from '../../shared/lib/random-id';
 import { onStreamClosed } from '../../shared/lib/stream-utils';
 
@@ -11,7 +11,7 @@ import { onStreamClosed } from '../../shared/lib/stream-utils';
  * A notification with the method `sendUpdate`.
  */
 type SendUpdateNotification = JsonRpcNotification & {
-  method: typeof SEND_UPDATE;
+  method: typeof PATCH_STORE_SUBSTREAM_METHODS.SendUpdate;
   params: [Patch[]];
 };
 
@@ -24,7 +24,7 @@ type SendUpdateNotification = JsonRpcNotification & {
 function isSendUpdateNotification(message: {
   method: unknown;
 }): message is SendUpdateNotification {
-  return message.method === SEND_UPDATE;
+  return message.method === PATCH_STORE_SUBSTREAM_METHODS.SendUpdate;
 }
 
 /**
@@ -98,7 +98,7 @@ export class PatchStoreSubstreamConnection {
     this.#patchStoreSubstream.write({
       id,
       jsonrpc: '2.0' as const,
-      method: GET_STATE_PATCHES,
+      method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
     });
 
     return await promise;

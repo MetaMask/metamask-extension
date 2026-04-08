@@ -180,11 +180,7 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import {
-  GET_STATE_PATCHES,
-  SEND_UPDATE,
-  START_SENDING_PATCHES,
-} from '../../shared/constants/patches';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import {
   createEnsureOnboardingCompleteCallback,
   getTokenValueParam,
@@ -6785,7 +6781,7 @@ export default class MetamaskController extends EventEmitter {
 
       outStream.write({
         jsonrpc: '2.0',
-        method: SEND_UPDATE,
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [patches],
       });
     };
@@ -6830,9 +6826,9 @@ export default class MetamaskController extends EventEmitter {
 
       const { method } = message;
 
-      if (method === START_SENDING_PATCHES) {
+      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
         handleStartSendingPatches();
-      } else if (method === GET_STATE_PATCHES) {
+      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
         handleGetStatePatches(message);
       } else if (message.id === undefined) {
         console.error(
