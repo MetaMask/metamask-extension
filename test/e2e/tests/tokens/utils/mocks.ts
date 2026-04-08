@@ -106,6 +106,55 @@ export async function mockPriceApi(
   return [spotPricesMockEth, mockExchangeRates];
 }
 
+/**
+ * Mock both spot-prices and exchange-rates at the given ETH/USD price.
+ *
+ * @param mockServer - Mockttp instance.
+ * @param ethPrice - ETH price in USD to use for both APIs.
+ * @param chainIds - Hex chain ids to include in spot-prices (defaults to mainnet + localhost).
+ */
+export async function mockEthPrices(
+  mockServer: Mockttp,
+  ethPrice: number,
+  chainIds: `0x${string}`[] = ['0x1', '0x539'],
+) {
+  const spotEntries: Record<
+    string,
+    { price: number; marketCap: number; pricePercentChange1d: number }
+  > = {};
+  for (const cid of chainIds) {
+    const dec = Number.parseInt(cid, 16);
+    spotEntries[`eip155:${dec}/slip44:60`] = {
+      price: ethPrice,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    };
+  }
+
+  await mockSpotPrices(mockServer, spotEntries);
+
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ethPrice,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+}
+
 type HistoricalPricesOptions = {
   address: string;
   chainId: string;

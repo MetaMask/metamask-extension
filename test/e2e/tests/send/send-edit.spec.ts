@@ -6,7 +6,6 @@
  * - Legacy and EIP1559 gas editing
  */
 
-import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
@@ -16,7 +15,7 @@ import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import { mockEthPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PREFERENCES_STATE_MOCK = {
@@ -25,17 +24,13 @@ const PREFERENCES_STATE_MOCK = {
   },
 };
 
-/**
- * When assets-unify is on, `getCurrencyRateControllerCurrencyRates` maps `ETH` from the first
- * native EVM row in `assetsInfo` (lexicographic CAIP id), i.e. mainnet `eip155:1/slip44:60`,
- * not the active chain. Default fixture seeds ~2047 USD there, so fiat gas on localhost still
- * follows mainnet unless we override both (and keep {@link mockPriceApi} in sync).
- */
+const ETH_USD_PRICE = 1700;
+
 const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
   assetPriceType: 'fungible' as const,
   id: 'ethereum',
-  price: 1700,
-  usdPrice: 1700,
+  price: ETH_USD_PRICE,
+  usdPrice: ETH_USD_PRICE,
 };
 
 describe('Send - Edit Transaction', function () {
@@ -54,7 +49,10 @@ describe('Send - Edit Transaction', function () {
         localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST);
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
         },
       },
       async ({ driver }) => {
@@ -112,7 +110,10 @@ describe('Send - Edit Transaction', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST);
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
         },
       },
       async ({ driver }) => {
