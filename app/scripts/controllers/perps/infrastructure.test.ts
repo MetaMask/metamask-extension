@@ -5,6 +5,19 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
+function setupSentryScope() {
+  const mockScope = {
+    setTag: jest.fn(),
+    setContext: jest.fn(),
+    setExtras: jest.fn(),
+  };
+  const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+    cb(mockScope),
+  );
+  (globalThis as Record<string, unknown>).sentry = { withScope };
+  return mockScope;
+}
+
 describe('createPerpsInfrastructure', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -56,15 +69,7 @@ describe('createPerpsInfrastructure', () => {
 
     describe('when sentry.withScope is available', () => {
       it('always sets the feature:perps tag', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         logger.error(new Error('test'));
@@ -73,15 +78,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('forwards errors to captureException inside the scope', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         const error = new Error('test error');
@@ -91,15 +88,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('sets extra tags from options on the scope', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         logger.error(new Error('test'), {
@@ -114,15 +103,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('converts numeric tag values to strings', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         logger.error(new Error('test'), { tags: { retryCount: 3 } });
@@ -131,15 +112,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('sets Sentry context from options', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         logger.error(new Error('test'), {
@@ -156,15 +129,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('sets Sentry extras from options', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         logger.error(new Error('test'), {
@@ -177,15 +142,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('works correctly when options are omitted', () => {
-        const mockScope = {
-          setTag: jest.fn(),
-          setContext: jest.fn(),
-          setExtras: jest.fn(),
-        };
-        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
-          cb(mockScope),
-        );
-        (globalThis as Record<string, unknown>).sentry = { withScope };
+        const mockScope = setupSentryScope();
 
         const { logger } = createPerpsInfrastructure();
         const error = new Error('bare error');
