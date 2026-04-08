@@ -13,6 +13,7 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
+import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
 const mockPriceLine = { options: jest.fn() };
@@ -543,7 +544,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
 
       fireEvent.click(viewAllButton);
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
     it('displays learn section', () => {
