@@ -30,6 +30,7 @@ function makeTx(overrides: Partial<TransactionMeta> = {}): TransactionMeta {
     status: 'submitted',
     chainId: MERKL_CLAIM_CHAIN_ID,
     txParams: {
+      from: MOCK_USER,
       to: MERKL_DISTRIBUTOR_ADDRESS,
       data,
     },
@@ -47,6 +48,7 @@ describe('isMerklClaimTransaction', () => {
       isMerklClaimTransaction(
         makeTx({
           txParams: {
+            from: MOCK_USER,
             to: '0x0000000000000000000000000000000000000001',
             data: encodeClaimData(MUSD_TOKEN_ADDRESS),
           },
@@ -59,7 +61,7 @@ describe('isMerklClaimTransaction', () => {
     expect(
       isMerklClaimTransaction(
         makeTx({
-          txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+          txParams: { from: MOCK_USER, to: MERKL_DISTRIBUTOR_ADDRESS },
         }),
       ),
     ).toBe(false);
@@ -70,6 +72,7 @@ describe('isMerklClaimTransaction', () => {
       isMerklClaimTransaction(
         makeTx({
           txParams: {
+            from: MOCK_USER,
             to: MERKL_DISTRIBUTOR_ADDRESS,
             data: '0xdeadbeef',
           },
@@ -94,6 +97,7 @@ describe('isMerklClaimTransaction', () => {
       isMerklClaimTransaction(
         makeTx({
           txParams: {
+            from: MOCK_USER,
             to: MERKL_DISTRIBUTOR_ADDRESS,
             data,
           },
@@ -107,6 +111,7 @@ describe('isMerklClaimTransaction', () => {
       isMerklClaimTransaction(
         makeTx({
           txParams: {
+            from: MOCK_USER,
             to: MERKL_DISTRIBUTOR_ADDRESS,
             data: `${MERKL_CLAIM_METHOD_ID}00`,
           },
