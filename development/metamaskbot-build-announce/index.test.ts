@@ -160,6 +160,21 @@ describe('start() entry point', () => {
     expect(commentBody).not.toContain('AI generated test plan');
   });
 
+  it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is empty string', async () => {
+    setEnv({ BUILDS_FROM_SHA: '' });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { artifacts } = getMocks();
+    expect(artifacts.buildArtifactsBody).toHaveBeenCalledWith(
+      expect.objectContaining({
+        buildsFromSha: 'abc1234',
+      }),
+    );
+  });
+
   it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is not set', async () => {
     setEnv({ BUILDS_FROM_SHA: undefined });
 

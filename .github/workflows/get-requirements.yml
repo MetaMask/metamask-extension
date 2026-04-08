@@ -15,6 +15,9 @@ on:
       builds-from-sha:
         description: The HEAD commit SHA of the run providing builds (for PR comment annotation)
         value: ${{ jobs.detect-changes.outputs.builds-from-sha }}
+      skip-builds:
+        description: Whether builds were skipped without hash verification (blocks merge)
+        value: ${{ jobs.detect-changes.outputs.skip-builds }}
       needs-lint:
         description: Whether lint job is needed
         value: ${{ jobs.detect-changes.outputs.needs-lint }}
@@ -43,6 +46,8 @@ env:
   RUN_ID: ${{ github.run_id }}
   # For a `pull_request` event, the base branch is `github.event.pull_request.base.ref`.
   # For a `push` event on release/* branches, fall back to `stable`; otherwise `main`.
+  # Note: merge_group events only target `main` (no merge queue on `stable`),
+  # so the fallback to 'main' is correct for that case too.
   BASE_BRANCH: ${{ github.event.pull_request.base.ref || (startsWith(github.ref_name, 'release/') && 'stable') || 'main' }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
@@ -59,12 +64,13 @@ jobs:
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
       builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
+      skip-builds: ${{ steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '' && 'true' || 'false' }}
       needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
       needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
-      needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
-      needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
-      needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
-      just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false'}}
+      needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
+      needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
+      needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
+      just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
@@ -100,36 +106,90 @@ jobs:
       # IMPORTANT: We hash from HEAD_COMMIT_HASH (the PR head), not the merge
       # commit that actions/checkout creates. This ensures the hash is stable
       # across pushes even when the base branch advances.
+      #
+      # Uses a DENYLIST approach: we exclude paths known NOT to affect builds.
+      # This is safer than an allowlist — if a new build-affecting file is
+      # added, it is automatically included (worst case: unnecessary rebuild).
       - name: Compute build-source hash
         id: compute-build-hash
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: |
-          BUILD_HASH=$(
-            git ls-tree -r "${HEAD_COMMIT_HASH}" -- \
-              .github/workflows/run-build.yml \
-              .storybook/ \
-              app/ \
-              development/build/ \
-              development/webpack/ \
-              lavamoat/ \
-              shared/ \
-              types/ \
-              ui/ \
-              .browserslistrc \
-              babel.config.js \
-              builds.yml \
-              package.json \
-              tailwind.config.js \
-              tsconfig.json \
-              yarn.lock \
-            | git hash-object --stdin
-          )
-          echo "build-hash=$BUILD_HASH" >> "$GITHUB_OUTPUT"
-          echo "-> Build-source hash: $BUILD_HASH"
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // Directories that never affect the production build output.
+            const excludedDirs = [
+              '.agents/', '.claude/', '.cursor/', '.devcontainer/',
+              '.github/', '.husky/', '.storybook/', '.vscode/', '.yarn/',
+              'docs/', 'test/',
+              'development/metamaskbot-build-announce/',
+              'development/ts-migration-dashboard/',
+            ];
+            // Files inside excluded dirs that DO affect builds.
+            // run-build.yml is kept because it injects env vars and secrets.
+            const keptFiles = new Set([
+              '.github/workflows/run-build.yml',
+            ]);
+            // Directories inside excluded dirs that DO affect builds.
+            // .yarn/patches/ contains source patches applied to dependencies.
+            const keptDirs = ['.yarn/patches/'];
+            // Top-level files that never affect the production build output.
+            const excludedFiles = new Set([
+              'AGENTS.md', 'attribution.txt', 'CHANGELOG.md', 'LICENSE',
+              'README.md', '.depcheckrc.yml', '.editorconfig', '.env.yarn',
+              '.gitattributes', '.git-blame-ignore-revs', '.gitignore',
+              '.madgerc', '.mocharc.js', '.prettierignore', '.prettierrc.yml',
+              'codecov.yml', 'coverage.json', 'crowdin.yml',
+              'jest.config.js', 'jest.integration.config.js',
+              'playwright.config.ts', 'privacy-snapshot.json',
+              'sonar-project.properties', 'stylelint.config.js',
+            ]);
+            // Also exclude any top-level .eslintrc*.js variant.
+            const eslintPattern = /^\.eslintrc(\.[a-z.-]+)?\.js$/;
+
+            const { stdout: tree } = await exec.getExecOutput(
+              'git', ['ls-tree', '-r', process.env.HEAD_COMMIT_HASH],
+              { silent: true },
+            );
+            const kept = tree.split('\n').filter(line => {
+              if (!line) return false;
+              const path = line.split('\t')[1];
+              if (keptFiles.has(path)) return true;
+              if (keptDirs.some(d => path.startsWith(d))) return true;
+              if (excludedDirs.some(d => path.startsWith(d))) return false;
+              if (excludedFiles.has(path)) return false;
+              if (eslintPattern.test(path)) return false;
+              return true;
+            }).join('\n') + '\n';
+
+            if (kept === '\n') {
+              core.setFailed('git ls-tree returned no files after filtering — cannot compute a meaningful hash');
+              return;
+            }
+
+            // main.yml is in the denylist (most changes are CI plumbing), but
+            // the build-command values it passes to run-build.yml DO affect
+            // output. Extract and sort them so only command changes bust the hash.
+            const { stdout: mainYml } = await exec.getExecOutput(
+              'git', ['show', `${process.env.HEAD_COMMIT_HASH}:.github/workflows/main.yml`],
+              { silent: true },
+            );
+            const buildCommands = (mainYml.match(/build-command: .+/g) ?? [])
+              .sort()
+              .join('\n') + '\n';
+
+            const { stdout: hash } = await exec.getExecOutput(
+              'git', ['hash-object', '--stdin'],
+              { silent: true, input: Buffer.from(kept + buildCommands) },
+            );
+            const buildHash = hash.trim();
+            core.setOutput('build-hash', buildHash);
+            core.info(`-> Build-source hash: ${buildHash}`);
 
       # Post the hash as a commit status so future runs can look it up by SHA.
+      # This is an optimization for future runs — failure must not block current CI.
       - name: Post build-source-hash commit status
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        continue-on-error: true
         uses: actions/github-script@v8
         env:
           BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
@@ -147,22 +207,73 @@ jobs:
             });
             core.info(`Posted build-source-hash: ${process.env.BUILD_HASH}`);
 
+      # Check for build override tags in commit message or PR labels.
+      # [force-builds] / force-builds label → always build fresh.
+      # [skip-builds] / skip-builds label → always reuse from base branch (skip hash check).
+      # Only applies to pull_request events — overrides are meaningless on
+      # main/stable pushes and dangerous in the merge queue (the squash commit
+      # message includes the PR description, and leftover tags would cause
+      # unverified builds to enter the merge queue).
+      - name: Check build overrides
+        id: build-overrides
+        if: ${{ env.EVENT_NAME == 'pull_request' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { stdout: msg } = await exec.getExecOutput(
+              'git', ['show', '--format=%B', '--no-patch', process.env.HEAD_COMMIT_HASH],
+              { silent: true },
+            );
+            const labels = context.payload.pull_request
+              ? context.payload.pull_request.labels.map(l => l.name)
+              : [];
+
+            if (msg.includes('[force-builds]') || labels.includes('force-builds')) {
+              core.setOutput('force', 'true');
+              core.info('-> force-builds: true');
+              return;
+            }
+            if (msg.includes('[skip-builds]') || labels.includes('skip-builds')) {
+              core.setOutput('skip', 'true');
+              core.info('-> skip-builds: true');
+              return;
+            }
+            core.info('-> no build overrides');
+
+      # Extract the list of expected build artifact names from main.yml.
+      # This avoids a hardcoded list that could drift out of sync.
+      - name: Extract required build artifact names
+        id: extract-build-names
+        if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        run: |
+          NAMES=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml | jq -Rsc 'split("\n") | map(select(length > 0))')
+          echo "names=$NAMES" >> "$GITHUB_OUTPUT"
+          echo "-> Required build artifacts: $NAMES"
+
       # Find a prior run whose builds match the current source hash.
       # Checks same branch first, then base branch (main).
-      # Skipped on main, stable, and direct pushes to release/* (too high-risk to skip builds).
+      # Skipped on main, stable, and release/* branches (too high-risk to skip builds).
       - name: Find reusable builds from prior run
         id: find-reusable-builds
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && !(!github.head_ref && startsWith(github.ref_name, 'release/')) && steps.compute-build-hash.outputs.build-hash && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && !startsWith(github.head_ref || github.ref_name, 'release/') && steps.compute-build-hash.outputs.build-hash && steps.check-skip-merge-queue.outputs.up-to-date != 'true' && steps.build-overrides.outputs.force != 'true' }}
         uses: actions/github-script@v8
         env:
           BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
           BASE_BRANCH: ${{ env.BASE_BRANCH }}
+          REQUIRED_BUILD_NAMES: ${{ steps.extract-build-names.outputs.names }}
+          SKIP_BUILDS: ${{ steps.build-overrides.outputs.skip }}
         with:
           script: |
             const { repo: { owner, repo } } = context;
             const buildHash = process.env.BUILD_HASH;
             const currentRunId = parseInt(process.env.RUN_ID, 10);
             const branch = process.env.BRANCH;
+            const required = JSON.parse(process.env.REQUIRED_BUILD_NAMES);
+            const skipBuilds = process.env.SKIP_BUILDS === 'true';
+            core.info(`Expecting ${required.length} build artifacts`);
+            if (skipBuilds) {
+              core.warning('[skip-builds] active — ignoring hash, finding most recent run with all artifacts');
+            }
 
             async function findMatchingRun(searchBranch) {
               core.info(`Searching branch '${searchBranch}' for matching build hash...`);
@@ -182,6 +293,10 @@ jobs:
                 return false;
               }
 
+              // 'in_progress' is included intentionally: a concurrent run that
+              // already uploaded all build artifacts can be reused even before it
+              // finishes its E2E/lint jobs. The artifact completeness check below
+              // ensures we never use a run with missing uploads.
               const allowedStatuses = new Set(['completed', 'in_progress']);
               for (const run of runs) {
                 if (!allowedStatuses.has(run.status)) continue;
@@ -195,47 +310,23 @@ jobs:
                     owner,
                     repo,
                     ref: run.head_sha,
+                    per_page: 100,
                   });
                   const hashStatus = statuses.find(s => s.context === 'build-source-hash');
 
-                  if (hashStatus?.description !== buildHash) {
+                  if (!skipBuilds && hashStatus?.description !== buildHash) {
                     core.info(`-> Run ${run.id} (SHA: ${run.head_sha}): hash ${hashStatus?.description ?? 'not found'} — skipping`);
                     continue;
                   }
 
-                  // Verify that build artifacts still exist (one API call for all artifacts)
-                  const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
-                    owner,
-                    repo,
-                    run_id: run.id,
-                    per_page: 100,
-                  });
+                  // Verify that build artifacts still exist, using pagination to
+                  // handle runs with more than 100 artifacts.
+                  const artifacts = await github.paginate(
+                    github.rest.actions.listWorkflowRunArtifacts,
+                    { owner, repo, run_id: run.id, per_page: 100 },
+                  );
                   const artifactNames = new Set(artifacts.map(a => a.name));
 
-                  // IMPORTANT: Keep this list in sync with every `build-name:` value
-                  // in main.yml. If a build job is added or removed there, update here too.
-                  const required = [
-                    'build-dist-browserify',
-                    'build-dist-mv2-browserify',
-                    'build-beta-browserify',
-                    'build-beta-mv2-browserify',
-                    'build-flask-browserify',
-                    'build-flask-mv2-browserify',
-                    'build-test-browserify',
-                    'build-test-mv2-browserify',
-                    'build-test-flask-browserify',
-                    'build-test-flask-mv2-browserify',
-                    'build-dist-webpack',
-                    'build-dist-mv2-webpack',
-                    'build-beta-webpack',
-                    'build-beta-mv2-webpack',
-                    'build-flask-webpack',
-                    'build-flask-mv2-webpack',
-                    'build-test-webpack',
-                    'build-test-mv2-webpack',
-                    'build-test-flask-webpack',
-                    'build-test-flask-mv2-webpack',
-                  ];
                   const missing = required.filter(name => !artifactNames.has(name));
 
                   if (missing.length === 0) {
