@@ -220,6 +220,23 @@ export const detectOutliersIQR = (
 };
 
 /**
+ * IQR-based outlier trimming.
+ * Returns the filtered samples and the number of values removed.
+ * Intended for use before stats computation and before Mann-Whitney U tests.
+ *
+ * Thin wrapper over {@link detectOutliersIQR} with a stable public interface.
+ *
+ * @param samples - Raw per-run durations (unsorted)
+ */
+export function trimOutliers(samples: number[]): {
+  samples: number[];
+  trimmedCount: number;
+} {
+  const { filtered, outlierCount } = detectOutliersIQR(samples);
+  return { samples: filtered, trimmedCount: outlierCount };
+}
+
+/**
  * Combined outlier detection using both IQR and z-score methods
  * A value is only kept if it passes both methods
  *
@@ -353,13 +370,17 @@ export const calculateTimerStatistics = (
     maxDuration,
     minDuration,
   );
-  const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
+  const iqrResult = detectOutliersIQR(sanityResult.filtered);
+  const zScoreResult = detectOutliersZScore(iqrResult.filtered);
+  const filtered = zScoreResult.filtered;
+  const totalExcluded =
+    sanityResult.excludedCount +
+    iqrResult.outlierCount +
+    zScoreResult.outlierCount;
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
-
-  const totalExcluded = sanityResult.excludedCount + outlierCount;
 
   return {
     id: timerId,
@@ -374,6 +395,7 @@ export const calculateTimerStatistics = (
     p99: calculatePercentile(sorted, 99),
     samples: filtered.length,
     outliers: totalExcluded,
+    trimmedCount: iqrResult.outlierCount,
     dataQuality: assessDataQuality(cv),
   };
 };
