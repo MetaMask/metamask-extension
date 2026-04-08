@@ -81,6 +81,9 @@ export const WalletInitiatedHeader = () => {
     ) {
       return t('shieldConfirmMembership');
     }
+    if (currentConfirmation?.type === TransactionType.musdClaim) {
+      return null;
+    }
     return t('review');
   };
 

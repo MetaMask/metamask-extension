@@ -1452,6 +1452,10 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Community contributed",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
   "completed": {
     "message": "Completed"
   },
@@ -4113,9 +4117,13 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Claiming to",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
+  "musdClaimSendingTo": {
+    "message": "Sending to",
+    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
+  },
+  "musdClaimSendingToWallet": {
+    "message": "Sending to $1",
+    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "Claim bonus",
@@ -4555,11 +4563,18 @@
   "nickname": {
     "message": "Nickname"
   },
+  "no": {
+    "message": "No"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
+  },
+  "noDefaultAddress": {
+    "message": "No $1 address",
+    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -4950,6 +4965,9 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Open multichain account address menu"
   },
   "openSettings": {
     "message": "Open settings"
@@ -5431,6 +5449,9 @@
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
+  "perpsCancelOrder": {
+    "message": "Cancel order"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
@@ -5448,9 +5469,6 @@
   },
   "perpsCloseShort": {
     "message": "Close Short"
-  },
-  "perpsClosedShort": {
-    "message": "Closed short"
   },
   "perpsConfirmCloseLong": {
     "message": "Close Long"
@@ -5547,9 +5565,6 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Increased position"
-  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5637,14 +5652,23 @@
     "message": "Open Short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Opened long"
-  },
   "perpsOraclePrice": {
     "message": "Oracle Price"
   },
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
+  },
+  "perpsOrderDate": {
+    "message": "Date"
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Original size"
+  },
+  "perpsOrderStatus": {
+    "message": "Status"
+  },
+  "perpsOrderValue": {
+    "message": "Order value"
   },
   "perpsOrders": {
     "message": "Orders"
@@ -5669,6 +5693,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsReduceOnly": {
+    "message": "Reduce only"
   },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
@@ -5772,6 +5799,14 @@
   "perpsTakeProfit": {
     "message": "Take Profit",
     "description": "Label for take profit price input"
+  },
+  "perpsToastCancelOrderFailed": {
+    "message": "Failed to cancel order",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Order cancelled",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
   },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",
@@ -8449,6 +8484,10 @@
   },
   "supportMultiRpcInformation": {
     "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
+  "supportedLanguagesSectionTitle": {
+    "message": "Supported languages",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "Take our survey"
