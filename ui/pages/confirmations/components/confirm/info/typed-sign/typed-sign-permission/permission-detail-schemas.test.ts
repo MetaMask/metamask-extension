@@ -75,9 +75,7 @@ describe('PERMISSION_SCHEMAS', () => {
       const schema = PERMISSION_SCHEMAS['native-token-periodic'];
       const summaryFields = schema.sections
         .flatMap((s) => s.elements)
-        .filter(
-          (e) => 'views' in e && e.views?.includes('reviewSummary'),
-        );
+        .filter((e) => 'views' in e && e.views?.includes('reviewSummary'));
       expect(summaryFields.length).toBe(3);
       expect(summaryFields[0].type).toBe('account');
       expect(summaryFields[1].type).toBe('amount');
@@ -88,9 +86,7 @@ describe('PERMISSION_SCHEMAS', () => {
       const schema = PERMISSION_SCHEMAS['native-token-stream'];
       const summaryFields = schema.sections
         .flatMap((s) => s.elements)
-        .filter(
-          (e) => 'views' in e && e.views?.includes('reviewSummary'),
-        );
+        .filter((e) => 'views' in e && e.views?.includes('reviewSummary'));
       expect(summaryFields.length).toBeGreaterThanOrEqual(2);
     });
 
@@ -98,9 +94,7 @@ describe('PERMISSION_SCHEMAS', () => {
       const schema = PERMISSION_SCHEMAS['erc20-token-revocation'];
       const summaryFields = schema.sections
         .flatMap((s) => s.elements)
-        .filter(
-          (e) => 'views' in e && e.views?.includes('reviewSummary'),
-        );
+        .filter((e) => 'views' in e && e.views?.includes('reviewSummary'));
       expect(summaryFields.length).toBe(2);
       expect(summaryFields[0].type).toBe('account');
       expect(summaryFields[1].type).toBe('text');

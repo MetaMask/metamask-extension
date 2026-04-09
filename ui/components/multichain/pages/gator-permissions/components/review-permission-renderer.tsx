@@ -90,168 +90,6 @@ function translateValue(t: I18nFunction, value: I18nValue): string {
 }
 
 // ---------------------------------------------------------------------------
-// Element renderer
-// ---------------------------------------------------------------------------
-
-function renderElement(
-  sectionTestId: string,
-  element: SchemaElement,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-  tokenSymbol: string,
-  tokenDecimals: number | undefined,
-  loading: boolean,
-  index: number,
-  viewMode: FieldView,
-  extraProps: {
-    permissionAccount?: string;
-    networkName?: string;
-  },
-  rules?: GatorPermissionRule[] | null,
-): React.ReactNode {
-  // Skip elements not intended for the current view
-  if (
-    'views' in element &&
-    element.views &&
-    !element.views.includes(viewMode)
-  ) {
-    return null;
-  }
-
-  const rowKey = schemaElementDomKey(sectionTestId, element, index);
-
-  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
-    return null;
-  }
-
-  switch (element.type) {
-    case 'amount':
-      return renderAmountElement(
-        rowKey,
-        element,
-        ctx,
-        t,
-        tokenSymbol,
-        tokenDecimals,
-        loading,
-      );
-
-    case 'text':
-      return (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t(element.reviewLabelKey ?? element.labelKey)}
-          value={translateValue(t, element.getValue(ctx))}
-          testId={element.reviewTestId}
-        />
-      );
-
-    case 'date':
-      return (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t(element.reviewLabelKey ?? element.labelKey)}
-          value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
-          testId={element.reviewTestId}
-        />
-      );
-
-    case 'expiry':
-      return renderExpiryElement(rowKey, ctx, t, element.reviewTestId, rules);
-
-    case 'justification':
-      return ctx.permission.justification ? (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t('gatorPermissionsJustification')}
-          value={ctx.permission.justification}
-          testId="review-gator-permission-justification"
-        />
-      ) : null;
-
-    case 'account':
-      return extraProps.permissionAccount ? (
-        <ReviewAccountRow
-          key={rowKey}
-          address={extraProps.permissionAccount}
-        />
-      ) : null;
-
-    case 'network':
-      return extraProps.networkName ? (
-        <ReviewNetworkRow
-          key={rowKey}
-          chainId={ctx.chainId}
-          networkName={extraProps.networkName}
-        />
-      ) : null;
-
-    case 'totalExposure':
-    case 'divider':
-    case 'origin':
-    case 'address':
-      return null;
-
-    default:
-      return null;
-  }
-}
-
-function renderAmountElement(
-  rowKey: string,
-  element: AmountField,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-  tokenSymbol: string,
-  tokenDecimals: number | undefined,
-  loading: boolean,
-): React.ReactNode {
-  const rawValue = element.getValue(ctx);
-  let displayValue = formatRawAmount(rawValue, tokenDecimals, tokenSymbol);
-
-  if (element.isRatePerSecond) {
-    displayValue = `${displayValue}/sec`;
-  }
-
-  return (
-    <GatorPermissionDetailRow
-      key={rowKey}
-      label={t(element.reviewLabelKey ?? element.labelKey)}
-      value={displayValue}
-      testId={element.reviewTestId}
-      isLoading={loading}
-    />
-  );
-}
-
-function renderExpiryElement(
-  rowKey: string,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-  testId: string | undefined,
-  rules?: GatorPermissionRule[] | null,
-): React.ReactNode {
-  let displayValue: string;
-  if (rules?.length) {
-    const expiryDate = extractExpiryToReadableDate(rules);
-    displayValue = expiryDate || t('gatorPermissionNoExpiration');
-  } else if (ctx.expiry === null) {
-    displayValue = t('gatorPermissionNoExpiration');
-  } else {
-    displayValue = convertTimestampToReadableDate(ctx.expiry);
-  }
-
-  return (
-    <GatorPermissionDetailRow
-      key={rowKey}
-      label={t('gatorPermissionsExpirationDate')}
-      value={displayValue}
-      testId={testId}
-    />
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
@@ -351,6 +189,165 @@ const ReviewNetworkRow: React.FC<{
 };
 
 // ---------------------------------------------------------------------------
+// Element renderer
+// ---------------------------------------------------------------------------
+
+function renderElement(
+  sectionTestId: string,
+  element: SchemaElement,
+  ctx: PermissionRenderContext,
+  t: I18nFunction,
+  tokenSymbol: string,
+  tokenDecimals: number | undefined,
+  loading: boolean,
+  index: number,
+  viewMode: FieldView,
+  extraProps: {
+    permissionAccount?: string;
+    networkName?: string;
+  },
+  rules?: GatorPermissionRule[] | null,
+): React.ReactNode {
+  // Skip elements not intended for the current view
+  if (
+    'views' in element &&
+    element.views &&
+    !element.views.includes(viewMode)
+  ) {
+    return null;
+  }
+
+  const rowKey = schemaElementDomKey(sectionTestId, element, index);
+
+  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
+    return null;
+  }
+
+  switch (element.type) {
+    case 'amount':
+      return renderAmountElement(
+        rowKey,
+        element,
+        ctx,
+        t,
+        tokenSymbol,
+        tokenDecimals,
+        loading,
+      );
+
+    case 'text':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.reviewLabelKey ?? element.labelKey)}
+          value={translateValue(t, element.getValue(ctx))}
+          testId={element.reviewTestId}
+        />
+      );
+
+    case 'date':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.reviewLabelKey ?? element.labelKey)}
+          value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
+          testId={element.reviewTestId}
+        />
+      );
+
+    case 'expiry':
+      return renderExpiryElement(rowKey, ctx, t, element.reviewTestId, rules);
+
+    case 'justification':
+      return ctx.permission.justification ? (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t('gatorPermissionsJustification')}
+          value={ctx.permission.justification}
+          testId="review-gator-permission-justification"
+        />
+      ) : null;
+
+    case 'account':
+      return extraProps.permissionAccount ? (
+        <ReviewAccountRow key={rowKey} address={extraProps.permissionAccount} />
+      ) : null;
+
+    case 'network':
+      return extraProps.networkName ? (
+        <ReviewNetworkRow
+          key={rowKey}
+          chainId={ctx.chainId}
+          networkName={extraProps.networkName}
+        />
+      ) : null;
+
+    case 'totalExposure':
+    case 'divider':
+    case 'origin':
+    case 'address':
+      return null;
+
+    default:
+      return null;
+  }
+}
+
+function renderAmountElement(
+  rowKey: string,
+  element: AmountField,
+  ctx: PermissionRenderContext,
+  t: I18nFunction,
+  tokenSymbol: string,
+  tokenDecimals: number | undefined,
+  loading: boolean,
+): React.ReactNode {
+  const rawValue = element.getValue(ctx);
+  let displayValue = formatRawAmount(rawValue, tokenDecimals, tokenSymbol);
+
+  if (element.isRatePerSecond) {
+    displayValue = `${displayValue}/sec`;
+  }
+
+  return (
+    <GatorPermissionDetailRow
+      key={rowKey}
+      label={t(element.reviewLabelKey ?? element.labelKey)}
+      value={displayValue}
+      testId={element.reviewTestId}
+      isLoading={loading}
+    />
+  );
+}
+
+function renderExpiryElement(
+  rowKey: string,
+  ctx: PermissionRenderContext,
+  t: I18nFunction,
+  testId: string | undefined,
+  rules?: GatorPermissionRule[] | null,
+): React.ReactNode {
+  let displayValue: string;
+  if (rules?.length) {
+    const expiryDate = extractExpiryToReadableDate(rules);
+    displayValue = expiryDate || t('gatorPermissionNoExpiration');
+  } else if (ctx.expiry === null) {
+    displayValue = t('gatorPermissionNoExpiration');
+  } else {
+    displayValue = convertTimestampToReadableDate(ctx.expiry);
+  }
+
+  return (
+    <GatorPermissionDetailRow
+      key={rowKey}
+      label={t('gatorPermissionsExpirationDate')}
+      value={displayValue}
+      testId={testId}
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Section renderer
 // ---------------------------------------------------------------------------
 
@@ -413,6 +410,17 @@ export type ReviewPermissionRendererProps = {
  * Review-page renderer that interprets the shared permission schema.
  * Renders each schema element as a detail row with string-formatted values.
  * Does not run schema `validate` (signing flow only); tolerates imperfect stored data.
+ * @param options0
+ * @param options0.permissionType
+ * @param options0.permissionData
+ * @param options0.chainId
+ * @param options0.expiry
+ * @param options0.rules
+ * @param options0.tokenInfo
+ * @param options0.tokenLoading
+ * @param options0.viewMode
+ * @param options0.permissionAccount
+ * @param options0.networkName
  */
 export const ReviewPermissionRenderer: React.FC<
   ReviewPermissionRendererProps
