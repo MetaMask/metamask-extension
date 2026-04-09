@@ -1,5 +1,5 @@
 import { AddressBookController } from '@metamask/address-book-controller';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 
 /**
