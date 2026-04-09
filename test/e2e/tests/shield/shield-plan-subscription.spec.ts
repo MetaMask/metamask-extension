@@ -282,6 +282,7 @@ describe('Shield Subscription Tests', function () {
             await settingsPage.checkPageIsLoaded();
             await settingsPage.goToTransactionShieldPage();
 
+            await homePage.checkShieldEntryModalIsDisplayed();
             await homePage.clickOnShieldEntryModalGetStarted();
             await shieldPlanPage.completeShieldPlanSubscriptionFlow(
               'monthly',
@@ -396,6 +397,7 @@ describe('Shield Subscription Tests', function () {
             await settingsPage.checkPageIsLoaded();
             await settingsPage.goToTransactionShieldPage();
 
+            await homePage.checkShieldEntryModalIsDisplayed();
             await homePage.clickOnShieldEntryModalGetStarted();
             await shieldPlanPage.completeShieldPlanSubscriptionFlow(
               'monthly',

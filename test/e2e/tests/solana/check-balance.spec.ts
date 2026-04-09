@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { merge } from 'lodash';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -64,14 +63,6 @@ describe('Check balance', function (this: Suite) {
         },
       })
       .build();
-
-    merge(fixture.data, {
-      RemoteFeatureFlagController: {
-        remoteFeatureFlags: {
-          assetsUnifyState: { enabled: true, featureVersion: '1' },
-        },
-      },
-    });
 
     await withFixtures(
       {

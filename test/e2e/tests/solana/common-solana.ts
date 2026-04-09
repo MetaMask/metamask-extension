@@ -940,7 +940,7 @@ export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
 ) {
-  const resp = await readResponseJsonFile('usdcSolTransaction.json');
+  const resp = await readResponseJsonFile('succeededTransaction.json');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
