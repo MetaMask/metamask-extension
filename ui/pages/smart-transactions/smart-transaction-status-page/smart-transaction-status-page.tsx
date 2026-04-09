@@ -230,7 +230,7 @@ const ViewActivityButton = ({
       width={BlockSize.Full}
       marginTop={3}
     >
-      {t('backToHome')}
+      {t('viewActivity')}
     </ButtonSecondary>
   );
 };
