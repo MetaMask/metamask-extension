@@ -4,16 +4,25 @@ import { useSelector } from 'react-redux';
 import {
   selectNonEvmTransactionsForToast,
   selectEvmTransactionsForToast,
-} from '../../../selectors/toast';
-import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
-import { useTransactionLifecycle } from '../../../hooks/useTransactionLifecycle';
-import { useNonEvmTransactionLifecycle } from '../../../hooks/useNonEvmTransactionLifecycle';
-import { useBridgeHistoryLifecycle } from '../../../hooks/useBridgeHistoryLifecycle';
-import { ToastContent } from './toast';
-import type { Handlers } from './types';
+} from '../../selectors/toast';
+import { selectBridgeHistoryForToast } from '../../ducks/bridge-status/selectors';
+import { useTransactionLifecycle } from '../../hooks/useTransactionLifecycle';
+import { useNonEvmTransactionLifecycle } from '../../hooks/useNonEvmTransactionLifecycle';
+import { useBridgeHistoryLifecycle } from '../../hooks/useBridgeHistoryLifecycle';
+import {
+  useTransactionDisplay,
+  type TransactionStatus,
+} from '../../helpers/utils/transaction-display';
+import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
+import type { Handlers } from '../../components/ui/toast/types';
 
 type EvmTx = ReturnType<typeof selectEvmTransactionsForToast>[number];
 type NonEvmTx = ReturnType<typeof selectNonEvmTransactionsForToast>[number];
+
+const ToastContent = ({ status }: { status: TransactionStatus }) => {
+  const { title } = useTransactionDisplay(status);
+  return <ToastContentBase title={title} />;
+};
 
 /**
  * Watches EVM transactions for status transitions and shows toast notifications

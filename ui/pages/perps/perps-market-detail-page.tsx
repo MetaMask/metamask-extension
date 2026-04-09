@@ -307,7 +307,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     // Activate background price stream for this symbol
     submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [decodedSymbol] },
+      { symbols: [decodedSymbol], includeMarketData: true },
     ]).catch(() => {
       // Controller not ready yet, skip silently
     });
@@ -324,7 +324,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           price: update.price,
           timestamp: ts ?? Date.now(),
           percentChange24h: update.percentChange24h,
-          markPrice: mark ?? update.price,
+          markPrice: mark,
         });
       }
     });

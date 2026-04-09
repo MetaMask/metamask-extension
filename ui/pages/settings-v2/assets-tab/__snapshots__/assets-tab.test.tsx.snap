@@ -92,7 +92,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full mx-4"
+      class="bg-muted my-2 h-px w-auto mx-4"
     />
     <div>
       <div
@@ -144,7 +144,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full mx-4"
+      class="bg-muted my-2 h-px w-auto mx-4"
     />
     <div>
       <div
