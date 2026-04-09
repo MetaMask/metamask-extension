@@ -62,7 +62,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [balancePercent]);
 
   const tokenAmount = useMemo(() => {
-    const numAmount = Number.parseFloat(amount) || 0;
+    const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
@@ -122,7 +122,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       return;
     }
 
-    const numValue = Number.parseFloat(amount);
+    const numValue = Number.parseFloat(amount.replace(/,/gu, ''));
     if (Number.isFinite(numValue) && numValue > 0) {
       onAmountChange(numValue.toFixed(2));
       return;
