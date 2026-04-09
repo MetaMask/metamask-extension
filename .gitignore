@@ -123,5 +123,6 @@ test/e2e/playwright/llm-workflow/recipes/
 test/e2e/playwright/llm-workflow/launcher/state-inspector.js
 .omc/
 .omx/
+*.tsbuildinfo
 .tool-versions
 CLAUDE.local.md
