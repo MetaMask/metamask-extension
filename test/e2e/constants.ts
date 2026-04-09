@@ -64,6 +64,10 @@ export const MULTI_SRP_FIXTURE_VAULT =
 export const ADDITIONAL_ACCOUNT_FIXTURE_VAULT =
   '{"data":"wiB80G6yk3XY9doo6nmVt+qIgGinIFw0iANKZB7uPM4jjWsLNPny8NaDlh9mQclXfxlvy6wRcEIXmM6D9Qpr3miTfhW4HFcuDFQ0DtrPOceSUZMQtrdpZWul8zwNbjRe1mbprZu0LdPK/0wiSKvHay4/UDHcIxIOWA64a4SUFMQ59Orbh8JQnDZ3rYEi2+zHZuyj4F4J6+HQuWdLV4m/ZbfDeytf7VAn1DXkaCnpne4KAy1YpPXQ2Ucqol1PM9gEZURErwL3xjBARaE8iQHyWQV2FuOj4tylU82Tsa1kn/ne9Sv9lFNNQE0d50EQtPFeLCqjCqj84q2AaOGFXN5ojgYId+m+SMgji2w/ANl/6FXLA7hIPvYEmiS2etLQXS9yj0Z1zGxQO/V6H7wBSGquute9Z1zkSivE5Bpym324ccB9S5H5h9CPgxtdFSnEs+0xkv0OB1GmcS+5dh2ZtK6Am7jvwlkuynC1ha0Gre/xp7SUpG4wM4cGhYn1b3cMz0eYHiP9POaINZvsZWbE+VTWezQ9hHBCdv7o4GXNrwHm3w1cI/bVGotr3MV3tLdXE5T/izNNNXU78s2ADDWkHfjgXm002TDHZtHbmBWFqw==","iv":"djp82xT3OOpenReQzhcEDA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"SJPfWAWz3MfeLwZrOve636Gh0l4qYC60udPVVdXtR/c="}';
 
+/** KeyringController vault for withKeyringControllerImportedAccountVault (three HD accounts from an imported SRP). */
+export const IMPORTED_ACCOUNT_FIXTURE_VAULT =
+  '{"data":"NlxYVSDJJV4B1DWM+fZ0KX1K2lIU9ozK3WMbbL23WEY036umZ9//qB+bN9R1jKMm6xqHGSGgq9EteFMy2Ix5Bx1/c4hV2QquFRTEzPB4TkQ6+P5eJUvgvZ7vqvVU+2W8719T1oz/O7DH7HbO05JPLD1RBY+XOyHzUzAgwmXq0mwxNpqji3ejHyrjZ/1l06igircW/qysLcjZFZ52Vv4a/q1zCL37/4heHDRVmfEob//ulUbJ/5M=","iv":"b9n77dsUqvww9nGcWfPuIA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"XrmM930Jqnb7C9Ow5NErAMkSGR3vuMLsqUrkGjzpwaY="}';
+
 /** KeyringController vault for withKeyringControllerOldVault fixture (old encryption format for migration tests). */
 export const OLD_FIXTURE_VAULT =
   '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}';
