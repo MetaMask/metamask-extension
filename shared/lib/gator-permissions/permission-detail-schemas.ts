@@ -180,6 +180,18 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           reviewTestId: 'review-gator-permission-max-allowance',
           views: ['confirmation', 'reviewDetail'],
         },
+        {
+          type: 'text',
+          labelKey: 'confirmFieldMaxAllowance',
+          getValue: () => ({ key: 'unlimited' }),
+          isVisible: (ctx) => {
+            const max = getData(ctx).maxAmount as string | undefined;
+            return Boolean(max && max.toLowerCase() === MAX_UINT256);
+          },
+          reviewLabelKey: 'gatorPermissionsMaxAllowance',
+          reviewTestId: 'review-gator-permission-max-allowance',
+          views: ['confirmation', 'reviewDetail'],
+        },
         { type: 'divider', views: ['confirmation'] },
         {
           type: 'date',
@@ -351,6 +363,18 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           isVisible: (ctx) => {
             const max = getData(ctx).maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() !== MAX_UINT256);
+          },
+          reviewLabelKey: 'gatorPermissionsMaxAllowance',
+          reviewTestId: 'review-gator-permission-max-allowance',
+          views: ['confirmation', 'reviewDetail'],
+        },
+        {
+          type: 'text',
+          labelKey: 'confirmFieldMaxAllowance',
+          getValue: () => ({ key: 'unlimited' }),
+          isVisible: (ctx) => {
+            const max = getData(ctx).maxAmount as string | undefined;
+            return Boolean(max && max.toLowerCase() === MAX_UINT256);
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
           reviewTestId: 'review-gator-permission-max-allowance',
