@@ -11,7 +11,6 @@ import {
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { detectSIWE } from '@metamask/controller-utils';
-import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -40,6 +39,7 @@ import {
   SeasonMetadataDto,
   DiscoverSeasonsDto,
   ChallengeDto,
+  RewardsControllerMessenger,
 } from './rewards-controller.types';
 import {
   AccountAlreadyRegisteredError,
@@ -226,6 +226,24 @@ export async function wrapWithCache<T>({
 
   return freshValue;
 }
+
+const MESSENGER_EXPOSED_METHODS = [
+  'getHasAccountOptedIn',
+  'estimatePoints',
+  'isRewardsFeatureEnabled',
+  'getSeasonMetadata',
+  'getSeasonStatus',
+  'optIn',
+  'getGeoRewardsMetadata',
+  'validateReferralCode',
+  'linkAccountToSubscriptionCandidate',
+  'linkAccountsToSubscriptionCandidate',
+  'getCandidateSubscriptionId',
+  'getOptInStatus',
+  'isOptInSupported',
+  'getActualSubscriptionId',
+  'resetState',
+] as const;
 
 /**
  * Controller for managing user rewards and campaigns
@@ -502,73 +520,14 @@ export class RewardsController extends BaseController<
       },
     });
 
-    this.#registerActionHandlers();
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
     this.#initializeEventSubscriptions();
     this.#isDisabled = isDisabled;
     this.#isBitcoinDisabled = isBitcoinDisabled;
     this.#isTronDisabled = isTronDisabled;
-  }
-
-  /**
-   * Register action handlers for this controller
-   */
-  #registerActionHandlers(): void {
-    this.messenger.registerActionHandler(
-      'RewardsController:getHasAccountOptedIn',
-      this.getHasAccountOptedIn.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:estimatePoints',
-      this.estimatePoints.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:isRewardsFeatureEnabled',
-      this.isRewardsFeatureEnabled.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getSeasonMetadata',
-      this.getSeasonMetadata.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getSeasonStatus',
-      this.getSeasonStatus.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:optIn',
-      this.optIn.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getGeoRewardsMetadata',
-      this.getRewardsGeoMetadata.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:validateReferralCode',
-      this.validateReferralCode.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:linkAccountToSubscriptionCandidate',
-      this.linkAccountToSubscriptionCandidate.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:linkAccountsToSubscriptionCandidate',
-      this.linkAccountsToSubscriptionCandidate.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getCandidateSubscriptionId',
-      this.getCandidateSubscriptionId.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getOptInStatus',
-      this.getOptInStatus.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:isOptInSupported',
-      this.isOptInSupported.bind(this),
-    );
-    this.messenger.registerActionHandler(
-      'RewardsController:getActualSubscriptionId',
-      this.getActualSubscriptionId.bind(this),
-    );
   }
 
   /**
@@ -1929,7 +1888,7 @@ export class RewardsController extends BaseController<
    *
    * @returns Promise<GeoRewardsMetadata> - The geo rewards metadata
    */
-  async getRewardsGeoMetadata(): Promise<RewardsGeoMetadata> {
+  async getGeoRewardsMetadata(): Promise<RewardsGeoMetadata> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
       return {

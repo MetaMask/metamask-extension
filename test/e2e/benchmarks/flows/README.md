@@ -91,11 +91,11 @@ await timer.measure(async () => {
 
 **Threshold Validation (mandatory):**
 
-Every benchmark **must** have a threshold entry in `THRESHOLD_REGISTRY` inside `test/e2e/benchmarks/utils/constants.ts`. Thresholds are validated after collecting statistics from all iterations.
+Every benchmark **must** have a threshold entry in `THRESHOLD_REGISTRY` inside `test/e2e/benchmarks/utils/thresholds.ts`. Thresholds are validated after collecting statistics from all iterations.
 
 To add thresholds for a new benchmark:
 
-1. Define a threshold config constant in `test/e2e/benchmarks/utils/constants.ts`
+1. Define a threshold config constant in `test/e2e/benchmarks/utils/thresholds.ts`
 2. Add it to `BENCHMARK_THRESHOLDS` with a camelCase key matching the filename
 
 ```typescript

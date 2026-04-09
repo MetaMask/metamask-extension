@@ -6,7 +6,7 @@ import type {
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -415,6 +415,75 @@ export const isHip3Market = (
  */
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
+};
+
+const volumeMultipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * volumeMultipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
+/**
+ * Check if a market has meaningful trading volume (non-zero).
+ * Markets with zero, negative, or missing volume are considered inactive and
+ * should be hidden from market lists.
+ *
+ * @param market - The market data to check
+ * @returns True if the market has non-zero volume
+ * @example
+ * hasVolume({ volume: '$1.2M' }) // → true
+ * hasVolume({ volume: '$0' })    // → false
+ * hasVolume({ volume: '' })      // → false
+ */
+export const hasVolume = (market: PerpsMarketData): boolean => {
+  return parseVolume(market.volume) > 0;
 };
 
 /**
