@@ -65,198 +65,19 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
 }
 
 /**
- * Simulates the vault-decryptor webapp's extractVaultFromFile function to
- * check whether it would successfully extract the vault from the given content.
+ * Retrieve the log file from the extension's storage path.
  *
- * This mirrors the exact behaviour of the vault-decryptor, including its bug:
- * attempt 3 has no try-catch, so a regex match with an invalid JSON.parse
- * throws and prevents attempts 4-7 from running.
- *
- * @param data - File content read as UTF-8 text.
- * @returns true if the vault-decryptor would successfully extract a vault.
+ * @param extensionStoragePath - The path to the extension's storage.
+ * @returns The log file path.
  */
-function canVaultDecryptorExtract(data: string): boolean {
-  // attempt 1: raw json
-  try {
-    const parsed = JSON.parse(data);
-    if (
-      typeof parsed === 'object' &&
-      typeof parsed?.data === 'string' &&
-      typeof parsed?.iv === 'string' &&
-      typeof parsed?.salt === 'string'
-    ) {
-      return true;
-    }
-  } catch {
-    // Not valid JSON: continue
-  }
-
-  // attempt 3: NO try-catch in the vault-decryptor — if this regex matches
-  // but JSON.parse fails, the error propagates and attempts 4-7 never run.
-  {
-    const matches = data.match(/"KeyringController":{"vault":"{[^{}]*}"/);
-    if (matches && matches.length) {
-      try {
-        const vaultBody = matches[0].substring(29);
-        JSON.parse(JSON.parse(vaultBody));
-        return true;
-      } catch {
-        // The vault-decryptor would throw here and stop — attempts 4-7 unreachable
-        return false;
-      }
-    }
-  }
-
-  // attempt 4
-  {
-    const matches = data.match(
-      /KeyringController":(\{"vault":".*?=\\"\}"\})/,
-    );
-    if (matches && matches.length) {
-      try {
-        const frag = matches[1];
-        const dataMatch = frag.match(/\\"data\\":\\"([A-Za-z0-9+/]*=*)/u);
-        const ivMatch = frag.match(
-          /,\\"iv\\":\\"([A-Za-z0-9+/]{10,40}=*)/u,
-        );
-        const saltMatch = frag.match(
-          /,\\"salt\\":\\"([A-Za-z0-9+/]{10,100}=*)\\"/,
-        );
-        if (dataMatch && ivMatch && saltMatch) {
-          return true;
-        }
-      } catch {
-        // continue
-      }
-    }
-  }
-
-  // attempt 5
-  {
-    const matches = data.match(
-      /"KeyringController":(\{.*?"vault":".*?=\\"\}"\})/,
-    );
-    if (matches && matches.length) {
-      try {
-        const frag = matches[1];
-        const dataMatch = frag.match(/\\"data\\":\\"([A-Za-z0-9+/]*=*)/u);
-        const ivMatch = frag.match(
-          /,\\"iv\\":\\"([A-Za-z0-9+/]{10,40}=*)/u,
-        );
-        const saltMatch = frag.match(
-          /,\\"salt\\":\\"([A-Za-z0-9+/]{10,100}=*)\\"/,
-        );
-        if (dataMatch && ivMatch && saltMatch) {
-          return true;
-        }
-      } catch {
-        // continue
-      }
-    }
-  }
-
-  // attempt 7 (most flexible pattern)
-  {
-    const vaultRegex =
-      /KeyringController[\s\S]*?"vault":"((?:[^"\\]|\\.)*)"/g;
-    let match;
-    while ((match = vaultRegex.exec(data)) !== null) {
-      try {
-        const vaultString = JSON.parse(`"${match[1]}"`);
-        const json = JSON.parse(vaultString);
-        if (
-          typeof json === 'object' &&
-          typeof json?.data === 'string' &&
-          typeof json?.iv === 'string' &&
-          typeof json?.salt === 'string'
-        ) {
-          return true;
-        }
-      } catch {
-        // continue to next match
-      }
-    }
-  }
-
-  return false;
-}
-
-/**
- * Returns the best file to upload to the vault-decryptor from the LevelDB
- * directory. Tries each database file (.log first, then .ldb) and picks
- * the first one the vault-decryptor can actually parse.
- *
- * If no raw database file is parseable (due to binary data interfering with
- * the vault-decryptor's regex-based extraction), falls back to extracting
- * the vault via the `level` library and writing it as a standalone JSON file.
- *
- * @param extensionStoragePath - The copied LevelDB directory.
- * @param originalExtensionPath - The original (live) extension storage path,
- *   used for a separate LevelDB read if needed (opening LevelDB mutates files).
- * @returns The path to the file to upload.
- */
-async function getUploadableVaultFile(
-  extensionStoragePath: string,
-  originalExtensionPath: string,
-  testTitle: string,
-): Promise<string> {
-  const allFiles = fs.readdirSync(extensionStoragePath);
-  const logFiles = allFiles.filter((f: string) => f.endsWith('.log'));
-  const ldbFiles = allFiles.filter((f: string) => f.endsWith('.ldb'));
+function getExtensionLogFile(extensionStoragePath: string): string {
+  const logFiles = fs
+    .readdirSync(extensionStoragePath)
+    .filter((filename: string) => filename.endsWith('.log'));
 
   console.log('Log Files =========================:', logFiles.length);
-
-  for (const file of [...logFiles, ...ldbFiles]) {
-    const filePath = path.resolve(extensionStoragePath, file);
-    const content = fs.readFileSync(filePath, 'utf8');
-    const size = fs.statSync(filePath).size;
-
-    if (canVaultDecryptorExtract(content)) {
-      console.log(`Vault data found in ${file} (${size} bytes)`);
-      return filePath;
-    }
-    console.log(`${file} (${size} bytes): vault-decryptor cannot parse`);
-  }
-
-  // Save unparseable database files as test artifacts so they can be
-  // downloaded from CI and used to reproduce the vault-decryptor bug.
-  const artifactDir = `./test-artifacts/chrome/${testTitle.replace(/\s+/g, '_')}`;
-  await fs.mkdir(artifactDir, { recursive: true });
-  for (const file of [...logFiles, ...ldbFiles]) {
-    const src = path.resolve(extensionStoragePath, file);
-    const dest = path.join(artifactDir, file);
-    await fs.copy(src, dest);
-    console.log(`Saved unparseable DB file as artifact: ${dest}`);
-  }
-
-  // Fallback: extract the vault via the level library and write as JSON.
-  // This is needed when the vault-decryptor's attempt 3 regex matches
-  // binary garbage and throws before the more robust attempts 4-7 can run
-  // (a known bug in the vault-decryptor's extractVaultFromFile function).
-  console.log(
-    'No raw database file is parseable by vault-decryptor, extracting vault via LevelDB',
-  );
-  let diagDir;
-  let db;
-  try {
-    diagDir = await copyDirectoryToTmp(originalExtensionPath);
-    db = new level.Level(diagDir, { valueEncoding: 'json' });
-    await db.open();
-    const keyringController = (await db.get(
-      'KeyringController',
-    )) as unknown as { vault: string };
-    const vaultFilePath = path.join(extensionStoragePath, 'vault.json');
-    await fs.writeFile(vaultFilePath, keyringController.vault);
-    console.log(`Vault extracted from LevelDB to ${vaultFilePath}`);
-    return vaultFilePath;
-  } finally {
-    if (db) {
-      await db.close();
-    }
-    if (diagDir) {
-      await fs.remove(diagDir);
-    }
-  }
+  // Use the first of the `.log` files found
+  return path.resolve(extensionStoragePath, logFiles[0]);
 }
 
 /**
@@ -281,17 +102,6 @@ async function getFileSize(filePath: string): Promise<number> {
  * @returns Resolves if the file meets the size requirement within the retries.
  * @throws {Error} If the file does not reach the minimum size after the maximum retries.
  */
-/**
- * Returns the first .log file from the extension's LevelDB directory.
- */
-function getExtensionLogFile(extensionStoragePath: string): string {
-  const logFiles = fs
-    .readdirSync(extensionStoragePath)
-    .filter((f: string) => f.endsWith('.log'));
-  console.log('Log Files =========================:', logFiles.length);
-  return path.resolve(extensionStoragePath, logFiles[0]);
-}
-
 async function waitUntilFileIsWritten({
   driver,
   maxRetries = 10,
@@ -303,8 +113,8 @@ async function waitUntilFileIsWritten({
 }): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const extensionPath = await getExtensionStorageFilePath(driver);
-    const logFile = getExtensionLogFile(extensionPath);
-    const fileSize = await getFileSize(logFile);
+    const extensionLogFile = getExtensionLogFile(extensionPath);
+    const fileSize = await getFileSize(extensionLogFile);
     if (fileSize > minFileSize) {
       console.log(`File is ready with size ${fileSize} bytes.`);
       return;
@@ -315,9 +125,34 @@ async function waitUntilFileIsWritten({
       await driver.delay(8000);
     }
   }
+  // If the loop completes without success, throw an error
   throw new Error(
     `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
   );
+}
+
+/**
+ * Saves all LevelDB database files (.log, .ldb) from the copied directory
+ * to the test-artifacts folder so they can be downloaded from CI.
+ */
+async function saveDatabaseFilesAsArtifacts(
+  copiedDir: string,
+  testTitle: string,
+): Promise<void> {
+  const allFiles = fs.readdirSync(copiedDir);
+  const dbFiles = allFiles.filter(
+    (f: string) => f.endsWith('.log') || f.endsWith('.ldb'),
+  );
+  const artifactDir = `./test-artifacts/chrome/${testTitle.replace(/\s+/g, '_')}`;
+  await fs.mkdir(artifactDir, { recursive: true });
+  for (const file of dbFiles) {
+    const src = path.resolve(copiedDir, file);
+    const dest = path.join(artifactDir, file);
+    await fs.copy(src, dest);
+    console.log(
+      `[vault-debug] Saved DB file as artifact: ${dest} (${fs.statSync(src).size} bytes)`,
+    );
+  }
 }
 
 describe('Vault Decryptor Page', function () {
@@ -350,13 +185,15 @@ describe('Vault Decryptor Page', function () {
         const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // copy LevelDB directory to a temp location, to avoid reading it while the browser is writing it
+        // copy log file to a temp location, to avoid reading it while the browser is writing it
         let copiedDir;
         try {
           copiedDir = await copyDirectoryToTmp(extensionPath);
-          const dbFileCopy = await getUploadableVaultFile(
+          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
+
+          // Save database files as CI artifacts for manual reproduction
+          await saveDatabaseFilesAsArtifacts(
             copiedDir,
-            extensionPath,
             this.test?.fullTitle() ?? 'vault-decryption',
           );
 
@@ -364,7 +201,7 @@ describe('Vault Decryptor Page', function () {
           await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
           const vaultDecryptorPage = new VaultDecryptorPage(driver);
           await vaultDecryptorPage.checkPageIsLoaded();
-          await vaultDecryptorPage.uploadLogFile(dbFileCopy);
+          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
 
           // fill the password and decrypt
           await vaultDecryptorPage.fillPassword();
@@ -456,7 +293,7 @@ describe('Vault Decryptor Page', function () {
         const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // copy LevelDB to a temp location, to avoid reading it while the browser is writing it
+        // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
           vault: string;
         };
