@@ -734,9 +734,27 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByText('Hours')).toBeInTheDocument();
       expect(screen.getByText('Days')).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
+      const morePeriodOption = screen.getByTestId(
+        'perps-candle-period-modal-30m',
+      );
+      expect(morePeriodOption).toBeInTheDocument();
+
+      fireEvent.click(morePeriodOption);
 
       expect(screen.getByText('30min')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('closes the candle period modal when the close button is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByLabelText('Close'));
+
       expect(
         screen.queryByTestId('perps-candle-period-modal'),
       ).not.toBeInTheDocument();
