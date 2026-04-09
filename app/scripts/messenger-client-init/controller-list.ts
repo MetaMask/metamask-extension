@@ -91,7 +91,7 @@ import {
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
 import { PerpsController } from '@metamask/perps-controller';
-import OnboardingController from '../controllers/onboarding';
+import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
