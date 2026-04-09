@@ -46,7 +46,7 @@ export class PatchStoreSubstreamConnection {
    * A map of request IDs to deferred promises, used to resolve pending requests
    * for `getStatePatches`.
    */
-  #pendingGetStatePatchesRequests = new Map<
+  readonly #pendingGetStatePatchesRequests = new Map<
     number,
     {
       resolve: (value: Patch[]) => void;
@@ -57,12 +57,12 @@ export class PatchStoreSubstreamConnection {
   /**
    * The substream.
    */
-  #patchStoreSubstream: Substream;
+  readonly #patchStoreSubstream: Substream;
 
   /**
    * How to handle a notification for `sendUpdate`.
    */
-  #handleSendUpdate: (
+  readonly #handleSendUpdate: (
     notification: SendUpdateNotification,
   ) => void | Promise<void>;
 
