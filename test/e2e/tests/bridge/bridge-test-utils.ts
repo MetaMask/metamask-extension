@@ -1323,6 +1323,15 @@ export const getBridgeFixtures = (
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
     });
 
   if (withErc20) {
@@ -1439,6 +1448,13 @@ export const getQuoteNegativeCasesFixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+        },
+      },
+    })
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
@@ -1585,6 +1601,11 @@ export const getInsufficientFundsFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+        },
+      },
       assetsPrice: getMockAssetsPrice(ethConversionRate),
     })
     .withBridgeControllerDefaultState()
