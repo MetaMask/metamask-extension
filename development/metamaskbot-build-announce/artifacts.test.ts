@@ -1,13 +1,7 @@
-import { readdir } from 'node:fs/promises';
-
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
-
-jest.mock('node:fs/promises');
 
 const HOST = 'https://ci.example.com';
 const VERSION = '12.0.0';
-
-const mockReaddir = jest.mocked(readdir);
 
 describe('getArtifactLinks', () => {
   it('returns URLs using the provided host, owner, repo, and runId', () => {
@@ -37,26 +31,11 @@ describe('getArtifactLinks', () => {
 });
 
 describe('buildArtifactsBody', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation();
-    // discoverBundleArtifacts reads local directory; default to empty
-    mockReaddir.mockResolvedValue(
-      [] as unknown as ReturnType<typeof readdir> extends Promise<infer T>
-        ? T
-        : never,
-    );
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-    mockReaddir.mockReset();
-  });
-
   const makeArtifacts = () =>
     getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
 
-  it('includes build links when postNewBuilds is true', async () => {
-    const result = await buildArtifactsBody({
+  it('includes build links when postNewBuilds is true', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
@@ -68,8 +47,8 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('build-dist-webpack');
   });
 
-  it('omits build links when postNewBuilds is false', async () => {
-    const result = await buildArtifactsBody({
+  it('omits build links when postNewBuilds is false', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
@@ -80,8 +59,8 @@ describe('buildArtifactsBody', () => {
     expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
   });
 
-  it('wraps everything in a collapsible details element with the sha', async () => {
-    const result = await buildArtifactsBody({
+  it('wraps everything in a collapsible details element with the sha', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
@@ -95,16 +74,8 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('storybook:');
   });
 
-  it('discovers source-map-explorer artifacts from local directory', async () => {
-    mockReaddir.mockResolvedValue([
-      'runtime.1d783a34e3a0b7e1c76d.html',
-      'ui.d8e8d0d0259de4b80f7a.html',
-      'bootstrap.8019f1c1ea55df5686cd.html',
-    ] as unknown as ReturnType<typeof readdir> extends Promise<infer T>
-      ? T
-      : never);
-
-    const result = await buildArtifactsBody({
+  it('includes a bundle analyzer link', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
@@ -113,13 +84,8 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/source-map-explorer/bootstrap.8019f1c1ea55df5686cd.html">bootstrap</a>`,
+      `<a href="${HOST}/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );
-    expect(result).toContain(
-      `<a href="${HOST}/source-map-explorer/runtime.1d783a34e3a0b7e1c76d.html">runtime</a>`,
-    );
-    expect(result).toContain(
-      `<a href="${HOST}/source-map-explorer/ui.d8e8d0d0259de4b80f7a.html">ui</a>`,
-    );
+    expect(result).toContain('bundle analyzer:');
   });
 });

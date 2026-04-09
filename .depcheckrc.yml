@@ -42,7 +42,6 @@ ignores:
   - 'jest'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
-  - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer

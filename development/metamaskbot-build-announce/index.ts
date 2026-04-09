@@ -44,7 +44,7 @@ async function start(): Promise<void> {
 
   const artifacts = getArtifactLinks(HOST_URL, OWNER, REPOSITORY, RUN_ID);
 
-  const artifactsBody = await buildArtifactsBody({
+  const artifactsBody = buildArtifactsBody({
     hostUrl: HOST_URL,
     version: VERSION,
     shortSha: HEAD_COMMIT_HASH.slice(0, 7),

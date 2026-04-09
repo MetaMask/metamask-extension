@@ -2,9 +2,6 @@
  * Artifact link construction and PR "Builds ready" section builder.
  */
 
-import { readdir } from 'node:fs/promises';
-import { join } from 'node:path';
-
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
@@ -15,6 +12,7 @@ type ArtifactLink = { url: string; label: string };
 type ArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
   bundleSizeStats: ArtifactLink;
+  bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
   storybook: ArtifactLink;
   tsMigrationDashboard: ArtifactLink;
@@ -48,6 +46,10 @@ export function getArtifactLinks(
     bundleSizeStats: {
       url: `${hostUrl}/bundle-size/bundle_size.json`,
       label: 'Bundle Size Stats',
+    },
+    bundleAnalyzer: {
+      url: `${hostUrl}/bundle-analyzer/report.html`,
+      label: 'Bundle Analyzer',
     },
     interactionStats: {
       url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.WEBPACK}-interactionUserActions.json`,
@@ -190,44 +192,6 @@ function formatBuildLinks(buildLinks: BuildLinks): string[] {
   });
 }
 
-/** Local directory where source-map-explorer.sh writes HTML reports. */
-const SOURCE_MAP_EXPLORER_DIR = join(
-  __dirname,
-  '..',
-  '..',
-  'build-artifacts',
-  'source-map-explorer',
-);
-
-/**
- * Discovers source-map-explorer bundle artifacts by reading the local
- * build-artifacts directory and returns an HTML markup list.
- *
- * @param hostUrl - Base URL for hosted artifacts.
- * @returns HTML `<ul>` string of discovered bundle links.
- */
-async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
-  let files: string[];
-  try {
-    files = (await readdir(SOURCE_MAP_EXPLORER_DIR))
-      .filter((f) => f.endsWith('.html'))
-      .sort();
-  } catch {
-    console.log('No source-map-explorer artifacts found');
-    return '<ul></ul>';
-  }
-
-  const links = files.map((file) => {
-    const label = file
-      .replace(/\.[0-9a-f]{20}\.html$/u, '')
-      .replace(/\.html$/u, '');
-    const url = `${hostUrl}/source-map-explorer/${file}`;
-    return `<a href="${url}">${label}</a>`;
-  });
-
-  return `<ul><li>${links.join(', ')}</li></ul>`;
-}
-
 /**
  * Builds the collapsible "Builds ready" artifacts body for the PR comment.
  *
@@ -239,7 +203,7 @@ async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
  * @param options.postNewBuilds - Whether to include extension build links.
  * @returns Collapsible HTML string.
  */
-export async function buildArtifactsBody({
+export function buildArtifactsBody({
   hostUrl,
   version,
   shortSha,
@@ -251,25 +215,20 @@ export async function buildArtifactsBody({
   shortSha: string;
   artifacts: ArtifactLinks;
   postNewBuilds: boolean;
-}): Promise<string> {
+}) {
   const contentRows: string[] = [];
 
   if (postNewBuilds) {
     contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
   }
 
-  const bundleMarkup = await discoverBundleArtifacts(hostUrl);
-
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeStats')}`,
+    `bundle analyzer: ${artifacts.link('bundleAnalyzer')}`,
     `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,
     `typescript migration: ${artifacts.link('tsMigrationDashboard')}`,
     artifacts.link('allArtifacts'),
-    `<details>
-       <summary>bundle viz:</summary>
-       ${bundleMarkup}
-     </details>`,
   );
 
   const hiddenContent = `<ul>${contentRows
