@@ -8,7 +8,7 @@ import {
   REWARDS_API_URL,
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
-import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
+import type { RewardsDataServiceMessenger } from '../../messenger-client-init/messengers/reward-data-service-messenger';
 import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
