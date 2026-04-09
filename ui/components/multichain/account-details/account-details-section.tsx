@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import QrCodeView from '../../ui/qr-code-view';
 
 import {
@@ -11,8 +16,6 @@ import {
   isAbleToExportAccount,
   isAbleToRevealSrp,
 } from '../../../helpers/utils/util';
-import { ButtonSecondary, ButtonSecondarySize } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -46,12 +49,12 @@ export const AccountDetailsSection = ({
     <>
       <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
-        <ButtonSecondary
+        <Button
           data-testid="account-details-display-export-private-key"
-          block
-          size={ButtonSecondarySize.Lg}
-          variant={TextVariant.bodyMd}
-          marginBottom={1}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Secondary}
+          isFullWidth
+          className="mb-1"
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
@@ -70,20 +73,20 @@ export const AccountDetailsSection = ({
           }}
         >
           {t('showPrivateKey')}
-        </ButtonSecondary>
+        </Button>
       ) : null}
       {exportSrpFeatureEnabled ? (
-        <ButtonSecondary
+        <Button
           data-testid="account-details-display-export-srp"
-          block
-          size={ButtonSecondarySize.Lg}
-          variant={TextVariant.bodyMd}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Secondary}
+          isFullWidth
           onClick={() => {
             onExportClick('SRP');
           }}
         >
           {t('showSRP')}
-        </ButtonSecondary>
+        </Button>
       ) : null}
     </>
   );
