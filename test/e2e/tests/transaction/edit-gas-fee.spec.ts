@@ -41,18 +41,21 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to high
         await transactionConfirmation.openGasFeeModal();
+        await gasFeeModal.checkEstimatesModalIsDisplayed();
         await gasFeeModal.selectHighGasFee();
 
         await transactionConfirmation.checkGasFeeLabel('Aggressive');
 
         // update estimates to medium
         await transactionConfirmation.openGasFeeModal();
+        await gasFeeModal.checkEstimatesModalIsDisplayed();
         await gasFeeModal.selectMediumGasFee();
 
         await transactionConfirmation.checkGasFeeLabel('Market');
 
         // update estimates to low
         await transactionConfirmation.openGasFeeModal();
+        await gasFeeModal.checkEstimatesModalIsDisplayed();
         await gasFeeModal.selectLowGasFee();
 
         await transactionConfirmation.checkGasFeeLabel('Slow');
@@ -159,7 +162,7 @@ describe('Editing Confirm Transaction', function () {
         await transactionConfirmation.checkGasFeeLabel('Site suggested');
 
         await transactionConfirmation.openGasFeeModal();
-        // -- should render the popover with no error
+        await gasFeeModal.checkEstimatesModalIsDisplayed();
         // this is to test in MV3 a racing issue when request for suggestedGasFees is not fetched properly
         // some data would not be defined yet
         await gasFeeModal.selectSiteSuggestedGasFee();
