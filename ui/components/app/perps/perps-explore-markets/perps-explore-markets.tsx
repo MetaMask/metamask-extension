@@ -17,6 +17,7 @@ import {
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { PerpsMarketCard } from '../perps-market-card';
+import { PERPS_CONSTANTS } from '../constants';
 import type { PerpsMarketData } from '../types';
 
 export type PerpsExploreMarketsProps = {
@@ -59,18 +60,20 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
         />
       </ButtonBase>
       <Box flexDirection={BoxFlexDirection.Column}>
-        {markets.slice(0, 10).map((market) => (
-          <PerpsMarketCard
-            key={market.symbol}
-            symbol={market.symbol}
-            name={market.name}
-            price={market.price}
-            change24hPercent={market.change24hPercent}
-            volume={market.volume}
-            onClick={handleMarketClick}
-            data-testid={`explore-markets-${market.symbol.replace(/:/gu, '-')}`}
-          />
-        ))}
+        {markets
+          .slice(0, PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT)
+          .map((market) => (
+            <PerpsMarketCard
+              key={market.symbol}
+              symbol={market.symbol}
+              name={market.name}
+              price={market.price}
+              change24hPercent={market.change24hPercent}
+              volume={market.volume}
+              onClick={handleMarketClick}
+              data-testid={`explore-markets-${market.symbol.replaceAll(':', '-')}`}
+            />
+          ))}
       </Box>
     </Box>
   );

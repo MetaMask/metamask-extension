@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import { hasVolume } from '../../../components/app/perps/utils';
-import { parseVolume } from '../../../pages/perps/utils/sortMarkets';
+import { hasVolume, parseVolume } from '../../../components/app/perps/utils';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
