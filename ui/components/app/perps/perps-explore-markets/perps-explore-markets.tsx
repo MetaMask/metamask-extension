@@ -59,7 +59,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
         />
       </ButtonBase>
       <Box flexDirection={BoxFlexDirection.Column}>
-        {markets.map((market) => (
+        {markets.slice(0, 10).map((market) => (
           <PerpsMarketCard
             key={market.symbol}
             symbol={market.symbol}
