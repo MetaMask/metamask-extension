@@ -14,8 +14,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  IconColor,
+  IconName,
   Text,
   TextAlign,
   TextColor,
@@ -41,7 +45,6 @@ import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
 import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
 import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
 import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
-import { PerpsWalletAccountHeader } from '../../components/app/perps/perps-wallet-account-header';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -364,7 +367,32 @@ const PerpsWithdrawPage: React.FC = () => {
 
   return (
     <Page data-testid="perps-withdraw-page">
-      <PerpsWalletAccountHeader />
+      <Box
+        alignItems={BoxAlignItems.Center}
+        className="bg-background-default"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        paddingLeft={3}
+        paddingRight={3}
+        paddingTop={4}
+        paddingBottom={4}
+      >
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={handleCancel}
+          color={IconColor.IconDefault}
+          data-testid="perps-withdraw-back-button"
+        />
+        <Text
+          variant={TextVariant.HeadingSm}
+          data-testid="perps-withdraw-header-title"
+        >
+          {t('perpsWithdrawFundsTitle')}
+        </Text>
+        <Box style={{ width: 32 }} />
+      </Box>
       <Content className="min-h-0 flex-1">
         <Box
           flexDirection={BoxFlexDirection.Column}

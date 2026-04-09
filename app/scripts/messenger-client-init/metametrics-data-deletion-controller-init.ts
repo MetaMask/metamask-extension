@@ -1,7 +1,9 @@
-import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
+import {
+  MetaMetricsDataDeletionController,
+  MetaMetricsDataDeletionControllerMessenger,
+} from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { ControllerInitFunction } from './types';
-import { MetaMetricsDataDeletionControllerMessenger } from './messengers';
 
 /**
  * Initialize the MetaMetrics data deletion controller.
