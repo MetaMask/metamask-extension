@@ -374,6 +374,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
         });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+        });
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: new Error(message),
           isPartialClose,

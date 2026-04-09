@@ -321,6 +321,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
           [PERPS_EVENT_PROPERTY.SIZE]: position.size,
         });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
           description: failMessage,
