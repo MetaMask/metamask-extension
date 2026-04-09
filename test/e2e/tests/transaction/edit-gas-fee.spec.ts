@@ -156,7 +156,7 @@ describe('Editing Confirm Transaction', function () {
 
         // check transaction in extension popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector({ text: 'Site suggested' });
+        await transactionConfirmation.checkGasFeeLabel('Site suggested');
 
         await transactionConfirmation.openGasFeeModal();
         // -- should render the popover with no error
@@ -164,7 +164,7 @@ describe('Editing Confirm Transaction', function () {
         // some data would not be defined yet
         await gasFeeModal.selectSiteSuggestedGasFee();
 
-        await transactionConfirmation.checkGasFee('0.001 ETH');
+        await transactionConfirmation.checkGasFeeEstimate('0.001 ETH');
 
         // has correct updated value on the confirm screen the transaction
         await transactionConfirmation.checkGasFeeFiat('$3.15');

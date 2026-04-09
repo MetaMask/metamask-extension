@@ -47,6 +47,10 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeCloseToastMessage: RawLocator =
     '.toasts-container__banner-base button[aria-label="Close"]';
 
+  private readonly gasFeeEstimate = (amount: string): RawLocator => ({
+    text: amount,
+  });
+
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
@@ -226,10 +230,18 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async checkGasFee(amountToken: string) {
+    console.log(
+      `Checking gas fee ${amountToken} is displayed on transaction confirmation page.`,
+    );
     await this.driver.findElement({
       css: this.gasFeeText,
       text: amountToken,
     });
+  }
+
+  async checkGasFeeEstimate(amount: string): Promise<void> {
+    console.log(`Checking gas fee estimate ${amount} is displayed`);
+    await this.driver.waitForSelector(this.gasFeeEstimate(amount));
   }
 
   async checkGasFeeFiat(amountFiat: string) {
