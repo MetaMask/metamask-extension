@@ -12,6 +12,10 @@ const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
+  const defaultDecimalChainId = '1337';
+  const decimalChainId = inputChainId.startsWith('0x')
+    ? parseInt(inputChainId, 16).toString()
+    : defaultDecimalChainId;
   return {
     data: {
       AuthenticationController: {
@@ -310,7 +314,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AssetsController: {
         assetsBalance: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            'eip155:1337/slip44:60': { amount: '25' },
+            [`eip155:${decimalChainId}/slip44:60`]: { amount: '25' },
           },
         },
       },
