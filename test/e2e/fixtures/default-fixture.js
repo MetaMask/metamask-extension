@@ -307,6 +307,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         initialEnqueueCompleted: false,
         syncQueue: {},
       },
+      AssetsController: {
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:60': { amount: '25' },
+          },
+        },
+      },
       config: {},
     },
   };
