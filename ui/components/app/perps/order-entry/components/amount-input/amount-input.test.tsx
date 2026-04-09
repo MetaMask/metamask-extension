@@ -224,49 +224,191 @@ describe('AmountInput', () => {
       const input = container.querySelector('input');
       expect(input).toHaveValue('1000.50');
     });
-
-    it('floors amount to 2 decimals on blur', () => {
-      const onAmountChange = jest.fn();
-      renderWithProvider(
-        <AmountInput
-          {...defaultProps}
-          amount="3.067"
-          onAmountChange={onAmountChange}
-        />,
-        mockStore,
-      );
-
-      const container = screen.getByTestId('amount-input-field');
-      const input = container.querySelector('input');
-      expect(input).not.toBeNull();
-      fireEvent.blur(input as HTMLInputElement);
-
-      expect(onAmountChange).toHaveBeenCalledWith('3.06');
-    });
   });
 
-  describe('token input', () => {
-    it('floors converted USD amount to 2 decimals', () => {
-      const onAmountChange = jest.fn();
+  describe('token display', () => {
+    it('displays token amount as size divided by price (not multiplied by leverage)', () => {
       renderWithProvider(
         <AmountInput
           {...defaultProps}
-          onAmountChange={onAmountChange}
-          availableBalance={3.066}
-          currentPrice={1}
-          leverage={1}
+          amount="9000"
+          leverage={10}
+          currentPrice={45000}
         />,
         mockStore,
       );
 
       const container = screen.getByTestId('amount-input-token-field');
       const input = container.querySelector('input');
-      expect(input).not.toBeNull();
+      // Size $9000 / price $45000 = 0.2 BTC (not 0.2 × 10 = 2)
+      expect(input).toHaveValue('0.2');
+    });
+  });
+
+  describe('leveraged size calculations', () => {
+    it('computes balance percent using max size (available × leverage)', () => {
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={10}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      // Size $5000 with available $1000 × 10x leverage = max size $10000
+      // So $5000 / $10000 = 50%
       fireEvent.change(input as HTMLInputElement, {
-        target: { value: '3.067' },
+        target: { value: '5000' },
       });
 
-      expect(onAmountChange).toHaveBeenCalledWith('3.06');
+      expect(onBalancePercentChange).toHaveBeenCalledWith(50);
+    });
+
+    it('caps percent at 100% when size exceeds max leveraged size', () => {
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={5}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      // Max size = $1000 × 5 = $5000. Entering $6000 should cap at 100%
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '6000' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+    });
+  });
+
+  describe('token input', () => {
+    it('converts token amount to USD size and updates percent', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={5}
+          currentPrice={50000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      // 0.1 BTC × $50000 = $5000 size
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '0.1' },
+      });
+
+      // USD = tokens × price = $5000
+      expect(onAmountChange).toHaveBeenCalledWith('5000.00');
+      // Percent = $5000 / ($1000 × 5) = 100%
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+    });
+
+    it('rejects non-numeric token input', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: 'abc' },
+      });
+
+      expect(onAmountChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('percent input', () => {
+    it('sets amount from percent using leveraged max size', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={8}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      // 50% of ($1000 × 8) = 50% of $8000 = $4000
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '50' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(50);
+      expect(onAmountChange).toHaveBeenCalledWith('4000.00');
+    });
+
+    it('clears amount when percent changes to 0', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          availableBalance={1000}
+          leverage={5}
+          balancePercent={50}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, { target: { value: '0' } });
+
+      expect(onAmountChange).toHaveBeenCalledWith('');
+    });
+
+    it('clamps to max leveraged size on blur when percent exceeds 100', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={4}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      // Type 150 then blur — triggers clamp to 100
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '150' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      // 100% of ($1000 × 4) = $4000
+      expect(onAmountChange).toHaveBeenCalledWith('4000.00');
     });
   });
 
@@ -275,81 +417,6 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
-    });
-  });
-
-  describe('percent input', () => {
-    it('does not underflow at 100% for IEEE-754 edge values', () => {
-      const onAmountChange = jest.fn();
-      const onBalancePercentChange = jest.fn();
-      renderWithProvider(
-        <AmountInput
-          {...defaultProps}
-          onAmountChange={onAmountChange}
-          onBalancePercentChange={onBalancePercentChange}
-          availableBalance={1.15}
-        />,
-        mockStore,
-      );
-
-      const container = screen.getByTestId('balance-percent-input');
-      const input = container.querySelector('input');
-      expect(input).not.toBeNull();
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '100' },
-      });
-
-      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
-      expect(onAmountChange).toHaveBeenCalledWith('1.15');
-    });
-
-    it('floors generated 100% amount to 2 decimals', () => {
-      const onAmountChange = jest.fn();
-      const onBalancePercentChange = jest.fn();
-      renderWithProvider(
-        <AmountInput
-          {...defaultProps}
-          onAmountChange={onAmountChange}
-          onBalancePercentChange={onBalancePercentChange}
-          availableBalance={3.066}
-        />,
-        mockStore,
-      );
-
-      const container = screen.getByTestId('balance-percent-input');
-      const input = container.querySelector('input');
-      expect(input).not.toBeNull();
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '100' },
-      });
-
-      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
-      expect(onAmountChange).toHaveBeenCalledWith('3.06');
-    });
-
-    it('floors clamped amount when percent input is above 100 on blur', () => {
-      const onAmountChange = jest.fn();
-      const onBalancePercentChange = jest.fn();
-      renderWithProvider(
-        <AmountInput
-          {...defaultProps}
-          onAmountChange={onAmountChange}
-          onBalancePercentChange={onBalancePercentChange}
-          availableBalance={3.066}
-        />,
-        mockStore,
-      );
-
-      const container = screen.getByTestId('balance-percent-input');
-      const input = container.querySelector('input');
-      expect(input).not.toBeNull();
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '101' },
-      });
-      fireEvent.blur(input as HTMLInputElement);
-
-      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
-      expect(onAmountChange).toHaveBeenCalledWith('3.06');
     });
   });
 });

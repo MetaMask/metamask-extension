@@ -215,15 +215,11 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       <div
         style="display: contents;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
-          >
-            Select amount
-          </p>
-        </div>
+          Select amount
+        </p>
       </div>
     </div>
   </div>
@@ -452,15 +448,11 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       <div
         style="display: contents;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
-          >
-            Select token
-          </p>
-        </div>
+          Select token
+        </p>
       </div>
     </div>
   </div>

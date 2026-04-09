@@ -1,15 +1,13 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { sumHexes } from '../../../../shared/lib/conversion.utils';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getNativeTokenCachedBalanceByChainIdSelector,
-} from '../../../selectors';
+import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
+import { useNativeCurrencySymbol } from '../components/confirm/info/hooks/useNativeCurrencySymbol';
 
 const ZERO_HEX_FALLBACK = '0x0';
 
@@ -42,19 +40,15 @@ export function useHasInsufficientBalance(): {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const [multichainNetworks, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
-
-  const nativeCurrency = (
-    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
-  )?.nativeCurrency;
-
+  const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
     gasTotal: maxFeeHex,
     balance,
   });
 
-  return { hasInsufficientBalance: insufficientBalance, nativeCurrency };
+  return {
+    hasInsufficientBalance: insufficientBalance,
+    nativeCurrency: nativeCurrencySymbol,
+  };
 }

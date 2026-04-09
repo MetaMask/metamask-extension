@@ -271,3 +271,36 @@ export function mapHardwareWalletRecoveryErrorType(
       return MetaMetricsHardwareWalletRecoveryErrorType.GenericError;
   }
 }
+
+let inlineCtaLastErrorIdentityKey: string | null = null;
+let inlineCtaConsecutiveClickCount = 0;
+
+/**
+ * Returns the next `error_type_view_count` for inline “Connect device” recovery CTAs
+ * (bridge / confirmation footer). Increments when the same error identity is tracked
+ * again; resets to 1 when the identity changes.
+ *
+ * @param errorIdentityKey - Stable key for the current error context (aligned with
+ * `errorIdentityKey` in `hardware-wallet-error-modal.tsx`, plus `walletType` for inline CTAs).
+ * @returns Monotonic count for this identity within the current streak.
+ */
+export function nextHardwareWalletRecoveryInlineCtaViewCount(
+  errorIdentityKey: string,
+): number {
+  if (inlineCtaLastErrorIdentityKey === errorIdentityKey) {
+    inlineCtaConsecutiveClickCount += 1;
+  } else {
+    inlineCtaLastErrorIdentityKey = errorIdentityKey;
+    inlineCtaConsecutiveClickCount = 1;
+  }
+  return inlineCtaConsecutiveClickCount;
+}
+
+/**
+ * Clears inline CTA view-count state. Call when the device is successfully ready or the
+ * connection is fully reset so the next recovery attempt starts at 1.
+ */
+export function resetHardwareWalletRecoveryInlineCtaViewCount(): void {
+  inlineCtaLastErrorIdentityKey = null;
+  inlineCtaConsecutiveClickCount = 0;
+}

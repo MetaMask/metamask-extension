@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
+import * as streamHooks from '../../../hooks/perps/stream';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 
@@ -24,6 +25,12 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('./perps-toast', () => ({
+  PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="perps-toast-provider-mock">{children}</div>
+  ),
+}));
+
 jest.mock('../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   usePerpsController: () => ({
@@ -33,32 +40,43 @@ jest.mock('../../../providers/perps', () => ({
   }),
 }));
 
-// Mock the perps stream hooks
-jest.mock('../../../hooks/perps/stream', () => ({
-  usePerpsLivePositions: () => ({
-    positions: mocks.mockPositions,
-    isInitialLoading: false,
-  }),
-  usePerpsLiveOrders: () => ({
-    orders: mocks.mockOrders,
-    isInitialLoading: false,
-  }),
-  usePerpsLiveAccount: () => ({
-    account: mocks.mockAccountState,
-    isInitialLoading: false,
-  }),
-  usePerpsLiveMarketData: () => ({
-    markets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
-    cryptoMarkets: mocks.mockCryptoMarkets,
-    hip3Markets: mocks.mockHip3Markets,
-    isInitialLoading: false,
-  }),
+// Mock the perps stream hooks (jest.fn so individual tests can override return values)
+jest.mock('../../../hooks/perps/stream', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {
+    usePerpsLivePositions: jest.fn(() => ({
+      positions: streamMocks.mockPositions,
+      isInitialLoading: false,
+    })),
+    usePerpsLiveOrders: jest.fn(() => ({
+      orders: streamMocks.mockOrders,
+      isInitialLoading: false,
+    })),
+    usePerpsLiveAccount: jest.fn(() => ({
+      account: streamMocks.mockAccountState,
+      isInitialLoading: false,
+    })),
+    usePerpsLiveMarketData: jest.fn(() => ({
+      markets: [
+        ...streamMocks.mockCryptoMarkets,
+        ...streamMocks.mockHip3Markets,
+      ],
+      cryptoMarkets: streamMocks.mockCryptoMarkets,
+      hip3Markets: streamMocks.mockHip3Markets,
+      isInitialLoading: false,
+    })),
+  };
+});
+
+jest.mock('./perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
 }));
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
     isTestnet: false,
+    isFirstTimeUser: { testnet: false, mainnet: false },
     watchlistMarkets: {
       testnet: [],
       mainnet: ['BTC', 'ETH'],
@@ -70,6 +88,14 @@ describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+      positions: mocks.mockPositions,
+      isInitialLoading: false,
+    });
+    jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
+      orders: mocks.mockOrders,
+      isInitialLoading: false,
+    });
     mockGetPerpsStreamManager.mockReturnValue({
       init: jest.fn().mockResolvedValue(undefined),
       prewarm: jest.fn(),
@@ -84,7 +110,7 @@ describe('PerpsView', () => {
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-tab-view')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
     });
 
     it('renders the balance dropdown', () => {
@@ -145,11 +171,13 @@ describe('PerpsView', () => {
       expect(screen.getByText(/open orders/iu)).toBeInTheDocument();
     });
 
-    it('displays close all option in positions section', () => {
+    // TODO: TAT-2852 - Restore when batch close/cancel is implemented
+    it('does not display close all option in positions section while hidden', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      const closeAllElements = screen.getAllByText(/close all/iu);
-      expect(closeAllElements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.queryByTestId('perps-close-all-positions'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows Support & Learn section with Learn basics', () => {
@@ -182,6 +210,31 @@ describe('PerpsView', () => {
       ).toBeInTheDocument();
     });
 
+    it('filters out order and funding transactions from Recent Activity', () => {
+      // mockTransactions contains trades (tx-001, tx-002, tx-002b),
+      // a funding entry (tx-003), orders (tx-004 to tx-004d), and a deposit (tx-005)
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // Trade and deposit cards should be shown
+      expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-005')).toBeInTheDocument();
+
+      // Funding and order cards must not appear in Recent Activity
+      expect(
+        screen.queryByTestId('transaction-card-tx-003'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transaction-card-tx-004'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows watchlist when mock watchlist symbols match market data', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -190,6 +243,14 @@ describe('PerpsView', () => {
   });
 
   describe('component structure', () => {
+    it('does not own a PerpsToastProvider wrapper', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-toast-provider-mock'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders positions before orders', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -201,7 +262,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-tab-view');
+      const view = screen.getByTestId('perps-view');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),
@@ -214,8 +275,9 @@ describe('PerpsView', () => {
     });
   });
 
+  // TODO: TAT-2852 - Restore/unskip when batch close/cancel is implemented
   describe('close all and cancel all', () => {
-    it('calls batch close and applies a single positions snapshot', async () => {
+    it.skip('calls batch close and applies a single positions snapshot', async () => {
       const clearAll = jest.fn();
       const pushPositions = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
@@ -257,7 +319,7 @@ describe('PerpsView', () => {
       expect(pushPositions).toHaveBeenCalledWith([]);
     });
 
-    it('calls batch cancel and applies a single orders snapshot', async () => {
+    it.skip('calls batch cancel and applies a single orders snapshot', async () => {
       const ordersPush = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
         init: jest.fn().mockResolvedValue(undefined),
@@ -295,6 +357,107 @@ describe('PerpsView', () => {
       });
       expect(ordersPush).toHaveBeenCalledTimes(1);
       expect(ordersPush).toHaveBeenCalledWith([]);
+    });
+
+    it('does not show cancel all when only TP/SL trigger orders are open', () => {
+      jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
+        orders: [
+          {
+            orderId: 'tp-only-1',
+            symbol: 'ARB',
+            side: 'sell',
+            orderType: 'limit',
+            size: '500.0',
+            originalSize: '500.0',
+            price: '1.15',
+            filledSize: '0',
+            remainingSize: '500.0',
+            status: 'open',
+            timestamp: Date.now(),
+            isTrigger: true,
+            triggerPrice: '1.15',
+            detailedOrderType: 'Take Profit Limit',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-cancel-all-orders'),
+      ).not.toBeInTheDocument();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsCancelOrders',
+        [{ cancelAll: true }],
+      );
+    });
+
+    it.skip('refreshes open orders when cancel all returns success false with no failures', async () => {
+      const ordersPush = jest.fn();
+      mockGetPerpsStreamManager.mockReturnValue({
+        init: jest.fn().mockResolvedValue(undefined),
+        prewarm: jest.fn(),
+        cleanupPrewarm: jest.fn(),
+        clearAllOptimisticTPSL: jest.fn(),
+        pushPositionsWithOverrides: jest.fn(),
+        orders: { pushData: ordersPush },
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsCancelOrders') {
+          return Promise.resolve({
+            success: false,
+            successCount: 0,
+            failureCount: 0,
+          });
+        }
+        if (method === 'perpsGetOpenOrders') {
+          return Promise.resolve([]);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-cancel-all-orders'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+      });
+      expect(ordersPush).toHaveBeenCalledWith([]);
+      expect(
+        screen.queryByText(/couldn't load this page/iu),
+      ).not.toBeInTheDocument();
+    });
+
+    it.skip('shows batch error when cancel all reports failures', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsCancelOrders') {
+          return Promise.resolve({
+            success: false,
+            successCount: 0,
+            failureCount: 1,
+          });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-cancel-all-orders'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/couldn't load this page/iu),
+        ).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetOpenOrders',
+        [],
+      );
     });
   });
 });

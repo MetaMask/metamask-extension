@@ -464,7 +464,6 @@ export class SubscriptionService {
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        // @ts-expect-error type is resolved when @metamask/subscription-controller upgrades to @metamask/transaction-controller v63
         txMeta,
         isSponsored,
         rewardAccountId,

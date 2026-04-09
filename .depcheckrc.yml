@@ -40,10 +40,8 @@ ignores:
   - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
-  - 'lavamoat-viz'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
-  - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer
@@ -70,6 +68,7 @@ ignores:
   - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
+  - 'webpack-bundle-analyzer' # build tool
   - 'postcss-loader' # build tool
   - '@swc/helpers' # build tool
   - 'browserslist' # build tool

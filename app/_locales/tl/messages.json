@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Bayad sa bridge"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Mag-fetch ng bago?"
-  },
   "bridgeFromTo": {
     "message": "I-bridge ang $1 $2 sa $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Babala sa epekto ng presyo"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Nag-time out ang quote mo."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Nakaayos ang mga quote ayon sa tinatayang kabuuang halaga, kasama ang rate ng palitan at bayad sa network."
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "Mula sa/kay"
   },
-  "fromTokenLists": {
-    "message": "Mula sa mga listahan ng token: $1"
-  },
   "function": {
     "message": "Function: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Huwag pansinin ang lahat"
-  },
-  "ignoreTokenWarning": {
-    "message": "Kapag nagtago ka ng mga token, hindi iyon ipapakita sa iyong wallet. Gayunpaman, maaari mo pa ring idagdag ang mga ito sa pamamagitan ng paghahanap sa kanila."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
-  "importSelectedTokens": {
-    "message": "Mag-import ng napiling mga token?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Tanging ang mga token na iyong pinili ang lalabas sa iyong wallet. Maaari kang palaging mag-import ng mga nakatagong token sa ibang pagkakataon sa pamamagitan ng paghahanap sa kanila."
-  },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Na-import ang wallet na $1",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Mag-import ng $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Na-import",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Ikini-claim sa",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "I-claim ang bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Alamin kung paano"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 bagong token ang nakita sa account na ito",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 bagong token ang nakita sa account na ito"
   },
   "numberOfTokens": {
     "message": "Bilang ng token"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "Isara ang Short"
   },
-  "perpsClosedShort": {
-    "message": "Naisara ang short"
-  },
   "perpsConfirmCloseLong": {
     "message": "Isara ang Long"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "kasama ang P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Dinagdagan ang posisyon"
-  },
   "perpsLearnBasics": {
     "message": "Matutunan ang mga pangunahing kaalaman tungkol sa perps"
   },
@@ -5537,9 +5495,6 @@
     "message": "Magbukas ng Short na $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Bukas na long"
-  },
   "perpsOraclePrice": {
     "message": "Oracle Price"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Laki"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Rate ng pagpopondo: mataas pababa"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Rate ng pagpopondo: mababa pataas"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Open na interes: mataas pababa"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Open na interes: mababa pataas"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Pagbabago ng presyo: mataas pababa"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Pagbabago ng presyo: mababa pataas"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Dami: mataas pababa"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Dami: mababa pataas"
   },
   "perpsStartNewTrade": {
     "message": "Magsimula ng bagong trade"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Pakikumpirma"
-  },
-  "plusXMore": {
-    "message": "+ $1 pa",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog post."
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "Mga detalye ng token"
   },
-  "tokenFoundTitle": {
-    "message": "1 bagong token ang nakita"
-  },
   "tokenId": {
     "message": "ID ng Token"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "mga Token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 bagong token ang nakita",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Mga token sa koleksyon"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Inaaprubahan mo"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Tinanggihan mo ang transaksyon."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

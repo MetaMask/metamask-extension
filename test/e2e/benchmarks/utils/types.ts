@@ -1,12 +1,27 @@
 import type {
   Persona,
   BenchmarkType,
+  WebVitalsMetrics,
+  WebVitalsSummary,
+  TimerStatistics,
   ThresholdViolation,
 } from '../../../../shared/constants/benchmarks';
 
 export type TimerResult = {
   id: string;
+  /** Numeric value: duration in ms, or a count when unit is 'count'. */
+  value: number;
+  /** Defaults to 'ms'. Non-duration entries (e.g. counts) use 'count'. */
+  unit?: 'ms' | 'count';
+};
+
+export type LongTaskStepResult = {
+  id: string;
   duration: number;
+  longTaskCount: number;
+  longTaskTotalDuration: number;
+  longTaskMaxDuration: number;
+  tbt: number;
 };
 
 export type PageLoadBenchmarkOptions = {
@@ -34,14 +49,26 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
+  longTaskCount?: number;
+  longTaskTotalDuration?: number;
+  longTaskMaxDuration?: number;
+  tbt?: number;
 };
 
-/** User action result with testTitle, persona and numeric timing metrics. */
+export type MeasurePageResult = {
+  metrics: Metrics[];
+  title: string;
+  persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
+};
+
+/** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
   persona: Persona;
+  webVitals?: WebVitalsMetrics;
   benchmarkType?: BenchmarkType;
-  [key: string]: string | number | undefined;
+  [key: string]: string | number | WebVitalsMetrics | undefined;
 };
 
 export type BenchmarkArguments = {
@@ -59,25 +86,11 @@ export type NetworkReport = {
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
+  /** Per-run web vitals snapshot captured at end of measurement */
+  webVitals?: WebVitalsMetrics;
   success: boolean;
   error?: string;
   benchmarkType?: BenchmarkType;
-};
-
-export type TimerStatistics = {
-  id: string;
-  mean: number;
-  min: number;
-  max: number;
-  stdDev: number;
-  cv: number; // Coefficient of Variation
-  p50: number;
-  p75: number;
-  p95: number;
-  p99: number;
-  samples: number;
-  outliers: number;
-  dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
 export type BenchmarkSummary = {
@@ -96,6 +109,46 @@ export type BenchmarkSummary = {
   thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
+};
+
+/**
+ * Web vitals–style metrics for one Playwright dapp page-load sample (ms unless noted).
+ */
+export type DappPageLoadMetric = {
+  /** Navigation start → load event end */
+  pageLoadTime: number;
+  domContentLoaded: number;
+  firstPaint: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint: number;
+  memoryUsage?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+};
+
+/**
+ * One raw measurement from a Playwright dapp page-load benchmark run.
+ */
+export type DappPageLoadSample = {
+  page: string;
+  run: number;
+  metrics: DappPageLoadMetric;
+  timestamp: number;
+};
+
+/**
+ * Aggregated web-vitals per URL for the Playwright dapp benchmark, using the same
+ * {@link TimerStatistics} concept as {@link BenchmarkSummary} (`timers` array).
+ * Aggregate with `aggregateDappPageLoadStatistics` in `test/e2e/benchmarks/flows/dapp-page-load/dapp-page-load-stats.ts`,
+ * then convert via `dappPageLoadStatsToBenchmarkResults`.
+ */
+export type DappPageLoadStats = {
+  page: string;
+  timers: TimerStatistics[];
 };
 
 export type PerformanceBenchmarkResults = {
@@ -104,3 +157,9 @@ export type PerformanceBenchmarkResults = {
 };
 
 export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
+
+/** Return type for user-action measurement functions inside flows */
+export type UserActionMeasurement = {
+  timers: TimerResult[];
+  webVitals?: WebVitalsMetrics;
+};

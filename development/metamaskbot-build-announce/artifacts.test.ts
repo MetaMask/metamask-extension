@@ -31,76 +31,61 @@ describe('getArtifactLinks', () => {
 });
 
 describe('buildArtifactsBody', () => {
-  const mockFetch = jest.fn();
-
-  beforeEach(() => {
-    global.fetch = mockFetch;
-    jest.spyOn(console, 'log').mockImplementation();
-    // discoverBundleArtifacts HEAD requests all return not-found by default
-    mockFetch.mockResolvedValue({ ok: false } as Response);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-    mockFetch.mockReset();
-  });
-
   const makeArtifacts = () =>
     getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
 
-  it('includes build links when postNewBuilds is true', async () => {
-    const result = await buildArtifactsBody({
+  it('includes build links when postNewBuilds is true', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: true,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('build-dist-webpack');
   });
 
-  it('omits build links when postNewBuilds is false', async () => {
-    const result = await buildArtifactsBody({
+  it('omits build links when postNewBuilds is false', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
   });
 
-  it('includes lavamoat viz link when lavamoatPolicyChanged is true', async () => {
-    const result = await buildArtifactsBody({
+  it('wraps everything in a collapsible details element with the sha', () => {
+    const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
-      lavamoatPolicyChanged: true,
-    });
-
-    expect(result).toContain('lavamoat build viz');
-  });
-
-  it('wraps everything in a collapsible details element with the sha', async () => {
-    const result = await buildArtifactsBody({
-      hostUrl: HOST,
-      version: VERSION,
-      shortSha: 'abc1234',
-      artifacts: makeArtifacts(),
-      postNewBuilds: false,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).toContain('<details>');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).toContain('bundle size:');
     expect(result).toContain('storybook:');
+  });
+
+  it('includes a bundle analyzer link', () => {
+    const result = buildArtifactsBody({
+      hostUrl: HOST,
+      version: VERSION,
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: false,
+    });
+
+    expect(result).toContain(
+      `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
+    );
+    expect(result).toContain('bundle analyzer:');
   });
 });

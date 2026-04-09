@@ -34,15 +34,18 @@ import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
-jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
-      state: {},
-      name: 'PerpsController',
-    },
-    api: {},
+jest.mock(
+  '../../app/scripts/messenger-client-init/perps-controller-init',
+  () => ({
+    PerpsControllerInit: jest.fn().mockReturnValue({
+      controller: {
+        state: {},
+        name: 'PerpsController',
+      },
+      api: {},
+    }),
   }),
-}));
+);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -2851,37 +2854,6 @@ describe('Actions', () => {
       expect(
         addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
       ).toBe(true);
-    });
-  });
-
-  describe('#setUseBlockie', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setUseBlockie in background', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().resolves();
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockieStub.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setUseBlockie in background throws', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().rejects(new Error('error'));
-
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
