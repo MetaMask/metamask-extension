@@ -118,6 +118,7 @@ export const BridgePriceImpactWarningModal = ({
           </Text>
           {formattedPriceImpactFiat && isPriceImpactError && (
             <BannerAlert
+              data-testid="bridge-alert-modal-banner"
               severity={BannerAlertSeverity.Danger}
               description={t('bridgePriceImpactFiatAlert', [
                 formattedPriceImpactFiat,
@@ -134,6 +135,7 @@ export const BridgePriceImpactWarningModal = ({
                 variant={ButtonVariant.Secondary}
                 disabled={isSubmitting}
                 isLoading={isSubmitting}
+                data-testid="bridge-alert-modal-proceed-button"
                 onClick={async () => {
                   if (activeQuote) {
                     await submitBridgeTransaction(activeQuote);

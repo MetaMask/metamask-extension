@@ -642,6 +642,7 @@ const PrepareBridgePage = ({
               title={t('bridgeMarketClosedTitle')}
               description={t('bridgeMarketClosedDescription')}
               textAlign={TextAlign.Left}
+              data-testid="bridge-market-closed"
             />
           </Column>
         )}
@@ -656,10 +657,7 @@ const PrepareBridgePage = ({
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t(bridgeUnavailableQuotesReason)}
-                data-testid="bridge-error-banner"
-                descriptionProps={{
-                  'data-testid': 'bridge-no-options-available',
-                }}
+                data-testid="bridge-no-quotes"
                 textAlign={TextAlign.Left}
               />
             </Column>
@@ -720,6 +718,7 @@ const PrepareBridgePage = ({
         paddingInline={4}
         gap={4}
         backgroundColor={BackgroundColor.backgroundDefault}
+        data-testid="bridge-banner-alerts"
       >
         {isUsingHardwareWallet &&
           isTxSubmittable &&
@@ -749,6 +748,7 @@ const PrepareBridgePage = ({
           )}
         {txAlert && activeQuote && (
           <BannerAlert
+            data-testid="bridge-tx-alert"
             severity={BannerAlertSeverity.Danger}
             title={t(txAlert.titleId)}
             description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
@@ -757,6 +757,7 @@ const PrepareBridgePage = ({
         )}
         {tokenAlert && isTokenAlertBannerOpen && (
           <BannerAlert
+            data-testid="bridge-token-warning-alert"
             title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
             severity={
               tokenAlert.type === TokenFeatureType.MALICIOUS
@@ -785,9 +786,7 @@ const PrepareBridgePage = ({
                   : 'bridgeValidationInsufficientGasMessage',
                 [ticker],
               )}
-              descriptionProps={{
-                'data-testid': 'bridge-insufficient-gas-for-quote',
-              }}
+              data-testid="bridge-insufficient-gas"
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}

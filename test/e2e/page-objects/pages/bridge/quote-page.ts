@@ -62,10 +62,9 @@ class BridgeQuotePage {
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
-  private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
+  private noOptionAvailable = '[data-testid="bridge-no-quotes"]';
 
-  private moreETHneededForGas =
-    '[data-testid="bridge-insufficient-gas-for-quote"]';
+  private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 

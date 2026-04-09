@@ -348,7 +348,6 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
-      "Reselect: Identity function warnings": 1,
       "error: Error: Insufficient number of substitutions": 1
     },
     "ui/components/app/update-modal/update-modal.test.tsx": {
@@ -698,6 +697,14 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
+    },
+    "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 38,
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/prepare/components/destination-account-picker-modal.test.tsx": {
       "Reselect: Input stability warnings": 1

@@ -225,6 +225,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
   </div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+    data-testid="bridge-banner-alerts"
   >
     <div />
   </div>
@@ -458,6 +459,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
   </div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+    data-testid="bridge-banner-alerts"
   >
     <div />
   </div>

@@ -1,22 +1,25 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import {
+  formatAddressToAssetId,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-import { DummyQuotesNoApproval } from '../../../../test/data/bridge/dummy-quotes';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import configureStore from '../../../store/store';
-import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
-import * as useSubmitBridgeTransactionModule from '../hooks/useSubmitBridgeTransaction';
-import { BridgePriceImpactWarningModal } from './bridge-price-impact-modal';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
+import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { DummyQuotesNoApproval } from '../../../../../test/data/bridge/dummy-quotes';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../store/store';
+import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
+import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
+import { BridgePriceImpactWarningModal } from '../bridge-price-impact-modal';
 
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
 
-jest.mock('../hooks/useSubmitBridgeTransaction', () => ({
+jest.mock('../../hooks/useSubmitBridgeTransaction', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
@@ -28,40 +31,32 @@ jest.mock('../hooks/useSubmitBridgeTransaction', () => ({
 const renderModal = (
   variant: 'submit-cta' | 'quote-card' | null = null,
   priceImpact: string = '0.05',
+  stateOverrides = {},
+  quotes = mockBridgeQuotesNativeErc20,
 ) => {
+  const toToken = {
+    ...quotes[0].quote.destAsset,
+    assetId: formatAddressToAssetId(
+      quotes[0].quote.destAsset.address,
+      quotes[0].quote.destChainId,
+    ),
+  };
   const mockStore = configureStore(
     createBridgeMockStore({
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
+        quotes: quotes.map((quote) => ({
           ...quote,
           quote: {
             ...quote.quote,
             priceData: { ...quote.quote.priceData, priceImpact },
-          },
-        })) as unknown as QuoteResponse[],
-      },
-    }),
-  );
-  return renderWithProvider(
-    <HardwareWalletProvider>
-      <BridgePriceImpactWarningModal variant={variant} onClose={mockOnClose} />
-    </HardwareWalletProvider>,
-    mockStore,
-  );
-};
-
-const renderModalWithFiat = (
-  variant: 'submit-cta' | 'quote-card' | null = null,
-  priceImpact: string = '0.05',
-) => {
-  const mockStore = configureStore(
-    createBridgeMockStore({
-      bridgeStateOverrides: {
-        quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-          ...quote,
-          quote: {
-            ...quote.quote,
-            priceData: { priceImpact },
+            srcAsset: {
+              ...quote.quote.srcAsset,
+              assetId: formatAddressToAssetId(
+                quote.quote.srcAsset.address,
+                quote.quote.srcChainId,
+              ),
+            },
+            destAsset: toToken,
           },
         })) as unknown as QuoteResponse[],
         quoteRequest: {
@@ -71,14 +66,14 @@ const renderModalWithFiat = (
           destTokenAddress: zeroAddress(),
         },
       },
-      metamaskStateOverrides: {
-        currentCurrency: 'usd',
-        currencyRates: {
-          ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
-        },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken,
       },
+      ...stateOverrides,
     }),
   );
+
   return renderWithProvider(
     <HardwareWalletProvider>
       <BridgePriceImpactWarningModal variant={variant} onClose={mockOnClose} />
@@ -86,6 +81,7 @@ const renderModalWithFiat = (
     mockStore,
   );
 };
+
 describe('BridgePriceImpactModal', () => {
   it('should not render the component when variant is null', () => {
     const { baseElement } = renderModal();
@@ -183,15 +179,58 @@ describe('BridgePriceImpactModal', () => {
 
     // @ts-expect-error: each is a valid test function in jest
     it.each([
-      '0.07', // warning
-      '0.27', // error
+      ['', 'warning', '0.07', {}, undefined],
+      [
+        '',
+        'error',
+        '0.27',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {},
+          },
+        },
+        undefined,
+      ],
+      [
+        ' alert banner',
+        'error (with exchange rates)',
+        '0.27',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {
+              ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+            },
+          },
+        },
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+      ],
+      [
+        '',
+        'warning (with exchange rates)',
+        '0.07',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {
+              ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+            },
+          },
+        },
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+      ],
     ])(
-      'should render when there is a price impact warning or error: %s',
-      async (priceImpact: string | undefined) => {
-        const { baseElement, getByRole, getAllByRole } = renderModal(
-          'quote-card',
-          priceImpact,
-        );
+      'should render%s when there is a price impact %s: %s',
+      async (
+        _: string,
+        _condition: string,
+        priceImpact: string | undefined,
+        stateOverrides?: Record<string, unknown>,
+        quotes?: never[],
+      ) => {
+        const { baseElement, getByRole, getAllByRole, queryByTestId } =
+          renderModal('quote-card', priceImpact, stateOverrides, quotes);
         expect(baseElement).toMatchSnapshot();
         expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
           '',
@@ -203,6 +242,9 @@ describe('BridgePriceImpactModal', () => {
           }),
         ).toBeEnabled();
 
+        expect(
+          queryByTestId('bridge-alert-modal-banner')?.textContent,
+        ).toMatchSnapshot('BannerAlert within BridgeAlertModal');
         await act(async () => {
           await userEvent.click(
             getByRole('button', {
@@ -232,18 +274,54 @@ describe('BridgePriceImpactModal', () => {
     });
 
     it('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
-      const { queryByText } = renderModalWithFiat('submit-cta', '0.9');
-      expect(queryByText(/you will lose/iu)).toBeInTheDocument();
+      const { getByTestId } = renderModal(
+        'submit-cta',
+        '0.9',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {
+              ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+            },
+          },
+        },
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+      );
+      expect(
+        getByTestId('bridge-alert-modal-banner').textContent,
+      ).toMatchInlineSnapshot(`"You will lose $0.07 on this trade"`);
+      expect(getByTestId('bridge-alert-modal-proceed-button')).toBeEnabled();
     });
 
     it('does not show the fiat loss banner when isPriceImpactError is false (warning)', () => {
-      const { queryByText } = renderModalWithFiat('quote-card', '0.07');
-      expect(queryByText(/you will lose/iu)).not.toBeInTheDocument();
+      const { queryByTestId } = renderModal(
+        'quote-card',
+        '0.07',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {
+              ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+            },
+          },
+        },
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+      );
+      expect(
+        queryByTestId('bridge-alert-modal-banner'),
+      ).not.toBeInTheDocument();
     });
 
     it('does not show the fiat loss banner when fiat amount is unavailable (no exchange rates)', () => {
-      const { queryByText } = renderModal('submit-cta', '0.9');
-      expect(queryByText(/you will lose/iu)).not.toBeInTheDocument();
+      const { queryByTestId } = renderModal('submit-cta', '0.9', {
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {},
+        },
+      });
+      expect(
+        queryByTestId('bridge-alert-modal-banner'),
+      ).not.toBeInTheDocument();
     });
   });
 });
