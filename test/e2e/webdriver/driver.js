@@ -1187,6 +1187,18 @@ class Driver {
     return await this.driver.executeScript(collectMetrics);
   }
 
+  async resetLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      window.stateHooks?.resetLongTaskMetrics?.();
+    });
+  }
+
+  async collectLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+    });
+  }
+
   // Window management
 
   /**
@@ -1899,6 +1911,14 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
+
+  const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
+  if (longTaskData) {
+    results.longTaskCount = longTaskData.count;
+    results.longTaskTotalDuration = longTaskData.totalDuration;
+    results.longTaskMaxDuration = longTaskData.maxDuration;
+    results.tbt = longTaskData.tbt;
+  }
 
   return {
     ...results,

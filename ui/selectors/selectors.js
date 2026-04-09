@@ -159,8 +159,8 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
 import { hasTransactionData } from '../../shared/lib/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
+  createDeepEqualSelector,
   createParameterizedSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -1291,7 +1291,8 @@ export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
-export const getNetworkConfigurationIdByChainId = createDeepEqualSelector(
+
+export const getNetworkConfigurationIdByChainId = createSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
     Object.entries(networkConfigurationsByChainId).reduce(
@@ -2251,13 +2252,14 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   },
 );
 
-const getAllConnectedAccounts = createDeepEqualSelector(
+const getAllConnectedAccounts = createSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
   },
 );
-export const getConnectedSitesList = createDeepEqualSelector(
+
+export const getConnectedSitesList = createSelector(
   getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getAllConnectedAccounts,
@@ -2586,7 +2588,7 @@ export const getSelectedNetwork = createDeepEqualSelector(
   },
 );
 
-export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+export const getConnectedSitesListWithNetworkInfo = createSelector(
   getConnectedSitesList,
   getAllDomains,
   getNetworkConfigurationsByChainId,
@@ -2695,16 +2697,6 @@ export function getUseTokenDetection(state) {
  */
 export function getUseNftDetection(state) {
   return Boolean(state.metamask.useNftDetection);
-}
-
-/**
- * To get the useBlockie flag which determines whether we show blockies or Jazzicons
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getUseBlockie(state) {
-  return Boolean(state.metamask.useBlockie);
 }
 
 /**
@@ -2938,6 +2930,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return '';
   }
 };
+
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * Returns true if a token list is available for the current network.
  *
@@ -2950,10 +2944,12 @@ export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 export function getAllDetectedTokens(state) {
   return state.metamask.allDetectedTokens;
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * To retrieve the list of tokens detected across all chains.
  *

@@ -14,9 +14,13 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
+import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
+import { runUserActionBenchmark, collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -45,6 +49,8 @@ export async function run(): Promise<BenchmarkRunResult> {
     let loadPage: number = 0;
     let loadAssetPicker: number = 0;
     let searchToken: number = 0;
+    const steps: LongTaskStepResult[] = [];
+    let webVitals;
 
     const fixtureBuilder = new FixtureBuilder()
       .withNetworkControllerOnMainnet()
@@ -67,22 +73,41 @@ export async function run(): Promise<BenchmarkRunResult> {
         const homePage = new HomePage(driver);
         const quotePage = new BridgeQuotePage(driver);
 
+        await driver.resetLongTaskMetrics();
         const timestampBeforeLoadPage = new Date();
         await homePage.startSwapFlow();
         const timestampAfterLoadPage = new Date();
-
         loadPage =
           timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
+        let longTaskData = await driver.collectLongTaskMetrics();
+        steps.push({
+          id: 'bridge_load_page',
+          duration: loadPage,
+          longTaskCount: longTaskData?.count ?? 0,
+          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
+          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
+          tbt: longTaskData?.tbt ?? 0,
+        });
 
+        await driver.resetLongTaskMetrics();
         const timestampBeforeClickAssetPicker = new Date();
         await driver.clickElement(quotePage.sourceAssetPickerButton);
         const timestampAfterClickAssetPicker = new Date();
-
         loadAssetPicker =
           timestampAfterClickAssetPicker.getTime() -
           timestampBeforeClickAssetPicker.getTime();
+        longTaskData = await driver.collectLongTaskMetrics();
+        steps.push({
+          id: 'bridge_load_asset_picker',
+          duration: loadAssetPicker,
+          longTaskCount: longTaskData?.count ?? 0,
+          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
+          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
+          tbt: longTaskData?.tbt ?? 0,
+        });
 
         const tokenToSearch = 'FXS';
+        await driver.resetLongTaskMetrics();
         const timestampBeforeTokenSearch = new Date();
         await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
         await driver.waitForSelector({
@@ -90,17 +115,33 @@ export async function run(): Promise<BenchmarkRunResult> {
           css: quotePage.tokenButton,
         });
         const timestampAfterTokenSearch = new Date();
-
         searchToken =
           timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
+        longTaskData = await driver.collectLongTaskMetrics();
+        steps.push({
+          id: 'bridge_search_token',
+          duration: searchToken,
+          longTaskCount: longTaskData?.count ?? 0,
+          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
+          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
+          tbt: longTaskData?.tbt ?? 0,
+        });
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
-    return [
-      { id: 'bridge_load_page', duration: loadPage },
-      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-      { id: 'bridge_search_token', duration: searchToken },
-    ];
+    return {
+      timers: [
+        ...steps.map((s) => ({ id: s.id, value: s.duration })),
+        ...buildLongTaskTimerResults(steps),
+      ],
+      webVitals,
+    };
   }, BENCHMARK_TYPE.USER_ACTION);
 }

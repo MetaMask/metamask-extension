@@ -4,10 +4,76 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
+    "AccountTracker": {
+      "accountsByChainId": {
+        "0x1": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000",
+            "stakedBalance": "0x0"
+          }
+        },
+        "0x18c7": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x0"
+          }
+        },
+        "0x2105": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x0"
+          }
+        },
+        "0x279f": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x0"
+          }
+        },
+        "0x38": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
+        "0x539": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
+        "0x89": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
+        "0xa": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
+        "0xa4b1": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
+        "0xaa36a7": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x0"
+          }
+        },
+        "0xe705": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x0"
+          }
+        },
+        "0xe708": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        }
+      }
+    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": true
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true,
+      "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
     },
     "AccountsController": {
       "internalAccounts": {
@@ -105,7 +171,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 200,
+      "currentMigrationVersion": 203,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -853,7 +919,6 @@
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -915,9 +980,12 @@
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
         "https://alpha.mycactus.io": "mainnet",
+        "https://app-beta.signer.cubist.dev": "mainnet",
+        "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.bitgo-test.com": "mainnet",
         "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
+        "https://app.signer.cubist.dev": "mainnet",
         "https://apps-portal.safe.global": "mainnet",
         "https://console.dev.mpcvault.com": "mainnet",
         "https://console.fireblocks.io": "mainnet",
@@ -977,7 +1045,9 @@
           "eip155:59144/slip44:60": { "amount": "25" }
         },
         "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": { "amount": "0" }
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+            "amount": "0"
+          }
         }
       },
       "assetsInfo": {
@@ -1087,6 +1157,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 200
+    "version": 203
   }
 }

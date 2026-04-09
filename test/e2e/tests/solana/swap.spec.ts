@@ -1,6 +1,6 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -205,7 +205,7 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withConversionRates({
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               conversionTime: 1770832998.066,
@@ -232,13 +232,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap
@@ -278,6 +280,7 @@ describe('Swap on Solana', function () {
 
         // await driver.delay(15000);
 
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -290,7 +293,7 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
@@ -299,13 +302,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap USDC → SOL
@@ -326,6 +331,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
@@ -339,7 +345,7 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
@@ -348,13 +354,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap and verify no quotes message
@@ -375,7 +383,7 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
@@ -384,13 +392,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap SOL → USDC
@@ -412,6 +422,7 @@ describe('Swap on Solana', function () {
         });
 
         // After failure, the bridge navigates to home/activity with the failed tx
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },

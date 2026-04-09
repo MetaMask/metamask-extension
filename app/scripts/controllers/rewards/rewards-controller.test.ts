@@ -9,15 +9,15 @@ import {
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAccountId } from '@metamask/utils';
-import {
-  AccountsControllerListMultichainAccountsAction,
-  HandleSnapRequest,
-} from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
 import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
@@ -27,17 +27,17 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  RewardsControllerActions,
-  RewardsControllerEvents,
-  RewardsControllerMessenger,
-} from '../../controller-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
   SeasonDtoState,
 } from '../../../../shared/types/rewards';
+import {
+  RewardsControllerActions,
+  RewardsControllerEvents,
+  RewardsControllerMessenger,
+} from './rewards-controller.types';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
@@ -74,7 +74,7 @@ import {
   RewardsDataServiceGenerateChallengeAction,
   RewardsDataServiceSiweLoginAction,
   RewardsDataServiceSiweJoinAction,
-} from './rewards-data-service-types';
+} from './rewards-data-service-method-action-types';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
 
@@ -230,7 +230,7 @@ async function withController<ReturnValue>(
     | RewardsDataServiceSiweLoginAction
     | RewardsDataServiceSiweJoinAction
     | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-    | HandleSnapRequest;
+    | SnapControllerHandleRequestAction;
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent
@@ -2835,7 +2835,7 @@ describe('RewardsController', () => {
   describe('getGeoRewardsMetadata', () => {
     it('should return unknown location when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.getRewardsGeoMetadata();
+        const result = await controller.getGeoRewardsMetadata();
 
         expect(result).toEqual({
           geoLocation: 'UNKNOWN',
@@ -2855,7 +2855,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'US',
@@ -2863,7 +2863,7 @@ describe('RewardsController', () => {
           });
 
           // Verify caching - second call should not fetch again
-          const cachedResult = await controller.getRewardsGeoMetadata();
+          const cachedResult = await controller.getGeoRewardsMetadata();
           expect(cachedResult).toEqual(result);
         },
       );
@@ -2880,7 +2880,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UK',
@@ -5122,7 +5122,7 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.getRewardsGeoMetadata();
+          const result = await controller.getGeoRewardsMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UNKNOWN',

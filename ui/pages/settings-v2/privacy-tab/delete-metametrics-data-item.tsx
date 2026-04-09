@@ -59,14 +59,14 @@ export const DeleteMetametricsDataItem = () => {
   return (
     <>
       <Button
-        data-testid="delete-metametrics-button"
+        data-testid="delete-metametrics-data-button"
         onClick={() =>
           isDataDeletionInProgress
             ? setShowDeletionInProgressModal(true)
             : setShowDeleteModal(true)
         }
         disabled={!isMetaMetricsEnabled}
-        className="text-error-default !bg-transparent p-0 text-left"
+        className="text-error-default !bg-transparent p-0 text-left mx-4"
       >
         {t(PRIVACY_ITEMS['delete-metametrics-data'])}
       </Button>

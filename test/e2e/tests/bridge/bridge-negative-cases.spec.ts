@@ -2,10 +2,10 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
+  enterBridgeQuote,
   getBridgeNegativeCasesFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
@@ -14,7 +14,7 @@ import {
   GET_QUOTE_INVALID_RESPONSE,
   FAILED_SOURCE_TRANSACTION,
   FAILED_DEST_TRANSACTION,
-  DEFAULT_BRIDGE_FEATURE_FLAGS,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
@@ -24,7 +24,7 @@ describe('Bridge functionality', function (this: Suite) {
     await withFixtures(
       {
         ...getInsufficientFundsFixtures(
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
         ),
       },
@@ -59,7 +59,7 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 500,
             json: 'Internal server error',
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
         ),
       },
@@ -86,7 +86,7 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 200,
             json: [],
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
         ),
       },
@@ -113,7 +113,7 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 200,
             json: GET_QUOTE_INVALID_RESPONSE,
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
         ),
       },
@@ -141,7 +141,7 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 500,
             json: 'Internal server error',
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
         ),
       },
@@ -158,10 +158,17 @@ describe('Bridge functionality', function (this: Suite) {
         const bridgePage = await enterBridgeQuote(driver);
         // await driver.delay(100000);
         await bridgePage.submitQuote();
-
         await homePage.goToActivityList();
+
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'pending',
+          '1',
+          'ETH',
+        );
       },
     );
   });
@@ -174,8 +181,10 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 200,
             json: FAILED_SOURCE_TRANSACTION,
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          true,
+          { minedTx: 'reverted' },
         ),
       },
       async ({ driver, localNodes }) => {
@@ -190,11 +199,17 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuote();
-
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });
@@ -207,8 +222,10 @@ describe('Bridge functionality', function (this: Suite) {
             statusCode: 200,
             json: FAILED_DEST_TRANSACTION,
           },
-          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          true,
+          { minedTx: 'reverted' },
         ),
       },
       async ({ driver, localNodes }) => {
@@ -223,25 +240,18 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuote();
-
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });
 });
-
-async function enterBridgeQuote(driver: Driver): Promise<BridgeQuotePage> {
-  const bridgePage = new BridgeQuotePage(driver);
-  await bridgePage.enterBridgeQuote({
-    amount: '1',
-    tokenFrom: 'ETH',
-    tokenTo: 'ETH',
-    fromChain: 'Ethereum',
-    toChain: 'Linea',
-  });
-
-  return bridgePage;
-}

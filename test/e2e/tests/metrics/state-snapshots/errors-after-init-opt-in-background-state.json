@@ -1,7 +1,7 @@
 {
   "AccountOrderController": {
-    "hiddenAccountList": {},
-    "pinnedAccountList": {}
+    "hiddenAccountList": "object",
+    "pinnedAccountList": "object"
   },
   "AccountTracker": {
     "accountsByChainId": "object"
@@ -11,7 +11,8 @@
     "accountTree": "object",
     "accountWalletsMetadata": "object",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountTreeSyncingInProgress": "boolean"
+    "isAccountTreeSyncingInProgress": "boolean",
+    "selectedAccountGroup": "string"
   },
   "AccountsController": {
     "accountIdByAddress": "object",
@@ -106,11 +107,13 @@
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
-    "quotes": {},
+    "quoteStreamComplete": null,
+    "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "tokenWarnings": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
@@ -220,15 +223,7 @@
     "nativeAssetIdentifiers": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": {
-      "0": "object",
-      "1": "object",
-      "2": "object",
-      "3": "object",
-      "4": "object",
-      "5": "object",
-      "6": "object"
-    }
+    "orderedNetworkList": "object"
   },
   "NftController": {
     "allNftContracts": "object",
@@ -259,7 +254,7 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PPOMController": { "storageMetadata": {} },
+  "PPOMController": { "storageMetadata": "object" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionActivityLog": "object",
@@ -315,7 +310,6 @@
     "theme": "os",
     "use4ByteResolution": true,
     "useAddressBarEnsResolution": true,
-    "useBlockie": false,
     "useCurrencyRateCheck": true,
     "useExternalNameSources": "boolean",
     "useExternalServices": "boolean",
@@ -378,7 +372,7 @@
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
-  "SnapsRegistry": {
+  "SnapRegistryController": {
     "database": "object",
     "databaseUnavailable": "boolean",
     "lastUpdated": "number",

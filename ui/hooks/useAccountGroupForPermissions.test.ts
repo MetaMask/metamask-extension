@@ -71,8 +71,8 @@ const createMockState = (overrides = {}) => ({
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
@@ -94,6 +94,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 0,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount1.id, mockSolAccount1.id],
             },
@@ -107,6 +108,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 1,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount2.id, mockSolAccount2.id],
             },
@@ -311,8 +313,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('handles missing account groups gracefully', () => {
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {},
         },
       };
@@ -937,8 +939,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('includes first supported group when selected account group is not provided', () => {
       const stateOverrides = {
+        selectedAccountGroup: null, // No selected account group
         accountTree: {
-          selectedAccountGroup: null, // No selected account group
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,
@@ -960,6 +962,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id, mockSolAccount1.id],
                 },
@@ -973,6 +976,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount2.id, mockSolAccount2.id],
                 },
@@ -1026,8 +1030,8 @@ describe('useAccountGroupsForPermissions', () => {
       const requestedNamespaces: CaipNamespace[] = [];
 
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,
@@ -1049,6 +1053,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id],
                 },
@@ -1062,6 +1067,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockSolAccount1.id],
                 },

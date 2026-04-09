@@ -2,9 +2,11 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { DummyQuotesNoApproval } from '../../../../test/data/bridge/dummy-quotes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
@@ -37,6 +39,43 @@ const renderModal = (
             priceData: { ...quote.quote.priceData, priceImpact },
           },
         })) as unknown as QuoteResponse[],
+      },
+    }),
+  );
+  return renderWithProvider(
+    <HardwareWalletProvider>
+      <BridgePriceImpactWarningModal variant={variant} onClose={mockOnClose} />
+    </HardwareWalletProvider>,
+    mockStore,
+  );
+};
+
+const renderModalWithFiat = (
+  variant: 'submit-cta' | 'quote-card' | null = null,
+  priceImpact: string = '0.05',
+) => {
+  const mockStore = configureStore(
+    createBridgeMockStore({
+      bridgeStateOverrides: {
+        quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            priceData: { priceImpact },
+          },
+        })) as unknown as QuoteResponse[],
+        quoteRequest: {
+          srcChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destChainId: 42161,
+          destTokenAddress: zeroAddress(),
+        },
+      },
+      metamaskStateOverrides: {
+        currentCurrency: 'usd',
+        currencyRates: {
+          ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+        },
       },
     }),
   );
@@ -185,5 +224,26 @@ describe('BridgePriceImpactModal', () => {
         expect(baseElement).toMatchSnapshot();
       },
     );
+  });
+
+  describe('fiat alert banner', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
+      const { queryByText } = renderModalWithFiat('submit-cta', '0.9');
+      expect(queryByText(/you will lose/iu)).toBeInTheDocument();
+    });
+
+    it('does not show the fiat loss banner when isPriceImpactError is false (warning)', () => {
+      const { queryByText } = renderModalWithFiat('quote-card', '0.07');
+      expect(queryByText(/you will lose/iu)).not.toBeInTheDocument();
+    });
+
+    it('does not show the fiat loss banner when fiat amount is unavailable (no exchange rates)', () => {
+      const { queryByText } = renderModal('submit-cta', '0.9');
+      expect(queryByText(/you will lose/iu)).not.toBeInTheDocument();
+    });
   });
 });

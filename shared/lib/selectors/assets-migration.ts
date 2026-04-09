@@ -71,11 +71,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // conversionRates: DONE
 // historicalPrices: TODO (This state should be removed)
 //
+// RatesController
+// rates: DONE
+//
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
-//
-// RatesController
-// rates: TODO (This state should be removed)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration

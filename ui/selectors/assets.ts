@@ -42,7 +42,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -73,6 +73,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
+import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -93,7 +94,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   MultichainNetworkControllerState,
 } from './multichain/networks';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -207,6 +211,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     getCustomAssets,
     getCurrentCurrency,
     getSelectedInternalAccount,
+    getSelectedAccountGroup,
     getEnabledNetworks,
     (state: AggregatedBalanceState) => state.metamask?.accountTree,
     (state: AggregatedBalanceState) =>
@@ -238,6 +243,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     customAssets,
     selectedCurrency,
     selectedInternalAccount,
+    selectedAccountGroup,
     enabledNetworkMap,
     accountTree,
     isAccountTreeSyncingInProgress,
@@ -260,6 +266,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     };
     const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
+          selectedAccountGroup,
           accountTree,
           isAccountTreeSyncingInProgress:
             isAccountTreeSyncingInProgress ?? false,
@@ -281,6 +288,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       (accountsById ?? {}) as Parameters<
         typeof getAggregatedBalanceForAccount
       >[5],
+      traceAsControllerCallback,
     );
   },
 );
@@ -305,16 +313,6 @@ export function getDefiPositions(
   state: DefiState,
 ): DeFiPositionsControllerState['allDeFiPositions'] {
   return state?.metamask?.allDeFiPositions;
-}
-
-/**
- * Gets non-EVM assets historical prices.
- *
- * @param state - Redux state object.
- * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
- */
-export function getHistoricalPrices(state: AssetsRatesState) {
-  return state.metamask.historicalPrices;
 }
 
 /**
@@ -759,7 +757,6 @@ const getMetamaskState = (state: BalanceCalculationState) =>
 
 const EMPTY_ACCOUNT_TREE = Object.freeze({
   wallets: {},
-  selectedAccountGroup: '',
 });
 
 // Renamed for clarity
@@ -774,12 +771,21 @@ const selectAccountTreeStateForBalances = createSelector(
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
     (state: BalanceCalculationState) =>
+      getMetamaskState(state).selectedAccountGroup,
+
+    (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
 
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
-  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+  (
+    accountTree,
+    selectedAccountGroup,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+  ) => ({
+    selectedAccountGroup: selectedAccountGroup ?? '',
     accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
     accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
     accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJECT,
@@ -825,10 +831,10 @@ const selectTokenRatesStateForBalances = createSelector(
  * Provides conversion rates and historical prices with stable fallbacks.
  */
 const selectMultichainRatesStateForBalances = createSelector(
-  [getMultichainAssetsRatesControllerConversionRates, getHistoricalPrices],
-  (conversionRates, historicalPrices) => ({
+  [getMultichainAssetsRatesControllerConversionRates],
+  (conversionRates) => ({
     conversionRates: conversionRates ?? EMPTY_OBJECT,
-    historicalPrices: historicalPrices ?? EMPTY_OBJECT,
+    historicalPrices: EMPTY_OBJECT,
   }),
 );
 
@@ -1092,7 +1098,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       currencyRateState,
       enabledNetworkMap,
     ): BalanceChangeResult | null => {
-      const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
+      const groupId = accountTreeState?.selectedAccountGroup;
       if (!groupId) {
         return null;
       }
@@ -1203,7 +1209,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     allMainnetNetworksMap,
     accountsByChainId,
   ): boolean => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return false;
     }
@@ -1357,7 +1363,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 export const selectBalanceBySelectedAccountGroup = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return null;
     }
@@ -1423,6 +1429,7 @@ export const selectBalanceByWallet = (walletId: string) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
+    selectedAccountGroup: metamask.selectedAccountGroup,
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
