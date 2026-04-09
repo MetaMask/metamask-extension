@@ -31,10 +31,15 @@ type ReportEntry = {
   isInitialByEntrypoint: Record<string, boolean>;
 };
 
+type FileStat = {
+  name: string;
+  size: number;
+};
+
 type BundleStats = {
   name: string;
   size: number;
-  fileList: { name: string; size: number }[];
+  fileList: FileStat[];
 };
 
 async function main(): Promise<void> {
@@ -56,9 +61,9 @@ async function main(): Promise<void> {
     await fs.readFile(reportPath, 'utf8'),
   );
 
-  const backgroundFileList: { name: string; size: number }[] = [];
-  const uiFileList: { name: string; size: number }[] = [];
-  const commonFileList: { name: string; size: number }[] = [];
+  const backgroundFileList: FileStat[] = [];
+  const uiFileList: FileStat[] = [];
+  const commonFileList: FileStat[] = [];
 
   for (const entry of report) {
     const entrypoints = Object.keys(entry.isInitialByEntrypoint || {});
