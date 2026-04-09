@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Biaya bridge"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Ambil yang baru?"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 ke $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Peringatan dampak harga"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Waktu kuotasi telah habis."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Kuotasi diurutkan berdasarkan estimasi biaya total, yang mencakup nilai tukar dan biaya jaringan."
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "Dari"
   },
-  "fromTokenLists": {
-    "message": "Dari daftar token: $1"
-  },
   "function": {
     "message": "Fungsi: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Abaikan semua"
-  },
-  "ignoreTokenWarning": {
-    "message": "Jika Anda menyembunyikan token, token tersebut tidak akan ditampilkan di dompet Anda. Namun, Anda masih dapat menambahkannya dengan mencarinya."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
   },
-  "importSelectedTokens": {
-    "message": "Impor token yang dipilih?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Hanya token yang dipilih yang akan muncul di dompet Anda. Anda selalu dapat mengimpor token tersembunyi nanti dengan mencarinya."
-  },
   "importTokenQuestion": {
     "message": "Impor token?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Dompet $1 diimpor",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Impor $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Diimpor",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "Beli mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Mengeklaim ke",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Klaim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Pelajari caranya"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 token baru ditemukan di akun ini",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 token baru ditemukan di akun ini"
   },
   "numberOfTokens": {
     "message": "Jumlah token"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "Tutup posisi Short"
   },
-  "perpsClosedShort": {
-    "message": "Short tertutup"
-  },
   "perpsConfirmCloseLong": {
     "message": "Tutup posisi Long"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "termasuk P&L $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Peningkatan posisi"
-  },
   "perpsLearnBasics": {
     "message": "Pelajari dasar-dasar perp"
   },
@@ -5537,9 +5495,6 @@
     "message": "Buka posisi Short $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Long terbuka"
-  },
   "perpsOraclePrice": {
     "message": "Harga Oracle"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Ukuran"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Tingkat pendanaan: tinggi ke rendah"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Tingkat pendanaan: rendah ke tinggi"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Kontrak terbuka: tinggi ke rendah"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Kontrak terbuka: rendah ke tinggi"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Perubahan harga: tinggi ke rendah"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Perubahan harga: rendah ke tinggi"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: tinggi ke rendah"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: rendah ke tinggi"
   },
   "perpsStartNewTrade": {
     "message": "Mulai perdagangan baru"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Harap konfirmasikan"
-  },
-  "plusXMore": {
-    "message": "+ $1 lagi",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "postingan blog."
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "Detail token"
   },
-  "tokenFoundTitle": {
-    "message": "1 token baru ditemukan"
-  },
   "tokenId": {
     "message": "ID Token"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 token baru ditemukan",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Token dalam koleksi"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Anda menyetujui"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Anda menolak transaksi tersebut."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda harus mengizinkan akses kamera untuk menggunakan fitur ini."

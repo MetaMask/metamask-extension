@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Köprü ücreti"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Yeni bir tanesi alınsın mı?"
-  },
   "bridgeFromTo": {
     "message": "$1 $2, $3 ağına köprülensin",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Fiyat etkisi uyarısı"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Teklifiniz zaman aşımına uğradı."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Teklifler, döviz kurunu ve ağ ücretini içeren tahmini toplam maliyete göre sıralanır."
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "Kimden"
   },
-  "fromTokenLists": {
-    "message": "Token listelerinden: $1"
-  },
   "function": {
     "message": "İşlev: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "Kimlik"
   },
-  "ignoreAll": {
-    "message": "Tümünü yoksay"
-  },
-  "ignoreTokenWarning": {
-    "message": "Gizlediğiniz tokenlar cüzdanınızda gösterilmez. Ancak, yine de onları bulup ekleyebilirsiniz."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
   },
-  "importSelectedTokens": {
-    "message": "Seçilen tokenları içe aktar?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Sadece seçtiğiniz tokenlar cüzdanınızda gösterilecek. Dilediğiniz zaman onları arayarak gizli tokenları içe aktarabilirsiniz."
-  },
   "importTokenQuestion": {
     "message": "Tokeni içe aktar?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Cüzdan $1 içe aktarıldı",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 tokeni içe aktar",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "İçe aktarıldı",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "mUSD al"
   },
-  "musdClaimClaimingTo": {
-    "message": "Alıcı hesap",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Bonusu al",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Nasıl olduğunu öğrenin"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "Bu hesapta $1 yeni token bulundu",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "Bu hesapta 1 yeni token bulundu"
   },
   "numberOfTokens": {
     "message": "Token sayısı"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "Short pozisyonu kapat"
   },
-  "perpsClosedShort": {
-    "message": "Short pozisyon kapatıldı"
-  },
   "perpsConfirmCloseLong": {
     "message": "Long pozisyonu kapat"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "K&Z dahil $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Pozisyon artırıldı"
-  },
   "perpsLearnBasics": {
     "message": "Sürekli vadeli işlem sözleşmeleri hakkındaki temel bilgileri öğrenin"
   },
@@ -5537,9 +5495,6 @@
     "message": "$1 değerinde Short pozisyon aç",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Long pozisyon açıldı"
-  },
   "perpsOraclePrice": {
     "message": "Oracle Fiyatı"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Boyut"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Fonlama oranı: yüksekten düşüğe"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Fonlama oranı: düşükten yükseğe"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Açık pozisyon hacmi: yüksekten düşüğe"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Açık pozisyon hacmi: düşükten yükseğe"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Fiyat değişikliği: yüksekten düşüğe"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Fiyat değişikliği: düşükten yükseğe"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Hacim: yüksekten düşüğe"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Hacim: düşükten yükseğe"
   },
   "perpsStartNewTrade": {
     "message": "Yeni bir işlem başlat"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Lütfen onayla"
-  },
-  "plusXMore": {
-    "message": "+ $1 tane daha",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz."
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "Token bilgileri"
   },
-  "tokenFoundTitle": {
-    "message": "1 yeni token bulundu"
-  },
   "tokenId": {
     "message": "Token Kimliği"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "token'lar",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 yeni token bulundu",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Koleksiyondaki tokenlar"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Onaylıyorsunuz"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "İşlemi reddettiniz."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."

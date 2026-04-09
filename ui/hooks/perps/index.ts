@@ -1,5 +1,7 @@
 export { usePerpsOrderForm } from './usePerpsOrderForm';
 export { usePerpsEligibility } from './usePerpsEligibility';
+export { usePerpsMeasurement } from './usePerpsMeasurement';
+export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
@@ -16,6 +18,8 @@ export type {
   UsePerpsTransactionHistoryParams,
   UsePerpsTransactionHistoryResult,
 } from './usePerpsTransactionHistory';
+
+export { usePerpsMarketFills } from './usePerpsMarketFills';
 
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {

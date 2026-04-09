@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletWithSocialLoginOnboardingFlow,
@@ -104,7 +104,7 @@ describe('Wallet Created Events', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -203,7 +203,7 @@ describe('Wallet Created Events', function () {
   it('are not sent when onboarding user who chooses to opt out metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -228,7 +228,7 @@ describe('Wallet Created Events', function () {
   it('are sent when user onboarding with social login', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
