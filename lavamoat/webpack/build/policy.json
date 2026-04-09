@@ -731,12 +731,6 @@
         "define": true
       }
     },
-    "webpack-bundle-analyzer>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
-      }
-    },
     "schema-utils>ajv-formats": {
       "packages": {
         "schema-utils>ajv": true
@@ -3461,12 +3455,12 @@
       "packages": {
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack-bundle-analyzer>acorn-walk": true,
-        "webpack-bundle-analyzer>acorn": true,
+        "jsdom>acorn": true,
         "webpack-bundle-analyzer>html-escaper": true,
         "http-server>opener": true,
         "postcss>picocolors": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-bundle-analyzer>ws": true
+        "ws": true
       }
     },
     "webpack-dev-server>webpack-dev-middleware": {
@@ -3584,44 +3578,6 @@
       }
     },
     "ws": {
-      "builtin": {
-        "buffer.isUtf8": true,
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "crypto.randomFillSync": true,
-        "events": true,
-        "http.STATUS_CODES": true,
-        "http.createServer": true,
-        "http.request": true,
-        "https.request": true,
-        "net.connect": true,
-        "net.isIP": true,
-        "stream.Duplex": true,
-        "stream.Readable": true,
-        "stream.Writable": true,
-        "tls.connect": true,
-        "url.URL": true,
-        "zlib.Z_DEFAULT_WINDOWBITS": true,
-        "zlib.Z_SYNC_FLUSH": true,
-        "zlib.createDeflateRaw": true,
-        "zlib.createInflateRaw": true
-      },
-      "globals": {
-        "Blob": true,
-        "Buffer": true,
-        "clearTimeout": true,
-        "process.env.WS_NO_BUFFER_UTIL": true,
-        "process.env.WS_NO_UTF_8_VALIDATE": true,
-        "process.nextTick": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "ws>bufferutil": true,
-        "ws>utf-8-validate": true
-      }
-    },
-    "webpack-bundle-analyzer>ws": {
       "builtin": {
         "buffer.isUtf8": true,
         "crypto.createHash": true,
