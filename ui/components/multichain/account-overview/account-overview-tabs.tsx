@@ -182,11 +182,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <ErrorBoundary key="perps">
-              <PerpsViewStreamBoundary>
-                <PerpsView />
-              </PerpsViewStreamBoundary>
-            </ErrorBoundary>
+            <PerpsToastProvider>
+              <ErrorBoundary key="perps">
+                <PerpsViewStreamBoundary>
+                  <PerpsView />
+                </PerpsViewStreamBoundary>
+              </ErrorBoundary>
+            </PerpsToastProvider>
           </Tab>
         )}
 
