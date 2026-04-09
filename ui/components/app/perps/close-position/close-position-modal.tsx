@@ -1,9 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
-import {
   Box,
   BoxBackgroundColor,
   BoxFlexDirection,
@@ -32,6 +28,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import {
   getDisplayName,
@@ -255,6 +255,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
   const {
@@ -372,6 +373,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
         });
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: new Error(message),
@@ -387,6 +391,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
         [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
       });
       replacePerpsToastByKey(
         getCloseSuccessToastConfig({

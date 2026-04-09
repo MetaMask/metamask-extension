@@ -57,6 +57,7 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
           ? PERPS_EVENT_VALUE.SCREEN_TYPE.ADD_MARGIN
           : PERPS_EVENT_VALUE.SCREEN_TYPE.REMOVE_MARGIN,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
   const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');

@@ -22,7 +22,10 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
+import {
+  usePerpsLiveMarketData,
+  usePerpsLiveAccount,
+} from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
   isHip3Market,
@@ -158,6 +161,7 @@ export const MarketListView: React.FC = () => {
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+  const { account } = usePerpsLiveAccount();
 
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
@@ -186,12 +190,19 @@ export const MarketListView: React.FC = () => {
   // Use stream loading state
   const isLoading = marketsLoading;
 
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !isLoading,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });
 

@@ -231,6 +231,11 @@ const PerpsOrderEntryPage: React.FC = () => {
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
+        account && Number.parseFloat(account.availableBalance) > 0
+          ? 'yes'
+          : 'no',
     },
     resetKey: decodedSymbol,
   });
@@ -648,6 +653,27 @@ const PerpsOrderEntryPage: React.FC = () => {
       });
     }
 
+    const deriveTradeAction = (): string => {
+      if (orderMode === 'new' && !position) {
+        return PERPS_EVENT_VALUE.TRADE_ACTION.CREATE_POSITION;
+      }
+      if (orderMode === 'modify' && position) {
+        const posSize = Number.parseFloat(position.size) || 0;
+        const posIsLong = posSize >= 0;
+        const orderIsLong = orderDirection === 'long';
+        if (posIsLong !== orderIsLong) {
+          return posIsLong
+            ? PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT
+            : PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG;
+        }
+        return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
+      }
+      if (position) {
+        return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
+      }
+      return PERPS_EVENT_VALUE.TRADE_ACTION.CREATE_POSITION;
+    };
+
     let specificFailureTracked = false;
     const reportTransactionFailure = (
       event:
@@ -661,6 +687,18 @@ const PerpsOrderEntryPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
         [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        ...(event === MetaMetricsEventName.PerpsTradeTransaction && {
+          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
+          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+            orderCalculations?.estimatedFees ?? null,
+        }),
+        ...(event === MetaMetricsEventName.PerpsPositionCloseTransaction && {
+          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+            orderCalculations?.estimatedFees ?? null,
+        }),
       });
     };
 
@@ -686,6 +724,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+            orderCalculations?.estimatedFees ?? null,
         });
         handleBackClick(
           PERPS_TOAST_KEYS.TRADE_SUCCESS,
@@ -721,6 +762,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
             [PERPS_EVENT_PROPERTY.ORDER_TYPE]: orderFormState.type,
             [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+            [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
+            [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
+            [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+              orderCalculations?.estimatedFees ?? null,
           });
 
           submitRequestToBackground('perpsSaveTradeConfiguration', [
@@ -752,6 +797,20 @@ const PerpsOrderEntryPage: React.FC = () => {
           'perpsUpdatePositionTPSL',
           [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
         );
+        const deriveTpslType = (): string => {
+          const hasExistingTpsl = Boolean(
+            position?.takeProfitPrice || position?.stopLossPrice,
+          );
+          const prefix = hasExistingTpsl ? 'update' : 'create';
+          if (takeProfitPrice && stopLossPrice) {
+            return `${prefix}_tpsl`;
+          }
+          if (takeProfitPrice) {
+            return `${prefix}_tp`;
+          }
+          return `${prefix}_sl`;
+        };
+
         if (!result.success) {
           const message = result.error || 'Failed to update TP/SL';
           reportTransactionFailure(
@@ -763,6 +822,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
         });
         handleBackClick(PERPS_TOAST_KEYS.UPDATE_SUCCESS);
         return;
@@ -791,6 +851,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
         [PERPS_EVENT_PROPERTY.ORDER_TYPE]: orderFormState.type,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
+        [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+          orderCalculations?.estimatedFees ?? null,
       });
 
       submitRequestToBackground('perpsSaveTradeConfiguration', [

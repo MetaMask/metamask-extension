@@ -30,6 +30,15 @@ export const PERPS_EVENT_PROPERTY = {
   ERROR_TYPE: 'error_type',
   ERROR_MESSAGE: 'error_message',
   LEVERAGE: 'leverage',
+  TYPE: 'type',
+  SIZE: 'size',
+  METAMASK_FEE: 'metamask_fee',
+  ACTION: 'action',
+  SOURCE: 'source',
+  HAS_PERP_BALANCE: 'has_perp_balance',
+  BUTTON_TYPE: 'button_type',
+  BUTTON_LOCATION: 'button_location',
+  MARKET_CATEGORY_FILTER: 'market_category_filter',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
@@ -43,6 +52,9 @@ export const PERPS_EVENT_VALUE = {
     ADD_MARGIN: 'add_margin',
     REMOVE_MARGIN: 'remove_margin',
     INCREASE_EXPOSURE: 'increase_exposure',
+    FLIP_POSITION: 'flip_position',
+    CREATE_TP_SL: 'create_tp_sl',
+    UPDATE_TP_SL: 'update_tp_sl',
   },
   INTERACTION_TYPE: {
     ORDER_TYPE_SELECTED: 'order_type_selected',
@@ -59,6 +71,15 @@ export const PERPS_EVENT_VALUE = {
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
     WITHDRAW: 'withdraw',
+    TUTORIAL: 'tutorial',
+    SUPPORT: 'support',
+    FEEDBACK: 'feedback',
+    MARGIN: 'margin',
+    INCREASE_EXPOSURE: 'increase_exposure',
+    REDUCE_EXPOSURE: 'reduce_exposure',
+    ADD_MARGIN: 'add_margin',
+    REMOVE_MARGIN: 'remove_margin',
+    TRADE: 'trade',
   },
   DIRECTION: {
     LONG: 'long',
@@ -70,6 +91,34 @@ export const PERPS_EVENT_VALUE = {
   },
   ERROR_TYPE: {
     BACKEND: 'backend',
+  },
+  RISK_MANAGEMENT_TYPE: {
+    CREATE_TPSL: 'create_tpsl',
+    CREATE_TP: 'create_tp',
+    CREATE_SL: 'create_sl',
+    UPDATE_TPSL: 'update_tpsl',
+    UPDATE_TP: 'update_tp',
+    UPDATE_SL: 'update_sl',
+    ADD_MARGIN: 'add_margin',
+    REMOVE_MARGIN: 'remove_margin',
+  },
+  TRADE_ACTION: {
+    CREATE_POSITION: 'create_position',
+    INCREASE_POSITION: 'increase_position',
+    FLIP_LONG_TO_SHORT: 'flip_long_to_short',
+    FLIP_SHORT_TO_LONG: 'flip_short_to_long',
+  },
+  SOURCE: {
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+    MARKET_LIST: 'market_list',
+    ASSET_DETAILS: 'perps_asset_details_screen',
+    DEEPLINK: 'deeplink',
+    TRADING: 'trading',
+  },
+  BUTTON_LOCATION: {
+    ASSET_DETAILS: 'asset_details',
+    MARKET_LIST: 'market_list',
+    TRADING: 'trading',
   },
 } as const;
 

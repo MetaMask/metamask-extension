@@ -303,6 +303,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !marketsLoading && Boolean(decodedSymbol),
@@ -312,6 +315,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       ...(decodedSymbol && {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
     },
     resetKey: decodedSymbol,
   });
@@ -631,9 +636,19 @@ const PerpsMarketDetailPage: React.FC = () => {
       if (!isEligible || !decodedSymbol) {
         return;
       }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+        [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+      });
       navigate(buildOrderEntryUrl(direction, 'new'));
     },
-    [isEligible, decodedSymbol, navigate, buildOrderEntryUrl],
+    [isEligible, decodedSymbol, navigate, buildOrderEntryUrl, track],
   );
 
   const handleClosePosition = useCallback(() => {
@@ -644,16 +659,32 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [isEligible, position]);
 
   const handleOpenAddMarginModal = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen(false);
     setMarginModalMode('add');
-  }, []);
+  }, [track]);
 
   const handleOpenDecreaseMarginModal = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen(false);
     setMarginModalMode('remove');
-  }, []);
+  }, [track]);
 
   const handleOpenReverseModal = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -664,19 +695,35 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!position || !decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'modify'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
     if (!position || !decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -707,6 +754,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.FAVORITE_TOGGLED,
       [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
@@ -1579,7 +1628,17 @@ const PerpsMarketDetailPage: React.FC = () => {
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
             data-testid="perps-learn-basics"
-            onClick={() => dispatch(setTutorialModalOpen(true))}
+            onClick={() => {
+              track(MetaMetricsEventName.PerpsUiInteraction, {
+                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                  PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+                [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                  PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+                [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+                  PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+              });
+              dispatch(setTutorialModalOpen(true));
+            }}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsLearnBasics')}

@@ -1,9 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
-import {
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -24,6 +20,10 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -74,13 +74,15 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.INCREASE_EXPOSURE,
+        PERPS_EVENT_VALUE.SCREEN_TYPE.FLIP_POSITION,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
@@ -128,6 +130,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     } catch (err) {
       const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+      });
       setError(raw);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.REVERSE_FAILED,
@@ -136,7 +142,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, [onClose, position.symbol, positionForFlip, replacePerpsToastByKey]);
+  }, [
+    onClose,
+    position.symbol,
+    positionForFlip,
+    replacePerpsToastByKey,
+    track,
+  ]);
 
   return (
     <Modal

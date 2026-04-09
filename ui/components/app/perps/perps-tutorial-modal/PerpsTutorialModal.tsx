@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
   ModalContent,
@@ -57,6 +57,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.TUTORIAL,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
   usePerpsEventTracking({

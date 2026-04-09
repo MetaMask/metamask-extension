@@ -46,10 +46,15 @@ import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-fla
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
@@ -78,6 +83,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
   const { account } = usePerpsLiveAccount();
+  const { track } = usePerpsEventTracking();
 
   const [amount, setAmount] = useState('0');
   const [withdrawalRoutes, setWithdrawalRoutes] = useState<AssetRoute[]>([]);
@@ -243,15 +249,34 @@ const PerpsWithdrawPage: React.FC = () => {
       );
 
       if (result?.success) {
+        track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+        });
         navigate(DEFAULT_ROUTE);
         return;
       }
 
-      setSubmitError(result?.error ?? t('perpsWithdrawFailed'));
+      const failedMessage = result?.error ?? t('perpsWithdrawFailed');
+      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
+      });
+      setSubmitError(failedMessage);
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
-    } catch {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
       setSubmitError(t('perpsWithdrawFailed'));
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
@@ -266,6 +291,7 @@ const PerpsWithdrawPage: React.FC = () => {
     navigate,
     selectedAccount?.address,
     t,
+    track,
     usdcAssetId,
   ]);
 

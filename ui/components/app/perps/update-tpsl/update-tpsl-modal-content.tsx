@@ -303,12 +303,28 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           },
         ],
       );
+      const deriveTpslType = (): string => {
+        const hasExistingTpsl = Boolean(
+          position.takeProfitPrice || position.stopLossPrice,
+        );
+        const prefix = hasExistingTpsl ? 'update' : 'create';
+        if (cleanTpPrice && cleanSlPrice) {
+          return `${prefix}_tpsl`;
+        }
+        if (cleanTpPrice) {
+          return `${prefix}_tp`;
+        }
+        return `${prefix}_sl`;
+      };
+
       if (!result.success) {
         const failMessage = result.error || 'Failed to update TP/SL';
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
@@ -319,6 +335,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       track(MetaMetricsEventName.PerpsRiskManagement, {
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
       });
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
@@ -356,6 +373,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.UPDATE_FAILED,
         description: errorMessage,
