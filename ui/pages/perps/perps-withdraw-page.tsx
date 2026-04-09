@@ -260,6 +260,7 @@ const PerpsWithdrawPage: React.FC = () => {
       const failedMessage = result?.error ?? t('perpsWithdrawFailed');
       track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
       });
       track(MetaMetricsEventName.PerpsError, {
@@ -275,6 +276,7 @@ const PerpsWithdrawPage: React.FC = () => {
         error instanceof Error ? error.message : 'An unknown error occurred';
       track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
       track(MetaMetricsEventName.PerpsError, {
