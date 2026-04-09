@@ -64,6 +64,9 @@ class BridgeQuotePage {
 
   private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
 
+  private statusPageCloseButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
+
   private moreETHneededForGas =
     '[data-testid="bridge-insufficient-gas-for-quote"]';
 
@@ -229,6 +232,11 @@ class BridgeQuotePage {
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+    await this.dismissStatusPage();
+  };
+
+  dismissStatusPage = async () => {
+    await this.driver.clickElement(this.statusPageCloseButton);
   };
 
   confirmBridgeTransaction = async () => {
