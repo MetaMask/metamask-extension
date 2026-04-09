@@ -59,7 +59,6 @@ function configureMocks(): void {
       url: 'https://ci/bundle-analyzer/report.html',
       label: 'Bundle Analyzer',
     },
-    depViz: { url: 'https://ci/dep', label: 'dep' },
     allArtifacts: { url: 'https://ci/all', label: 'All' },
   });
   artifacts.buildArtifactsBody.mockReturnValue('<p>artifacts</p>');
