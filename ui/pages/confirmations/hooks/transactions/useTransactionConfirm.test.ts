@@ -83,10 +83,12 @@ function runHook({
   customNonceValue,
   gasFeeTokens,
   selectedGasFeeToken,
+  isGasFeeSponsored,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
+  isGasFeeSponsored?: boolean;
 } = {}) {
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
@@ -94,6 +96,7 @@ function runHook({
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens,
         selectedGasFeeToken,
+        isGasFeeSponsored,
       }),
       {
         appState: {
@@ -637,5 +640,49 @@ describe('useTransactionConfirm', () => {
     const { onTransactionConfirm } = runHook();
 
     await expect(onTransactionConfirm()).rejects.toThrow('Network error');
+  });
+
+  it('clears isGasFeeSponsored when gasless is not supported (HW wallet)', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('preserves isGasFeeSponsored when gasless is supported even without STX or gas fee token', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(true);
   });
 });

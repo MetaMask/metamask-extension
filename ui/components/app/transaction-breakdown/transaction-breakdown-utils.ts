@@ -108,6 +108,11 @@ export const getTransactionBreakdownData = ({
     l1HexGasTotal ?? 0,
   );
 
+  const isGasActuallySponsored =
+    isGasFeeSponsored &&
+    status !== TransactionStatus.rejected &&
+    !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed);
+
   return {
     nativeCurrency: getNativeCurrency(state),
     showFiat: getShouldShowFiat(state),
@@ -121,7 +126,7 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isGasFeeSponsored,
+    isGasFeeSponsored: isGasActuallySponsored,
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,
