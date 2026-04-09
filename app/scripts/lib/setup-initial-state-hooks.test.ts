@@ -33,18 +33,22 @@ jest.mock('../../../shared/lib/stores/fixture-extension-store', () => ({
 }));
 
 jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
-  PersistenceManager: jest.fn().mockImplementation(() => ({
-    get: mockGet,
-    getBackup: mockGetBackup,
-    cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
-    events: {
-      on: mockPersistenceOn,
+  PersistenceManager: jest.fn().mockImplementation(() => {
+    const instance = {
+      get: mockGet,
+      getBackup: mockGetBackup,
+      cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
+      on: (...args: unknown[]) => {
+        mockPersistenceOn(...args);
+        return instance;
+      },
       off: jest.fn(),
-    },
-    get mostRecentRetrievedState() {
-      return mockMostRecentRetrievedState;
-    },
-  })),
+      get mostRecentRetrievedState() {
+        return mockMostRecentRetrievedState;
+      },
+    };
+    return instance;
+  }),
 }));
 
 /**
@@ -186,13 +190,17 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(2);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(3);
       expect(mockPersistenceOn).toHaveBeenCalledWith(
-        'vaultCorruptionEventToTrack',
+        'vaultCorruptionDetected',
         expect.any(Function),
       );
       expect(mockPersistenceOn).toHaveBeenCalledWith(
-        'earlySegmentEventToTrack',
+        'splitStateMigrationSucceeded',
+        expect.any(Function),
+      );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'splitStateMigrationFailed',
         expect.any(Function),
       );
     });

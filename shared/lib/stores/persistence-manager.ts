@@ -1,15 +1,11 @@
+import EventEmitter from 'events';
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
-import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../constants/metametrics';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -43,21 +39,23 @@ export const backedUpStateKeys = [
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
-export type VaultCorruptionEventToTrackPayload = {
-  backup: Backup | null;
-  event: MetaMetricsEventName;
+export type VaultCorruptionDetectedEvent = {
+  backup: Backup;
   corruptionType: VaultCorruptionType;
 };
 
-export type EarlySegmentEventToTrackPayload = {
+export type SplitStateMigrationSucceededEvent = {
   state: MetaMaskStateType;
-  event: MetaMetricsEventName;
-  category: MetaMetricsEventCategory;
+};
+
+export type SplitStateMigrationFailedEvent = {
+  state: MetaMaskStateType;
 };
 
 export type PersistenceManagerEventMap = {
-  vaultCorruptionEventToTrack: VaultCorruptionEventToTrackPayload;
-  earlySegmentEventToTrack: EarlySegmentEventToTrackPayload;
+  vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
+  splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
+  splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
 };
 
 export type PersistenceManagerEventName = keyof PersistenceManagerEventMap;
@@ -178,7 +176,7 @@ const STATE_LOCK = 'state-lock';
  * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
-export class PersistenceManager {
+export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap> {
   /**
    * DefaultStorageKind is a static property that defines the default storage
    * kind to be used by the PersistenceManager. It checks if the code is running
@@ -235,9 +233,8 @@ export class PersistenceManager {
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  readonly events = new SafeEventEmitter();
-
   constructor({ localStore }: PersistenceManagerOptions) {
+    super();
     this.#localStore = localStore;
   }
 
@@ -745,9 +742,8 @@ export class PersistenceManager {
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
-              this.events.emit('vaultCorruptionEventToTrack', {
+              this.emit('vaultCorruptionDetected', {
                 backup,
-                event: MetaMetricsEventName.VaultCorruptionDetected,
                 corruptionType,
               });
 
@@ -948,18 +944,10 @@ export class PersistenceManager {
       );
 
       if (migrationStatus === 'succeeded') {
-        this.events.emit('earlySegmentEventToTrack', {
-          state,
-          event: MetaMetricsEventName.StateMigrationSucceeded,
-          category: MetaMetricsEventCategory.StateMigration,
-        });
+        this.emit('splitStateMigrationSucceeded', { state });
       }
     } catch (error) {
-      this.events.emit('earlySegmentEventToTrack', {
-        state,
-        event: MetaMetricsEventName.StateMigrationFailed,
-        category: MetaMetricsEventCategory.StateMigration,
-      });
+      this.emit('splitStateMigrationFailed', { state });
 
       throw error;
     }

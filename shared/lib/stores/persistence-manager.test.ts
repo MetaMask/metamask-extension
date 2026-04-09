@@ -51,12 +51,12 @@ describe('PersistenceManager', () => {
   });
 
   describe('events', () => {
-    it('supports SafeEventEmitter on and off without throwing', () => {
+    it('supports EventEmitter on and off without throwing', () => {
       const listener = jest.fn();
       expect(() => {
-        manager.events.on('earlySegmentEventToTrack', listener);
-        manager.events.off('earlySegmentEventToTrack', listener);
-        manager.events.off('vaultCorruptionEventToTrack', listener);
+        manager.on('splitStateMigrationSucceeded', listener);
+        manager.off('splitStateMigrationSucceeded', listener);
+        manager.off('vaultCorruptionDetected', listener);
       }).not.toThrow();
     });
   });

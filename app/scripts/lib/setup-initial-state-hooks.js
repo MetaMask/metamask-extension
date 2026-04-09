@@ -6,6 +6,10 @@ import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { FixtureExtensionStore } from '../../../shared/lib/stores/fixture-extension-store';
 import ExtensionStore from '../../../shared/lib/stores/extension-store';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
@@ -36,13 +40,28 @@ const localStore = createLocalStore();
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore });
 
-persistenceManager.events.on('vaultCorruptionEventToTrack', (args) => {
-  trackVaultCorruptionEvent(args.backup, args.event, args.corruptionType);
-});
-
-persistenceManager.events.on('earlySegmentEventToTrack', (args) => {
-  trackEarlySegmentEvent(args);
-});
+persistenceManager
+  .on('vaultCorruptionDetected', (payload) => {
+    trackVaultCorruptionEvent(
+      payload.backup,
+      MetaMetricsEventName.VaultCorruptionDetected,
+      payload.corruptionType,
+    );
+  })
+  .on('splitStateMigrationSucceeded', (payload) => {
+    trackEarlySegmentEvent({
+      state: payload.state,
+      event: MetaMetricsEventName.StateMigrationSucceeded,
+      category: MetaMetricsEventCategory.StateMigration,
+    });
+  })
+  .on('splitStateMigrationFailed', (payload) => {
+    trackEarlySegmentEvent({
+      state: payload.state,
+      event: MetaMetricsEventName.StateMigrationFailed,
+      category: MetaMetricsEventCategory.StateMigration,
+    });
+  });
 
 /**
  * Get the persisted wallet state.
