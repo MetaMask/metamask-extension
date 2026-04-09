@@ -1,8 +1,5 @@
-import React, { useMemo } from 'react';
-import type { Hex } from '@metamask/utils';
+import React from 'react';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -13,18 +10,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
 import { PreferredAvatar } from '../../preferred-avatar';
-import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
-import {
-  getIsMultichainAccountsState2Enabled,
-  selectNetworkConfigurationByChainId,
-} from '../../../../selectors';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { selectAccountGroupNameByAddress } from '../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -67,17 +53,11 @@ function getHasMultipleWallets(state: unknown): boolean {
 }
 
 /**
- * Account strip matching confirmations `Header` default layout (sender avatar,
- * network badge, account name, secondary line) for standalone Perps pages.
+ * Account strip for standalone Perps pages (avatar, account name, optional wallet subtitle).
  */
 export const PerpsWalletAccountHeader: React.FC = () => {
-  const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const senderAddress = selectedAccount?.address ?? '';
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const chainId = useSelector(getCurrentChainId) as Hex;
 
   const accountGroupDisplayName = useSelector((state) =>
     selectAccountGroupNameByAddress(state, senderAddress),
@@ -91,42 +71,12 @@ export const PerpsWalletAccountHeader: React.FC = () => {
 
   const hasMoreThanOneWallet = useSelector(getHasMultipleWallets);
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
-  const networkDisplayName = useMemo(() => {
-    return (
-      networkConfiguration?.name ??
-      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
-      t('privateNetwork')
-    );
-  }, [chainId, networkConfiguration?.name, t]);
-
-  const networkImageUrl =
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ] ?? '';
-
-  const networkBackgroundKey = getAvatarNetworkColor(networkDisplayName);
-  const networkAvatarStyle = networkBackgroundKey
-    ? {
-        backgroundColor: `var(--color-network-${networkBackgroundKey}-default)`,
-      }
-    : undefined;
-
   const primaryLabel =
-    (isMultichainAccountsState2Enabled ? accountGroupDisplayName : null) ??
-    selectedAccount?.metadata?.name ??
-    '';
+    accountGroupDisplayName ?? selectedAccount?.metadata?.name ?? '';
 
   let secondaryText: string | undefined;
-  if (isMultichainAccountsState2Enabled) {
-    if (hasMoreThanOneWallet) {
-      secondaryText = walletNameForSubtitle ?? '';
-    }
-  } else {
-    secondaryText = networkDisplayName;
+  if (hasMoreThanOneWallet) {
+    secondaryText = walletNameForSubtitle ?? '';
   }
 
   if (!senderAddress || (!primaryLabel && !secondaryText)) {
@@ -148,15 +98,6 @@ export const PerpsWalletAccountHeader: React.FC = () => {
       >
         <Box flexDirection={BoxFlexDirection.Row} marginTop={2}>
           <PreferredAvatar address={senderAddress} />
-          {isMultichainAccountsState2Enabled ? null : (
-            <AvatarNetwork
-              src={networkImageUrl}
-              name={networkDisplayName}
-              size={AvatarNetworkSize.Xs}
-              className="confirm_header__avatar-network"
-              style={networkAvatarStyle}
-            />
-          )}
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Column}
