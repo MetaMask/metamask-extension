@@ -1147,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Price impact"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "You will lose $1 on this trade"
+  },
   "bridgePriceImpactHigh": {
     "message": "High price impact"
   },
@@ -1170,6 +1173,33 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
+  },
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
+    "message": "No quotes available. Try a smaller amount."
+  },
+  "bridgeQuoteStreamCompleteAmountTooLow": {
+    "message": "No quotes available. Try a larger amount."
+  },
+  "bridgeQuoteStreamCompleteRetry": {
+    "message": "Unable to get a quote right now. Try again."
+  },
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
+    "message": "This swap isn't available in your region."
+  },
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
+    "message": "The market for this asset is currently unavailable. Try again later."
+  },
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
+    "message": "Swaps between this token and real-world assets aren't supported yet. Try using a different token."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
+    "message": "Slippage is too high. Try lowering your slippage setting."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
+    "message": "Slippage is too low. Try increasing your slippage setting."
+  },
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
+    "message": "This token isn't supported. Try using a different token."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
@@ -1451,6 +1481,10 @@
   "comboNoOptions": {
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Community contributed",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "Completed"
@@ -4573,6 +4607,10 @@
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
   },
+  "noDefaultAddress": {
+    "message": "No $1 address",
+    "description": "$1 is the default address scope"
+  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
@@ -4962,6 +5000,9 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Open multichain account address menu"
   },
   "openSettings": {
     "message": "Open settings"
@@ -5482,6 +5523,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
+  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
@@ -5728,29 +5772,29 @@
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Funding rate: high to low"
+  "perpsSortByFundingRate": {
+    "message": "Funding rate"
   },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Funding rate: low to high"
+  "perpsSortByHighToLow": {
+    "message": "High to low"
   },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Open interest: high to low"
+  "perpsSortByLowToHigh": {
+    "message": "Low to high"
   },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Open interest: low to high"
+  "perpsSortByOpenInterest": {
+    "message": "Open interest"
   },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Price change: high to low"
+  "perpsSortByPriceChange": {
+    "message": "Price change"
   },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Price change: low to high"
+  "perpsSortBySection": {
+    "message": "Sort by"
   },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: high to low"
+  "perpsSortByTitle": {
+    "message": "Sort"
   },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: low to high"
+  "perpsSortByVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5815,8 +5859,8 @@
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
   "perpsToastMarginAddSuccess": {
-    "message": "Added $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+    "message": "Added $1 margin to $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
   },
   "perpsToastMarginAdjustmentFailed": {
     "message": "Margin adjustment failed",
@@ -5827,8 +5871,8 @@
     "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
-    "message": "Removed $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+    "message": "Removed $1 margin from $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
   },
   "perpsToastOrderFailed": {
     "message": "Order failed",
@@ -5979,6 +6023,9 @@
   },
   "perpsWithdrawFee": {
     "message": "Provider Fee"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
@@ -8478,6 +8525,10 @@
   },
   "supportMultiRpcInformation": {
     "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
+  "supportedLanguagesSectionTitle": {
+    "message": "Supported languages",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "Take our survey"
