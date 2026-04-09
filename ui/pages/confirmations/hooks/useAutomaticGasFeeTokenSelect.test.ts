@@ -106,8 +106,8 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
-          automatic_fee_token_selection: true,
-          automatic_fee_token_selected: GAS_FEE_TOKEN_MOCK.symbol,
+          gas_payment_token_default: true,
+          gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
       },
       expect.any(String),
@@ -153,8 +153,8 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
-          automatic_fee_token_selection: true,
-          automatic_fee_token_selected: undefined,
+          gas_payment_token_default: true,
+          gas_payment_token_default_symbol: undefined,
         },
       },
       expect.any(String),
@@ -208,8 +208,8 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
-          automatic_fee_token_selection: true,
-          automatic_fee_token_selected: GAS_FEE_TOKEN_MOCK.symbol,
+          gas_payment_token_default: true,
+          gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
       },
       expect.any(String),
@@ -288,8 +288,8 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
-          automatic_fee_token_selection: true,
-          automatic_fee_token_selected: GAS_FEE_TOKEN_MOCK.symbol,
+          gas_payment_token_default: true,
+          gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
       },
       expect.any(String),
@@ -410,8 +410,8 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
       {
         properties: {
-          automatic_fee_token_selection: true,
-          automatic_fee_token_selected: GAS_FEE_TOKEN_MOCK.symbol,
+          gas_payment_token_default: true,
+          gas_payment_token_default_symbol: GAS_FEE_TOKEN_MOCK.symbol,
         },
       },
       expect.any(String),

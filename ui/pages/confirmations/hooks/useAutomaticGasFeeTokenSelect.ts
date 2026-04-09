@@ -82,9 +82,9 @@ export function useAutomaticGasFeeTokenSelect() {
         {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            automatic_fee_token_selection: true,
+            gas_payment_token_default: true,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            automatic_fee_token_selected: automaticFeeTokenSelected,
+            gas_payment_token_default_symbol: automaticFeeTokenSelected,
           },
         },
         transactionId,
