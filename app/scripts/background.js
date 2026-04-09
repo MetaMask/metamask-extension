@@ -104,6 +104,7 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { getIframeProperties } from './lib/getIframeProperties';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -1182,8 +1183,9 @@ export async function loadStateFromPersistence(backup) {
  *
  * @param {string} origin - URL of visited dapp
  * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
+ * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
-function emitDappViewedMetricEvent(origin, mainFrameOrigin) {
+function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
@@ -1202,8 +1204,7 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin) {
     accountsState.internalAccounts.accounts,
   ).length;
 
-  const isIframe =
-    typeof mainFrameOrigin === 'string' && origin !== mainFrameOrigin;
+  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
   controller.metaMetricsController.trackEvent(
     {
@@ -1216,9 +1217,7 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin) {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
-        is_iframe: isIframe,
-        iframe_origin: isIframe ? origin : null,
-        top_level_origin: isIframe ? mainFrameOrigin : null,
+        ...iframeProps,
       },
     },
     {
@@ -1245,6 +1244,7 @@ function trackDappView(remotePort) {
   const { origin } = url;
   const tabUrl = new URL(remotePort.sender.tab.url);
   const { origin: tabOrigin } = tabUrl;
+  const { frameId } = remotePort.sender;
 
   // store the origin to corresponding tab so it can provide info for onActivated listener
   if (!Object.keys(senderOriginMapping).includes(tabId)) {
@@ -1267,7 +1267,7 @@ function trackDappView(remotePort) {
   // - refresh the dapp
   // - open dapp in a new tab
   if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin, tabOrigin);
+    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
   }
 }
 
