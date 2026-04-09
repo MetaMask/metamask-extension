@@ -1241,18 +1241,13 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
 
-    it('should return isInsufficientGasBalance=true when balance === minimumBalanceForRentExemption + srcTokenAmount', () => {
+    it('should return populated insufficientNativeReserveError when balance === minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
-          fromToken: {
-            decimals: 9,
-            address: zeroAddress(),
-            chainId: formatChainIdToCaip(ChainId.SOLANA),
-            assetId: getNativeAssetForChainId(ChainId.SOLANA).assetId,
-          },
+          toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
           fromTokenInputValue: '1000000000',
-          fromNativeBalance: '2000000000',
+          fromNativeBalance: null,
         },
         bridgeStateOverrides: {
           minimumBalanceForRentExemptionInLamports: '1000000000',
@@ -1261,13 +1256,29 @@ describe('Bridge selectors', () => {
             srcChainId: ChainId.SOLANA,
           },
         },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_SOLANA_ACCOUNT.id,
+          },
+          balances: {
+            [MOCK_SOLANA_ACCOUNT.id]: {
+              [getNativeAssetForChainId(ChainId.SOLANA).assetId]: {
+                amount: '2.5',
+              },
+            },
+          },
+          selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
+        },
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toStrictEqual({
+        maxSwappableNativeBalance: '1.5',
+        minimumNativeBalanceToBeKeptInAccount: '1',
+      });
     });
 
-    it('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
+    it('should return populated insufficientNativeReserveError when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
@@ -1304,10 +1315,13 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toStrictEqual({
+        maxSwappableNativeBalance: '0',
+        minimumNativeBalanceToBeKeptInAccount: '1',
+      });
     });
 
-    it('should return isInsufficientGasBalance=false when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
+    it('should return undefined insufficientNativeReserveError when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -1351,10 +1365,10 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
-    it('should return isInsufficientGasBalance=false when minimumBalanceForRentExemption is null', () => {
+    it('should return undefined insufficientNativeReserveError when minimumBalanceForRentExemption is null', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -1397,7 +1411,7 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
     it('should return isInsufficientBalance=false when there is no input amount', () => {
@@ -1448,7 +1462,7 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
 
-    it('should return isInsufficientGasBalance=true when balance is equal to srcAmount and fromToken is native', () => {
+    it('should return undefined insufficientNativeReserveError when balance is equal to srcAmount and fromToken is native', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -1463,10 +1477,10 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
-    it('should return isInsufficientGasBalance=true when balance is 0 and fromToken is erc20', () => {
+    it('should return undefined insufficientNativeReserveError when balance is 0 and fromToken is erc20', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: {
@@ -1507,10 +1521,10 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
-    it('should return isInsufficientGasBalance=false if there is no fromAmount', () => {
+    it('should return undefined insufficientNativeReserveError if there is no fromAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -1523,10 +1537,10 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
-    it('should return isInsufficientGasBalance=false when quotes have been loaded', () => {
+    it('should return undefined insufficientNativeReserveError when quotes have been loaded', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -1539,8 +1553,7 @@ describe('Bridge selectors', () => {
         },
       });
       const result = getValidationErrors(state as never);
-
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
     it('should return isInsufficientGasForQuote=true when balance is less than required network fees in quote', () => {
@@ -1863,10 +1876,10 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
 
-    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
+    it('should return populated insufficientNativeReserveError on Monad when native balance after trade < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1890,10 +1903,13 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.insufficientNativeReserveError).toStrictEqual({
+        maxSwappableNativeBalance: '90',
+        minimumNativeBalanceToBeKeptInAccount: '10',
+      });
     });
 
-    it('should return isInsufficientGasBalance=false for non-sponsored Monad swap even when remaining balance < 10 MON', () => {
+    it('should return insufficientNativeReserveError even for non-sponsored Monad swap when remaining balance would be < 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1914,12 +1930,14 @@ describe('Bridge selectors', () => {
         },
       });
       const result = getValidationErrors(state as never);
-
       // 100 - 95 = 5 MON remaining, but no 7702 sponsorship so no reserve applies
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toStrictEqual({
+        maxSwappableNativeBalance: '90',
+        minimumNativeBalanceToBeKeptInAccount: '10',
+      });
     });
 
-    it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
+    it('should return undefined insufficientNativeReserveError for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
@@ -1943,7 +1961,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
-      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+      expect(result.insufficientNativeReserveError).toBeUndefined();
     });
   });
 

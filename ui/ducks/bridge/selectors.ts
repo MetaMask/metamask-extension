@@ -774,21 +774,38 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    let minimumBalanceToUse =
+    let minimumNativeBalanceToBeKeptInAccount =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
 
-    // Monad requires >= 10 MON native reserve for 7702 sponsored txs.
-    // Without this balance the relay rejects the tx on-chain.
+    // Monad requires >= 10 MON native reserve per account.
+    // Without this balance the relay would reject the tx on-chain.
     const MONAD_MIN_RESERVE = '10';
     const srcHexChainId = srcChainId
       ? getMaybeHexChainId(String(srcChainId))
       : undefined;
-    if (srcHexChainId === CHAIN_IDS.MONAD && quoteRequest.gasIncluded7702) {
-      minimumBalanceToUse = MONAD_MIN_RESERVE;
+    if (srcHexChainId === CHAIN_IDS.MONAD) {
+      minimumNativeBalanceToBeKeptInAccount = MONAD_MIN_RESERVE;
     }
-
+    const maxSwappableNativeBalance = BigNumber.max(
+      new BigNumber(nativeBalance ?? 0).sub(
+        minimumNativeBalanceToBeKeptInAccount,
+      ),
+      0,
+    );
+    const insufficientNativeReserveError =
+      nativeBalance &&
+      validatedSrcAmount &&
+      fromToken &&
+      minimumNativeBalanceToBeKeptInAccount !== '0' &&
+      isNativeAddress(fromToken.assetId) &&
+      maxSwappableNativeBalance.lt(validatedSrcAmount)
+        ? {
+            minimumNativeBalanceToBeKeptInAccount,
+            maxSwappableNativeBalance: maxSwappableNativeBalance.toString(),
+          }
+        : undefined;
     return {
       isTxAlertPresent: Boolean(txAlert),
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
@@ -801,19 +818,8 @@ const _getBaseValidationErrors = createDeepEqualSelector(
             !isLoading &&
             quotesRefreshCount > 0,
         ),
-      // Shown prior to fetching quotes
-      isInsufficientGasBalance: Boolean(
-        nativeBalance &&
-          !activeQuote &&
-          validatedSrcAmount &&
-          fromToken &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
-      ),
+      // Shown anytime (before, during and after having fetched quotes)
+      insufficientNativeReserveError,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
@@ -825,7 +831,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
             ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
+                .sub(minimumNativeBalanceToBeKeptInAccount)
                 .lte(0)
             : new BigNumber(nativeBalance).lte(
                 activeQuote.totalNetworkFee.amount,
@@ -890,7 +896,7 @@ export const getWarningLabels = (
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
-    isInsufficientGasBalance,
+    insufficientNativeReserveError,
     isInsufficientGasForQuote,
     isInsufficientBalance,
     isPriceImpactWarning,
@@ -901,7 +907,7 @@ export const getWarningLabels = (
   const warnings: (QuoteWarning | 'market_closed')[] = [];
   isEstimatedReturnLow && warnings.push('low_return');
   isNoQuotesAvailable && warnings.push('no_quotes');
-  isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+  insufficientNativeReserveError && warnings.push('insufficient_gas_balance');
   isInsufficientGasForQuote &&
     warnings.push('insufficient_gas_for_selected_quote');
   isInsufficientBalance && warnings.push('insufficient_balance');

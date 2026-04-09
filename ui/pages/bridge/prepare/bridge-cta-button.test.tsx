@@ -509,7 +509,7 @@ describe('BridgeCTAButton', () => {
       jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
         isTxAlertPresent: false,
         isNoQuotesAvailable: false,
-        isInsufficientGasBalance: false,
+        insufficientNativeReserveError: undefined,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
@@ -575,7 +575,7 @@ describe('BridgeCTAButton', () => {
       jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
         isTxAlertPresent: false,
         isNoQuotesAvailable: false,
-        isInsufficientGasBalance: false,
+        insufficientNativeReserveError: undefined,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
@@ -698,7 +698,7 @@ describe('BridgeCTAButton', () => {
     jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
       isTxAlertPresent: false,
       isNoQuotesAvailable: false,
-      isInsufficientGasBalance: false,
+      insufficientNativeReserveError: undefined,
       isInsufficientGasForQuote: false,
       isInsufficientBalance: false,
       isEstimatedReturnLow: false,
