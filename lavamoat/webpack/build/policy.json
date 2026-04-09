@@ -644,14 +644,6 @@
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": true
       }
     },
-    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": {
-      "packages": {
-        "webpack>@webassemblyjs/ast": true,
-        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": true,
-        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
-        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": true
-      }
-    },
     "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": {
       "packages": {
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754>@xtuc/ieee754": true
