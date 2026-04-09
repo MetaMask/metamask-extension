@@ -1,6 +1,7 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
+import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
@@ -67,13 +68,33 @@ export default function setupSentry() {
   };
 }
 
+/**
+ * Deep-clone a Sentry report.
+ * If `cloneDeep` throws (unexpected graph), returns the original reference.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {Record<string, unknown>} Cloned report, or original reference on failure.
+ */
+function safeCloneReport(report) {
+  try {
+    return cloneDeep(report);
+  } catch (err) {
+    log('Failed to clone Sentry event, using original reference', err);
+    return report;
+  }
+}
+
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
+    // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
+    // which would otherwise make the next error look like a different stack (background timers
+    // usually run after beforeSend finished; rapid UI captures often dedupe first).
+    beforeSend: (report) => rewriteReport(safeCloneReport(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -82,6 +103,9 @@ function getClientOptions() {
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
         shouldCreateSpanForRequest: (url) => {
           // Do not create spans for outgoing requests to a 'sentry.io' domain.
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);

@@ -9,11 +9,14 @@ import {
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
+  normalizeTpslPrices,
   filterMarketsByQuery,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  parseVolume,
+  hasVolume,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
@@ -198,6 +201,39 @@ describe('Perps Utils', () => {
 
     it('handles empty string', () => {
       expect(safeDecodeURIComponent('')).toBe('');
+    });
+  });
+
+  describe('normalizeTpslPrices', () => {
+    it('strips commas and whitespace from TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' 12,345.67 ',
+          stopLossPrice: ' 9,876.54 ',
+        }),
+      ).toEqual({
+        takeProfitPrice: '12345.67',
+        stopLossPrice: '9876.54',
+      });
+    });
+
+    it('returns undefined for empty TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' ',
+          stopLossPrice: '',
+        }),
+      ).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
+    });
+
+    it('handles missing TP/SL values', () => {
+      expect(normalizeTpslPrices({})).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
     });
   });
 
@@ -482,6 +518,75 @@ describe('Perps Utils', () => {
     it('returns TextDefault for amounts without prefix', () => {
       expect(getTransactionAmountColor('100.00')).toBe(TextColor.TextDefault);
       expect(getTransactionAmountColor('0')).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('parseVolume', () => {
+    it('parses suffixed volume strings into numeric values', () => {
+      expect(parseVolume('$500K')).toBe(500_000);
+      expect(parseVolume('$1.2M')).toBe(1_200_000);
+      expect(parseVolume('$850M')).toBe(850_000_000);
+      expect(parseVolume('$2.3B')).toBe(2_300_000_000);
+      expect(parseVolume('$1.5T')).toBe(1_500_000_000_000);
+    });
+
+    it('parses plain numeric strings without suffix', () => {
+      expect(parseVolume('$100')).toBe(100);
+      expect(parseVolume('$0')).toBe(0);
+      expect(parseVolume('$0.5')).toBe(0.5);
+    });
+
+    it('strips commas from formatted numbers', () => {
+      expect(parseVolume('$1,234')).toBe(1234);
+      expect(parseVolume('$1,234,567')).toBe(1_234_567);
+    });
+
+    it('handles strings without $ prefix', () => {
+      expect(parseVolume('500K')).toBe(500_000);
+      expect(parseVolume('1.2M')).toBe(1_200_000);
+      expect(parseVolume('100')).toBe(100);
+    });
+
+    it('returns 0.5 for the "$<1" special case', () => {
+      expect(parseVolume('$<1')).toBe(0.5);
+    });
+
+    it('returns -1 for the fallback display "--"', () => {
+      expect(parseVolume('--')).toBe(-1);
+    });
+
+    it('returns -1 for undefined or empty input', () => {
+      expect(parseVolume(undefined)).toBe(-1);
+      expect(parseVolume('')).toBe(-1);
+    });
+
+    it('returns -1 for non-numeric strings', () => {
+      expect(parseVolume('abc')).toBe(-1);
+      expect(parseVolume('N/A')).toBe(-1);
+    });
+  });
+
+  describe('hasVolume', () => {
+    it('returns true for markets with non-zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$1.2B' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$850M' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$500K' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$<1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$0.5' }))).toBe(true);
+    });
+
+    it('returns false for markets with zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$0' }))).toBe(false);
+      expect(hasVolume(createMockMarket({ volume: '$0.00' }))).toBe(false);
+    });
+
+    it('returns false for markets with empty volume string', () => {
+      expect(hasVolume(createMockMarket({ volume: '' }))).toBe(false);
+    });
+
+    it('returns false for markets with unparseable volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
     });
   });
 });
