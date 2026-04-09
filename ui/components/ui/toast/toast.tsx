@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
@@ -13,6 +12,8 @@ import {
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../icon/status-icon';
+
+export { toast } from 'react-hot-toast';
 
 const statusMap = {
   loading: 'loading',

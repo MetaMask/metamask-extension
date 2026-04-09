@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -32,7 +31,7 @@ import {
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { ToastContent } from '../../../../components/ui/toast/toast';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';

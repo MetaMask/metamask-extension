@@ -94,15 +94,11 @@ class PrivacySettings {
   private readonly changePasswordButton =
     '[data-testid="change-password-button"]';
 
-  private readonly passwordChangeSuccessToast = {
-    text: 'New password saved',
-    css: '[role="status"]',
-  };
+  private readonly passwordChangeSuccessToast =
+    '[data-testid="password-change-toast-success"]';
 
-  private readonly passwordChangeErrorToast = {
-    text: "Password couldn't be changed. Please try again.",
-    css: '[role="status"]',
-  };
+  private readonly passwordChangeErrorToast =
+    '[data-testid="password-change-toast-error"]';
 
   private readonly revealSrpContinueButton =
     '[data-testid="reveal-seed-password-continue"]';
