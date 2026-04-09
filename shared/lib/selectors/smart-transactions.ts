@@ -23,7 +23,7 @@ import {
 } from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
 import { getCurrentChainId, type NetworkState } from './networks';
-import { createDeepEqualSelector } from './util';
+import { createDeepEqualSelector } from './selector-creators';
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {

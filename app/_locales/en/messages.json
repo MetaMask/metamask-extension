@@ -1147,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Price impact"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "You will lose $1 on this trade"
+  },
   "bridgePriceImpactHigh": {
     "message": "High price impact"
   },
@@ -1170,6 +1173,33 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
+  },
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
+    "message": "No quotes available. Try a smaller amount."
+  },
+  "bridgeQuoteStreamCompleteAmountTooLow": {
+    "message": "No quotes available. Try a larger amount."
+  },
+  "bridgeQuoteStreamCompleteRetry": {
+    "message": "Unable to get a quote right now. Try again."
+  },
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
+    "message": "This swap isn't available in your region."
+  },
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
+    "message": "The market for this asset is currently unavailable. Try again later."
+  },
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
+    "message": "Swaps between this token and real-world assets aren't supported yet. Try using a different token."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
+    "message": "Slippage is too high. Try lowering your slippage setting."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
+    "message": "Slippage is too low. Try increasing your slippage setting."
+  },
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
+    "message": "This token isn't supported. Try using a different token."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Quotes are sorted by the estimated total cost, which includes the exchange rate and network fee."
@@ -2949,9 +2979,6 @@
   "from": {
     "message": "From"
   },
-  "fromTokenLists": {
-    "message": "From token lists: $1"
-  },
   "function": {
     "message": "Function: $1"
   },
@@ -3335,12 +3362,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Ignore all"
-  },
-  "ignoreTokenWarning": {
-    "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3400,12 +3421,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
-  "importSelectedTokens": {
-    "message": "Import selected tokens?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
-  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -3424,10 +3439,6 @@
   "importWalletSuccess": {
     "message": "Wallet $1 imported",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Import $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Imported",
@@ -4796,13 +4807,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 new tokens found in this account",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 new token found in this account"
-  },
   "numberOfTokens": {
     "message": "Number of tokens"
   },
@@ -5488,6 +5492,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
+  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
@@ -5734,29 +5741,29 @@
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Funding rate: high to low"
+  "perpsSortByFundingRate": {
+    "message": "Funding rate"
   },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Funding rate: low to high"
+  "perpsSortByHighToLow": {
+    "message": "High to low"
   },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Open interest: high to low"
+  "perpsSortByLowToHigh": {
+    "message": "Low to high"
   },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Open interest: low to high"
+  "perpsSortByOpenInterest": {
+    "message": "Open interest"
   },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Price change: high to low"
+  "perpsSortByPriceChange": {
+    "message": "Price change"
   },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Price change: low to high"
+  "perpsSortBySection": {
+    "message": "Sort by"
   },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: high to low"
+  "perpsSortByTitle": {
+    "message": "Sort"
   },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: low to high"
+  "perpsSortByVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5821,8 +5828,8 @@
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
   "perpsToastMarginAddSuccess": {
-    "message": "Added $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+    "message": "Added $1 margin to $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
   },
   "perpsToastMarginAdjustmentFailed": {
     "message": "Margin adjustment failed",
@@ -5833,8 +5840,8 @@
     "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
-    "message": "Removed $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+    "message": "Removed $1 margin from $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
   },
   "perpsToastOrderFailed": {
     "message": "Order failed",
@@ -5986,6 +5993,9 @@
   "perpsWithdrawFee": {
     "message": "Provider Fee"
   },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
+  },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
   },
@@ -6046,10 +6056,6 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
-  },
-  "plusXMore": {
-    "message": "+ $1 more",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog post."
@@ -8913,9 +8919,6 @@
   "tokenDetails": {
     "message": "Token details"
   },
-  "tokenFoundTitle": {
-    "message": "1 new token found"
-  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -8957,10 +8960,6 @@
   "tokensCount": {
     "message": "tokens",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 new tokens found",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Tokens in collection"
