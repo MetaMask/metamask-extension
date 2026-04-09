@@ -1,4 +1,40 @@
-import type { ArtifactLinks } from './artifacts';
+import type { ArtifactLinks, BundleSizeBundler } from './artifacts';
+
+const bundleParts = ['background', 'ui', 'common', 'contentScripts'] as const;
+
+type BundlePart = (typeof bundleParts)[number];
+
+type BundlePartStats = {
+  size: number;
+};
+
+type BundleSizeArtifactV2 = {
+  schemaVersion: 2;
+  bundler: BundleSizeBundler;
+} & Record<BundlePart, BundlePartStats>;
+
+type BundleSizeSummaryV2 = {
+  schemaVersion: 2;
+  bundler: BundleSizeBundler;
+  timestamp: number;
+} & Record<BundlePart, number>;
+
+type StoredBundleSizeDataV2 = Record<
+  string,
+  Partial<Record<BundleSizeBundler, BundleSizeSummaryV2>>
+>;
+
+const bundlePartLabels: Record<BundlePart, string> = {
+  background: 'background',
+  ui: 'ui',
+  common: 'common',
+  contentScripts: 'content scripts',
+};
+
+const bundlerLabels: Record<BundleSizeBundler, string> = {
+  browserify: 'Browserify',
+  webpack: 'Webpack',
+};
 
 /**
  * Converts a byte count to a human-readable string (e.g. "1.5 KiB").
@@ -42,71 +78,149 @@ export function getPercentageChange(from: number, to: number): number {
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
 const BUNDLE_SIZE_THRESHOLD = 1_000;
 
-/**
- * Fetches bundle size stats and builds the bundle size diff collapsible section.
- *
- * @param artifacts - The artifact links object from getArtifactLinks.
- * @param mergeBaseCommitHash - The merge base commit hash for comparison.
- * @returns HTML string for the bundle size diff section, or empty string on error.
- */
-export async function buildBundleSizeDiffSection(
-  artifacts: ArtifactLinks,
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isBundleSizeArtifact(
+  value: unknown,
+  bundler: BundleSizeBundler,
+): value is BundleSizeArtifactV2 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (value.schemaVersion !== 2 || value.bundler !== bundler) {
+    return false;
+  }
+
+  return bundleParts.every((part) => {
+    const partValue = value[part];
+    return isRecord(partValue) && typeof partValue.size === 'number';
+  });
+}
+
+function isBundleSizeSummary(
+  value: unknown,
+  bundler: BundleSizeBundler,
+): value is BundleSizeSummaryV2 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (
+    value.schemaVersion !== 2 ||
+    value.bundler !== bundler ||
+    typeof value.timestamp !== 'number'
+  ) {
+    return false;
+  }
+
+  return bundleParts.every((part) => typeof value[part] === 'number');
+}
+
+async function fetchJson(url: string, label: string): Promise<unknown> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${label}, status ${response.statusText}`);
+  }
+
+  return await response.json();
+}
+
+function getCurrentSizes(
+  artifact: BundleSizeArtifactV2,
+): Record<BundlePart, number> {
+  return {
+    background: artifact.background.size,
+    ui: artifact.ui.size,
+    common: artifact.common.size,
+    contentScripts: artifact.contentScripts.size,
+  };
+}
+
+function getBaselineSummary(
+  value: unknown,
   mergeBaseCommitHash: string,
-): Promise<string> {
-  const prBundleSizeStatsResponse = await fetch(artifacts.bundleSizeStats.url);
-  if (!prBundleSizeStatsResponse.ok) {
-    throw new Error(
-      `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
-    );
+  bundler: BundleSizeBundler,
+): BundleSizeSummaryV2 | null {
+  if (!isRecord(value)) {
+    return null;
   }
-  // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
-  const prBundleSizeStats: Record<string, { size: number }> =
-    await prBundleSizeStatsResponse.json();
 
-  const devBundleSizeStatsResponse = await fetch(artifacts.bundleSizeData.url);
-  if (!devBundleSizeStatsResponse.ok) {
-    throw new Error(
-      `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
-    );
+  const mergeBaseStats = value[mergeBaseCommitHash];
+
+  if (!isRecord(mergeBaseStats)) {
+    return null;
   }
-  // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
-  const devBundleSizeStats: Record<
-    string,
-    Record<string, number>
-  > = await devBundleSizeStatsResponse.json();
 
-  const bundleParts = ['background', 'ui', 'common'] as const;
-  type BundlePart = (typeof bundleParts)[number];
+  const summary = mergeBaseStats[bundler];
 
-  const prSizes: Record<BundlePart, number> = {
-    background: prBundleSizeStats.background.size,
-    ui: prBundleSizeStats.ui.size,
-    common: prBundleSizeStats.common.size,
+  return isBundleSizeSummary(summary, bundler) ? summary : null;
+}
+
+function buildUnavailableComparisonContent(
+  currentSizes: Record<BundlePart, number>,
+): string {
+  const currentSizeRows = bundleParts.map(
+    (part) =>
+      `${bundlePartLabels[part]}: ${getHumanReadableSize(currentSizes[part])}`,
+  );
+
+  return `<p>Comparison unavailable.</p><ul>${currentSizeRows
+    .map((row) => `<li>${row}</li>`)
+    .join('\n')}</ul>`;
+}
+
+function buildBundlerBundleSizeDiffSection({
+  bundler,
+  artifact,
+  storedBundleSizeData,
+  mergeBaseCommitHash,
+}: {
+  bundler: BundleSizeBundler;
+  artifact: BundleSizeArtifactV2;
+  storedBundleSizeData: StoredBundleSizeDataV2 | unknown;
+  mergeBaseCommitHash: string;
+}): string {
+  const label = bundlerLabels[bundler];
+  const currentSizes = getCurrentSizes(artifact);
+  const baselineSummary = getBaselineSummary(
+    storedBundleSizeData,
+    mergeBaseCommitHash,
+    bundler,
+  );
+
+  if (!baselineSummary) {
+    return `<details><summary>${label} bundle size diffs</summary>${buildUnavailableComparisonContent(
+      currentSizes,
+    )}</details>\n\n`;
+  }
+
+  const baselineSizes: Record<BundlePart, number> = {
+    background: baselineSummary.background,
+    ui: baselineSummary.ui,
+    common: baselineSummary.common,
+    contentScripts: baselineSummary.contentScripts,
   };
-
-  const devSizes: Record<BundlePart, number> = {
-    background: 0,
-    ui: 0,
-    common: 0,
-  };
-  for (const part of bundleParts) {
-    devSizes[part] = devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
-  }
 
   const diffs: Record<BundlePart, number> = {
     background: 0,
     ui: 0,
     common: 0,
+    contentScripts: 0,
   };
+
   for (const part of bundleParts) {
-    diffs[part] = prSizes[part] - devSizes[part];
+    diffs[part] = currentSizes[part] - baselineSizes[part];
   }
 
   const sizeDiffRows = bundleParts.map(
     (part) =>
-      `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-        devSizes[part],
-        prSizes[part],
+      `${bundlePartLabels[part]}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
+        baselineSizes[part],
+        currentSizes[part],
       )}%)`,
   );
 
@@ -130,7 +244,55 @@ export async function buildBundleSizeDiffSection(
     sizeDiffWarning = `🚀 Bundle size reduced!`;
   }
 
-  const sizeDiffTitle = `Bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`;
+  const sizeDiffTitle = `${label} bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`;
 
   return `<details><summary>${sizeDiffTitle}</summary>${sizeDiffHiddenContent}</details>\n\n`;
+}
+
+/**
+ * Fetches bundle size stats and builds the bundle size diff collapsible section.
+ *
+ * @param artifacts - The artifact links object from getArtifactLinks.
+ * @param mergeBaseCommitHash - The merge base commit hash for comparison.
+ * @returns HTML string for the bundle size diff section, or empty string on error.
+ */
+export async function buildBundleSizeDiffSection(
+  artifacts: ArtifactLinks,
+  mergeBaseCommitHash: string,
+): Promise<string> {
+  const [
+    browserifyBundleSizeStats,
+    webpackBundleSizeStats,
+    storedBundleSizeData,
+  ] = await Promise.all([
+    fetchJson(
+      artifacts.bundleSizeStats.browserify.url,
+      'browserifyBundleSizeStats',
+    ),
+    fetchJson(artifacts.bundleSizeStats.webpack.url, 'webpackBundleSizeStats'),
+    fetchJson(artifacts.bundleSizeData.url, 'devBundleSizeStats'),
+  ]);
+
+  if (!isBundleSizeArtifact(browserifyBundleSizeStats, 'browserify')) {
+    throw new Error('Invalid browserify bundle size artifact');
+  }
+
+  if (!isBundleSizeArtifact(webpackBundleSizeStats, 'webpack')) {
+    throw new Error('Invalid webpack bundle size artifact');
+  }
+
+  return (
+    buildBundlerBundleSizeDiffSection({
+      bundler: 'browserify',
+      artifact: browserifyBundleSizeStats,
+      storedBundleSizeData,
+      mergeBaseCommitHash,
+    }) +
+    buildBundlerBundleSizeDiffSection({
+      bundler: 'webpack',
+      artifact: webpackBundleSizeStats,
+      storedBundleSizeData,
+      mergeBaseCommitHash,
+    })
+  );
 }

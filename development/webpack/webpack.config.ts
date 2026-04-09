@@ -235,10 +235,16 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
-if (args.bundleAnalyzer) {
+if (args.stats) {
   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   plugins.push(
-    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: 'bundle-analyzer/report.html',
+      generateStatsFile: true,
+      statsFilename: 'bundle-analyzer/stats.json',
+    }),
   );
 }
 

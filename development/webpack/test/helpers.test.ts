@@ -20,7 +20,7 @@ describe('./utils/helpers.ts', () => {
 
   describe('logStats', () => {
     const getStatsMock = (
-      stats: 'normal' | 'none',
+      stats: 'normal' | 'none' | { preset: 'normal' | 'none' },
       mode: 'development' | 'production',
       hasError: boolean,
       hasWarning: boolean,
@@ -81,6 +81,24 @@ describe('./utils/helpers.ts', () => {
     };
 
     generateCases(matrix).forEach(runTest);
+
+    it('logs verbose stats when webpack normalizes the stats option to an object preset', () => {
+      const stats = getStatsMock(
+        { preset: 'normal' },
+        'development',
+        false,
+        false,
+      );
+      const { mock: error } = mock.method(console, 'error', helpers.noop);
+
+      helpers.logStats(null, stats);
+
+      assert.strictEqual(stats.toString.mock.callCount(), 1);
+      assert.deepStrictEqual(stats.toString.mock.calls[0].arguments, [
+        { colors: helpers.colors },
+      ]);
+      assert.deepStrictEqual(error.calls[0].arguments, ['test-stats']);
+    });
 
     function runTest(settings: Combination<typeof matrix>) {
       const { colorDepth, level, env, hasErrors, hasWarnings } = settings;

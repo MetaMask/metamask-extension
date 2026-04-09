@@ -19,10 +19,10 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
-      bundle-analyzer:
+      stats:
         type: boolean
         default: false
-        description: Whether to generate and upload bundle analyzer reports
+        description: Whether to generate and upload webpack stats and bundle analyzer artifacts
 
 jobs:
   run-build:
@@ -105,7 +105,7 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: ${{ inputs.build-command }}${{ inputs.stats && ' --stats' || '' }}
 
       - name: Validate source maps
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
@@ -114,18 +114,18 @@ jobs:
         if: ${{ contains(inputs.build-name, 'mv2') }}
         run: yarn mozilla-lint
 
-      - name: Upload bundle analyzer report to S3
-        if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+      - name: Upload bundle stats to S3
+        if: ${{ inputs.stats && contains(inputs.build-name, 'webpack') && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/bundle-analyzer/report.html
-          path: dist/report.html
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/bundle-analyzer
+          path: dist/bundle-analyzer
 
-      - name: Remove bundle analyzer report from dist
-        if: ${{ inputs.bundle-analyzer }}
-        run: rm -f dist/report.html
+      - name: Remove bundle analyzer HTML report from dist
+        if: ${{ inputs.stats && contains(inputs.build-name, 'webpack') && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        run: rm -f dist/bundle-analyzer/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'
         uses: actions/upload-artifact@v6

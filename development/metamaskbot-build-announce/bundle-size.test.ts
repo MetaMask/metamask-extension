@@ -69,83 +69,121 @@ describe('buildBundleSizeDiffSection', () => {
     '1',
   );
 
-  const prStats = {
+  const browserifyArtifact = {
+    schemaVersion: 2,
+    bundler: 'browserify',
     background: { size: 1100 },
     ui: { size: 2200 },
     common: { size: 300 },
-  };
-  const devStats = {
-    [MERGE_BASE]: { background: 1000, ui: 2000, common: 300 },
+    contentScripts: { size: 50 },
   };
 
-  function mockSuccessfulFetches() {
+  const webpackArtifact = {
+    schemaVersion: 2,
+    bundler: 'webpack',
+    background: { size: 1600 },
+    ui: { size: 2500 },
+    common: { size: 400 },
+    contentScripts: { size: 60 },
+  };
+
+  const bundleSizeData = {
+    [MERGE_BASE]: {
+      browserify: {
+        schemaVersion: 2,
+        bundler: 'browserify',
+        background: 1000,
+        ui: 2000,
+        common: 300,
+        contentScripts: 40,
+        timestamp: 1,
+      },
+      webpack: {
+        schemaVersion: 2,
+        bundler: 'webpack',
+        background: 1500,
+        ui: 2400,
+        common: 400,
+        contentScripts: 50,
+        timestamp: 1,
+      },
+    },
+  };
+
+  function mockSuccessfulFetches({
+    browserify = browserifyArtifact,
+    webpack = webpackArtifact,
+    storedData = bundleSizeData,
+  }: {
+    browserify?: Record<string, unknown>;
+    webpack?: Record<string, unknown>;
+    storedData?: Record<string, unknown>;
+  } = {}) {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(prStats),
+        json: () => Promise.resolve(browserify),
       } as unknown as Response)
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(devStats),
+        json: () => Promise.resolve(webpack),
+      } as unknown as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(storedData),
       } as unknown as Response);
   }
 
-  it('returns a collapsible details section with size diff rows', async () => {
+  it('renders separate browserify and webpack sections with content scripts rows', async () => {
     mockSuccessfulFetches();
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('<details>');
-    expect(result).toContain('Bundle size diffs');
-    expect(result).toContain('background:');
-    expect(result).toContain('ui:');
-    expect(result).toContain('common:');
+    expect(result).toContain('Browserify bundle size diffs');
+    expect(result).toContain('Webpack bundle size diffs');
+    expect(result).toContain('content scripts:');
   });
 
-  it('shows a warning when the background bundle increases beyond the threshold', async () => {
-    const bigIncrease = {
-      background: { size: 3000 },
-      ui: { size: 2000 },
-      common: { size: 300 },
-    };
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(bigIncrease),
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(devStats),
-      } as unknown as Response);
+  it('compares each section only against the matching bundler baseline', async () => {
+    mockSuccessfulFetches();
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('background: 100 Bytes (10%)');
+    expect(result).toContain('ui: 100 Bytes (4.17%)');
+    expect(result).toContain('content scripts: 10 Bytes (25%)');
+  });
+
+  it('shows a warning when the same-bundler background diff exceeds the threshold', async () => {
+    mockSuccessfulFetches({
+      browserify: {
+        ...browserifyArtifact,
+        background: { size: 3000 },
+      },
+    });
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain('Warning! Bundle size has increased!');
   });
 
-  it('shows a reduction notice when the bundle shrinks beyond the threshold', async () => {
-    const bigDecrease = {
-      background: { size: 100 },
-      ui: { size: 100 },
-      common: { size: 100 },
-    };
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(bigDecrease),
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(devStats),
-      } as unknown as Response);
-
-    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
-
-    expect(result).toContain('Bundle size reduced!');
-  });
-
-  it('shows no warning when diffs are within threshold', async () => {
-    mockSuccessfulFetches();
+  it('does not use content scripts increases to trigger warnings', async () => {
+    mockSuccessfulFetches({
+      browserify: {
+        ...browserifyArtifact,
+        background: { size: 1000 },
+        ui: { size: 2000 },
+        common: { size: 300 },
+        contentScripts: { size: 5000 },
+      },
+      webpack: {
+        ...webpackArtifact,
+        background: { size: 1500 },
+        ui: { size: 2400 },
+        common: { size: 400 },
+        contentScripts: { size: 50 },
+      },
+    });
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
@@ -153,7 +191,52 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).not.toContain('Bundle size reduced!');
   });
 
-  it('throws when the PR bundle size stats fetch fails', async () => {
+  it('renders comparison unavailable when the merge base baseline is missing', async () => {
+    mockSuccessfulFetches({ storedData: {} });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('Comparison unavailable.');
+  });
+
+  it('renders comparison unavailable when the stored schema is incompatible', async () => {
+    mockSuccessfulFetches({
+      storedData: {
+        [MERGE_BASE]: {
+          browserify: {
+            ...bundleSizeData[MERGE_BASE].browserify,
+            schemaVersion: 1,
+          },
+          webpack: bundleSizeData[MERGE_BASE].webpack,
+        },
+      },
+    });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('Comparison unavailable.');
+    expect(result).toContain('Webpack bundle size diffs');
+  });
+
+  it('renders comparison unavailable when the stored bundler does not match', async () => {
+    mockSuccessfulFetches({
+      storedData: {
+        [MERGE_BASE]: {
+          browserify: {
+            ...bundleSizeData[MERGE_BASE].browserify,
+            bundler: 'webpack',
+          },
+          webpack: bundleSizeData[MERGE_BASE].webpack,
+        },
+      },
+    });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('Comparison unavailable.');
+  });
+
+  it('throws when the browserify bundle size stats fetch fails', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       statusText: 'Not Found',
@@ -161,14 +244,18 @@ describe('buildBundleSizeDiffSection', () => {
 
     await expect(
       buildBundleSizeDiffSection(artifacts, MERGE_BASE),
-    ).rejects.toThrow('Failed to fetch prBundleSizeStats');
+    ).rejects.toThrow('Failed to fetch browserifyBundleSizeStats');
   });
 
   it('throws when the dev bundle size data fetch fails', async () => {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(prStats),
+        json: () => Promise.resolve(browserifyArtifact),
+      } as unknown as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(webpackArtifact),
       } as unknown as Response)
       .mockResolvedValueOnce({
         ok: false,
@@ -178,21 +265,5 @@ describe('buildBundleSizeDiffSection', () => {
     await expect(
       buildBundleSizeDiffSection(artifacts, MERGE_BASE),
     ).rejects.toThrow('Failed to fetch devBundleSizeStats');
-  });
-
-  it('uses 0 for dev sizes when the merge base hash is not in the data', async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(prStats),
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({}),
-      } as unknown as Response);
-
-    const result = await buildBundleSizeDiffSection(artifacts, 'unknown-hash');
-
-    expect(result).toContain('Bundle size diffs');
   });
 });

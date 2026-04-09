@@ -12,8 +12,11 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size.json`,
+    expect(links.bundleSizeStats.browserify.url).toBe(
+      `${HOST}/bundle-size/browserify/bundle_size.json`,
+    );
+    expect(links.bundleSizeStats.webpack.url).toBe(
+      `${HOST}/bundle-size/webpack/bundle_size.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -87,5 +90,22 @@ describe('buildArtifactsBody', () => {
       `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );
     expect(result).toContain('bundle analyzer:');
+  });
+
+  it('includes separate browserify and webpack bundle size links', () => {
+    const result = buildArtifactsBody({
+      hostUrl: HOST,
+      version: VERSION,
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: false,
+    });
+
+    expect(result).toContain(
+      `<a href="${HOST}/bundle-size/browserify/bundle_size.json">Browserify Bundle Size Stats</a>`,
+    );
+    expect(result).toContain(
+      `<a href="${HOST}/bundle-size/webpack/bundle_size.json">Webpack Bundle Size Stats</a>`,
+    );
   });
 });

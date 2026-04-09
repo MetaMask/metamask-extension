@@ -301,20 +301,38 @@ ${Object.entries(env)
     const bundleAnalyzerPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
-    assert.strictEqual(
+    assert.ok(
       bundleAnalyzerPlugin,
-      undefined,
-      'BundleAnalyzerPlugin should be absent without --bundleAnalyzer',
+      'BundleAnalyzerPlugin should be present when --stats is enabled',
     );
   });
 
-  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
-    const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
+  it('should include BundleAnalyzerPlugin and stats output when --stats is passed', () => {
+    const config: Configuration = getWebpackConfig(['--stats']);
     const instance = getWebpackInstance(config);
     const bundleAnalyzerPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
-    );
+    ) as WebpackPluginInstance & {
+      opts?: {
+        analyzerMode?: string;
+        openAnalyzer?: boolean;
+        generateStatsFile?: boolean;
+        reportFilename?: string;
+        statsFilename?: string;
+      };
+    };
     assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
+    assert.strictEqual(bundleAnalyzerPlugin.opts?.analyzerMode, 'static');
+    assert.strictEqual(bundleAnalyzerPlugin.opts?.openAnalyzer, false);
+    assert.strictEqual(bundleAnalyzerPlugin.opts?.generateStatsFile, true);
+    assert.strictEqual(
+      bundleAnalyzerPlugin.opts?.reportFilename,
+      'bundle-analyzer/report.html',
+    );
+    assert.strictEqual(
+      bundleAnalyzerPlugin.opts?.statsFilename,
+      'bundle-analyzer/stats.json',
+    );
   });
 
   it('should allow disabling source maps', () => {
