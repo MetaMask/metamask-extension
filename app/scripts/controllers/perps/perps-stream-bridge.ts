@@ -12,6 +12,7 @@ type EmitFn = (
 
 type ActivateStreamingParams = {
   priceSymbols?: string[];
+  includeMarketData?: boolean;
   orderBookSymbol?: string;
   candle?: { symbol: string; interval: CandlePeriod; duration?: TimeDuration };
 };
@@ -109,10 +110,16 @@ export class PerpsStreamBridge {
         }
         return 'ok';
       },
-      perpsActivatePriceStream: async ({ symbols }: { symbols: string[] }) => {
+      perpsActivatePriceStream: async ({
+        symbols,
+        includeMarketData,
+      }: {
+        symbols: string[];
+        includeMarketData?: boolean;
+      }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols);
+          this.#activatePriceStream(symbols, includeMarketData);
         }
         return 'ok';
       },
@@ -222,17 +229,12 @@ export class PerpsStreamBridge {
   }
 
   #activateStreaming(params: ActivateStreamingParams): void {
-    const { priceSymbols, orderBookSymbol, candle } = params;
+    const { priceSymbols, includeMarketData, orderBookSymbol, candle } = params;
 
     this.#tearDownAllDynamic();
 
     if (priceSymbols?.length) {
-      this.#addDynamicSubscription('prices', () =>
-        this.#controller.subscribeToPrices({
-          symbols: priceSymbols,
-          callback: (data: unknown) => this.#emit('prices', data),
-        }),
-      );
+      this.#subscribeToPriceStream(priceSymbols, includeMarketData);
     }
 
     if (orderBookSymbol) {
@@ -262,16 +264,24 @@ export class PerpsStreamBridge {
     }
   }
 
-  #activatePriceStream(symbols: string[]): void {
+  #activatePriceStream(symbols: string[], includeMarketData?: boolean): void {
     this.#tearDownChannel('prices');
     if (symbols.length) {
-      this.#addDynamicSubscription('prices', () =>
-        this.#controller.subscribeToPrices({
-          symbols,
-          callback: (data: unknown) => this.#emit('prices', data),
-        }),
-      );
+      this.#subscribeToPriceStream(symbols, includeMarketData);
     }
+  }
+
+  #subscribeToPriceStream(
+    symbols: string[],
+    includeMarketData?: boolean,
+  ): void {
+    this.#addDynamicSubscription('prices', () =>
+      this.#controller.subscribeToPrices({
+        symbols,
+        includeMarketData,
+        callback: (data: unknown) => this.#emit('prices', data),
+      }),
+    );
   }
 
   #activateOrderBookStream(symbol: string): void {

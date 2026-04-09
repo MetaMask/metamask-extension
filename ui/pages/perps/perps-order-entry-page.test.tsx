@@ -974,6 +974,11 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivatePriceStream',
+        [{ symbols: ['ETH'], includeMarketData: true }],
+      );
+
       await waitFor(() => {
         expect(typeof priceCallback).toBe('function');
       });
@@ -992,7 +997,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
     });
 
-    it('uses price field when markPrice is absent', async () => {
+    it('preserves missing markPrice when absent from the stream update', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 

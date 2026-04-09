@@ -282,7 +282,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           marginMode === 'add'
             ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
             : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
-        messageParams: [marginAmount, displaySymbol],
+        messageParams: [`$${marginAmount}`, displaySymbol],
       });
 
       setMarginAmount('');

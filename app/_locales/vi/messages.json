@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Kích thước"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Tỷ lệ tài trợ: cao đến thấp"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Tỷ lệ tài trợ: thấp đến cao"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Lãi suất mở: cao đến thấp"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Lãi suất mở: thấp đến cao"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Biến động giá: cao đến thấp"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Biến động giá: thấp đến cao"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Khối lượng: cao đến thấp"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Khối lượng: thấp đến cao"
-  },
   "perpsStartNewTrade": {
     "message": "Bắt đầu giao dịch mới"
   },

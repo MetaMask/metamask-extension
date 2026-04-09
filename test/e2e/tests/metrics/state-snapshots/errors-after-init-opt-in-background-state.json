@@ -53,7 +53,7 @@
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
-    "newPrivacyPolicyToastClickedOrClosed": null,
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
@@ -105,6 +105,7 @@
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
+    "quoteStreamComplete": null,
     "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,

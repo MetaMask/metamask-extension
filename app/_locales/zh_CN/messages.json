@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "规模"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "资金费率：从高到低"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "资金费率：从低到高"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "未平仓合约：从高到低"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "未平仓合约：从低到高"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "价格变化：从高到低"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "价格变化：从低到高"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "交易量：从高到低"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "交易量：从低到高"
-  },
   "perpsStartNewTrade": {
     "message": "开始新交易"
   },
