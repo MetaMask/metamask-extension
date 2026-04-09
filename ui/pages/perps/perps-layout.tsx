@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 
 /**
@@ -16,5 +17,9 @@ import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive'
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
 
-  return <Outlet />;
+  return (
+    <PerpsToastProvider>
+      <Outlet />
+    </PerpsToastProvider>
+  );
 }

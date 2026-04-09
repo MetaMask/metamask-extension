@@ -55,6 +55,7 @@ class NftListPage {
   }
 
   async clickNFTIconOnActivityList() {
+    console.log('Clicking NFT icon on activity list');
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
 

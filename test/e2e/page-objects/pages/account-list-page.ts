@@ -218,7 +218,7 @@ class AccountListPage {
 
   private readonly importSrpConfirmButton = {
     text: 'Continue',
-    tag: 'button',
+    tag: 'span',
   };
 
   private readonly exportSrpButton = {
@@ -1138,17 +1138,20 @@ class AccountListPage {
     await new HeaderNavbar(this.driver).openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
     await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToPrivacySettings();
+    await settingsPage.goToSecurityAndPasswordSettings();
 
     const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
     await privacySettings.openSrpList();
 
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');
     }
 
-    const srps = await this.driver.findElements('.select-srp__container');
-    const selectedSrp = srps[srpIndex - 1];
+    const selectedSrp = await this.driver.waitForSelector({
+      css: '.select-srp__container',
+      text: `Secret Recovery Phrase ${srpIndex}`,
+    });
     const showAccountsButton = await this.driver.waitForSelector(
       `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
     );

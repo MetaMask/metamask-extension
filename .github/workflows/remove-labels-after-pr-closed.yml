@@ -3,7 +3,10 @@ name: Remove labels after issue (or PR) closed
 on:
   issues:
     types: [closed]
-  pull_request:
+  # Use pull_request_target so closed-PR cleanup always runs with the
+  # workflow definition from the default branch (not the PR head SHA).
+  # This ensures newly added cleanup labels are applied consistently.
+  pull_request_target:
     types: [closed]
 
 jobs:
@@ -34,7 +37,9 @@ jobs:
             "needs-qa"
             "issues-found"
             "ready-for-release"
+            "retry-ci"
           )
+
           for LABEL in "${LABELS[@]}"; do
             curl \
             -X DELETE \

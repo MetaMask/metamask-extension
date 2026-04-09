@@ -9,6 +9,7 @@ import { ReversePositionModal } from './reverse-position-modal';
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -17,6 +18,17 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
+
+jest.mock('../perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    REVERSE_FAILED: 'perpsToastReverseFailed',
+    REVERSE_IN_PROGRESS: 'perpsToastReverseInProgress',
+    REVERSE_SUCCESS: 'perpsToastReverseSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -306,6 +318,78 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Network error')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('toast emission', () => {
+    it('emits reverse in-progress toast on submit', () => {
+      // Never resolve so we can assert the in-progress toast fires
+      mockSubmitRequestToBackground.mockImplementation(
+        () => new Promise(() => undefined),
+      );
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastReverseInProgress',
+      });
+    });
+
+    it('emits reverse success toast after successful flip + refresh', async () => {
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseSuccess',
+        });
+      });
+    });
+
+    it('emits reverse failed toast on returned failure', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsFlipPosition') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseFailed',
+          description: 'Insufficient margin',
+        });
+      });
+    });
+
+    it('emits reverse failed toast on thrown exception', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsFlipPosition') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseFailed',
+          description: 'Network error',
+        });
       });
     });
   });

@@ -25,7 +25,7 @@ const createMockTransaction = (
   type: 'trade',
   category: 'position_open',
   symbol: 'ETH',
-  title: messages.perpsOpenedLong.message,
+  title: 'Opened long',
   subtitle: '2.5 ETH @ $2,850.00',
   timestamp: Date.now() - 3600000,
   fill: {
@@ -58,16 +58,14 @@ describe('TransactionCard', () => {
 
   it('displays the transaction title', () => {
     const transaction = createMockTransaction({
-      title: messages.perpsOpenedLong.message,
+      title: 'Opened long',
     });
     renderWithProvider(
       <TransactionCard transaction={transaction} />,
       mockStore,
     );
 
-    expect(
-      screen.getByText(messages.perpsOpenedLong.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Opened long')).toBeInTheDocument();
   });
 
   it('displays the token logo', () => {
@@ -498,7 +496,7 @@ describe('TransactionCard', () => {
         type: 'trade',
         category: 'position_open',
         symbol: 'xyz:TSLA',
-        title: messages.perpsOpenedLong.message,
+        title: 'Opened long',
         fill: {
           shortTitle: 'Opened long',
           amount: '+$2,400.00',

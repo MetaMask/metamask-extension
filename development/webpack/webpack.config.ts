@@ -111,7 +111,7 @@ const manifestPlugin = new ManifestPlugin({
   ...(args.zip
     ? {
         zipOptions: {
-          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
           mtime: getLatestCommit().timestamp(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1

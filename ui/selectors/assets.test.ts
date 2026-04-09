@@ -328,6 +328,7 @@ describe('selectAggregatedBalanceForSelectedAccount', () => {
       }),
       undefined,
       expect.any(Object),
+      expect.any(Function),
     );
   });
 });
@@ -506,6 +507,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
@@ -517,8 +519,8 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       internalAccounts: {
         accounts: {
           '81b1ead4-334c-4921-9adf-282fde539752': {
@@ -995,7 +997,8 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('does not recompute when unrelated state changes but used slice references are stable', () => {
     // Build stable references for used slices
-    const accountTree = { wallets: {}, selectedAccountGroup: '' };
+    const accountTree = { wallets: {} };
+    const selectedAccountGroup = '';
     const internalAccounts = { accounts: {}, selectedAccount: '' };
     const tokenBalances = {};
     const marketData = {};
@@ -1012,6 +1015,7 @@ describe('Aggregated balance recomputation behavior', () => {
     const baseState: BalanceCalculationState = {
       metamask: {
         // provide all used slices with stable refs
+        selectedAccountGroup,
         accountTree,
         internalAccounts,
         tokenBalances,
@@ -1035,6 +1039,7 @@ describe('Aggregated balance recomputation behavior', () => {
     const nextState: BalanceCalculationState = {
       metamask: {
         // reuse same references for used inputs
+        selectedAccountGroup,
         accountTree,
         internalAccounts,
         tokenBalances,
@@ -1069,7 +1074,8 @@ describe('Aggregated balance recomputation behavior', () => {
 
     const stateA: BalanceCalculationState = {
       metamask: {
-        accountTree: { wallets: {}, selectedAccountGroup: '' },
+        selectedAccountGroup: '',
+        accountTree: { wallets: {} },
         internalAccounts: { accounts: {}, selectedAccount: '' },
         tokenBalances: tokenBalancesA,
         marketData: {},
@@ -1172,6 +1178,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     accountScopes: string[],
     accountMetadata: Record<string, unknown> = {},
   ): Partial<BalanceCalculationState['metamask']> => ({
+    selectedAccountGroup: 'entropy:wallet1/group1',
     accountTree: {
       wallets: {
         'entropy:wallet1': {
@@ -1185,12 +1192,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
                 name: 'Account 1',
                 hidden: false,
                 pinned: false,
+                lastSelected: 0,
               },
             },
           },
         },
       },
-      selectedAccountGroup: 'entropy:wallet1/group1',
     } as unknown as BalanceCalculationState['metamask']['accountTree'],
     internalAccounts: {
       accounts: {
