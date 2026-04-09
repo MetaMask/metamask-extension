@@ -22,7 +22,7 @@ on:
       bundle-analyzer:
         type: boolean
         default: false
-        description: Whether to generate and upload a bundle analyzer report
+        description: Whether to generate and upload bundle analyzer reports
 
 jobs:
   run-build:
