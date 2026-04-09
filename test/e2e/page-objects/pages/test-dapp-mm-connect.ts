@@ -325,22 +325,12 @@ export class TestDappMmConnect {
       const selector = this.checkboxSelector(chainId);
       const isChecked = await this.getCheckboxState(selector);
       const shouldBeChecked = desiredChainIds.includes(chainId);
-
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
         // Ensure React has committed this checkbox state before moving
-        // to the next one. This avoids stale-closure races when several
-        // checkboxes are toggled in quick succession.
+        // to the next one.
         await this.waitForCheckboxState(selector, shouldBeChecked);
       }
-    }
-
-    // Defensive final pass: confirm every featured network checkbox is in
-    // the desired state before triggering wallet_createSession.
-    for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
-      const selector = this.checkboxSelector(chainId);
-      const shouldBeChecked = desiredChainIds.includes(chainId);
-      await this.waitForCheckboxState(selector, shouldBeChecked);
     }
   }
 
