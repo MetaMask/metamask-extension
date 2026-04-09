@@ -498,5 +498,8 @@ export const deriveTpslType = ({
   if (takeProfitPrice) {
     return `${prefix}_tp`;
   }
-  return `${prefix}_sl`;
+  if (stopLossPrice) {
+    return `${prefix}_sl`;
+  }
+  return `${prefix}_tpsl`;
 };
