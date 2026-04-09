@@ -127,17 +127,8 @@ class SmartTransactionHook {
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
-    const extensionSkipSmartTransactionStatusPage =
-      featureFlags?.extensionSkipSmartTransactionStatusPage;
 
-    this.#shouldShowStatusPage = extensionSkipSmartTransactionStatusPage
-      ? false
-      : Boolean(
-          (transactionMeta.type !== TransactionType.bridge &&
-            transactionMeta.type !==
-              TransactionType.shieldSubscriptionApprove) ||
-            (this.#transactions && this.#transactions.length > 0),
-        );
+    this.#shouldShowStatusPage = false;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
