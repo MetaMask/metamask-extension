@@ -4,6 +4,10 @@ on:
   issue_comment:
     types: created
 
+concurrency:
+  group: update-lavamoat-policies-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
 jobs:
   prepare:
     name: Prepare
@@ -58,7 +62,8 @@ jobs:
           echo "Found run ${RUN_ID}, looking for failed lavamoat validation job ids..."
 
           JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '[.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.steps[]? | select(.name == "Check working tree" and .conclusion == "failure")) | .id] | map(tostring) | join(",")')
+            --jq '.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.steps[]? | select(.name == "Check working tree" and .conclusion == "failure")) | .id' \
+            | paste -sd,)
 
           echo "JOB_IDS=${JOB_IDS}" >> "$GITHUB_OUTPUT"
           echo "Failed job IDs: ${JOB_IDS:-none}"
@@ -66,7 +71,7 @@ jobs:
   apply-and-commit:
     name: Apply policy diffs and commit
     needs: prepare
-    if: ${{ always() && needs.prepare.outputs.IS_FORK == 'false' }}
+    if: ${{ !cancelled() && needs.prepare.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -103,9 +108,15 @@ jobs:
               | sed 's/^[0-9T:.Z-]* //' \
               > /tmp/policy.patch
 
-            echo "Applying patch from job ${JOB_ID} ($(wc -l < /tmp/policy.patch) lines)..."
-            git apply /tmp/policy.patch
-            HAS_CHANGES=true
+            PATCH_LINES=$(wc -l < /tmp/policy.patch)
+            echo "Extracted patch from job ${JOB_ID} (${PATCH_LINES} lines)"
+
+            if [ "$PATCH_LINES" -gt 0 ]; then
+              git apply /tmp/policy.patch
+              HAS_CHANGES=true
+            else
+              echo "Warning: empty patch from job ${JOB_ID}, skipping"
+            fi
           done
 
           echo "HAS_CHANGES=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
@@ -124,51 +135,28 @@ jobs:
           BASE_REF=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq .baseRefName)
           git fetch origin "${BASE_REF}"
 
-          browserify_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/browserify/main/policy.json | md5sum | cut -d' ' -f1)
+          compare_policies() {
+            local main_dir="$1"
+            local parent_dir="$2"
+            git diff "origin/${BASE_REF}" -- "${main_dir}policy.json" > /tmp/main_policy_diff
+            for folder in "${parent_dir}"*/; do
+              if [ "$folder" != "$main_dir" ]; then
+                local file="${folder}policy.json"
+                if [ -f "$file" ]; then
+                  if diff -q /tmp/main_policy_diff <(git diff "origin/${BASE_REF}" -- "$file") > /dev/null 2>&1; then
+                    echo "✅ ${file} changes match ${main_dir}policy.json changes"
+                  else
+                    echo "👀 ${file} changes **differ from** ${main_dir}policy.json changes"
+                  fi
+                fi
+              fi
+            done
+          }
+
           {
-          for folder in lavamoat/browserify/*/; do
-            if [ "$folder" != "lavamoat/browserify/main/" ]; then
-              file="${folder}policy.json"
-              if [ -f "$file" ]; then
-                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
-                if [ "$diff" = "$browserify_main_diff" ]; then
-                  echo "✅ ${folder}policy.json changes match main/policy.json policy changes"
-                else
-                  echo "👀 ${folder}policy.json changes **differ from** main/policy.json policy changes"
-                fi
-              fi
-            fi
-          done
-
-          mv2_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/webpack/mv2/main/policy.json | md5sum | cut -d' ' -f1)
-          for folder in lavamoat/webpack/mv2/*/; do
-            if [ "$folder" != "lavamoat/webpack/mv2/main/" ]; then
-              file="${folder}policy.json"
-              if [ -f "$file" ]; then
-                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
-                if [ "$diff" = "$mv2_main_diff" ]; then
-                  echo "✅ ${folder}policy.json changes match mv2/main/policy.json policy changes"
-                else
-                  echo "👀 ${folder}policy.json changes **differ from** mv2/main/policy.json policy changes"
-                fi
-              fi
-            fi
-          done
-
-          mv3_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/webpack/mv3/main/policy.json | md5sum | cut -d' ' -f1)
-          for folder in lavamoat/webpack/mv3/*/; do
-            if [ "$folder" != "lavamoat/webpack/mv3/main/" ]; then
-              file="${folder}policy.json"
-              if [ -f "$file" ]; then
-                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
-                if [ "$diff" = "$mv3_main_diff" ]; then
-                  echo "✅ ${folder}policy.json changes match mv3/main/policy.json policy changes"
-                else
-                  echo "👀 ${folder}policy.json changes **differ from** mv3/main/policy.json policy changes"
-                fi
-              fi
-            fi
-          done
+            compare_policies "lavamoat/browserify/main/" "lavamoat/browserify/"
+            compare_policies "lavamoat/webpack/mv2/main/" "lavamoat/webpack/mv2/"
+            compare_policies "lavamoat/webpack/mv3/main/" "lavamoat/webpack/mv3/"
           } > does_diff_diff.txt
 
       - name: Post comment (policies updated)
@@ -177,11 +165,11 @@ jobs:
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
-        if: ${{ !env.JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false' }}
+        if: ${{ needs.prepare.result == 'success' && (!env.JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false') }}
         run: |
           gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
       - name: Post comment if the update failed
-        if: ${{ failure() }}
+        if: ${{ failure() || needs.prepare.result == 'failure' }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
