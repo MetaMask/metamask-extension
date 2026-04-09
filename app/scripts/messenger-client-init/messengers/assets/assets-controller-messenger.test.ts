@@ -35,8 +35,6 @@ describe('getAssetsControllerMessenger', () => {
           // Network dependencies
           'NetworkController:getState',
           'NetworkController:getNetworkClientById',
-          // Token list dependencies
-          'TokenListController:getState',
           // Backend WebSocket dependencies
           'BackendWebSocketService:subscribe',
           'BackendWebSocketService:getConnectionInfo',
@@ -45,6 +43,7 @@ describe('getAssetsControllerMessenger', () => {
           'SnapController:handleRequest',
           'SnapController:getRunnableSnaps',
           'PermissionController:getPermissions',
+          'PhishingController:bulkScanTokens',
         ]),
       }),
     );
@@ -69,6 +68,7 @@ describe('getAssetsControllerMessenger', () => {
           'BackendWebSocketService:connectionStateChanged',
           'AccountsController:accountBalancesUpdated',
           'PermissionController:stateChange',
+          'PreferencesController:stateChange',
         ]),
       }),
     );

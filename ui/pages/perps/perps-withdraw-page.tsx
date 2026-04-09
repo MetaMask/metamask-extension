@@ -14,8 +14,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  IconColor,
+  IconName,
   Text,
   TextAlign,
   TextColor,
@@ -41,7 +45,6 @@ import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
 import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
 import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
 import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
-import { PerpsWalletAccountHeader } from '../../components/app/perps/perps-wallet-account-header';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -55,6 +58,7 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
+import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
@@ -268,6 +272,15 @@ const PerpsWithdrawPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
       });
       setSubmitError(failedMessage);
+      const withdrawError = result?.error;
+      setSubmitError(
+        withdrawError
+          ? (translatePerpsError(
+              new Error(withdrawError),
+              t as (key: string) => string,
+            ) ?? t('perpsWithdrawFailed'))
+          : t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
@@ -283,7 +296,10 @@ const PerpsWithdrawPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
-      setSubmitError(t('perpsWithdrawFailed'));
+      setSubmitError(
+        translatePerpsError(error, t as (key: string) => string) ??
+          t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
@@ -396,7 +412,32 @@ const PerpsWithdrawPage: React.FC = () => {
 
   return (
     <Page data-testid="perps-withdraw-page">
-      <PerpsWalletAccountHeader />
+      <Box
+        alignItems={BoxAlignItems.Center}
+        className="bg-background-default"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        paddingLeft={3}
+        paddingRight={3}
+        paddingTop={4}
+        paddingBottom={4}
+      >
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={handleCancel}
+          color={IconColor.IconDefault}
+          data-testid="perps-withdraw-back-button"
+        />
+        <Text
+          variant={TextVariant.HeadingSm}
+          data-testid="perps-withdraw-header-title"
+        >
+          {t('perpsWithdrawFundsTitle')}
+        </Text>
+        <Box style={{ width: 32 }} />
+      </Box>
       <Content className="min-h-0 flex-1">
         <Box
           flexDirection={BoxFlexDirection.Column}

@@ -60,6 +60,7 @@ import {
 } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -450,6 +451,11 @@ const PerpsMarketDetailPage: React.FC = () => {
     const transactions = transformFillsToTransactions(marketFills);
     return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
   }, [marketFills]);
+
+  usePerpsMeasurement(
+    'PerpsMarketDetailLoaded',
+    !marketsLoading && !isCandleLoading && !fillsLoading,
+  );
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);

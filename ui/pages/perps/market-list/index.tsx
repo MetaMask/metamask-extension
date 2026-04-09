@@ -53,11 +53,7 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../hooks/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
-import {
-  SortDropdown,
-  SORT_OPTIONS,
-  type SortOptionId,
-} from './components/sort-dropdown';
+import { SortDropdown } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect } from './components/filter-select';
 
@@ -177,15 +173,10 @@ export const MarketListView: React.FC = () => {
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSortId, setSelectedSortId] =
-    useState<SortOptionId>('volumeHigh');
+  const [sortField, setSortField] = useState<SortField>('volume');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [selectedFilter, setSelectedFilter] =
     useState<MarketFilter>(initialFilter);
-
-  // Get current sort option
-  const currentSortOption = SORT_OPTIONS.find(
-    (option) => option.id === selectedSortId,
-  );
 
   // Use stream loading state
   const isLoading = marketsLoading;
@@ -227,20 +218,19 @@ export const MarketListView: React.FC = () => {
       markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
     }
 
-    if (currentSortOption) {
-      markets = sortMarkets({
-        markets,
-        sortBy: currentSortOption.field,
-        direction: currentSortOption.direction,
-      });
-    }
+    markets = sortMarkets({
+      markets,
+      sortBy: sortField,
+      direction: sortDirection,
+    });
     return markets;
   }, [
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
     searchQuery,
-    currentSortOption,
+    sortField,
+    sortDirection,
   ]);
 
   // Handlers
@@ -257,8 +247,9 @@ export const MarketListView: React.FC = () => {
   }, []);
 
   const handleSortChange = useCallback(
-    (optionId: SortOptionId, _field: SortField, _direction: SortDirection) => {
-      setSelectedSortId(optionId);
+    (field: SortField, direction: SortDirection) => {
+      setSortField(field);
+      setSortDirection(direction);
     },
     [],
   );
@@ -365,8 +356,9 @@ export const MarketListView: React.FC = () => {
             showNewFilter={hasUncategorizedMarkets}
           />
           <SortDropdown
-            selectedOptionId={selectedSortId}
-            onOptionChange={handleSortChange}
+            selectedField={sortField}
+            direction={sortDirection}
+            onChange={handleSortChange}
           />
         </Box>
       )}
@@ -389,7 +381,7 @@ export const MarketListView: React.FC = () => {
             <MarketRow
               key={market.symbol}
               market={market}
-              displayMetric={currentSortOption?.field || 'volume'}
+              displayMetric={sortField}
               onPress={handleMarketSelect}
             />
           ))}

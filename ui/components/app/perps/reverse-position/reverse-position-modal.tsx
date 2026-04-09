@@ -29,6 +29,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
+import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
 
@@ -134,10 +135,11 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
       });
-      setError(raw);
+      const message = handlePerpsError(err, t as (key: string) => string);
+      setError(message);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: raw,
+        description: message,
       });
     } finally {
       setIsSubmitting(false);
@@ -148,6 +150,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     positionForFlip,
     replacePerpsToastByKey,
     track,
+    t,
   ]);
 
   return (

@@ -7,10 +7,8 @@ import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
-import {
-  RewardsControllerInitMessenger,
-  RewardsControllerMessenger,
-} from './messengers/rewards-controller-messenger';
+import { RewardsControllerMessenger } from '../controllers/rewards/rewards-controller.types';
+import { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
 import { ControllerInitFunction } from './types';
 
 /**

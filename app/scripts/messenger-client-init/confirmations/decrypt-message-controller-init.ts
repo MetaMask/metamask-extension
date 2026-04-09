@@ -1,6 +1,8 @@
-import DecryptMessageController from '../../controllers/decrypt-message';
+import {
+  DecryptMessageController,
+  DecryptMessageControllerMessenger,
+} from '../../controllers/decrypt-message';
 import { ControllerInitFunction } from '../types';
-import { DecryptMessageControllerMessenger } from '../messengers';
 import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-message-controller-messenger';
 
 /**

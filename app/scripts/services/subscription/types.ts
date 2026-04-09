@@ -36,7 +36,7 @@ import {
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
-} from '../../controllers/rewards/rewards-controller.types';
+} from '../../controllers/rewards/rewards-controller-method-action-types';
 
 export const SERVICE_NAME = 'SubscriptionService';
 

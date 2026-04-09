@@ -9,6 +9,24 @@ import {
   type InfrastructureDeps,
 } from './infrastructure';
 
+const mockCaptureException = jest.fn();
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+}));
+
+function setupSentryScope() {
+  const mockScope = {
+    setTag: jest.fn(),
+    setContext: jest.fn(),
+    setExtras: jest.fn(),
+  };
+  const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+    cb(mockScope),
+  );
+  (globalThis as Record<string, unknown>).sentry = { withScope };
+  return mockScope;
+}
+
 describe('createPerpsInfrastructure', () => {
   const mockTrackEvent = jest.fn();
 
@@ -18,6 +36,11 @@ describe('createPerpsInfrastructure', () => {
 
   beforeEach(() => {
     mockTrackEvent.mockClear();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    delete (globalThis as Record<string, unknown>).sentry;
   });
 
   it('returns a valid PerpsPlatformDependencies object', () => {
@@ -59,6 +82,390 @@ describe('createPerpsInfrastructure', () => {
     it('reports metrics as enabled', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.metrics.isEnabled()).toBe(true);
+    });
+  });
+
+  describe('logger', () => {
+    describe('when sentry.withScope is not available', () => {
+      it('falls back to captureException without scope', () => {
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('does not throw when options are provided but withScope is unavailable', () => {
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+
+        expect(() =>
+          logger.error(error, {
+            tags: { provider: 'hyperliquid' },
+            context: {
+              name: 'PerpsController',
+              data: { method: 'placeOrder' },
+            },
+            extras: { orderId: '123' },
+          }),
+        ).not.toThrow();
+      });
+    });
+
+    describe('when sentry.withScope is available', () => {
+      it('always sets the feature:perps tag', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'));
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+      });
+
+      it('forwards errors to captureException inside the scope', () => {
+        setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('sets extra tags from options on the scope', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          tags: { provider: 'hyperliquid', network: 'mainnet' },
+        });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'provider',
+          'hyperliquid',
+        );
+        expect(mockScope.setTag).toHaveBeenCalledWith('network', 'mainnet');
+      });
+
+      it('converts numeric tag values to strings', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), { tags: { retryCount: 3 } });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('retryCount', '3');
+      });
+
+      it('sets Sentry context from options', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          context: {
+            name: 'PerpsController',
+            data: { method: 'placeOrder', orderId: 'abc123' },
+          },
+        });
+
+        expect(mockScope.setContext).toHaveBeenCalledWith('PerpsController', {
+          method: 'placeOrder',
+          orderId: 'abc123',
+        });
+      });
+
+      it('sets Sentry extras from options', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          extras: { requestPayload: '{"coin":"ETH"}' },
+        });
+
+        expect(mockScope.setExtras).toHaveBeenCalledWith({
+          requestPayload: '{"coin":"ETH"}',
+        });
+      });
+
+      it('works correctly when options are omitted', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('bare error');
+        logger.error(error);
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+        expect(mockScope.setContext).not.toHaveBeenCalled();
+        expect(mockScope.setExtras).not.toHaveBeenCalled();
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+    });
+  });
+
+  describe('metrics', () => {
+    it('reports metrics as disabled', () => {
+      const { metrics } = createPerpsInfrastructure(getDeps());
+
+      expect(metrics.isEnabled()).toBe(false);
+    });
+
+    it('does not throw when tracking an event', () => {
+      const { metrics } = createPerpsInfrastructure(getDeps());
+
+      expect(() =>
+        metrics.trackPerpsEvent('test_event' as never, {} as never),
+      ).not.toThrow();
+    });
+  });
+
+  describe('performance', () => {
+    it('returns a numeric timestamp', () => {
+      const { performance: perf } = createPerpsInfrastructure(getDeps());
+
+      expect(typeof perf.now()).toBe('number');
+    });
+  });
+
+  describe('tracer', () => {
+    describe('when sentry is not available', () => {
+      it('does not throw on trace', () => {
+        const { tracer } = createPerpsInfrastructure(getDeps());
+
+        expect(() =>
+          tracer.trace({
+            name: 'Perps Place Order' as never,
+            id: '1',
+            op: 'perps.order',
+          }),
+        ).not.toThrow();
+      });
+
+      it('does not throw on endTrace', () => {
+        const { tracer } = createPerpsInfrastructure(getDeps());
+
+        expect(() =>
+          tracer.endTrace({ name: 'Perps Place Order' as never, id: '1' }),
+        ).not.toThrow();
+      });
+
+      it('does not throw on setMeasurement', () => {
+        const { tracer } = createPerpsInfrastructure(getDeps());
+
+        expect(() =>
+          tracer.setMeasurement('test', 100, 'millisecond'),
+        ).not.toThrow();
+      });
+    });
+
+    describe('when sentry is available', () => {
+      it('calls startSpanManual on trace', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+          data: { coin: 'ETH' },
+        });
+
+        expect(startSpanManual).toHaveBeenCalledWith(
+          {
+            name: 'Perps Place Order',
+            op: 'perps.order',
+            attributes: { coin: 'ETH' },
+          },
+          expect.any(Function),
+        );
+      });
+
+      it('merges tags and data into span attributes', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+          tags: { network: 'arbitrum' },
+          data: { coin: 'ETH' },
+        });
+
+        expect(startSpanManual).toHaveBeenCalledWith(
+          {
+            name: 'Perps Place Order',
+            op: 'perps.order',
+            attributes: { network: 'arbitrum', coin: 'ETH' },
+          },
+          expect.any(Function),
+        );
+      });
+
+      it('ends the span on endTrace', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+        });
+
+        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
+
+        expect(mockSpan.end).toHaveBeenCalled();
+      });
+
+      it('does nothing on endTrace for unknown span', () => {
+        (globalThis as Record<string, unknown>).sentry = {
+          startSpanManual: jest.fn(),
+        };
+        const { tracer } = createPerpsInfrastructure(getDeps());
+
+        expect(() =>
+          tracer.endTrace({ name: 'Perps Place Order' as never, id: 'nope' }),
+        ).not.toThrow();
+      });
+
+      it('sets attributes from data before ending the span', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+        });
+
+        tracer.endTrace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          data: { result: 'success', latency: 42 },
+        });
+
+        expect(mockSpan.setAttribute).toHaveBeenCalledWith('result', 'success');
+        expect(mockSpan.setAttribute).toHaveBeenCalledWith('latency', 42);
+        expect(mockSpan.end).toHaveBeenCalled();
+      });
+
+      it('removes the span after endTrace', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+        });
+        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
+
+        // Second endTrace is a no-op — span.end not called again
+        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
+
+        expect(mockSpan.end).toHaveBeenCalledTimes(1);
+      });
+
+      it('ends the previous span when trace is called with a duplicate key', () => {
+        const firstSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const secondSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        let callCount = 0;
+        const startSpanManual = jest.fn((_opts, cb) => {
+          cb(callCount === 0 ? firstSpan : secondSpan);
+          callCount += 1;
+        });
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'dup',
+          op: 'perps.order',
+        });
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'dup',
+          op: 'perps.order',
+        });
+
+        expect(firstSpan.end).toHaveBeenCalledTimes(1);
+      });
+
+      it('evicts the oldest span when the pending map reaches capacity', () => {
+        const spans: { setAttribute: jest.Mock; end: jest.Mock }[] = [];
+        const startSpanManual = jest.fn((_opts, cb) => {
+          const span = { setAttribute: jest.fn(), end: jest.fn() };
+          spans.push(span);
+          cb(span);
+        });
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+
+        // Fill the map to capacity (MAX_PENDING_SPANS = 50)
+        for (let i = 0; i < 50; i++) {
+          tracer.trace({
+            name: 'Perps Place Order' as never,
+            id: String(i),
+            op: 'perps.order',
+          });
+        }
+
+        // The first span should still be pending — map is exactly at capacity
+        expect(spans[0].end).not.toHaveBeenCalled();
+
+        // One more trace pushes the map over capacity, evicting span[0]
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: '50',
+          op: 'perps.order',
+        });
+
+        expect(spans[0].end).toHaveBeenCalledTimes(1);
+      });
+
+      it('calls setMeasurement on sentry', () => {
+        const setMeasurement = jest.fn();
+        (globalThis as Record<string, unknown>).sentry = { setMeasurement };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.setMeasurement('perps.latency', 42, 'millisecond');
+
+        expect(setMeasurement).toHaveBeenCalledWith(
+          'perps.latency',
+          42,
+          'millisecond',
+        );
+      });
+    });
+  });
+
+  describe('streamManager', () => {
+    it('does not throw on pauseChannel', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.pauseChannel('test')).not.toThrow();
+    });
+
+    it('does not throw on resumeChannel', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.resumeChannel('test')).not.toThrow();
+    });
+
+    it('does not throw on clearAllChannels', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.clearAllChannels()).not.toThrow();
     });
   });
 
@@ -106,7 +513,7 @@ describe('createPerpsInfrastructure', () => {
   });
 
   describe('cacheInvalidator', () => {
-    it('invalidate does not throw', () => {
+    it('does not throw on invalidate', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(() =>
         infrastructure.cacheInvalidator.invalidate({
@@ -115,7 +522,7 @@ describe('createPerpsInfrastructure', () => {
       ).not.toThrow();
     });
 
-    it('invalidateAll does not throw', () => {
+    it('does not throw on invalidateAll', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(() =>
         infrastructure.cacheInvalidator.invalidateAll(),

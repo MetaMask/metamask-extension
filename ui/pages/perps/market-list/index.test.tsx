@@ -210,7 +210,7 @@ describe('MarketListView', () => {
       fireEvent.click(sortButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('sort-dropdown-menu')).toBeInTheDocument();
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
     });
   });
