@@ -843,6 +843,7 @@
       "globals": {
         "clearInterval": true,
         "console.error": true,
+        "fetch.bind": true,
         "performance.now": true,
         "setInterval": true
       },
@@ -856,6 +857,7 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
+        "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -894,7 +896,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/assets-controllers>@metamask/phishing-controller": true,
+        "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
@@ -974,6 +976,64 @@
         "uuid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
+      "globals": {
+        "AbortController": true,
+        "TextDecoder": true,
+        "URLSearchParams": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/polling-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>bignumber.js": true,
+        "browserify>buffer": true,
+        "lodash": true,
+        "reselect": true,
+        "uuid": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
+      "globals": {
+        "AbortController": true,
+        "TextDecoder": true,
+        "URLSearchParams": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/polling-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/transaction-pay-controller>bignumber.js": true,
+        "browserify>buffer": true,
+        "lodash": true,
+        "reselect": true,
+        "uuid": true
+      }
+    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -982,13 +1042,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-controller": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-controllers": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1113,7 +1173,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1445,7 +1505,7 @@
         "@metamask/delegation-core": true,
         "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1814,7 +1874,7 @@
         "clearTimeout": true,
         "fetch": true,
         "performance.now": true,
-        "process.env.NODE_ENV": true,
+        "process": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -1823,7 +1883,6 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/perps-controller>@myx-trade/sdk": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
         "reselect": true,
@@ -1843,23 +1902,6 @@
         "@metamask/controller-utils": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
-        "webpack-cli>fastest-levenshtein": true,
-        "punycode": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/phishing-controller": {
-      "globals": {
-        "TextEncoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.warn": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@noble/hashes": true,
-        "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
@@ -2093,7 +2135,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -2232,7 +2274,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2271,7 +2313,6 @@
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -2288,7 +2329,7 @@
         "uuid": true
       }
     },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller": {
+    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2312,7 +2353,40 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": true,
+        "@metamask/bridge-status-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/gator-permissions-controller>@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/gator-permissions-controller>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -2354,7 +2428,7 @@
         "uuid": true
       }
     },
-    "@metamask/subscription-controller>@metamask/transaction-controller": {
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2378,7 +2452,73 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
-        "@metamask/subscription-controller>bignumber.js": true,
+        "@metamask/smart-transactions-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/transaction-pay-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/user-operation-controller>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -2398,11 +2538,11 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
-        "@metamask/bridge-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
         "lodash": true
@@ -2420,7 +2560,7 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/user-operation-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "webpack>events": true,
@@ -2473,98 +2613,6 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk": {
-      "globals": {
-        "AppealCaseTypeEnum": true,
-        "AppealClaimStatusEnum": true,
-        "AppealNodeStateEnum": true,
-        "AppealNodeVotedStateEnum": true,
-        "AppealReconsiderationType": true,
-        "AppealStage": true,
-        "AppealType": true,
-        "COMMON_LP_AMOUNT_DECIMALS": true,
-        "COMMON_PRICE_DECIMALS": true,
-        "ChainId": true,
-        "CloseTypeEnum": true,
-        "Direction": true,
-        "DirectionEnum": true,
-        "ErrorCode": true,
-        "ExecTypeEnum": true,
-        "ForwarderGetStatus": true,
-        "HttpKlineIntervalEnum": true,
-        "IsVoteNodeEnum": true,
-        "MarketCapType": true,
-        "MarketPoolState": true,
-        "MarketType": true,
-        "MxSDK": true,
-        "MyxClient": true,
-        "NodeTypeEnum": true,
-        "OperationEnum": true,
-        "OperationType": true,
-        "OracleType": true,
-        "OrderStatus": true,
-        "OrderStatusEnum": true,
-        "OrderType": true,
-        "OrderTypeEnum": true,
-        "SDK_VERSION": true,
-        "SearchSecondTypeEnum": true,
-        "SearchTypeEnum": true,
-        "TextEncoder": true,
-        "TimeInForce": true,
-        "TradeFlowAccountTypeEnum": true,
-        "TradeFlowTypeEnum": true,
-        "TriggerType": true,
-        "TriggerTypeEnum": true,
-        "URLSearchParams": true,
-        "VoteTypeEnum": true,
-        "WebSocket.CONNECTING": true,
-        "WebSocket.OPEN": true,
-        "approve": true,
-        "base": true,
-        "bigintAmountSlipperCalculator": true,
-        "bigintTradingGasPriceWithRatio": true,
-        "bigintTradingGasToRatioCalculator": true,
-        "clearInterval": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto.subtle.digest": true,
-        "fetch": true,
-        "formatUnits": true,
-        "getAllowanceApproved": true,
-        "getBalanceOf": true,
-        "getBaseDetail": true,
-        "getBaseUrlByEnv": true,
-        "getMarketDetail": true,
-        "getMarketList": true,
-        "getOraclePrice": true,
-        "getPoolDetail": true,
-        "getPoolList": true,
-        "getPoolOpenOrders": true,
-        "getPriceData": true,
-        "getPricesData": true,
-        "getTickerData": true,
-        "getTokenInfo": true,
-        "market": true,
-        "parseUnits": true,
-        "pool": true,
-        "queueMicrotask": true,
-        "quote": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethersproject/bytes": true,
-        "@ethersproject/providers": true,
-        "@metamask/perps-controller>@myx-trade/sdk>crypto-es": true,
-        "@metamask/perps-controller>@myx-trade/sdk>dayjs": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers": true,
-        "@metamask/perps-controller>@myx-trade/sdk>lodash-es": true,
-        "@metamask/perps-controller>@myx-trade/sdk>mitt": true,
-        "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": true,
-        "@metamask/perps-controller>@myx-trade/sdk>wretch": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -2670,14 +2718,6 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true
-      }
-    },
     "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/curves": {
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": true
@@ -2775,18 +2815,6 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3604,13 +3632,19 @@
         "define": true
       }
     },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": {
+    "@metamask/gator-permissions-controller>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
       }
     },
     "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -4041,11 +4075,6 @@
         "react>object-assign": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>dayjs": {
-      "globals": {
-        "define": true
-      }
-    },
     "nock>debug": {
       "globals": {
         "console": true,
@@ -4290,15 +4319,6 @@
         "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
@@ -4385,31 +4405,6 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": {
-      "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers": {
-      "globals": {
-        "AbortController": true,
-        "Event": true,
-        "Headers": true,
-        "atob": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@adraffy/ens-normalize": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>aes-js": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>tslib": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -4944,12 +4939,6 @@
       "globals": {
         "clearTimeout": true,
         "define": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>lodash-es": {
-      "globals": {
-        "clearTimeout": true,
         "setTimeout": true
       }
     },
@@ -5917,15 +5906,6 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": {
-      "globals": {
-        "Blob": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "console": true,
-        "setTimeout": true
-      }
-    },
     "redux": {
       "globals": {
         "console": true
@@ -6268,14 +6248,6 @@
     },
     "tslib": {
       "globals": {
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
