@@ -725,9 +725,17 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen((prev) => !prev);
-  }, []);
+  }, [track]);
 
   const handleCloseMarginModal = useCallback(() => {
     setMarginModalMode(null);

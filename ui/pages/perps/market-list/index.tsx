@@ -269,6 +269,9 @@ export const MarketListView: React.FC = () => {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
         [PERPS_EVENT_PROPERTY.TAB_NAME]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
       });
       setSelectedFilter(filter);
     },
@@ -293,6 +296,8 @@ export const MarketListView: React.FC = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.SEARCH_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
     });
   }, [track]);
 

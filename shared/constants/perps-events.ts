@@ -119,6 +119,7 @@ export const PERPS_EVENT_VALUE = {
     ASSET_DETAILS: 'asset_details',
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
   },
 } as const;
 
