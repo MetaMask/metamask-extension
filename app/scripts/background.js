@@ -2135,10 +2135,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to false for side panel)
+    // Get user preference (default to true for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? false;
+        ?.useSidePanelAsDefault ?? true;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -2168,7 +2168,7 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? false;
+          state?.preferences?.useSidePanelAsDefault ?? true;
 
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel

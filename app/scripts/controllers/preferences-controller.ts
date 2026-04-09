@@ -197,7 +197,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      useSidePanelAsDefault: false,
+      useSidePanelAsDefault: true,
     },
     securityAlertsEnabled: true,
     snapRegistryList: {},
