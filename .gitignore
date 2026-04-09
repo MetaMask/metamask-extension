@@ -120,5 +120,6 @@ temp-llm-workflow-*
 .agent/
 .claude/mcp.json
 test/e2e/playwright/llm-workflow/recipes/
+test/e2e/playwright/llm-workflow/launcher/state-inspector.js
 .tool-versions
 CLAUDE.local.md
