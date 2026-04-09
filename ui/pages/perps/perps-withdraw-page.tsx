@@ -271,12 +271,10 @@ const PerpsWithdrawPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
       });
-      setSubmitError(failedMessage);
-      const withdrawError = result?.error;
       setSubmitError(
-        withdrawError
+        result?.error
           ? (translatePerpsError(
-              new Error(withdrawError),
+              new Error(result.error),
               t as (key: string) => string,
             ) ?? t('perpsWithdrawFailed'))
           : t('perpsWithdrawFailed'),

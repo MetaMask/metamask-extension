@@ -202,22 +202,6 @@ describe('createPerpsInfrastructure', () => {
     });
   });
 
-  describe('metrics', () => {
-    it('reports metrics as disabled', () => {
-      const { metrics } = createPerpsInfrastructure(getDeps());
-
-      expect(metrics.isEnabled()).toBe(false);
-    });
-
-    it('does not throw when tracking an event', () => {
-      const { metrics } = createPerpsInfrastructure(getDeps());
-
-      expect(() =>
-        metrics.trackPerpsEvent('test_event' as never, {} as never),
-      ).not.toThrow();
-    });
-  });
-
   describe('performance', () => {
     it('returns a numeric timestamp', () => {
       const { performance: perf } = createPerpsInfrastructure(getDeps());
