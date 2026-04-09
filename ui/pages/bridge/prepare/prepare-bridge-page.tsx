@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -38,8 +38,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromNonEvm,
-  getHardwareWalletName,
-  BridgeAppState,
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
@@ -51,57 +49,45 @@ import {
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  BannerAlert,
-  BannerAlertSeverity,
   Box,
   ButtonIcon,
   IconName,
-  Text,
 } from '../../../components/component-library';
-import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   BackgroundColor,
   BlockSize,
   Display,
   IconColor,
   JustifyContent,
-  TextAlign,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatTokenAmount,
-  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
-} from '../utils/quote';
+import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getCurrentKeyring } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
+import { getMultichainProviderConfig } from '../../../selectors/multichain';
+import { Toast, ToastContainer } from '../../../components/multichain';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
+import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
 } from '../quotes/multichain-bridge-quote-card';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
-import { Toast, ToastContainer } from '../../../components/multichain';
-import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import type { BridgeToken } from '../../../ducks/bridge/types';
-import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
-import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
+import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -151,29 +137,9 @@ const PrepareBridgePage = ({
     getBridgeUnavailableQuoteReason,
   );
 
-  const {
-    isNoQuotesAvailable,
-    isInsufficientGasForQuote,
-    isInsufficientBalance,
-    isStockMarketClosed,
-    isQuoteExpired,
-  } = useSelector(
-    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
-    shallowEqual,
-  );
-  const { txAlert, tokenAlerts, securityWarnings } = useSecurityAlerts();
-  const [tokenAlert] = tokenAlerts;
+  const { isInsufficientBalance } = useSelector(getValidationErrors);
+  const { securityWarnings } = useSecurityAlerts();
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
-
-  // Determine if the current quote is expired or does not match the currently
-  // selected destination asset/chain.
-  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: unvalidatedQuote ?? null,
-    toToken,
-    isQuoteExpired,
-  });
-
-  const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
 
@@ -194,11 +160,7 @@ const PrepareBridgePage = ({
     fromToken && isNativeAddress(fromToken.assetId)
       ? effectiveGasIncluded || effectiveGasIncluded7702
       : true;
-  const hardwareWalletName = useSelector(getHardwareWalletName);
-  const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
-
-  const ticker = useMultichainSelector(getMultichainNativeCurrency);
 
   const {
     selectedDestinationAccount,
@@ -209,13 +171,7 @@ const PrepareBridgePage = ({
 
   useLatestBalance();
 
-  const { openBuyCryptoInPdapp } = useRamps();
-
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
-
-  // Resets the banner visibility when new alerts found
-  const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
-  useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -233,31 +189,18 @@ const PrepareBridgePage = ({
     };
   }, [rotateSwitchTokens]);
 
-  // Scroll to bottom of the page when banners are shown
-  const alertBannersRef = useRef<HTMLDivElement>(null);
+  // Scroll to CTA of the page after quotes load
+  const footerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    // If quotes are still loading, don't scroll to the warning area
+    // If quotes are still loading, don't scroll to the footer area
     if (isLoading) {
       return;
     }
-    if (
-      isInsufficientGasForQuote ||
-      tokenAlert ||
-      txAlert ||
-      isUsingHardwareWallet
-    ) {
-      alertBannersRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-    }
-  }, [
-    isInsufficientGasForQuote,
-    tokenAlert,
-    txAlert,
-    isUsingHardwareWallet,
-    isLoading,
-  ]);
+    footerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
@@ -370,14 +313,6 @@ const PrepareBridgePage = ({
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
 
-  const getFromInputHeader = () => {
-    return t('swapSelectToken');
-  };
-
-  const getToInputHeader = () => {
-    return t('swapSelectToken');
-  };
-
   return (
     <>
       <DestinationAccountPickerModal
@@ -405,7 +340,7 @@ const PrepareBridgePage = ({
           setIsAssetPickerOpen={(isOpen) =>
             dispatch(setIsSrcAssetPickerOpen(isOpen))
           }
-          header={getFromInputHeader()}
+          header={t('swapSelectToken')}
           token={fromToken}
           accountAddress={selectedAccount?.address}
           onAmountChange={(e) => {
@@ -558,7 +493,7 @@ const PrepareBridgePage = ({
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
-            header={getToInputHeader()}
+            header={t('swapSelectToken')}
             accountAddress={
               selectedDestinationAccount?.address ?? selectedAccount.address
             }
@@ -626,33 +561,8 @@ const PrepareBridgePage = ({
           </Column>
         )}
 
-        {isStockMarketClosed && (
-          <Column paddingInline={4}>
-            <BannerAlert
-              severity={BannerAlertSeverity.Danger}
-              title={t('bridgeMarketClosedTitle')}
-              description={t('bridgeMarketClosedDescription')}
-              textAlign={TextAlign.Left}
-              data-testid="bridge-market-closed"
-            />
-          </Column>
-        )}
-
-        {isNoQuotesAvailable &&
-          !isStockMarketClosed &&
-          !isQuoteExpired &&
-          quoteParams &&
-          // Only show banner if quoteParams (inputs) are valid
-          isValidQuoteRequest(quoteParams, true) && (
-            <Column paddingInline={4}>
-              <BannerAlert
-                severity={BannerAlertSeverity.Danger}
-                description={t(bridgeUnavailableQuotesReason)}
-                data-testid="bridge-no-quotes"
-                textAlign={TextAlign.Left}
-              />
-            </Column>
-          )}
+        {/** Alert banners */}
+        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
 
         {!isInitialQuoteLoading && (
           <Column
@@ -709,84 +619,7 @@ const PrepareBridgePage = ({
             />
           </Column>
         )}
-      </Column>
-
-      {/** Alert banners */}
-      <Column
-        paddingInline={4}
-        gap={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        data-testid="bridge-banner-alerts"
-      >
-        {isUsingHardwareWallet &&
-          isTxSubmittable &&
-          hardwareWalletName &&
-          activeQuote && (
-            <BannerAlert
-              title={t('hardwareWalletSubmissionWarningTitle')}
-              textAlign={TextAlign.Left}
-            >
-              <ul style={{ listStyle: 'disc' }}>
-                <li>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep1', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-                <li>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep2', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-              </ul>
-            </BannerAlert>
-          )}
-        {txAlert && activeQuote && (
-          <BannerAlert
-            data-testid="bridge-tx-alert"
-            severity={BannerAlertSeverity.Danger}
-            title={txAlert.title}
-            description={txAlert.description}
-            textAlign={TextAlign.Left}
-          />
-        )}
-        {tokenAlert && isTokenAlertBannerOpen && (
-          <BannerAlert
-            data-testid="bridge-token-warning-alert"
-            title={tokenAlert.title}
-            severity={
-              tokenAlert.severity === 'danger'
-                ? BannerAlertSeverity.Danger
-                : BannerAlertSeverity.Warning
-            }
-            description={tokenAlert.description}
-            textAlign={TextAlign.Left}
-            onClose={() => setIsTokenAlertBannerOpen(false)}
-          />
-        )}
-        {!isLoading &&
-          activeQuote &&
-          !isInsufficientBalance &&
-          isInsufficientGasForQuote && (
-            <BannerAlert
-              title={t('bridgeValidationInsufficientGasTitle', [ticker])}
-              severity={BannerAlertSeverity.Danger}
-              description={t(
-                isSwap
-                  ? 'swapValidationInsufficientGasMessage'
-                  : 'bridgeValidationInsufficientGasMessage',
-                [ticker],
-              )}
-              data-testid="bridge-insufficient-gas"
-              textAlign={TextAlign.Left}
-              actionButtonLabel={t('buyMoreAsset', [ticker])}
-              actionButtonOnClick={() => openBuyCryptoInPdapp()}
-            />
-          )}
-        <div ref={alertBannersRef} />
+        <div ref={footerRef} />
       </Column>
 
       {showBlockExplorerToast && blockExplorerToken && (

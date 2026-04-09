@@ -42,7 +42,6 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
       </button>
     </div>
   </div>
-  <div />
 </div>
 `;
 
@@ -57,7 +56,32 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
-  <div />
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-market-closed"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        Market closed
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        This stock token is currently outside trading hours. Try again when the market reopens.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -72,7 +96,32 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
-  <div />
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-market-closed"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        Market closed
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        This stock token is currently outside trading hours. Try again when the market reopens.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -87,7 +136,27 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
   class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
-  <div />
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-no-quotes"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -102,7 +171,27 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
   class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
   data-testid="bridge-banner-alerts"
 >
-  <div />
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--text-align-left mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="bridge-no-quotes"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+      >
+        No quotes available. Try a smaller amount.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
 </div>
 `;
 
@@ -152,7 +241,6 @@ exports[`BridgeAlertBannerList should render the token-warning-alert alert when 
       />
     </button>
   </div>
-  <div />
 </div>
 `;
 
@@ -193,6 +281,5 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
       />
     </div>
   </div>
-  <div />
 </div>
 `;
