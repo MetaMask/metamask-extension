@@ -264,8 +264,13 @@ function getRunHeadSha(): string {
   if (process.env.HEAD_SHA) {
     _headShaCache = process.env.HEAD_SHA;
   } else {
-    const run = JSON.parse(ghApi(`${repoApi}/actions/runs/${MAIN_RUN_ID}`));
-    _headShaCache = run.head_sha as string;
+    try {
+      const run = JSON.parse(ghApi(`${repoApi}/actions/runs/${MAIN_RUN_ID}`));
+      _headShaCache = (run.head_sha as string) || '';
+    } catch (err) {
+      console.warn(`Failed to fetch head_sha for run ${MAIN_RUN_ID}:`, err);
+      _headShaCache = '';
+    }
   }
   return _headShaCache;
 }
@@ -287,7 +292,11 @@ function getFailedJobs(): Job[] {
   for (const line of raw.split('\n')) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    jobs.push(JSON.parse(trimmed) as Job);
+    try {
+      jobs.push(JSON.parse(trimmed) as Job);
+    } catch {
+      console.warn(`Skipping malformed job JSON: ${trimmed.slice(0, 120)}`);
+    }
   }
   return jobs.filter((j) => j.conclusion === 'failure');
 }

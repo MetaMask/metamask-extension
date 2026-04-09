@@ -65,7 +65,7 @@ jobs:
               }
             }
 
-            if (process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
+            if (process.env.BUILDS_FROM_RUN && process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
               core.warning(`Builds were used from a different GHA run: ${process.env.BUILDS_FROM_RUN}`);
               core.info('Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it.');
               allPassed = false;
