@@ -3,7 +3,6 @@ import type { AssetsControllerMessenger as AssetsControllerMessengerType } from 
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
-  AccountTreeControllerStateChangeEvent,
 } from '@metamask/account-tree-controller';
 import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
 import {
@@ -168,9 +167,7 @@ type AllowedEvents =
   | RpcDataSourceEvents
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
-  | PreferencesControllerStateChangeEvent
-  | AccountTreeControllerStateChangeEvent;
-
+  | PreferencesControllerStateChangeEvent;
 /**
  * Messenger type for AssetsController initialization.
  */
@@ -230,7 +227,6 @@ export function getAssetsControllerMessenger(
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'PreferencesController:stateChange',
-      'AccountTreeController:stateChange',
     ],
   });
 
