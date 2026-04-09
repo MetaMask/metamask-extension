@@ -899,28 +899,45 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
-  const stablecoinEntry = (id: string) => ({
+  const tokenEntry = (
+    id: string,
+    price: number,
+    pricePercentChange1d: number = 0.1,
+  ) => ({
     assetPriceType: 'fungible',
     id,
-    price: 1.0,
-    usdPrice: 1.0,
-    pricePercentChange1d: 0.1,
+    price,
+    usdPrice: price,
+    pricePercentChange1d,
   });
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
-            stablecoinEntry('dai'),
-          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
-            stablecoinEntry('dai'),
-          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da':
-            stablecoinEntry('musd'),
-        },
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+
+      const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+          tokenEntry('dai', 1.0),
+        'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+          tokenEntry('dai', 1.0),
+        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da':
+          tokenEntry('musd', 0.9999),
       };
+
+      const json =
+        vsCurrency === 'usd'
+          ? {
+              'eip155:1/slip44:60': tokenEntry('ethereum', 2000.0, 2.5),
+              ...stablecoins,
+            }
+          : {
+              'eip155:1/slip44:60': tokenEntry('ethereum', 1, 0),
+              ...stablecoins,
+            };
+
+      return { statusCode: 200, json };
     });
 }
 

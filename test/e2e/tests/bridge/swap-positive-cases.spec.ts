@@ -113,7 +113,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '3.011',
+          expectedDestAmount: '0.369',
         });
 
         const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
@@ -141,8 +141,8 @@ describe('Swap tests', function (this: Suite) {
           `Quote count validation failed. Actual value: ${quotesReceivedEvent.properties.quotes_count}`,
         );
         assert.ok(
-          quotesReceivedEvent.properties.provider === 'openocean_openocean',
-          `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.provider}`,
+          quotesReceivedEvent.properties.provider === '0x_0x',
+          `Provider validation failed. Actual value: ${quotesReceivedEvent.properties.provider}`,
         );
         // assert.ok(
         //   quotesReceivedEvent.properties.usd_quoted_gas === 23.15898006845514,
