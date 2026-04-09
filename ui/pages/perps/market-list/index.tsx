@@ -195,7 +195,7 @@ export const MarketListView: React.FC = () => {
   );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !isLoading && account !== undefined,
+    conditions: !isLoading && account !== null,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,

@@ -309,7 +309,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions:
-      !marketsLoading && Boolean(decodedSymbol) && account !== undefined,
+      !marketsLoading && Boolean(decodedSymbol) && account !== null,
     properties: {
       ...(decodedSymbol && {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
