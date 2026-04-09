@@ -40,7 +40,7 @@ async function waitForPhishingBlocklistToBeLoaded(driver) {
   // The state being populated doesn't guarantee the extension's content
   // script / webNavigation handlers are registered yet. A brief delay
   // lets the browser finish activating its interception mechanisms.
-  await driver.delay(500);
+  await driver.delay(2500);
 }
 
 module.exports = {
