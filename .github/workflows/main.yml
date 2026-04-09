@@ -770,6 +770,7 @@ jobs:
   ci-status-gate:
     if: ${{ !cancelled() }}
     permissions:
+      pull-requests: read
       statuses: write
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
@@ -825,43 +826,3 @@ jobs:
       needs-json: ${{ toJson(needs) }}
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
-
-  check-retry-ci:
-    name: Check for retry-ci label and retry
-    if: >-
-      ${{
-        !cancelled() &&
-        needs.ci-status-gate.result == 'failure' &&
-        github.event_name == 'pull_request' &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
-      }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs:
-      - ci-status-gate
-      - publish-prerelease
-    env:
-      GH_TOKEN: ${{ github.token }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      REPO: ${{ github.repository }}
-    permissions:
-      actions: write
-      pull-requests: write
-    steps:
-      - name: Check if this PR has a retry-ci label
-        run: |
-          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
-
-          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
-            echo "This PR has a retry-ci label, removing the label..."
-            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
-
-            echo "Retrying failed jobs..."
-
-            # We cannot use `gh run rerun` here, because this workflow is still running,
-            # so we must run main-retry.yml, which in turn runs `gh run rerun`
-            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
-          else
-            echo "This PR does not have a retry-ci label, not retrying."
-          fi
