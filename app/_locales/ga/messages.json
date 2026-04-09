@@ -2392,9 +2392,6 @@
   "from": {
     "message": "Ó"
   },
-  "fromTokenLists": {
-    "message": "Ó liostaí comharthaí: $1"
-  },
   "function": {
     "message": "Feidhm: $1"
   },
@@ -2605,12 +2602,6 @@
   "id": {
     "message": "Aitheantas"
   },
-  "ignoreAll": {
-    "message": "Déan neamhaird de gach rud"
-  },
-  "ignoreTokenWarning": {
-    "message": "Mura gcuireann tú comharthaí i bhfolach, ní thaispeánfar iad i do sparán. Mar sin féin, is féidir leat iad a chur leis fós trí chuardach a dhéanamh orthu."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -2670,12 +2661,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
   },
-  "importSelectedTokens": {
-    "message": "An bhfuil tú ag iarraidh comharthaí roghnaithe a allmhairiú?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Ní bheidh ach na comharthaí a roghnaigh tú le feiceáil i do sparán. Is féidir leat comharthaí folaithe a allmhairiú níos déanaí trí chuardach a dhéanamh orthu."
-  },
   "importTokenQuestion": {
     "message": "Comhartha a allmhairiú?"
   },
@@ -2694,10 +2679,6 @@
   "importWalletSuccess": {
     "message": "Frása Rúnda Aisghabhála $1 allmhairithe",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Iompórtáil $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Iompórtáilte",
@@ -3827,13 +3808,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht agus an ghné seo in úsáid agat."
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "Fuarthas $1 comharthaí nua sa chuntas seo",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "Fuarthas 1 chomhartha nua sa chuntas seo"
-  },
   "numberOfTokens": {
     "message": "Líon na gcomharthaí"
   },
@@ -4380,10 +4354,6 @@
   },
   "pleaseConfirm": {
     "message": "Deimhnigh le do thoil"
-  },
-  "plusXMore": {
-    "message": "+ $1 breise",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "popularNetworkAddToolTip": {
     "message": "Braitheann cuid de na líonraí seo ar thríú páirtithe. D’fhéadfadh na naisc a bheith níos lú iontaofa nó go gcuirfidís ar chumas tríú páirtithe gníomhaíocht a rianú.",
@@ -6421,9 +6391,6 @@
   "tokenDetails": {
     "message": "Sonraí an chomhartha"
   },
-  "tokenFoundTitle": {
-    "message": "Fuarthas 1 chomhartha nua"
-  },
   "tokenId": {
     "message": "Aitheantas Comhartha"
   },
@@ -6452,10 +6419,6 @@
   },
   "tokens": {
     "message": "Comharthaí"
-  },
-  "tokensFoundTitle": {
-    "message": "Fuarthas $1 comharthaí nua",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Comharthaí sa bhailiúchán"

@@ -50,7 +50,7 @@ const TabBar = ({
       const active = isActive(key, content);
 
       const activeClass =
-        active && !removeFullscreenStyles ? 'sm:bg-background-muted' : '';
+        active && !removeFullscreenStyles ? 'sm:bg-pressed' : '';
 
       const caretClass = removeFullscreenStyles
         ? 'rtl:rotate-180'
@@ -64,7 +64,7 @@ const TabBar = ({
           iconColor={IconColor.IconAlternative}
           iconSize={IconSize.Lg}
           textVariant={TextVariant.BodyMd}
-          className={`!rounded-none focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
+          className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
           data-testid={dataTestId}
           onClick={
             onTabClick

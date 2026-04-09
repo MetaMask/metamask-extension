@@ -4,6 +4,7 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
 import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
@@ -87,21 +88,6 @@ type RpcDataSourceActions =
 type RpcDataSourceEvents = NetworkControllerStateChangeEvent;
 
 /**
- * TokenListController:getState action for TokenDataSource.
- */
-type TokenListControllerGetStateAction = {
-  type: 'TokenListController:getState';
-  handler: () => unknown;
-};
-
-/**
- * Actions required by TokenDataSource.
- *
- * @see TokenDataSource in @metamask/assets-controller
- */
-type TokenDataSourceActions = TokenListControllerGetStateAction;
-
-/**
  * Actions required by BackendWebsocketDataSource.
  *
  * @see BackendWebsocketDataSource in @metamask/assets-controller
@@ -165,10 +151,9 @@ type SnapDataSourceEvents =
 type AllowedActions =
   | CoreAssetsControllerActions
   | RpcDataSourceActions
-  | TokenDataSourceActions
   | BackendWebsocketDataSourceActions
-  | SnapDataSourceActions;
-
+  | SnapDataSourceActions
+  | PhishingControllerBulkScanTokensAction;
 /**
  * All events allowed for the AssetsController messenger.
  * Includes core controller events and all data source events.
@@ -183,7 +168,6 @@ type AllowedEvents =
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
   | PreferencesControllerStateChangeEvent;
-
 /**
  * Messenger type for AssetsController initialization.
  */
@@ -224,13 +208,13 @@ export function getAssetsControllerMessenger(
       'NetworkEnablementController:getState',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      'TokenListController:getState',
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
+      'PhishingController:bulkScanTokens',
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
