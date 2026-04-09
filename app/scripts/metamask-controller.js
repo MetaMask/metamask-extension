@@ -6775,7 +6775,7 @@ export default class MetamaskController extends EventEmitter {
    * updates as a deduplicated set of JSON patch objects, and then releases them
    * to the UI process only when requested.
    *
-   * For the UI side of this, see `ui/store/patch-substream-connection.ts`.
+   * For the UI side of this, see `ui/store/patch-store-substream-connection.ts`.
    *
    * @param {Substream} outStream - The substream that patch store messages are
    * sent through.
