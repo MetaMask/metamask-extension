@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS_BY_CHAIN } from '../constants';
+import { MUSD_TOKEN, getMusdTokenAddressForChain } from '../constants';
 import {
   addImportedTokens,
   findNetworkClientIdByChainId,
@@ -19,13 +19,15 @@ export async function ensureMusdTokenImportedForChain(
   chainId: Hex,
   dispatch: MetaMaskReduxDispatch,
 ): Promise<void> {
-  const musdAddress = MUSD_TOKEN_ADDRESS_BY_CHAIN[chainId];
+  const musdAddress = getMusdTokenAddressForChain(chainId);
   if (!musdAddress) {
     return;
   }
 
   try {
-    const networkClientId = await findNetworkClientIdByChainId(chainId);
+    const networkClientId = await findNetworkClientIdByChainId(
+      chainId.toLowerCase(),
+    );
     await Promise.resolve(
       dispatch(
         addImportedTokens(

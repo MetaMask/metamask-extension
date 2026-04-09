@@ -59,6 +59,22 @@ describe('ensureMusdTokenImportedForChain', () => {
     );
   });
 
+  it('imports mUSD when chain id uses non-canonical hex casing', async () => {
+    await ensureMusdTokenImportedForChain('0X1' as Hex, mockDispatch);
+
+    expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
+    expect(mockAddImportedTokens).toHaveBeenCalledWith(
+      [
+        {
+          address: MUSD_TOKEN_ADDRESS,
+          symbol: 'MUSD',
+          decimals: 6,
+        },
+      ],
+      'mainnet',
+    );
+  });
+
   it('logs and resolves when import fails', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
     mockFindNetworkClientIdByChainId.mockRejectedValue(new Error('network'));
