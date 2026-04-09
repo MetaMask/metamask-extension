@@ -65,32 +65,38 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
 }
 
 /**
- * Retrieve the log file from the extension's storage path.
+ * Returns the database file (.log or .ldb) that contains the vault data.
+ *
+ * Chrome stores extension data in LevelDB. The vault may live in the WAL
+ * (.log file) or, after compaction, in a sorted-string-table (.ldb file).
+ * This function checks the .log file first, then falls back to .ldb files,
+ * returning whichever contains a "vault" string near "KeyringController".
  *
  * @param extensionStoragePath - The path to the extension's storage.
- * @returns The log file path.
+ * @returns The path to the database file containing the vault.
  */
-function getExtensionLogFile(extensionStoragePath: string): string {
+function getExtensionDatabaseFile(extensionStoragePath: string): string {
   const allFiles = fs.readdirSync(extensionStoragePath);
-  const logFiles = allFiles.filter((filename: string) =>
-    filename.endsWith('.log'),
-  );
-  const ldbFiles = allFiles.filter((filename: string) =>
-    filename.endsWith('.ldb'),
-  );
+  const logFiles = allFiles.filter((f: string) => f.endsWith('.log'));
+  const ldbFiles = allFiles.filter((f: string) => f.endsWith('.ldb'));
 
-  console.log(
-    `[vault-debug] Directory contents: ${allFiles.length} files total — .log: ${logFiles.length}, .ldb: ${ldbFiles.length}`,
-  );
-  console.log(`[vault-debug] All files: ${allFiles.join(', ')}`);
+  console.log('Log Files =========================:', logFiles.length);
 
+  // Try .log files first (vault lives here before compaction),
+  // then .ldb files (vault moves here after compaction).
   for (const file of [...logFiles, ...ldbFiles]) {
     const filePath = path.resolve(extensionStoragePath, file);
-    const stats = fs.statSync(filePath);
-    console.log(`[vault-debug]   ${file}: ${stats.size} bytes`);
+    const content = fs.readFileSync(filePath, 'utf8');
+    if (content.includes('"vault"') && content.includes('KeyringController')) {
+      console.log(
+        `Vault data found in ${file} (${fs.statSync(filePath).size} bytes)`,
+      );
+      return filePath;
+    }
   }
 
-  // Use the first of the `.log` files found
+  // Fallback: return the first .log file (original behaviour)
+  console.log('Vault data not found in any individual file, falling back to first .log file');
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
 
@@ -127,8 +133,8 @@ async function waitUntilFileIsWritten({
 }): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const extensionPath = await getExtensionStorageFilePath(driver);
-    const extensionLogFile = getExtensionLogFile(extensionPath);
-    const fileSize = await getFileSize(extensionLogFile);
+    const dbFile = getExtensionDatabaseFile(extensionPath);
+    const fileSize = await getFileSize(dbFile);
     if (fileSize > minFileSize) {
       console.log(`File is ready with size ${fileSize} bytes.`);
       return;
@@ -143,98 +149,6 @@ async function waitUntilFileIsWritten({
   throw new Error(
     `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
   );
-}
-
-/**
- * Diagnostic: reads the .log file as text and checks which vault-decryptor
- * regex attempts would match. Also opens a SEPARATE copy of the LevelDB to
- * verify the vault key exists (opening LevelDB mutates files via WAL replay,
- * so we must not touch the copy used for file upload).
- *
- * @param copiedDir - The copied LevelDB directory (read-only file operations only).
- * @param originalDir - The original extension storage path (used for a second
- *   temporary copy that we can safely open with the level library).
- */
-async function logVaultDiagnostics(
-  copiedDir: string,
-  originalDir: string,
-): Promise<void> {
-  const logFile = getExtensionLogFile(copiedDir);
-  const logFileData = fs.readFileSync(logFile, 'utf8');
-  console.log(
-    `[vault-debug] .log file read as UTF-8 text: ${logFileData.length} chars`,
-  );
-
-  // Check each regex attempt the vault-decryptor uses (attempts 3–7)
-  const attempt3 =
-    logFileData.match(/"KeyringController":{"vault":"{[^{}]*}"/);
-  console.log(`[vault-debug] vault-decryptor attempt 3 (linux .log): ${attempt3 ? 'MATCH' : 'no match'}`);
-
-  const attempt4 = logFileData.match(
-    /KeyringController":(\{"vault":".*?=\\"\}"\})/,
-  );
-  console.log(`[vault-debug] vault-decryptor attempt 4 (macOS .log): ${attempt4 ? 'MATCH' : 'no match'}`);
-
-  const attempt5 = logFileData.match(
-    /"KeyringController":(\{.*?"vault":".*?=\\"\}"\})/,
-  );
-  console.log(`[vault-debug] vault-decryptor attempt 5 (macOS .log v2): ${attempt5 ? 'MATCH' : 'no match'}`);
-
-  const attempt6 = logFileData.match(
-    /Keyring[0-9][^}]*(\{[^\{\}]*\\"\})/u,
-  );
-  console.log(`[vault-debug] vault-decryptor attempt 6 (windows .ldb): ${attempt6 ? 'MATCH' : 'no match'}`);
-
-  const attempt7Regex =
-    /KeyringController[\s\S]*?"vault":"((?:[^"\\]|\\.)*)"/g;
-  const attempt7 = attempt7Regex.exec(logFileData);
-  console.log(`[vault-debug] vault-decryptor attempt 7 (split state): ${attempt7 ? 'MATCH' : 'no match'}`);
-
-  // Check if the raw string "KeyringController" appears at all
-  const kcIndex = logFileData.indexOf('KeyringController');
-  console.log(
-    `[vault-debug] "KeyringController" found in .log text at index: ${kcIndex}`,
-  );
-  if (kcIndex !== -1) {
-    const start = Math.max(0, kcIndex - 20);
-    const end = Math.min(logFileData.length, kcIndex + 200);
-    const snippet = logFileData
-      .substring(start, end)
-      .replace(/[^\x20-\x7E]/g, '�');
-    console.log(`[vault-debug] Context around KeyringController: ${snippet}`);
-  }
-
-  // Verify the vault exists in LevelDB using a SEPARATE temporary copy
-  // (opening LevelDB replays the WAL and may compact/rename files)
-  let diagDir;
-  let db;
-  try {
-    diagDir = await copyDirectoryToTmp(originalDir);
-    db = new level.Level(diagDir, { valueEncoding: 'json' });
-    await db.open();
-    const keyringController = (await db.get('KeyringController')) as {
-      vault?: string;
-    };
-    const hasVault = Boolean(keyringController?.vault);
-    console.log(
-      `[vault-debug] LevelDB read KeyringController.vault: ${hasVault ? 'EXISTS' : 'MISSING'}`,
-    );
-    if (hasVault) {
-      const vaultStr = keyringController.vault as string;
-      console.log(
-        `[vault-debug] vault string length: ${vaultStr.length}, starts with: ${vaultStr.substring(0, 80)}...`,
-      );
-    }
-  } catch (err) {
-    console.log(`[vault-debug] LevelDB read error: ${err}`);
-  } finally {
-    if (db) {
-      await db.close();
-    }
-    if (diagDir) {
-      await fs.remove(diagDir);
-    }
-  }
 }
 
 describe('Vault Decryptor Page', function () {
@@ -267,20 +181,17 @@ describe('Vault Decryptor Page', function () {
         const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // copy log file to a temp location, to avoid reading it while the browser is writing it
+        // copy LevelDB directory to a temp location, to avoid reading it while the browser is writing it
         let copiedDir;
         try {
           copiedDir = await copyDirectoryToTmp(extensionPath);
-          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
-
-          // Diagnostic logging to debug flakiness in webpack dist builds
-          await logVaultDiagnostics(copiedDir, extensionPath);
+          const dbFileCopy = getExtensionDatabaseFile(copiedDir);
 
           // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
           await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
           const vaultDecryptorPage = new VaultDecryptorPage(driver);
           await vaultDecryptorPage.checkPageIsLoaded();
-          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
+          await vaultDecryptorPage.uploadLogFile(dbFileCopy);
 
           // fill the password and decrypt
           await vaultDecryptorPage.fillPassword();
@@ -372,7 +283,7 @@ describe('Vault Decryptor Page', function () {
         const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // copy log file to a temp location, to avoid reading it while the browser is writting it
+        // copy LevelDB to a temp location, to avoid reading it while the browser is writing it
         type VaultData = {
           vault: string;
         };
