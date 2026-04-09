@@ -257,6 +257,12 @@
         "process": true
       }
     },
+    "webpack-cli>@discoveryjs/json-ext": {
+      "globals": {
+        "ReadableStream": true,
+        "TextDecoder": true
+      }
+    },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -550,6 +556,11 @@
         "webpack": true
       }
     },
+    "jest-preview>sirv>@polka/url": {
+      "builtin": {
+        "querystring.parse": true
+      }
+    },
     "@swc/core": {
       "builtin": {
         "assert": true,
@@ -709,7 +720,18 @@
         "jsdom>acorn": true
       }
     },
+    "webpack-bundle-analyzer>acorn-walk": {
+      "globals": {
+        "define": true
+      }
+    },
     "jsdom>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn": {
       "globals": {
         "console": true,
         "define": true
@@ -2254,6 +2276,15 @@
         "http.ServerResponse.prototype.appendHeader": true
       }
     },
+    "http-server>opener": {
+      "builtin": {
+        "child_process.execFile": true,
+        "os.release": true
+      },
+      "globals": {
+        "process.platform": true
+      }
+    },
     "eslint>@eslint/eslintrc>import-fresh>parent-module": {
       "packages": {
         "@metamask/test-bundler>ow>callsites": true
@@ -2792,6 +2823,22 @@
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
       }
     },
+    "webpack-bundle-analyzer>sirv": {
+      "builtin": {
+        "node:fs.createReadStream": true,
+        "node:fs.existsSync": true,
+        "node:fs.statSync": true,
+        "node:path.join": true,
+        "node:path.normalize": true,
+        "node:path.resolve": true,
+        "node:path.sep": true
+      },
+      "packages": {
+        "jest-preview>sirv>@polka/url": true,
+        "jest-preview>sirv>mrmime": true,
+        "jest-preview>sirv>totalist": true
+      }
+    },
     "webpack-dev-server>sockjs": {
       "builtin": {
         "crypto": true,
@@ -3023,6 +3070,14 @@
     "chokidar>braces>fill-range>to-regex-range": {
       "packages": {
         "chokidar>braces>fill-range>to-regex-range>is-number": true
+      }
+    },
+    "jest-preview>sirv>totalist": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.join": true,
+        "path.resolve": true
       }
     },
     "tailwindcss>sucrase>ts-interface-checker": {
@@ -3376,6 +3431,44 @@
         "webpack>webpack-sources": true
       }
     },
+    "webpack-bundle-analyzer": {
+      "builtin": {
+        "node:fs.createReadStream": true,
+        "node:fs.createWriteStream": true,
+        "node:fs.mkdirSync": true,
+        "node:fs.promises.mkdir": true,
+        "node:fs.promises.writeFile": true,
+        "node:fs.readFileSync": true,
+        "node:fs.writeFileSync": true,
+        "node:http.createServer": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.resolve": true,
+        "node:stream.Readable": true,
+        "node:stream/promises.pipeline": true,
+        "node:util.inspect": true,
+        "node:util.types.isRegExp": true,
+        "node:zlib": true
+      },
+      "globals": {
+        "Buffer.byteLength": true,
+        "__dirname": true,
+        "console": true,
+        "process.cwd": true,
+        "process.env.npm_package_name": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
+        "webpack-bundle-analyzer>acorn": true,
+        "webpack-bundle-analyzer>html-escaper": true,
+        "http-server>opener": true,
+        "postcss>picocolors": true,
+        "webpack-bundle-analyzer>sirv": true,
+        "webpack-bundle-analyzer>ws": true
+      }
+    },
     "webpack-dev-server>webpack-dev-middleware": {
       "builtin": {
         "crypto.createHash": true,
@@ -3491,6 +3584,44 @@
       }
     },
     "ws": {
+      "builtin": {
+        "buffer.isUtf8": true,
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "crypto.randomFillSync": true,
+        "events": true,
+        "http.STATUS_CODES": true,
+        "http.createServer": true,
+        "http.request": true,
+        "https.request": true,
+        "net.connect": true,
+        "net.isIP": true,
+        "stream.Duplex": true,
+        "stream.Readable": true,
+        "stream.Writable": true,
+        "tls.connect": true,
+        "url.URL": true,
+        "zlib.Z_DEFAULT_WINDOWBITS": true,
+        "zlib.Z_SYNC_FLUSH": true,
+        "zlib.createDeflateRaw": true,
+        "zlib.createInflateRaw": true
+      },
+      "globals": {
+        "Blob": true,
+        "Buffer": true,
+        "clearTimeout": true,
+        "process.env.WS_NO_BUFFER_UTIL": true,
+        "process.env.WS_NO_UTF_8_VALIDATE": true,
+        "process.nextTick": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "ws>bufferutil": true,
+        "ws>utf-8-validate": true
+      }
+    },
+    "webpack-bundle-analyzer>ws": {
       "builtin": {
         "buffer.isUtf8": true,
         "crypto.createHash": true,
