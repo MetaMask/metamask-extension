@@ -62,6 +62,7 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
+import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constants';
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -697,11 +698,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
             orderCalculations?.estimatedFees ?? null,
         }),
-        ...(event === MetaMetricsEventName.PerpsPositionCloseTransaction && {
-          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-            orderCalculations?.estimatedFees ?? null,
-        }),
         ...(event === MetaMetricsEventName.PerpsRiskManagement && {
           [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
           [PERPS_EVENT_PROPERTY.SIZE]: position?.size ?? null,
@@ -714,6 +710,11 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     try {
       if (orderMode === 'close' && position) {
+        const closeNotionalUsd =
+          Math.abs(parseFloat(position.size)) * currentPrice;
+        const closeEstimatedFees =
+          closeNotionalUsd * PERPS_MARKET_ORDER_FEE_RATE;
+
         const closeParams = {
           symbol: orderFormState.asset,
           orderType: 'market' as const,
@@ -728,15 +729,20 @@ const PerpsOrderEntryPage: React.FC = () => {
           reportTransactionFailure(
             MetaMetricsEventName.PerpsPositionCloseTransaction,
             message,
+            {
+              [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: 100,
+              [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+              [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(closeEstimatedFees),
+            },
           );
           throw new Error(result.error ?? 'Failed to close position');
         }
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-            orderCalculations?.estimatedFees ?? null,
+          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: 100,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(closeEstimatedFees),
         });
         handleBackClick(
           PERPS_TOAST_KEYS.TRADE_SUCCESS,
