@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "आकार"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "फंडिंग रेट: ज़्यादा से कम"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "फंडिंग रेट: कम से ज़्यादा"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "ओपन इंटरेस्ट: ज़्यादा से कम"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "ओपन इंटरेस्ट: कम से ज़्यादा"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "प्राइस परिवर्तन: ज़्यादा से कम"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "प्राइस परिवर्तन: कम से ज़्यादा"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "वॉल्यूम: ज़्यादा से कम"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "वॉल्यूम: कम से ज़्यादा"
-  },
   "perpsStartNewTrade": {
     "message": "एक नया ट्रेड शुरू करें"
   },
