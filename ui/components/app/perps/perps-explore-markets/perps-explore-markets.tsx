@@ -20,13 +20,11 @@ import { PerpsMarketCard } from '../perps-market-card';
 import type { PerpsMarketData } from '../types';
 
 export type PerpsExploreMarketsProps = {
-  cryptoMarkets: PerpsMarketData[];
-  hip3Markets: PerpsMarketData[];
+  markets: PerpsMarketData[];
 };
 
 export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
-  cryptoMarkets,
-  hip3Markets,
+  markets,
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -61,7 +59,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
         />
       </ButtonBase>
       <Box flexDirection={BoxFlexDirection.Column}>
-        {cryptoMarkets.map((market) => (
+        {markets.map((market) => (
           <PerpsMarketCard
             key={market.symbol}
             symbol={market.symbol}
@@ -70,19 +68,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
             change24hPercent={market.change24hPercent}
             volume={market.volume}
             onClick={handleMarketClick}
-            data-testid={`explore-crypto-${market.symbol}`}
-          />
-        ))}
-        {hip3Markets.map((market) => (
-          <PerpsMarketCard
-            key={market.symbol}
-            symbol={market.symbol}
-            name={market.name}
-            price={market.price}
-            change24hPercent={market.change24hPercent}
-            volume={market.volume}
-            onClick={handleMarketClick}
-            data-testid={`explore-hip3-${market.symbol.replace(/:/gu, '-')}`}
+            data-testid={`explore-markets-${market.symbol.replace(/:/gu, '-')}`}
           />
         ))}
       </Box>

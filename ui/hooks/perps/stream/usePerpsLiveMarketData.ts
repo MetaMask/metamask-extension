@@ -105,24 +105,25 @@ export function usePerpsLiveMarketData(
     return true;
   });
 
-  // Filter out markets with no trading volume (inactive/delisted)
-  const activeMarkets = useMemo(() => markets.filter(hasVolume), [markets]);
-
   const compareByVolumeDesc = useCallback(
     (a: PerpsMarketData, b: PerpsMarketData) =>
       parseVolume(b.volume) - parseVolume(a.volume),
     [],
   );
 
+  // Filter out markets with no trading volume (inactive/delisted)
+  const activeMarkets = useMemo(() => {
+    return markets.filter(hasVolume).sort(compareByVolumeDesc);
+  }, [markets, compareByVolumeDesc]);
+
   // Derive crypto and HIP-3 markets from active markets, sorted by 24h volume descending
   const cryptoMarkets = useMemo(
-    () =>
-      activeMarkets.filter((m) => !m.marketSource).sort(compareByVolumeDesc),
-    [activeMarkets, compareByVolumeDesc],
+    () => activeMarkets.filter((m) => !m.marketSource),
+    [activeMarkets],
   );
   const hip3Markets = useMemo(
-    () => activeMarkets.filter((m) => m.marketSource).sort(compareByVolumeDesc),
-    [activeMarkets, compareByVolumeDesc],
+    () => activeMarkets.filter((m) => m.marketSource),
+    [activeMarkets],
   );
 
   // Manual refresh function
