@@ -316,7 +316,7 @@ describe('AmountInput', () => {
       });
 
       // USD = tokens × price = $5000
-      expect(onAmountChange).toHaveBeenCalledWith('5,000.00');
+      expect(onAmountChange).toHaveBeenCalledWith('5000.00');
       // Percent = $5000 / ($1000 × 5) = 100%
       expect(onBalancePercentChange).toHaveBeenCalledWith(100);
     });
@@ -361,7 +361,7 @@ describe('AmountInput', () => {
       });
 
       expect(onBalancePercentChange).toHaveBeenCalledWith(50);
-      expect(onAmountChange).toHaveBeenCalledWith('4,000.00');
+      expect(onAmountChange).toHaveBeenCalledWith('4000.00');
     });
 
     it('clears amount when percent changes to 0', () => {
@@ -408,7 +408,7 @@ describe('AmountInput', () => {
 
       expect(onBalancePercentChange).toHaveBeenCalledWith(100);
       // 100% of ($1000 × 4) = $4000
-      expect(onAmountChange).toHaveBeenCalledWith('4,000.00');
+      expect(onAmountChange).toHaveBeenCalledWith('4000.00');
     });
   });
 

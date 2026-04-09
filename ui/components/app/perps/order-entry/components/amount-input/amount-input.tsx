@@ -80,12 +80,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [tokenAmount, formatNumber]);
 
   const formatAmount = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
+    (value: number): string => value.toFixed(2),
+    [],
   );
 
   const handleAmountChange = useCallback(
