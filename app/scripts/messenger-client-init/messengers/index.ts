@@ -223,11 +223,9 @@ export type { AccountsControllerMessenger } from './accounts-controller-messenge
 export { getAccountsControllerMessenger } from './accounts-controller-messenger';
 export type { AddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
-export type { AlertControllerMessenger } from './alert-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
-export type { AppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';

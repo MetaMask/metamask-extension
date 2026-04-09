@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Laki"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Rate ng pagpopondo: mataas pababa"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Rate ng pagpopondo: mababa pataas"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Open na interes: mataas pababa"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Open na interes: mababa pataas"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Pagbabago ng presyo: mataas pababa"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Pagbabago ng presyo: mababa pataas"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Dami: mataas pababa"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Dami: mababa pataas"
-  },
   "perpsStartNewTrade": {
     "message": "Magsimula ng bagong trade"
   },
