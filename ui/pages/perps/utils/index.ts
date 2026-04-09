@@ -1,2 +1,3 @@
-export { sortMarkets, parseVolume } from './sortMarkets';
+export { sortMarkets } from './sortMarkets';
+export { parseVolume } from '../../../components/app/perps/utils';
 export type { SortField, SortDirection } from './sortMarkets';

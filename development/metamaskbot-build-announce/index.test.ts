@@ -1,6 +1,5 @@
 jest.mock('./artifacts');
 jest.mock('./bundle-size');
-jest.mock('./dapp-benchmarks');
 jest.mock('./performance-benchmarks');
 jest.mock('./utils');
 
@@ -13,7 +12,6 @@ const BASE_ENV: Record<string, string> = {
   HEAD_COMMIT_HASH: 'abc1234567',
   MERGE_BASE_COMMIT_HASH: 'def7654321',
   HOST_URL: 'https://ci.example.com',
-  LAVAMOAT_POLICY_CHANGED: 'false',
   POST_NEW_BUILDS: 'false',
 };
 
@@ -42,14 +40,13 @@ function getMocks(): Record<string, any> {
   return {
     artifacts: jest.requireMock('./artifacts'),
     bundleSize: jest.requireMock('./bundle-size'),
-    dapp: jest.requireMock('./dapp-benchmarks'),
     perf: jest.requireMock('./performance-benchmarks'),
     utils: jest.requireMock('./utils'),
   };
 }
 
 function configureMocks(): void {
-  const { artifacts, bundleSize, dapp, perf, utils } = getMocks();
+  const { artifacts, bundleSize, perf, utils } = getMocks();
 
   artifacts.getArtifactLinks.mockReturnValue({
     link: () => '<a href="#">link</a>',
@@ -58,12 +55,14 @@ function configureMocks(): void {
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
     storybook: { url: 'https://ci/storybook', label: 'Storybook' },
     tsMigrationDashboard: { url: 'https://ci/ts', label: 'TS' },
-    depViz: { url: 'https://ci/dep', label: 'dep' },
+    bundleAnalyzer: {
+      url: 'https://ci/bundle-analyzer/report.html',
+      label: 'Bundle Analyzer',
+    },
     allArtifacts: { url: 'https://ci/all', label: 'All' },
   });
-  artifacts.buildArtifactsBody.mockResolvedValue('<p>artifacts</p>');
+  artifacts.buildArtifactsBody.mockReturnValue('<p>artifacts</p>');
   perf.buildPerformanceBenchmarksSection.mockResolvedValue('<p>perf</p>');
-  dapp.getDappBenchmarkComment.mockResolvedValue('<p>dapp</p>');
   bundleSize.buildBundleSizeDiffSection.mockResolvedValue('<p>bundle</p>');
   utils.buildSectionWithFallback.mockImplementation(
     (fn: () => Promise<string | null | undefined>) =>

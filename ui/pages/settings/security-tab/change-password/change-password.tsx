@@ -31,8 +31,7 @@ import {
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
-import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -40,6 +39,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import { SECOND } from '../../../../../shared/constants/time';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -48,7 +49,15 @@ const ChangePasswordSteps = {
   ChangePasswordLoading: 3,
 };
 
-const ChangePassword = () => {
+const autoHideToastDelay = 5 * SECOND;
+
+type ChangePasswordProps = {
+  redirectRoute?: string;
+};
+
+const ChangePassword = ({
+  redirectRoute = SECURITY_ROUTE,
+}: ChangePasswordProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -61,7 +70,7 @@ const ChangePassword = () => {
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
     useState(false);
 
-  const [termsChecked, setTermsChecked] = useState(false);
+  const { value: termsChecked, toggle } = useBoolean();
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
@@ -114,12 +123,18 @@ const ChangePassword = () => {
       });
 
       // upon successful password change, go back to the settings page
-      navigate(SECURITY_ROUTE);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
+      navigate(redirectRoute);
+      toast.success(
+        <ToastContent title={t('securityChangePasswordToastSuccess')} />,
+        { duration: autoHideToastDelay },
+      );
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
+      toast.error(
+        <ToastContent title={t('securityChangePasswordToastError')} />,
+        { duration: autoHideToastDelay },
+      );
     }
   };
 
@@ -256,9 +271,7 @@ const ChangePassword = () => {
                   id="change-password-terms"
                   data-testid="change-password-terms"
                   isSelected={termsChecked}
-                  onChange={() => {
-                    setTermsChecked(!termsChecked);
-                  }}
+                  onChange={toggle}
                   label={
                     <>
                       {isSocialLoginFlow

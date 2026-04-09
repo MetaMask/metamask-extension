@@ -1,14 +1,26 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
+const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
+
+jest.mock('../../../selectors/first-time-flow', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../selectors/first-time-flow')
+  >('../../../selectors/first-time-flow');
+  return {
+    ...actual,
+    getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -17,6 +29,7 @@ jest.mock('../../../store/actions', () => ({
     return { type: 'MOCK_ACTION' };
   },
   setMarketingConsent: jest.fn().mockResolvedValue(undefined),
+  getMarketingConsent: () => mockGetMarketingConsent(),
 }));
 
 const backgroundConnectionMock = new Proxy(
@@ -40,6 +53,7 @@ describe('DataCollectionToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
+    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
   });
 
   it('renders title', () => {
@@ -65,7 +79,7 @@ describe('DataCollectionToggleItem', () => {
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('data-collection-for-marketing-toggle'),
+      screen.getByTestId('data-collection-for-marketing-input'),
     ).toHaveAttribute('value', 'true');
   });
 
@@ -74,7 +88,7 @@ describe('DataCollectionToggleItem', () => {
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('data-collection-for-marketing-toggle'),
+      screen.getByTestId('data-collection-for-marketing-input'),
     ).toHaveAttribute('value', 'false');
   });
 
@@ -82,7 +96,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
@@ -91,7 +105,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
   });
@@ -100,7 +114,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ useExternalServices: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    const toggle = screen.getByTestId('data-collection-for-marketing-toggle');
+    const toggle = screen.getByRole('checkbox');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
@@ -108,7 +122,18 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ participateInMetaMetrics: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    const toggle = screen.getByTestId('data-collection-for-marketing-toggle');
+    const toggle = screen.getByRole('checkbox');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+  });
+
+  it('fetches remote marketing consent on mount when social login flow is active', async () => {
+    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+    const mockStore = createMockStore();
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    await waitFor(() => {
+      expect(mockGetMarketingConsent).toHaveBeenCalled();
+    });
+    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
 });

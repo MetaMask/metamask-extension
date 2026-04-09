@@ -445,7 +445,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-settings',
           iconName: IconName.Setting,
           label: t('settings'),
-          to: SETTINGS_ROUTE,
+          to: `${SETTINGS_ROUTE}?drawerOpen=true`,
           onClick: () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,

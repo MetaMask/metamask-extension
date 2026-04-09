@@ -12,8 +12,8 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import TransactionsSettingsPage from '../../../page-objects/pages/settings/transactions-settings';
 import {
   assertAdvancedGasDetails,
   assertAdvancedGasDetailsWithFewerFields,
@@ -314,10 +314,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.clickAdvancedTab();
-          const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.checkPageIsLoaded();
-          await advancedSettingsPage.toggleOnHexData();
+          await settingsPage.goToTransactionsSettings();
+          const transactionsSettingsPage = new TransactionsSettingsPage(driver);
+          await transactionsSettingsPage.checkPageIsLoaded();
+          await transactionsSettingsPage.toggleOnHexData();
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });

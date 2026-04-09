@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Дополнительные"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
-  },
   "advancedDetailsDataDesc": {
     "message": "Данные"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "расширенные разрешения"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
   "airDropPatternDescription": {
     "message": "В истории токена в блокчейне уже были случаи подозрительных аирдропов."
@@ -1080,9 +1070,6 @@
   "bridgeFee": {
     "message": "Комиссия моста"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Получить новый?"
-  },
   "bridgeFromTo": {
     "message": "Создать мост для $1 из $2 к $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Предупреждение о влиянии на цену"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Срок действия Вашей котировки истек."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Котировки отсортированы по расчетной общей стоимости, которая включает обменный курс и комиссию сети."
@@ -1996,9 +1980,6 @@
   "currentQuestion": {
     "message": "Вопрос $1 из 2"
   },
-  "currentTitle": {
-    "message": "Текущая:"
-  },
   "currentlyUnavailable": {
     "message": "Недоступно в этой сети"
   },
@@ -2051,12 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Рекомендовано сайтом"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Сайт (высокий)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Сайт"
   },
   "dappSwapAdvantage": {
     "message": "Экономьте и зарабатывайте с MetaMask Swaps"
@@ -2422,9 +2397,6 @@
   "dontShowThisAgain": {
     "message": "Не показывать снова"
   },
-  "downArrow": {
-    "message": "стрелка «вниз»"
-  },
   "download": {
     "message": "Скачать"
   },
@@ -2517,19 +2489,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Лимит газа должен быть больше $1 и меньше $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Максимальная базовая комиссия выше необходимой"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Максимальная базовая комиссия низкая для текущих условий сети"
-  },
   "editGasMaxFeeHigh": {
     "message": "Максимальная комиссия выше, чем необходимо"
   },
@@ -2542,20 +2501,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Максимальная плата за приоритет должна быть больше 0 Гвей."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Плата за приоритет должна быть больше 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Максимальная плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Максимальная плата за приоритет низкая для текущих условий сети"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Плата за приоритет низкая для текущих условий сети"
   },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
@@ -2959,9 +2909,6 @@
   "from": {
     "message": "Из"
   },
-  "fromTokenLists": {
-    "message": "Из списков токенов: $1"
-  },
   "function": {
     "message": "Функция: $1"
   },
@@ -2977,9 +2924,6 @@
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
-  },
-  "gasLimitV2": {
-    "message": "Лимит газа"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -3344,12 +3288,6 @@
   "id": {
     "message": "Ид."
   },
-  "ignoreAll": {
-    "message": "Игнорировать все"
-  },
-  "ignoreTokenWarning": {
-    "message": "Если вы скроете токены, они не будут отображаться в вашем кошельке. Однако вы все равно можете добавить их, выполнив их поиск."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3409,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
   },
-  "importSelectedTokens": {
-    "message": "Импортировать выбранные токены?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "В вашем кошельке появятся только те токены, которые вы выбрали. Вы всегда можете импортировать скрытые токены позже, выполнив их поиск."
-  },
   "importTokenQuestion": {
     "message": "Импортировать токен?"
   },
@@ -3433,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Кошелек $1 импортирован",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Импортировать $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Импортирован",
@@ -3740,9 +3668,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "стрелка «уровень»"
   },
   "lightTheme": {
     "message": "Светлая"
@@ -4113,10 +4038,6 @@
   },
   "musdBuyMusd": {
     "message": "Купить mUSD"
-  },
-  "musdClaimClaimingTo": {
-    "message": "Зачисление на",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdClaimTitle": {
     "message": "Получить бонус",
@@ -4760,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Узнайте как"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 новых токена(-ов) найдены в этом аккаунте",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 новый токен найден в этом счете"
-  },
   "numberOfTokens": {
     "message": "Количество токенов"
   },
@@ -5391,9 +5305,6 @@
     "message": "доступные",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Доступный баланс"
-  },
   "perpsAvailableToClose": {
     "message": "Доступно для закрытия"
   },
@@ -5418,9 +5329,6 @@
   },
   "perpsCloseShort": {
     "message": "Закрыть короткую позицию"
-  },
-  "perpsClosedShort": {
-    "message": "Закрыта короткая позиция"
   },
   "perpsConfirmCloseLong": {
     "message": "Закрыть длинную позицию"
@@ -5509,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "включая П/У $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Увеличенная политика"
-  },
   "perpsLearnBasics": {
     "message": "Изучите основы перпов"
   },
@@ -5555,12 +5460,6 @@
   "perpsMarkets": {
     "message": "Рынки"
   },
-  "perpsMax": {
-    "message": "Максимум"
-  },
-  "perpsMaxRemovable": {
-    "message": "Макс. для снятия"
-  },
   "perpsMid": {
     "message": "Сред."
   },
@@ -5596,9 +5495,6 @@
     "message": "Открыть короткую позицию $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Открыта длинная позиция"
-  },
   "perpsOraclePrice": {
     "message": "Цена Oracle"
   },
@@ -5613,9 +5509,6 @@
   },
   "perpsPosition": {
     "message": "Позиция"
-  },
-  "perpsPositionSize": {
-    "message": "Размер позиции"
   },
   "perpsPositions": {
     "message": "Позиции"
@@ -5665,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Размер"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Ставка финансирования: от высокой к низкой"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Ставка финансирования: от низкой к высокой"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Процент при открытии: от высокого к низкому"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Процент при открытии: от низкого к высокому"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Изменение цены: от высокой к низкой"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Изменение цены: от низкой к высокой"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Объем: от высокого к низкому"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Объем: от низкого к высокому"
   },
   "perpsStartNewTrade": {
     "message": "Создать новую сделку"
@@ -5825,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Подтвердите"
-  },
-  "plusXMore": {
-    "message": "+ еще $1",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "пост в блоге."
@@ -8505,9 +8370,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSuggested": {
-    "message": "Рекомендуется своп"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
   },
@@ -8684,9 +8546,6 @@
   "tokenDetails": {
     "message": "Описание токена"
   },
-  "tokenFoundTitle": {
-    "message": "Найден 1 новый токен"
-  },
   "tokenId": {
     "message": "ID токена"
   },
@@ -8728,10 +8587,6 @@
   "tokensCount": {
     "message": "токены",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "Найдены $1 новых токена(-ов)",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Токены в коллекции"
@@ -8927,9 +8782,6 @@
   "tutorial": {
     "message": "Руководство"
   },
-  "twelveHrTitle": {
-    "message": "12 ч:"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -9015,9 +8867,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Нестабильная цена токена"
-  },
-  "upArrow": {
-    "message": "стрелка «вверх»"
   },
   "update": {
     "message": "Обновить"
@@ -9277,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Вы одобряете"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Вы отклонили транзакцию."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Для использования этой функции вам необходимо предоставить доступ к камере."

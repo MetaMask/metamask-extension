@@ -38,7 +38,7 @@ import {
 } from '../../../../shared/lib/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
-import { ControllerFlatState } from '../../controller-init/controller-list';
+import { ControllerFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
 import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 

@@ -42,7 +42,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
   'data.SnapController.unencryptedSnapStates',
-  'data.SnapsRegistry',
+  'data.SnapRegistryController',
   // Subject Metadata
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys
@@ -52,6 +52,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
   'data.AppStateController.lastUpdatedAt',
+  'data.AppStateController.newPrivacyPolicyToastClickedOrClosed',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',

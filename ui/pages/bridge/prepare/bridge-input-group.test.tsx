@@ -24,6 +24,9 @@ import configureStore from '../../../store/store';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
+/** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
+const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
+
 const mockUseVirtualizer = jest.fn();
 
 jest.mock('lodash/debounce', () => ({
@@ -220,7 +223,7 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -234,7 +237,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
               [
@@ -268,7 +271,7 @@ describe('BridgeInputGroup', () => {
     await openAssetPicker();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -281,7 +284,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
         [
@@ -318,7 +321,7 @@ describe('BridgeInputGroup', () => {
 
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
         [

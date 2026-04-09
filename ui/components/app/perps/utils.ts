@@ -6,7 +6,7 @@ import type {
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -180,6 +180,36 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
   } catch {
     return undefined;
   }
+};
+
+type TpslPriceInput = {
+  takeProfitPrice?: string | null;
+  stopLossPrice?: string | null;
+};
+
+type TpslPriceOutput = {
+  takeProfitPrice?: string;
+  stopLossPrice?: string;
+};
+
+const normalizePriceInput = (value?: string | null): string | undefined => {
+  const cleanedValue = value?.replaceAll(',', '').trim() ?? '';
+  return cleanedValue === '' ? undefined : cleanedValue;
+};
+
+/**
+ * Normalizes TP/SL input strings by removing formatting and mapping empty values to undefined.
+ *
+ * @param prices - The raw TP/SL input strings.
+ * @returns The normalized TP/SL values ready for controller calls.
+ */
+export const normalizeTpslPrices = (
+  prices: TpslPriceInput,
+): TpslPriceOutput => {
+  return {
+    takeProfitPrice: normalizePriceInput(prices.takeProfitPrice),
+    stopLossPrice: normalizePriceInput(prices.stopLossPrice),
+  };
 };
 
 // Transaction history utility types
@@ -385,4 +415,111 @@ export const isHip3Market = (
  */
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
+};
+
+const volumeMultipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * volumeMultipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
+/**
+ * Check if a market has meaningful trading volume (non-zero).
+ * Markets with zero, negative, or missing volume are considered inactive and
+ * should be hidden from market lists.
+ *
+ * @param market - The market data to check
+ * @returns True if the market has non-zero volume
+ * @example
+ * hasVolume({ volume: '$1.2M' }) // → true
+ * hasVolume({ volume: '$0' })    // → false
+ * hasVolume({ volume: '' })      // → false
+ */
+export const hasVolume = (market: PerpsMarketData): boolean => {
+  return parseVolume(market.volume) > 0;
+};
+
+/**
+ * Computes the PnL ratio for a position, returning `undefined` when it
+ * cannot be determined.
+ *
+ * Primary: unrealizedPnl / marginUsed.
+ * Fallback: returnOnEquity (percent) converted to a ratio.
+ *
+ * @param position - Position values used to compute the PnL ratio.
+ * @param position.unrealizedPnl - Unrealized profit and loss as a string.
+ * @param position.marginUsed - Margin used as a string.
+ * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
+ */
+export const getPositionPnlRatio = (position: {
+  unrealizedPnl: string;
+  marginUsed: string;
+  returnOnEquity: string;
+}): number | undefined => {
+  const unrealizedPnl = Number.parseFloat(position.unrealizedPnl);
+  const marginUsed = Number.parseFloat(position.marginUsed);
+
+  if (
+    !Number.isNaN(unrealizedPnl) &&
+    !Number.isNaN(marginUsed) &&
+    marginUsed !== 0
+  ) {
+    return unrealizedPnl / marginUsed;
+  }
+
+  const returnOnEquity = parseFloat(position.returnOnEquity);
+  if (!Number.isNaN(returnOnEquity)) {
+    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
+    return returnOnEquity / 100;
+  }
+
+  return undefined;
 };
