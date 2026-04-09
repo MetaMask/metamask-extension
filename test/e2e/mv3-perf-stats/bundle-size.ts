@@ -45,7 +45,7 @@ type BundleStats = {
 async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
-    'Capture bundle size stats from bundle analyzer report',
+    'Capture bundle size stats',
     (_yargs) =>
       _yargs.option('out', {
         description:
