@@ -3,6 +3,7 @@ import type { AssetsControllerMessenger as AssetsControllerMessengerType } from 
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
+  AccountTreeControllerStateChangeEvent,
 } from '@metamask/account-tree-controller';
 import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
 import {
@@ -154,7 +155,6 @@ type AllowedActions =
   | BackendWebsocketDataSourceActions
   | SnapDataSourceActions
   | PhishingControllerBulkScanTokensAction;
-
 /**
  * All events allowed for the AssetsController messenger.
  * Includes core controller events and all data source events.
@@ -168,7 +168,8 @@ type AllowedEvents =
   | RpcDataSourceEvents
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
-  | PreferencesControllerStateChangeEvent;
+  | PreferencesControllerStateChangeEvent
+  | AccountTreeControllerStateChangeEvent;
 
 /**
  * Messenger type for AssetsController initialization.
@@ -229,6 +230,7 @@ export function getAssetsControllerMessenger(
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'PreferencesController:stateChange',
+      'AccountTreeController:stateChange',
     ],
   });
 
