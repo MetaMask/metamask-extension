@@ -406,6 +406,14 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     } catch (err) {
       const errMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
