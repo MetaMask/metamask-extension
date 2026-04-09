@@ -117,6 +117,7 @@ async function waitUntilFileIsWritten({
     const fileSize = await getFileSize(extensionLogFile);
     if (fileSize > minFileSize) {
       console.log(`File is ready with size ${fileSize} bytes.`);
+      await driver.delay(8000);
       return;
     }
     console.log(`File size is too small (${fileSize} bytes)`);
