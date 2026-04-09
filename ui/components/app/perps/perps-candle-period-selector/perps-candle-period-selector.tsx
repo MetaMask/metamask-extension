@@ -1,9 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
 import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
-import {
   twMerge,
   Box,
   Text,
@@ -18,6 +14,10 @@ import {
   BoxJustifyContent,
   ButtonBase,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { Popover, PopoverPosition } from '../../../component-library';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../hooks/perps';

@@ -444,6 +444,10 @@ describe('CancelOrderModal', () => {
           }),
         );
       });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
     });
 
     it('fires PerpsOrderCancelTransaction with failed status and PerpsError on failure', async () => {
@@ -475,6 +479,10 @@ describe('CancelOrderModal', () => {
             [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
           }),
         );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
   });

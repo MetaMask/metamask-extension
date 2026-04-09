@@ -912,6 +912,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     isEligible,
     orderFormState,
     orderMode,
+    orderDirection,
+    orderCalculations,
     position,
     selectedAddress,
     currentPrice,
