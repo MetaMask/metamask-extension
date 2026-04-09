@@ -2,26 +2,12 @@
 
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { formatPermissionPeriodDuration } from '../../../../../../../../shared/lib/gator-permissions/format-permission-period-duration';
 import { MAX_UINT256 } from '../../../../../../../../shared/lib/gator-permissions/permission-constants';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export { MAX_UINT256 };
-
-/**
- * Formats a period duration in seconds to a human-readable string.
- * Converts common durations (daily, weekly) to readable labels, otherwise shows seconds.
- *
- * @param i18nContext
- * @param periodSeconds - The duration in seconds to format
- * @returns A formatted string representing the duration (e.g., "Daily", "Weekly", "3600 seconds")
- */
-export const formatPeriodDuration = (
-  i18nContext: ReturnType<typeof useI18nContext>,
-  periodSeconds: number,
-): string => formatPermissionPeriodDuration(i18nContext, periodSeconds);
 
 /**
  * Retrieves ERC-20 token details (label and decimals) for a given token address and chain ID.

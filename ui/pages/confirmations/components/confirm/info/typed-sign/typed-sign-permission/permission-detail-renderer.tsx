@@ -24,6 +24,7 @@ import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
+import { PERMISSION_SCHEMAS } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import type {
   AmountField,
   I18nFunction,
@@ -34,8 +35,7 @@ import type {
   SchemaSection,
   TokenResolution,
   TotalExposureField,
-} from './permission-detail-schema.types';
-import { PERMISSION_SCHEMAS } from './permission-detail-schemas';
+} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
