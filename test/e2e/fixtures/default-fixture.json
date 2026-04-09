@@ -192,7 +192,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": true,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
