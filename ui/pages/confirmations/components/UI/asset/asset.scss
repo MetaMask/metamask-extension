@@ -1,0 +1,12 @@
+.nft-asset-default-image {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 8px;
+  padding: 0;
+
+  // Override the padding-top: 100% from the base nft-default class
+  // since we need fixed dimensions for the Send flow layout
+  padding-top: 0 !important;
+}
