@@ -9,16 +9,16 @@ import { ConfirmContextProvider, useConfirmContext } from '.';
 
 const mockNavigate = jest.fn();
 
-let mockSearchParams = new URLSearchParams('');
+let mockWindowSearch = '';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useSearchParams: () => [mockSearchParams, jest.fn()],
+  useSearchParams: () => [new URLSearchParams(mockWindowSearch), jest.fn()],
   useParams: () => ({}),
   useLocation: () => ({
     pathname: '/confirm-transaction',
-    search: '',
+    search: mockWindowSearch,
     hash: '',
     state: null,
     key: 'test',
@@ -72,11 +72,12 @@ function renderContextProvider(store: ReturnType<typeof createStore>) {
 describe('ConfirmContextProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSearchParams = new URLSearchParams('');
+    mockWindowSearch = '';
+    window.history.replaceState({}, '', '/');
     mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
   });
 
-  it('navigates to DEFAULT_ROUTE when confirmation disappears and no returnTo', () => {
+  it('navigates to DEFAULT_ROUTE when confirmation disappears and no goBackTo', () => {
     const store = createStore();
     const { rerender } = renderContextProvider(store);
 
@@ -86,8 +87,9 @@ describe('ConfirmContextProvider', () => {
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });
 
-  it('navigates to returnTo when confirmation disappears and returnTo is present', () => {
-    mockSearchParams = new URLSearchParams('returnTo=/perps/trade/BTC');
+  it('navigates to goBackTo when confirmation disappears and goBackTo is present', () => {
+    mockWindowSearch = '?goBackTo=/perps/trade/BTC';
+    window.history.replaceState({}, '', '/?goBackTo=/perps/trade/BTC');
     const store = createStore();
     const { rerender } = renderContextProvider(store);
 
@@ -134,9 +136,12 @@ describe('ConfirmContextProvider', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('ignores unsafe returnTo values (absolute URLs)', () => {
-    mockSearchParams = new URLSearchParams(
-      'returnTo=https://evil.com/phishing',
+  it('ignores unsafe goBackTo values (absolute URLs)', () => {
+    mockWindowSearch = '?goBackTo=https%3A%2F%2Fevil.com%2Fphishing';
+    window.history.replaceState(
+      {},
+      '',
+      '/?goBackTo=https%3A%2F%2Fevil.com%2Fphishing',
     );
     const store = createStore();
     const { rerender } = renderContextProvider(store);
@@ -145,5 +150,18 @@ describe('ConfirmContextProvider', () => {
     rerender();
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('keeps goBackTo from initial URL when location search is cleared after mount', () => {
+    mockWindowSearch = '?goBackTo=/asset/keep';
+    window.history.replaceState({}, '', '/?goBackTo=/asset/keep');
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    expect(result.current.goBackTo).toBe('/asset/keep');
+    mockWindowSearch = '';
+    window.history.replaceState({}, '', '/');
+    rerender();
+    expect(result.current.goBackTo).toBe('/asset/keep');
   });
 });
