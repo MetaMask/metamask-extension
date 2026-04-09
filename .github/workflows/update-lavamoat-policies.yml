@@ -22,7 +22,7 @@ jobs:
       COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
-      JOB_IDS: ${{ steps.find-failed-lavamoat-validation-job-ids.outputs.JOB_IDS }}
+      RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -38,9 +38,9 @@ jobs:
             "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
             -f content='+1'
 
-      - name: Find failed lavamoat validation job ids
+      - name: Find CI run for PR head commit
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
-        id: find-failed-lavamoat-validation-job-ids
+        id: find-ci-run
         run: |
           HEAD_SHA=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json headRefOid --jq '.headRefOid')
           echo "Looking for main.yml run for commit ${HEAD_SHA}..."
@@ -53,20 +53,8 @@ jobs:
             --json databaseId \
             --jq '.[0].databaseId // empty')
 
-          if [ -z "$RUN_ID" ]; then
-            echo "No CI run found"
-            echo "JOB_IDS=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Found run ${RUN_ID}, looking for failed lavamoat validation job ids..."
-
-          JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.steps[]? | select(.name == "Check working tree" and .conclusion == "failure")) | .id' \
-            | paste -sd,)
-
-          echo "JOB_IDS=${JOB_IDS}" >> "$GITHUB_OUTPUT"
-          echo "Failed job IDs: ${JOB_IDS:-none}"
+          echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "Found run: ${RUN_ID:-none}"
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -78,51 +66,43 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
-      JOB_IDS: ${{ needs.prepare.outputs.JOB_IDS }}
+      RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
-        if: ${{ env.JOB_IDS }}
+        if: ${{ env.RUN_ID }}
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Checkout pull request
-        if: ${{ env.JOB_IDS }}
+        if: ${{ env.RUN_ID }}
         run: gh pr checkout "${PR_NUMBER}"
 
-      - name: Extract and apply policy diffs from validation logs
-        if: ${{ env.JOB_IDS }}
-        id: apply-diffs
+      - name: Download policy diffs from CI
+        if: ${{ env.RUN_ID }}
+        uses: actions/download-artifact@v7
+        with:
+          path: lavamoat-policy-diffs
+          pattern: lavamoat-policy-diff-*
+          merge-multiple: true
+          run-id: ${{ env.RUN_ID }}
+          github-token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+
+      - name: Check for policy diffs
+        id: check-diffs
+        run: echo "HAS_DIFFS=$([ -d lavamoat-policy-diffs ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Apply policy diffs
+        if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
         run: |
-          HAS_CHANGES=false
-
-          IFS=',' read -ra JOB_IDS <<< "$JOB_IDS"
-          for JOB_ID in "${JOB_IDS[@]}"; do
-            echo "Extracting diff from job ${JOB_ID}..."
-
-            # Download job logs and extract the git diff output
-            gh api "/repos/${REPO}/actions/jobs/${JOB_ID}/logs" \
-              | sed -n '/^.*diff --git/,/^.*::error::Working tree dirty/p' \
-              | grep -v '::error::' \
-              | sed 's/^[0-9T:.Z-]* //' \
-              > /tmp/policy.patch
-
-            PATCH_LINES=$(wc -l < /tmp/policy.patch)
-            echo "Extracted patch from job ${JOB_ID} (${PATCH_LINES} lines)"
-
-            if [ "$PATCH_LINES" -gt 0 ]; then
-              git apply /tmp/policy.patch
-              HAS_CHANGES=true
-            else
-              echo "Warning: empty patch from job ${JOB_ID}, skipping"
-            fi
+          for patch in lavamoat-policy-diffs/*.patch; do
+            echo "Applying ${patch}..."
+            git apply "${patch}"
           done
 
-          echo "HAS_CHANGES=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
-
       - name: Commit the updated policies
-        if: ${{ steps.apply-diffs.outputs.HAS_CHANGES == 'true' }}
+        if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
@@ -130,7 +110,7 @@ jobs:
           git push
 
       - name: Compare policy changes
-        if: ${{ steps.apply-diffs.outputs.HAS_CHANGES == 'true' }}
+        if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
         run: |
           BASE_REF=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq .baseRefName)
           git fetch origin "${BASE_REF}"
@@ -160,12 +140,12 @@ jobs:
           } > does_diff_diff.txt
 
       - name: Post comment (policies updated)
-        if: ${{ steps.apply-diffs.outputs.HAS_CHANGES == 'true' }}
+        if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
         run: |
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
-        if: ${{ needs.prepare.result == 'success' && (!env.JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false') }}
+        if: ${{ needs.prepare.result == 'success' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
         run: |
           gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
