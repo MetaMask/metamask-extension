@@ -34206,7 +34206,7 @@ __metadata:
     "@metamask/transaction-pay-controller": "npm:^19.0.0"
     "@metamask/tron-wallet-snap": "npm:^1.25.1"
     "@metamask/user-operation-controller": "npm:^41.1.0"
-    "@metamask/utils": "npm:^11.10.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
