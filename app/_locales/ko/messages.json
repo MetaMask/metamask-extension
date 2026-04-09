@@ -2909,9 +2909,6 @@
   "from": {
     "message": "발신:"
   },
-  "fromTokenLists": {
-    "message": "가져올 토큰 목록: $1"
-  },
   "function": {
     "message": "기능: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "모두 무시"
-  },
-  "ignoreTokenWarning": {
-    "message": "토큰을 숨기면 지갑에 표시되지 않습니다. 하지만 이를 검색하여 추가할 수 있습니다."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
-  "importSelectedTokens": {
-    "message": "선택한 토큰을 가져올까요?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "선택한 토큰만 지갑에 표시됩니다. 토큰 검색을 통해 언제든지 나중에 숨긴 토큰도 가져올 수 있습니다."
-  },
   "importTokenQuestion": {
     "message": "토큰을 가져오시겠습니까?"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "지갑 $1 가져오기 완료",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 불러오기",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "가져옴",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "방법 확인하기"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "계정에서 $1개의 새로운 토큰이 발견됨",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "계정에서 1개의 새 토큰을 찾았습니다"
-  },
   "numberOfTokens": {
     "message": "토큰 수"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "컨펌하세요"
-  },
-  "plusXMore": {
-    "message": "+ $1개 추가",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "블로그 게시물에서 확인할 수 있습니다."
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "토큰 상세 정보"
   },
-  "tokenFoundTitle": {
-    "message": "$1개의 새 토큰을 찾았습니다"
-  },
   "tokenId": {
     "message": "토큰 ID"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "토큰",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1개의 새 토큰을 찾았습니다",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "컬렉션에 보유 중인 토큰"
