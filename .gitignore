@@ -119,6 +119,6 @@ temp-llm-workflow-*
 .task/
 .agent/
 .claude/mcp.json
-test/e2e/playwright/llm-workflow/
+test/e2e/playwright/llm-workflow/recipes/
 .tool-versions
 CLAUDE.local.md
