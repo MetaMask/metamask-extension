@@ -3888,11 +3888,11 @@ __metadata:
   linkType: hard
 
 "@hono/node-server@npm:^1.19.9":
-  version: 1.19.12
-  resolution: "@hono/node-server@npm:1.19.12"
+  version: 1.19.9
+  resolution: "@hono/node-server@npm:1.19.9"
   peerDependencies:
     hono: ^4
-  checksum: 10/aeb02f3c255cc9016d88ea4611eb105dbd8dca881b1b4e77256a41d6a18b8b45dd6f46ab35ef08becfa32e64c5ba77de7b5aa0af552e7fe67ce3079b94988c20
+  checksum: 10/d4915c2e736ee1e3934b5538cde92b19914dc71346340528a04e4c7219afc7367965080cd1a5291ac9cbda7b0780b89b6ca93472a9418aa105d6d1183033dc8a
   languageName: node
   linkType: hard
 
@@ -8586,8 +8586,8 @@ __metadata:
   linkType: hard
 
 "@modelcontextprotocol/sdk@npm:^1.26.0":
-  version: 1.29.0
-  resolution: "@modelcontextprotocol/sdk@npm:1.29.0"
+  version: 1.26.0
+  resolution: "@modelcontextprotocol/sdk@npm:1.26.0"
   dependencies:
     "@hono/node-server": "npm:^1.19.9"
     ajv: "npm:^8.17.1"
@@ -8614,7 +8614,7 @@ __metadata:
       optional: true
     zod:
       optional: false
-  checksum: 10/ff551b97e06b661f95fec8fd34e112c446e69894a84a9979cdac369fb5de27f0a1a5c1f4e2a1f270cc60f93e54c28a8059a94ca51c3d528d2670ade874b244f9
+  checksum: 10/a206b2a4d61a23be8b8f4c886528dd9348d11b17ce36013b350edf5c082b1c1f07941d52ea098f721daf3828085b6f6276bb844c484a0e9913edbc028517a3d5
   languageName: node
   linkType: hard
 
@@ -26208,13 +26208,13 @@ __metadata:
   linkType: hard
 
 "express-rate-limit@npm:^8.2.1":
-  version: 8.3.2
-  resolution: "express-rate-limit@npm:8.3.2"
+  version: 8.2.1
+  resolution: "express-rate-limit@npm:8.2.1"
   dependencies:
-    ip-address: "npm:10.1.0"
+    ip-address: "npm:10.0.1"
   peerDependencies:
     express: ">= 4.11"
-  checksum: 10/71afac0fff29bf03117a89902953e7feafc67402332910cfb601b27da079b98f04ba551a1ef4f0ad5cf2538d9599c2649450af6d3f7505bcc7d24f7eaf765a4e
+  checksum: 10/7cbf70df2e88e590e463d2d8f93380775b2ea181d97f2c50c2ff9f2c666c247f83109a852b21d9c99ccc5762119101f281f54a27252a2f1a0a918be6d71f955b
   languageName: node
   linkType: hard
 
@@ -29044,9 +29044,9 @@ __metadata:
   linkType: hard
 
 "hono@npm:^4.11.4":
-  version: 4.12.10
-  resolution: "hono@npm:4.12.10"
-  checksum: 10/0e27311bec761e5197039d8b307cb3f2d31d5df4c9c17a36ab63ffbaec703ae214d158f495bac651e0264c4110d7bbfcebdeda5c1caaada194fe6f15c89a214f
+  version: 4.11.8
+  resolution: "hono@npm:4.11.8"
+  checksum: 10/4c741c96087538af1408f2d0075b89caea2ef2436cd4cabe724a0b11d9bf190d38ed084d07f14373376464dc9a9061540a2b8e955f6f44e380da583dbbcb0b04
   languageName: node
   linkType: hard
 
@@ -29939,10 +29939,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:10.1.0":
-  version: 10.1.0
-  resolution: "ip-address@npm:10.1.0"
-  checksum: 10/a6979629d1ad9c1fb424bc25182203fad739b40225aebc55ec6243bbff5035faf7b9ed6efab3a097de6e713acbbfde944baacfa73e11852bb43989c45a68d79e
+"ip-address@npm:10.0.1":
+  version: 10.0.1
+  resolution: "ip-address@npm:10.0.1"
+  checksum: 10/09731acda32cd8e14c46830c137e7e5940f47b36d63ffb87c737331270287d631cf25aa95570907a67d3f919fdb25f4470c404eda21e62f22e0a55927f4dd0fb
   languageName: node
   linkType: hard
 
@@ -31905,9 +31905,9 @@ __metadata:
   linkType: hard
 
 "jose@npm:^6.1.3":
-  version: 6.2.2
-  resolution: "jose@npm:6.2.2"
-  checksum: 10/fd66f24916d2507dbde0ca77ede86377e7d7eae42c7f94db0dfd014b0c6ce5041365dc8e757a44e54cd7606ea5e9c757aa544b51e55cb8a736e83320db1b8258
+  version: 6.1.3
+  resolution: "jose@npm:6.1.3"
+  checksum: 10/9626c51e8c3792b505e954f3094698c182208617b62dfb27269230f31e57560b083985ed8128b8a9753aa92daf18d3a2341cc826d149503f14569abe87d42389
   languageName: node
   linkType: hard
 
@@ -38444,21 +38444,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.4.0, qs@npm:~6.14.0":
+"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.4.0, qs@npm:~6.14.0":
   version: 6.14.2
   resolution: "qs@npm:6.14.2"
   dependencies:
     side-channel: "npm:^1.1.0"
   checksum: 10/682933a85bb4b7bd0d66e13c0a40d9e612b5e4bcc2cb9238f711a9368cd22d91654097a74fff93551e58146db282c56ac094957dfdc60ce64ea72c3c9d7779ac
-  languageName: node
-  linkType: hard
-
-"qs@npm:^6.14.0, qs@npm:^6.14.1":
-  version: 6.15.0
-  resolution: "qs@npm:6.15.0"
-  dependencies:
-    side-channel: "npm:^1.1.0"
-  checksum: 10/a3458f2f389285c3512e0ebc55522ee370ac7cb720ba9f0eff3e30fb2bb07631caf556c08e2a3d4481a371ac14faa9ceb7442a0610c5a7e55b23a5bdee7b701c
   languageName: node
   linkType: hard
 
@@ -47019,11 +47010,11 @@ __metadata:
   linkType: hard
 
 "zod-to-json-schema@npm:^3.25.1":
-  version: 3.25.2
-  resolution: "zod-to-json-schema@npm:3.25.2"
+  version: 3.25.1
+  resolution: "zod-to-json-schema@npm:3.25.1"
   peerDependencies:
-    zod: ^3.25.28 || ^4
-  checksum: 10/7035328654113f1a0b8e4c2d34a06f918c93650ef8a50d4fb30ad8f22e47d5762c163af9c82494756b34776bae3c41c26cfc6945105b0eee7dceb528cc07e665
+    zod: ^3.25 || ^4
+  checksum: 10/744dd370f4452c8db120de1475ea4d484a11df884c4636111d630e5e1351b8a7590d99cf14a2b9f21e7906f8b78721d958663a7973a40994e7d28770876674cc
   languageName: node
   linkType: hard
 
