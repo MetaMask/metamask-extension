@@ -1,4 +1,8 @@
-import { QuoteStreamCompleteReason } from '@metamask/bridge-controller';
+import {
+  QuoteStreamCompleteReason,
+  TokenFeatureType,
+} from '@metamask/bridge-controller';
+import { type BridgeAlert } from '../prepare/types';
 
 export const getQuoteStreamReasonString = (
   reason: QuoteStreamCompleteReason,
@@ -25,4 +29,16 @@ export const getQuoteStreamReasonString = (
     default:
       return 'bridgeQuoteStreamCompleteRetry';
   }
+};
+
+export const getTokenWarningTitle = (featureType: TokenFeatureType): string => {
+  return featureType === TokenFeatureType.MALICIOUS
+    ? 'bridgeMaliciousTokenTitle'
+    : 'bridgeSuspiciousTokenTitle';
+};
+
+export const getTokenWarningSeverity = (
+  featureType: TokenFeatureType,
+): BridgeAlert['severity'] => {
+  return featureType === TokenFeatureType.MALICIOUS ? 'danger' : 'warning';
 };

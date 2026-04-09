@@ -23,7 +23,6 @@ import {
   HardwareWalletProvider,
 } from '../../../../contexts/hardware-wallets';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
-import * as useTokenAlertsHook from '../../../../hooks/bridge/useTokenAlerts';
 import PrepareBridgePage from '../prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -149,21 +148,11 @@ describe('BridgeAlertBannerList', () => {
             description: 'Token warning description 1',
           },
           {
-            type: TokenFeatureType.MALICIOUS,
-            feature_id: 'UNSTABLE_TOKEN_PRICE',
-            description: 'Token warning description 2',
-          },
-          {
             type: TokenFeatureType.BENIGN,
             feature_id: 'HONEYPOT',
             description: 'Token warning description 3',
           },
         ],
-      },
-      {
-        type: TokenFeatureType.MALICIOUS,
-        feature_id: 'HONEYPOT',
-        description: 'Token warning description 1',
       },
     ],
   ])(
@@ -174,7 +163,6 @@ describe('BridgeAlertBannerList', () => {
       validationErrors?: Record<string, boolean>,
       bridgeSliceOverrides = {},
       bridgeStateOverrides = {},
-      tokenAlert = undefined,
     ) => {
       jest
         .spyOn(reactRouterUtils, 'useSearchParams')
@@ -183,11 +171,6 @@ describe('BridgeAlertBannerList', () => {
         jest
           .spyOn(bridgeSelectors, 'getValidationErrors')
           .mockReturnValue(validationErrors as never);
-      jest
-        .spyOn(useTokenAlertsHook, 'useTokenAlerts')
-        .mockImplementation(() => ({
-          tokenAlert,
-        }));
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',

@@ -1,4 +1,5 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { type BannerAlert } from '../../../components/component-library';
 
 type BaseDestinationAccount = {
   isExternal: boolean;
@@ -46,3 +47,34 @@ export type InternalDestinationAccount = InternalAccount &
 export type DestinationAccount =
   | InternalDestinationAccount
   | ExternalDestinationAccount;
+
+/** An alert transformed for display purposes */
+export type MinimalBridgeAlert = {
+  id:
+    | `token-warning-${number}`
+    | 'price-impact'
+    | 'tx-alert'
+    | 'market-closed'
+    | 'no-quotes'
+    | 'insufficient-gas';
+  title?: string;
+  description: string;
+  severity: 'warning' | 'danger';
+};
+
+export type BridgeAlert = MinimalBridgeAlert & {
+  /** This indicates whether the alert should be shown during the confirmation flow. */
+  isConfirmationAlert: boolean;
+  /** When shown as a BannerAlert, this indicates whether the alert can be dismissed by the user. */
+  isDismissable?: boolean;
+  /** If this is defined, the alert will be displayed as a BannerAlert with the props specified. */
+  bannerAlertProps?: Pick<
+    React.ComponentProps<typeof BannerAlert>,
+    'severity' | 'actionButtonLabel' | 'actionButtonOnClick' | 'data-testid'
+  >;
+  /**
+   * This is for the BannerAlert shown in the alert modal, which may appear when the alert modal is opened
+   * from the quote card or the confirmation flow.
+   */
+  alertModalErrorMessage?: string;
+};

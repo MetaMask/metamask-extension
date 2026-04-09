@@ -108,7 +108,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
 
 exports[`BridgeAlertBannerList should render the token-warning-alert alert when token warning 1`] = `
 [
-  "Token warning description 1",
+  "Malicious tokenToken warning description 1",
 ]
 `;
 
@@ -128,7 +128,11 @@ exports[`BridgeAlertBannerList should render the token-warning-alert alert when 
     <div
       class="mm-box mm-box--min-width-0"
     >
-      
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+      >
+        Malicious token
+      </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
       >

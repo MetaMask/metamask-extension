@@ -11,7 +11,6 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -40,9 +39,7 @@ import {
   getValidationErrors,
   getIsToOrFromNonEvm,
   getHardwareWalletName,
-  getIsQuoteExpired,
   BridgeAppState,
-  getTxAlerts,
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
@@ -92,7 +89,6 @@ import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
 } from '../quotes/multichain-bridge-quote-card';
-import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
@@ -100,6 +96,7 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -146,16 +143,26 @@ const PrepareBridgePage = ({
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
 
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
-  );
-
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
   const bridgeUnavailableQuotesReason = useSelector(
     getBridgeUnavailableQuoteReason,
   );
+
+  const {
+    isNoQuotesAvailable,
+    isInsufficientGasForQuote,
+    isInsufficientBalance,
+    isStockMarketClosed,
+    isQuoteExpired,
+    isPriceImpactError,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
+  const { txAlert, tokenAlerts, securityWarnings } = useSecurityAlerts();
+  const [tokenAlert] = tokenAlerts;
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -191,29 +198,6 @@ const PrepareBridgePage = ({
   const locale = useSelector(getIntlLocale);
 
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
-  const {
-    isNoQuotesAvailable,
-    isInsufficientGasForQuote,
-    isInsufficientBalance,
-    isStockMarketClosed,
-  } = useSelector(
-    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
-    shallowEqual,
-  );
-  const txAlert = useSelector(getTxAlerts);
-  const { openBuyCryptoInPdapp } = useRamps();
-
-  const { tokenAlert } = useTokenAlerts();
-  const securityWarnings: string[] = useMemo(() => {
-    const warnings: string[] = [];
-    if (tokenAlert?.description) {
-      warnings.push(tokenAlert.description);
-    }
-    if (txAlert?.description) {
-      warnings.push(txAlert.description);
-    }
-    return warnings;
-  }, [tokenAlert?.description, txAlert?.description]);
 
   const {
     selectedDestinationAccount,
@@ -223,6 +207,8 @@ const PrepareBridgePage = ({
   } = useDestinationAccount();
 
   useLatestBalance();
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -704,8 +690,10 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
-              onOpenPriceImpactWarningModal={() =>
-                togglePriceImpactModalWithVariant('submit-cta')
+              onOpenAlertModals={() =>
+                isPriceImpactError
+                  ? togglePriceImpactModalWithVariant('submit-cta')
+                  : undefined
               }
               onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}
             />
@@ -750,25 +738,21 @@ const PrepareBridgePage = ({
           <BannerAlert
             data-testid="bridge-tx-alert"
             severity={BannerAlertSeverity.Danger}
-            title={t(txAlert.titleId)}
-            description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
+            title={txAlert.title}
+            description={txAlert.description}
             textAlign={TextAlign.Left}
           />
         )}
         {tokenAlert && isTokenAlertBannerOpen && (
           <BannerAlert
             data-testid="bridge-token-warning-alert"
-            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
+            title={tokenAlert.title}
             severity={
-              tokenAlert.type === TokenFeatureType.MALICIOUS
+              tokenAlert.severity === 'danger'
                 ? BannerAlertSeverity.Danger
                 : BannerAlertSeverity.Warning
             }
-            description={
-              tokenAlert.descriptionId
-                ? t(tokenAlert.descriptionId)
-                : tokenAlert.description
-            }
+            description={tokenAlert.description}
             textAlign={TextAlign.Left}
             onClose={() => setIsTokenAlertBannerOpen(false)}
           />
