@@ -23,6 +23,7 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
+      VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -53,8 +54,24 @@ jobs:
             --json databaseId \
             --jq '.[0].databaseId // empty')
 
+          if [ -z "$RUN_ID" ]; then
+            echo "No CI run found"
+            exit 0
+          fi
+
+          echo "Found run ${RUN_ID}, checking validation job status..."
+
+          PENDING=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.status != "completed") | .id')
+
+          if [ -n "$PENDING" ]; then
+            echo "LavaMoat validation still running"
+            echo "VALIDATION_PENDING=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "LavaMoat validation completed"
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
-          echo "Found run: ${RUN_ID:-none}"
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -67,6 +84,7 @@ jobs:
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
+      VALIDATION_PENDING: ${{ needs.prepare.outputs.VALIDATION_PENDING }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
@@ -144,8 +162,13 @@ jobs:
         run: |
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
+      - name: Post comment (validation still running)
+        if: ${{ env.VALIDATION_PENDING == 'true' }}
+        run: |
+          gh pr comment "${PR_NUMBER}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
+
       - name: Post comment (no policy changes)
-        if: ${{ needs.prepare.result == 'success' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
+        if: ${{ needs.prepare.result == 'success' && !env.VALIDATION_PENDING && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
         run: |
           gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
