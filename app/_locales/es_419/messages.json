@@ -3108,7 +3108,8 @@
     "message": "Sigue asegurándote de que:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Tu Ledger esté desbloqueada"
+    "message": "Tu Ledger esté desbloqueada",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "La aplicación Ethereum esté abierta"
