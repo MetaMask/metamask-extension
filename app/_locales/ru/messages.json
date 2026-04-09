@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Размер"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Ставка финансирования: от высокой к низкой"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Ставка финансирования: от низкой к высокой"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Процент при открытии: от высокого к низкому"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Процент при открытии: от низкого к высокому"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Изменение цены: от высокой к низкой"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Изменение цены: от низкой к высокой"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Объем: от высокого к низкому"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Объем: от низкого к высокому"
-  },
   "perpsStartNewTrade": {
     "message": "Создать новую сделку"
   },

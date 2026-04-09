@@ -45,7 +45,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
@@ -305,5 +305,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 202 }
+  "meta": { "storageKind": "split", "version": 203 }
 }

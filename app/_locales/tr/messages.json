@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Boyut"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Fonlama oranı: yüksekten düşüğe"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Fonlama oranı: düşükten yükseğe"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Açık pozisyon hacmi: yüksekten düşüğe"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Açık pozisyon hacmi: düşükten yükseğe"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Fiyat değişikliği: yüksekten düşüğe"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Fiyat değişikliği: düşükten yükseğe"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Hacim: yüksekten düşüğe"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Hacim: düşükten yükseğe"
-  },
   "perpsStartNewTrade": {
     "message": "Yeni bir işlem başlat"
   },

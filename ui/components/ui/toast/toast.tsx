@@ -5,13 +5,13 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../icon/status-icon';
 
@@ -74,12 +74,32 @@ export function Toaster() {
   );
 }
 
-export const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-
+export const ToastContent = ({
+  title,
+  actionText,
+  onActionClick,
+}: {
+  title: string;
+  actionText?: string;
+  onActionClick?: () => void;
+}) => {
   return (
     <div>
       <p className="text-m-body-md">{title}</p>
+
+      {onActionClick && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
+          className="mt-2 rounded-lg"
+          textProps={{
+            variant: TextVariant.BodySm,
+          }}
+          onClick={onActionClick}
+        >
+          {actionText}
+        </Button>
+      )}
     </div>
   );
 };
