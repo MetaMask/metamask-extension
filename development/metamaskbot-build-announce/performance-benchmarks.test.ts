@@ -3,6 +3,7 @@ import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import * as historicalComparison from './historical-comparison';
 import { COMPARISON_SEVERITY } from './comparison-utils';
 import {
+  BENCHMARK_ANNOUNCE_SECTIONS,
   buildBenchmarkSection,
   extractEntries,
   fetchBenchmarkJson,
@@ -10,6 +11,7 @@ import {
   buildPerformanceBenchmarksSection,
   computeEntryHealth,
   EntryHealth,
+  getUserJourneyBenchmarkApiModeFromBranch,
   getUserJourneyBenchmarkBuildTypesForCurrentRun,
   type FetchBenchmarkResult,
   type BenchmarkEntry,
@@ -93,7 +95,7 @@ describe('getUserJourneyBenchmarkBuildTypesForCurrentRun', () => {
     ]);
   });
 
-  it('returns browserify and webpack on push to main (benchmarks-webpack-perf runs)', () => {
+  it('returns browserify and webpack on push to main (webpack user-journey matrix rows)', () => {
     process.env.GITHUB_EVENT_NAME = 'push';
     process.env.GITHUB_REF = 'refs/heads/main';
 
@@ -392,6 +394,64 @@ describe('fetchBenchmarkEntries', () => {
   });
 });
 
+describe('getUserJourneyBenchmarkApiModeFromBranch', () => {
+  const saved = () => ({
+    BRANCH: process.env.BRANCH,
+    GITHUB_HEAD_REF: process.env.GITHUB_HEAD_REF,
+    GITHUB_REF_NAME: process.env.GITHUB_REF_NAME,
+  });
+
+  const restore = (env: ReturnType<typeof saved>) => {
+    for (const key of [
+      'BRANCH',
+      'GITHUB_HEAD_REF',
+      'GITHUB_REF_NAME',
+    ] as const) {
+      if (env[key] === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = env[key];
+      }
+    }
+  };
+
+  it('returns real for main', () => {
+    const before = saved();
+    try {
+      delete process.env.BRANCH;
+      delete process.env.GITHUB_HEAD_REF;
+      process.env.GITHUB_REF_NAME = 'main';
+      expect(getUserJourneyBenchmarkApiModeFromBranch()).toBe('real');
+    } finally {
+      restore(before);
+    }
+  });
+
+  it('returns real for release branches', () => {
+    const before = saved();
+    try {
+      process.env.BRANCH = 'release/12.0.0';
+      delete process.env.GITHUB_HEAD_REF;
+      delete process.env.GITHUB_REF_NAME;
+      expect(getUserJourneyBenchmarkApiModeFromBranch()).toBe('real');
+    } finally {
+      restore(before);
+    }
+  });
+
+  it('returns mock for feature branches', () => {
+    const before = saved();
+    try {
+      process.env.BRANCH = 'feature/foo';
+      delete process.env.GITHUB_HEAD_REF;
+      delete process.env.GITHUB_REF_NAME;
+      expect(getUserJourneyBenchmarkApiModeFromBranch()).toBe('mock');
+    } finally {
+      restore(before);
+    }
+  });
+});
+
 describe('buildBenchmarkSection', () => {
   it('returns empty string when there are no entries and no missing presets', () => {
     expect(
@@ -424,6 +484,7 @@ describe('buildBenchmarkSection', () => {
       BASELINE_PASS,
     );
 
+    expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
     expect(html).toContain('<td>loadNewAccount</td>');
@@ -464,6 +525,116 @@ describe('buildBenchmarkSection', () => {
     const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
     expect(html).toContain('<table style=');
     expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+  });
+
+  it('includes mapped sample semantics in the title for announce sections', () => {
+    const html = buildBenchmarkSection(
+      withEntries([
+        makeEntry(),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          mean: { confirmTx: 1 },
+          stdDev: { confirmTx: 1 },
+          p75: { confirmTx: 1 },
+          p95: { confirmTx: 1 },
+        }),
+      ]),
+      BENCHMARK_ANNOUNCE_SECTIONS.startup,
+    );
+    expect(html).toContain(
+      '<summary><b>Startup Benchmarks · Samples: 100</b></summary>',
+    );
+  });
+
+  it('uses interaction announce mapping for the Samples line', () => {
+    const html = buildBenchmarkSection(
+      withEntries([
+        makeEntry(),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          mean: { confirmTx: 1 },
+          stdDev: { confirmTx: 1 },
+          p75: { confirmTx: 1 },
+          p95: { confirmTx: 1 },
+        }),
+      ]),
+      BENCHMARK_ANNOUNCE_SECTIONS.interaction,
+    );
+    expect(html).toContain(
+      '<summary><b>Interaction Benchmarks · Samples: 5</b></summary>',
+    );
+  });
+
+  it('appends mock API for User Journey when branch is not main or release', () => {
+    const saved = {
+      BRANCH: process.env.BRANCH,
+      GITHUB_HEAD_REF: process.env.GITHUB_HEAD_REF,
+      GITHUB_REF_NAME: process.env.GITHUB_REF_NAME,
+    };
+    try {
+      process.env.BRANCH = 'feat/benchmark-tweaks';
+      delete process.env.GITHUB_HEAD_REF;
+      delete process.env.GITHUB_REF_NAME;
+      const html = buildBenchmarkSection(
+        withEntries([makeEntry()]),
+        BENCHMARK_ANNOUNCE_SECTIONS.userJourney,
+      );
+      expect(html).toContain(
+        '<summary><b>User Journey Benchmarks · Samples: 5 · mock API</b></summary>',
+      );
+    } finally {
+      if (saved.BRANCH === undefined) {
+        delete process.env.BRANCH;
+      } else {
+        process.env.BRANCH = saved.BRANCH;
+      }
+      if (saved.GITHUB_HEAD_REF === undefined) {
+        delete process.env.GITHUB_HEAD_REF;
+      } else {
+        process.env.GITHUB_HEAD_REF = saved.GITHUB_HEAD_REF;
+      }
+      if (saved.GITHUB_REF_NAME === undefined) {
+        delete process.env.GITHUB_REF_NAME;
+      } else {
+        process.env.GITHUB_REF_NAME = saved.GITHUB_REF_NAME;
+      }
+    }
+  });
+
+  it('appends real API for User Journey on main', () => {
+    const saved = {
+      BRANCH: process.env.BRANCH,
+      GITHUB_HEAD_REF: process.env.GITHUB_HEAD_REF,
+      GITHUB_REF_NAME: process.env.GITHUB_REF_NAME,
+    };
+    try {
+      process.env.BRANCH = 'main';
+      delete process.env.GITHUB_HEAD_REF;
+      delete process.env.GITHUB_REF_NAME;
+      const html = buildBenchmarkSection(
+        withEntries([makeEntry()]),
+        BENCHMARK_ANNOUNCE_SECTIONS.userJourney,
+      );
+      expect(html).toContain(
+        '<summary><b>User Journey Benchmarks · Samples: 5 · real API</b></summary>',
+      );
+    } finally {
+      if (saved.BRANCH === undefined) {
+        delete process.env.BRANCH;
+      } else {
+        process.env.BRANCH = saved.BRANCH;
+      }
+      if (saved.GITHUB_HEAD_REF === undefined) {
+        delete process.env.GITHUB_HEAD_REF;
+      } else {
+        process.env.GITHUB_HEAD_REF = saved.GITHUB_HEAD_REF;
+      }
+      if (saved.GITHUB_REF_NAME === undefined) {
+        delete process.env.GITHUB_REF_NAME;
+      } else {
+        process.env.GITHUB_REF_NAME = saved.GITHUB_REF_NAME;
+      }
+    }
   });
 
   it('shows – for combos where a benchmark has no data', () => {

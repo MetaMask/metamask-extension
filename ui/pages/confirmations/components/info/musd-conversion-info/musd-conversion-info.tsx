@@ -99,6 +99,7 @@ export const MusdConversionInfo = () => {
     <CustomAmountInfo
       disablePay={Boolean(existingPayToken)}
       preferredToken={preferredToken}
+      hasMax={true}
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}
     />

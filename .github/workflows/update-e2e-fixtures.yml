@@ -117,8 +117,8 @@ jobs:
 
           echo "Attempting to download dist artifact..."
 
-          if ! gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify; then
-            echo "::error::Failed to download the 'build-dist-browserify' artifact. The build job may not have completed yet, or may have failed. Please ensure the build-dist-browserify job has completed successfully."
+          if ! gh run download "${RUN_ID}" -n build-dist-webpack -D build-dist-webpack; then
+            echo "::error::Failed to download the 'build-dist-webpack' artifact. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
             exit 1
           fi
 
@@ -130,7 +130,7 @@ jobs:
       - name: Cache dist artifact
         uses: actions/cache/save@v5
         with:
-          path: build-dist-browserify
+          path: build-dist-webpack
           key: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
 
   update-fixtures:
@@ -171,15 +171,15 @@ jobs:
       - name: Restore dist artifact
         uses: actions/cache/restore@v5
         with:
-          path: build-dist-browserify
+          path: build-dist-webpack
           key: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
       - name: Prepare dist
         run: |
           rm -rf dist builds
-          cp -R build-dist-browserify/dist ./dist
-          cp -R build-dist-browserify/builds ./builds
+          cp -R build-dist-webpack/dist ./dist
+          cp -R build-dist-webpack/builds ./builds
 
       - name: Update E2E fixtures
         run: |
