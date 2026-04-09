@@ -14,8 +14,8 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
 import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
-import { BridgeAlertModal } from './bridge-alert-modal';
 import { BridgeAlert } from '../types';
+import { BridgeAlertModal } from './bridge-alert-modal';
 
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
