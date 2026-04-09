@@ -9,77 +9,70 @@ import {
 } from '../../helpers/file';
 
 /**
- * The e2e test case is used to capture bundle time statistics for extension.
+ * Captures bundle size statistics from the webpack-bundle-analyzer JSON report.
+ *
+ * Chunks are categorized into three groups based on their entrypoints:
+ * - background: service-worker, content scripts (self-contained, no code splitting)
+ * - ui: HTML page entrypoints and their shared/split chunks
+ * - common: lazily loaded chunks with no entrypoint
  */
 
-// Webpack entry points that belong to the background / service-worker category.
-const BackgroundFileRegex =
-  /^(?:service-worker\.js|scripts\/contentscript\.js|scripts\/inpage\.js)$/u;
+const BACKGROUND_ENTRYPOINTS = new Set([
+  'service-worker.ts',
+  'scripts/contentscript.js',
+  'scripts/inpage.js',
+  'vendor/trezor/content-script.js',
+]);
 
-// Webpack entry point for the UI popup.
-const UIFileRegex = /^ui[.]/u;
-
-type FileStat = {
-  name: string;
-  size: number;
+type ReportEntry = {
+  label: string;
+  parsedSize: number;
+  statSize: number;
+  isInitialByEntrypoint: Record<string, boolean>;
 };
 
 type BundleStats = {
   name: string;
   size: number;
-  fileList: FileStat[];
+  fileList: { name: string; size: number }[];
 };
-
-/**
- * Recursively collects all .js files under `dir`, returning paths relative to `base`.
- *
- * @param dir - The directory to scan.
- * @param base - The base directory for computing relative paths.
- * @returns Array of relative file paths.
- */
-async function collectJsFiles(dir: string, base: string): Promise<string[]> {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...(await collectJsFiles(full, base)));
-    } else if (entry.isFile() && entry.name.endsWith('.js')) {
-      files.push(path.relative(base, full));
-    }
-  }
-  return files;
-}
 
 async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
-    'Capture bundle size stats',
+    'Capture bundle size stats from bundle analyzer report',
     (_yargs) =>
       _yargs.option('out', {
         description:
-          'Output filename. Output printed to STDOUT if this is omitted.',
+          'Output directory. Output printed to STDOUT if this is omitted.',
         type: 'string',
         normalize: true,
       }),
   );
   const { out } = argv as { out?: string };
 
-  const distFolder = 'dist/chrome';
-  const backgroundFileList: FileStat[] = [];
-  const uiFileList: FileStat[] = [];
-  const commonFileList: FileStat[] = [];
+  const reportPath = 'dist/report.json';
+  const report: ReportEntry[] = JSON.parse(
+    await fs.readFile(reportPath, 'utf8'),
+  );
 
-  const files = await collectJsFiles(distFolder, distFolder);
-  for (const file of files) {
-    const stats = await fs.stat(path.join(distFolder, file));
-    const entry = { name: file, size: stats.size };
-    if (BackgroundFileRegex.test(file)) {
-      backgroundFileList.push(entry);
-    } else if (UIFileRegex.test(file)) {
-      uiFileList.push(entry);
+  const backgroundFileList: { name: string; size: number }[] = [];
+  const uiFileList: { name: string; size: number }[] = [];
+  const commonFileList: { name: string; size: number }[] = [];
+
+  for (const entry of report) {
+    const entrypoints = Object.keys(entry.isInitialByEntrypoint || {});
+    const file = { name: entry.label, size: entry.parsedSize };
+
+    if (entrypoints.length === 0) {
+      // No entrypoint — common/lazy-loaded chunks shared across entry points
+      commonFileList.push(file);
+    } else if (entrypoints.every((ep) => BACKGROUND_ENTRYPOINTS.has(ep))) {
+      // All entrypoints are background scripts
+      backgroundFileList.push(file);
     } else {
-      commonFileList.push(entry);
+      // UI entrypoints (HTML pages and their shared chunks)
+      uiFileList.push(file);
     }
   }
 

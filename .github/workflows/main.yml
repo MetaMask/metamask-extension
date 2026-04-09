@@ -456,10 +456,11 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-webpack'
+      - name: Download artifact 'bundle-analyzer-report-json'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-webpack
+          name: bundle-analyzer-report-json
+          path: dist
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
