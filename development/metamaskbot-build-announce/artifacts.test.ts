@@ -84,7 +84,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-analyzer/report.html">Bundle Analyzer</a>`,
+      `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );
     expect(result).toContain('bundle analyzer:');
   });

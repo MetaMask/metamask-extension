@@ -48,7 +48,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Stats',
     },
     bundleAnalyzer: {
-      url: `${hostUrl}/bundle-analyzer/report.html`,
+      url: `${hostUrl}/build-dist-webpack/bundle-analyzer/report.html`,
       label: 'Bundle Analyzer',
     },
     interactionStats: {
