@@ -298,8 +298,8 @@
     "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/qr-hardware-popover/base-reader.test.js": {
-      "React: Component update warnings": 1
+    "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8
     },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
