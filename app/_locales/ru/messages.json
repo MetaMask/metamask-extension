@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Комиссия моста"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Получить новый?"
-  },
   "bridgeFromTo": {
     "message": "Создать мост для $1 из $2 к $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Предупреждение о влиянии на цену"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Срок действия Вашей котировки истек."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Котировки отсортированы по расчетной общей стоимости, которая включает обменный курс и комиссию сети."
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Купить mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Зачисление на",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Получить бонус",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Закрыть короткую позицию"
   },
-  "perpsClosedShort": {
-    "message": "Закрыта короткая позиция"
-  },
   "perpsConfirmCloseLong": {
     "message": "Закрыть длинную позицию"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "включая П/У $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Увеличенная политика"
-  },
   "perpsLearnBasics": {
     "message": "Изучите основы перпов"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Открыть короткую позицию $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Открыта длинная позиция"
   },
   "perpsOraclePrice": {
     "message": "Цена Oracle"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "Вы одобряете"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Вы отклонили транзакцию."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Для использования этой функции вам необходимо предоставить доступ к камере."

@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Phí cầu nối"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Tìm nạp báo giá mới?"
-  },
   "bridgeFromTo": {
     "message": "Cầu nối $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Cảnh báo tác động giá"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Báo giá của bạn đã hết hạn."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Các báo giá được sắp xếp theo tổng chi phí ước tính, bao gồm tỷ giá và phí mạng."
@@ -4064,10 +4058,6 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Nhận vào",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5366,9 +5356,6 @@
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
   },
-  "perpsClosedShort": {
-    "message": "Đã đóng vị thế bán khống"
-  },
   "perpsConfirmCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
@@ -5456,9 +5443,6 @@
   "perpsIncludesPnl": {
     "message": "bao gồm Lãi/Lỗ $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Đã tăng vị thế"
-  },
   "perpsLearnBasics": {
     "message": "Tìm hiểu những kiến thức cơ bản về hợp đồng vĩnh cửu"
   },
@@ -5536,9 +5520,6 @@
   "perpsOpenShort": {
     "message": "Mở vị thế bán khống $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
-  },
-  "perpsOpenedLong": {
-    "message": "Đã mở vị thế mua khống"
   },
   "perpsOraclePrice": {
     "message": "Giá nguồn cấp dữ liệu"
@@ -9206,9 +9187,6 @@
   },
   "youApprove": {
     "message": "Bạn phê duyệt"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Bạn đã từ chối giao dịch."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."

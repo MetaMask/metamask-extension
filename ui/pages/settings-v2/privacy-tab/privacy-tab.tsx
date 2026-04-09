@@ -1,6 +1,7 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../selectors';
 import {
   setUseMultiAccountBalanceChecker,
@@ -14,6 +15,7 @@ import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
+import { ExportYourDataItem } from './export-your-data-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -23,6 +25,13 @@ const BatchAccountBalanceRequestsToggleItem = createToggleItem({
     state.metamask.useMultiAccountBalanceChecker,
   action: setUseMultiAccountBalanceChecker,
   dataTestId: 'batch-account-balance-requests-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_multi_account_balance_checker: newValue,
+    }),
+  },
 });
 
 const SkipLinkConfirmationToggleItem = createToggleItem({
@@ -33,6 +42,13 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
     Boolean(getPreferences(state).skipDeepLinkInterstitial),
   action: setSkipDeepLinkInterstitial,
   dataTestId: 'skip-link-confirmation-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      skip_deep_link_interstitial: newValue,
+    }),
+  },
 });
 
 /** Registry of setting items for the Privacy page. Add new items here */
@@ -55,6 +71,10 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
     id: 'download-state-logs',
     component: DownloadStateLogsItem,
     hasDividerBefore: true,
+  },
+  {
+    id: 'export-your-data',
+    component: ExportYourDataItem,
   },
 ];
 

@@ -1,15 +1,15 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-
-import mockState from '../../../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions, mockAccountState } from '../mocks';
 import { EditMarginExpandable } from './edit-margin-expandable';
 
 const mockGetPerpsStreamManager = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -18,6 +18,17 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
+jest.mock('../perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+    MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
+    MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 jest.mock('../../../../providers/perps', () => ({
@@ -41,6 +52,7 @@ const defaultProps = {
 describe('EditMarginExpandable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdateMargin') {
         return Promise.resolve({ success: true });
@@ -148,50 +160,6 @@ describe('EditMarginExpandable', () => {
     });
   });
 
-  describe('slider', () => {
-    it('does not underflow at max slider value for IEEE-754 edge balances', () => {
-      renderWithProvider(
-        <EditMarginExpandable
-          {...defaultProps}
-          account={{ ...mockAccountState, availableBalance: '1.15' }}
-          isExpanded
-        />,
-        mockStore,
-      );
-
-      fireEvent.keyDown(screen.getByRole('slider'), {
-        key: 'End',
-        code: 'End',
-      });
-
-      expect(screen.getByPlaceholderText('0.00')).toHaveValue('1.15');
-      expect(
-        screen.getByRole('button', { name: /Add Margin/iu }),
-      ).not.toBeDisabled();
-    });
-
-    it('keeps add margin submit enabled when max slider value floors to 2dp', () => {
-      renderWithProvider(
-        <EditMarginExpandable
-          {...defaultProps}
-          account={{ ...mockAccountState, availableBalance: '3.066' }}
-          isExpanded
-        />,
-        mockStore,
-      );
-
-      fireEvent.keyDown(screen.getByRole('slider'), {
-        key: 'End',
-        code: 'End',
-      });
-
-      expect(screen.getByPlaceholderText('0.00')).toHaveValue('3.06');
-      expect(
-        screen.getByRole('button', { name: /Add Margin/iu }),
-      ).not.toBeDisabled();
-    });
-  });
-
   describe('submit', () => {
     it('calls controller updateMargin and onToggle on successful submit', async () => {
       const onToggle = jest.fn();
@@ -222,6 +190,10 @@ describe('EditMarginExpandable', () => {
       await waitFor(() => {
         expect(onToggle).toHaveBeenCalled();
       });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastMarginAddSuccess',
+        messageParams: ['100', 'ETH'],
+      });
     });
 
     it('does not call updateMargin when amount is empty', () => {
@@ -241,10 +213,46 @@ describe('EditMarginExpandable', () => {
         expect.any(Array),
       );
     });
+
+    it('shows remove margin success toast on successful remove', async () => {
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          isExpanded
+          position={{
+            ...mockPositions[0],
+            marginUsed: '3000.00',
+          }}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '50' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Remove Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [{ symbol: mockPositions[0].symbol, amount: '-50' }],
+        );
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastMarginRemoveSuccess',
+        messageParams: ['50', 'ETH'],
+      });
+    });
   });
 
   describe('error display', () => {
-    it('shows error message when updateMargin fails', async () => {
+    it('shows margin adjustment failure toast when updateMargin fails', async () => {
       mockSubmitRequestToBackground.mockResolvedValueOnce({
         success: false,
         error: 'Insufficient balance',
@@ -264,7 +272,40 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Insufficient balance')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Insufficient balance',
+        });
+      });
+
+      expect(
+        screen.queryByText('Insufficient balance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('uses fallback margin adjustment description when backend returns no margin error', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+      });
+
+      renderWithProvider(
+        <EditMarginExpandable {...defaultProps} isExpanded />,
+        mockStore,
+      );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Unable to adjust margin. Please try again.',
+        });
       });
     });
   });
