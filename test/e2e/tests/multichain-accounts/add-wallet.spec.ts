@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -37,8 +37,8 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
@@ -111,10 +111,9 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesController()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
@@ -174,7 +173,7 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerImportedAccountVault()
           .build(),
         testSpecificMock: async (server: Mockttp) => {

@@ -41,9 +41,6 @@ class HeaderNavbar {
 
   private readonly networkPicker = '.mm-picker-network';
 
-  private readonly toastBannerButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
-
   private readonly notificationCounterMenuIcon = {
     testId: 'notifications-tag-counter__unread-dot',
   };
@@ -242,8 +239,6 @@ class HeaderNavbar {
    */
   async openDappNetworkMenu(): Promise<void> {
     console.log('Opening dapp network menu from control bar');
-    // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
-    await this.driver.clickElementSafe(this.toastBannerButton, 3000);
     await this.driver.clickElement(this.dappNetworkButton);
   }
 

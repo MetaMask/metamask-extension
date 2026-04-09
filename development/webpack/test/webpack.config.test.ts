@@ -10,7 +10,7 @@ import {
   Compiler,
   WebpackPluginInstance,
 } from 'webpack';
-import { noop } from '../utils/helpers';
+import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
@@ -23,6 +23,55 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+async function withWatching<T>(
+  config: Configuration,
+  callback: (
+    waitForBuild: (trigger?: () => void) => Promise<void>,
+  ) => Promise<T>,
+) {
+  const compiler = webpack(config);
+  // @ts-expect-error - Node types need to be updated.
+  let build = Promise.withResolvers<void>();
+  const watchHandle = compiler.watch({}, (error, stats) => {
+    if (error) {
+      build.reject(error);
+      return;
+    }
+    if (!stats) {
+      build.reject(
+        new Error('Webpack finished watch build without returning stats.'),
+      );
+      return;
+    }
+    if (stats.hasErrors()) {
+      build.reject(new Error('Webpack watch build failed.'));
+      return;
+    }
+    build.resolve();
+  });
+  assert(watchHandle, 'Webpack did not return a watch handle.');
+  const watching = watchHandle;
+
+  const waitForBuild = (trigger?: () => void) => {
+    if (!trigger) {
+      return build.promise;
+    }
+    // @ts-expect-error - Node types need to be updated.
+    build = Promise.withResolvers<void>();
+    trigger();
+    watching.invalidate();
+    return build.promise;
+  };
+
+  try {
+    return await callback(waitForBuild);
+  } finally {
+    await new Promise<void>((resolveClose, rejectClose) =>
+      watching.close((error) => (error ? rejectClose(error) : resolveClose())),
+    );
+  }
 }
 
 /**
@@ -166,6 +215,7 @@ ${Object.entries(env)
       ],
       key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
     });
+    assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
@@ -254,6 +304,85 @@ ${Object.entries(env)
     // check that options are valid
     const instance = getWebpackInstance(config);
     assert.strictEqual(instance.options.devtool, false);
+  });
+
+  it('enables manifest build IDs for test builds', () => {
+    const config: Configuration = getWebpackConfig(['--test']);
+    const instance = getWebpackInstance(config);
+    const manifestPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<boolean>;
+
+    assert(manifestPlugin, 'Manifest plugin should be present');
+    assert.strictEqual(manifestPlugin.options.setBuildId, true);
+  });
+
+  it('keeps build_id stable for no-op watch rebuilds and changes it for real edits', async () => {
+    using tempDirectory = fs.mkdtempDisposableSync(
+      join(tmpdir(), 'manifest-plugin-watch-test-'),
+    );
+    const manifestDirectory = join(tempDirectory.path, 'manifest', 'v3');
+    const sourceFilePath = join(tempDirectory.path, 'index.js');
+    const outputPath = join(tempDirectory.path, 'dist');
+    const manifestPath = join(outputPath, 'chrome', 'manifest.json');
+
+    const readBuildId = () =>
+      (
+        JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as Manifest & {
+          build_id?: string;
+        }
+      ).build_id;
+
+    const manifest = { manifest_version: 3, name: 'test', version: '1.0.0' };
+    const baseManifestPath = join(manifestDirectory, '_base.json');
+    const writeSource = (source: string | NodeJS.ArrayBufferView) =>
+      fs.writeFileSync(sourceFilePath, source);
+    fs.mkdirSync(manifestDirectory, { recursive: true });
+    fs.writeFileSync(baseManifestPath, JSON.stringify(manifest));
+    writeSource('console.log("v1");\n');
+
+    await withWatching(
+      {
+        mode: 'development',
+        context: tempDirectory.path,
+        entry: { app: sourceFilePath },
+        output: { path: outputPath },
+        plugins: [
+          new ManifestPlugin({
+            browsers: ['chrome'],
+            manifest_version: 3,
+            version: '1.0.0.0',
+            versionName: '1.0.0',
+            description: null,
+            buildType: 'main',
+            zip: false,
+            setBuildId: true,
+          }),
+        ],
+      },
+      async (waitForBuild) => {
+        await waitForBuild();
+        const firstBuildId = readBuildId();
+        assert.ok(firstBuildId, 'expected initial build_id');
+
+        await waitForBuild(() => writeSource(fs.readFileSync(sourceFilePath)));
+        const secondBuildId = readBuildId();
+
+        await waitForBuild(() => writeSource('console.log("v2");\n'));
+        const thirdBuildId = readBuildId();
+
+        assert.strictEqual(
+          secondBuildId,
+          firstBuildId,
+          'expected no-op watch rebuild to keep the same build_id',
+        );
+        assert.notStrictEqual(
+          thirdBuildId,
+          secondBuildId,
+          'expected real file changes to produce a new build_id',
+        );
+      },
+    );
   });
 
   it('keeps the MYX provider ignore only while the warning still exists', async () => {
