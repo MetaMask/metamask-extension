@@ -283,9 +283,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const handleTpPercentFocus = useCallback(() => {
-    setRawTpPercent(editingTpPercent);
+    setRawTpPercent(tpPresetPercent ?? editingTpPercent);
     setIsTpPercentFocused(true);
-  }, [editingTpPercent]);
+  }, [tpPresetPercent, editingTpPercent]);
 
   const handleTpPercentBlur = useCallback(() => {
     setIsTpPercentFocused(false);
@@ -311,9 +311,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const handleSlPercentFocus = useCallback(() => {
-    setRawSlPercent(editingSlPercent);
+    setRawSlPercent(slPresetPercent ?? editingSlPercent);
     setIsSlPercentFocused(true);
-  }, [editingSlPercent]);
+  }, [slPresetPercent, editingSlPercent]);
 
   const handleSlPercentBlur = useCallback(() => {
     setIsSlPercentFocused(false);
@@ -495,7 +495,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           <Box className="flex-1">
             <TextField
               size={TextFieldSize.Md}
-              value={isTpPercentFocused ? rawTpPercent : (tpPresetPercent ?? editingTpPercent)}
+              value={
+                isTpPercentFocused
+                  ? rawTpPercent
+                  : (tpPresetPercent ?? editingTpPercent)
+              }
               onChange={handleTpPercentInputChange}
               onFocus={handleTpPercentFocus}
               onBlur={handleTpPercentBlur}
@@ -609,7 +613,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           <Box className="flex-1">
             <TextField
               size={TextFieldSize.Md}
-              value={isSlPercentFocused ? rawSlPercent : (slPresetPercent ?? editingSlPercent)}
+              value={
+                isSlPercentFocused
+                  ? rawSlPercent
+                  : (slPresetPercent ?? editingSlPercent)
+              }
               onChange={handleSlPercentInputChange}
               onFocus={handleSlPercentFocus}
               onBlur={handleSlPercentBlur}

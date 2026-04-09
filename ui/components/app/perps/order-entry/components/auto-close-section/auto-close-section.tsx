@@ -72,7 +72,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
    * Integers: no decimal ("25"), non-integers: 2 decimal places ("25.50").
    */
   const formatPercent = useCallback((value: number): string => {
-    return value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);
+    const abs = Math.abs(value);
+    return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
   }, []);
 
   /**
