@@ -143,7 +143,8 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',
         });
-        await new HomePage(driver).checkPageIsLoaded();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         // Network Selector
         await driver.clickElement('[data-testid="sort-by-networks"]');
@@ -154,6 +155,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await driver.clickElement('[data-testid="Localhost 8545"]');
 
         // check confirmed transaction is displayed in activity list
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 ETH');

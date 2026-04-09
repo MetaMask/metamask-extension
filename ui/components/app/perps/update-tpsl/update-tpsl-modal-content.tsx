@@ -1,19 +1,20 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -26,42 +27,73 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import type { Position } from '../types';
+import { usePerpsToast } from '../perps-toast';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
+import type { Position, PerpsBackgroundResult } from '../types';
+import { normalizeTpslPrices } from '../utils';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
+
+function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
+
+export type UpdateTPSLSubmitState = {
+  onSubmit: () => void;
+  isSaving: boolean;
+  submitDisabled: boolean;
+  submitButtonTitle?: string;
+};
 
 export type UpdateTPSLModalContentProps = {
   position: Position;
   currentPrice: number;
   onClose: () => void;
+  /** Wired by UpdateTPSLModal to place the primary action in ModalFooter */
+  onSubmitStateChange?: (state: UpdateTPSLSubmitState) => void;
 };
 
 /**
- * TP/SL form content: presets, price/percent inputs, save.
- * Used inside UpdateTPSLModal. Initializes from position when modal opens.
+ * TP/SL form content: presets, price/percent inputs, and validation errors.
+ * Used inside UpdateTPSLModal. Initializes from position on mount; parent should set
+ * `key={position.symbol}` on the modal so edits are not overwritten when the same
+ * market is refetched while the modal is open.
  * @param options0
  * @param options0.position
  * @param options0.currentPrice
  * @param options0.onClose
+ * @param options0.onSubmitStateChange
  */
 export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   position,
   currentPrice,
   onClose,
+  onSubmitStateChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
+  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const { replacePerpsToastByKey } = usePerpsToast();
 
-  const [editingTpPrice, setEditingTpPrice] = useState<string>('');
-  const [editingSlPrice, setEditingSlPrice] = useState<string>('');
+  const [editingTpPrice, setEditingTpPrice] = useState(
+    () => position.takeProfitPrice ?? '',
+  );
+  const [editingSlPrice, setEditingSlPrice] = useState(
+    () => position.stopLossPrice ?? '',
+  );
   const [isSaving, setIsSaving] = useState(false);
-  const [tpslError, setTpslError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
-      return parseFloat(position.entryPrice.replace(/,/gu, ''));
+      return Number.parseFloat(position.entryPrice.replaceAll(',', ''));
     }
     return currentPrice;
   }, [position, currentPrice]);
@@ -70,7 +102,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (!position) {
       return 'long';
     }
-    return parseFloat(position.size) >= 0 ? 'long' : 'short';
+    return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
 
   const formatEditPrice = useCallback(
@@ -96,8 +128,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       if (!price || !entryPriceForEdit) {
         return '';
       }
-      const cleanPrice = price.replace(/,/gu, '');
-      const priceNum = parseFloat(cleanPrice);
+      const cleanPrice = price.replaceAll(',', '');
+      const priceNum = Number.parseFloat(cleanPrice);
       if (Number.isNaN(priceNum) || priceNum <= 0) {
         return '';
       }
@@ -138,13 +170,40 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [priceToPercentForEdit, editingSlPrice],
   );
 
-  useEffect(() => {
-    if (position) {
-      setEditingTpPrice(position.takeProfitPrice ?? '');
-      setEditingSlPrice(position.stopLossPrice ?? '');
-      setTpslError(null);
+  const signedSize = useMemo(
+    () => Number.parseFloat(position.size.replaceAll(',', '')) || 0,
+    [position.size],
+  );
+
+  const estimatedPnlAtTp = useMemo(() => {
+    const clean = editingTpPrice.replaceAll(',', '').trim();
+    if (!clean) {
+      return null;
     }
-  }, [position]);
+    const exitPrice = Number.parseFloat(clean);
+    if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
+      return null;
+    }
+    return signedSize * (exitPrice - entryPriceForEdit);
+  }, [editingTpPrice, signedSize, entryPriceForEdit]);
+
+  const estimatedPnlAtSl = useMemo(() => {
+    const clean = editingSlPrice.replaceAll(',', '').trim();
+    if (!clean) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(clean);
+    if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
+      return null;
+    }
+    return signedSize * (exitPrice - entryPriceForEdit);
+  }, [editingSlPrice, signedSize, entryPriceForEdit]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleTpPresetClick = useCallback(
     (percent: number) => {
@@ -166,7 +225,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
-        const numValue = parseFloat(value);
+        const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingTpPrice('');
         } else if (!Number.isNaN(numValue)) {
@@ -182,7 +241,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
-        const numValue = parseFloat(value);
+        const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingSlPrice('');
         } else if (!Number.isNaN(numValue)) {
@@ -196,7 +255,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleTpPriceBlur = useCallback(() => {
     if (editingTpPrice) {
-      const numValue = parseFloat(editingTpPrice.replace(/,/gu, ''));
+      const numValue = Number.parseFloat(editingTpPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
         setEditingTpPrice(formatEditPrice(numValue));
       }
@@ -205,7 +264,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPriceBlur = useCallback(() => {
     if (editingSlPrice) {
-      const numValue = parseFloat(editingSlPrice.replace(/,/gu, ''));
+      const numValue = Number.parseFloat(editingSlPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
         setEditingSlPrice(formatEditPrice(numValue));
       }
@@ -217,40 +276,46 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return;
     }
     setIsSaving(true);
-    setTpslError(null);
+
+    const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
+      normalizeTpslPrices({
+        takeProfitPrice: editingTpPrice,
+        stopLossPrice: editingSlPrice,
+      });
+
     try {
-      const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
-      const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsUpdatePositionTPSL', [
-        {
-          symbol: position.symbol,
-          takeProfitPrice: cleanTpPrice || undefined,
-          stopLossPrice: cleanSlPrice || undefined,
-        },
-      ]);
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsUpdatePositionTPSL',
+        [
+          {
+            symbol: position.symbol,
+            takeProfitPrice: cleanTpPrice,
+            stopLossPrice: cleanSlPrice,
+          },
+        ],
+      );
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
+
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
-        cleanTpPrice || undefined,
-        cleanSlPrice || undefined,
+        cleanTpPrice,
+        cleanSlPrice,
       );
       const currentPositions = streamManager.positions.getCachedData();
       const optimisticallyUpdatedPositions = currentPositions.map((p) =>
         p.symbol === position.symbol
           ? {
               ...p,
-              takeProfitPrice: cleanTpPrice || undefined,
-              stopLossPrice: cleanSlPrice || undefined,
+              takeProfitPrice: cleanTpPrice,
+              stopLossPrice: cleanSlPrice,
             }
           : p,
       );
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
+
       setTimeout(async () => {
         try {
           const freshPositions = await submitRequestToBackground<
@@ -261,15 +326,40 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           console.warn('[Perps] Delayed TP/SL refetch failed:', e);
         }
       }, 2500);
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+      });
       onClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setTpslError(errorMessage);
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+        description: errorMessage,
+      });
     } finally {
-      setIsSaving(false);
+      if (isMountedRef.current) {
+        setIsSaving(false);
+      }
     }
-  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose]);
+  }, [
+    editingSlPrice,
+    editingTpPrice,
+    isEligible,
+    onClose,
+    position,
+    replacePerpsToastByKey,
+  ]);
+
+  useLayoutEffect(() => {
+    onSubmitStateChange?.({
+      onSubmit: handleSave,
+      isSaving,
+      submitDisabled: !isEligible || isSaving,
+      submitButtonTitle: isEligible ? undefined : t('perpsGeoBlockedTooltip'),
+    });
+  }, [onSubmitStateChange, handleSave, isSaving, isEligible, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -356,6 +446,32 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             />
           </Box>
         </Box>
+        {estimatedPnlAtTp !== null && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            data-testid="perps-update-tpsl-estimated-tp-pnl-row"
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsEstimatedPnlAtTakeProfit')}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={getPnlDisplayColor(estimatedPnlAtTp)}
+            >
+              {estimatedPnlAtTp >= 0 ? '+' : '-'}
+              {formatCurrencyWithMinThreshold(
+                Math.abs(estimatedPnlAtTp),
+                'USD',
+              )}
+            </Text>
+          </Box>
+        )}
       </Box>
 
       {/* Stop Loss */}
@@ -441,40 +557,33 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             />
           </Box>
         </Box>
+        {estimatedPnlAtSl !== null && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            data-testid="perps-update-tpsl-estimated-sl-pnl-row"
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsEstimatedPnlAtStopLoss')}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={getPnlDisplayColor(estimatedPnlAtSl)}
+            >
+              {estimatedPnlAtSl >= 0 ? '+' : '-'}
+              {formatCurrencyWithMinThreshold(
+                Math.abs(estimatedPnlAtSl),
+                'USD',
+              )}
+            </Text>
+          </Box>
+        )}
       </Box>
-
-      {tpslError && (
-        <Box
-          className="bg-error-muted rounded-lg px-3 py-2"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Sm}
-            color={IconColor.ErrorDefault}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {tpslError}
-          </Text>
-        </Box>
-      )}
-
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Md}
-        onClick={handleSave}
-        disabled={!isEligible || isSaving}
-        title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-        className={
-          isSaving || !isEligible
-            ? 'w-full opacity-70 cursor-not-allowed'
-            : 'w-full'
-        }
-      >
-        {isSaving ? t('perpsSubmitting') : t('perpsSaveChanges')}
-      </Button>
     </Box>
   );
 };

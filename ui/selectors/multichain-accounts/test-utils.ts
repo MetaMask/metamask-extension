@@ -19,8 +19,10 @@ export const createMockMultichainAccountsState = (
       MultichainNetworkConfiguration
     >;
   },
+  selectedAccountGroup: AccountGroupId | null = null as unknown as AccountGroupId,
 ): MultichainAccountsState & MultichainNetworkConfigurationsByChainIdState => ({
   metamask: {
+    selectedAccountGroup: selectedAccountGroup as AccountGroupId,
     accountTree,
     internalAccounts,
     accountIdByAddress: Object.fromEntries(
@@ -42,10 +44,11 @@ export const createEmptyState = (): MultichainAccountsState &
   createMockMultichainAccountsState(
     {
       wallets: {},
-      selectedAccountGroup: null as unknown as AccountGroupId,
     },
     {
       accounts: {},
       selectedAccount: '',
     },
+    undefined,
+    null as unknown as AccountGroupId,
   );

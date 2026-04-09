@@ -15,7 +15,6 @@ import {
   IconColor,
   Text,
   TextVariant,
-  BoxBackgroundColor,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
 import { setAvatarType } from '../../../store/actions';
@@ -51,12 +50,11 @@ const AccountIdenticonSubPage = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            backgroundColor={
+            className={`w-full cursor-pointer border-0 p-4 ${
               isSelected
-                ? BoxBackgroundColor.BackgroundMuted
-                : BoxBackgroundColor.BackgroundDefault
-            }
-            className="w-full cursor-pointer border-0 p-4"
+                ? 'bg-muted hover:bg-muted-hover'
+                : 'bg-background-default hover:bg-background-default-hover'
+            }`}
             onClick={() => handleSelect(value)}
           >
             <Box

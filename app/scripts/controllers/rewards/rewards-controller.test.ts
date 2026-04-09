@@ -9,15 +9,15 @@ import {
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAccountId } from '@metamask/utils';
-import {
-  AccountsControllerListMultichainAccountsAction,
-  HandleSnapRequest,
-} from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
 import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
@@ -31,7 +31,7 @@ import {
   RewardsControllerActions,
   RewardsControllerEvents,
   RewardsControllerMessenger,
-} from '../../controller-init/messengers';
+} from '../../messenger-client-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   EstimatedPointsDto,
@@ -230,7 +230,7 @@ async function withController<ReturnValue>(
     | RewardsDataServiceSiweLoginAction
     | RewardsDataServiceSiweJoinAction
     | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-    | HandleSnapRequest;
+    | SnapControllerHandleRequestAction;
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent

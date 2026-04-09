@@ -51,7 +51,6 @@ export const createToggleItem = (
 
     const handleToggle = (currentValue: boolean) => {
       const newValue = !currentValue;
-      dispatch(config.action(newValue));
 
       if (config.trackEvent) {
         trackEvent({
@@ -59,6 +58,11 @@ export const createToggleItem = (
           event: config.trackEvent.event,
           properties: config.trackEvent.properties(newValue),
         });
+      }
+
+      const result = config.action(newValue);
+      if (result !== undefined) {
+        dispatch(result);
       }
     };
 

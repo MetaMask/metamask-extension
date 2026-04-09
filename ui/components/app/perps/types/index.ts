@@ -1,8 +1,11 @@
 /**
- * Perps Transaction History Types
- *
- * Re-exports all transaction history types for easy importing.
+ * Perps shared types and re-exports.
  */
+
+export type PerpsBackgroundResult = {
+  success: boolean;
+  error?: string;
+};
 
 export {
   PerpsOrderTransactionStatus,
