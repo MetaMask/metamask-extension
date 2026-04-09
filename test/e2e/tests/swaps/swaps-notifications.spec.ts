@@ -32,7 +32,7 @@ describe('Swaps - notifications', function () {
         [
           {
             type: TokenFeatureType.MALICIOUS,
-            // @eslint-disable-next-line @typescript-eslint/naming-convention
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: 'HONEYPOT',
             description: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
           },
