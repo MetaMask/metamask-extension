@@ -69,6 +69,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
+  deriveTpslType,
   getChangeColor,
   getPositionPnlRatio,
   normalizeTpslPrices,
@@ -227,9 +228,9 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol),
+    conditions:
+      !marketsLoading && Boolean(decodedSymbol) && account !== undefined,
     properties: {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
@@ -797,19 +798,13 @@ const PerpsOrderEntryPage: React.FC = () => {
           'perpsUpdatePositionTPSL',
           [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
         );
-        const deriveTpslType = (): string => {
-          const hasExistingTpsl = Boolean(
+        const derivedTpslType = deriveTpslType({
+          takeProfitPrice,
+          stopLossPrice,
+          hasExistingTpsl: Boolean(
             position?.takeProfitPrice || position?.stopLossPrice,
-          );
-          const prefix = hasExistingTpsl ? 'update' : 'create';
-          if (takeProfitPrice && stopLossPrice) {
-            return `${prefix}_tpsl`;
-          }
-          if (takeProfitPrice) {
-            return `${prefix}_tp`;
-          }
-          return `${prefix}_sl`;
-        };
+          ),
+        });
 
         if (!result.success) {
           const message = result.error || 'Failed to update TP/SL';
@@ -822,7 +817,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
+          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
         });
         handleBackClick(PERPS_TOAST_KEYS.UPDATE_SUCCESS);
         return;

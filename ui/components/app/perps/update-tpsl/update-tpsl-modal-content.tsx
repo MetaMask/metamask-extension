@@ -38,7 +38,7 @@ import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
-import { normalizeTpslPrices } from '../utils';
+import { normalizeTpslPrices, deriveTpslType } from '../utils';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
@@ -303,19 +303,13 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           },
         ],
       );
-      const deriveTpslType = (): string => {
-        const hasExistingTpsl = Boolean(
+      const derivedTpslType = deriveTpslType({
+        takeProfitPrice: cleanTpPrice,
+        stopLossPrice: cleanSlPrice,
+        hasExistingTpsl: Boolean(
           position.takeProfitPrice || position.stopLossPrice,
-        );
-        const prefix = hasExistingTpsl ? 'update' : 'create';
-        if (cleanTpPrice && cleanSlPrice) {
-          return `${prefix}_tpsl`;
-        }
-        if (cleanTpPrice) {
-          return `${prefix}_tp`;
-        }
-        return `${prefix}_sl`;
-      };
+        ),
+      });
 
       if (!result.success) {
         const failMessage = result.error || 'Failed to update TP/SL';
@@ -324,7 +318,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
-          [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
+          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
@@ -335,7 +329,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       track(MetaMetricsEventName.PerpsRiskManagement, {
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.TYPE]: deriveTpslType(),
+        [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
       });
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
