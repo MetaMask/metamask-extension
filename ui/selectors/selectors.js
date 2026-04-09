@@ -163,6 +163,7 @@ import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   createParameterizedSelector,
   createParameterizedShallowEqualSelector,
+  createResultEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
@@ -1408,7 +1409,7 @@ export const getUnapprovedConfirmations = createDeepEqualSelector(
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
-export const getUnapprovedTemplatedConfirmations = createDeepEqualSelector(
+export const getUnapprovedTemplatedConfirmations = createResultEqualSelector(
   getUnapprovedConfirmations,
   (unapprovedConfirmations) =>
     unapprovedConfirmations.filter((approval) =>
