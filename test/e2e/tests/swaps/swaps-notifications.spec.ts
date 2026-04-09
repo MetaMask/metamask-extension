@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { MockedEndpoint } from 'mockttp';
+import { TokenFeatureType } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,7 +15,6 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
 import { checkNotification } from './shared';
-import { TokenFeatureType } from '@metamask/bridge-controller';
 
 const UNSTABLE_TOKEN_PRICE_TITLE = 'Malicious token';
 const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
