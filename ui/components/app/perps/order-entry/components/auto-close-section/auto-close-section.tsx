@@ -20,6 +20,12 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from '../../../utils/tpslValidation';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -216,6 +222,52 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [priceToPercent, stopLossPrice],
   );
 
+  const isTpInvalid = useMemo(
+    () =>
+      Boolean(
+        takeProfitPrice.trim() &&
+          currentPrice > 0 &&
+          !isValidTakeProfitPrice(takeProfitPrice, {
+            currentPrice,
+            direction,
+          }),
+      ),
+    [takeProfitPrice, currentPrice, direction],
+  );
+
+  const isSlInvalid = useMemo(
+    () =>
+      Boolean(
+        stopLossPrice.trim() &&
+          currentPrice > 0 &&
+          !isValidStopLossPrice(stopLossPrice, {
+            currentPrice,
+            direction,
+          }),
+      ),
+    [stopLossPrice, currentPrice, direction],
+  );
+
+  const tpErrorMessage = useMemo(() => {
+    if (!isTpInvalid) {
+      return null;
+    }
+    return t('perpsTakeProfitInvalidPrice', [
+      getTakeProfitErrorDirection(direction),
+      'current',
+    ]);
+  }, [isTpInvalid, direction, t]);
+
+  const slErrorMessage = useMemo(() => {
+    if (!isSlInvalid) {
+      return null;
+    }
+    return t('perpsStopLossInvalidPrice', [
+      getStopLossErrorDirection(direction),
+      'current',
+    ]);
+  }, [isSlInvalid, direction, t]);
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {/* Toggle Row */}
@@ -305,6 +357,15 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {tpErrorMessage && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.ErrorDefault}
+                data-testid="tp-validation-error"
+              >
+                {tpErrorMessage}
+              </Text>
+            )}
           </Box>
 
           {/* Stop Loss Section */}
@@ -375,6 +436,15 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {slErrorMessage && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.ErrorDefault}
+                data-testid="sl-validation-error"
+              >
+                {slErrorMessage}
+              </Text>
+            )}
           </Box>
         </Box>
       )}

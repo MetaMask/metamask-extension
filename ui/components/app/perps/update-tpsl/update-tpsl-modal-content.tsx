@@ -31,6 +31,12 @@ import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
 import { normalizeTpslPrices } from '../utils';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from '../utils/tpslValidation';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
@@ -199,6 +205,34 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return signedSize * (exitPrice - entryPriceForEdit);
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
+  const isTpInvalid = useMemo(
+    () =>
+      Boolean(
+        editingTpPrice.replaceAll(',', '').trim() &&
+          currentPrice > 0 &&
+          !isValidTakeProfitPrice(editingTpPrice, {
+            currentPrice,
+            direction: positionDirection,
+          }),
+      ),
+    [editingTpPrice, currentPrice, positionDirection],
+  );
+
+  const isSlInvalid = useMemo(
+    () =>
+      Boolean(
+        editingSlPrice.replaceAll(',', '').trim() &&
+          currentPrice > 0 &&
+          !isValidStopLossPrice(editingSlPrice, {
+            currentPrice,
+            direction: positionDirection,
+          }),
+      ),
+    [editingSlPrice, currentPrice, positionDirection],
+  );
+
+  const hasInvalidTPSL = isTpInvalid || isSlInvalid;
+
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
@@ -356,10 +390,17 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: !isEligible || isSaving,
+      submitDisabled: !isEligible || isSaving || hasInvalidTPSL,
       submitButtonTitle: isEligible ? undefined : t('perpsGeoBlockedTooltip'),
     });
-  }, [onSubmitStateChange, handleSave, isSaving, isEligible, t]);
+  }, [
+    onSubmitStateChange,
+    handleSave,
+    isSaving,
+    isEligible,
+    hasInvalidTPSL,
+    t,
+  ]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -472,6 +513,18 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             </Text>
           </Box>
         )}
+        {isTpInvalid && (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.ErrorDefault}
+            data-testid="tp-validation-error"
+          >
+            {t('perpsTakeProfitInvalidPrice', [
+              getTakeProfitErrorDirection(positionDirection),
+              'current',
+            ])}
+          </Text>
+        )}
       </Box>
 
       {/* Stop Loss */}
@@ -582,6 +635,18 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               )}
             </Text>
           </Box>
+        )}
+        {isSlInvalid && (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.ErrorDefault}
+            data-testid="sl-validation-error"
+          >
+            {t('perpsStopLossInvalidPrice', [
+              getStopLossErrorDirection(positionDirection),
+              'current',
+            ])}
+          </Text>
         )}
       </Box>
     </Box>

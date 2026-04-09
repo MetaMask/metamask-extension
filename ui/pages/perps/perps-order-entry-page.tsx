@@ -67,6 +67,10 @@ import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
   isNearLiquidationPrice as checkNearLiquidationPrice,
 } from '../../components/app/perps/order-entry/limit-price-warnings';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+} from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
@@ -406,6 +410,43 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderCalculations,
   ]);
 
+  const hasInvalidTPSL = useMemo(() => {
+    if (!orderFormState?.autoCloseEnabled) {
+      return false;
+    }
+
+    const isLimitWithPrice =
+      orderType === 'limit' && Boolean(orderFormState.limitPrice?.trim());
+    const referencePrice = isLimitWithPrice
+      ? Number.parseFloat(orderFormState.limitPrice.replaceAll(/[$,]/gu, ''))
+      : currentPrice;
+
+    if (!referencePrice || referencePrice <= 0) {
+      return false;
+    }
+
+    const tp = orderFormState.takeProfitPrice;
+    const sl = orderFormState.stopLossPrice;
+    const dir = orderFormState.direction;
+
+    const tpInvalid = Boolean(
+      tp?.trim() &&
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
+    );
+    const slInvalid = Boolean(
+      sl?.trim() &&
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
+    );
+
+    return tpInvalid || slInvalid;
+  }, [orderFormState, orderType, currentPrice]);
+
   const isSubmitDisabled =
     !isEligible ||
     !selectedAddress ||
@@ -413,6 +454,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isLimitPriceInvalid ||
     isLimitPriceUnfavorable ||
     isNearLiquidation ||
+    hasInvalidTPSL ||
     currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {

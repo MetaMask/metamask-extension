@@ -22,3 +22,10 @@ export {
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
 } from './orderUtils';
+
+export {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from './tpslValidation';
