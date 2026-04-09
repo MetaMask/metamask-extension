@@ -30,8 +30,10 @@ function getFallbackBlockedRegions(): string[] {
 function getHyperLiquidBuilderAddresses():
   | { builderAddressMainnet?: string; builderAddressTestnet?: string }
   | undefined {
-  const mainnet = process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET;
-  const testnet = process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET;
+  const mainnet =
+    process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET?.trim() || undefined;
+  const testnet =
+    process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET?.trim() || undefined;
   if (!mainnet && !testnet) {
     return undefined;
   }

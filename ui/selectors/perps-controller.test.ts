@@ -339,7 +339,14 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const data = [{ market: 'ETH' }];
       expect(
-        selectPerpsCachedMarketData(buildState({ cachedMarketData: data })),
+        selectPerpsCachedMarketData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
       ).toBe(data);
     });
 
@@ -352,7 +359,20 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const positions = [{ market: 'ETH', size: 1 }];
       expect(
-        selectPerpsCachedPositions(buildState({ cachedPositions: positions })),
+        selectPerpsCachedPositions(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(positions);
     });
 
@@ -365,7 +385,20 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const orders = [{ id: 'o1' }];
       expect(
-        selectPerpsCachedOrders(buildState({ cachedOrders: orders })),
+        selectPerpsCachedOrders(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(orders);
     });
 
@@ -378,9 +411,7 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const account = { balance: '100' };
       expect(
-        selectPerpsCachedAccountState(
-          buildState({ cachedAccountState: account }),
-        ),
+        selectPerpsCachedAccountState(buildState({ accountState: account })),
       ).toBe(account);
     });
 

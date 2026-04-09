@@ -7760,6 +7760,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true,
         "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
       }
     },

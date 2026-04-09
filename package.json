@@ -154,14 +154,7 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
-  "previewBuilds": {
-    "@metamask/perps-controller": {
-      "type": "breaking",
-      "previewVersion": "2.0.0-preview-f6f25fa44"
-    }
-  },
   "resolutions": {
-    "metamask-crx@workspace:./@metamask/perps-controller@^2.0.0": "npm:@metamask-previews/perps-controller@2.0.0-preview-f6f25fa44",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "napi-postinstall": "npm:npm-empty-package@1.0.0",
