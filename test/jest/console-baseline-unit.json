@@ -441,19 +441,6 @@
       "React: Act warnings (component updates not wrapped)": 3,
       "React: State updates on unmounted components": 1
     },
-    "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
-      "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/components/multichain/account-overview/account-overview-unknown.test.tsx": {
-      "MetaMask: Background connection not initialized": 3
-    },
     "ui/components/multichain/activity-list-item/activity-list-item.test.js": {
       "React: DOM nesting violations": 1
     },
