@@ -286,6 +286,7 @@ jobs:
       # use admin bypass or update thresholds instead.
       - name: Check for skip label
         id: skip-check
+        continue-on-error: true
         if: >-
           ${{
             steps.download-benchmarks.outcome == 'success' &&
