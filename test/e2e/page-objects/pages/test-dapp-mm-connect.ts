@@ -175,6 +175,55 @@ export class TestDappMmConnect {
     return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
   }
 
+  private async getCheckboxState(selector: string): Promise<boolean> {
+    let isChecked = false;
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkbox = await this.driver.findElement(selector);
+          isChecked = await checkbox.isSelected();
+          return true;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 200, timeout: this.driver.timeout },
+    );
+
+    return isChecked;
+  }
+
+  private async waitForCheckboxState(
+    selector: string,
+    expectedState: boolean,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkbox = await this.driver.findElement(selector);
+          return (await checkbox.isSelected()) === expectedState;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 200, timeout: this.driver.timeout },
+    );
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // Private shared interaction helpers
   // ──────────────────────────────────────────────────────────────────────────
@@ -274,27 +323,24 @@ export class TestDappMmConnect {
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
       const selector = this.checkboxSelector(chainId);
-      let isChecked = false;
-      await this.driver.waitUntil(
-        async () => {
-          try {
-            const element = await this.driver.findElement(selector);
-            isChecked = await element.isSelected();
-            return true;
-          } catch (error) {
-            const err = error as { name?: string };
-            if (err.name === 'StaleElementReferenceError') {
-              return false;
-            }
-            throw error;
-          }
-        },
-        { interval: 500, timeout: this.driver.timeout },
-      );
+      const isChecked = await this.getCheckboxState(selector);
       const shouldBeChecked = desiredChainIds.includes(chainId);
+
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
+        // Ensure React has committed this checkbox state before moving
+        // to the next one. This avoids stale-closure races when several
+        // checkboxes are toggled in quick succession.
+        await this.waitForCheckboxState(selector, shouldBeChecked);
       }
+    }
+
+    // Defensive final pass: confirm every featured network checkbox is in
+    // the desired state before triggering wallet_createSession.
+    for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
+      const selector = this.checkboxSelector(chainId);
+      const shouldBeChecked = desiredChainIds.includes(chainId);
+      await this.waitForCheckboxState(selector, shouldBeChecked);
     }
   }
 
