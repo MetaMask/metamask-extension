@@ -34,6 +34,7 @@ export function getNotificationServicesControllerMessenger(
       // Push Actions
       'NotificationServicesPushController:enablePushNotifications',
       'NotificationServicesPushController:disablePushNotifications',
+      'NotificationServicesPushController:deletePushNotificationLinks',
       'NotificationServicesPushController:subscribeToPushNotifications',
     ],
     events: [
