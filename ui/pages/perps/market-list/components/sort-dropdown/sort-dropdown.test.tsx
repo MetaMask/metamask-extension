@@ -33,7 +33,9 @@ describe('SortDropdown', () => {
       renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
 
       // Should show the translated label for volume field
-      expect(screen.getByTestId('sort-dropdown-button')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-dropdown-button').textContent).toContain(
+        'Volume',
+      );
     });
 
     it('opens sort modal when trigger button is clicked', () => {
