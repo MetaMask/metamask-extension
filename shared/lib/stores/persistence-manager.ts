@@ -58,8 +58,6 @@ export type PersistenceManagerEventMap = {
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
 };
 
-export type PersistenceManagerEventName = keyof PersistenceManagerEventMap;
-
 export type PersistenceManagerOptions = {
   localStore: BaseStore;
 };

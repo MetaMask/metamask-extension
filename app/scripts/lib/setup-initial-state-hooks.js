@@ -38,9 +38,7 @@ function createLocalStore() {
 const localStore = createLocalStore();
 
 // Single PersistenceManager per context: one in background, one per UI context.
-export const persistenceManager = new PersistenceManager({ localStore });
-
-persistenceManager
+export const persistenceManager = new PersistenceManager({ localStore })
   .on('vaultCorruptionDetected', (payload) => {
     trackVaultCorruptionEvent(
       payload.backup,
