@@ -68,6 +68,7 @@ ignores:
   - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
+  - 'webpack-bundle-analyzer' # build tool
   - 'postcss-loader' # build tool
   - '@swc/helpers' # build tool
   - 'browserslist' # build tool
