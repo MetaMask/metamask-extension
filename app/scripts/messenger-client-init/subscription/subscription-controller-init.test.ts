@@ -6,13 +6,13 @@ import { ControllerInitRequest } from '../types';
 import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
-  SubscriptionControllerMessenger,
   SubscriptionControllerInitMessenger,
 } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SubscriptionControllerInit } from './subscription-controller-init';
+import { SubscriptionControllerMessenger } from '../messengers/subscription/subscription-controller-messenger';
 
 jest.mock('@metamask/subscription-controller');
 
