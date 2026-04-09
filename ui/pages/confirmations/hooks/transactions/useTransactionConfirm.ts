@@ -100,10 +100,7 @@ export function useTransactionConfirm() {
     // were the only code clearing the flag, so activity briefly showed
     // "paid by MetaMask" until state caught up (e.g. Monad send on HW).
     if (!isGaslessSupported) {
-      newTransactionMeta = {
-        ...newTransactionMeta,
-        isGasFeeSponsored: false,
-      };
+      newTransactionMeta.isGasFeeSponsored = false;
     }
 
     if (isGaslessSupportedSTX) {
