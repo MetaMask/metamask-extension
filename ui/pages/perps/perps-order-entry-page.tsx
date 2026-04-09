@@ -656,24 +656,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
 
     const deriveTradeAction = (): string => {
-      if (orderMode === 'new' && !position) {
+      if (!position) {
         return PERPS_EVENT_VALUE.TRADE_ACTION.CREATE_POSITION;
       }
-      if (orderMode === 'modify' && position) {
-        const posSize = Number.parseFloat(position.size) || 0;
-        const posIsLong = posSize >= 0;
-        const orderIsLong = orderDirection === 'long';
-        if (posIsLong !== orderIsLong) {
-          return posIsLong
-            ? PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT
-            : PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG;
-        }
-        return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
+      const posSize = Number.parseFloat(position.size) || 0;
+      const posIsLong = posSize >= 0;
+      const orderIsLong = orderDirection === 'long';
+      if (posIsLong !== orderIsLong) {
+        return posIsLong
+          ? PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT
+          : PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG;
       }
-      if (position) {
-        return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
-      }
-      return PERPS_EVENT_VALUE.TRADE_ACTION.CREATE_POSITION;
+      return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
     };
 
     let specificFailureTracked = false;

@@ -49,6 +49,15 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
+      onLeverageChange(newValue);
+      setInputValue(String(newValue));
+    },
+    [onLeverageChange],
+  );
+
+  const handleSliderChangeCommitted = useCallback(
+    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+      const newValue = Array.isArray(value) ? value[0] : value;
       if (newValue !== leverage) {
         track(MetaMetricsEventName.PerpsUiInteraction, {
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
@@ -56,10 +65,8 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
           [PERPS_EVENT_PROPERTY.LEVERAGE]: newValue,
         });
       }
-      onLeverageChange(newValue);
-      setInputValue(String(newValue));
     },
-    [onLeverageChange, leverage, track],
+    [leverage, track],
   );
 
   const handleInputChange = useCallback(
@@ -106,6 +113,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             step={1}
             value={leverage}
             onChange={handleSliderChange}
+            onChangeCommitted={handleSliderChangeCommitted}
           />
         </Box>
         <Box className="shrink-0 w-20">
