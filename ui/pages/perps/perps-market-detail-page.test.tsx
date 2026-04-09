@@ -593,7 +593,9 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
-      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      const modifyMenu = screen.getByTestId('perps-modify-menu');
+      expect(modifyMenu).toBeInTheDocument();
+      expect(modifyMenu.parentElement).toBe(document.body);
       expect(
         screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
@@ -620,7 +622,9 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-margin-card'));
-      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      const marginMenu = screen.getByTestId('perps-margin-menu');
+      expect(marginMenu).toBeInTheDocument();
+      expect(marginMenu.parentElement).toBe(document.body);
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
@@ -713,6 +717,29 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByTestId('perps-decrease-margin-modal'),
       ).toBeInTheDocument();
+    });
+
+    it('updates the selected candle period from the More menu', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+
+      expect(
+        screen.getByTestId('perps-candle-period-modal'),
+      ).toBeInTheDocument();
+      expect(screen.getByText('Candle intervals')).toBeInTheDocument();
+      expect(screen.getByText('Minutes')).toBeInTheDocument();
+      expect(screen.getByText('Hours')).toBeInTheDocument();
+      expect(screen.getByText('Days')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
+
+      expect(screen.getByText('30min')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays Close Long button text for long position', async () => {
