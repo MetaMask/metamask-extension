@@ -286,9 +286,16 @@ jobs:
       # use admin bypass or update thresholds instead.
       - name: Check for skip label
         id: skip-check
-        if: steps.download-benchmarks.outcome == 'success'
+        if: >-
+          ${{
+            steps.download-benchmarks.outcome == 'success' &&
+            github.event_name == 'pull_request'
+          }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'skip-benchmark-gate') }}" == "true" ]]; then
+          LABELS=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/labels --jq '.[].name')
+          if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
