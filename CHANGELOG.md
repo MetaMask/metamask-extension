@@ -7,6 +7,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.27.0]
+
+### Uncategorized
+
+- Tiny adjustment to default address font weight and icon sizes (#41580)
+- Bump new assets controller to v5.0.0 (#41575)
+- chore: Bulk register actions in `AppMetadataController` (#41553)
+- chore: Bulk register actions in `AlertController` (#41552)
+- chore: Bulk register actions in `AccountOrderController` (#41551)
+- chore: Bulk register actions in`RewardController` and `RewardsDataService` (#41550)
+- chore: Bulk register actions in `MetametricsDataDeletionController` (#41548)
+- Bump institutional snap to 1.5.0 (#39652)
+- Updated extension typography and design-system dependencies to align semantic bold with the v27 semibold migration. (#41467)
+- Update default address UI to show multichain account menu on click rather than hover when on Account List (#41540)
+- - Display correctly token icon size when sending TRC20 tokens (#41547)
+- Display correctly decimal amount sent in confirmation dialog
+- Confirm `fee_limit` is always present when building transaction
+- Include memo fee (1 TRX) in fee estimation logic
+- Handle NFT asset types in transaction scan simulation
+- chore: Bulk register actions in `InstitutionalSnapController` (#41439)
+- Remove useBlockie (#40544)
+- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
+- Tweak survey banner (#41403)
+- Fixes design and estimate calculation for add/remove margin flows. (#41285)
+- Remove deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest`. (#41313)
+- Warned users on outdated Chrome, Edge, Firefox, and Opera versions to update before support is removed. We will be dropping (#41063)
+  official support for Firefox on Windows 7-8.1 and macOS 10.12-10.14 in
+  the next release.
+- Filter out native token transfers (#41164)
+
+### Added
+
+- Improve gas-included metrics on send/transfer (#41581)
+- Update transaction transactions metrics to add details on smart transactions and submission method (#41465)
+- Improved the "no quotes available" error message on the bridge/swap page to show a specific, actionable reason (e.g. amount too (#41412)
+  high/low, slippage out of range, token not supported) instead of a
+  generic fallback.
+- Open to Activity tab when badge is clicked on failed transaction (#41531)
+- Added a fiat loss amount to the bridge high price impact warning, showing users how much they will lose in their local (#41492)
+  currency when a trade has a severe price impact.
+- Removed es and updated es-419 to use es transaltions (#41506)
+- Added a "See All" button to the Recent Activity section on the perps market detail page and fixed the activity page back button (#41541)
+  to return to the previous screen
+- Adds Tempo support (using 7702/gasless) with absence of native token on Extension. (#40449)
+  adds Tempo transactions (partial) support on Extension.
+- Add cancel order flow from market detail entrypoint (#41484)
+- Implement new musd claim modal design (#41158)
+- Add Perps first time user experience (#41429)
+- Show bridge re-fetch quotes CTA as a button (#41379)
+- Enable sidepanel for the social login rehydration (#41491)
+- Fixed Bitcoin PSBT build errors now include the underlying cause for better diagnostics (#41422)
+- Added export data button (#41427)
+- Transaction toast notification (#40886)
+- Enabled settings v2 to replace legacy settings (#41194)
+- Added banners localization (#41387)
+- Defaulted perpetuals leverage to 3x for new users and added per-market leverage memory so the order form starts at the (#41394)
+  last-used leverage
+- Add missing support links into perps tab (#41286)
+- Added warnings when setting a perps limit price above/below current price or near the liquidation price (#41230)
+- Introduce Perps withdrawal flow (#41214)
+- Added legacy transaction support to the new cancel/speedup (#40925)
+- Add Enter key navigation, migrated to DS and unit test suite - password-form (#41296)
+- Added real-time dapp scanning warning with acknowledgment checkbox on the SRP reveal page for malicious websites (#40209)
+- Adds dapp connection control bar (#40617)
+- Add asset verified badge in swaps asset picker (#41169)
+
+### Fixed
+
+- Tweaked hover and active styles on fullscreen Settings view (#41603)
+- Fixed incorrect margin value on perps order entry when leverage is applied (#41350)
+- Fixed Explore Markets section on the Perps tab to display markets ranked by highest 24h trading volume (#41606)
+- Replaced flat sort dropdown with two-section sort modal on perps market list (#41385)
+- Update margin toast copy (#41562)
+- Fixed a bug where completing a Perps deposit redirected to the home page instead of the previous screen (#41517)
+- Fixed a bug where bridge token balances were displayed as slightly higher than the user's actual balance due to double-rounding (#41505)
+  in the amount formatter.
+- On Gas-Sponsored networks, allow sending full native balance using `Max`. (#41299)
+- Fixed the Perps market detail header so it stays visible while scrolling. (#41555)
+- Fixed Activity tab Speed up and pending status using the wrong earliest nonce when completed local transactions were still in (#41444)
+  the list
+- Fixed the fox animation on the welcome screen being cut off or distorted when resizing the browser window without reloading. (#41499)
+- Replaced placeholder data in perps Recent Activity section with real trade history (#41508)
+- Filtered out inactive zero-volume markets from the perpetuals market list (#41502)
+- Include ClientVersion in swap token endpoint requests (#41516)
+- Fixed dapp connection control bar flickering when switching tabs on the home screen (#41501)
+- Fixed reliability of gas handling when canceling or speeding up a pending transaction (#41437)
+- Fixed a crash when selecting an external recipient address during cross-chain bridge transactions (#41442)
+- Fixed a bug causing order and funding transactions to appear in the perps Recent Activity section (#41446)
+- Fix cancel all, Close all functionality (#41430)
+- Fixed an issue where choosing Try again on some error screens could show the browser’s default page inside the MetaMask window (#41364)
+  instead of restarting the extension.
+- Fixed a crash that could occur for users with corrupted wallet state after a password reset or Snap keyring usage. (#41405)
+- Localize `Looking for your <device>` mesage (#41417)
+- Fixed Review Permissions screen incorrectly showing non-EVM networks instead of the requested testnet during chain switch (#41236)
+- Update tooltip icon in claimable bonus row for Firefox compatibility (#41404)
+- Asset list and select quotes list improvements (#41155)
+- Reset bridge page inputs after submitting transaction (#41222)
+- Fix close position modal design, address partial close bugfix (#41279)
+- Fixed position size display to show USD value instead of token units (#41380)
+- Close all positions / cancel all open orders functionality (#41287)
+- Dapp connection control bar style adjustments (#41390)
+- Fixes tpsl form reset bug (#41283)
+
 ## [13.25.0]
 
 ### Added
@@ -2017,7 +2120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...HEAD
+[13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.27.0
 [13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
 [13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
 [13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
