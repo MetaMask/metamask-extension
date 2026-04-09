@@ -50,6 +50,17 @@ describe('PersistenceManager', () => {
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
+  describe('events', () => {
+    it('supports EventEmitter on and off without throwing', () => {
+      const listener = jest.fn();
+      expect(() => {
+        manager.on('splitStateMigrationSucceeded', listener);
+        manager.off('splitStateMigrationSucceeded', listener);
+        manager.off('vaultCorruptionDetected', listener);
+      }).not.toThrow();
+    });
+  });
+
   describe('set', () => {
     beforeEach(() => {
       manager.storageKind = 'data';
