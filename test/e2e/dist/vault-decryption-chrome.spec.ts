@@ -71,11 +71,25 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
  * @returns The log file path.
  */
 function getExtensionLogFile(extensionStoragePath: string): string {
-  const logFiles = fs
-    .readdirSync(extensionStoragePath)
-    .filter((filename: string) => filename.endsWith('.log'));
+  const allFiles = fs.readdirSync(extensionStoragePath);
+  const logFiles = allFiles.filter((filename: string) =>
+    filename.endsWith('.log'),
+  );
+  const ldbFiles = allFiles.filter((filename: string) =>
+    filename.endsWith('.ldb'),
+  );
 
-  console.log('Log Files =========================:', logFiles.length);
+  console.log(
+    `[vault-debug] Directory contents: ${allFiles.length} files total — .log: ${logFiles.length}, .ldb: ${ldbFiles.length}`,
+  );
+  console.log(`[vault-debug] All files: ${allFiles.join(', ')}`);
+
+  for (const file of [...logFiles, ...ldbFiles]) {
+    const filePath = path.resolve(extensionStoragePath, file);
+    const stats = fs.statSync(filePath);
+    console.log(`[vault-debug]   ${file}: ${stats.size} bytes`);
+  }
+
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
@@ -131,8 +145,88 @@ async function waitUntilFileIsWritten({
   );
 }
 
+/**
+ * Diagnostic: reads the .log file as text and checks which vault-decryptor
+ * regex attempts would match. Also opens the LevelDB to verify the vault
+ * key exists. Logs everything so CI failures are debuggable.
+ */
+async function logVaultDiagnostics(copiedDir: string): Promise<void> {
+  const logFile = getExtensionLogFile(copiedDir);
+  const logFileData = fs.readFileSync(logFile, 'utf8');
+  console.log(
+    `[vault-debug] .log file read as UTF-8 text: ${logFileData.length} chars`,
+  );
+
+  // Check each regex attempt the vault-decryptor uses (attempts 3–7)
+  const attempt3 =
+    logFileData.match(/"KeyringController":{"vault":"{[^{}]*}"/);
+  console.log(`[vault-debug] vault-decryptor attempt 3 (linux .log): ${attempt3 ? 'MATCH' : 'no match'}`);
+
+  const attempt4 = logFileData.match(
+    /KeyringController":(\{"vault":".*?=\\"\}"\})/,
+  );
+  console.log(`[vault-debug] vault-decryptor attempt 4 (macOS .log): ${attempt4 ? 'MATCH' : 'no match'}`);
+
+  const attempt5 = logFileData.match(
+    /"KeyringController":(\{.*?"vault":".*?=\\"\}"\})/,
+  );
+  console.log(`[vault-debug] vault-decryptor attempt 5 (macOS .log v2): ${attempt5 ? 'MATCH' : 'no match'}`);
+
+  const attempt6 = logFileData.match(
+    /Keyring[0-9][^}]*(\{[^\{\}]*\\"\})/u,
+  );
+  console.log(`[vault-debug] vault-decryptor attempt 6 (windows .ldb): ${attempt6 ? 'MATCH' : 'no match'}`);
+
+  const attempt7Regex =
+    /KeyringController[\s\S]*?"vault":"((?:[^"\\]|\\.)*)"/g;
+  const attempt7 = attempt7Regex.exec(logFileData);
+  console.log(`[vault-debug] vault-decryptor attempt 7 (split state): ${attempt7 ? 'MATCH' : 'no match'}`);
+
+  // Check if the raw string "KeyringController" appears at all
+  const kcIndex = logFileData.indexOf('KeyringController');
+  console.log(
+    `[vault-debug] "KeyringController" found in .log text at index: ${kcIndex}`,
+  );
+  if (kcIndex !== -1) {
+    // Log a small window around it to see what the surrounding data looks like
+    const start = Math.max(0, kcIndex - 20);
+    const end = Math.min(logFileData.length, kcIndex + 200);
+    const snippet = logFileData
+      .substring(start, end)
+      .replace(/[^\x20-\x7E]/g, '�');
+    console.log(`[vault-debug] Context around KeyringController: ${snippet}`);
+  }
+
+  // Verify the vault is actually in the LevelDB by reading it properly
+  let db;
+  try {
+    db = new level.Level(copiedDir, { valueEncoding: 'json' });
+    await db.open();
+    const keyringController = (await db.get('KeyringController')) as {
+      vault?: string;
+    };
+    const hasVault = Boolean(keyringController?.vault);
+    console.log(
+      `[vault-debug] LevelDB read KeyringController.vault: ${hasVault ? 'EXISTS' : 'MISSING'}`,
+    );
+    if (hasVault) {
+      const vaultStr = keyringController.vault as string;
+      console.log(
+        `[vault-debug] vault string length: ${vaultStr.length}, starts with: ${vaultStr.substring(0, 80)}...`,
+      );
+    }
+  } catch (err) {
+    console.log(`[vault-debug] LevelDB read error: ${err}`);
+  } finally {
+    if (db) {
+      await db.close();
+    }
+  }
+}
+
 describe('Vault Decryptor Page', function () {
-  it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+  for (let run = 1; run <= 5; run++) {
+  it(`[run ${run}/5] is able to decrypt the vault uploading the log file in the vault-decryptor webapp`, async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
       // TODO: Get this working on Firefox
       this.skip();
@@ -165,6 +259,9 @@ describe('Vault Decryptor Page', function () {
         try {
           copiedDir = await copyDirectoryToTmp(extensionPath);
           const extensionLogFileCopy = getExtensionLogFile(copiedDir);
+
+          // Diagnostic logging to debug flakiness in webpack dist builds
+          await logVaultDiagnostics(copiedDir);
 
           // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
           await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
@@ -209,6 +306,7 @@ describe('Vault Decryptor Page', function () {
       },
     );
   });
+  } // end for-loop (run x5)
 
   it('is able to decrypt the vault pasting the text in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
