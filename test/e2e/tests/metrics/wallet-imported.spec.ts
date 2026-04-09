@@ -6,7 +6,7 @@ import {
   withFixtures,
   assertInAnyOrder,
 } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { mockSegment } from './mocks/segment';
@@ -29,7 +29,7 @@ describe('Wallet Created Events - Imported Account', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             participateInMetaMetrics: true,
           })

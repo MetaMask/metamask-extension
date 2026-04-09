@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
@@ -76,7 +76,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -103,7 +103,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts into metrics but not data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -130,7 +130,7 @@ describe('Segment User Traits', function () {
   it('will not send identify event when user opts out of both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -153,7 +153,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user enables metrics in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -189,7 +189,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })

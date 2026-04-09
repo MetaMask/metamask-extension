@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Ukuran"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Tingkat pendanaan: tinggi ke rendah"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Tingkat pendanaan: rendah ke tinggi"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Kontrak terbuka: tinggi ke rendah"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Kontrak terbuka: rendah ke tinggi"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Perubahan harga: tinggi ke rendah"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Perubahan harga: rendah ke tinggi"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: tinggi ke rendah"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: rendah ke tinggi"
-  },
   "perpsStartNewTrade": {
     "message": "Mulai perdagangan baru"
   },
