@@ -163,6 +163,7 @@ import {
   createDeepEqualSelector,
   createParameterizedSelector,
   createParameterizedShallowEqualSelector,
+  createResultEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
@@ -1409,12 +1410,13 @@ export const getUnapprovedConfirmations = createDeepEqualSelector(
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
-function getUnapprovedTemplatedConfirmations(state) {
-  const unapprovedConfirmations = getUnapprovedConfirmations(state);
-  return unapprovedConfirmations.filter((approval) =>
-    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
-  );
-}
+export const getUnapprovedTemplatedConfirmations = createResultEqualSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter((approval) =>
+      TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
+    ),
+);
 
 export function getSuggestedTokens(state) {
   return (
@@ -1523,12 +1525,9 @@ export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }
 
-export const getTokenSortConfig = createDeepEqualSelector(
-  getPreferences,
-  ({ tokenSortConfig }) => {
-    return tokenSortConfig;
-  },
-);
+export function getTokenSortConfig(state) {
+  return state.metamask.preferences?.tokenSortConfig;
+}
 
 /**
  * Returns an object indicating which networks
@@ -1815,27 +1814,6 @@ export const getHideSnapBranding = createDeepEqualSelector(
 );
 
 /**
- * Get a memoized version of the target subject metadata.
- */
-
-/**
- * Get a memoized version of the unapproved confirmations.
- */
-export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
-  getUnapprovedConfirmations,
-  (confirmations) => confirmations,
-);
-
-/**
- * Get a memoized version of the unapproved templated confirmations.
- */
-export const getMemoizedUnapprovedTemplatedConfirmations =
-  createDeepEqualSelector(
-    getUnapprovedTemplatedConfirmations,
-    (confirmations) => confirmations,
-  );
-
-/**
  * Get the Snap interfaces from the redux state.
  *
  * @param state - Redux state object.
@@ -1853,27 +1831,11 @@ const getInterfaces = (state) => state.metamask.interfaces;
 const selectInterfaceId = (_state, interfaceId) => interfaceId;
 
 /**
- * Get a memoized version of the Snap interfaces.
- */
-const getMemoizedInterfaces = createDeepEqualSelector(
-  getInterfaces,
-  (interfaces) => interfaces,
-);
-
-/**
  * Get a Snap Interface with a given ID.
  */
 export const getInterface = createSelector(
-  [getMemoizedInterfaces, selectInterfaceId],
+  [getInterfaces, selectInterfaceId],
   (interfaces, id) => interfaces[id],
-);
-
-/**
- * Get a memoized version of a Snap interface with a given ID
- */
-export const getMemoizedInterface = createDeepEqualSelector(
-  getInterface,
-  (snapInterface) => snapInterface,
 );
 
 /**
@@ -2117,10 +2079,9 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
-export const selectERC20TokensByChain = createDeepEqualSelector(
-  (state) => state.metamask.tokensChainsCache,
-  (erc20TokensByChain) => erc20TokensByChain,
-);
+export function selectERC20TokensByChain(state) {
+  return state.metamask.tokensChainsCache;
+}
 
 const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
@@ -2290,11 +2251,6 @@ export const getConnectedSitesList = createSelector(
     });
     return sitesList;
   },
-);
-
-export const getMemoizedCurrentChainId = createDeepEqualSelector(
-  getCurrentChainId,
-  (chainId) => chainId,
 );
 
 export function getSnaps(state) {
