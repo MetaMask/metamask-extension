@@ -65,12 +65,81 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
 }
 
 /**
+ * The vault-decryptor regex patterns used to extract the vault from a file.
+ * Attempts are tried in order; the first match wins.
+ */
+const VAULT_DECRYPTOR_REGEXES: { name: string; regex: RegExp }[] = [
+  {
+    name: 'attempt 3 (linux .log)',
+    regex: /"KeyringController":{"vault":"{[^{}]*}"/,
+  },
+  {
+    name: 'attempt 4 (macOS .log)',
+    regex: /KeyringController":(\{"vault":".*?=\\"\}"\})/,
+  },
+  {
+    name: 'attempt 5 (macOS .log v2)',
+    regex: /"KeyringController":(\{.*?"vault":".*?=\\"\}"\})/,
+  },
+  {
+    name: 'attempt 6 (windows .ldb)',
+    regex: /Keyring[0-9][^}]*(\{[^\{\}]*\\"\})/u,
+  },
+  {
+    name: 'attempt 7 (split state)',
+    regex: /KeyringController[\s\S]*?"vault":"((?:[^"\\]|\\.)*)"/,
+  },
+];
+
+/**
+ * Checks whether the vault-decryptor would be able to extract the vault
+ * from the given file content using its regex-based parsing.
+ *
+ * @param content - File content read as UTF-8 text.
+ * @returns true if at least one vault-decryptor regex matches.
+ */
+function canVaultDecryptorParseContent(content: string): boolean {
+  for (const { regex } of VAULT_DECRYPTOR_REGEXES) {
+    if (regex.test(content)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Logs which vault-decryptor regexes match (or don't) against file content,
+ * plus context around KeyringController for debugging binary interference.
+ */
+function logVaultRegexDiagnostics(content: string, fileName: string): void {
+  for (const { name, regex } of VAULT_DECRYPTOR_REGEXES) {
+    console.log(
+      `[vault-debug] ${fileName} ${name}: ${regex.test(content) ? 'MATCH' : 'no match'}`,
+    );
+  }
+
+  const kcIndex = content.indexOf('KeyringController');
+  console.log(
+    `[vault-debug] ${fileName} "KeyringController" at index: ${kcIndex}`,
+  );
+  if (kcIndex !== -1) {
+    const start = Math.max(0, kcIndex - 20);
+    const end = Math.min(content.length, kcIndex + 300);
+    const snippet = content
+      .substring(start, end)
+      .replace(/[^\x20-\x7E]/g, '�');
+    console.log(`[vault-debug] ${fileName} context: ${snippet}`);
+  }
+}
+
+/**
  * Returns the database file (.log or .ldb) that contains the vault data.
  *
  * Chrome stores extension data in LevelDB. The vault may live in the WAL
  * (.log file) or, after compaction, in a sorted-string-table (.ldb file).
- * This function checks the .log file first, then falls back to .ldb files,
- * returning whichever contains a "vault" string near "KeyringController".
+ * This function checks each file using the same regex patterns the
+ * vault-decryptor webapp uses, returning the first file that would
+ * successfully parse.
  *
  * @param extensionStoragePath - The path to the extension's storage.
  * @returns The path to the database file containing the vault.
@@ -87,16 +156,22 @@ function getExtensionDatabaseFile(extensionStoragePath: string): string {
   for (const file of [...logFiles, ...ldbFiles]) {
     const filePath = path.resolve(extensionStoragePath, file);
     const content = fs.readFileSync(filePath, 'utf8');
-    if (content.includes('"vault"') && content.includes('KeyringController')) {
-      console.log(
-        `Vault data found in ${file} (${fs.statSync(filePath).size} bytes)`,
-      );
+    const size = fs.statSync(filePath).size;
+
+    if (canVaultDecryptorParseContent(content)) {
+      console.log(`Vault data found in ${file} (${size} bytes)`);
       return filePath;
     }
+    console.log(
+      `[vault-debug] ${file} (${size} bytes): vault-decryptor cannot parse`,
+    );
+    logVaultRegexDiagnostics(content, file);
   }
 
   // Fallback: return the first .log file (original behaviour)
-  console.log('Vault data not found in any individual file, falling back to first .log file');
+  console.log(
+    'Vault data not parseable from any individual file, falling back to first .log file',
+  );
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
 
