@@ -176,10 +176,10 @@ jest.mock('../../hooks/perps/stream', () => ({
       candles: [
         {
           time: 1768188300000,
-          open: '2500.0',
-          high: '2520.0',
-          low: '2490.0',
-          close: '2510.0',
+          open: '2880.0',
+          high: '2920.0',
+          low: '2870.0',
+          close: '2900.0',
           volume: '100.0',
         },
       ],
