@@ -164,6 +164,8 @@ describe('requestEthereumAccountsHandler', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_iframe: false,
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_cross_origin_iframe: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             iframe_origin: null,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             top_level_origin: null,
