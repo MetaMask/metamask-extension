@@ -294,25 +294,6 @@ class FixtureBuilderV2 {
      ==================================================================
   */
 
-  withLegacyFixtureBuilderDefaultState(
-    inputChainId: string = CHAIN_IDS.LOCALHOST,
-  ): this {
-    /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- CommonJS default fixture (same as fixture-builder.js) */
-    const {
-      defaultFixture: legacyDefaultFixture,
-      FIXTURE_STATE_METADATA_VERSION,
-    } = require('./default-fixture');
-    /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-    this.fixture = cloneDeep(legacyDefaultFixture(inputChainId)) as FixtureType;
-    if (!this.fixture.meta) {
-      this.fixture.meta = {
-        storageKind: 'split',
-        version: FIXTURE_STATE_METADATA_VERSION,
-      };
-    }
-    return this;
-  }
-
   withBadPreferencesControllerState(): this {
     (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
     return this;

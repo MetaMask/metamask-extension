@@ -56,7 +56,7 @@ describe('Test Snap Lifecycle Hooks', function () {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilderV2()
-          .withLegacyFixtureBuilderDefaultState()
+          .withSnapsPrivacyWarningAlreadyShown()
           .withSnapControllerOnStartLifecycleSnap()
           .build(),
         title: this.test?.fullTitle(),
