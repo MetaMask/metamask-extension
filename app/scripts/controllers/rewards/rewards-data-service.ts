@@ -8,11 +8,6 @@ import {
   REWARDS_API_URL,
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
-<<<<<<< HEAD
-import type { RewardsDataServiceMessenger } from '../../messenger-client-init/messengers/reward-data-service-messenger';
-=======
-import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
->>>>>>> main
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
