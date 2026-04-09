@@ -122,11 +122,7 @@ export const WalletInitiatedHeader = () => {
           {headerTitle}
         </Text>
       )}
-      {currentConfirmation?.type === TransactionType.perpsDeposit ? (
-        <Box style={{ width: 32 }} />
-      ) : (
-        <AdvancedDetailsButton />
-      )}
+      <AdvancedDetailsButton />
     </Box>
   );
 };

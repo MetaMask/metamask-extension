@@ -106,12 +106,13 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
-  it('hides AdvancedDetailsButton and shows spacer for perpsDeposit', () => {
-    const { queryByTestId } = render(getPerpsDepositState());
+  it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
+    const { getByTestId } = render(getPerpsDepositState());
 
-    expect(
-      queryByTestId('header-advanced-details-button'),
-    ).not.toBeInTheDocument();
+    const advancedButton = getByTestId('header-advanced-details-button');
+    expect(advancedButton.closest('[style*="visibility"]')).toHaveStyle({
+      visibility: 'hidden',
+    });
   });
 
   it('shows AdvancedDetailsButton for non-perpsDeposit transactions', () => {
