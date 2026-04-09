@@ -430,8 +430,8 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
  * formatRoePercent(0) => '0'
  */
 export const formatRoePercent = (value: number): string => {
-  const abs = Math.abs(value);
-  return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
+  const rounded = Math.round(Math.abs(value) * 100) / 100;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
 };
 
 const volumeMultipliers: Record<string, number> = {

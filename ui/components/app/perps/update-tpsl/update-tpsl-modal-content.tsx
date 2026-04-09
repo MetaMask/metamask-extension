@@ -280,6 +280,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentBlur = useCallback(() => {
     setIsTpPercentFocused(false);
     setRawTpPercent('');
+    setTpPresetPercent(null);
   }, []);
 
   const handleSlPercentInputChange = useCallback(
@@ -308,6 +309,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleSlPercentBlur = useCallback(() => {
     setIsSlPercentFocused(false);
     setRawSlPercent('');
+    setSlPresetPercent(null);
   }, []);
 
   const handleTpPriceBlur = useCallback(() => {
