@@ -843,6 +843,7 @@
       "globals": {
         "clearInterval": true,
         "console.error": true,
+        "fetch.bind": true,
         "performance.now": true,
         "setInterval": true
       },
@@ -856,6 +857,7 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
+        "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,

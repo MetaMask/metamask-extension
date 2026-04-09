@@ -40,6 +40,9 @@ export const PERPS_CONSTANTS = {
 
   RECENT_ACTIVITY_LIMIT: 3,
   FILLS_LOOKBACK_MS: 90 * 24 * 60 * 60 * 1000, // 3 months in milliseconds
+
+  /** Max markets shown in the explore section (aligned with mobile). */
+  EXPLORE_MARKETS_LIMIT: 8,
 } as const;
 
 /**

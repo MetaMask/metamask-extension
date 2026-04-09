@@ -123,6 +123,7 @@ jobs:
               'docs/', 'test/',
               'development/metamaskbot-build-announce/',
               'development/ts-migration-dashboard/',
+              'development/webpack/test/',
             ];
             // Files inside excluded dirs that DO affect builds.
             // run-build.yml is kept because it injects env vars and secrets.

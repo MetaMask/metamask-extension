@@ -1,6 +1,8 @@
-import { AccountOrderController } from '../controllers/account-order';
+import {
+  AccountOrderController,
+  AccountOrderControllerMessenger,
+} from '../controllers/account-order';
 import { ControllerInitFunction } from './types';
-import { AccountOrderControllerMessenger } from './messengers';
 
 /**
  * Initialize the accountOrder controller.

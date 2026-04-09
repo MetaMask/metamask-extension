@@ -210,7 +210,6 @@ import { getProfileMetricsServiceMessenger } from './profile-metrics-service-mes
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
-export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
   AccountTrackerControllerMessenger,
@@ -224,11 +223,9 @@ export type { AccountsControllerMessenger } from './accounts-controller-messenge
 export { getAccountsControllerMessenger } from './accounts-controller-messenger';
 export type { AddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
-export type { AlertControllerMessenger } from './alert-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
-export type { AppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
@@ -248,7 +245,6 @@ export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
 } from './currency-rate-controller-messenger';
-export type { DecryptMessageControllerMessenger } from './decrypt-message-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
@@ -295,7 +291,6 @@ export type { LoggingControllerMessenger } from './logging-controller-messenger'
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
-export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
@@ -350,11 +345,6 @@ export {
 } from './signature-controller-messenger';
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
-export type {
-  RewardsControllerMessenger,
-  RewardsControllerActions,
-  RewardsControllerEvents,
-} from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,

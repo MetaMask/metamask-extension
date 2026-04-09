@@ -17,7 +17,6 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
-    LAVAMOAT_POLICY_CHANGED,
     BUILDS_FROM_SHA,
     BUILDS_FROM_RUN,
     TEST_PLAN_VERSION,
@@ -51,7 +50,7 @@ async function start(): Promise<void> {
     BUILDS_FROM_RUN || RUN_ID,
   );
 
-  const artifactsBody = await buildArtifactsBody({
+  const artifactsBody = buildArtifactsBody({
     hostUrl: HOST_URL,
     version: VERSION,
     shortSha: HEAD_COMMIT_HASH.slice(0, 7),
@@ -59,7 +58,6 @@ async function start(): Promise<void> {
     buildsFromSha: BUILDS_FROM_SHA
       ? BUILDS_FROM_SHA.slice(0, 7)
       : HEAD_COMMIT_HASH.slice(0, 7),
-    lavamoatPolicyChanged: LAVAMOAT_POLICY_CHANGED === 'true',
   });
 
   let commentBody = artifactsBody;

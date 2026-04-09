@@ -6,39 +6,108 @@ import { generateRandomId } from '../util';
 
 const noop = () => ({});
 
+type AnalyticsCallback = (err?: Error, data?: FlushData) => void;
+
+type QueueItem = {
+  message: AnalyticsMessage;
+  callback: AnalyticsCallback;
+};
+
+type FlushData = {
+  batch: AnalyticsMessage[];
+  timestamp: Date;
+  sentAt: Date;
+};
+
+type AnalyticsMessage = {
+  type?: string;
+  context?: {
+    library?: {
+      name: string;
+    };
+    [key: string]: unknown;
+  };
+  timestamp?: Date;
+  messageId?: string;
+  anonymousId?: unknown;
+  userId?: unknown;
+  [key: string]: unknown;
+};
+
+type AnalyticsOptions = {
+  flushAt?: number;
+  flushInterval?: number;
+  host?: string;
+};
+
+type RequestBody = {
+  method: string;
+  body: string;
+  headers: Record<string, string>;
+};
+
+type RetryableError = {
+  response?: Response;
+  code?: string;
+};
+
 // Method below is inspired from axios-retry https://github.com/softonic/axios-retry
-function isNetworkError(error) {
+function isNetworkError(error: RetryableError): boolean {
   return (
     !error.response &&
     Boolean(error.code) && // Prevents retrying cancelled requests
     error.code !== 'ECONNABORTED' && // Prevents retrying timed out requests
-    isRetryAllowed(error)
+    isRetryAllowed(error as Error)
   ); // Prevents retrying unsafe errors
 }
 
 export default class Analytics {
+  writeKey: string;
+
+  host: string;
+
+  flushInterval: number;
+
+  flushAt: number;
+
+  queue: QueueItem[];
+
+  path: string;
+
+  maxQueueSize: number;
+
+  flushed: boolean;
+
+  retryCount: number;
+
+  enable!: boolean;
+
+  timer: ReturnType<typeof setTimeout> | null;
+
   /**
    * Initialize a new `Analytics` with Segment project's `writeKey` and an
    * optional dictionary of `options`.
    *
-   * @param {string} writeKey
-   * @param {object} [options] - (optional)
-   * @property {number} [flushAt] (default: 20)
-   * @property {number} [flushInterval] (default: 10000)
-   * @property {string} [host] (default: 'https://api.segment.io')
+   * @param writeKey - The Segment project write key.
+   * @param options - Optional configuration options.
+   * @param options.flushAt - Number of events to queue before flushing (default: 20).
+   * @param options.flushInterval - Interval in ms between flushes (default: 10000).
+   * @param options.host - The Segment API host (default: 'https://api.segment.io').
    */
-  constructor(writeKey, options = {}) {
+  constructor(writeKey: string, options: AnalyticsOptions = {}) {
     this.writeKey = writeKey;
 
     this.host = removeSlash(options.host || 'https://api.segment.io');
     this.flushInterval = options.flushInterval || 10000;
-    this.flushAt = options.flushAt || Math.max(options.flushAt, 1) || 20;
+    this.flushAt =
+      options.flushAt === undefined ? 20 : Math.max(options.flushAt, 1);
 
     this.queue = [];
     this.path = '/v1/batch';
     this.maxQueueSize = 1024 * 450;
     this.flushed = false;
     this.retryCount = 3;
+    this.timer = null;
 
     Object.defineProperty(this, 'enable', {
       configurable: false,
@@ -48,11 +117,15 @@ export default class Analytics {
     });
   }
 
-  _validate(message, type) {
-    looselyValidate(message, type);
+  _validate(message: AnalyticsMessage, type: string): void {
+    looselyValidate(message as Record<string, unknown>, type);
   }
 
-  _message(type, message, callback) {
+  _message(
+    type: string,
+    message: AnalyticsMessage,
+    callback?: AnalyticsCallback,
+  ): this {
     this._validate(message, type);
     this.enqueue(type, message, callback);
     return this;
@@ -61,33 +134,33 @@ export default class Analytics {
   /**
    * Send an identify `message`.
    *
-   * @param {object} message
-   * @param {Function} [callback] - (optional)
-   * @returns {Analytics}
+   * @param message - The identify message payload.
+   * @param callback - Optional callback invoked after the event is flushed.
+   * @returns The Analytics instance.
    */
-  identify(message, callback) {
+  identify(message: AnalyticsMessage, callback?: AnalyticsCallback): this {
     return this._message('identify', message, callback);
   }
 
   /**
    * Send a track `message`.
    *
-   * @param {object} message
-   * @param {Function} [callback] - (optional)
-   * @returns {Analytics}
+   * @param message - The track message payload.
+   * @param callback - Optional callback invoked after the event is flushed.
+   * @returns The Analytics instance.
    */
-  track(message, callback) {
+  track(message: AnalyticsMessage, callback?: AnalyticsCallback): this {
     return this._message('track', message, callback);
   }
 
   /**
    * Send a page `message`.
    *
-   * @param {object} message
-   * @param {Function} [callback] - (optional)
-   * @returns {Analytics}
+   * @param message - The page message payload.
+   * @param callback - Optional callback invoked after the event is flushed.
+   * @returns The Analytics instance.
    */
-  page(message, callback) {
+  page(message: AnalyticsMessage, callback?: AnalyticsCallback): this {
     return this._message('page', message, callback);
   }
 
@@ -95,17 +168,21 @@ export default class Analytics {
    * Add a `message` of type `type` to the queue and
    * check whether it should be flushed.
    *
-   * @param {string} type
-   * @param {object} msg
-   * @param {Function} [callback] - (optional)
+   * @param type - The type of the message (e.g. 'track', 'identify', 'page').
+   * @param msg - The message payload.
+   * @param callback - Optional callback invoked after the event is flushed.
    */
-  enqueue(type, msg, callback = noop) {
+  enqueue(
+    type: string,
+    msg: AnalyticsMessage,
+    callback: AnalyticsCallback = noop,
+  ): void {
     if (!this.enable) {
       setImmediate(callback);
       return;
     }
 
-    const message = { ...msg, type };
+    const message: AnalyticsMessage = { ...msg, type };
 
     // Specifying library here helps segment to understand structure of request.
     // Currently segment seems to support these source libraries only.
@@ -154,9 +231,10 @@ export default class Analytics {
   /**
    * Flush the current queue
    *
-   * @param {Function} [callback] - (optional)
+   * @param callback - Optional callback invoked after the queue is flushed.
+   * @returns A promise that resolves when the flush is complete.
    */
-  flush(callback = noop) {
+  flush(callback: AnalyticsCallback = noop): Promise<void> | undefined {
     if (!this.enable) {
       setImmediate(callback);
       return Promise.resolve();
@@ -176,20 +254,20 @@ export default class Analytics {
     const callbacks = items.map((item) => item.callback);
     const messages = items.map((item) => item.message);
 
-    const data = {
+    const data: FlushData = {
       batch: messages,
       timestamp: new Date(),
       sentAt: new Date(),
     };
 
-    const done = (err) => {
+    const done = (err?: Error) => {
       setImmediate(() => {
         callbacks.forEach((fn) => fn(err, data));
         callback(err, data);
       });
     };
 
-    const headers = {
+    const headers: Record<string, string> = {
       Authorization: `Basic ${Buffer.from(this.writeKey, 'utf8').toString(
         'base64',
       )}`,
@@ -207,14 +285,24 @@ export default class Analytics {
     );
   }
 
-  _retryRequest(url, body, done, retryNo) {
+  _retryRequest(
+    url: string,
+    body: RequestBody,
+    done: (err?: Error) => void,
+    retryNo: number,
+  ): void {
     const delay = Math.pow(2, retryNo) * 100;
     setTimeout(() => {
       this._sendRequest(url, body, done, retryNo + 1);
     }, delay);
   }
 
-  async _sendRequest(url, body, done, retryNo) {
+  async _sendRequest(
+    url: string,
+    body: RequestBody,
+    done: (err?: Error) => void,
+    retryNo: number,
+  ): Promise<void> {
     return fetch(url, body)
       .then(async (response) => {
         if (response.ok) {
@@ -229,8 +317,11 @@ export default class Analytics {
           done(error);
         }
       })
-      .catch((error) => {
-        if (this._isErrorRetryable(error) && retryNo <= this.retryCount) {
+      .catch((error: Error) => {
+        if (
+          this._isErrorRetryable(error as RetryableError) &&
+          retryNo <= this.retryCount
+        ) {
           this._retryRequest(url, body, done, retryNo);
         } else {
           done(error);
@@ -238,7 +329,7 @@ export default class Analytics {
       });
   }
 
-  _isErrorRetryable(error) {
+  _isErrorRetryable(error: RetryableError): boolean {
     // Retry Network Errors.
     if (isNetworkError(error)) {
       return true;
