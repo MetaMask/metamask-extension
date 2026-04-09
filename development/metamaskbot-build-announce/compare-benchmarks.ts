@@ -324,8 +324,8 @@ async function main(): Promise<void> {
 
   const benchmarks = await loadCurrentBenchmarks(values.current);
   if (benchmarks.length === 0) {
-    console.warn('No benchmark JSON files found in', values.current);
-    process.exit(0);
+    console.error('No benchmark JSON files found in', values.current);
+    process.exit(1);
   }
 
   const baseline = await loadBaseline();
