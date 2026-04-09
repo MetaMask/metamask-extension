@@ -368,6 +368,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           ppom_eth_getCode_count: 3,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         },
@@ -1051,6 +1052,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.WALLET_SEND_CALLS,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         },
@@ -1063,6 +1065,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         },
@@ -1075,6 +1078,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         },
@@ -1133,6 +1137,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.PERSONAL_SIGN,
           origin: 'https://iframe.malicious.com',
           mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
         };
 
         const res = { error: null };
@@ -1143,6 +1148,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
           is_iframe: true,
+          is_cross_origin_iframe: true,
           iframe_origin: 'https://iframe.malicious.com',
           top_level_origin: 'https://top-level.dapp.com',
         });
@@ -1174,6 +1180,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
           origin: 'https://iframe.malicious.com',
           mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
           params: {
             requiredScopes: { 'eip155:1': {} },
             optionalScopes: {},
@@ -1215,6 +1222,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
           origin: 'https://iframe.malicious.com',
           mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
           params: {
             requiredScopes: { 'eip155:1': {} },
             optionalScopes: {},
@@ -1246,6 +1254,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           method: MESSAGE_TYPE.PERSONAL_SIGN,
           origin: 'https://iframe.malicious.com',
           mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
         };
 
         const res = { error: null };
