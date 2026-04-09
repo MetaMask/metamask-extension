@@ -97,6 +97,7 @@ export const SETUP_2FA_ROUTE = '/setup-2fa';
 export const MANAGE_2FA_ROUTE = '/manage-2fa';
 export const RECOVER_2FA_ROUTE = '/recover-2fa';
 export const LINK_2FA_ROUTE = '/link-2fa';
+export const SEND_2FA_ROUTE = '/send-2fa';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';

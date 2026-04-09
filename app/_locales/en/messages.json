@@ -239,7 +239,7 @@
     "message": "Email, authenticator app, passkey, etc."
   },
   "twoFASlide3Share3Title": {
-    "message": "Share 3: A recovery factor"
+    "message": "Share 3: A backup factor"
   },
   "twoFASlide3Share3Desc": {
     "message": "In case you lose access to a signing factor or device"
@@ -249,6 +249,42 @@
   },
   "twoFACreateNewWallet": {
     "message": "Create a new wallet"
+  },
+  "twoFAStepNOfTotal": {
+    "message": "Step $1 of $2"
+  },
+  "twoFABackupExplainerTitle": {
+    "message": "Recover anywhere"
+  },
+  "twoFABackupExplainerBody": {
+    "message": "Your 2FA Wallet can be recovered on any device. If you ever lose this device, you'll need two things to restore it:"
+  },
+  "twoFABackupExplainerPoint1Title": {
+    "message": "One verification factor"
+  },
+  "twoFABackupExplainerPoint1Desc": {
+    "message": "the method you just set up"
+  },
+  "twoFABackupExplainerPoint2Title": {
+    "message": "One backup factor"
+  },
+  "twoFABackupExplainerPoint2Desc": {
+    "message": "You'll choose this next"
+  },
+  "twoFAContinueToBackup": {
+    "message": "Continue to backup setup"
+  },
+  "twoFASetupBackupFactor": {
+    "message": "Add backup factor"
+  },
+  "twoFABackupPickerSubtitle": {
+    "message": "Required alongside your verification method to restore your 2FA wallet on a new device."
+  },
+  "twoFABackupFactor": {
+    "message": "Backup factor"
+  },
+  "twoFANoBackupNote": {
+    "message": "You can set up a backup method later in settings."
   },
   "twoFASigningPickerTitle": {
     "message": "Set up signing verification"
@@ -544,6 +580,33 @@
   "twoFAMobileLinkedRole": {
     "message": "Signing + Recovery factor"
   },
+  "twoFAFirstFactorSuccessTitle": {
+    "message": "You're all set!"
+  },
+  "twoFAFirstFactorSuccessBody": {
+    "message": "You'll be prompted for 2FA verification using this method whenever you send a transaction."
+  },
+  "twoFARecoveryFactorSuccessTitle": {
+    "message": "Recovery factor added"
+  },
+  "twoFARecoveryFactorSuccessBody": {
+    "message": "You can now recover your wallet if you lose access to this device."
+  },
+  "twoFADevicePairing": {
+    "message": "Device pairing"
+  },
+  "twoFAMobileRequiresFactorFirst": {
+    "message": "Set up a verification method first"
+  },
+  "twoFAContinueToRecovery": {
+    "message": "Continue to recovery setup"
+  },
+  "twoFASkipRecovery": {
+    "message": "I'll set it up later"
+  },
+  "twoFANoRecoveryNote": {
+    "message": "You can set up a recovery method later in settings."
+  },
   "twoFARecommended": {
     "message": "Recommended"
   },
@@ -636,7 +699,10 @@
     "message": "Enter the 6-digit code"
   },
   "twoFAVerify": {
-    "message": "Verify"
+    "message": "Approve"
+  },
+  "twoFAUseAnotherMethod": {
+    "message": "Use another method"
   },
   "twoFAPasskeysSetup": {
     "message": "Set up Passkey"
@@ -667,6 +733,9 @@
   },
   "twoFAContinue": {
     "message": "Continue"
+  },
+  "twoFASetUp2FA": {
+    "message": "Set up 2FA"
   },
   "twoFASuccessTitle": {
     "message": "2FA Wallet Created!"
@@ -702,7 +771,7 @@
     "message": "Signing factor"
   },
   "twoFARecoveryFactor": {
-    "message": "Recovery factor"
+    "message": "Backup factor"
   },
   "twoFADeviceFactor": {
     "message": "Current device"
@@ -713,17 +782,26 @@
   "twoFAGoToWallet": {
     "message": "Go to Wallet"
   },
+  "twoFASuccessForTransactions": {
+    "message": "For Transactions"
+  },
+  "twoFASuccessForRecovery": {
+    "message": "For Recovery"
+  },
+  "twoFASuccessTwoOfTwoRequired": {
+    "message": "2 of 2 required"
+  },
   "twoFAAdd2FAVerification": {
     "message": "Set up 2FA verification"
   },
   "twoFAStepSigning": {
-    "message": "1. Transaction verification"
+    "message": "Verification"
   },
   "twoFAStepLinkMobile": {
     "message": "2. Link Mobile"
   },
   "twoFAStepRecovery": {
-    "message": "3. Recovery"
+    "message": "Backup"
   },
   "twoFAStepDone": {
     "message": "Complete"
@@ -797,16 +875,16 @@
     "message": "This applies only to this wallet. Your other accounts are not affected"
   },
   "twoFALearnMoreRecoveryTitle": {
-    "message": "How recovery factors work"
+    "message": "How backup factors work"
   },
   "twoFALearnMoreRecoveryPoint1": {
-    "message": "If you lose access to your device, your recovery factor — together with your signing method — is needed to restore your 2FA wallet on a new device."
+    "message": "If you lose access to your device, your backup factor — together with your verification method — is needed to restore your 2FA wallet on a new device."
   },
   "twoFALearnMoreRecoveryPoint2": {
-    "message": "Your recovery factor helps re-create the key shares on your new device without ever exposing the full key."
+    "message": "Your backup factor helps re-create the key shares on your new device without ever exposing the full key."
   },
   "twoFALearnMoreRecoveryPoint3": {
-    "message": "Your recovery factor is separate from your signing method — it's only used for account restoration, not for transaction verification."
+    "message": "Your backup factor is separate from your verification method — it's only used for account restoration, not for transaction verification."
   },
   "twoFAGotIt": {
     "message": "Got it"
@@ -836,7 +914,110 @@
     "message": "2FA Verification"
   },
   "twoFARecoveryFactors": {
-    "message": "Recovery factor"
+    "message": "Backup factor"
+  },
+  "twoFASendTitle": {
+    "message": "Send from 2FA account"
+  },
+  "twoFASendSubtitle": {
+    "message": "This transaction will require 2FA verification before signing."
+  },
+  "twoFARecipientLabel": {
+    "message": "Recipient address"
+  },
+  "twoFARecipientPlaceholder": {
+    "message": "Enter public address (0x) or ENS name"
+  },
+  "twoFAAmountLabel": {
+    "message": "Amount"
+  },
+  "twoFAAmountPlaceholder": {
+    "message": "0.0"
+  },
+  "twoFANetworkLabel": {
+    "message": "Network"
+  },
+  "twoFAEthereumMainnet": {
+    "message": "Ethereum Mainnet"
+  },
+  "twoFABalance": {
+    "message": "Balance: $1 ETH",
+    "description": "$1 is the ETH balance"
+  },
+  "twoFAContinueToReview": {
+    "message": "Continue"
+  },
+  "twoFAReviewTitle": {
+    "message": "Review transaction"
+  },
+  "twoFAReviewFrom": {
+    "message": "From"
+  },
+  "twoFAReviewTo": {
+    "message": "To"
+  },
+  "twoFAReviewAmount": {
+    "message": "Amount"
+  },
+  "twoFAReviewGas": {
+    "message": "Estimated gas fee"
+  },
+  "twoFAReviewTotal": {
+    "message": "Total"
+  },
+  "twoFAConfirmTransaction": {
+    "message": "Confirm"
+  },
+  "twoFAApproveTitle": {
+    "message": "2FA approval required"
+  },
+  "twoFAApproveSubtitle": {
+    "message": "Approve this transaction with your signing factor."
+  },
+  "twoFAApproveVerifyWith": {
+    "message": "Approve with $1",
+    "description": "$1 is the factor name, e.g. Passkeys or Authenticator"
+  },
+  "twoFAApproveTxSummary": {
+    "message": "Sending $1 ETH to $2",
+    "description": "$1 is the amount, $2 is the truncated recipient address"
+  },
+  "twoFAApproveExtensionCloud": {
+    "message": "Extension + Cloud"
+  },
+  "twoFASigningTitle": {
+    "message": "Signing with MPC..."
+  },
+  "twoFASigningSubtitle": {
+    "message": "Your device and MetaMask cloud are co-signing this transaction using threshold cryptography."
+  },
+  "twoFASigningStep1": {
+    "message": "Verifying local share"
+  },
+  "twoFASigningStep2": {
+    "message": "Co-signing with cloud"
+  },
+  "twoFASigningStep3": {
+    "message": "Broadcasting transaction"
+  },
+  "twoFATxSuccessTitle": {
+    "message": "Transaction signed"
+  },
+  "twoFATxSuccessSubtitle": {
+    "message": "$1 ETH sent successfully",
+    "description": "$1 is the amount"
+  },
+  "twoFATxSuccessHash": {
+    "message": "Transaction hash"
+  },
+  "twoFAViewTransaction": {
+    "message": "View on Etherscan"
+  },
+  "twoFADone": {
+    "message": "Done"
+  },
+  "twoFASendAction": {
+    "message": "Send"
   },
   "addAHardwareWallet": {
     "message": "Add a hardware wallet"

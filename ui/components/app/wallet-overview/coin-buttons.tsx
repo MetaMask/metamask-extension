@@ -16,7 +16,7 @@ import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE, SEND_2FA_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -243,6 +243,11 @@ const CoinButtons = ({
   }, [currentChainId, multichainChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
+    if (typeof window !== 'undefined' && localStorage.getItem('mm-2fa-active') === 'true') {
+      navigate(SEND_2FA_ROUTE);
+      return;
+    }
+
     trackEvent(
       {
         event: MetaMetricsEventName.SendStarted,
@@ -270,7 +275,7 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation, navigate]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);

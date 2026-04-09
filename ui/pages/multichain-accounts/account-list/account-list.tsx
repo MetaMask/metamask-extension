@@ -42,7 +42,7 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getShowDefaultAddress,
 } from '../../../selectors';
-import { DEFAULT_ROUTE, LINK_2FA_ROUTE, MANAGE_2FA_ROUTE, PREVIOUS_ROUTE, RECOVER_2FA_ROUTE, SETUP_2FA_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, LINK_2FA_ROUTE, MANAGE_2FA_ROUTE, PREVIOUS_ROUTE, RECOVER_2FA_ROUTE, SEND_2FA_ROUTE, SETUP_2FA_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -220,7 +220,7 @@ export const AccountList = () => {
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
               className="py-3 cursor-pointer hover:bg-background-default-hover rounded-lg px-2 -mx-2"
-              onClick={() => navigate(DEFAULT_ROUTE)}
+              onClick={() => { localStorage.setItem('mm-2fa-active', 'true'); navigate(DEFAULT_ROUTE); }}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
                 <AvatarAccount
@@ -244,6 +244,17 @@ export const AccountList = () => {
                     className="absolute right-0 bottom-8 z-50 rounded-lg py-1 min-w-[200px]"
                     style={{ border: '1px solid var(--color-border-muted)', boxShadow: '0 4px 16px var(--color-shadow-default)' }}
                   >
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      alignItems={AlignItems.center}
+                      gap={3}
+                      className="px-4 py-3 cursor-pointer hover:bg-background-default-hover"
+                      onClick={(e: React.MouseEvent) => { e.stopPropagation(); setTwoFAMenuOpen(false); navigate(SEND_2FA_ROUTE); }}
+                    >
+                      <Icon name={IconName.Send} color={IconColor.IconDefault} size={IconSize.Sm} />
+                      <Text variant={TextVariant.bodySmMedium}>{t('twoFASendAction')}</Text>
+                    </Box>
                     <Box
                       display={Display.Flex}
                       flexDirection={FlexDirection.Row}

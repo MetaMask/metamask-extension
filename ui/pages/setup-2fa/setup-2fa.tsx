@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import qrCode from 'qrcode-generator';
 import {
   Box,
   BoxAlignItems,
@@ -65,13 +66,15 @@ const ALL_FACTORS: FactorOption[] = [
   { id: 'sms', nameKey: 'twoFAFactorSmsOtp', descKey: 'twoFAFactorSmsOtpDesc', icon: IconName.Sms, security: 'less' },
 ];
 
+const BACKUP_ALLOWED_IDS: FactorId[] = ['authenticator', 'email', 'sms', 'passkeys'];
+
 type UserType = 'srp' | 'social';
 
-type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'mobile-link' | 'success';
+type Step = 'carousel-0' | 'signing' | 'carousel-backup' | 'backup' | 'success';
 
 function getProgressStage(step: Step): number {
   if (step === 'signing') return 1;
-  if (step === 'mobile-link') return 2;
+  if (step === 'backup') return 2;
   if (step === 'success') return 3;
   return 0;
 }
@@ -89,6 +92,36 @@ function maskPhone(phone: string): string {
 
 // ─── Shared UI ───────────────────────────────────────────────────────
 
+const MOCK_PAIR_URL = 'metamask://pair?session=2fa-mock-session-abc123';
+
+function MobilePairQrContent({ t }: { t: (key: string) => string }) {
+  const qrHtml = useMemo(() => {
+    const qr = qrCode(4, 'M');
+    qr.addData(MOCK_PAIR_URL);
+    qr.make();
+    return qr.createTableTag(4, 12);
+  }, []);
+
+  return (
+    <Box className="flex-1 overflow-y-auto flex flex-col items-center" paddingHorizontal={4}>
+      <Box
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className="rounded-2xl mt-6 mb-6"
+        style={{ width: 220, height: 220, overflow: 'hidden' }}
+        dangerouslySetInnerHTML={{ __html: qrHtml }}
+      />
+      <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">
+        {t('twoFALinkMobileScanTitle')}
+      </Text>
+      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative} className="mt-1 text-center">
+        {t('twoFALinkMobileScanSubtitle')}
+      </Text>
+    </Box>
+  );
+}
+
 function SetupHeader({ onBack, onClose, t }: { onBack: () => void; onClose: () => void; t: (key: string) => string }) {
   return (
     <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between} padding={4} className="shrink-0">
@@ -100,37 +133,27 @@ function SetupHeader({ onBack, onClose, t }: { onBack: () => void; onClose: () =
 }
 
 function StepProgress({ stage, t }: { stage: number; t: (key: string) => string }) {
-  const steps = [
-    { key: 'twoFAStepSigning', stageNum: 1 },
-    { key: 'twoFAStepLinkMobile', stageNum: 2 },
-  ];
   return (
-    <Box flexDirection={BoxFlexDirection.Row} paddingHorizontal={4} paddingBottom={3} gap={2} className="shrink-0">
-      {steps.map((step, i) => {
-        const isActive = stage === step.stageNum;
-        const isCompleted = stage > step.stageNum;
-
-        return (
-          <Box key={i} className="flex-1" flexDirection={BoxFlexDirection.Column} alignItems={BoxAlignItems.Start}>
-            <Box
-              className="w-full rounded-full"
-              style={{
-                height: 3,
-                backgroundColor: isActive ? 'var(--color-primary-default)' : isCompleted ? 'var(--color-primary-default)' : 'var(--color-border-muted)',
-                opacity: isCompleted ? 0.4 : 1,
-              }}
-            />
-            <Text
-              variant={TextVariant.BodyXs}
-              fontWeight={isActive ? FontWeight.Bold : FontWeight.Medium}
-              color={isActive ? TextColor.TextDefault : TextColor.TextMuted}
-              className="pt-1.5"
-            >
-              {t(step.key)}
-            </Text>
-          </Box>
-        );
-      })}
+    <Box paddingHorizontal={4} paddingBottom={4} className="shrink-0">
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Bold}
+        className="mb-2"
+      >
+        {t('twoFAStepNOfTotal').replace('$1', String(stage)).replace('$2', '2')}
+      </Text>
+      <Box
+        className="w-full rounded-full overflow-hidden"
+        style={{ height: 6, backgroundColor: 'var(--color-success-muted)' }}
+      >
+        <Box
+          className="h-full rounded-full transition-all duration-500"
+          style={{
+            width: stage === 1 ? '50%' : '100%',
+            backgroundColor: 'var(--color-success-default)',
+          }}
+        />
+      </Box>
     </Box>
   );
 }
@@ -279,7 +302,7 @@ function OtpInput({ onCodeChange }: { onCodeChange: (code: string, isFull: boole
 
 function SetupModal({ factorId, phase, onComplete, onClose, t }: {
   factorId: FactorId;
-  phase: 'signing' | 'recovery';
+  phase: 'signing' | 'backup';
   onComplete: (detail?: string) => void;
   onClose: () => void;
   t: (key: string) => string;
@@ -289,7 +312,7 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
   const [otpFilled, setOtpFilled] = useState(false);
 
   const factor = ALL_FACTORS.find((f) => f.id === factorId)!;
-  const effectiveSubStep = phase === 'recovery' ? 'verify' : subStep;
+  const effectiveSubStep = phase === 'backup' ? 'verify' : subStep;
 
   const header = (
     <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between} padding={4} className="shrink-0">
@@ -477,32 +500,6 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
 
 
   if (factorId === 'passkeys') {
-    if (effectiveSubStep === 'input') {
-      return (
-        <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
-          {header}
-          <Box className="flex-1 overflow-y-auto" paddingHorizontal={4}>
-            <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAPasskeysSetup')}</Text>
-            <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFAPasskeysIdentifierSubtitle')}</Text>
-            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium} className="mb-1">{t('twoFAIdentifierLabel')}</Text>
-            <input
-              type="text"
-              placeholder={t('twoFAIdentifierPlaceholder')}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2.5 text-sm"
-              style={{ borderColor: 'var(--color-border-default)', backgroundColor: 'var(--color-background-default)', color: 'var(--color-text-default)' }}
-            />
-          </Box>
-          <Box padding={4} className="shrink-0">
-            <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth isDisabled={!inputValue.trim()} onClick={() => setSubStep('verify')}>
-              {t('twoFAContinue')}
-            </Button>
-          </Box>
-        </Box>
-      );
-    }
-
     return (
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
         {header}
@@ -512,9 +509,6 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
           </Box>
           <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">{t('twoFAPasskeysSetup')}</Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center">{t('twoFAPasskeysSubtitle')}</Text>
-          {inputValue && (
-            <Text color={TextColor.TextMuted} variant={TextVariant.BodyXs} className="mt-2 text-center">{inputValue}</Text>
-          )}
         </Box>
         <Box padding={4} className="shrink-0">
           <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth startIconName={IconName.Fingerprint}
@@ -531,8 +525,10 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
 
 // ─── Factor List Screen ──────────────────────────────────────────────
 
-function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, step, t }: {
-  phase: 'signing' | 'recovery';
+function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, onSkip, step, t,
+  mobileLinked, onMobileLink, mobileLinkSubStep, onMobileLinkSubStepChange,
+}: {
+  phase: 'signing' | 'backup';
   title: string;
   subtitle: string;
   factors: FactorOption[];
@@ -542,21 +538,28 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
   onContinue: () => void;
   onBack: () => void;
   onClose: () => void;
+  onSkip?: () => void;
   step: Step;
   t: (key: string) => string;
+  mobileLinked?: boolean;
+  onMobileLink?: () => void;
+  mobileLinkSubStep?: 'info' | 'qr';
+  onMobileLinkSubStepChange?: (sub: 'info' | 'qr') => void;
 }) {
   const [setupModalFactor, setSetupModalFactor] = useState<FactorId | null>(null);
   const [smsWarningVisible, setSmsWarningVisible] = useState(false);
   const [learnMoreVisible, setLearnMoreVisible] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const available = factors.filter((f) => !excludeIds.includes(f.id));
-  const canContinue = configured.length > 0;
-
+  const canContinue = configured.length > 0 || (phase === 'backup' && Boolean(mobileLinked));
+  const showMobilePairing = phase === 'backup' && onMobileLink;
 
   const handleSetupComplete = (detail?: string) => {
     if (setupModalFactor) {
       onFactorConfigured({ id: setupModalFactor, detail });
       setSetupModalFactor(null);
+      setShowSuccessPopup(true);
     }
   };
 
@@ -568,12 +571,30 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
     }
   };
 
+  if (phase === 'backup' && mobileLinkSubStep === 'qr') {
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full">
+        <SetupHeader onBack={() => onMobileLinkSubStepChange?.('info')} onClose={onClose} t={t} />
+        <StepProgress stage={getProgressStage(step)} t={t} />
+        <MobilePairQrContent t={t} />
+        <Box padding={4} className="shrink-0">
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth
+            onClick={() => { onMobileLink?.(); onMobileLinkSubStepChange?.('info'); setShowSuccessPopup(true); }}>
+            {t('twoFALinkMobileScanDone')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full relative">
       <SetupHeader onBack={onBack} onClose={onClose} t={t} />
       <StepProgress stage={getProgressStage(step)} t={t} />
 
       <Box className="flex-1 overflow-y-auto" paddingHorizontal={4}>
+        {/* Success banner removed — popup shown below */}
+
         {/* Title */}
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{title}</Text>
         <Box className="mt-1 mb-6">
@@ -582,6 +603,43 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
           </Text>
           <TextButton size={TextButtonSize.BodySm} className="inline" onClick={() => setLearnMoreVisible(true)}>{t('twoFALearnMore')}</TextButton>
         </Box>
+
+        {/* Device pairing — mobile (shown first on backup screen) */}
+        {showMobilePairing && (
+          <Box className="mb-4">
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              paddingVertical={3}
+              paddingHorizontal={3}
+              gap={3}
+              borderColor={BoxBorderColor.BorderMuted}
+              className="border-b"
+            >
+              <Box
+                backgroundColor={mobileLinked ? BoxBackgroundColor.SuccessMuted : BoxBackgroundColor.BackgroundMuted}
+                className="rounded-full p-1.5 shrink-0"
+              >
+                <Icon name={IconName.Mobile} size={IconSize.Sm} color={mobileLinked ? IconColor.SuccessDefault : IconColor.IconAlternative} />
+              </Box>
+              <Box className="flex-1 min-w-0">
+                <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>{t('twoFAFactorMobileDevice')}</Text>
+              </Box>
+              {mobileLinked ? (
+                <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full px-2.5 py-1">
+                  <Text variant={TextVariant.BodyXs} fontWeight={FontWeight.Bold} color={TextColor.SuccessDefault} className="text-[10px]">
+                    {t('twoFAActive')}
+                  </Text>
+                </Box>
+              ) : (
+                <Button variant={ButtonVariant.Secondary} size={ButtonSize.Sm}
+                  onClick={() => onMobileLinkSubStepChange?.('qr')}>
+                  {t('twoFASetUp')}
+                </Button>
+              )}
+            </Box>
+          </Box>
+        )}
 
         {(() => {
           const configuredIds = configured.map((c) => c.id);
@@ -624,16 +682,15 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
       </Box>
 
       {/* Footer */}
-      <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative} className="text-center mb-2">
-          {!canContinue
-            ? (phase === 'signing' ? t('twoFAAtLeastOneSigning') : t('twoFAAtLeastOneRecovery'))
-            : t('twoFACanAddMoreLater')
-          }
-        </Text>
+      <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted} flexDirection={BoxFlexDirection.Column} gap={2}>
         <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth isDisabled={!canContinue} onClick={onContinue}>
           {phase === 'signing' ? t('twoFAContinue') : t('twoFACreate2FAWallet')}
         </Button>
+        {onSkip && !canContinue && (
+          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} className="pt-1">
+            <TextButton onClick={onSkip}>{t('twoFASkipRecovery')}</TextButton>
+          </Box>
+        )}
       </Box>
 
       {/* SMS Warning Modal */}
@@ -722,6 +779,40 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
         </Box>
       )}
 
+      {/* Factor success popup */}
+      {showSuccessPopup && !setupModalFactor && (
+        <Box className="absolute inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'var(--color-overlay-default)' }}>
+          <Box
+            backgroundColor={BoxBackgroundColor.BackgroundDefault}
+            className="rounded-2xl mx-6 max-w-sm w-full"
+            padding={4}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+          >
+            <Box
+              backgroundColor={BoxBackgroundColor.SuccessMuted}
+              className="rounded-full p-3 mb-4"
+            >
+              <Icon name={IconName.Check} color={IconColor.SuccessDefault} size={IconSize.Xl} />
+            </Box>
+            <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center mb-2">
+              {phase === 'signing' ? t('twoFAFirstFactorSuccessTitle') : t('twoFARecoveryFactorSuccessTitle')}
+            </Text>
+            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative} className="text-center mb-6">
+              {phase === 'signing' ? t('twoFAFirstFactorSuccessBody') : t('twoFARecoveryFactorSuccessBody')}
+            </Text>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isFullWidth
+              onClick={() => setShowSuccessPopup(false)}
+            >
+              {t('twoFAGotIt')}
+            </Button>
+          </Box>
+        </Box>
+      )}
+
       {/* Setup modal overlay */}
       {setupModalFactor && (
         <SetupModal
@@ -745,16 +836,19 @@ export const Setup2FAPage: React.FC = () => {
   const userType: UserType = isSocialLogin ? 'social' : 'srp';
   const [step, setStep] = useState<Step>('carousel-0');
   const [configuredSigning, setConfiguredSigning] = useState<ConfiguredFactor[]>([]);
+  const [configuredBackup, setConfiguredBackup] = useState<ConfiguredFactor[]>([]);
   const [mobileLinked, setMobileLinked] = useState(false);
   const [mobileLinkSubStep, setMobileLinkSubStep] = useState<'info' | 'qr'>('info');
+  const [learnMoreOpen, setLearnMoreOpen] = useState(false);
 
   const handleClose = useCallback(() => navigate(ACCOUNT_LIST_PAGE_ROUTE, { replace: true }), [navigate]);
   const handleGoToWallet = useCallback(() => {
     localStorage.setItem('mm-2fa-wallet-created', 'true');
     localStorage.setItem('mm-2fa-configured-signing', JSON.stringify(configuredSigning.map((f) => f.id)));
+    localStorage.setItem('mm-2fa-configured-backup', JSON.stringify(configuredBackup.map((f) => f.id)));
     localStorage.setItem('mm-2fa-mobile-linked', JSON.stringify(mobileLinked));
     navigate(DEFAULT_ROUTE, { replace: true });
-  }, [navigate, configuredSigning, mobileLinked]);
+  }, [navigate, configuredSigning, configuredBackup, mobileLinked]);
 
   const getFactorName = (id: FactorId) => {
     const f = ALL_FACTORS.find((x) => x.id === id);
@@ -763,8 +857,9 @@ export const Setup2FAPage: React.FC = () => {
 
   const handleBack = useCallback(() => {
     const backMap: Partial<Record<Step, Step>> = {
-      'carousel-1': 'carousel-0', 'carousel-2': 'carousel-1',
-      'signing': 'carousel-2', 'mobile-link': 'signing',
+      'signing': 'carousel-0',
+      'carousel-backup': 'signing',
+      'backup': 'carousel-backup',
     };
     const prev = backMap[step];
     if (prev) setStep(prev);
@@ -774,106 +869,81 @@ export const Setup2FAPage: React.FC = () => {
 
   // ─── Carousel ──────────────────────────────────────────────────────
 
-  if (step.startsWith('carousel-')) {
-    const slideIndex = parseInt(step.split('-')[1], 10);
-    const slides = [
-      {
-        image: slide1Image,
-        title: t('twoFASlide1Title'),
-        content: (
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFASlide1Body')}</Text>
-        ),
-        buttonText: t('twoFANext'),
-        onButton: () => setStep('carousel-1'),
-      },
-      {
-        image: slide2Image,
-        title: t('twoFASlide2Title'),
-        content: (
-          <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-            <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Start} gap={3} paddingBottom={3} borderColor={BoxBorderColor.BorderMuted} className="border-b">
-              <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-2 shrink-0 mt-0.5">
-                <Icon name={IconName.ShieldLock} color={IconColor.PrimaryDefault} size={IconSize.Md} />
-              </Box>
-              <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFASlide2Point1')}</Text>
-            </Box>
-            <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Start} gap={3}>
-              <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-2 shrink-0 mt-0.5">
-                <Icon name={IconName.Refresh} color={IconColor.SuccessDefault} size={IconSize.Md} />
-              </Box>
-              <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFASlide2Point2')}</Text>
-            </Box>
-          </Box>
-        ),
-        buttonText: t('twoFANext'),
-        onButton: () => setStep('carousel-2'),
-      },
-      {
-        image: slide3Image,
-        title: t('twoFASlide3Title'),
-        content: (
-          <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-            <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFASlide3Intro')}</Text>
-            <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-              <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
-                <Box backgroundColor={BoxBackgroundColor.InfoMuted} className="rounded-full p-2 shrink-0">
-                  <Icon name={IconName.Monitor} color={IconColor.InfoDefault} size={IconSize.Md} />
-                </Box>
-                <Box className="min-w-0">
-                  <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share1Title')}</Text>
-                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share1Desc')}</Text>
-                </Box>
-              </Box>
-              <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
-                <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full p-2 shrink-0">
-                  <Icon name={IconName.Key} color={IconColor.PrimaryDefault} size={IconSize.Md} />
-                </Box>
-                <Box className="min-w-0">
-                  <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share2Title')}</Text>
-                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share2Desc')}</Text>
-                </Box>
-              </Box>
-              <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
-                <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-2 shrink-0">
-                  <Icon name={IconName.Refresh} color={IconColor.SuccessDefault} size={IconSize.Md} />
-                </Box>
-                <Box className="min-w-0">
-                  <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share3Title')}</Text>
-                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share3Desc')}</Text>
-                </Box>
-              </Box>
-            </Box>
-            <Text color={TextColor.TextMuted} variant={TextVariant.BodyXs}>{t('twoFASlide3Footer')}</Text>
-          </Box>
-        ),
-        buttonText: t('twoFACreateNewWallet'),
-        onButton: () => setStep('signing'),
-      },
-    ];
-    const slide = slides[slideIndex];
+  // ─── Carousel: 2FA Explainer (slide 0) ─────────────────────────────
+  if (step === 'carousel-0') {
     return (
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full">
         <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between} padding={4} className="shrink-0">
           <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" size={ButtonIconSize.Sm} onClick={handleBack} />
-          <CarouselDots current={slideIndex} total={3} />
+          <Box />
           <ButtonIcon iconName={IconName.Close} ariaLabel="Close" size={ButtonIconSize.Sm} onClick={handleClose} />
         </Box>
-        <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} alignItems={BoxAlignItems.Center} className="shrink-0 relative overflow-hidden" style={{ height: slideIndex === 2 ? '28%' : '35%' }}>
+        <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} alignItems={BoxAlignItems.Center} className="shrink-0 relative overflow-hidden" style={{ height: '35%' }}>
           <img src={foxBgImage} alt="" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', opacity: 0.18 }} />
-          <img src={slide.image} alt="" style={{ maxWidth: slideIndex === 2 ? 180 : 240, maxHeight: slideIndex === 2 ? 180 : 240, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+          <img src={slide1Image} alt="" style={{ maxWidth: 240, maxHeight: 240, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
         </Box>
         <Box padding={4} paddingBottom={2} flexDirection={BoxFlexDirection.Column} gap={3} className="flex-1 min-h-0">
-          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>{slide.title}</Text>
-          {slide.content}
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>{t('twoFASlide1Title')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFASlide1Body')}</Text>
         </Box>
         <Box padding={4} paddingTop={2} className="shrink-0">
-          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={slide.onButton}>{slide.buttonText}</Button>
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={() => setStep('signing')}>{t('twoFASetUp2FA')}</Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  // ─── Carousel: Backup Explainer ───────────────────────────────────
+  if (step === 'carousel-backup') {
+    const signingMethodName = configuredSigning.length > 0 ? getFactorName(configuredSigning[0].id) : t('twoFAStepSigning');
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full">
+        <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between} padding={4} className="shrink-0">
+          <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" size={ButtonIconSize.Sm} onClick={handleBack} />
+          <Box />
+          <ButtonIcon iconName={IconName.Close} ariaLabel="Close" size={ButtonIconSize.Sm} onClick={handleClose} />
+        </Box>
+        <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} alignItems={BoxAlignItems.Center} className="shrink-0 relative overflow-hidden" style={{ height: '35%' }}>
+          <img src={foxBgImage} alt="" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', opacity: 0.18 }} />
+          <img src={slide2Image} alt="" style={{ maxWidth: 240, maxHeight: 240, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+        </Box>
+        <Box padding={4} paddingBottom={2} flexDirection={BoxFlexDirection.Column} gap={3} className="flex-1 min-h-0">
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>{t('twoFABackupExplainerTitle')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>{t('twoFABackupExplainerBody')}</Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Start} gap={3}>
+              <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full p-2 shrink-0 mt-0.5">
+                <Icon name={IconName.ShieldLock} color={IconColor.PrimaryDefault} size={IconSize.Md} />
+              </Box>
+              <Box className="min-w-0">
+                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFABackupExplainerPoint1Title')}</Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{signingMethodName} — {t('twoFABackupExplainerPoint1Desc')}</Text>
+              </Box>
+            </Box>
+            <Box className="text-center py-1">
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold} color={TextColor.TextMuted}>+</Text>
+            </Box>
+            <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Start} gap={3}>
+              <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-2 shrink-0 mt-0.5">
+                <Icon name={IconName.Refresh} color={IconColor.SuccessDefault} size={IconSize.Md} />
+              </Box>
+              <Box className="min-w-0">
+                <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFABackupExplainerPoint2Title')}</Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFABackupExplainerPoint2Desc')}</Text>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+        <Box padding={4} paddingTop={2} className="shrink-0">
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={() => setStep('backup')}>{t('twoFAContinue')}</Button>
         </Box>
       </Box>
     );
   }
 
   // ─── Phase 1: Signing factors ──────────────────────────────────────
+
+  const signingFactorIds = configuredSigning.map((c) => c.id);
 
   if (step === 'signing') {
     return (
@@ -885,7 +955,7 @@ export const Setup2FAPage: React.FC = () => {
         excludeIds={[]}
         configured={configuredSigning}
         onFactorConfigured={(f) => setConfiguredSigning((prev) => [...prev.filter((x) => x.id !== f.id), f])}
-        onContinue={() => setStep('mobile-link')}
+        onContinue={() => setStep('carousel-backup')}
         onBack={handleBack}
         onClose={handleClose}
         step={step}
@@ -894,146 +964,51 @@ export const Setup2FAPage: React.FC = () => {
     );
   }
 
-  // ─── Phase 2: Link MetaMask Mobile ────────────────────────────────
+  // ─── Phase 2: Backup factors (skippable) ────────────────────────────
 
-  if (step === 'mobile-link') {
-    if (mobileLinkSubStep === 'qr') {
-      return (
-        <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full">
-          <SetupHeader onBack={() => setMobileLinkSubStep('info')} onClose={handleClose} t={t} />
-          <StepProgress stage={getProgressStage(step)} t={t} />
-
-          <Box className="flex-1 overflow-y-auto flex flex-col items-center" paddingHorizontal={4}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Center}
-              alignItems={BoxAlignItems.Center}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              className="rounded-2xl mt-6 mb-6"
-              style={{ width: 220, height: 220 }}
-            >
-              <Icon name={IconName.QrCode} color={IconColor.IconMuted} size={IconSize.Xl} />
-            </Box>
-
-            <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">
-              {t('twoFALinkMobileScanTitle')}
-            </Text>
-            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative} className="mt-1 text-center">
-              {t('twoFALinkMobileScanSubtitle')}
-            </Text>
-          </Box>
-
-          <Box padding={4} className="shrink-0">
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              onClick={() => { setMobileLinked(true); setMobileLinkSubStep('info'); setStep('success'); }}
-            >
-              {t('twoFALinkMobileScanDone')}
-            </Button>
-          </Box>
-        </Box>
-      );
-    }
-
+  if (step === 'backup') {
     return (
-      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full">
-        <SetupHeader onBack={handleBack} onClose={handleClose} t={t} />
-        <StepProgress stage={getProgressStage(step)} t={t} />
-
-        <Box className="flex-1 overflow-y-auto" paddingHorizontal={4}>
-          {/* Illustration */}
-          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} className="mb-4 mt-2">
-            <Box className="relative">
-              <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-3xl p-6">
-                <Icon name={IconName.Mobile} color={IconColor.PrimaryDefault} size={IconSize.Xl} />
-              </Box>
-              <Box
-                backgroundColor={BoxBackgroundColor.SuccessDefault}
-                className="absolute -bottom-1 -right-1 rounded-full p-1"
-              >
-                <Icon name={IconName.Add} color={IconColor.SuccessInverse} size={IconSize.Xs} />
-              </Box>
-            </Box>
-          </Box>
-
-          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">
-            {t('twoFALinkMobileTitle')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative} className="mt-1 mb-5 text-center">
-            {t('twoFALinkMobileSubtitle')}
-          </Text>
-
-          {/* Benefit cards */}
-          <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              gap={3}
-              padding={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              className="rounded-xl"
-            >
-              <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full w-8 h-8 flex items-center justify-center shrink-0">
-                <Icon name={IconName.Confirmation} color={IconColor.PrimaryDefault} size={IconSize.Sm} />
-              </Box>
-              <Box className="flex-1">
-                <Text fontWeight={FontWeight.Medium} variant={TextVariant.BodySm}>
-                  {t('twoFALinkMobileBenefit1Title')}
-                </Text>
-                <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative} className="mt-0.5">
-                  {t('twoFALinkMobileBenefit1Desc')}
-                </Text>
-              </Box>
-            </Box>
-
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              gap={3}
-              padding={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              className="rounded-xl"
-            >
-              <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full w-8 h-8 flex items-center justify-center shrink-0">
-                <Icon name={IconName.Refresh} color={IconColor.SuccessDefault} size={IconSize.Sm} />
-              </Box>
-              <Box className="flex-1">
-                <Text fontWeight={FontWeight.Medium} variant={TextVariant.BodySm}>
-                  {t('twoFALinkMobileBenefit2Title')}
-                </Text>
-                <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative} className="mt-0.5">
-                  {t('twoFALinkMobileBenefit2Desc')}
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Footer */}
-        <Box padding={4} className="shrink-0" flexDirection={BoxFlexDirection.Column} gap={2}>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isFullWidth
-            startIconName={IconName.Mobile}
-            onClick={() => setMobileLinkSubStep('qr')}
-          >
-            {t('twoFALinkMobileButton')}
-          </Button>
-          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} className="pt-1">
-            <TextButton onClick={() => setStep('success')}>{t('twoFALinkMobileSkip')}</TextButton>
-          </Box>
-        </Box>
-      </Box>
+      <FactorListScreen
+        phase="backup"
+        title={t('twoFASetupBackupFactor')}
+        subtitle={t('twoFABackupPickerSubtitle')}
+        factors={ALL_FACTORS.filter((f) => BACKUP_ALLOWED_IDS.includes(f.id))}
+        excludeIds={signingFactorIds}
+        configured={configuredBackup}
+        onFactorConfigured={(f) => setConfiguredBackup((prev) => [...prev.filter((x) => x.id !== f.id), f])}
+        onContinue={() => setStep('success')}
+        onSkip={() => setStep('success')}
+        onBack={handleBack}
+        onClose={handleClose}
+        step={step}
+        t={t}
+        mobileLinked={mobileLinked}
+        onMobileLink={() => setMobileLinked(true)}
+        mobileLinkSubStep={mobileLinkSubStep}
+        onMobileLinkSubStepChange={setMobileLinkSubStep}
+      />
     );
   }
 
   // ─── Success ───────────────────────────────────────────────────────
 
   if (step === 'success') {
-    const allConfigured: { id: FactorId; detail?: string; role: string }[] = [
-      ...configuredSigning.map((cf) => ({ ...cf, role: t('twoFASigningFactor') })),
-    ];
+
+    const signingNames = [
+      t('twoFADeviceExtension'),
+      ...configuredSigning.map((cf) => {
+        const fo = ALL_FACTORS.find((f) => f.id === cf.id);
+        return fo ? t(fo.nameKey) : '';
+      }),
+    ].filter(Boolean);
+
+    const backupNames = [
+      ...(mobileLinked ? [t('twoFAFactorMobileDevice')] : []),
+      ...configuredBackup.map((cf) => {
+        const fo = ALL_FACTORS.find((f) => f.id === cf.id);
+        return fo ? t(fo.nameKey) : '';
+      }),
+    ].filter(Boolean);
 
     const confettiColors = ['var(--color-primary-default)', 'var(--color-success-default)', 'var(--color-error-default)', 'var(--color-warning-default)', 'var(--color-primary-alternative)', 'var(--color-info-default)', 'var(--color-accent01-normal)'];
     const confettiPieces = Array.from({ length: 40 }).map((_, i) => ({
@@ -1076,102 +1051,121 @@ export const Setup2FAPage: React.FC = () => {
         <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.End} padding={4} className="shrink-0">
           <ButtonIcon iconName={IconName.Close} ariaLabel="Close" size={ButtonIconSize.Sm} onClick={handleGoToWallet} />
         </Box>
-        <Box className="flex-1 overflow-y-auto flex flex-col items-center" paddingHorizontal={4}>
-          <img src={successPhoneImage} alt="" style={{ width: 140, height: 140, objectFit: 'contain', marginBottom: 12 }} />
+        <Box className="flex-1 flex flex-col items-center justify-center" paddingHorizontal={4}>
+          <img src={successPhoneImage} alt="" style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 8 }} />
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold} className="text-center">{t('twoFASuccessTitle')}</Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center">{t('twoFASuccessSubtitle')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center mb-5">{t('twoFASuccessSubtitle')}</Text>
 
-          {/* Configured factors — single list like JasonBorg */}
-          <Box className="w-full mt-4">
-            <Text variant={TextVariant.BodyXs} fontWeight={FontWeight.Bold} color={TextColor.TextMuted}
-              className="mb-2 uppercase tracking-wider"
+          {/* Two-card layout */}
+          <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={3}>
+            {/* For Transactions */}
+            <Box
+              backgroundColor={BoxBackgroundColor.PrimaryMuted}
+              className="rounded-xl"
+              padding={3}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
             >
-              {t('twoFAConfiguredFactors')}
-            </Text>
-            <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-xl" flexDirection={BoxFlexDirection.Column}>
-              {/* Active device */}
+              <Box backgroundColor={BoxBackgroundColor.PrimaryDefault} className="rounded-full p-2 shrink-0">
+                <Icon name={IconName.Lock} color={IconColor.PrimaryInverse} size={IconSize.Sm} />
+              </Box>
+              <Box className="flex-1 min-w-0">
+                <Text fontWeight={FontWeight.Bold} variant={TextVariant.BodySm}>{t('twoFASuccessForTransactions')}</Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative} className="mt-0.5">
+                  {signingNames.join(' \u00b7 ')}
+                </Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted} className="mt-0.5">
+                  {t('twoFASuccessTwoOfTwoRequired')}
+                </Text>
+              </Box>
+            </Box>
+
+            {/* For Recovery */}
+            {backupNames.length > 0 && (
               <Box
+                backgroundColor={BoxBackgroundColor.SuccessMuted}
+                className="rounded-xl"
+                padding={3}
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
-                paddingVertical={3}
-                paddingHorizontal={3}
                 gap={3}
-                borderColor={BoxBorderColor.BorderMuted}
-                className="border-b"
               >
-                <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-1.5 shrink-0">
-                  <Icon name={IconName.Monitor} color={IconColor.SuccessDefault} size={IconSize.Sm} />
+                <Box backgroundColor={BoxBackgroundColor.SuccessDefault} className="rounded-full p-2 shrink-0">
+                  <Icon name={IconName.Refresh} color={IconColor.SuccessInverse} size={IconSize.Sm} />
                 </Box>
-                <Box className="flex-1">
-                  <Text fontWeight={FontWeight.Medium} variant={TextVariant.BodyMd}>{t('twoFADeviceExtension')}</Text>
-                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAActiveDevice')}</Text>
+                <Box className="flex-1 min-w-0">
+                  <Text fontWeight={FontWeight.Bold} variant={TextVariant.BodySm}>{t('twoFASuccessForRecovery')}</Text>
+                  <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative} className="mt-0.5">
+                    {backupNames.join(' \u00b7 ')}
+                  </Text>
+                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted} className="mt-0.5">
+                    {t('twoFASuccessTwoOfTwoRequired')}
+                  </Text>
                 </Box>
-                <Icon name={IconName.Check} color={IconColor.SuccessDefault} size={IconSize.Sm} />
               </Box>
-              {mobileLinked && (
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  paddingVertical={3}
-                  paddingHorizontal={3}
-                  gap={3}
-                  borderColor={BoxBorderColor.BorderMuted}
-                  className="border-b"
-                >
-                  <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-1.5 shrink-0">
-                    <Icon name={IconName.Mobile} color={IconColor.SuccessDefault} size={IconSize.Sm} />
-                  </Box>
-                  <Box className="flex-1">
-                    <Text fontWeight={FontWeight.Medium} variant={TextVariant.BodyMd}>{t('twoFAFactorMobileDevice')}</Text>
-                    <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAMobileLinkedRole')}</Text>
-                  </Box>
-                  <Icon name={IconName.Check} color={IconColor.SuccessDefault} size={IconSize.Sm} />
-                </Box>
-              )}
-              {allConfigured.map((cf, i) => {
-                const fo = ALL_FACTORS.find((f) => f.id === cf.id);
-                return (
-                  <Box
-                    key={`${cf.id}-${cf.role}`}
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    paddingVertical={3}
-                    paddingHorizontal={3}
-                    gap={3}
-                    borderColor={BoxBorderColor.BorderMuted}
-                    className={i < allConfigured.length - 1 ? 'border-b' : ''}
-                  >
-                    <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-1.5 shrink-0">
-                      <Icon name={fo?.icon || IconName.Lock} color={IconColor.SuccessDefault} size={IconSize.Sm} />
-                    </Box>
-                    <Box className="flex-1">
-                      <Text fontWeight={FontWeight.Medium} variant={TextVariant.BodyMd}>{fo ? t(fo.nameKey) : ''}</Text>
-                      <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{cf.role}</Text>
-                    </Box>
-                    <Icon name={IconName.Check} color={IconColor.SuccessDefault} size={IconSize.Sm} />
-                  </Box>
-                );
-              })}
-            </Box>
+            )}
           </Box>
 
-          {/* Info banner */}
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            gap={3}
-            padding={3}
-            backgroundColor={BoxBackgroundColor.BackgroundMuted}
-            className="rounded-xl w-full mt-4 mb-4"
-          >
-            <Icon name={IconName.Info} color={IconColor.IconMuted} size={IconSize.Sm} className="shrink-0 mt-0.5" />
-            <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-              {t('twoFASuccessInfoBanner')}
-            </Text>
+          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} className="mt-4">
+            <TextButton size={TextButtonSize.BodySm} onClick={() => setLearnMoreOpen(true)}>{t('twoFALearnMore')}</TextButton>
           </Box>
         </Box>
-        <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted} flexDirection={BoxFlexDirection.Column} gap={2}>
+
+        <Box padding={4} className="shrink-0" flexDirection={BoxFlexDirection.Column} gap={2}>
           <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={handleGoToWallet}>{t('twoFAGoToWallet')}</Button>
         </Box>
+
+        {/* Learn more bottom sheet — MPC explainer */}
+        {learnMoreOpen && (
+          <Box className="absolute inset-0 z-50 flex flex-col justify-end" style={{ backgroundColor: 'var(--color-overlay-default)' }} onClick={() => setLearnMoreOpen(false)}>
+            <Box
+              backgroundColor={BoxBackgroundColor.BackgroundDefault}
+              className="rounded-t-2xl"
+              padding={4}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} className="mb-3">
+                <Box className="w-9 h-1 rounded-full" style={{ backgroundColor: 'var(--color-border-default)' }} />
+              </Box>
+              <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="mb-2">{t('twoFASlide3Title')}</Text>
+              <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mb-3">{t('twoFASlide3Intro')}</Text>
+              <Box flexDirection={BoxFlexDirection.Column} gap={2} className="mb-3">
+                <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
+                  <Box backgroundColor={BoxBackgroundColor.InfoMuted} className="rounded-full p-1.5 shrink-0">
+                    <Icon name={IconName.Monitor} color={IconColor.InfoDefault} size={IconSize.Sm} />
+                  </Box>
+                  <Box className="min-w-0">
+                    <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share1Title')}</Text>
+                    <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share1Desc')}</Text>
+                  </Box>
+                </Box>
+                <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
+                  <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full p-1.5 shrink-0">
+                    <Icon name={IconName.Key} color={IconColor.PrimaryDefault} size={IconSize.Sm} />
+                  </Box>
+                  <Box className="min-w-0">
+                    <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share2Title')}</Text>
+                    <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share2Desc')}</Text>
+                  </Box>
+                </Box>
+                <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
+                  <Box backgroundColor={BoxBackgroundColor.SuccessMuted} className="rounded-full p-1.5 shrink-0">
+                    <Icon name={IconName.Refresh} color={IconColor.SuccessDefault} size={IconSize.Sm} />
+                  </Box>
+                  <Box className="min-w-0">
+                    <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>{t('twoFASlide3Share3Title')}</Text>
+                    <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFASlide3Share3Desc')}</Text>
+                  </Box>
+                </Box>
+              </Box>
+              <Text color={TextColor.TextMuted} variant={TextVariant.BodyXs} className="mb-4">{t('twoFASlide3Footer')}</Text>
+              <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={() => setLearnMoreOpen(false)}>
+                {t('twoFAGotIt')}
+              </Button>
+            </Box>
+          </Box>
+        )}
       </Box>
     );
   }

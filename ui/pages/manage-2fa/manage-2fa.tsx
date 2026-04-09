@@ -375,12 +375,18 @@ export const Manage2FAPage: React.FC = () => {
   const availableForSigning = ALL_FACTOR_IDS.filter((id) => !signingFactors.some((f) => f.id === id));
   const availableForRecovery = ALL_FACTOR_IDS.filter((id) => !recoveryFactors.some((f) => f.id === id));
 
+  const syncSigningKey = (allFactors: ConfiguredFactor[]) => {
+    const signingIds = allFactors.filter((f) => f.role === 'signing').map((f) => f.id);
+    localStorage.setItem('mm-2fa-configured-signing', JSON.stringify(signingIds));
+  };
+
   const handleSetupComplete = (detail: string) => {
     if (setupModal) {
       const updated = [...factors.filter((f) => !(f.id === setupModal.factorId && f.role === setupModal.role)),
         { id: setupModal.factorId, detail, role: setupModal.role }];
       setFactors(updated);
       localStorage.setItem('mm-2fa-configured-factors', JSON.stringify(updated));
+      syncSigningKey(updated);
       setSetupModal(null);
     }
   };
@@ -391,6 +397,7 @@ export const Manage2FAPage: React.FC = () => {
     const updated = factors.filter((f) => !(f.id === factorId && f.role === role));
     setFactors(updated);
     localStorage.setItem('mm-2fa-configured-factors', JSON.stringify(updated));
+    syncSigningKey(updated);
   };
 
   return (
