@@ -319,6 +319,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
           [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
@@ -330,6 +331,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
         [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+        [PERPS_EVENT_PROPERTY.SIZE]: position.size,
       });
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(

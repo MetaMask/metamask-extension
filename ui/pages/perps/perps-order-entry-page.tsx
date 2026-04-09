@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import type { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   Navigate,
@@ -682,6 +683,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         | typeof MetaMetricsEventName.PerpsPositionCloseTransaction
         | typeof MetaMetricsEventName.PerpsRiskManagement,
       errorMessage: string,
+      extraProperties?: Record<string, Json>,
     ) => {
       specificFailureTracked = true;
       track(event, {
@@ -700,6 +702,13 @@ const PerpsOrderEntryPage: React.FC = () => {
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
             orderCalculations?.estimatedFees ?? null,
         }),
+        ...(event === MetaMetricsEventName.PerpsRiskManagement && {
+          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
+          [PERPS_EVENT_PROPERTY.SIZE]: position?.size ?? null,
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+            orderCalculations?.estimatedFees ?? null,
+        }),
+        ...extraProperties,
       });
     };
 
@@ -811,6 +820,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           reportTransactionFailure(
             MetaMetricsEventName.PerpsRiskManagement,
             message,
+            { [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType },
           );
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
@@ -818,6 +828,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
           [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
+          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
+            orderCalculations?.estimatedFees ?? null,
         });
         handleBackClick(PERPS_TOAST_KEYS.UPDATE_SUCCESS);
         return;

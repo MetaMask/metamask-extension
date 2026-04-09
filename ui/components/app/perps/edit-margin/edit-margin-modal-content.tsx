@@ -286,6 +286,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
         [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
       });
 
       const streamManager = getPerpsStreamManager();
@@ -317,8 +318,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       track(MetaMetricsEventName.PerpsRiskManagement, {
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
       });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
