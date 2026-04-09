@@ -14,7 +14,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -34,48 +34,6 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Amount
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-amount-label"
-          >
-            0.5 WBTC
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Transfer window
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-frequency-label"
-          >
-            Weekly
-          </p>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -148,6 +106,48 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Amount
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-amount-label"
+          >
+            0.5 WBTC
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Transfer window
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-frequency-label"
+          >
+            Weekly
+          </p>
         </div>
       </div>
     </div>
@@ -204,7 +204,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -224,53 +224,6 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Streaming amount
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="height: 16px; width: 100px;"
-          >
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-              data-testid="review-gator-permission-amount-label"
-            >
-              0.00003024 Unknown Token
-            </p>
-          </div>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Period
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-frequency-label"
-          >
-            Weekly
-          </p>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -343,6 +296,53 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Streaming amount
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 16px; width: 100px;"
+          >
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+              data-testid="review-gator-permission-amount-label"
+            >
+              0.00003024 Unknown Token
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Period
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-frequency-label"
+          >
+            Weekly
+          </p>
         </div>
       </div>
     </div>
@@ -399,7 +399,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -419,32 +419,6 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Revoke token approvals
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="height: 16px; width: 100px;"
-          >
-            <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-              data-testid="review-gator-permission-amount-label"
-            >
-              All tokens
-            </p>
-          </div>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -517,6 +491,27 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Revoke token approvals
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-amount-label"
+          >
+            All tokens
+          </p>
         </div>
       </div>
     </div>
@@ -573,7 +568,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -593,48 +588,6 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Streaming amount
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-amount-label"
-          >
-            302400 WBTC
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Period
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-frequency-label"
-          >
-            Weekly
-          </p>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -707,6 +660,48 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Streaming amount
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-amount-label"
+          >
+            302400 WBTC
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Period
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-frequency-label"
+          >
+            Weekly
+          </p>
         </div>
       </div>
     </div>
@@ -763,7 +758,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -783,48 +778,6 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Amount
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-amount-label"
-          >
-            0.5 ETH
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Transfer window
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-frequency-label"
-          >
-            Weekly
-          </p>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -897,6 +850,48 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Amount
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-amount-label"
+          >
+            0.5 ETH
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Transfer window
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-frequency-label"
+          >
+            Weekly
+          </p>
         </div>
       </div>
     </div>
@@ -953,7 +948,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         style="flex: 1; align-self: center;"
       >
         <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
         >
           localhost:8000
         </p>
@@ -973,48 +968,6 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
     <div
       class="bg-default"
     >
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Streaming amount
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-amount-label"
-          >
-            302400 ETH
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-4 justify-between mt-2"
-        style="flex: 1; align-self: center;"
-      >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
-        >
-          Period
-        </p>
-        <div
-          class="flex flex-row gap-2 items-center justify-end"
-          style="flex: 1; align-self: center;"
-        >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
-            data-testid="review-gator-permission-frequency-label"
-          >
-            Weekly
-          </p>
-        </div>
-      </div>
       <div
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
@@ -1087,6 +1040,48 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Streaming amount
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-amount-label"
+          >
+            302400 ETH
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Period
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+            data-testid="review-gator-permission-frequency-label"
+          >
+            Weekly
+          </p>
         </div>
       </div>
     </div>

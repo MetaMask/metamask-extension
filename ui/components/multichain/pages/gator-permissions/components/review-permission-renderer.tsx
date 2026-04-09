@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
+import {
+  BoxFlexDirection,
+  BoxJustifyContent,
+  TextColor,
+  TextAlign,
+  TextVariant,
+  Box,
+  BoxAlignItems,
+  Text,
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import type {
   AmountField,
+  FieldView,
   I18nFunction,
   I18nValue,
   PermissionRenderContext,
@@ -18,7 +32,15 @@ import {
   formatDecimalShiftedValue,
   GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
-import { GatorPermissionDetailRow } from './gator-permission-detail-row';
+import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getInternalAccountByAddress } from '../../../../../selectors';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import { PreferredAvatar } from '../../../../app/preferred-avatar';
+import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
+import {
+  GatorPermissionDetailRow,
+  gatorPermissionDetailRowStyle,
+} from './gator-permission-detail-row';
 
 // ---------------------------------------------------------------------------
 // Format helpers
@@ -80,13 +102,18 @@ function renderElement(
   tokenDecimals: number | undefined,
   loading: boolean,
   index: number,
+  viewMode: FieldView,
+  extraProps: {
+    permissionAccount?: string;
+    networkName?: string;
+  },
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
-  // Skip elements not intended for the review detail view
+  // Skip elements not intended for the current view
   if (
     'views' in element &&
     element.views &&
-    !element.views.includes('reviewDetail')
+    !element.views.includes(viewMode)
   ) {
     return null;
   }
@@ -132,13 +159,37 @@ function renderElement(
     case 'expiry':
       return renderExpiryElement(rowKey, ctx, t, element.reviewTestId, rules);
 
+    case 'justification':
+      return ctx.permission.justification ? (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t('gatorPermissionsJustification')}
+          value={ctx.permission.justification}
+          testId="review-gator-permission-justification"
+        />
+      ) : null;
+
+    case 'account':
+      return extraProps.permissionAccount ? (
+        <ReviewAccountRow
+          key={rowKey}
+          address={extraProps.permissionAccount}
+        />
+      ) : null;
+
+    case 'network':
+      return extraProps.networkName ? (
+        <ReviewNetworkRow
+          key={rowKey}
+          chainId={ctx.chainId}
+          networkName={extraProps.networkName}
+        />
+      ) : null;
+
     case 'totalExposure':
     case 'divider':
-    case 'justification':
-    case 'account':
     case 'origin':
     case 'address':
-    case 'network':
       return null;
 
     default:
@@ -201,6 +252,105 @@ function renderExpiryElement(
 }
 
 // ---------------------------------------------------------------------------
+// Custom field components (use hooks, so must be React components)
+// ---------------------------------------------------------------------------
+
+const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
+  const t = useI18nContext() as I18nFunction;
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
+  const accountText = useMemo(
+    () => internalAccount?.metadata?.name || shortenAddress(address),
+    [internalAccount, address],
+  );
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {t('account')}
+      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
+        style={gatorPermissionDetailRowStyle}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+      >
+        <PreferredAvatar address={address} />
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          data-testid="review-gator-permission-account-name"
+        >
+          {accountText}
+        </Text>
+        <CopyIcon
+          copyText={address}
+          style={{ position: 'static', right: 'auto', top: 'auto' }}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+const ReviewNetworkRow: React.FC<{
+  chainId: Hex;
+  networkName: string;
+}> = ({ chainId, networkName }) => {
+  const t = useI18nContext() as I18nFunction;
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {t('networks')}
+      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Baseline}
+        justifyContent={BoxJustifyContent.End}
+        style={gatorPermissionDetailRowStyle}
+        gap={2}
+      >
+        <AvatarNetwork
+          src={getImageForChainId(chainId)}
+          name={chainId}
+          size={AvatarNetworkSize.Xs}
+        />
+        <Text
+          textAlign={TextAlign.Right}
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+          data-testid="review-gator-permission-network-name"
+        >
+          {networkName}
+        </Text>
+      </Box>
+    </Box>
+  );
+};
+
+// ---------------------------------------------------------------------------
 // Section renderer
 // ---------------------------------------------------------------------------
 
@@ -211,6 +361,11 @@ function renderSection(
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
+  viewMode: FieldView,
+  extraProps: {
+    permissionAccount?: string;
+    networkName?: string;
+  },
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   return (
@@ -225,6 +380,8 @@ function renderSection(
           tokenDecimals,
           loading,
           index,
+          viewMode,
+          extraProps,
           rules,
         ),
       )}
@@ -244,20 +401,18 @@ export type ReviewPermissionRendererProps = {
   rules?: GatorPermissionRule[] | null;
   tokenInfo: Pick<GatorTokenInfo, 'symbol' | 'decimals'>;
   tokenLoading: boolean;
+  /** Which view to filter fields by. Defaults to 'reviewDetail'. */
+  viewMode?: 'reviewDetail' | 'reviewSummary';
+  /** Account address for rendering account fields. */
+  permissionAccount?: string;
+  /** Network name for rendering network fields. */
+  networkName?: string;
 };
 
 /**
  * Review-page renderer that interprets the shared permission schema.
  * Renders each schema element as a detail row with string-formatted values.
  * Does not run schema `validate` (signing flow only); tolerates imperfect stored data.
- * @param options0
- * @param options0.permissionType
- * @param options0.permissionData
- * @param options0.chainId
- * @param options0.expiry
- * @param options0.rules
- * @param options0.tokenInfo
- * @param options0.tokenLoading
  */
 export const ReviewPermissionRenderer: React.FC<
   ReviewPermissionRendererProps
@@ -269,6 +424,9 @@ export const ReviewPermissionRenderer: React.FC<
   rules,
   tokenInfo,
   tokenLoading: loading,
+  viewMode = 'reviewDetail',
+  permissionAccount,
+  networkName,
 }) => {
   const t = useI18nContext() as I18nFunction;
 
@@ -278,7 +436,11 @@ export const ReviewPermissionRenderer: React.FC<
   }
 
   const ctx: PermissionRenderContext = {
-    permission: { type: permissionType, data: permissionData },
+    permission: {
+      type: permissionType,
+      data: permissionData,
+      justification: permissionData.justification as string | undefined,
+    },
     expiry,
     chainId,
     origin: '',
@@ -287,6 +449,8 @@ export const ReviewPermissionRenderer: React.FC<
       decimals: tokenInfo.decimals,
     },
   };
+
+  const extraProps = { permissionAccount, networkName };
 
   return (
     <>
@@ -298,6 +462,8 @@ export const ReviewPermissionRenderer: React.FC<
           tokenInfo.symbol,
           tokenInfo.decimals,
           loading,
+          viewMode,
+          extraProps,
           rules,
         ),
       )}

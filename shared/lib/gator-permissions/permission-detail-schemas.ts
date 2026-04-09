@@ -41,9 +41,9 @@ const justificationSection: SchemaSection = {
     {
       type: 'justification',
       isVisible: (ctx) => Boolean(ctx.permission.justification),
-      views: ['confirmation'],
+      views: ['confirmation', 'reviewDetail'],
     },
-    { type: 'account', views: ['confirmation'] },
+    { type: 'account', views: ['confirmation', 'reviewSummary'] },
   ],
 };
 
@@ -58,7 +58,7 @@ const permissionInfoSection: SchemaSection = {
       isVisible: (ctx) => Boolean(ctx.to),
       views: ['confirmation'],
     },
-    { type: 'network', views: ['confirmation'] },
+    { type: 'network', views: ['confirmation', 'reviewDetail'] },
   ],
 };
 
@@ -70,27 +70,30 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
   tokenVariant: 'native',
   tokenResolution: { kind: 'native' },
   validate: requireStartTime,
-  summary: {
-    amount: {
-      labelKey: 'amount',
-      testId: 'review-gator-permission-amount-label',
-      getHexValue: (ctx) => getData(ctx).periodAmount as Hex,
-    },
-    frequency: {
-      labelKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-      testId: 'review-gator-permission-frequency-label',
-      getValueKey: (ctx) =>
-        getPeriodFrequencyValueTranslationKey(
-          getData(ctx).periodDuration as number,
-        ),
-    },
-  },
   sections: [
     justificationSection,
     permissionInfoSection,
     {
       testId: 'native-token-periodic-details-section',
       elements: [
+        {
+          type: 'amount',
+          labelKey: 'amount',
+          getValue: (ctx) => new BigNumber(getData(ctx).periodAmount as string),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-amount-label',
+        },
+        {
+          type: 'text',
+          labelKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
+          getValue: (ctx) => ({
+            key: getPeriodFrequencyValueTranslationKey(
+              getData(ctx).periodDuration as number,
+            ),
+          }),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-frequency-label',
+        },
         {
           type: 'amount',
           labelKey: 'confirmFieldAllowance',
@@ -113,10 +116,12 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
           getTimestamp: (ctx) => getData(ctx).startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'expiry',
           reviewTestId: 'review-gator-permission-expiration-date',
+          views: ['confirmation', 'reviewDetail'],
         },
       ],
     },
@@ -127,22 +132,6 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
   tokenVariant: 'native',
   tokenResolution: { kind: 'native' },
   validate: requireStartTime,
-  summary: {
-    amount: {
-      labelKey: 'gatorPermissionsStreamingAmountLabel',
-      testId: 'review-gator-permission-amount-label',
-      getHexValue: (ctx) =>
-        convertAmountPerSecondToAmountPerPeriod(
-          getData(ctx).amountPerSecond as Hex,
-          'weekly',
-        ),
-    },
-    frequency: {
-      labelKey: 'gatorPermissionTokenStreamFrequencyLabel',
-      testId: 'review-gator-permission-frequency-label',
-      getValueKey: () => 'gatorPermissionWeeklyFrequency',
-    },
-  },
   sections: [
     justificationSection,
     permissionInfoSection,
@@ -151,12 +140,33 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
       elements: [
         {
           type: 'amount',
+          labelKey: 'gatorPermissionsStreamingAmountLabel',
+          getValue: (ctx) =>
+            new BigNumber(
+              convertAmountPerSecondToAmountPerPeriod(
+                getData(ctx).amountPerSecond as Hex,
+                'weekly',
+              ),
+            ),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-amount-label',
+        },
+        {
+          type: 'text',
+          labelKey: 'gatorPermissionTokenStreamFrequencyLabel',
+          getValue: () => ({ key: 'gatorPermissionWeeklyFrequency' }),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-frequency-label',
+        },
+        {
+          type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
           getValue: (ctx) =>
             new BigNumber(getData(ctx).initialAmount as string),
           isVisible: (ctx) => Boolean(getData(ctx).initialAmount),
           reviewLabelKey: 'gatorPermissionsInitialAllowance',
           reviewTestId: 'review-gator-permission-initial-allowance',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'amount',
@@ -168,6 +178,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
           reviewTestId: 'review-gator-permission-max-allowance',
+          views: ['confirmation', 'reviewDetail'],
         },
         { type: 'divider', views: ['confirmation'] },
         {
@@ -176,10 +187,12 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           getTimestamp: (ctx) => getData(ctx).startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'expiry',
           reviewTestId: 'review-gator-permission-expiration-date',
+          views: ['confirmation', 'reviewDetail'],
         },
       ],
     },
@@ -194,6 +207,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           reviewLabelKey: 'gatorPermissionsStreamRate',
           reviewTestId: 'review-gator-permission-stream-rate',
           isRatePerSecond: true,
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'amount',
@@ -226,27 +240,30 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
     getTokenAddress: (p) => p.data.tokenAddress as string,
   },
   validate: requireStartTime,
-  summary: {
-    amount: {
-      labelKey: 'amount',
-      testId: 'review-gator-permission-amount-label',
-      getHexValue: (ctx) => getData(ctx).periodAmount as Hex,
-    },
-    frequency: {
-      labelKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-      testId: 'review-gator-permission-frequency-label',
-      getValueKey: (ctx) =>
-        getPeriodFrequencyValueTranslationKey(
-          getData(ctx).periodDuration as number,
-        ),
-    },
-  },
   sections: [
     justificationSection,
     permissionInfoSection,
     {
       testId: 'erc20-token-periodic-details-section',
       elements: [
+        {
+          type: 'amount',
+          labelKey: 'amount',
+          getValue: (ctx) => new BigNumber(getData(ctx).periodAmount as string),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-amount-label',
+        },
+        {
+          type: 'text',
+          labelKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
+          getValue: (ctx) => ({
+            key: getPeriodFrequencyValueTranslationKey(
+              getData(ctx).periodDuration as number,
+            ),
+          }),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-frequency-label',
+        },
         {
           type: 'amount',
           labelKey: 'confirmFieldAllowance',
@@ -270,10 +287,12 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
           getTimestamp: (ctx) => getData(ctx).startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'expiry',
           reviewTestId: 'review-gator-permission-expiration-date',
+          views: ['confirmation', 'reviewDetail'],
         },
       ],
     },
@@ -287,28 +306,32 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
     getTokenAddress: (p) => p.data.tokenAddress as string,
   },
   validate: requireStartTime,
-  summary: {
-    amount: {
-      labelKey: 'gatorPermissionsStreamingAmountLabel',
-      testId: 'review-gator-permission-amount-label',
-      getHexValue: (ctx) =>
-        convertAmountPerSecondToAmountPerPeriod(
-          getData(ctx).amountPerSecond as Hex,
-          'weekly',
-        ),
-    },
-    frequency: {
-      labelKey: 'gatorPermissionTokenStreamFrequencyLabel',
-      testId: 'review-gator-permission-frequency-label',
-      getValueKey: () => 'gatorPermissionWeeklyFrequency',
-    },
-  },
   sections: [
     justificationSection,
     permissionInfoSection,
     {
       testId: 'erc20-token-stream-details-section',
       elements: [
+        {
+          type: 'amount',
+          labelKey: 'gatorPermissionsStreamingAmountLabel',
+          getValue: (ctx) =>
+            new BigNumber(
+              convertAmountPerSecondToAmountPerPeriod(
+                getData(ctx).amountPerSecond as Hex,
+                'weekly',
+              ),
+            ),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-amount-label',
+        },
+        {
+          type: 'text',
+          labelKey: 'gatorPermissionTokenStreamFrequencyLabel',
+          getValue: () => ({ key: 'gatorPermissionWeeklyFrequency' }),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-frequency-label',
+        },
         {
           type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
@@ -318,6 +341,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           isVisible: (ctx) => Boolean(getData(ctx).initialAmount),
           reviewLabelKey: 'gatorPermissionsInitialAllowance',
           reviewTestId: 'review-gator-permission-initial-allowance',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'amount',
@@ -330,6 +354,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
           reviewTestId: 'review-gator-permission-max-allowance',
+          views: ['confirmation', 'reviewDetail'],
         },
         { type: 'divider', views: ['confirmation'] },
         {
@@ -338,10 +363,12 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           getTimestamp: (ctx) => getData(ctx).startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'expiry',
           reviewTestId: 'review-gator-permission-expiration-date',
+          views: ['confirmation', 'reviewDetail'],
         },
       ],
     },
@@ -357,6 +384,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           reviewLabelKey: 'gatorPermissionsStreamRate',
           reviewTestId: 'review-gator-permission-stream-rate',
           isRatePerSecond: true,
+          views: ['confirmation', 'reviewDetail'],
         },
         {
           type: 'amount',
@@ -386,13 +414,6 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
 const erc20TokenRevocationSchema: PermissionSchemaEntry = {
   tokenVariant: 'none',
   tokenResolution: { kind: 'none' },
-  summary: {
-    amount: {
-      labelKey: 'revokeTokenApprovals',
-      testId: 'review-gator-permission-amount-label',
-      getI18nValue: () => ({ key: 'allTokens' }),
-    },
-  },
   sections: [
     justificationSection,
     permissionInfoSection,
@@ -400,8 +421,16 @@ const erc20TokenRevocationSchema: PermissionSchemaEntry = {
       testId: 'erc20-token-revocation-details-section',
       elements: [
         {
+          type: 'text',
+          labelKey: 'revokeTokenApprovals',
+          getValue: () => ({ key: 'allTokens' }),
+          views: ['reviewSummary'],
+          reviewTestId: 'review-gator-permission-amount-label',
+        },
+        {
           type: 'expiry',
           reviewTestId: 'review-gator-permission-expiration-date',
+          views: ['confirmation', 'reviewDetail'],
         },
       ],
     },

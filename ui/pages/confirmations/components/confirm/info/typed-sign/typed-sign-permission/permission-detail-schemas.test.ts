@@ -30,15 +30,19 @@ describe('PERMISSION_SCHEMAS', () => {
   });
 
   describe('views annotations', () => {
-    it('common section elements are confirmation-only', () => {
+    it('common section elements include confirmation view', () => {
       const schema = PERMISSION_SCHEMAS['native-token-periodic'];
       // justification section
       for (const el of schema.sections[0].elements) {
-        expect('views' in el && el.views).toEqual(['confirmation']);
+        expect('views' in el && el.views).toEqual(
+          expect.arrayContaining(['confirmation']),
+        );
       }
       // permission info section
       for (const el of schema.sections[1].elements) {
-        expect('views' in el && el.views).toEqual(['confirmation']);
+        expect('views' in el && el.views).toEqual(
+          expect.arrayContaining(['confirmation']),
+        );
       }
     });
 
@@ -52,56 +56,59 @@ describe('PERMISSION_SCHEMAS', () => {
       }
     });
 
-    it('fields with reviewLabelKey appear in all views (no views restriction)', () => {
+    it('fields with reviewLabelKey include reviewDetail view', () => {
       const schema = PERMISSION_SCHEMAS['native-token-stream'];
       const fieldsWithReviewKey = schema.sections
         .flatMap((s) => s.elements)
         .filter((e) => 'reviewLabelKey' in e && e.reviewLabelKey);
       expect(fieldsWithReviewKey.length).toBeGreaterThan(0);
       for (const f of fieldsWithReviewKey) {
-        expect('views' in f ? f.views : undefined).toBeUndefined();
+        expect('views' in f && f.views).toEqual(
+          expect.arrayContaining(['reviewDetail']),
+        );
       }
     });
   });
 
-  describe('summary', () => {
-    it('native-token-periodic has hex amount and frequency', () => {
+  describe('reviewSummary fields', () => {
+    it('native-token-periodic has amount, frequency, and account in reviewSummary', () => {
       const schema = PERMISSION_SCHEMAS['native-token-periodic'];
-      expect(schema.summary).toBeDefined();
-      expect(schema.summary?.amount.labelKey).toBe('amount');
-      expect('getHexValue' in schema.summary!.amount).toBe(true);
-      expect(schema.summary?.frequency).toBeDefined();
-
-      const ctx = buildCtx({
-        permission: {
-          type: 'native-token-periodic',
-          data: { periodAmount: '0xabc', periodDuration: 86400, startTime: 1 },
-        },
-      });
-      if ('getHexValue' in schema.summary!.amount) {
-        expect(schema.summary!.amount.getHexValue(ctx)).toBe('0xabc');
-      }
+      const summaryFields = schema.sections
+        .flatMap((s) => s.elements)
+        .filter(
+          (e) => 'views' in e && e.views?.includes('reviewSummary'),
+        );
+      expect(summaryFields.length).toBe(3);
+      expect(summaryFields[0].type).toBe('account');
+      expect(summaryFields[1].type).toBe('amount');
+      expect(summaryFields[2].type).toBe('text');
     });
 
-    it('native-token-stream has hex amount and weekly frequency', () => {
+    it('native-token-stream has amount and frequency in reviewSummary', () => {
       const schema = PERMISSION_SCHEMAS['native-token-stream'];
-      expect(schema.summary).toBeDefined();
-      expect('getHexValue' in schema.summary!.amount).toBe(true);
-      expect(schema.summary?.frequency?.getValueKey(buildCtx())).toBe(
-        'gatorPermissionWeeklyFrequency',
-      );
+      const summaryFields = schema.sections
+        .flatMap((s) => s.elements)
+        .filter(
+          (e) => 'views' in e && e.views?.includes('reviewSummary'),
+        );
+      expect(summaryFields.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('erc20-token-revocation has i18n amount and no frequency', () => {
+    it('erc20-token-revocation has account and text amount in reviewSummary (no frequency)', () => {
       const schema = PERMISSION_SCHEMAS['erc20-token-revocation'];
-      expect(schema.summary).toBeDefined();
-      expect('getI18nValue' in schema.summary!.amount).toBe(true);
-      if ('getI18nValue' in schema.summary!.amount) {
-        expect(schema.summary!.amount.getI18nValue(buildCtx())).toEqual({
+      const summaryFields = schema.sections
+        .flatMap((s) => s.elements)
+        .filter(
+          (e) => 'views' in e && e.views?.includes('reviewSummary'),
+        );
+      expect(summaryFields.length).toBe(2);
+      expect(summaryFields[0].type).toBe('account');
+      expect(summaryFields[1].type).toBe('text');
+      if (summaryFields[1].type === 'text') {
+        expect(summaryFields[1].getValue(buildCtx())).toEqual({
           key: 'allTokens',
         });
       }
-      expect(schema.summary?.frequency).toBeUndefined();
     });
   });
 
@@ -212,7 +219,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { periodAmount: '0xabc', periodDuration: 86400, startTime: 1 },
         },
       });
-      const allowanceField = schema.sections[2].elements[0];
+      const allowanceField = schema.sections[2].elements[2];
       expect(allowanceField.type).toBe('amount');
       if (allowanceField.type === 'amount') {
         expect(allowanceField.getValue(ctx)).toEqual(new BigNumber('0xabc'));
@@ -226,7 +233,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { periodAmount: '0x1', periodDuration: 86400, startTime: 1 },
         },
       });
-      const freqField = schema.sections[2].elements[1];
+      const freqField = schema.sections[2].elements[3];
       if (freqField.type === 'text') {
         expect(freqField.getValue(ctx)).toEqual({
           key: 'confirmFieldPeriodDurationDaily',
@@ -241,7 +248,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { periodAmount: '0x1', periodDuration: 86400, startTime: 999 },
         },
       });
-      const dateField = schema.sections[2].elements[3];
+      const dateField = schema.sections[2].elements[5];
       if (dateField.type === 'date') {
         expect(dateField.getTimestamp(ctx)).toBe(999);
       }
@@ -274,7 +281,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[2].elements[0];
+      const field = schema.sections[2].elements[2];
       if ('isVisible' in field && field.isVisible) {
         expect(field.isVisible(ctx)).toBe(false);
       }
@@ -287,7 +294,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { initialAmount: '0x1', amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[2].elements[0];
+      const field = schema.sections[2].elements[2];
       if ('isVisible' in field && field.isVisible) {
         expect(field.isVisible(ctx)).toBe(true);
       }
@@ -304,7 +311,7 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[2].elements[1];
+      const field = schema.sections[2].elements[3];
       if ('isVisible' in field && field.isVisible) {
         expect(field.isVisible(ctx)).toBe(false);
       }
@@ -317,7 +324,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { maxAmount: '0x1234', amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[2].elements[1];
+      const field = schema.sections[2].elements[3];
       if ('isVisible' in field && field.isVisible) {
         expect(field.isVisible(ctx)).toBe(true);
       }
@@ -377,7 +384,7 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[2].elements[0];
+      const field = schema.sections[2].elements[2];
       if (field.type === 'amount') {
         expect(field.getTokenAddress?.(ctx)).toBe('0xTok');
         expect(field.getValue(ctx)).toEqual(new BigNumber('0x1'));
@@ -404,7 +411,7 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[2].elements[1];
+      const field = schema.sections[2].elements[3];
       if ('isVisible' in field && field.isVisible) {
         expect(field.isVisible(ctx)).toBe(false);
       }
@@ -432,8 +439,9 @@ describe('PERMISSION_SCHEMAS', () => {
 
     it('has 3 sections (justification, permissionInfo, details)', () => {
       expect(schema.sections).toHaveLength(3);
-      expect(schema.sections[2].elements).toHaveLength(1);
-      expect(schema.sections[2].elements[0].type).toBe('expiry');
+      expect(schema.sections[2].elements).toHaveLength(2);
+      expect(schema.sections[2].elements[0].type).toBe('text');
+      expect(schema.sections[2].elements[1].type).toBe('expiry');
     });
 
     it('has correct testId', () => {

@@ -13,7 +13,7 @@ export type I18nValue = {
 };
 
 /** Views in which a schema element can appear. */
-export type FieldView = 'confirmation' | 'reviewDetail';
+export type FieldView = 'confirmation' | 'reviewDetail' | 'reviewSummary';
 
 /**
  * The context object passed to all accessor functions in the schema.
@@ -202,32 +202,6 @@ export type TokenResolution =
   | { kind: 'none' };
 
 // ---------------------------------------------------------------------------
-// Summary — declares collapsed-card data for the review page
-// ---------------------------------------------------------------------------
-
-/** Summary amount — either a hex token value or a translatable text. */
-export type SummaryAmount = {
-  labelKey: string;
-  testId: string;
-} & (
-  | { getHexValue: (ctx: PermissionRenderContext) => Hex }
-  | { getI18nValue: (ctx: PermissionRenderContext) => I18nValue }
-);
-
-/** Summary frequency row. */
-export type SummaryFrequency = {
-  labelKey: string;
-  testId: string;
-  getValueKey: (ctx: PermissionRenderContext) => string;
-};
-
-/** Full summary for a schema entry's collapsed review card. */
-export type SchemaSummary = {
-  amount: SummaryAmount;
-  frequency?: SummaryFrequency;
-};
-
-// ---------------------------------------------------------------------------
 // Schema entry and registry
 // ---------------------------------------------------------------------------
 
@@ -241,8 +215,6 @@ export type PermissionSchemaEntry = {
   validate?: (permission: { data: Record<string, unknown> }) => void;
   /** Sections to render. */
   sections: SchemaSection[];
-  /** Collapsed-card summary for the review page. */
-  summary?: SchemaSummary;
 };
 
 /** Maps permission type strings to their schema entries. */
