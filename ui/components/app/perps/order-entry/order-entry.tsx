@@ -161,6 +161,29 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
 
+  const estimatedSize = useMemo(() => {
+    if (mode === 'modify' && existingPosition) {
+      const parsed = Number.parseFloat(
+        existingPosition.size.replaceAll(',', ''),
+      );
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    const amount = Number.parseFloat(formState.amount) || 0;
+    if (amount === 0 || currentPrice === 0) {
+      return undefined;
+    }
+    const positionValue = amount * formState.leverage;
+    const size = positionValue / currentPrice;
+    return formState.direction === 'long' ? size : -size;
+  }, [
+    mode,
+    existingPosition,
+    formState.amount,
+    formState.leverage,
+    formState.direction,
+    currentPrice,
+  ]);
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -307,6 +330,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                   })()
                 : undefined
             }
+            estimatedSize={estimatedSize}
           />
         )}
 

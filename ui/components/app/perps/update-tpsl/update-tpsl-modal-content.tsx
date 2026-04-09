@@ -78,7 +78,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   onSubmitStateChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
 
@@ -106,21 +106,13 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [position]);
 
   const formatEditPrice = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
+    (value: number): string => value.toFixed(2),
+    [],
   );
 
   const formatEditPercent = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }),
-    [formatNumber],
+    (value: number): string => value.toFixed(1),
+    [],
   );
 
   const priceToPercentForEdit = useCallback(

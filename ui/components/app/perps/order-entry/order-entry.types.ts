@@ -209,6 +209,8 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
+  estimatedSize?: number;
 };
 
 /**

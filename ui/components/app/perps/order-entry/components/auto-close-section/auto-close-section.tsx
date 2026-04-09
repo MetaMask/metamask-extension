@@ -16,10 +16,21 @@ import {
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
+
+function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -39,6 +50,7 @@ import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
  * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
+ * @param props.estimatedSize - Signed position size in asset units for estimated PnL
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -50,8 +62,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   direction,
   currentPrice,
   entryPrice: entryPriceProp,
+  estimatedSize,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
@@ -216,6 +230,28 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [priceToPercent, stopLossPrice],
   );
 
+  const estimatedPnlAtTp = useMemo(() => {
+    if (!estimatedSize || !takeProfitPrice || !entryPrice) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(takeProfitPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    return estimatedSize * (exitPrice - entryPrice);
+  }, [estimatedSize, takeProfitPrice, entryPrice]);
+
+  const estimatedPnlAtSl = useMemo(() => {
+    if (!estimatedSize || !stopLossPrice || !entryPrice) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(stopLossPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    return estimatedSize * (exitPrice - entryPrice);
+  }, [estimatedSize, stopLossPrice, entryPrice]);
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {/* Toggle Row */}
@@ -305,6 +341,32 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {estimatedPnlAtTp !== null && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                data-testid="auto-close-estimated-tp-pnl-row"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstimatedPnlAtTakeProfit')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={getPnlDisplayColor(estimatedPnlAtTp)}
+                >
+                  {estimatedPnlAtTp >= 0 ? '+' : '-'}
+                  {formatCurrencyWithMinThreshold(
+                    Math.abs(estimatedPnlAtTp),
+                    'USD',
+                  )}
+                </Text>
+              </Box>
+            )}
           </Box>
 
           {/* Stop Loss Section */}
@@ -375,6 +437,32 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {estimatedPnlAtSl !== null && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                data-testid="auto-close-estimated-sl-pnl-row"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstimatedPnlAtStopLoss')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={getPnlDisplayColor(estimatedPnlAtSl)}
+                >
+                  {estimatedPnlAtSl >= 0 ? '+' : '-'}
+                  {formatCurrencyWithMinThreshold(
+                    Math.abs(estimatedPnlAtSl),
+                    'USD',
+                  )}
+                </Text>
+              </Box>
+            )}
           </Box>
         </Box>
       )}

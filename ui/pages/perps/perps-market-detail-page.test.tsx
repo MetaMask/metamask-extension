@@ -764,11 +764,11 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, TP input is initialized to position's existing TP (3200.00)
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3562.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3562.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', () => {
@@ -780,11 +780,11 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, SL input is initialized to position's existing SL (2600.00)
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2137.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2137.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', () => {
@@ -795,11 +795,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40500.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('40500.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', () => {
@@ -810,11 +810,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49500.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('49500.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
