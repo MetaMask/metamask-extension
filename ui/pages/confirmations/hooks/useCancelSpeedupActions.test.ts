@@ -57,6 +57,38 @@ describe('useCancelSpeedupActions', () => {
     });
   });
 
+  it('normalizes non-Error rejection values to a string message', async () => {
+    const { result } = renderHook(() => useCancelSpeedupActions(mockOnClose));
+
+    await act(async () => {
+      await result.current.submitTransaction(
+        () => Promise.reject('string rejection'),
+        true,
+      );
+    });
+
+    expect(result.current.error).toStrictEqual({
+      message: 'string rejection',
+      isCancel: true,
+    });
+  });
+
+  it('uses String() for arbitrary rejection values', async () => {
+    const { result } = renderHook(() => useCancelSpeedupActions(mockOnClose));
+
+    await act(async () => {
+      await result.current.submitTransaction(
+        () => Promise.reject({ code: 400 }),
+        false,
+      );
+    });
+
+    expect(result.current.error).toStrictEqual({
+      message: '[object Object]',
+      isCancel: false,
+    });
+  });
+
   it('clears error when clearError is called', async () => {
     const { result } = renderHook(() => useCancelSpeedupActions(mockOnClose));
 

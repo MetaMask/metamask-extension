@@ -28,4 +28,16 @@ describe('resolveCancelSpeedupErrorMessage', () => {
       'cancelSpeedupFailedDescription',
     );
   });
+
+  it('returns cancelSpeedupFailedDescription when errorMessage is undefined', () => {
+    expect(resolveCancelSpeedupErrorMessage(undefined)).toBe(
+      'cancelSpeedupFailedDescription',
+    );
+  });
+
+  it('returns cancelSpeedupFailedDescription when errorMessage is null', () => {
+    expect(resolveCancelSpeedupErrorMessage(null)).toBe(
+      'cancelSpeedupFailedDescription',
+    );
+  });
 });

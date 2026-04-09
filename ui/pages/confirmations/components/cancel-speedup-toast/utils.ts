@@ -7,7 +7,10 @@ const ALREADY_CONFIRMED_SUBSTRING = 'Previous transaction is already confirmed';
  * @param errorMessage - The raw error message from the background.
  * @returns A locale key for the resolved description string.
  */
-export function resolveCancelSpeedupErrorMessage(errorMessage: string): string {
+export function resolveCancelSpeedupErrorMessage(errorMessage: unknown): string {
+  if (typeof errorMessage !== 'string') {
+    return 'cancelSpeedupFailedDescription';
+  }
   if (errorMessage.includes(ALREADY_CONFIRMED_SUBSTRING)) {
     return 'cancelSpeedupAlreadyConfirmedDescription';
   }

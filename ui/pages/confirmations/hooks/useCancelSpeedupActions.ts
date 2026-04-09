@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
 
+import { getErrorMessage } from '../../../../shared/lib/error';
+
 type CancelSpeedupErrorState = {
   message: string;
   isCancel: boolean;
@@ -26,7 +28,7 @@ export function useCancelSpeedupActions(onClose: () => void) {
       try {
         await Promise.resolve(action());
       } catch (err) {
-        setError({ message: (err as Error).message, isCancel });
+        setError({ message: getErrorMessage(err), isCancel });
       }
     },
     [onClose],
