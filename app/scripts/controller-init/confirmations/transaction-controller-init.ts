@@ -63,6 +63,12 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.predictRelayDeposit,
 ];
 
+type CheckFirstTimeInteractionRequest = {
+  from: string;
+  to: string;
+  chainId: number;
+};
+
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
   TransactionControllerMessenger,
@@ -238,6 +244,22 @@ export const TransactionControllerInit: ControllerInitFunction<
   return { controller, api, memStateKey: 'TxController' };
 };
 
+/**
+ * Returns whether the sender has no prior on-chain interaction with `to` on `chainId`,
+ * or `undefined` when the relationship cannot be determined.
+ * @param request
+ */
+async function checkFirstTimeInteraction(
+  request: CheckFirstTimeInteractionRequest,
+): Promise<boolean | undefined> {
+  try {
+    const result = await getAccountAddressRelationship(request);
+    return result.count === undefined ? undefined : result.count === 0;
+  } catch {
+    return undefined;
+  }
+}
+
 function getApi(
   controller: TransactionController,
 ): ControllerInitResult<TransactionController>['api'] {
@@ -261,26 +283,7 @@ function getApi(
       controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
-    checkFirstTimeInteraction: async ({
-      from,
-      to,
-      chainId,
-    }: {
-      from: string;
-      to: string;
-      chainId: number;
-    }): Promise<boolean | undefined> => {
-      try {
-        const result = await getAccountAddressRelationship({
-          from,
-          to,
-          chainId,
-        });
-        return result.count === undefined ? undefined : result.count === 0;
-      } catch {
-        return undefined;
-      }
-    },
+    checkFirstTimeInteraction,
   };
 }
 

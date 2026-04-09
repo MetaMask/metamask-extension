@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
+
 export type SendAlert = {
   key: string;
   title: string;
-  message: React.ReactNode;
+  message: ReactNode;
   acknowledgeButtonLabel?: string;
 };

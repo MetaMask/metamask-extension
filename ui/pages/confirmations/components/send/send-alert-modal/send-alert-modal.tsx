@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -25,8 +25,13 @@ import {
   ModalOverlay,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { JustifyContent } from '../../../../../helpers/constants/design-system';
+import { Display } from '../../../../../helpers/constants/design-system';
 import { SendAlertModalProps } from './send-alert-modal.types';
+
+const NAV_BUTTON_ICON_CLASSNAME =
+  'rounded-full bg-background-alternative text-icon-alternative';
+
+const NAV_ICON_PROPS = { size: IconSize.Sm };
 
 function PreviousButton({
   safeIndex,
@@ -43,9 +48,9 @@ function PreviousButton({
     <ButtonIcon
       iconName={IconName.ArrowLeft}
       ariaLabel={t('back')}
-      size={ButtonIconSize.Sm}
+      iconProps={NAV_ICON_PROPS}
       onClick={onBack}
-      className="confirm_nav__left_btn"
+      className={`confirm_nav__left_btn ${NAV_BUTTON_ICON_CLASSNAME}`}
       data-testid="send-alert-modal-prev-button"
     />
   );
@@ -68,9 +73,9 @@ function NextButton({
     <ButtonIcon
       iconName={IconName.ArrowRight}
       ariaLabel={t('next')}
-      size={ButtonIconSize.Sm}
+      iconProps={NAV_ICON_PROPS}
       onClick={onNext}
-      className="confirm_nav__right_btn"
+      className={`confirm_nav__right_btn ${NAV_BUTTON_ICON_CLASSNAME}`}
       data-testid="send-alert-modal-next-button"
     />
   );
@@ -144,6 +149,22 @@ export const SendAlertModal = ({
     setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
   }, [alerts.length]);
 
+  const alertKeys = alerts.map((a) => a.key).join('|');
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [isOpen, alertKeys]);
+
+  const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
+
+  const handleAcknowledgeStep = useCallback(() => {
+    if (isOnLastAlert) {
+      onAcknowledge();
+      return;
+    }
+    goToNext();
+  }, [goToNext, isOnLastAlert, onAcknowledge]);
+
   if (!currentAlert) {
     return null;
   }
@@ -155,7 +176,7 @@ export const SendAlertModal = ({
         <ModalHeader
           onClose={onClose}
           paddingBottom={0}
-          justifyContent={JustifyContent.flexEnd}
+          display={hasMultiple ? Display.InlineFlex : Display.Block}
           startAccessory={
             hasMultiple ? (
               <PageNavigation
@@ -202,7 +223,7 @@ export const SendAlertModal = ({
         </ModalBody>
         <ModalFooter
           onCancel={onClose}
-          onSubmit={onAcknowledge}
+          onSubmit={handleAcknowledgeStep}
           submitButtonProps={{
             children: currentAlert.acknowledgeButtonLabel ?? t('iUnderstand'),
             'data-testid': 'send-alert-modal-acknowledge-button',

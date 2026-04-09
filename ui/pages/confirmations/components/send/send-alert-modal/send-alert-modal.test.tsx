@@ -226,5 +226,18 @@ describe('SendAlertModal', () => {
         getByTestId('send-alert-modal-acknowledge-button'),
       ).toHaveTextContent('Continue');
     });
+
+    it('does not call onAcknowledge until the last alert is acknowledged', () => {
+      const { getByTestId, getByText } = renderComponent({
+        alerts: [TOKEN_ALERT, FIRST_TIME_ALERT],
+      });
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).not.toHaveBeenCalled();
+      expect(getByText('New address')).toBeInTheDocument();
+
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      expect(mockOnAcknowledge).toHaveBeenCalledTimes(1);
+    });
   });
 });
