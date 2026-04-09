@@ -16,6 +16,16 @@ type SendUpdateNotification = JsonRpcNotification & {
 };
 
 /**
+ * The response for a `getStatePatches` request.
+ *
+ * Roughly matches a `JsonRpcResponse`.
+ */
+type GetStatePatchesResponse = { id: number } & (
+  | { result: Patch[] }
+  | { error: unknown }
+);
+
+/**
  * Type guard to identify a `sendUpdate` notification.
  *
  * @param message - The message to identify.
@@ -137,10 +147,7 @@ export class PatchStoreSubstreamConnection {
       // `getStatePatches` request. (These responses can be quite large so we
       // avoid a runtime check for performance reasons.)
       this.#resolvePendingGetStatePatchesRequest(
-        message as {
-          id: number;
-          result: Patch[];
-        },
+        message as GetStatePatchesResponse,
       );
     } else if (isObject(message) && hasProperty(message, 'method')) {
       if (isSendUpdateNotification(message)) {
@@ -159,33 +166,31 @@ export class PatchStoreSubstreamConnection {
    * Handles the response from a previous request for `getStatePatches` by
    * resolving the pending promise for that request.
    *
-   * @param message - The message sent through the background connection.
-   * @param message.id - The `id` field on the message.
-   * @param message.result - The state patches.
+   * @param response - The response received through the background connection.
+   * @param response.id - The `id` field on the response.
+   * @param response.result - The state patches.
+   * @param response.error - The error within the response.
    * @throws If the previous request corresponding to the response cannot be
    * found.
    */
-  #resolvePendingGetStatePatchesRequest(message: {
-    id: number;
-    result: Patch[];
-  }) {
-    const { id } = message;
-    const request = this.#pendingGetStatePatchesRequests.get(id);
-    if (!request) {
+  #resolvePendingGetStatePatchesRequest(response: GetStatePatchesResponse) {
+    const { id } = response;
+    const pendingRequest = this.#pendingGetStatePatchesRequests.get(id);
+    if (!pendingRequest) {
       console.error(
         `Encountered response for unexpected patch-store stream request '${id}'`,
-        message,
+        response,
       );
       return;
     }
 
     this.#pendingGetStatePatchesRequests.delete(id);
 
-    if ('error' in message) {
-      request.reject(message.error);
+    if ('error' in response) {
+      pendingRequest.reject(response.error);
     } else {
-      const { result } = message;
-      request.resolve(result);
+      const { result } = response;
+      pendingRequest.resolve(result);
     }
   }
 }
