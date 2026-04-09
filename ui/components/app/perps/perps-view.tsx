@@ -74,11 +74,8 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const {
-    cryptoMarkets: allCryptoMarkets,
-    hip3Markets: allHip3Markets,
-    isInitialLoading: marketsLoading,
-  } = usePerpsLiveMarketData();
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
 
   const {
     transactions: allRecentActivityTransactions,
@@ -197,15 +194,6 @@ export const PerpsView: React.FC = () => {
     }
   }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
 
-  // Limit markets to 5 for explore sections
-  const cryptoMarkets = useMemo(() => {
-    return allCryptoMarkets.slice(0, 5);
-  }, [allCryptoMarkets]);
-
-  const hip3Markets = useMemo(() => {
-    return allHip3Markets.slice(0, 5);
-  }, [allHip3Markets]);
-
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
   // so the section is represented before the main view mounts.
@@ -259,10 +247,7 @@ export const PerpsView: React.FC = () => {
       <PerpsWatchlist />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+      <PerpsExploreMarkets markets={allMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity

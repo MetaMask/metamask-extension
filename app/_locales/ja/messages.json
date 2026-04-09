@@ -2909,9 +2909,6 @@
   "from": {
     "message": "送り元"
   },
-  "fromTokenLists": {
-    "message": "トークンリストから: $1"
-  },
   "function": {
     "message": "機能: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "すべて無視"
-  },
-  "ignoreTokenWarning": {
-    "message": "トークンを非表示にするとウォレットに表示されなくなりますが、検索して追加することはできます。"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importSelectedTokens": {
-    "message": "選択したトークンをインポートしますか？"
-  },
-  "importSelectedTokensDescription": {
-    "message": "選択したトークンだけがウォレットに表示されます。非表示のトークンは後でいつでも検索してインポートできます。"
-  },
   "importTokenQuestion": {
     "message": "トークンをインポートしますか？"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1をインポート",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "インポートされました",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 の新しいトークンがこのアカウントで見つかりました",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1つの新しいトークンがこのアカウントで見つかりました"
-  },
   "numberOfTokens": {
     "message": "トークンの数"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "ご確認ください"
-  },
-  "plusXMore": {
-    "message": "他$1件",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ブログ記事をお読みください。"
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "トークンの詳細"
   },
-  "tokenFoundTitle": {
-    "message": "1 つの新しいトークンが見つかりました"
-  },
   "tokenId": {
     "message": "トークンID"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "トークン",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1種類の新しいトークンが見つかりました",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "コレクションのトークン"

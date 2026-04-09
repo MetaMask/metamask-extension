@@ -2909,9 +2909,6 @@
   "from": {
     "message": "Από"
   },
-  "fromTokenLists": {
-    "message": "Από λίστες token: $1"
-  },
   "function": {
     "message": "Λειτουργία: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "Αναγνωριστικό"
   },
-  "ignoreAll": {
-    "message": "Αγνόηση όλων"
-  },
-  "ignoreTokenWarning": {
-    "message": "Εάν αποκρύψετε τα tokens, δεν θα εμφανίζονται στο πορτοφόλι σας. Ωστόσο, μπορείτε να τα προσθέσετε αναζητώντας τα."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
   },
-  "importSelectedTokens": {
-    "message": "Εισαγωγή επιλεγμένων tokens;"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Μόνο τα tokens που επιλέξατε θα εμφανιστούν στο πορτοφόλι σας. Μπορείτε να εισάγετε αργότερα κρυφά token αναζητώντας τα."
-  },
   "importTokenQuestion": {
     "message": "Εισαγωγή του token;"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Έγινε εισαγωγή του πορτοφολιού $1",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Εισαγωγή $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Έγινε εισαγωγή",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Μάθετε πως"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 νέο token βρέθηκε σε αυτόν τον λογαριασμό"
-  },
   "numberOfTokens": {
     "message": "Αριθμός tokens"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Παρακαλούμε επιβεβαιώστε"
-  },
-  "plusXMore": {
-    "message": "+ $1 ακόμη",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ανάρτηση στο blog."
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "Λεπτομέρειες του token"
   },
-  "tokenFoundTitle": {
-    "message": "Βρέθηκε 1 νέο token"
-  },
   "tokenId": {
     "message": "Αναγνωριστικό Token"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "Βρέθηκαν $1 νέα tokens",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Token στη συλλογή"
