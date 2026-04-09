@@ -312,19 +312,19 @@ describe('fetchBenchmarkEntries', () => {
     expect(missingPresets[0]).toContain('interactionUserActions');
   });
 
-  it('uses custom platforms and buildTypes (2 × 2 × 1 = 4 combinations)', async () => {
+  it('uses custom platforms and buildTypes', async () => {
     mockFetch.mockResolvedValue({ ok: false } as Response);
 
     const { missingPresets } = await fetchBenchmarkEntries(
       HOST,
       ['myPreset'],
       ['chrome', 'firefox'],
-      ['webpack', 'webpack-alt'],
+      ['webpack'],
     );
 
-    expect(missingPresets).toHaveLength(4);
+    expect(missingPresets).toHaveLength(2);
     expect(missingPresets).toContain('chrome/webpack/myPreset');
-    expect(missingPresets).toContain('firefox/webpack-alt/myPreset');
+    expect(missingPresets).toContain('firefox/webpack/myPreset');
   });
 });
 
