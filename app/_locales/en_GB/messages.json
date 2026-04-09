@@ -5824,9 +5824,6 @@
   "perpsSortByVolume": {
     "message": "Volume"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Funding rate: high to low"
-  },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
   },
