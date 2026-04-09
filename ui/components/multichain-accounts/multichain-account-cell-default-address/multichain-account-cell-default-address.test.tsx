@@ -97,9 +97,7 @@ describe('MultichainAccountCellDefaultAddress', () => {
     );
 
     expect(
-      screen.getByText(
-        `${messages.networkNameEthereum.message} ${messages.addressCopied.message.toLowerCase()}`,
-      ),
+      screen.getByText(`${messages.addressCopied.message}`),
     ).toBeInTheDocument();
   });
 

@@ -103,7 +103,7 @@ export const MultichainAccountCellDefaultAddress = ({
             className="flex-1"
           >
             {addressCopied
-              ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
+              ? t('addressCopied')
               : shortenAddress(normalizeSafeAddress(defaultAddress))}
           </Text>
           <Icon
