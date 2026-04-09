@@ -54,7 +54,7 @@ export const SelectSrp = ({
           <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
         </Box>
       </Card>
-      <Text variant={TextVariant.BodySm} className="mt-1">
+      <Text variant={TextVariant.BodySm}>
         {t('srpListSelectionDescription')}
       </Text>
     </Box>

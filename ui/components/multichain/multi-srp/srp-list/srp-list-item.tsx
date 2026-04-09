@@ -45,7 +45,7 @@ export const SrpListItem = ({
           data-testid="avatar"
         />
         <Text
-          className="srp-list__account-name ps-5"
+          className="srp-list__account-name"
           variant={TextVariant.BodySm}
           ellipsis
         >

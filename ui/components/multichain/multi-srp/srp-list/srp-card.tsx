@@ -12,6 +12,8 @@ import {
   IconName,
   IconSize,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -98,8 +100,8 @@ export const SrpCard = ({
             {t('srpListName', [index + 1])}
           </Text>
           {!hideShowAccounts && (
-            <Text
-              variant={TextVariant.BodySm}
+            <TextButton
+              size={TextButtonSize.BodySm}
               color={TextColor.PrimaryDefault}
               className="srp-list__show-accounts"
               data-testid={`srp-list-show-accounts-${index}`}
@@ -118,7 +120,7 @@ export const SrpCard = ({
               }}
             >
               {showHideText(multichainAccounts.length)}
-            </Text>
+            </TextButton>
           )}
         </Box>
         <Box
