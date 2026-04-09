@@ -34,8 +34,7 @@ jobs:
       - name: Check working tree
         id: check-working-tree
         run: |
-          git diff > /tmp/policy.patch
-          if [ -s /tmp/policy.patch ]; then
+          if ! git diff --exit-code > /tmp/policy.patch; then
               cat /tmp/policy.patch
               echo "::error::Working tree dirty."
               exit 1
@@ -65,8 +64,7 @@ jobs:
       - name: Check working tree
         id: check-working-tree
         run: |
-          git diff > /tmp/policy.patch
-          if [ -s /tmp/policy.patch ]; then
+          if ! git diff --exit-code > /tmp/policy.patch; then
               cat /tmp/policy.patch
               echo "::error::Working tree dirty."
               exit 1
@@ -96,8 +94,7 @@ jobs:
       - name: Check working tree
         id: check-working-tree
         run: |
-          git diff > /tmp/policy.patch
-          if [ -s /tmp/policy.patch ]; then
+          if ! git diff --exit-code > /tmp/policy.patch; then
               cat /tmp/policy.patch
               echo "::error::Working tree dirty."
               exit 1
@@ -127,8 +124,7 @@ jobs:
       - name: Check working tree
         id: check-working-tree
         run: |
-          git diff > /tmp/policy.patch
-          if [ -s /tmp/policy.patch ]; then
+          if ! git diff --exit-code > /tmp/policy.patch; then
               cat /tmp/policy.patch
               echo "::error::Working tree dirty."
               exit 1
@@ -158,8 +154,7 @@ jobs:
       - name: Check working tree
         id: check-working-tree
         run: |
-          git diff > /tmp/policy.patch
-          if [ -s /tmp/policy.patch ]; then
+          if ! git diff --exit-code > /tmp/policy.patch; then
               cat /tmp/policy.patch
               echo "::error::Working tree dirty."
               exit 1
