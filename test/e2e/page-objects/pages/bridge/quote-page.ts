@@ -79,13 +79,13 @@ class BridgeQuotePage {
   private networkNameSelector = (network: string) =>
     `[data-testid="${network}"]`;
 
-  private warningModal = '[data-testid="bridge-warning-modal"]';
+  private warningModal = '[data-testid="bridge-alert-modal"]';
 
   private warningModalProceedButton =
-    '[data-testid="bridge-warning-modal-proceed-button"]';
+    '[data-testid="bridge-alert-modal-proceed-button"]';
 
   private warningModalCancelButton =
-    '[data-testid="bridge-warning-modal-cancel-button"]';
+    '[data-testid="bridge-alert-modal-cancel-button"]';
 
   private closeButton = '[aria-label="Close"]';
 

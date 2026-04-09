@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: -0.1 1`] = `
+exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: -0.1 1`] = `
 <body>
   <div
     id="popover-content"
@@ -9,7 +9,7 @@ exports[`BridgePriceImpactModal quote-card should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: 0 1`] = `
+exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: 0 1`] = `
 <body>
   <div
     id="popover-content"
@@ -18,7 +18,7 @@ exports[`BridgePriceImpactModal quote-card should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: 0.001 1`] = `
+exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: 0.001 1`] = `
 <body>
   <div
     id="popover-content"
@@ -27,7 +27,7 @@ exports[`BridgePriceImpactModal quote-card should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should not render when there is no price impact warning or error: undefined 1`] = `
+exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: undefined 1`] = `
 <body>
   <div
     id="popover-content"
@@ -36,14 +36,15 @@ exports[`BridgePriceImpactModal quote-card should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27 1`] = `
+exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -147,6 +148,7 @@ exports[`BridgePriceImpactModal quote-card should render alert banner when there
             >
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
                 <span
@@ -172,16 +174,17 @@ exports[`BridgePriceImpactModal quote-card should render alert banner when there
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27: BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.07 on this trade"`;
+exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27: BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.07 on this trade"`;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact error: 0.27 1`] = `
+exports[`BridgeAlertModal quote-card should render when there is a price impact error: 0.27 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -257,6 +260,7 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
             >
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
                 <span
@@ -282,16 +286,17 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact error: 0.27: BannerAlert within BridgeAlertModal 1`] = `undefined`;
+exports[`BridgeAlertModal quote-card should render when there is a price impact error: 0.27: BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning (with exchange rates): 0.07 1`] = `
+exports[`BridgeAlertModal quote-card should render when there is a price impact warning (with exchange rates): 0.07 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -367,6 +372,7 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
             >
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
                 <span
@@ -392,16 +398,17 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning (with exchange rates): 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
+exports[`BridgeAlertModal quote-card should render when there is a price impact warning (with exchange rates): 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning: 0.07 1`] = `
+exports[`BridgeAlertModal quote-card should render when there is a price impact warning: 0.07 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -477,6 +484,7 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
             >
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
                 <span
@@ -502,16 +510,17 @@ exports[`BridgePriceImpactModal quote-card should render when there is a price i
 </body>
 `;
 
-exports[`BridgePriceImpactModal quote-card should render when there is a price impact warning: 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
+exports[`BridgeAlertModal quote-card should render when there is a price impact warning: 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgePriceImpactModal submit-cta should disable the submit button when submission is in progress 1`] = `
+exports[`BridgeAlertModal submit-cta should disable the submit button when submission is in progress 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -561,8 +570,7 @@ exports[`BridgePriceImpactModal submit-cta should disable the submit button when
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                disabled=""
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -654,6 +662,7 @@ exports[`BridgePriceImpactModal submit-cta should disable the submit button when
               </button>
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 disabled=""
                 role="button"
               >
@@ -680,7 +689,7 @@ exports[`BridgePriceImpactModal submit-cta should disable the submit button when
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0 1`] = `
+exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0 1`] = `
 <body>
   <div
     id="popover-content"
@@ -689,7 +698,7 @@ exports[`BridgePriceImpactModal submit-cta should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.001 1`] = `
+exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.001 1`] = `
 <body>
   <div
     id="popover-content"
@@ -698,7 +707,7 @@ exports[`BridgePriceImpactModal submit-cta should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.07 1`] = `
+exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.07 1`] = `
 <body>
   <div
     id="popover-content"
@@ -707,7 +716,7 @@ exports[`BridgePriceImpactModal submit-cta should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: 0.24 1`] = `
+exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.24 1`] = `
 <body>
   <div
     id="popover-content"
@@ -716,7 +725,7 @@ exports[`BridgePriceImpactModal submit-cta should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should not render when there is no price impact error: undefined 1`] = `
+exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: undefined 1`] = `
 <body>
   <div
     id="popover-content"
@@ -725,14 +734,15 @@ exports[`BridgePriceImpactModal submit-cta should not render when there is no pr
 </body>
 `;
 
-exports[`BridgePriceImpactModal submit-cta should render when there is a price impact error 1`] = `
+exports[`BridgeAlertModal submit-cta should render when there is a price impact error 1`] = `
 <body>
   <div
     id="popover-content"
   />
   <div />
   <div
-    class="mm-modal bridge-price-impact-modal"
+    class="mm-modal bridge-alert-modal"
+    data-testid="bridge-alert-modal"
   >
     <div
       aria-hidden="true"
@@ -847,6 +857,7 @@ exports[`BridgePriceImpactModal submit-cta should render when there is a price i
               </button>
               <button
                 class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                data-testid="bridge-alert-modal-cancel-button"
                 role="button"
               >
                 <span

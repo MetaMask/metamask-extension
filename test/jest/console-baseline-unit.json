@@ -699,7 +699,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 38,
+      "React: Act warnings (component updates not wrapped)": 36,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,

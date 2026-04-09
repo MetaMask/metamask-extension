@@ -96,11 +96,12 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
-import { BridgePriceImpactWarningModal } from './bridge-price-impact-modal';
+import { BridgeAlertModal } from './components/bridge-alert-modal';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -156,13 +157,13 @@ const PrepareBridgePage = ({
     isInsufficientBalance,
     isStockMarketClosed,
     isQuoteExpired,
-    isPriceImpactError,
   } = useSelector(
     (state) => getValidationErrors(state as BridgeAppState, Date.now()),
     shallowEqual,
   );
   const { txAlert, tokenAlerts, securityWarnings } = useSecurityAlerts();
   const [tokenAlert] = tokenAlerts;
+  const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -360,10 +361,12 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
-  const [priceImpactModalVariant, togglePriceImpactModalWithVariant] =
-    useState<
-      React.ComponentProps<typeof BridgePriceImpactWarningModal>['variant']
-    >(null);
+  const [alertModalProps, setAlertModalProps] = useState<
+    Pick<
+      React.ComponentProps<typeof BridgeAlertModal>,
+      'variant' | 'isOpen' | 'alertId'
+    >
+  >({});
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
 
@@ -386,12 +389,9 @@ const PrepareBridgePage = ({
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
       />
-
-      <BridgePriceImpactWarningModal
-        variant={priceImpactModalVariant}
-        onClose={() => {
-          togglePriceImpactModalWithVariant(null);
-        }}
+      <BridgeAlertModal
+        {...alertModalProps}
+        onClose={() => setAlertModalProps({})}
       />
 
       <MarketClosedModal
@@ -612,7 +612,12 @@ const PrepareBridgePage = ({
                   setIsDestinationAccountPickerOpen(true)
                 }
                 onOpenPriceImpactWarningModal={() =>
-                  togglePriceImpactModalWithVariant('quote-card')
+                  alertsById['price-impact'] &&
+                  setAlertModalProps({
+                    isOpen: true,
+                    variant: 'alert-details',
+                    alertId: 'price-impact',
+                  })
                 }
                 onOpenSlippageModal={onOpenSettings}
                 selectedDestinationAccount={selectedDestinationAccount}
@@ -666,6 +671,7 @@ const PrepareBridgePage = ({
                 if (!quoteParams) {
                   return;
                 }
+                setAlertModalProps({});
                 debouncedUpdateQuoteRequestInController.current(quoteParams, {
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -690,9 +696,13 @@ const PrepareBridgePage = ({
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }
-              onOpenAlertModals={() =>
-                isPriceImpactError
-                  ? togglePriceImpactModalWithVariant('submit-cta')
+              onOpenAlertModals={
+                confirmationAlerts.length > 0
+                  ? () =>
+                      setAlertModalProps({
+                        isOpen: true,
+                        variant: 'submit-cta',
+                      })
                   : undefined
               }
               onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}

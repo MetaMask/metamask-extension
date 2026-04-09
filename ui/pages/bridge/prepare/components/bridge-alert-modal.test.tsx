@@ -14,7 +14,8 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
 import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
-import { BridgePriceImpactWarningModal } from '../bridge-price-impact-modal';
+import { BridgeAlertModal } from './bridge-alert-modal';
+import { BridgeAlert } from '../types';
 
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
@@ -29,10 +30,11 @@ jest.mock('../../hooks/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  variant: 'submit-cta' | 'quote-card' | null = null,
+  variant: 'submit-cta' | 'alert-details' | undefined = undefined,
   priceImpact: string = '0.05',
   stateOverrides = {},
-  quotes = mockBridgeQuotesNativeErc20,
+  quotes: QuoteResponse[] = mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+  alertId: BridgeAlert['id'] | undefined = undefined,
 ) => {
   const toToken = {
     ...quotes[0].quote.destAsset,
@@ -76,14 +78,19 @@ const renderModal = (
 
   return renderWithProvider(
     <HardwareWalletProvider>
-      <BridgePriceImpactWarningModal variant={variant} onClose={mockOnClose} />
+      <BridgeAlertModal
+        isOpen={true}
+        alertId={alertId}
+        variant={variant}
+        onClose={mockOnClose}
+      />
     </HardwareWalletProvider>,
     mockStore,
   );
 };
 
-describe('BridgePriceImpactModal', () => {
-  it('should not render the component when variant is null', () => {
+describe('BridgeAlertModal', () => {
+  it('should not render the component when variant is undefined', () => {
     const { baseElement } = renderModal();
     expect(baseElement).toMatchInlineSnapshot(`
       <body>
@@ -123,7 +130,7 @@ describe('BridgePriceImpactModal', () => {
           getByRole('button', { name: messages.proceed.message }),
         );
       });
-      expect(mockOnClose).toHaveBeenCalledTimes(0);
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
     });
 
@@ -230,7 +237,13 @@ describe('BridgePriceImpactModal', () => {
         quotes?: never[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
-          renderModal('quote-card', priceImpact, stateOverrides, quotes);
+          renderModal(
+            'alert-details',
+            priceImpact,
+            stateOverrides,
+            quotes,
+            'price-impact',
+          );
         expect(baseElement).toMatchSnapshot();
         expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
           '',
@@ -262,7 +275,7 @@ describe('BridgePriceImpactModal', () => {
     it.each(['0.001', '-0.1', undefined, '0'])(
       'should not render when there is no price impact warning or error: %s',
       async (priceImpact: string | undefined) => {
-        const { baseElement } = renderModal('quote-card', priceImpact);
+        const { baseElement } = renderModal('alert-details', priceImpact);
         expect(baseElement).toMatchSnapshot();
       },
     );
@@ -295,7 +308,7 @@ describe('BridgePriceImpactModal', () => {
 
     it('does not show the fiat loss banner when isPriceImpactError is false (warning)', () => {
       const { queryByTestId } = renderModal(
-        'quote-card',
+        'alert-details',
         '0.07',
         {
           metamaskStateOverrides: {
