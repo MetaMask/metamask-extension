@@ -30,7 +30,7 @@ import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
-import { normalizeTpslPrices } from '../utils';
+import { normalizeTpslPrices, formatRoePercent } from '../utils';
 
 // HyperLiquid taker fee rate (0.045%) - applied when a TP/SL order executes.
 // Source: FEE_RATES.taker in @metamask/perps-controller/constants/hyperLiquidConfig
@@ -39,16 +39,6 @@ const HYPERLIQUID_TAKER_FEE_RATE = 0.00045;
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
-
-/**
- * Format a RoE% value for blurred display.
- * Integers show no decimal ("25"), non-integers show 2 decimal places ("25.50").
- * @param value - The numeric percentage value to format
- */
-function formatEditPercent(value: number): string {
-  const abs = Math.abs(value);
-  return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
-}
 
 function getPnlDisplayColor(pnl: number): TextColor {
   if (pnl > 0) {
@@ -160,9 +150,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const diff = priceNum - entryPriceForEdit;
       const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
       if (positionDirection === 'long') {
-        return formatEditPercent(isTP ? percentChange : -percentChange);
+        return formatRoePercent(isTP ? percentChange : -percentChange);
       }
-      return formatEditPercent(isTP ? -percentChange : percentChange);
+      return formatRoePercent(isTP ? -percentChange : percentChange);
     },
     [entryPriceForEdit, leverageForEdit, positionDirection],
   );

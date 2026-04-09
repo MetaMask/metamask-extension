@@ -416,3 +416,20 @@ export const isHip3Market = (
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
+
+/**
+ * Format a RoE% value for display in TP/SL inputs.
+ * Always returns the absolute value: integers with no decimal ("25"),
+ * non-integers with 2 decimal places ("25.50").
+ *
+ * @param value - The numeric percentage value to format
+ * @returns The formatted percentage string
+ * @example
+ * formatRoePercent(10) => '10'
+ * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(0) => '0'
+ */
+export const formatRoePercent = (value: number): string => {
+  const abs = Math.abs(value);
+  return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
+};

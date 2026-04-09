@@ -20,6 +20,7 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
+import { formatRoePercent } from '../../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -68,15 +69,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
   /**
-   * Format a numeric RoE% value for blurred display.
-   * Integers: no decimal ("25"), non-integers: 2 decimal places ("25.50").
-   */
-  const formatPercent = useCallback((value: number): string => {
-    const abs = Math.abs(value);
-    return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
-  }, []);
-
-  /**
    * Convert a target price to a RoE% for display.
    * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
@@ -96,11 +88,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       // For long: TP is above entry (positive RoE%), SL is below entry (show as positive loss%)
       // For short: TP is below entry (show as positive profit%), SL is above entry (show as positive loss%)
       if (direction === 'long') {
-        return formatPercent(isTP ? percentChange : -percentChange);
+        return formatRoePercent(isTP ? percentChange : -percentChange);
       }
-      return formatPercent(isTP ? -percentChange : percentChange);
+      return formatRoePercent(isTP ? -percentChange : percentChange);
     },
-    [entryPrice, leverage, direction, formatPercent],
+    [entryPrice, leverage, direction],
   );
 
   /**
