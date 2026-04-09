@@ -112,6 +112,11 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
           maxWidth: '100%',
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
+          borderTopLeftRadius: '20px',
+          borderTopRightRadius: '20px',
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          overflow: 'hidden',
         },
       }
     : {
@@ -121,6 +126,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
           width: '100%',
           maxWidth: '360px',
           borderRadius: '20px',
+          overflow: 'hidden',
         },
       };
 
