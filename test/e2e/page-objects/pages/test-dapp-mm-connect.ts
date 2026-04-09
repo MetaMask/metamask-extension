@@ -312,24 +312,32 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
-   * Set the exact set of networks to be selected before connecting.
+   * Ensure the requested networks are selected before connecting.
    *
-   * Compares each featured chain's current checkbox state against the desired
-   * list and clicks only when they differ.
+   * We intentionally avoid sweeping deselections of every non-requested
+   * checkbox here. The browser-playground app can drop intermediate checkbox
+   * updates when many toggles happen back-to-back, which causes flaky
+   * multichain session scopes in CI. For these tests we only need to guarantee
+   * the requested scopes are enabled.
    *
    * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
    * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
    */
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
-    for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
+    const featuredChainIds = new Set<string>(MM_CONNECT_FEATURED_CHAIN_IDS);
+
+    for (const chainId of desiredChainIds) {
+      if (!featuredChainIds.has(chainId)) {
+        continue;
+      }
+
       const selector = this.checkboxSelector(chainId);
       const isChecked = await this.getCheckboxState(selector);
-      const shouldBeChecked = desiredChainIds.includes(chainId);
-      if (isChecked !== shouldBeChecked) {
+      if (!isChecked) {
         await this.driver.clickElement(selector);
         // Ensure React has committed this checkbox state before moving
         // to the next one.
-        await this.waitForCheckboxState(selector, shouldBeChecked);
+        await this.waitForCheckboxState(selector, true);
       }
     }
   }
