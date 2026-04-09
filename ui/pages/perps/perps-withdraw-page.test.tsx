@@ -57,12 +57,6 @@ jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../components/app/perps/perps-wallet-account-header', () => ({
-  PerpsWalletAccountHeader: () => (
-    <div data-testid="perps-wallet-account-header-mock" />
-  ),
-}));
-
 const mockGetIsPerpsExperienceAvailable =
   getIsPerpsExperienceAvailable as jest.MockedFunction<
     typeof getIsPerpsExperienceAvailable
@@ -195,6 +189,30 @@ describe('PerpsWithdrawPage', () => {
     expect(
       screen.getByTestId('perps-withdraw-summary-receive-value'),
     ).toHaveTextContent('—');
+  });
+
+  it('renders back button and Withdraw title in the header', async () => {
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    expect(
+      screen.getByTestId('perps-withdraw-back-button'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-header-title')).toHaveTextContent(
+      messages.perpsWithdrawFundsTitle.message,
+    );
+  });
+
+  it('clicking the back button navigates home', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    await user.click(screen.getByTestId('perps-withdraw-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   it('redirects when perps experience is disabled', async () => {

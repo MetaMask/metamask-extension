@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "サイズ"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "資金調達率: 高い順"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "資金調達率: 低い順"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "取組高: 多い順"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "取組高: 少ない順"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "価格変動: 大きい順"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "価格変動: 小さい順"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "取引量: 多い順"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "取引量: 少ない順"
-  },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
   },

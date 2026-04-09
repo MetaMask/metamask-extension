@@ -422,7 +422,11 @@ function classifyJob(job: Job): JobClassification {
   // No transient pattern matched. Capture the first annotation message or
   // the last few log lines so the dashboard can surface what the actual
   // error was — useful for identifying new patterns to add.
-  const firstAnnotation = annotations.find((a) => a.message?.trim());
+  // Skip the generic "Process completed with exit code N" annotation —
+  // it appears on every failed job and provides no diagnostic value.
+  const firstAnnotation = annotations.find(
+    (a) => a.message?.trim() && !/^Process completed with exit code \d+/.test(a.message.trim()),
+  );
   const fallbackSnippet = firstAnnotation
     ? firstAnnotation.message!.trim().slice(0, 200)
     : logs
