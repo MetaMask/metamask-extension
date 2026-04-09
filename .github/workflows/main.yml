@@ -442,7 +442,7 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-webpack
+      - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -456,11 +456,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'bundle-analyzer-report-json'
+      - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v7
         with:
-          name: bundle-analyzer-report-json
-          path: dist
+          name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 

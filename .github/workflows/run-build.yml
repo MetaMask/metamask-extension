@@ -123,16 +123,9 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-analyzer/report.html
           path: dist/report.html
 
-      - name: Upload 'bundle-analyzer-report-json' artifact
+      - name: Remove bundle analyzer report from dist
         if: ${{ inputs.bundle-analyzer }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: bundle-analyzer-report-json
-          path: dist/report.json
-
-      - name: Remove bundle analyzer reports from dist
-        if: ${{ inputs.bundle-analyzer }}
-        run: rm -f dist/report.html dist/report.json
+        run: rm -f dist/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'
         uses: actions/upload-artifact@v6

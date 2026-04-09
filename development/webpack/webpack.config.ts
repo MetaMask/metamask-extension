@@ -235,7 +235,6 @@ if (args.bundleAnalyzer) {
   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   plugins.push(
     new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'json', openAnalyzer: false }),
   );
 }
 

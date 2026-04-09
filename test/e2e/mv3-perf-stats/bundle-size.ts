@@ -9,27 +9,26 @@ import {
 } from '../../helpers/file';
 
 /**
- * Captures bundle size statistics from the webpack-bundle-analyzer JSON report.
- *
- * Chunks are categorized into three groups based on their entrypoints:
- * - background: service-worker, content scripts (self-contained, no code splitting)
- * - ui: HTML page entrypoints and their shared/split chunks
- * - common: lazily loaded chunks with no entrypoint
+ * The e2e test case is used to capture bundle time statistics for extension.
  */
 
-const BACKGROUND_ENTRYPOINTS = new Set([
-  'service-worker.ts',
-  'scripts/contentscript.js',
-  'scripts/inpage.js',
-  'vendor/trezor/content-script.js',
-]);
+const backgroundFiles: string[] = [
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/sentry-install.js',
+  'scripts/policy-load.js',
+];
 
-type ReportEntry = {
-  label: string;
-  parsedSize: number;
-  statSize: number;
-  isInitialByEntrypoint: Record<string, boolean>;
-};
+const uiFiles: string[] = [
+  'scripts/sentry-install.js',
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/policy-load.js',
+];
+
+const BackgroundFileRegex = /background-[0-9]*.js/u;
+const CommonFileRegex = /common-[0-9]*.js/u;
+const UIFileRegex = /ui-[0-9]*.js/u;
 
 type FileStat = {
   name: string;
@@ -49,35 +48,32 @@ async function main(): Promise<void> {
     (_yargs) =>
       _yargs.option('out', {
         description:
-          'Output directory. Output printed to STDOUT if this is omitted.',
+          'Output filename. Output printed to STDOUT if this is omitted.',
         type: 'string',
         normalize: true,
       }),
   );
   const { out } = argv as { out?: string };
 
-  const reportPath = 'dist/report.json';
-  const report: ReportEntry[] = JSON.parse(
-    await fs.readFile(reportPath, 'utf8'),
-  );
-
+  const distFolder = 'dist/chrome';
   const backgroundFileList: FileStat[] = [];
   const uiFileList: FileStat[] = [];
   const commonFileList: FileStat[] = [];
 
-  for (const entry of report) {
-    const entrypoints = Object.keys(entry.isInitialByEntrypoint || {});
-    const file = { name: entry.label, size: entry.parsedSize };
-
-    if (entrypoints.length === 0) {
-      // No entrypoint — common/lazy-loaded chunks shared across entry points
-      commonFileList.push(file);
-    } else if (entrypoints.every((ep) => BACKGROUND_ENTRYPOINTS.has(ep))) {
-      // All entrypoints are background scripts
-      backgroundFileList.push(file);
-    } else {
-      // UI entrypoints (HTML pages and their shared chunks)
-      uiFileList.push(file);
+  const files = await fs.readdir(distFolder);
+  for (const file of files) {
+    if (CommonFileRegex.test(file)) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      commonFileList.push({ name: file, size: stats.size });
+    } else if (
+      backgroundFiles.includes(file) ||
+      BackgroundFileRegex.test(file)
+    ) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      backgroundFileList.push({ name: file, size: stats.size });
+    } else if (uiFiles.includes(file) || UIFileRegex.test(file)) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      uiFileList.push({ name: file, size: stats.size });
     }
   }
 
