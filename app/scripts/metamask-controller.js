@@ -2773,7 +2773,7 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
