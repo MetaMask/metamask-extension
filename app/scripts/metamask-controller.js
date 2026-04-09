@@ -79,6 +79,8 @@ import {
   bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
+  hasProperty,
+  isObject,
   isJsonRpcRequest,
   isJsonRpcNotification,
 } from '@metamask/utils';
@@ -6847,7 +6849,8 @@ export default class MetamaskController extends EventEmitter {
         )
       ) {
         outStream.write({
-          id: message.id,
+          id:
+            isObject(message) && hasProperty(message, 'id') ? message.id : null,
           jsonrpc: '2.0',
           error: rpcErrors.invalidRequest(),
         });

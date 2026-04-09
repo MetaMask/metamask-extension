@@ -3701,8 +3701,8 @@ describe('MetaMaskController', () => {
         const { patchStream, messages } = setupPatchStoreConnection();
 
         patchStream.write({
-          jsonrpc: '2.0',
           id: 'string-id',
+          jsonrpc: '2.0',
           method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
         });
         await flushBufferedWrites();
@@ -3710,6 +3710,42 @@ describe('MetaMaskController', () => {
         expect(messages).toContainEqual(
           expect.objectContaining({
             id: 'string-id',
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a message without an id or method', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: null,
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a non-object request', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write('not-an-object');
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: null,
             jsonrpc: '2.0',
             error: expect.objectContaining({
               code: errorCodes.rpc.invalidRequest,
