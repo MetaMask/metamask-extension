@@ -113,7 +113,7 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
         {
           type: 'date',
           labelKey: 'confirmFieldStartDate',
-          getTimestamp: (ctx) => getData(ctx).startTime as number,
+          getTimestamp: (ctx) => getData(ctx)?.startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
           views: ['confirmation', 'reviewDetail'],
@@ -171,9 +171,9 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldMaxAllowance',
-          getValue: (ctx) => new BigNumber(getData(ctx).maxAmount as string),
+          getValue: (ctx) => new BigNumber(getData(ctx)?.maxAmount as string),
           isVisible: (ctx) => {
-            const max = getData(ctx).maxAmount as string | undefined;
+            const max = getData(ctx)?.maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() !== MAX_UINT256);
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
@@ -185,7 +185,19 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldMaxAllowance',
           getValue: () => ({ key: 'unlimited' }),
           isVisible: (ctx) => {
-            const max = getData(ctx).maxAmount as string | undefined;
+            const max = getData(ctx)?.maxAmount as string | undefined;
+            return Boolean(max && max.toLowerCase() === MAX_UINT256);
+          },
+          reviewLabelKey: 'gatorPermissionsMaxAllowance',
+          reviewTestId: 'review-gator-permission-max-allowance',
+          views: ['confirmation', 'reviewDetail'],
+        },
+        {
+          type: 'text',
+          labelKey: 'confirmFieldMaxAllowance',
+          getValue: () => ({ key: 'unlimited' }),
+          isVisible: (ctx) => {
+            const max = getData(ctx)?.maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() === MAX_UINT256);
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
@@ -196,7 +208,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'date',
           labelKey: 'confirmFieldStartDate',
-          getTimestamp: (ctx) => getData(ctx).startTime as number,
+          getTimestamp: (ctx) => getData(ctx)?.startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
           views: ['confirmation', 'reviewDetail'],
@@ -233,10 +245,10 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'totalExposure',
           getStreamParams: (ctx) => ({
-            initialAmount: (getData(ctx).initialAmount as Hex) ?? undefined,
-            maxAmount: (getData(ctx).maxAmount as Hex) ?? undefined,
-            amountPerSecond: getData(ctx).amountPerSecond as Hex,
-            startTime: getData(ctx).startTime as number,
+            initialAmount: getData(ctx)?.initialAmount as Hex,
+            maxAmount: getData(ctx)?.maxAmount as Hex,
+            amountPerSecond: getData(ctx)?.amountPerSecond as Hex,
+            startTime: getData(ctx)?.startTime as number,
           }),
           views: ['confirmation'],
         },
@@ -296,7 +308,7 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
         {
           type: 'date',
           labelKey: 'confirmFieldStartDate',
-          getTimestamp: (ctx) => getData(ctx).startTime as number,
+          getTimestamp: (ctx) => getData(ctx)?.startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
           views: ['confirmation', 'reviewDetail'],
@@ -358,10 +370,10 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'amount',
           labelKey: 'confirmFieldMaxAllowance',
-          getValue: (ctx) => new BigNumber(getData(ctx).maxAmount as string),
-          getTokenAddress: (ctx) => getData(ctx).tokenAddress as Hex,
+          getValue: (ctx) => new BigNumber(getData(ctx)?.maxAmount as string),
+          getTokenAddress: (ctx) => getData(ctx)?.tokenAddress as Hex,
           isVisible: (ctx) => {
-            const max = getData(ctx).maxAmount as string | undefined;
+            const max = getData(ctx)?.maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() !== MAX_UINT256);
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
@@ -373,7 +385,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldMaxAllowance',
           getValue: () => ({ key: 'unlimited' }),
           isVisible: (ctx) => {
-            const max = getData(ctx).maxAmount as string | undefined;
+            const max = getData(ctx)?.maxAmount as string | undefined;
             return Boolean(max && max.toLowerCase() === MAX_UINT256);
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
@@ -384,7 +396,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'date',
           labelKey: 'confirmFieldStartDate',
-          getTimestamp: (ctx) => getData(ctx).startTime as number,
+          getTimestamp: (ctx) => getData(ctx)?.startTime as number,
           reviewLabelKey: 'gatorPermissionsStartDate',
           reviewTestId: 'review-gator-permission-start-date',
           views: ['confirmation', 'reviewDetail'],
@@ -423,8 +435,8 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         {
           type: 'totalExposure',
           getStreamParams: (ctx) => ({
-            initialAmount: getData(ctx).initialAmount as Hex | undefined,
-            maxAmount: getData(ctx).maxAmount as Hex | undefined,
+            initialAmount: getData(ctx)?.initialAmount as Hex,
+            maxAmount: getData(ctx)?.maxAmount as Hex,
             amountPerSecond: getData(ctx).amountPerSecond as Hex,
             startTime: getData(ctx).startTime as number,
           }),
