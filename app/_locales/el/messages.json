@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Μέγεθος"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Ρυθμός χρηματοδότησης: υψηλό προς χαμηλό"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Ρυθμός χρηματοδότησης: χαμηλό προς υψηλό"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Ανοιχτές θέσεις: υψηλό προς χαμηλό"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Ανοιχτές θέσεις: χαμηλό προς υψηλό"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Μεταβολή τιμής: από υψηλή προς χαμηλή"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Μεταβολή τιμής: από χαμηλή προς υψηλή"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Όγκος συναλλαγών: υψηλό προς χαμηλό"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Όγκος συναλλαγών: χαμηλό προς υψηλό"
-  },
   "perpsStartNewTrade": {
     "message": "Ξεκινήστε μια νέα συναλλαγή"
   },

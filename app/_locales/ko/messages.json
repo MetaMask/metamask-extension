@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "규모"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "펀딩비: 높은 순"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "펀딩비: 낮은 순"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "미결제 약정: 높은 순"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "미결제 약정: 낮은 순"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "가격 변동: 내림차순"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "가격 변동: 올림차순"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "거래량: 높은 순"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "거래량: 낮은 순"
-  },
   "perpsStartNewTrade": {
     "message": "새 거래 시작"
   },

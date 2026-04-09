@@ -1,8 +1,11 @@
 import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -114,8 +117,7 @@ describe('Account Tracker API Usage', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -173,7 +175,14 @@ describe('Account Tracker API Usage', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },

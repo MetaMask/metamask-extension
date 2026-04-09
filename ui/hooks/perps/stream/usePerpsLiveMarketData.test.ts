@@ -245,4 +245,49 @@ describe('usePerpsLiveMarketData', () => {
     expect(result.current.hip3Markets).toHaveLength(1);
     expect(result.current.hip3Markets[0].symbol).toBe('xyz:TSLA');
   });
+
+  it('sorts cryptoMarkets and hip3Markets by 24h volume descending', () => {
+    const allMarkets = [
+      createMockMarket({ symbol: 'DOGE', volume: '$50M' }),
+      createMockMarket({ symbol: 'BTC', volume: '$1.2B' }),
+      createMockMarket({ symbol: 'ETH', volume: '$850M' }),
+      createMockMarket({
+        symbol: 'xyz:GOOG',
+        volume: '$80M',
+        marketSource: 'xyz',
+      }),
+      createMockMarket({
+        symbol: 'xyz:TSLA',
+        volume: '$30M',
+        marketSource: 'xyz',
+      }),
+      createMockMarket({
+        symbol: 'xyz:NVDA',
+        volume: '$200M',
+        marketSource: 'xyz',
+      }),
+    ];
+
+    const { streamManager } = createMockStreamManager(allMarkets);
+
+    usePerpsStreamManagerMock.mockReturnValue({
+      streamManager,
+      isInitializing: false,
+      error: null,
+      selectedAddress: '0x123',
+    });
+
+    const { result } = renderHook(() => usePerpsLiveMarketData());
+
+    expect(result.current.cryptoMarkets.map((m) => m.symbol)).toEqual([
+      'BTC',
+      'ETH',
+      'DOGE',
+    ]);
+    expect(result.current.hip3Markets.map((m) => m.symbol)).toEqual([
+      'xyz:NVDA',
+      'xyz:GOOG',
+      'xyz:TSLA',
+    ]);
+  });
 });

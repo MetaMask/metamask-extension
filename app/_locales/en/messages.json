@@ -5530,6 +5530,9 @@
   "perpsDepositFailed": {
     "message": "Deposit could not be completed. Try again."
   },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
+  },
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
@@ -5797,29 +5800,32 @@
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
+  "perpsSortByFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortByHighToLow": {
+    "message": "High to low"
+  },
+  "perpsSortByLowToHigh": {
+    "message": "Low to high"
+  },
+  "perpsSortByOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortByPriceChange": {
+    "message": "Price change"
+  },
+  "perpsSortBySection": {
+    "message": "Sort by"
+  },
+  "perpsSortByTitle": {
+    "message": "Sort"
+  },
+  "perpsSortByVolume": {
+    "message": "Volume"
+  },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Funding rate: low to high"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Open interest: high to low"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Open interest: low to high"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Price change: high to low"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Price change: low to high"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: high to low"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: low to high"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5884,8 +5890,8 @@
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
   "perpsToastMarginAddSuccess": {
-    "message": "Added $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+    "message": "Added $1 margin to $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
   },
   "perpsToastMarginAdjustmentFailed": {
     "message": "Margin adjustment failed",
@@ -5896,8 +5902,8 @@
     "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
-    "message": "Removed $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+    "message": "Removed $1 margin from $2 position",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
   },
   "perpsToastOrderFailed": {
     "message": "Order failed",
@@ -6048,6 +6054,9 @@
   },
   "perpsWithdrawFee": {
     "message": "Provider Fee"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."

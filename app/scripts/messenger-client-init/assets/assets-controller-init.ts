@@ -15,7 +15,7 @@ import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import { trace } from '../../../../shared/lib/trace';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 
 /**
  * Cached API client instance.
@@ -178,8 +178,7 @@ export const AssetsControllerInit: ControllerInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    // @ts-expect-error: Type of `TraceRequest` is different.
-    trace,
+    trace: traceAsControllerCallback,
   });
 
   return { controller };

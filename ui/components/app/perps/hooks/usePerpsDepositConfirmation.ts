@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
@@ -35,6 +35,7 @@ export function usePerpsDepositConfirmation(
 ): PerpsDepositConfirmationResult {
   const { onCreated, navigateOnCreate = true } = options;
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,13 +59,18 @@ export function usePerpsDepositConfirmation(
       const { transactionId } = await createPerpsDepositTransaction({});
 
       if (navigateOnCreate) {
-        const search = new URLSearchParams({
+        const params = new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-        }).toString();
+        });
+
+        const returnTo = location.pathname + location.search;
+        if (returnTo && returnTo !== '/') {
+          params.set('returnTo', returnTo);
+        }
 
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-          search,
+          search: params.toString(),
         });
       }
 
@@ -80,6 +86,8 @@ export function usePerpsDepositConfirmation(
     }
   }, [
     isLoading,
+    location.pathname,
+    location.search,
     navigate,
     navigateOnCreate,
     onCreated,

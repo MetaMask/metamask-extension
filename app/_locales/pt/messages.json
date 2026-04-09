@@ -5585,30 +5585,6 @@
   "perpsSize": {
     "message": "Tamanho"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Taxa de financiamento: alta para baixa"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Taxa de financiamento: baixa para alta"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Juros em aberto: alta para baixa"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Juros em aberto: baixa para alta"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Variação de preço: maior para menor"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Variação de preço: menor para maior"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volume: alta para baixa"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volume: baixa para alta"
-  },
   "perpsStartNewTrade": {
     "message": "Iniciar uma nova negociação"
   },
