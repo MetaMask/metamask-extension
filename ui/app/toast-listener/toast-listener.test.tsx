@@ -6,8 +6,8 @@ import { toast } from 'react-hot-toast';
 import {
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
-} from '../../../selectors/toast';
-import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
+} from '../../selectors/toast';
+import { selectBridgeHistoryForToast } from '../../ducks/bridge-status/selectors';
 import { ToastListener } from './toast-listener';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
@@ -21,16 +21,18 @@ jest.mock('react-hot-toast', () => ({
   },
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../selectors', () => ({
   selectEvmTransactionsForToast: jest.fn(),
   selectNonEvmTransactionsForToast: jest.fn(),
 }));
 
-jest.mock('../../../ducks/bridge-status/selectors', () => ({
+jest.mock('../../ducks/bridge-status/selectors', () => ({
   selectBridgeHistoryForToast: jest.fn(),
 }));
 
-jest.mock('./toast', () => ({ ToastContent: () => null }));
+jest.mock('../../components/ui/toast/toast', () => ({
+  ToastContent: () => null,
+}));
 
 const mockUseSelector = jest.mocked(useSelector);
 
