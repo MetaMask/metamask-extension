@@ -49,6 +49,7 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
+  getBridgeUnavailableQuoteReason,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -152,6 +153,9 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
+  const bridgeUnavailableQuotesReason = useSelector(
+    getBridgeUnavailableQuoteReason,
+  );
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -651,7 +655,7 @@ const PrepareBridgePage = ({
             <Column paddingInline={4}>
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
+                description={t(bridgeUnavailableQuotesReason)}
                 data-testid="bridge-error-banner"
                 descriptionProps={{
                   'data-testid': 'bridge-no-options-available',

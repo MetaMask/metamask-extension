@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { BigNumber } from 'bignumber.js';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -112,6 +113,21 @@ export const BridgeInputGroup = ({
   const shouldShowAmountSkeleton = Boolean(
     showAmountSkeleton && isAmountReadOnly,
   );
+
+  const formattedTokenAmount = useMemo(() => {
+    if (!balanceAmount) {
+      return null;
+    }
+
+    // Use ROUND_DOWN so the displayed balance never exceeds what the user holds,
+    // e.g. 0.00054598 renders as 0.000545 instead of 0.000546.
+    return formatTokenAmount(
+      locale,
+      balanceAmount,
+      token.symbol,
+      BigNumber.ROUND_DOWN as number,
+    );
+  }, [locale, balanceAmount, token.symbol]);
 
   useEffect(() => {
     if (!isAmountReadOnly && inputRef.current) {
@@ -285,7 +301,7 @@ export const BridgeInputGroup = ({
               textDecoration: 'none',
             }}
           >
-            {formatTokenAmount(locale, balanceAmount, token.symbol)}
+            {formattedTokenAmount}
             {onMaxButtonClick && (
               <ButtonLink
                 variant={TextVariant.bodyMd}

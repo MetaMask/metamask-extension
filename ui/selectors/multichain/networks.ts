@@ -42,7 +42,7 @@ import {
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
 } from '../../../shared/lib/selectors/networks';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
 import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
