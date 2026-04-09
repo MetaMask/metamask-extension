@@ -7,7 +7,8 @@ import {
 } from '@metamask/message-manager';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import EncryptionPublicKeyController, {
+import {
+  EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
 } from './encryption-public-key';
