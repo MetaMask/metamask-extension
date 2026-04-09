@@ -126,13 +126,13 @@ describe('PerpsActivityPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('back button navigates to DEFAULT_ROUTE', () => {
+  it('back button navigates to previous page', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('redirects when perps experience is unavailable', () => {

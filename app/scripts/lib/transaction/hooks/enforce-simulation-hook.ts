@@ -5,7 +5,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { isEnforcedSimulationsEligible } from '../../../../../shared/lib/transaction/enforced-simulations';
 
