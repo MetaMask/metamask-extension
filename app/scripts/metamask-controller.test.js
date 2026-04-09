@@ -334,6 +334,23 @@ jest.mock('../../shared/lib/environment', () => ({
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
+jest.mock('../../shared/lib/selectors/smart-transactions', () => {
+  const actual = jest.requireActual(
+    '../../shared/lib/selectors/smart-transactions',
+  );
+  return {
+    ...actual,
+    // Plain implementation avoids Reselect identity-function console warnings when
+    // getTransactionMetricsRequest tests call through MetaMaskController.
+    getSmartTransactionsPreferenceEnabled: (state) => {
+      const preferences = state?.metamask?.preferences ?? {};
+      const optIn = preferences.smartTransactionsOptInStatus;
+      const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
+      return optIn ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
+    },
+  };
+});
+
 jest.mock('./lib/forwardRequestToSnap', () => ({
   forwardRequestToSnap: jest.fn().mockResolvedValue({}),
 }));
@@ -1039,6 +1056,23 @@ describe('MetaMaskController', () => {
           transactionOptions,
           test: '123',
         });
+      });
+    });
+
+    describe('getTransactionMetricsRequest', () => {
+      it('getSmartTransactionsPreferenceEnabled returns selector result from metamask state', () => {
+        metamaskController.preferencesController.update((state) => {
+          state.preferences.smartTransactionsOptInStatus = false;
+        });
+        const { getSmartTransactionsPreferenceEnabled } =
+          metamaskController.getTransactionMetricsRequest();
+        expect(getSmartTransactionsPreferenceEnabled()).toBe(false);
+      });
+
+      it('getSmartTransactionsEnabled returns selector result for a given chainId', () => {
+        const { getSmartTransactionsEnabled } =
+          metamaskController.getTransactionMetricsRequest();
+        expect(getSmartTransactionsEnabled(MAINNET_CHAIN_ID)).toBe(false);
       });
     });
 

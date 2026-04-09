@@ -273,7 +273,7 @@
     "networkConnectionBanner": "object",
     "networksMetadata": "object",
     "networksWithTransactionActivity": "object",
-    "newPrivacyPolicyToastClickedOrClosed": null,
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
