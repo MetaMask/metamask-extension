@@ -190,6 +190,9 @@ describe('MM Connect-EVM', function (this: Suite) {
           await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
+          await testDapp.waitForLegacyActiveAccount(
+            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+          );
 
           // Trigger eth_sendTransaction.
           await testDapp.clickLegacySendTransaction();
