@@ -1,0 +1,97 @@
+// Configuration for classify-failures.mts — determines whether a failed
+// workflow run should be retried.
+{
+  "defaults": {
+    // Jobs not matching any pattern use this category. Unmatched jobs trigger
+    // a warning in the report and a ci.retry.unmatchedJobCount Sentry
+    // attribute — add explicit patterns to avoid this.
+    "unmatchedCategory": "retryableOnTransientError"
+  },
+
+  // Blockers (blockerPatterns) control cascade logic — if one fails
+  // non-transiently, all downstream jobs are marked jobRetryable=false. Each blocker
+  // must also appear in a jobClassification category (usually
+  // retryableOnTransientError) so it gets proper transient error detection.
+  "blockerPatterns": [
+    "^Get workflow",
+    "^Prepare dependencies$",
+    "^repository-health-checks",
+    "^validate-lavamoat-policies"
+  ],
+
+  "jobClassification": {
+    // Jobs that are frequently flaky and should always be retried.
+    "alwaysRetryable": {
+      "patterns": ["^e2e-", "^prep-e2e"]
+    },
+
+    // Jobs that are normally deterministic but can fail due to infrastructure
+    // issues (OOM, network errors, etc.). Retried only if error matches a
+    // transient pattern from the global transientErrorPatterns list.
+    "retryableOnTransientError": {
+      "patterns": [
+        "^build-",
+        "^Build lavamoat",
+        "^Build source map",
+        "^Build storybook",
+        "^Build ts migration",
+        "^bundle-size",
+        "^Get workflow",
+        "^Lint workflows",
+        "^Locales changed",
+        "^Prepare dependencies$",
+        "^Publish",
+        "^repository-health-checks",
+        "^Run tests",
+        "^sonarcloud",
+        "^store-benchmark-stats",
+        "^Test lint$",
+        "^Test storybook",
+        "^Trigger Regression",
+        "^validate-lavamoat-policies"
+      ]
+    },
+
+    // Optional jobs — their failure does not influence the retry decision.
+    // Includes "CI status gate" which is the gateway job in main.yml;
+    // it always fails when any upstream job fails, so classifying it separately
+    // would double-count every failure.
+    "optional": {
+      "patterns": ["^ci-status-gate", "^dapp-page-load", "^run-benchmarks"]
+    }
+  },
+
+  // Patterns to detect transient errors in job logs. If a
+  // retryableOnTransientError job fails and its logs match any of these,
+  // it will be marked jobRetryable=true.
+  "transientErrorPatterns": [
+    "429 Too Many Requests",
+    "502 Bad Gateway",
+    "503 Service Unavailable",
+    "Anvil exited: Error: Address already in use",
+    "Authentication failed for",
+    "Could not resolve host",
+    "EAI_AGAIN",
+    "ECONNREFUSED",
+    "ECONNRESET",
+    "ENOTFOUND",
+    "ENOMEM",
+    "ESOCKETTIMEDOUT",
+    "ETIMEDOUT",
+    "Exceeded timeout of \\d+ ms for a test",
+    "fatal: unable to access",
+    "heap out of memory",
+    "JavaScript heap out of memory",
+    "net::ERR_",
+    "No space left on device",
+    "npm ERR! network",
+    "OOMKilled",
+    "read ECONNRESET",
+    "resource temporarily unavailable",
+    "socket hang up",
+    "vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER",
+    "VulkanError.cpp",
+    "write EPIPE",
+    "Yarn is terminating due to an unexpected empty event loop"
+  ]
+}
