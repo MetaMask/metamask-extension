@@ -89,7 +89,7 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
-      TZ: "UTC" # Ensures the bundles are consistent across machine time zones
+      TZ: 'UTC' # Ensures the bundles are consistent across machine time zones
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
