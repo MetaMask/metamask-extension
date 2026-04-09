@@ -16,7 +16,7 @@ describe('getArtifactLinks', () => {
       `${HOST}/bundle-size/bundle_size.json`,
     );
     expect(links.interactionStats.url).toBe(
-      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
+      `${HOST}/benchmarks/benchmark-chrome-browserify-interactionUserActions.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -62,6 +62,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
+    expect(result).toContain('build-dist-browserify');
     expect(result).toContain('build-dist-webpack');
   });
 

@@ -23,43 +23,18 @@ jobs:
         # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
-        # Startup + interaction: chrome/firefox × webpack (test build: build-test-webpack / build-test-mv2-webpack).
-        # User journeys: same matrix.
+        # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
         browser: [chrome, firefox]
         buildType: [webpack]
         pageType:
-          [startupStandardHome, startupPowerUserHome, interactionUserActions]
-        include:
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyOnboardingImport
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyOnboardingNew
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyAssets
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyTransactions
-          - browser: chrome
-            buildType: webpack
-            pageType: userJourneyAccountManagement
-          - browser: firefox
-            buildType: webpack
-            pageType: userJourneyOnboardingImport
-          - browser: firefox
-            buildType: webpack
-            pageType: userJourneyOnboardingNew
-          - browser: firefox
-            buildType: webpack
-            pageType: userJourneyAssets
-          - browser: firefox
-            buildType: webpack
-            pageType: userJourneyTransactions
-          - browser: firefox
-            buildType: webpack
-            pageType: userJourneyAccountManagement
+          - startupStandardHome
+          - startupPowerUserHome
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
