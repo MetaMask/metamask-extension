@@ -147,10 +147,18 @@ async function waitUntilFileIsWritten({
 
 /**
  * Diagnostic: reads the .log file as text and checks which vault-decryptor
- * regex attempts would match. Also opens the LevelDB to verify the vault
- * key exists. Logs everything so CI failures are debuggable.
+ * regex attempts would match. Also opens a SEPARATE copy of the LevelDB to
+ * verify the vault key exists (opening LevelDB mutates files via WAL replay,
+ * so we must not touch the copy used for file upload).
+ *
+ * @param copiedDir - The copied LevelDB directory (read-only file operations only).
+ * @param originalDir - The original extension storage path (used for a second
+ *   temporary copy that we can safely open with the level library).
  */
-async function logVaultDiagnostics(copiedDir: string): Promise<void> {
+async function logVaultDiagnostics(
+  copiedDir: string,
+  originalDir: string,
+): Promise<void> {
   const logFile = getExtensionLogFile(copiedDir);
   const logFileData = fs.readFileSync(logFile, 'utf8');
   console.log(
@@ -188,7 +196,6 @@ async function logVaultDiagnostics(copiedDir: string): Promise<void> {
     `[vault-debug] "KeyringController" found in .log text at index: ${kcIndex}`,
   );
   if (kcIndex !== -1) {
-    // Log a small window around it to see what the surrounding data looks like
     const start = Math.max(0, kcIndex - 20);
     const end = Math.min(logFileData.length, kcIndex + 200);
     const snippet = logFileData
@@ -197,10 +204,13 @@ async function logVaultDiagnostics(copiedDir: string): Promise<void> {
     console.log(`[vault-debug] Context around KeyringController: ${snippet}`);
   }
 
-  // Verify the vault is actually in the LevelDB by reading it properly
+  // Verify the vault exists in LevelDB using a SEPARATE temporary copy
+  // (opening LevelDB replays the WAL and may compact/rename files)
+  let diagDir;
   let db;
   try {
-    db = new level.Level(copiedDir, { valueEncoding: 'json' });
+    diagDir = await copyDirectoryToTmp(originalDir);
+    db = new level.Level(diagDir, { valueEncoding: 'json' });
     await db.open();
     const keyringController = (await db.get('KeyringController')) as {
       vault?: string;
@@ -220,6 +230,9 @@ async function logVaultDiagnostics(copiedDir: string): Promise<void> {
   } finally {
     if (db) {
       await db.close();
+    }
+    if (diagDir) {
+      await fs.remove(diagDir);
     }
   }
 }
@@ -261,7 +274,7 @@ describe('Vault Decryptor Page', function () {
           const extensionLogFileCopy = getExtensionLogFile(copiedDir);
 
           // Diagnostic logging to debug flakiness in webpack dist builds
-          await logVaultDiagnostics(copiedDir);
+          await logVaultDiagnostics(copiedDir, extensionPath);
 
           // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
           await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
