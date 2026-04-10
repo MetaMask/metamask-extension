@@ -264,7 +264,12 @@ jobs:
                   const lastRemoval = evts
                     .filter(e => e.event === 'removed_from_merge_queue')
                     .pop();
-                  if (lastRemoval && lastRemoval.actor?.login !== 'github-merge-queue[bot]') {
+                  const lastAdded = evts
+                    .filter(e => e.event === 'added_to_merge_queue')
+                    .pop();
+                  if (lastRemoval
+                    && (!lastAdded || lastRemoval.created_at > lastAdded.created_at)
+                    && lastRemoval.actor?.login !== 'github-merge-queue[bot]') {
                     core.info(`PR #${prMatch[1]} manually dequeued by ${lastRemoval.actor?.login} — skipping outcome event`);
                     skipOutcome = true;
                   }
@@ -355,7 +360,7 @@ jobs:
             }
 
       - name: Fail job if checks failed
-        if: ${{ steps.check.outputs.checkResult == 'failure' }}
+        if: ${{ steps.check.outputs.checkResult == 'failure' || steps.check.outputs.checkResult == 'cancelled' }}
         env:
           ERRORS: ${{ steps.check.outputs.errors }}
         run: |

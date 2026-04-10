@@ -425,7 +425,9 @@ function classifyJob(job: Job): JobClassification {
   // Skip the generic "Process completed with exit code N" annotation —
   // it appears on every failed job and provides no diagnostic value.
   const firstAnnotation = annotations.find(
-    (a) => a.message?.trim() && !/^Process completed with exit code \d+/.test(a.message.trim()),
+    (a) =>
+      a.message?.trim() &&
+      !/^Process completed with exit code \d+/.test(a.message.trim()),
   );
   const fallbackSnippet = firstAnnotation
     ? firstAnnotation.message!.trim().slice(0, 200)
@@ -533,16 +535,22 @@ if (WORKFLOW_EVENT === 'merge_group') {
       const lastRemoval = events
         .filter((e) => e.event === 'removed_from_merge_queue')
         .pop();
+      const lastAdded = events
+        .filter((e) => e.event === 'added_to_merge_queue')
+        .pop();
       if (
         lastRemoval &&
-        lastRemoval.actor.login !== 'github-merge-queue[bot]'
+        (!lastAdded || lastRemoval.created_at > lastAdded.created_at) &&
+        lastRemoval.actor?.login !== 'github-merge-queue[bot]'
       ) {
         console.log(
-          `PR #${prNum} was manually dequeued by ${lastRemoval.actor.login} — skipping triage.`,
+          `PR #${prNum} was manually dequeued by ${lastRemoval.actor?.login} — skipping triage.`,
         );
 
-        // Post failure status in case ci-status-gate didn't run.
-        // Harmless if it already posted — the MQ only cares about the latest.
+        // The PR is already out of the queue at this point, so this status
+        // is purely defensive: it ensures the orphaned merge-group commit
+        // doesn't keep an "All jobs pass" check stuck in pending if
+        // ci-status-gate was cancelled before it could post.
         const headSha = getRunHeadSha();
         if (headSha) {
           try {
@@ -551,7 +559,7 @@ if (WORKFLOW_EVENT === 'merge_group') {
               body: {
                 state: 'failure',
                 context: 'All jobs pass',
-                description: `Manually dequeued by ${lastRemoval.actor.login}`,
+                description: `Manually dequeued by ${lastRemoval.actor?.login}`,
               },
             });
             console.log(
