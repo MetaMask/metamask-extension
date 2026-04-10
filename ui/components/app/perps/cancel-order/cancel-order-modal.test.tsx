@@ -46,6 +46,7 @@ const baseOrder: Order = mockOrders[0]; // ETH limit long, open
 describe('CancelOrderModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -506,8 +507,6 @@ describe('CancelOrderModal', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-
-      mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     });
   });
 
