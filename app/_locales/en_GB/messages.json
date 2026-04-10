@@ -4160,6 +4160,10 @@
     "message": "Bonus details",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
   },
+  "musdConversionFeeTooltipDescription": {
+    "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
+    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
+  },
   "musdConversionTitle": {
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"

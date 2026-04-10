@@ -12,7 +12,8 @@ const BASE_ENV: Record<string, string> = {
   HEAD_COMMIT_HASH: 'abc1234567',
   MERGE_BASE_COMMIT_HASH: 'def7654321',
   HOST_URL: 'https://ci.example.com',
-  POST_NEW_BUILDS: 'false',
+  BUILDS_FROM_SHA: 'abc1234567',
+  BUILDS_FROM_RUN: '99',
 };
 
 function setEnv(overrides: Record<string, string | undefined> = {}): void {
@@ -159,5 +160,67 @@ describe('start() entry point', () => {
     const { commentBody } =
       getMocks().utils.postCommentWithMetamaskBot.mock.calls[0][0];
     expect(commentBody).not.toContain('AI generated test plan');
+  });
+
+  it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is empty string', async () => {
+    setEnv({ BUILDS_FROM_SHA: '' });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { artifacts } = getMocks();
+    expect(artifacts.buildArtifactsBody).toHaveBeenCalledWith(
+      expect.objectContaining({
+        buildsFromSha: 'abc1234',
+      }),
+    );
+  });
+
+  it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is not set', async () => {
+    setEnv({ BUILDS_FROM_SHA: undefined });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { artifacts } = getMocks();
+    expect(artifacts.buildArtifactsBody).toHaveBeenCalledWith(
+      expect.objectContaining({
+        buildsFromSha: 'abc1234',
+      }),
+    );
+  });
+
+  it('falls back to RUN_ID when BUILDS_FROM_RUN is not set', async () => {
+    setEnv({ BUILDS_FROM_RUN: undefined });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { artifacts } = getMocks();
+    expect(artifacts.getArtifactLinks).toHaveBeenCalledWith(
+      'https://ci.example.com',
+      'MetaMask',
+      'metamask-extension',
+      '99',
+    );
+  });
+
+  it('uses BUILDS_FROM_RUN for artifact links when set', async () => {
+    setEnv({ BUILDS_FROM_RUN: '55' });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    const { artifacts } = getMocks();
+    expect(artifacts.getArtifactLinks).toHaveBeenCalledWith(
+      'https://ci.example.com',
+      'MetaMask',
+      'metamask-extension',
+      '55',
+    );
   });
 });
