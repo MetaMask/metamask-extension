@@ -230,15 +230,21 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
-  submitQuote = async ({ dismissStatusPage = true } = {}) => {
+  submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
-    if (dismissStatusPage) {
-      await this.dismissStatusPage();
-    }
+
+    this.dismissStatusPageIfPresent();
   };
 
-  dismissStatusPage = async () => {
-    await this.driver.clickElement(this.statusPageCloseButton);
+  dismissStatusPageIfPresent = async () => {
+    const isStatusPageVisible = await this.driver.isElementPresentAndVisible(
+      this.statusPageCloseButton,
+      2000,
+    );
+
+    if (isStatusPageVisible) {
+      await this.driver.clickElement(this.statusPageCloseButton);
+    }
   };
 
   confirmBridgeTransaction = async () => {

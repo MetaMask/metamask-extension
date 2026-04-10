@@ -37,7 +37,6 @@ describe('Swap tests', function (this: Suite) {
           },
           submitDelay: 10000,
           expectedDestAmount: '3,839',
-          dismissStatusPage: true,
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
