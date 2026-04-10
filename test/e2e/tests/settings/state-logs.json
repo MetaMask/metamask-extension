@@ -1017,6 +1017,7 @@
     "knownMethodData": {},
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
+    "lastError": "null",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",

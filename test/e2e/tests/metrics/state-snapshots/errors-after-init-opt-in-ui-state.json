@@ -235,6 +235,7 @@
     "knownMethodData": "object",
     "lastDepositResult": null,
     "lastDepositTransactionId": null,
+    "lastError": null,
     "lastFetchedBlockNumbers": "object",
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
