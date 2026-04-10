@@ -158,13 +158,22 @@ class FixtureBuilderV2 {
     assetsPrice = {},
     assetsInfo = {},
     selectedCurrency,
-  }: Partial<AssetsControllerState> = {}): this {
+  }: {
+    assetsBalance?: Record<string, Record<string, { amount: string }>>;
+    assetsPrice?: Record<string, unknown>;
+    assetsInfo?: Record<string, unknown>;
+    selectedCurrency?: string;
+  } = {}): this {
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
       (this.fixture.data as Record<string, unknown>).AssetsController = {};
     }
     const ac = (this.fixture.data as Record<string, unknown>)
-      .AssetsController as AssetsControllerState;
-
+      .AssetsController as {
+      assetsBalance: Record<string, Record<string, { amount: string }>>;
+      assetsPrice: Record<string, unknown>;
+      assetsInfo: Record<string, unknown>;
+      selectedCurrency?: string;
+    };
     if (!ac.assetsBalance) {
       ac.assetsBalance = {};
     }
@@ -180,6 +189,9 @@ class FixtureBuilderV2 {
     merge(ac.assetsBalance, assetsBalance);
     merge(ac.assetsPrice, assetsPrice);
     merge(ac.assetsInfo, assetsInfo);
+    if (selectedCurrency !== undefined) {
+      ac.selectedCurrency = selectedCurrency;
+    }
     return this;
   }
 
