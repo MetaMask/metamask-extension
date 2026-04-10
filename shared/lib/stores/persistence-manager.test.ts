@@ -3,11 +3,8 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import {
-  captureException,
-  captureMessage,
-} from '../../../../shared/lib/sentry';
-import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { captureException, captureMessage } from '../sentry';
+import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
@@ -33,11 +30,11 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
 }));
-jest.mock('../../../../shared/lib/sentry', () => ({
+jest.mock('../sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
-jest.mock('../../../../shared/lib/trace', () => ({
+jest.mock('../trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
   TraceName: {},
@@ -51,6 +48,17 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+  });
+
+  describe('events', () => {
+    it('supports EventEmitter on and off without throwing', () => {
+      const listener = jest.fn();
+      expect(() => {
+        manager.on('splitStateMigrationSucceeded', listener);
+        manager.off('splitStateMigrationSucceeded', listener);
+        manager.off('vaultCorruptionDetected', listener);
+      }).not.toThrow();
+    });
   });
 
   describe('set', () => {
@@ -264,7 +272,7 @@ describe('PersistenceManager', () => {
         },
       };
       mockStoreGet.mockResolvedValueOnce({ data: mockData });
-      manager.getBackup = jest.fn().mockResolvedValueOnce({
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
         KeyringController: {
           vault: 'vault',
         },
@@ -304,11 +312,13 @@ describe('PersistenceManager', () => {
         string,
         unknown
       >;
+      /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
       expect(passedMap.get('meta')).toEqual({
         version: 10,
         storageKind: 'split',
       });
       expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+      /* eslint-enable jest/prefer-strict-equal */
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
     });
@@ -357,8 +367,10 @@ describe('PersistenceManager', () => {
         unknown
       >;
 
+      /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
       expect(retryMap.get('meta')).toEqual({ version: 10 });
       expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
+      /* eslint-enable jest/prefer-strict-equal */
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {
@@ -414,7 +426,10 @@ describe('PersistenceManager', () => {
       manager.storageKind = 'data';
       manager.setMetadata({ version: 10 });
 
-      manager.open = jest.fn().mockResolvedValue(undefined);
+      jest
+        .spyOn(manager, 'open')
+        .mockImplementation()
+        .mockResolvedValue(undefined);
 
       const { request } = navigator.locks;
       const mockCallback = jest.fn();
@@ -471,7 +486,7 @@ describe('PersistenceManager', () => {
       indexedDB.open = originalOpen;
     });
 
-    it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
+    it('handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const domException = new DOMException(
@@ -498,7 +513,7 @@ describe('PersistenceManager', () => {
       );
     });
 
-    it('Bubbles up IndexedDB error on initialization', async () => {
+    it('bubbles up IndexedDB error on initialization', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 

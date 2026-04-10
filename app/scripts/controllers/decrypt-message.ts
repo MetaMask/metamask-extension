@@ -13,7 +13,11 @@ import type {
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, StateMetadata } from '@metamask/base-controller';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  StateMetadata,
+} from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   ApprovalControllerAcceptRequestAction,
@@ -29,6 +33,7 @@ import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
+import { DecryptMessageControllerMethodActions } from './decrypt-message-method-action-types';
 
 const controllerName = 'DecryptMessageController';
 
@@ -99,17 +104,19 @@ export type DecryptMessageControllerState = {
   unapprovedDecryptMsgCount: number;
 };
 
-export type GetDecryptMessageControllerState = {
-  type: `${typeof controllerName}:getState`;
-  handler: () => DecryptMessageControllerState;
-};
+export type DecryptMessageControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  DecryptMessageControllerState
+>;
 
 export type DecryptMessageControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [DecryptMessageControllerState, Patch[]];
 };
 
-export type DecryptMessageControllerActions = GetDecryptMessageControllerState;
+export type DecryptMessageControllerActions =
+  | DecryptMessageControllerGetStateAction
+  | DecryptMessageControllerMethodActions;
 
 export type DecryptMessageControllerEvents =
   DecryptMessageControllerStateChange;
@@ -145,10 +152,20 @@ export type DecryptMessageControllerOptions = {
   metricsEvent: (payload: any, options?: any) => void;
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'resetState',
+  'clearUnapproved',
+  'newRequestDecryptMessage',
+  'decryptMessage',
+  'decryptMessageInline',
+  'cancelDecryptMessage',
+  'rejectUnapproved',
+] as const;
+
 /**
  * Controller for decrypt signing requests requiring user approval.
  */
-export default class DecryptMessageController extends BaseController<
+export class DecryptMessageController extends BaseController<
   typeof controllerName,
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
@@ -197,6 +214,11 @@ export default class DecryptMessageController extends BaseController<
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

@@ -19,6 +19,10 @@ import { join } from 'node:path';
 import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
 
+// Resolve from the repo root so this works when tsx loads the source as ESM
+// in thread-loader workers and when tsc emits the same file as CJS for
+// LavaMoat policy generation.
+// TODO: Remove once `@lavamoat/node` supports ESM.
 const requireFromRepoRoot = createRequire(join(process.cwd(), 'package.json'));
 const reactCompilerModule = requireFromRepoRoot(
   'react-compiler-webpack/dist/react-compiler-loader.js',

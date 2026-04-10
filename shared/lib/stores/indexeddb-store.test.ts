@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { IndexedDBStore } from './indexeddb-store'; // Adjust the import path to your file
+import { IndexedDBStore } from './indexeddb-store';
 
 describe('IndexedDBStore', () => {
   const dbName = 'test-db';
@@ -16,8 +16,6 @@ describe('IndexedDBStore', () => {
         throw new Error("this shouldn't happen. You have an error somewhere");
       };
     });
-  });
-  beforeEach(() => {
     db = new IndexedDBStore();
   });
   afterEach(() => {
@@ -30,7 +28,7 @@ describe('IndexedDBStore', () => {
       // Verify the database is open by performing an operation
       await db.set({ key: 'value' });
       const values = await db.get(['key']);
-      expect(values).toEqual(['value']);
+      expect(values).toStrictEqual(['value']);
     });
 
     it('rejects with TypeError for invalid version (0)', async () => {
@@ -73,7 +71,9 @@ describe('IndexedDBStore', () => {
       const values = { key1: 'value1', key2: 42, key3: { nested: true } };
       await db.set(values);
       const retrieved = await db.get(['key1', 'key2', 'key3']);
-      expect(retrieved).toEqual(['value1', 42, { nested: true }]);
+      expect(retrieved[0]).toBe('value1');
+      expect(retrieved[1]).toBe(42);
+      expect(retrieved[2]).toMatchObject({ nested: true });
     });
 
     it('throws when database is not open', async () => {
@@ -101,7 +101,12 @@ describe('IndexedDBStore', () => {
       await db.open(dbName, dbVersion);
       await db.set({ key1: 'value1', key2: 'value2' });
       const retrieved = await db.get(['key1', 'key3', 'key2', 'key1']);
-      expect(retrieved).toEqual(['value1', undefined, 'value2', 'value1']);
+      expect(retrieved).toStrictEqual([
+        'value1',
+        undefined,
+        'value2',
+        'value1',
+      ]);
     });
 
     it('throws when database is not open', async () => {
@@ -115,7 +120,7 @@ describe('IndexedDBStore', () => {
       await db.set({ key1: 'value1', key2: 'value2', key3: 'value3' });
       await db.remove(['key1', 'key3']);
       const retrieved = await db.get(['key1', 'key2', 'key3']);
-      expect(retrieved).toEqual([undefined, 'value2', undefined]);
+      expect(retrieved).toStrictEqual([undefined, 'value2', undefined]);
     });
 
     it('throws when database is not open', async () => {
