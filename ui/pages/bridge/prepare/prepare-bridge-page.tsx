@@ -803,6 +803,7 @@ const PrepareBridgePage = ({
             />
           )}
         {!isLoading &&
+          activeQuote &&
           !isInsufficientBalance &&
           !isInsufficientGasForQuote &&
           insufficientNativeReserveError &&

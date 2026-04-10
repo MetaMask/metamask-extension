@@ -24,7 +24,13 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { parseCaipChainId, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  parseCaipAssetType,
+  parseCaipChainId,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -173,6 +179,28 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     return validatedFlags;
   },
 );
+
+const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
+  {
+    'eip155:143': '10',
+  };
+
+const getMinimumReserveBalanceForChain = ({
+  caipAssetId,
+  minimumBalanceForRentExemptionInSOL,
+}: {
+  caipAssetId?: CaipAssetType;
+  minimumBalanceForRentExemptionInSOL: string;
+}): string => {
+  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
+    return '0';
+  }
+  const { chainId } = parseCaipAssetType(caipAssetId);
+  if (isSolanaChainId(chainId)) {
+    return minimumBalanceForRentExemptionInSOL;
+  }
+  return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
+};
 
 const getChainRanking = (state: BridgeAppState) =>
   getBridgeFeatureFlags(state)?.chainRanking;
@@ -772,22 +800,11 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       ? gasIncluded
       : gasIncluded || gasIncluded7702 || gasSponsored;
 
-    const srcChainId =
-      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    let minimumNativeBalanceToBeKeptInAccount =
-      srcChainId && isSolanaChainId(srcChainId)
-        ? minimumBalanceForRentExemptionInSOL
-        : '0';
-
-    // Monad requires >= 10 MON native reserve per account.
-    // Without this balance the relay would reject the tx on-chain.
-    const MONAD_MIN_RESERVE = '10';
-    const srcHexChainId = srcChainId
-      ? getMaybeHexChainId(String(srcChainId))
-      : undefined;
-    if (srcHexChainId === CHAIN_IDS.MONAD) {
-      minimumNativeBalanceToBeKeptInAccount = MONAD_MIN_RESERVE;
-    }
+    const minimumNativeBalanceToBeKeptInAccount =
+      getMinimumReserveBalanceForChain({
+        caipAssetId: fromToken.assetId,
+        minimumBalanceForRentExemptionInSOL,
+      });
     const maxSwappableNativeBalance = BigNumber.max(
       new BigNumber(nativeBalance ?? 0).sub(
         minimumNativeBalanceToBeKeptInAccount,
