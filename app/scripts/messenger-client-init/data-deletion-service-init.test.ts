@@ -1,10 +1,10 @@
-import { ControllerInitRequest } from './types';
 import { getRootMessenger } from '../lib/messenger';
-import { buildControllerInitRequestMock } from './test/utils';
 import {
   DataDeletionService,
   DataDeletionServiceMessenger,
 } from '../services/data-deletion-service';
+import { ControllerInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
 import { DataDeletionServiceInit } from './data-deletion-service-init';
 import { getDataDeletionServiceMessenger } from './messengers/data-deletion-service-messenger';
 
