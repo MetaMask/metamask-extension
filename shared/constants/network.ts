@@ -227,6 +227,7 @@ export const CHAIN_IDS = {
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
   MANTLE: '0x1388',
+  KONET: '0x4341',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -401,6 +402,7 @@ export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 export const TEMPO_MAINNET_DISPLAY_NAME = 'Tempo';
 export const STABLE_DISPLAY_NAME = 'Stable';
 export const MANTLE_DISPLAY_NAME = 'Mantle';
+export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -498,6 +500,7 @@ export const CURRENCY_SYMBOLS = {
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
   MANTLE: 'MNT',
+  KONET: 'KONET',
 } as const;
 
 // Non-EVM currency symbols
@@ -736,6 +739,8 @@ export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 export const STABLE_IMAGE_URL = './images/stable.svg';
 export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
+export const KONET_IMAGE_URL = './images/konet.svg';
+export const KONET_NATIVE_TOKEN_IMAGE_URL = './images/konet-native.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -923,6 +928,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_DISPLAY_NAME,
   [CHAIN_IDS.MANTLE]: MANTLE_DISPLAY_NAME,
+  [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1093,6 +1099,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.TEMPO_TESTNET]: CURRENCY_SYMBOLS.TEMPO_TESTNET,
   [CHAIN_IDS.TEMPO_MAINNET]: CURRENCY_SYMBOLS.TEMPO_MAINNET,
   [CHAIN_IDS.STABLE_MAINNET]: CURRENCY_SYMBOLS.STABLE,
+  [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
 } as const;
 
 /**
@@ -1283,6 +1290,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_IMAGE_URL,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_IMAGE_URL,
+  [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1380,6 +1388,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.KONET]: KONET_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
