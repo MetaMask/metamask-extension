@@ -26,29 +26,6 @@ export const backedUpStateKeys = [
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
-export type VaultCorruptionDetectedEvent = {
-  backup: Backup;
-  corruptionType: VaultCorruptionType;
-};
-
-export type SplitStateMigrationSucceededEvent = {
-  state: MetaMaskStateType;
-};
-
-export type SplitStateMigrationFailedEvent = {
-  state: MetaMaskStateType;
-};
-
-export type PersistenceManagerEventMap = {
-  vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
-  splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
-  splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
-};
-
-export type PersistenceManagerOptions = {
-  localStore: BaseStore;
-};
-
 /**
  * Shape of the backup object read from the IndexedDB backup database.
  * Used for vault recovery and critical error restore.

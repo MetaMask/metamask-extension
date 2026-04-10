@@ -207,7 +207,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/",
+            "/?tab=activity",
             {
               "replace": true,
               "state": {
@@ -260,7 +260,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/",
+            "/?tab=activity",
             {
               "replace": true,
               "state": {
@@ -311,7 +311,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             },
           ],
           [
-            "/",
+            "/?tab=activity",
             {
               "replace": true,
               "state": {
