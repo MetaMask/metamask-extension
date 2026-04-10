@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { IconName, TextColor } from '@metamask/design-system-react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';
 
 const menuItemSelector = '.multichain-account-cell-menu-item';
