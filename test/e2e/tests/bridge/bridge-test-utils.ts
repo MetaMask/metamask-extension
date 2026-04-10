@@ -1903,6 +1903,16 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1994,6 +2004,16 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
