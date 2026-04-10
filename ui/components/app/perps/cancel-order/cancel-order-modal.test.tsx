@@ -3,6 +3,7 @@ import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
@@ -11,10 +12,16 @@ import { CancelOrderModal } from './cancel-order-modal';
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+const mockTrack = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../../../hooks/perps', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
+  usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -414,6 +421,69 @@ describe('CancelOrderModal', () => {
 
       // Error should not be visible since it was never triggered in this open session
       expect(screen.queryByText('Some error')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('analytics', () => {
+    it('fires PerpsOrderCancelTransaction with success on successful cancel', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'success',
+            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
+    });
+
+    it('fires PerpsOrderCancelTransaction with failed status and PerpsError on failure', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'failed',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
+          }),
+        );
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Error',
+          expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'backend',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
+      });
     });
   });
 

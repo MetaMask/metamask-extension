@@ -3105,7 +3105,8 @@
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledgerのロックが解除されていること"
+    "message": "$1のロックが解除されていること",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"

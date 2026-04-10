@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { OrderEntry } from './order-entry';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
