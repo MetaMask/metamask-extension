@@ -30,7 +30,12 @@ export const SettingsToggleItem = ({
   dataTestId,
   disabled,
 }: SettingsToggleItemProps) => (
-  <Box flexDirection={BoxFlexDirection.Column} gap={1} paddingVertical={3}>
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    gap={1}
+    paddingVertical={3}
+    paddingHorizontal={4}
+  >
     <Box
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}

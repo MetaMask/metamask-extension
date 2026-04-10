@@ -25,6 +25,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown',
   };
 
+  private readonly perpsView = {
+    testId: 'perps-view',
+  };
+
   private readonly perpsExploreMarketsRow = {
     testId: 'perps-explore-markets-row',
   };
@@ -35,10 +39,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsRecentActivitySeeAll = {
     testId: 'perps-recent-activity-see-all',
-  };
-
-  private readonly perpsTabView = {
-    testId: 'perps-tab-view',
   };
 
   private readonly perpsTutorialContinueButton = {
@@ -55,11 +55,11 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Waits for the Perps Home view to be loaded and visible.
-   * The main Perps tab shows PerpsTabView (balance dropdown, positions, explore).
+   * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.perpsTabView,
+      this.perpsView,
       this.perpsBalanceDropdown,
     ]);
   }

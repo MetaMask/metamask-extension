@@ -117,10 +117,10 @@ describe('Error utils Tests', function () {
         .mocked(loadRelativeTimeFormatLocaleData)
         .mockResolvedValue(undefined);
 
-      const result = await setupLocale('es');
+      const result = await setupLocale('es_419');
 
       expect(fetchLocale).toHaveBeenCalledWith('en');
-      expect(fetchLocale).toHaveBeenCalledWith('es');
+      expect(fetchLocale).toHaveBeenCalledWith('es_419');
       expect(result.enLocaleMessages).toStrictEqual(enMessages);
       expect(result.currentLocaleMessages).toStrictEqual(esMessages);
     });

@@ -12,7 +12,34 @@ import {
   METHOD_REPAIR_DATABASE_TIMEOUT,
 } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
-import { safeGetVaultBackup, hasVault } from '../../../shared/lib/backup';
+import {
+  hasVault,
+  type Backup,
+} from '../../../shared/lib/stores/persistence-manager';
+
+const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+
+/**
+ * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
+ *
+ * @param timeoutMs - Max wait in milliseconds.
+ * @returns Backup or null on timeout, missing hook, or error.
+ */
+async function safeGetVaultBackup(
+  timeoutMs: number = SAFE_GET_VAULT_BACKUP_TIMEOUT_MS,
+): Promise<Backup | null> {
+  const getBackupState = globalThis.stateHooks?.getBackupState;
+  if (!getBackupState) {
+    return null;
+  }
+  const timeoutPromise = new Promise<Backup | null>((resolve) => {
+    setTimeout(() => resolve(null), timeoutMs);
+  });
+  const backupPromise = getBackupState()
+    .then((b) => (b ?? null) as Backup | null)
+    .catch(() => null);
+  return Promise.race([backupPromise, timeoutPromise]);
+}
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.

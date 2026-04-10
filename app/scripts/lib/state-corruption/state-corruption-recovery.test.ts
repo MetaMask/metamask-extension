@@ -1,9 +1,9 @@
 import 'navigator.locks';
-import type { Backup } from '../../../../shared/lib/backup';
+import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import {
   PersistenceError,
   PersistenceManager,
-} from '../stores/persistence-manager';
+} from '../../../../shared/lib/stores/persistence-manager';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,

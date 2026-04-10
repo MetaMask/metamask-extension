@@ -19,10 +19,10 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
-      zip:
+      bundle-analyzer:
         type: boolean
         default: false
-        description: Whether to zip the build output. Only compatible with webpack builds. This bash-based zipping is more performant than the built-in zip option of webpack.
+        description: Whether to generate and upload bundle analyzer reports
 
 jobs:
   run-build:
@@ -105,25 +105,7 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}
-
-      - name: Zip build
-        if: ${{ inputs.zip }}
-        run: |
-          mkdir -p builds
-          version_name=$(jq -r '.version' package.json)
-          if [ "${IS_FLASK_BUILD}" = "true" ]; then
-            version_name="${version_name}-flask.0"
-          elif [ "${IS_BETA_BUILD}" = "true" ]; then
-            version_name="${version_name}-beta.0"
-          elif [ "${IS_EXPERIMENTAL_BUILD}" = "true" ]; then
-            version_name="${version_name}-experimental.0"
-          fi
-          for browser in chrome firefox; do
-            if [ -d "dist/${browser}" ]; then
-              (cd "dist/${browser}" && zip -9 -r "../../builds/metamask-${browser}-${version_name}.zip" .)
-            fi
-          done
+        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
 
       - name: Validate source maps
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
@@ -131,6 +113,19 @@ jobs:
       - name: Run mozilla-lint
         if: ${{ contains(inputs.build-name, 'mv2') }}
         run: yarn mozilla-lint
+
+      - name: Upload bundle analyzer report to S3
+        if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/bundle-analyzer/report.html
+          path: dist/report.html
+
+      - name: Remove bundle analyzer report from dist
+        if: ${{ inputs.bundle-analyzer }}
+        run: rm -f dist/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'
         uses: actions/upload-artifact@v6

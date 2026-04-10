@@ -14,7 +14,9 @@ import {
 import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 
 /**
- * Material UI styles for the slider - uses CSS variables for theming
+ * Material UI styles for the slider - uses CSS variables for theming.
+ * MUI v4's default Slider shrinks the thumb to 8×8 when disabled; we keep the
+ * same size as enabled so $0 available / disabled sliders still look correct.
  */
 const sliderStyles = {
   root: {
@@ -22,6 +24,8 @@ const sliderStyles = {
     padding: 0,
     overflow: 'visible',
   },
+  /** Required for JSS `$disabled` references on root/thumb */
+  disabled: {},
   rail: {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
@@ -58,6 +62,19 @@ const sliderStyles = {
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
+    '&$disabled': {
+      height: 20,
+      width: 20,
+      marginTop: -7,
+      marginLeft: -7,
+      backgroundColor: 'var(--color-icon-muted)',
+      border: '2px solid var(--color-text-default)',
+      boxSizing: 'border-box' as const,
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '&:hover': {
+        boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      },
+    },
   },
   active: {},
 };
@@ -73,8 +90,13 @@ export type PerpsSliderProps = {
   step: number;
   /** Current value */
   value: number;
-  /** Change handler */
+  /** Change handler - fires continuously during drag */
   onChange: (
+    event: React.ChangeEvent<unknown>,
+    value: number | number[],
+  ) => void;
+  /** Committed change handler - fires only when drag ends or a discrete click occurs */
+  onChangeCommitted?: (
     event: React.ChangeEvent<unknown>,
     value: number | number[],
   ) => void;
@@ -94,6 +116,8 @@ export type PerpsSliderProps = {
   valueText?: string | React.ReactNode;
   /** Test ID for testing */
   'data-testid'?: string;
+  /** When true, the slider is non-interactive */
+  disabled?: boolean;
 };
 
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
@@ -102,6 +126,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   step,
   value,
   onChange,
+  onChangeCommitted,
   editText = 'Edit',
   infoText,
   onEdit,
@@ -110,6 +135,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   tooltipText,
   valueText,
   'data-testid': dataTestId,
+  disabled = false,
 }) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
@@ -163,6 +189,8 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         step={step}
         value={value}
         onChange={onChange}
+        onChangeCommitted={onChangeCommitted}
+        disabled={disabled}
         data-testid={dataTestId}
       />
 

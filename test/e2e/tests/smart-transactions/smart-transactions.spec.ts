@@ -93,6 +93,9 @@ describe('Smart Transactions', function () {
       async ({ driver }) => {
         // fill ens address as recipient when user lands on send token screen
         const transactionConfirmation = new TransactionConfirmation(driver);
+        const homePage = new HomePage(driver);
+        const activityList = new ActivityListPage(driver);
+
         await createInternalTransaction({
           driver,
           chainId: '0x1',
@@ -103,7 +106,7 @@ describe('Smart Transactions', function () {
         await transactionConfirmation.selectTokenFee('USDC');
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-        const activityList = new ActivityListPage(driver);
+        await homePage.goToActivityList();
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
@@ -141,9 +144,6 @@ describe('Smart Transactions', function () {
         await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
-
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
@@ -174,9 +174,6 @@ describe('Smart Transactions', function () {
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
-
-        await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();

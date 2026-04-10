@@ -2,11 +2,11 @@ import type {
   BenchmarkResults,
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
-import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
 import {
   BENCHMARK_PERSONA,
-  THRESHOLD_REGISTRY,
-} from '../../test/e2e/benchmarks/utils/constants';
+  DEFAULT_RELATIVE_THRESHOLDS,
+} from '../../shared/constants/benchmarks';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
   compareMetric,
