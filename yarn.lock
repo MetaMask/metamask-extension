@@ -5996,10 +5996,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-playground@npm:0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/browser-playground@npm:0.3.0"
-  checksum: 10/87eb5f9f623afea58dcf2eaeb46795ce595ecc3462b5976a4ab35d04c1eff0edde05ccaf52681fe1f02f840cf7d06b29ca6a71ce581cf1b2df2bc1b2e7acd28b
+"@metamask/browser-playground@npm:0.6.2":
+  version: 0.6.2
+  resolution: "@metamask/browser-playground@npm:0.6.2"
+  checksum: 10/7e8a725ac0ffb3c3cc0bb436619b8e4fcd0376920b1b2504cf9032aa593e1cd25b475b15fab6e8f72585d665b87c673a28a2ea3386d292e766247b5bcee94616
   languageName: node
   linkType: hard
 
@@ -34097,7 +34097,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^70.0.0"
     "@metamask/bridge-status-controller": "npm:^70.0.3"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/browser-playground": "npm:0.3.0"
+    "@metamask/browser-playground": "npm:0.6.2"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.5.0"
     "@metamask/claims-controller": "npm:^0.4.2"
