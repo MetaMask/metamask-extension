@@ -515,6 +515,20 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeGreaterThanOrEqual(1);
     });
 
+    it('displays leverage value in position details', () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <PerpsMarketDetailPage />,
+        store,
+      );
+
+      expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
+      expect(
+        getByText(new RegExp(`${messages.perpsLong.message} 3x`, 'u')),
+      ).toBeInTheDocument();
+    });
+
     it('displays stats section', async () => {
       const store = mockStore(createMockState(true));
 
