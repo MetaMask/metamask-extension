@@ -3668,7 +3668,9 @@ export function createSpeedUpTransaction(
 
       await forceUpdateMetamaskState(dispatch);
 
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
+      const currentNetworkTxList = getCurrentNetworkTransactions({
+        metamask: newState,
+      });
       const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       return newTx;

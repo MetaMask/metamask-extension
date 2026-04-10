@@ -35,8 +35,8 @@ type UseLegacyCancelSpeedupFlowParams = {
 };
 
 type UseLegacyCancelSpeedupFlowReturn = {
-  cancelTransaction: () => void;
-  speedUpTransaction: () => void;
+  cancelTransaction: () => unknown;
+  speedUpTransaction: () => unknown;
   updateTransactionToTenPercentIncreasedGasFee: (
     initTransaction?: boolean,
   ) => void;

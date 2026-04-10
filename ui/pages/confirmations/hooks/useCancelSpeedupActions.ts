@@ -22,7 +22,7 @@ export function useCancelSpeedupActions(onClose: () => void) {
   const clearError = useCallback(() => setError(null), []);
 
   const submitTransaction = useCallback(
-    async (action: () => void, isCancel: boolean) => {
+    async (action: () => unknown, isCancel: boolean) => {
       setError(null);
       onClose();
       try {
