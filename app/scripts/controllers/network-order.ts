@@ -91,7 +91,10 @@ const metadata: StateMetadata<NetworkOrderControllerState> = {
   },
 };
 
-const MESSENGER_EXPOSED_METHODS = ['updateNetworksList'] as const;
+const MESSENGER_EXPOSED_METHODS = [
+  'onNetworkControllerStateChange',
+  'updateNetworksList',
+] as const;
 
 /**
  * Controller that updates the order of the network list.
