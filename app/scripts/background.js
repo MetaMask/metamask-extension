@@ -61,7 +61,6 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   backedUpStateKeys,
   hasVault,
@@ -2464,7 +2463,7 @@ async function initOrRestoreBackground() {
     return;
   }
 
-  const restoreInProgress = await readCriticalErrorRestoreSession(browser);
+  const restoreSession = await readCriticalErrorRestoreSession(browser);
 
   // Fetch the backup once, shared by the restore path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
@@ -2472,7 +2471,7 @@ async function initOrRestoreBackground() {
   const testingFlags = inTest ? getManifestFlags().testing : undefined;
   let backup = null;
   if (
-    restoreInProgress ||
+    restoreSession ||
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
@@ -2490,15 +2489,15 @@ async function initOrRestoreBackground() {
     }
   }
 
-  if (restoreInProgress) {
+  if (restoreSession) {
     await clearCriticalErrorRestoreSession(browser);
     if (backupHasVault) {
       if (inTestState) {
         inTestState.restoreInProgress = true;
       }
       const handoffPayload = {
-        tabId: restoreInProgress.tabId,
-        tabUrl: restoreInProgress.tabUrl,
+        tabId: restoreSession.tabId,
+        tabUrl: restoreSession.tabUrl,
       };
       initBackground(backup);
       try {
