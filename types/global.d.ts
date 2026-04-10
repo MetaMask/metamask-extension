@@ -323,6 +323,14 @@ type StateHooks = {
    * Useful for clearing metrics between benchmark runs.
    */
   resetWebVitalsMetrics?: () => void;
+
+  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  store?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  submitRequestToBackground?: (method: string, args?: any[]) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getPerpsStreamManager?: () => any;
 };
 
 export declare global {
