@@ -4,8 +4,6 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
-  calculateMarginRequired,
-  estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
 import type {
   OrderFormState,
@@ -13,6 +11,52 @@ import type {
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
+import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constants';
+
+/**
+ * Calculate the estimated liquidation price for an isolated-margin position.
+ *
+ * Implements the same formula as HyperLiquidProvider.calculateLiquidationPrice,
+ * but synchronously — maxLeverage is already available from market data.
+ *
+ * @param entryPrice - Position entry price
+ * @param leverage - User-selected leverage
+ * @param direction - 'long' or 'short'
+ * @param maxLeverage - Maximum leverage allowed for the asset (from market data)
+ * @returns Estimated liquidation price (0 if inputs are invalid)
+ */
+function calculateLiquidationPrice(
+  entryPrice: number,
+  leverage: number,
+  direction: 'long' | 'short',
+  maxLeverage: number,
+): number {
+  if (entryPrice <= 0 || leverage <= 0 || maxLeverage <= 0) {
+    return 0;
+  }
+
+  const maintenanceLeverage = 2 * maxLeverage;
+  const maintenanceMarginRatio = 1 / maintenanceLeverage;
+  const side = direction === 'long' ? 1 : -1;
+
+  const initialMargin = 1 / leverage;
+  const maintenanceMargin = 1 / maintenanceLeverage;
+
+  if (initialMargin < maintenanceMargin) {
+    return 0;
+  }
+
+  const marginAvailable = initialMargin - maintenanceMargin;
+  const denominator = 1 - maintenanceMarginRatio * side;
+
+  if (Math.abs(denominator) < 0.0001) {
+    return entryPrice;
+  }
+
+  const liquidationPrice =
+    entryPrice - (side * marginAvailable * entryPrice) / denominator;
+  return Math.max(0, liquidationPrice);
+}
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -35,6 +79,12 @@ export type UsePerpsOrderFormOptions = {
   orderType?: OrderType;
   /** Initial leverage for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /**
+   * Maximum leverage allowed for this asset (from market data).
+   * Used in the HyperLiquid liquidation price formula.
+   * Defaults to 50 when market data is unavailable.
+   */
+  maxLeverage?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -90,6 +140,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
  * @param options.initialLeverage
+ * @param options.maxLeverage - Maximum leverage for the asset (used in liquidation price formula)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -103,6 +154,7 @@ export function usePerpsOrderForm({
   onSubmit,
   orderType = 'market',
   initialLeverage,
+  maxLeverage = 50,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -244,8 +296,7 @@ export function usePerpsOrderForm({
       const closeAmount = (positionSize * closePercent) / 100;
       const closeValueUsd = closeAmount * currentPrice;
 
-      // Mock fee calculation: 0.05% of close value
-      const estimatedFees = closeValueUsd * 0.0005;
+      const estimatedFees = closeValueUsd * PERPS_MARKET_ORDER_FEE_RATE;
 
       return {
         positionSize: formatTokenQuantity(closeAmount, asset),
@@ -286,24 +337,27 @@ export function usePerpsOrderForm({
       }
     }
 
-    // User enters SIZE (position notional value). Margin = size / leverage
     const positionSize = calculatePositionSize(amount, effectivePrice);
-    const marginRequired = calculateMarginRequired(amount, formState.leverage);
-    const liquidationPrice = estimateLiquidationPrice(
+    const openingFee = amount * PERPS_MARKET_ORDER_FEE_RATE;
+    // Margin required = initial margin + opening fee (total cost to open)
+    const marginRequired = amount / formState.leverage + openingFee;
+    const liquidationPriceValue = calculateLiquidationPrice(
       effectivePrice,
       formState.leverage,
-      formState.direction === 'long',
+      formState.direction,
+      maxLeverage,
     );
-    // Mock fee calculation: 0.05% of position size
-    const estimatedFees = amount * 0.0005;
 
     return {
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
-      liquidationPriceRaw: liquidationPrice,
+      liquidationPrice: formatCurrencyWithMinThreshold(
+        liquidationPriceValue,
+        'USD',
+      ),
+      liquidationPriceRaw: liquidationPriceValue,
       orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
-      estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
+      estimatedFees: formatCurrencyWithMinThreshold(openingFee, 'USD'),
     };
   }, [
     formState.amount,
@@ -316,6 +370,7 @@ export function usePerpsOrderForm({
     existingPosition,
     closePercent,
     asset,
+    maxLeverage,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
   ]);

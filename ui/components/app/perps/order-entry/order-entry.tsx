@@ -104,6 +104,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onSubmit,
     orderType,
     initialLeverage,
+    maxLeverage,
   });
 
   const isLong = formState.direction === 'long';

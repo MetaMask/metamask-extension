@@ -357,7 +357,7 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
-    it('calculates margin as size divided by leverage', () => {
+    it('calculates margin as size divided by leverage plus opening fee', () => {
       const { result } = renderHookWithProvider(
         () => usePerpsOrderForm(defaultOptions),
         mockStateWithLocale,
@@ -368,10 +368,11 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(10);
       });
 
-      // Size = $10000, leverage = 10x → margin = $1000
-      // marginRequired should NOT equal the amount (size) when leverage > 1
+      // Size = $10,000, leverage = 10x → initial_margin = $1,000
+      // Opening fee = $10,000 * 0.00045 = $4.50
+      // Total marginRequired = $1,004.50
       expect(result.current.calculations.marginRequired).not.toBeNull();
-      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).toContain('1,004');
       expect(result.current.calculations.marginRequired).not.toContain(
         '10,000',
       );

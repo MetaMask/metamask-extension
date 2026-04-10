@@ -164,10 +164,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Margin = size / leverage = $1,000 / 3 = $333.33
-      expect(screen.getByText('$333.33')).toBeInTheDocument();
-      // Fees = 0.05% of position size = $1,000 * 0.0005 = $0.50
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+      // Margin = size / leverage + opening_fee = $1,000 / 3 + $1,000 * 0.00045 = $333.78
+      expect(screen.getByText('$333.78')).toBeInTheDocument();
+      // Fees = 0.045% of position size = $1,000 * 0.00045 = $0.45
+      expect(screen.getByText('$0.45')).toBeInTheDocument();
     });
   });
 
