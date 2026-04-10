@@ -324,13 +324,15 @@ type StateHooks = {
    */
   resetWebVitalsMetrics?: () => void;
 
-  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  submitRequestToBackground?: (method: string, args?: any[]) => Promise<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getPerpsStreamManager?: () => any;
+  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
+  // Typed as `unknown` because these are untyped debug-only entry points consumed
+  // by CDP automation scripts that perform their own runtime checks.
+  store?: unknown;
+  submitRequestToBackground?: (
+    method: string,
+    args?: unknown[],
+  ) => Promise<unknown>;
+  getPerpsStreamManager?: () => unknown;
 };
 
 export declare global {
