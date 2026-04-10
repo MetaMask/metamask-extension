@@ -2909,9 +2909,6 @@
   "from": {
     "message": "Из"
   },
-  "fromTokenLists": {
-    "message": "Из списков токенов: $1"
-  },
   "function": {
     "message": "Функция: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "Ид."
   },
-  "ignoreAll": {
-    "message": "Игнорировать все"
-  },
-  "ignoreTokenWarning": {
-    "message": "Если вы скроете токены, они не будут отображаться в вашем кошельке. Однако вы все равно можете добавить их, выполнив их поиск."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
   },
-  "importSelectedTokens": {
-    "message": "Импортировать выбранные токены?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "В вашем кошельке появятся только те токены, которые вы выбрали. Вы всегда можете импортировать скрытые токены позже, выполнив их поиск."
-  },
   "importTokenQuestion": {
     "message": "Импортировать токен?"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Кошелек $1 импортирован",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Импортировать $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Импортирован",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Узнайте как"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 новых токена(-ов) найдены в этом аккаунте",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 новый токен найден в этом счете"
-  },
   "numberOfTokens": {
     "message": "Количество токенов"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Подтвердите"
-  },
-  "plusXMore": {
-    "message": "+ еще $1",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "пост в блоге."
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "Описание токена"
   },
-  "tokenFoundTitle": {
-    "message": "Найден 1 новый токен"
-  },
   "tokenId": {
     "message": "ID токена"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "токены",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "Найдены $1 новых токена(-ов)",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Токены в коллекции"

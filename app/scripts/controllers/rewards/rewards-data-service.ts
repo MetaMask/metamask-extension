@@ -8,13 +8,13 @@ import {
   REWARDS_API_URL,
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
-import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
   OptInStatusDto,
   OptInStatusInputDto,
 } from '../../../../shared/types/rewards';
+import { getNormalizedLocale } from '../../../../shared/constants/locales';
 import type {
   LoginResponseDto,
   MobileLoginDto,
@@ -107,17 +107,6 @@ const GEOLOCATION_URLS = {
 };
 
 /**
- * Normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
- *
- * @param locale - extension locale
- * @returns normalised locale
- */
-export const getNormalisedLocale = (locale: string): string =>
-  Intl.getCanonicalLocales(
-    locale ? locale.replace(/_/gu, '-') : FALLBACK_LOCALE,
-  )[0];
-
-/**
  * Data service for rewards API endpoints
  */
 export class RewardsDataService {
@@ -172,7 +161,7 @@ export class RewardsDataService {
       const hasRegionCode = /^[a-z]{2}[-_][a-z]{2}$/iu.test(currentLocale);
 
       // Only normalize if locale doesn't already have a region code
-      return hasRegionCode ? currentLocale : getNormalisedLocale(currentLocale);
+      return hasRegionCode ? currentLocale : getNormalizedLocale(currentLocale);
     } catch (error) {
       log.warn('Failed to get locale from PreferencesController:', error);
       try {

@@ -1333,7 +1333,6 @@ describe('MetaMaskController', () => {
           .mockReturnValue({
             allTokens: {},
             allIgnoredTokens: {},
-            allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
           });
 
         await metamaskController.createNewVaultAndRestore(
