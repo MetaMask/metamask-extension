@@ -84,6 +84,10 @@ jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
+jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
 const mockStreamManagerBase = {
   positions: {
     getCachedData: () => [],
