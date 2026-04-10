@@ -6,7 +6,6 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
-  IgnorePlugin,
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
@@ -242,20 +241,6 @@ if (args.bundleAnalyzer) {
     new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
   );
 }
-
-// Workaround for a bug in @metamask/perps-controller's publish pipeline.
-// The core source uses /* webpackIgnore: true */ on the dynamic MYXProvider
-// import (see packages/perps-controller/src/PerpsController.ts), but
-// ts-bridge strips the magic comment during JS emit. The published dist
-// ends up with a plain import("./providers/MYXProvider.mjs") pointing at a
-// file that is intentionally excluded from `files` in the package. webpack
-// treats this as a hard "Module not found" error (ignoreWarnings below only
-// handles warnings, not errors), so we must stop it from trying to resolve
-// the import at all.
-// TODO: Remove once core fixes its build to preserve the magic comment.
-plugins.push(
-  new IgnorePlugin({ resourceRegExp: /providers\/MYXProvider\.mjs$/u }),
-);
 
 // #endregion plugins
 
@@ -572,9 +557,6 @@ const config = {
   },
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
-    // Optional perps-controller: dynamic optional provider not shipped in this build
-    // TODO: Remove this once the MYX provider is included in the published
-    /MYXProvider\.mjs/u,
   ],
 } as const satisfies Configuration;
 
