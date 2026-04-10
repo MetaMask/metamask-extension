@@ -9,6 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -49,6 +50,13 @@ export async function withMultichainAccountsDesignEnabled(
             },
           },
         })
+        .withAssetsController({
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              'eip155:1/slip44:60': { amount: '0' },
+            },
+          },
+        })
         .build();
       break;
     default:
@@ -62,6 +70,13 @@ export async function withMultichainAccountsDesignEnabled(
               conversionDate: Date.now(),
               conversionRate: MOCK_ETH_CONVERSION_RATE,
               usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+            },
+          },
+        })
+        .withAssetsController({
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              'eip155:1/slip44:60': { amount: '0' },
             },
           },
         })
