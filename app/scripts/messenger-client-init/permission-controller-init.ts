@@ -36,13 +36,10 @@ export const PermissionControllerInit: ControllerInitFunction<
   const approvalController = getController('ApprovalController');
   const keyringController = getController('KeyringController');
 
-  const permissionControllerMessenger: PermissionControllerMessenger =
-    controllerMessenger;
-
   const controller = new PermissionController({
     state: persistedState.PermissionController,
     // @ts-expect-error PermissionController messenger parameter type is incompatible with our messenger alias (handler unions).
-    messenger: permissionControllerMessenger,
+    messenger: controllerMessenger,
     caveatSpecifications: getCaveatSpecifications({
       listAccounts: () => {
         const accounts = initMessenger.call('AccountsController:listAccounts');
