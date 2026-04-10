@@ -43,11 +43,15 @@ export const login = async (
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
 
+  if (options?.validateBalance === false) {
+    return;
+  }
+
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
-  } else if (options?.expectedBalance !== undefined) {
+  } else if (typeof options?.expectedBalance === 'string') {
     await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
-  } else if (options?.validateBalance !== false) {
+  } else {
     // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();
   }

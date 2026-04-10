@@ -17,7 +17,7 @@ async function mockPriceApi(mockServer: Mockttp) {
       json: {
         'eip155:1/slip44:60': {
           id: 'ethereum',
-          price: 1,
+          price: 1700,
           marketCap: 112500000,
           totalVolume: 4500000,
           dilutedMarketCap: 120000000,
