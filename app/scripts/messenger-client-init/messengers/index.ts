@@ -209,6 +209,7 @@ import { getProfileMetricsControllerMessenger } from './profile-metrics-controll
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
+import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -250,10 +251,7 @@ export {
 } from './decrypt-message-controller-messenger';
 export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
-export type {
-  EncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerInitMessenger,
-} from './encryption-public-key-controller-messenger';
+export type { EncryptionPublicKeyControllerInitMessenger } from './encryption-public-key-controller-messenger';
 export {
   getEncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
@@ -306,9 +304,7 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
-export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   PermissionControllerMessenger,
@@ -477,6 +473,10 @@ export const CONTROLLER_MESSENGERS = {
   CurrencyRateController: {
     getMessenger: getCurrencyRateControllerMessenger,
     getInitMessenger: getCurrencyRateControllerInitMessenger,
+  },
+  DataDeletionService: {
+    getMessenger: getDataDeletionServiceMessenger,
+    getInitMessenger: noop,
   },
   DecryptMessageController: {
     getMessenger: getDecryptMessageControllerMessenger,
