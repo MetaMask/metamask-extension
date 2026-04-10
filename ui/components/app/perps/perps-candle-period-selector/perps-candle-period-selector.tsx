@@ -42,7 +42,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
 
   const isMorePeriodSelected = !DEFAULT_CANDLE_PERIODS.some((period) =>
-    isMatchingPeriod(period.value, selectedPeriod),
+    isMatchingPeriod(selectedPeriod, period.value),
   );
 
   const emitPeriodChange = useCallback(
