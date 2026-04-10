@@ -171,11 +171,13 @@ describe('PerpsView', () => {
       expect(screen.getByText(/open orders/iu)).toBeInTheDocument();
     });
 
-    it('displays close all option in positions section', () => {
+    // TODO: TAT-2852 - Restore when batch close/cancel is implemented
+    it('does not display close all option in positions section while hidden', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      const closeAllElements = screen.getAllByText(/close all/iu);
-      expect(closeAllElements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.queryByTestId('perps-close-all-positions'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows Support & Learn section with Learn basics', () => {
@@ -273,8 +275,9 @@ describe('PerpsView', () => {
     });
   });
 
+  // TODO: TAT-2852 - Restore/unskip when batch close/cancel is implemented
   describe('close all and cancel all', () => {
-    it('calls batch close and applies a single positions snapshot', async () => {
+    it.skip('calls batch close and applies a single positions snapshot', async () => {
       const clearAll = jest.fn();
       const pushPositions = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
@@ -316,7 +319,7 @@ describe('PerpsView', () => {
       expect(pushPositions).toHaveBeenCalledWith([]);
     });
 
-    it('calls batch cancel and applies a single orders snapshot', async () => {
+    it.skip('calls batch cancel and applies a single orders snapshot', async () => {
       const ordersPush = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
         init: jest.fn().mockResolvedValue(undefined),
@@ -390,7 +393,7 @@ describe('PerpsView', () => {
       );
     });
 
-    it('refreshes open orders when cancel all returns success false with no failures', async () => {
+    it.skip('refreshes open orders when cancel all returns success false with no failures', async () => {
       const ordersPush = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
         init: jest.fn().mockResolvedValue(undefined),
@@ -430,7 +433,7 @@ describe('PerpsView', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows batch error when cancel all reports failures', async () => {
+    it.skip('shows batch error when cancel all reports failures', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsCancelOrders') {
           return Promise.resolve({

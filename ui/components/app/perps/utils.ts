@@ -1,13 +1,12 @@
 import { TextColor } from '@metamask/design-system-react';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import { parseVolume } from '../../../pages/perps/utils/sortMarkets';
 import type {
   Order,
   PerpsMarketData,
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -418,6 +417,59 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
 
+const volumeMultipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * volumeMultipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
 /**
  * Check if a market has meaningful trading volume (non-zero).
  * Markets with zero, negative, or missing volume are considered inactive and
@@ -470,4 +522,36 @@ export const getPositionPnlRatio = (position: {
   }
 
   return undefined;
+};
+
+/**
+ * Derives the TP/SL risk management type string for analytics.
+ * Returns a value like 'create_tpsl', 'update_tp', 'create_sl', etc.
+ *
+ * @param options - Input values used to determine the type string.
+ * @param options.takeProfitPrice - The take profit price, if set.
+ * @param options.stopLossPrice - The stop loss price, if set.
+ * @param options.hasExistingTpsl - Whether the position already has a TP or SL set.
+ * @returns A type string such as 'create_tpsl', 'update_tp', or 'create_sl'.
+ */
+export const deriveTpslType = ({
+  takeProfitPrice,
+  stopLossPrice,
+  hasExistingTpsl,
+}: {
+  takeProfitPrice: string | null | undefined;
+  stopLossPrice: string | null | undefined;
+  hasExistingTpsl: boolean;
+}): string => {
+  const prefix = hasExistingTpsl ? 'update' : 'create';
+  if (takeProfitPrice && stopLossPrice) {
+    return `${prefix}_tpsl`;
+  }
+  if (takeProfitPrice) {
+    return `${prefix}_tp`;
+  }
+  if (stopLossPrice) {
+    return `${prefix}_sl`;
+  }
+  return `${prefix}_tpsl`;
 };

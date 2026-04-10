@@ -312,6 +312,29 @@ describe('useMaxValueRefresher', () => {
         );
       });
 
+      it('calculates value as full balance if gas is sponsored', () => {
+        const transactionMeta = merge({}, baseTransactionMeta, {
+          txParams: {
+            gas: '0x5208', // 21000
+            maxFeePerGas: '0x77359400', // 2 gwei
+          },
+          isGasFeeSponsored: true,
+        });
+
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: transactionMeta,
+        } as unknown as ReturnType<typeof useConfirmContext>);
+
+        renderHook(() => useMaxValueRefresher());
+
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          transactionMeta.id,
+          {
+            value: defaultBalance,
+          },
+        );
+      });
+
       it('handles missing maxFeePerGas by using HEX_ZERO', () => {
         const transactionMeta = {
           ...baseTransactionMeta,

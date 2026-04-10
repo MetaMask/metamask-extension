@@ -49,6 +49,7 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
+  IMPORTED_ACCOUNT_FIXTURE_VAULT,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
   MULTI_SRP_FIXTURE_VAULT,
@@ -285,6 +286,110 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withAccountsControllerImportedAccount(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          '58093703-57e9-4ea9-8545-49e8a75cb084': {
+            id: '58093703-57e9-4ea9-8545-49e8a75cb084',
+            address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z',
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z',
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 2',
+              importTime: 1724486724986,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z',
+              derivationPath: "m/44'/60'/0'/0/2",
+              groupIndex: 2,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z',
+                derivationPath: "m/44'/60'/0'/0/2",
+                groupIndex: 2,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 3',
+              importTime: 1724486724986,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   withBadPreferencesControllerState(): this {
     (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
     return this;
@@ -323,6 +428,12 @@ class FixtureBuilderV2 {
   withKeyringControllerAdditionalAccountVault(): this {
     return this.withKeyringController({
       vault: ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
+    });
+  }
+
+  withKeyringControllerImportedAccountVault(): this {
+    return this.withKeyringController({
+      vault: IMPORTED_ACCOUNT_FIXTURE_VAULT,
     });
   }
 
@@ -433,6 +544,39 @@ class FixtureBuilderV2 {
       },
       networksMetadata: {
         [secondNodeClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  // We cannot simply use withSelectedNetwork because Sei is not enabled by default
+  withNetworkControllerOnSei(): this {
+    const seiChainId = '0x531';
+    const seiClientId = 'sei';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: seiClientId,
+      networkConfigurationsByChainId: {
+        [seiChainId]: {
+          blockExplorerUrls: ['https://seitrace.com'],
+          chainId: seiChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'Sei',
+          nativeCurrency: 'SEI',
+          rpcEndpoints: [
+            {
+              networkClientId: seiClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://sei-mainnet.infura.io/v3/',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [seiClientId]: {
           EIPS: {},
           status: NetworkStatus.Available,
         },
@@ -697,7 +841,6 @@ class FixtureBuilderV2 {
         },
       },
       allIgnoredTokens: {},
-      allDetectedTokens: {},
     });
   }
 
