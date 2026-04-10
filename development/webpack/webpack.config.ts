@@ -6,7 +6,6 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
-  IgnorePlugin,
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
@@ -242,16 +241,6 @@ if (args.bundleAnalyzer) {
     new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
   );
 }
-
-// MYXProvider.mjs is intentionally absent from the published
-// @metamask/perps-controller package and must not be bundled.
-// IgnorePlugin suppresses the build error for the dynamic import() in
-// PerpsController.mjs. If MYX init is ever triggered at runtime it will
-// throw — that is intentional (MYX is not supported in this build).
-// TODO: Remove once the package ships providers/MYXProvider.mjs.
-plugins.push(
-  new IgnorePlugin({ resourceRegExp: /providers\/MYXProvider\.mjs$/u }),
-);
 
 // #endregion plugins
 

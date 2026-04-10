@@ -403,43 +403,6 @@ ${Object.entries(env)
     );
   });
 
-  it('keeps the MYX provider ignore only while MYXProvider.mjs is missing from the package', () => {
-    const config: Configuration = getWebpackConfig();
-    const repositoryRoot = resolve(__dirname, '../../..');
-
-    // Guard: IgnorePlugin must be configured to exclude MYXProvider.mjs.
-    // Remove once the package ships providers/MYXProvider.mjs.
-    const { IgnorePlugin } = require('webpack');
-    const hasMyxIgnore = (config.plugins ?? []).some(
-      (plugin) =>
-        plugin instanceof IgnorePlugin &&
-        (
-          plugin as unknown as { options: { resourceRegExp: RegExp } }
-        ).options.resourceRegExp.test('providers/MYXProvider.mjs'),
-    );
-    assert.ok(
-      hasMyxIgnore,
-      'Expected webpack config to have IgnorePlugin for MYXProvider.mjs.',
-    );
-
-    // Guard: when @metamask/perps-controller ships MYXProvider.mjs, this test
-    // will fail as a reminder to remove the plugin.
-    const myxProviderPath = join(
-      repositoryRoot,
-      'node_modules/@metamask/perps-controller/dist/providers/MYXProvider.mjs',
-    );
-    assert.ok(
-      !fs.existsSync(myxProviderPath),
-      [
-        'Good news: @metamask/perps-controller now ships providers/MYXProvider.mjs.',
-        'The IgnorePlugin workaround is no longer needed. Cleanup steps:',
-        '1. Remove this test.',
-        '2. Remove the IgnorePlugin for MYXProvider from development/webpack/webpack.config.ts.',
-        '3. Remove /MYXProvider\\.mjs/u from ignoreWarnings in development/webpack/webpack.config.ts.',
-      ].join('\n'),
-    );
-  });
-
   it('should write the `dry-run` message then call exit(0)', () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
