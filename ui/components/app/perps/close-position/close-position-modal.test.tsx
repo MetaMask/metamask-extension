@@ -133,6 +133,32 @@ describe('ClosePositionModal', () => {
         ).toBeInTheDocument();
       });
     });
+
+    it('shows localized min-notional message when close returns success false with ORDER_SIZE_MIN', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'ORDER_SIZE_MIN',
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+        ).toBeInTheDocument();
+      });
+    });
   });
 
   describe('invalid current price', () => {
