@@ -1,11 +1,10 @@
-import { Messenger } from '@metamask/messenger';
-import { AllowedActions } from '../../controllers/preferences-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { PreferencesControllerMessenger } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-export type PreferencesControllerMessenger = ReturnType<
-  typeof getPreferencesControllerMessenger
->;
-
 /**
  * Create a messenger with delegated actions and events of the
  * preferences controller.
@@ -14,17 +13,16 @@ export type PreferencesControllerMessenger = ReturnType<
  * @returns The controller messenger.
  */
 export function getPreferencesControllerMessenger(
-  messenger: RootMessenger<AllowedActions>,
+  messenger: RootMessenger<
+    MessengerActions<PreferencesControllerMessenger>,
+    MessengerEvents<PreferencesControllerMessenger>
+  >,
 ) {
-  const preferencesControllerMessenger = new Messenger<
-    'PreferencesController',
-    AllowedActions,
-    never,
-    typeof messenger
-  >({
-    namespace: 'PreferencesController',
-    parent: messenger,
-  });
+  const preferencesControllerMessenger: PreferencesControllerMessenger =
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: preferencesControllerMessenger,
     actions: [

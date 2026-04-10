@@ -44,13 +44,6 @@
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 6
     },
-    "app/scripts/lib/stores/browser-storage-adapter.test.ts": {
-      "error: StorageService: Failed to clear namespace": 1,
-      "error: StorageService: Failed to get item:": 1,
-      "error: StorageService: Failed to get keys": 1,
-      "error: StorageService: Failed to remove item:": 1,
-      "error: StorageService: Failed to set item:": 1
-    },
     "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 3
@@ -203,6 +196,13 @@
     "shared/lib/shield/shield.test.ts": {
       "error: Failed to get bearer token": 1
     },
+    "shared/lib/stores/browser-storage-adapter.test.ts": {
+      "error: StorageService: Failed to clear namespace": 1,
+      "error: StorageService: Failed to get item:": 1,
+      "error: StorageService: Failed to get keys": 1,
+      "error: StorageService: Failed to remove item:": 1,
+      "error: StorageService: Failed to set item:": 1
+    },
     "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
@@ -246,16 +246,6 @@
     "ui/components/app/confirm/info/row/address.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/components/app/detected-token/detected-token-details/detected-token-details.test.js": {
-      "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/detected-token/detected-token-values/detected-token-values.test.js": {
-      "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/detected-token/detected-token.test.js": {
-      "MetaMask: Background connection not initialized": 12,
-      "error: Warning: A component is changing": 1
-    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
@@ -291,10 +281,10 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 13
+      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2
+      "React: Act warnings (component updates not wrapped)": 4
     },
     "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -1505,7 +1495,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/perps/perps-withdraw-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 10
+      "React: Act warnings (component updates not wrapped)": 15
     },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1

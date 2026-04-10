@@ -20,6 +20,7 @@ import {
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
  * Referral status for an account
@@ -43,7 +44,9 @@ export type PreferencesControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link PreferencesController}.
  */
-export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+export type PreferencesControllerActions =
+  | PreferencesControllerGetStateAction
+  | PreferencesControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link PreferencesController} changes.
@@ -443,6 +446,51 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setPasswordForgotten',
+  'setUsePhishDetect',
+  'setUseMultiAccountBalanceChecker',
+  'setUseSafeChainsListValidation',
+  'toggleExternalServices',
+  'setUseTokenDetection',
+  'setUseNftDetection',
+  'setUse4ByteResolution',
+  'setUseCurrencyRateCheck',
+  'setOpenSeaEnabled',
+  'setSecurityAlertsEnabled',
+  'setAddSnapAccountEnabled',
+  'setWatchEthereumAccountEnabled',
+  'setUseExternalNameSources',
+  'setUseTransactionSimulations',
+  'setAdvancedGasFee',
+  'setTheme',
+  'addKnownMethodData',
+  'setCurrentLocale',
+  'setAccountLabel',
+  'setFeatureFlag',
+  'setPreference',
+  'getPreferences',
+  'getIpfsGateway',
+  'setIpfsGateway',
+  'setIsIpfsGatewayEnabled',
+  'setUseAddressBarEnsResolution',
+  'setLedgerTransportPreference',
+  'setDismissSeedBackUpReminder',
+  'setOverrideContentSecurityPolicyHeader',
+  'setManageInstitutionalWallets',
+  'setServiceWorkerKeepAlivePreference',
+  'setUseSidePanelAsDefault',
+  'setShowDefaultAddress',
+  'setDefaultAddressScope',
+  'setSnapsAddSnapAccountModalDismissed',
+  'resetState',
+  'addReferralApprovedAccount',
+  'addReferralPassedAccount',
+  'addReferralDeclinedAccount',
+  'removeReferralDeclinedAccount',
+  'setAccountsReferralApproved',
+] as const;
+
 export class PreferencesController extends BaseController<
   typeof controllerName,
   PreferencesControllerState,
@@ -486,6 +534,11 @@ export class PreferencesController extends BaseController<
     globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
