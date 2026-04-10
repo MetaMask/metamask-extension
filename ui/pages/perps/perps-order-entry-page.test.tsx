@@ -3,7 +3,7 @@ import type {
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { screen, fireEvent, act, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -808,10 +808,11 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         [
-          expect.objectContaining({
+          {
             symbol: 'ETH',
             orderType: 'market',
-          }),
+            currentPrice: 3025.5,
+          },
         ],
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
@@ -828,6 +829,39 @@ describe('PerpsOrderEntryPage', () => {
           ),
         }),
       });
+    });
+
+    it('calls closePosition with size for partial close mode', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClosePosition',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            orderType: 'market',
+            currentPrice: 3025.5,
+            size: expect.any(String),
+          }),
+        ],
+      );
     });
 
     it('falls back to close subtitle when close PnL cannot be calculated', async () => {

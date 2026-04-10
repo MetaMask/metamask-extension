@@ -11,6 +11,7 @@ import type { OrderFormState } from './order-entry.types';
 export const mockOrderFormDefaults: OrderFormState = {
   asset: 'BTC',
   direction: 'long',
+  closePercent: 100,
   amount: '',
   leverage: 3,
   balancePercent: 0,
