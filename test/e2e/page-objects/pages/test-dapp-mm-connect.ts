@@ -77,10 +77,6 @@ export class TestDappMmConnect {
     testId: 'legacy-evm-btn-switch-polygon',
   };
 
-  private readonly legacyBtnSwitchToMainnet = {
-    testId: 'legacy-evm-btn-switch-mainnet',
-  };
-
   // ──────────────────────────────────────────────────────────────────────────
   // Wagmi card selectors (TEST_IDS.wagmi.*)
   // ──────────────────────────────────────────────────────────────────────────
@@ -106,8 +102,6 @@ export class TestDappMmConnect {
   private readonly wagmiBtnSendTransaction = {
     testId: 'wagmi-btn-send-transaction',
   };
-
-  private readonly wagmiTxError = '[data-testid="wagmi-tx-error"]';
 
   private readonly wagmiTxHashResult = '[data-testid="wagmi-tx-hash-result"]';
 
@@ -251,15 +245,6 @@ export class TestDappMmConnect {
       },
       { interval: 500, timeout: this.driver.timeout },
     );
-  }
-
-  /**
-   * Assert that the element identified by `selector` is absent from the DOM.
-   *
-   * @param selector - CSS selector for the active-account element.
-   */
-  private async checkAccountNotConnected(selector: string): Promise<void> {
-    await this.driver.assertElementNotPresent(selector);
   }
 
   /**
@@ -543,14 +528,6 @@ export class TestDappMmConnect {
   }
 
   /**
-   * Assert the active-account element is absent.
-   * This is the expected state after accountsChanged([]) fires (no permission).
-   */
-  async checkLegacyAccountNotConnected(): Promise<void> {
-    await this.checkAccountNotConnected(this.legacyActiveAccount);
-  }
-
-  /**
    * Wait for the legacy response text element to contain the expected text.
    *
    * @param expectedText - Text that the response element must contain.
@@ -576,15 +553,6 @@ export class TestDappMmConnect {
    */
   async clickLegacySwitchToPolygon(): Promise<void> {
     await this.driver.clickElement(this.legacyBtnSwitchToPolygon);
-  }
-
-  /**
-   * Click the "Switch to Mainnet" button in the Legacy EVM card.
-   * Only visible when the current chain is not 0x1.
-   * Triggers wallet_switchEthereumChain('0x1').
-   */
-  async clickLegacySwitchToMainnet(): Promise<void> {
-    await this.driver.clickElement(this.legacyBtnSwitchToMainnet);
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -623,14 +591,6 @@ export class TestDappMmConnect {
    */
   async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
     await this.waitForActiveAccount(this.wagmiActiveAccount, expectedAddress);
-  }
-
-  /**
-   * Assert the wagmi active-account element is absent.
-   * Expected after accountsChanged([]) fires (wagmi disconnects).
-   */
-  async checkWagmiAccountNotConnected(): Promise<void> {
-    await this.checkAccountNotConnected(this.wagmiActiveAccount);
   }
 
   /**
@@ -677,18 +637,6 @@ export class TestDappMmConnect {
   async checkWagmiTxHash(expectedText: string): Promise<void> {
     await this.driver.waitForSelector({
       css: this.wagmiTxHashResult,
-      text: expectedText,
-    });
-  }
-
-  /**
-   * Wait for the wagmi tx error element to contain the expected text.
-   *
-   * @param expectedText - Text that the error element must contain.
-   */
-  async checkWagmiTxError(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.wagmiTxError,
       text: expectedText,
     });
   }
