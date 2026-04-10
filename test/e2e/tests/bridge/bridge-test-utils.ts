@@ -10,7 +10,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -1135,6 +1135,7 @@ export const getBridgeFixtures = ({
   withErc20?: boolean;
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
       metaMetricsId: MOCK_META_METRICS_ID,
       participateInMetaMetrics: true,
@@ -1291,7 +1292,7 @@ export const getQuoteNegativeCasesFixtures = (
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withSelectedNetwork()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensControllerERC20({ chainId: 1 });
 
@@ -1346,7 +1347,7 @@ export const getBridgeNegativeCasesFixtures = (
   batchStatusOverride?: Record<string, unknown>,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withSelectedNetwork()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensControllerERC20({ chainId: 1 });
 
@@ -1401,7 +1402,7 @@ export const getInsufficientFundsFixtures = (
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withSelectedNetwork()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensControllerERC20({ chainId: 1 });
 
@@ -1450,6 +1451,8 @@ export const getBridgeL2Fixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
+    .withNetworkRpcUrlOnLocalhost('0xe708')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokenListController({
       tokensChainsCache: {
@@ -1657,6 +1660,7 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
 
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
@@ -1745,6 +1749,7 @@ async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
 
 export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
+    .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({

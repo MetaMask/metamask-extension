@@ -551,6 +551,36 @@ class FixtureBuilderV2 {
     });
   }
 
+  withNetworkRpcUrlOnLocalhost(chainId: Hex): this {
+    const networkController = this.fixture.data.NetworkController as {
+      selectedNetworkClientId: string;
+      networkConfigurationsByChainId: Record<
+        string,
+        {
+          defaultRpcEndpointIndex: number;
+          rpcEndpoints: {
+            networkClientId: string;
+            url: string;
+            type: string;
+          }[];
+        }
+      >;
+    };
+    const chainConfig =
+      networkController.networkConfigurationsByChainId[chainId];
+    if (chainConfig) {
+      const localClientId = `${chainId}-local`;
+      chainConfig.rpcEndpoints.push({
+        networkClientId: localClientId,
+        url: 'http://localhost:8545',
+        type: RpcEndpointType.Custom,
+      });
+      chainConfig.defaultRpcEndpointIndex = chainConfig.rpcEndpoints.length - 1;
+      networkController.selectedNetworkClientId = localClientId;
+    }
+    return this;
+  }
+
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
   withNetworkControllerOnSei(): this {
     const seiChainId = '0x531';
