@@ -157,7 +157,6 @@ export const SrpCard = ({
       {showAccounts && (
         <Box>
           <Box
-            className="srp-list__divider w-full"
             marginTop={2}
             marginBottom={2}
           />
