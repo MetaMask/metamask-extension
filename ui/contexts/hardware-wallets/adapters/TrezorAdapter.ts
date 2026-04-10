@@ -61,8 +61,12 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   private setupUsbEventListeners(): void {
     this.unsubscribeUsbEvents = subscribeToWebUsbEvents(
       HardwareWalletType.Trezor,
-      async () => {
-        await this.connect();
+      () => {
+        (async () => {
+          await this.connect();
+        })().catch(() => {
+          // connect() rejects after onDeviceEvent; avoid unhandledrejection from the WebUSB listener.
+        });
       },
       () => {
         if (this.connected) {

@@ -5,6 +5,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -201,11 +202,7 @@ describe('useHardwareWalletAutoConnect', () => {
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
         disconnect: jest.fn().mockResolvedValue(undefined),
-        isConnected: jest
-          .fn()
-          .mockReturnValueOnce(false)
-          .mockReturnValueOnce(false)
-          .mockReturnValue(true),
+        isConnected: jest.fn().mockReturnValueOnce(false).mockReturnValue(true),
         destroy: jest.fn(),
       };
 
@@ -225,7 +222,8 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      await connectCallback(mockDevice);
+      connectCallback(mockDevice);
+      await flushPromises();
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -262,8 +260,8 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      // Should not throw - error should be handled gracefully
-      await expect(connectCallback(mockDevice)).resolves.not.toThrow();
+      expect(() => connectCallback(mockDevice)).not.toThrow();
+      await flushPromises();
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -278,7 +276,6 @@ describe('useHardwareWalletAutoConnect', () => {
         disconnect: jest.fn().mockResolvedValue(undefined),
         isConnected: jest
           .fn()
-          .mockReturnValueOnce(false)
           .mockReturnValueOnce(false)
           .mockReturnValue(false),
         destroy: jest.fn(),
@@ -298,7 +295,8 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      await connectCallback({ productId: 123 } as HIDDevice);
+      connectCallback({ productId: 123 } as HIDDevice);
+      await flushPromises();
 
       expect(mockConnectRef).toHaveBeenCalled();
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
@@ -325,7 +323,8 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      await disconnectCallback(mockDevice);
+      disconnectCallback(mockDevice);
+      await flushPromises();
 
       expect(mockHandleDisconnect).toHaveBeenCalled();
       expect(
@@ -350,7 +349,8 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      await disconnectCallback(mockDevice);
+      disconnectCallback(mockDevice);
+      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
     });
@@ -363,7 +363,8 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const disconnectCallback = subscribeCall[2];
 
-      await disconnectCallback({ productId: 123 } as HIDDevice);
+      disconnectCallback({ productId: 123 } as HIDDevice);
+      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -383,7 +384,8 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      await connectCallback({ productId: 123 } as HIDDevice);
+      connectCallback({ productId: 123 } as HIDDevice);
+      await flushPromises();
 
       expect(mockConnectRef).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -410,7 +412,8 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const disconnectCallback = subscribeCall[2];
 
-      await disconnectCallback({ productId: 123 } as HIDDevice);
+      disconnectCallback({ productId: 123 } as HIDDevice);
+      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -457,11 +460,11 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      const connectPromise = connectCallback({ productId: 123 } as HIDDevice);
+      connectCallback({ productId: 123 } as HIDDevice);
       refs.isEnsuringDeviceReadyRef.current = true;
 
       resolvePermission?.(HardwareConnectionPermissionState.Granted);
-      await connectPromise;
+      await flushPromises();
 
       expect(mockUpdateConnectionState).not.toHaveBeenCalledWith(
         ConnectionState.connected(),
@@ -504,10 +507,7 @@ describe('useHardwareWalletAutoConnect', () => {
       const defaultAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
         disconnect: jest.fn().mockResolvedValue(undefined),
-        isConnected: jest
-          .fn()
-          .mockReturnValueOnce(false)
-          .mockReturnValue(true),
+        isConnected: jest.fn().mockReturnValueOnce(false).mockReturnValue(true),
         destroy: jest.fn(),
       };
       const refs = createMockRefs({
@@ -600,10 +600,7 @@ describe('useHardwareWalletAutoConnect', () => {
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
         disconnect: jest.fn().mockResolvedValue(undefined),
-        isConnected: jest
-          .fn()
-          .mockReturnValueOnce(false)
-          .mockReturnValue(true),
+        isConnected: jest.fn().mockReturnValueOnce(false).mockReturnValue(true),
         destroy: jest.fn(),
       };
 
