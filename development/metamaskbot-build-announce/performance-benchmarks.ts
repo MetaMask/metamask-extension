@@ -1113,7 +1113,7 @@ function buildFailingItemsHtml(
       const labelPart = worstLabel ? ` — ${worstLabel}` : '';
       const logHref = entry.artifactUrl ?? runUrl;
       const links = buildCiLogLinkHtml(logHref);
-      const rowSentry = buildBenchmarkRowSentryLinkHtml(entry.benchmarkName);
+      const rowSentry = buildBenchmarkRowSentryLinkHtml(entry);
       const sentryAnchor = rowSentry ? ` ${rowSentry}` : '';
       const logAnchor = links ? ` ${links}` : '';
       return [
