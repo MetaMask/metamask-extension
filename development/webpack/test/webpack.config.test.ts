@@ -403,115 +403,39 @@ ${Object.entries(env)
     );
   });
 
-  it('keeps the MYX provider ignore only while the warning still exists', async () => {
+  it('keeps the MYX provider ignore only while MYXProvider.mjs is missing from the package', () => {
     const config: Configuration = getWebpackConfig();
-    const myxWarningPattern = /MYXProvider\.mjs/u;
-    const ignoreWarnings = config.ignoreWarnings ?? [];
-    const getPerpsControllerWarnings = async (): Promise<string[]> => {
-      const tempDirectory = fs.mkdtempSync(
-        join(tmpdir(), 'webpack-perps-controller-warning-'),
-      );
-      const repositoryRoot = resolve(__dirname, '../../..');
-      const entryFilePath = join(tempDirectory, 'entry.js');
+    const repositoryRoot = resolve(__dirname, '../../..');
 
-      fs.writeFileSync(entryFilePath, "import '@metamask/perps-controller';\n");
-
-      try {
-        const compiler = webpack({
-          mode: 'development',
-          context: repositoryRoot,
-          entry: entryFilePath,
-          output: {
-            path: join(tempDirectory, 'dist'),
-            filename: 'bundle.js',
-            clean: true,
-          },
-          resolve: {
-            modules: [join(repositoryRoot, 'node_modules'), 'node_modules'],
-          },
-        });
-
-        return await new Promise((resolveWarnings, reject) => {
-          compiler.run((error, stats) => {
-            const closeCompiler = (callback: () => void) => {
-              compiler.close((closeError) => {
-                if (closeError) {
-                  reject(closeError);
-                  return;
-                }
-
-                callback();
-              });
-            };
-
-            if (error) {
-              closeCompiler(() => reject(error));
-              return;
-            }
-
-            if (!stats) {
-              closeCompiler(() =>
-                reject(new Error('Webpack finished without returning stats.')),
-              );
-              return;
-            }
-
-            const errors =
-              stats.toJson({ all: false, errors: true }).errors ?? [];
-            if (errors.length > 0) {
-              closeCompiler(() =>
-                reject(
-                  new Error(
-                    `Webpack build failed:\n${errors
-                      .map((item) =>
-                        typeof item === 'string' ? item : item.message,
-                      )
-                      .join('\n\n')}`,
-                  ),
-                ),
-              );
-              return;
-            }
-
-            const warnings =
-              stats.toJson({ all: false, warnings: true }).warnings ?? [];
-            closeCompiler(() =>
-              resolveWarnings(
-                warnings.map((item) =>
-                  typeof item === 'string' ? item : item.message,
-                ),
-              ),
-            );
-          });
-        });
-      } finally {
-        fs.rmSync(tempDirectory, { recursive: true, force: true });
-      }
-    };
-
+    // Guard: IgnorePlugin must be configured to exclude MYXProvider.mjs.
+    // Remove once the package ships providers/MYXProvider.mjs.
+    const { IgnorePlugin } = require('webpack');
+    const hasMyxIgnore = (config.plugins ?? []).some(
+      (plugin) =>
+        plugin instanceof IgnorePlugin &&
+        (
+          plugin as { options: { resourceRegExp: RegExp } }
+        ).options.resourceRegExp.test('providers/MYXProvider.mjs'),
+    );
     assert.ok(
-      ignoreWarnings.some(
-        (warning) =>
-          warning instanceof RegExp && warning.test('MYXProvider.mjs'),
-      ),
-      'Expected webpack config to ignore MYXProvider.mjs while that warning still exists.',
+      hasMyxIgnore,
+      'Expected webpack config to have IgnorePlugin for MYXProvider.mjs.',
     );
 
-    // The published perps-controller package currently omits MYXProvider.mjs.
-    // This assertion should fail once that warning goes away, which is the cue
-    // to remove the ignoreWarnings entry from webpack.config.ts.
-    const warnings = await getPerpsControllerWarnings();
+    // Guard: when @metamask/perps-controller ships MYXProvider.mjs, this test
+    // will fail as a reminder to remove the plugin.
+    const myxProviderPath = join(
+      repositoryRoot,
+      'node_modules/@metamask/perps-controller/dist/providers/MYXProvider.mjs',
+    );
     assert.ok(
-      warnings.some((warning) => myxWarningPattern.test(warning)),
+      !fs.existsSync(myxProviderPath),
       [
-        'Good news: webpack no longer warns about missing MYXProvider.mjs.',
-        'That means the temporary workaround is probably no longer needed.',
-        'Cleanup steps:',
-        '1. Remove this test: "keeps the MYX provider ignore only while the warning still exists".',
-        '2. Remove /MYXProvider\\.mjs/u from ignoreWarnings in development/webpack/webpack.config.ts.',
-        '3. Re-run the webpack unit tests.',
-        'Warnings seen in this run:',
-        ...warnings,
+        'Good news: @metamask/perps-controller now ships providers/MYXProvider.mjs.',
+        'The IgnorePlugin workaround is no longer needed. Cleanup steps:',
+        '1. Remove this test.',
+        '2. Remove the IgnorePlugin for MYXProvider from development/webpack/webpack.config.ts.',
+        '3. Remove /MYXProvider\\.mjs/u from ignoreWarnings in development/webpack/webpack.config.ts.',
       ].join('\n'),
     );
   });

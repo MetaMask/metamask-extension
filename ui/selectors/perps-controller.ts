@@ -93,31 +93,26 @@ export const selectPerpsSelectedPaymentToken = (state: PerpsState) =>
   state.metamask.selectedPaymentToken ?? null;
 
 export const selectPerpsCachedMarketData = (state: PerpsState) => {
-  const provider = state.metamask.activeProvider;
-  if (!provider) {
-    return null;
-  }
+  const provider = selectPerpsActiveProvider(state);
   return state.metamask.cachedMarketDataByProvider?.[provider]?.data ?? null;
 };
 
 export const selectPerpsCachedPositions = (state: PerpsState) => {
-  const provider = state.metamask.activeProvider;
-  if (!provider) {
-    return null;
-  }
+  const provider = selectPerpsActiveProvider(state);
   return state.metamask.cachedUserDataByProvider?.[provider]?.positions ?? null;
 };
 
 export const selectPerpsCachedOrders = (state: PerpsState) => {
-  const provider = state.metamask.activeProvider;
-  if (!provider) {
-    return null;
-  }
+  const provider = selectPerpsActiveProvider(state);
   return state.metamask.cachedUserDataByProvider?.[provider]?.orders ?? null;
 };
 
-export const selectPerpsCachedAccountState = (state: PerpsState) =>
-  state.metamask.accountState ?? null;
+export const selectPerpsCachedAccountState = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return (
+    state.metamask.cachedUserDataByProvider?.[provider]?.accountState ?? null
+  );
+};
 
 export const selectPerpsPerpsBalances = (state: PerpsState) =>
   state.metamask.perpsBalances ?? {};

@@ -408,7 +408,20 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const account = { balance: '100' };
       expect(
-        selectPerpsCachedAccountState(buildState({ accountState: account })),
+        selectPerpsCachedAccountState(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(account);
     });
 
