@@ -2,7 +2,10 @@
  * Artifact link construction and PR "Builds ready" section builder.
  */
 
-import { BENCHMARK_PLATFORMS } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
+} from '../../shared/constants/benchmarks';
 
 type ArtifactLink = { url: string; label: string };
 
@@ -49,8 +52,7 @@ export function getArtifactLinks(
       label: 'Bundle Analyzer',
     },
     interactionStats: {
-      // PR artifacts use the browserify interaction benchmark; literal matches CI output (see run-benchmark / upload).
-      url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-browserify-interactionUserActions.json`,
+      url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.WEBPACK}-interactionUserActions.json`,
       label: 'Interaction Stats',
     },
     storybook: {

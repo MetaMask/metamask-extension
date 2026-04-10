@@ -51,20 +51,16 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
-      # Run core benchmark steps (checkout, run, GH artifact) for every matrix job.
-      BENCHMARK_GATED: 'true'
       # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
       - name: Restore .metamask folder
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         id: restore-metamask
         uses: actions/cache/restore@v5
         with:
@@ -73,12 +69,11 @@ jobs:
           fail-on-cache-miss: false
 
       - name: Install anvil if cache missed
-        if: ${{ env.BENCHMARK_GATED == 'true' && steps.restore-metamask.outputs.cache-hit != 'true' }}
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
         run: yarn mm-foundryup
         shell: bash
 
       - name: Download build artifact
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         uses: actions/download-artifact@v7
         with:
           name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
@@ -86,14 +81,12 @@ jobs:
           run-id: ${{ inputs.builds-from-run }}
 
       - name: Configure Xvfb
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
         shell: bash
 
       - name: Install AWS CLI (needed for S3 upload on main/release only)
         if: >-
           ${{
-            env.BENCHMARK_GATED == 'true' &&
             env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
@@ -103,7 +96,6 @@ jobs:
         shell: bash
 
       - name: Run the benchmark
-        if: ${{ env.BENCHMARK_GATED == 'true' }}
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
@@ -128,7 +120,6 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
-            env.BENCHMARK_GATED == 'true' &&
             env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
@@ -142,7 +133,7 @@ jobs:
           path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
 
       - name: Upload benchmark result as GitHub artifact
-        if: ${{ always() && env.BENCHMARK_GATED == 'true' }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json

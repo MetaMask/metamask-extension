@@ -1,4 +1,8 @@
-import { getArtifactLinks, buildArtifactsBody } from './artifacts';
+import {
+  getArtifactLinks,
+  buildArtifactsBody,
+  getBuildLinks,
+} from './artifacts';
 
 const HOST = 'https://ci.example.com';
 const VERSION = '12.0.0';
@@ -16,7 +20,7 @@ describe('getArtifactLinks', () => {
       `${HOST}/bundle-size/bundle_size.json`,
     );
     expect(links.interactionStats.url).toBe(
-      `${HOST}/benchmarks/benchmark-chrome-browserify-interactionUserActions.json`,
+      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -38,6 +42,7 @@ describe('buildArtifactsBody', () => {
     getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
 
   it('includes build links when postNewBuilds is true', () => {
+    const buildLinks = getBuildLinks({ hostUrl: HOST, version: VERSION });
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
@@ -46,9 +51,8 @@ describe('buildArtifactsBody', () => {
       postNewBuilds: true,
     });
 
+    expect(result).toContain(buildLinks.webpack.main.chrome);
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-browserify');
-    expect(result).toContain('build-dist-webpack');
   });
 
   it('omits build links when postNewBuilds is false', () => {

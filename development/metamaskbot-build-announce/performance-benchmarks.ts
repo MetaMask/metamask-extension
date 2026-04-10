@@ -450,9 +450,10 @@ function buildHealthMap(
  * @param benchmarkName
  */
 function extractDisplayName(benchmarkName: string): string {
-  const match = benchmarkName.match(
-    /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
-  );
+  const platforms = Object.values(BENCHMARK_PLATFORMS).join('|');
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
+  const pattern = new RegExp(`^(?:${platforms})-(?:${buildTypes})-(.+)$`, 'u');
+  const match = pattern.exec(benchmarkName);
   return match ? match[1] : benchmarkName;
 }
 

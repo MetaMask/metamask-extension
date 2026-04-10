@@ -38,7 +38,7 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 
 ### User journey benchmarks
 
-- User journey presets run on **Chrome and Firefox** with the **Browserify** test build (`build-test` / `build-test-mv2` in CI), same as startup and interaction benchmarks.
+- User journey presets run on **Chrome and Firefox** with the **Webpack** test build (`build-test-webpack` / `build-test-mv2-webpack` in CI), same as startup and interaction benchmarks in `run-benchmarks.yml`.
 
 ### Special CI Requirements
 
