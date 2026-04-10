@@ -9,6 +9,7 @@ import { usePerpsEligibility } from '../../hooks/perps';
 import * as accountsSelectors from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -22,6 +23,64 @@ jest.mock('@metamask/perps-controller', () => ({
   WITHDRAWAL_CONSTANTS: {
     DefaultMinAmount: '1.01',
     DefaultFeeAmount: 1,
+  },
+  PERPS_ERROR_CODES: {
+    CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
+    CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
+    PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
+    TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
+    BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
+    WITHDRAW_FAILED: 'WITHDRAW_FAILED',
+    POSITIONS_FAILED: 'POSITIONS_FAILED',
+    ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
+    MARKETS_FAILED: 'MARKETS_FAILED',
+    UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+    ORDER_LEVERAGE_REDUCTION_FAILED: 'ORDER_LEVERAGE_REDUCTION_FAILED',
+    IOC_CANCEL: 'IOC_CANCEL',
+    CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT',
+    WITHDRAW_ASSET_ID_REQUIRED: 'WITHDRAW_ASSET_ID_REQUIRED',
+    WITHDRAW_AMOUNT_REQUIRED: 'WITHDRAW_AMOUNT_REQUIRED',
+    WITHDRAW_AMOUNT_POSITIVE: 'WITHDRAW_AMOUNT_POSITIVE',
+    WITHDRAW_INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
+    WITHDRAW_ASSET_NOT_SUPPORTED: 'WITHDRAW_ASSET_NOT_SUPPORTED',
+    WITHDRAW_INSUFFICIENT_BALANCE: 'WITHDRAW_INSUFFICIENT_BALANCE',
+    DEPOSIT_ASSET_ID_REQUIRED: 'DEPOSIT_ASSET_ID_REQUIRED',
+    DEPOSIT_AMOUNT_REQUIRED: 'DEPOSIT_AMOUNT_REQUIRED',
+    DEPOSIT_AMOUNT_POSITIVE: 'DEPOSIT_AMOUNT_POSITIVE',
+    DEPOSIT_MINIMUM_AMOUNT: 'DEPOSIT_MINIMUM_AMOUNT',
+    ORDER_COIN_REQUIRED: 'ORDER_COIN_REQUIRED',
+    ORDER_LIMIT_PRICE_REQUIRED: 'ORDER_LIMIT_PRICE_REQUIRED',
+    ORDER_PRICE_POSITIVE: 'ORDER_PRICE_POSITIVE',
+    ORDER_UNKNOWN_COIN: 'ORDER_UNKNOWN_COIN',
+    ORDER_SIZE_POSITIVE: 'ORDER_SIZE_POSITIVE',
+    ORDER_PRICE_REQUIRED: 'ORDER_PRICE_REQUIRED',
+    ORDER_SIZE_MIN: 'ORDER_SIZE_MIN',
+    ORDER_LEVERAGE_INVALID: 'ORDER_LEVERAGE_INVALID',
+    ORDER_LEVERAGE_BELOW_POSITION: 'ORDER_LEVERAGE_BELOW_POSITION',
+    ORDER_MAX_VALUE_EXCEEDED: 'ORDER_MAX_VALUE_EXCEEDED',
+    EXCHANGE_CLIENT_NOT_AVAILABLE: 'EXCHANGE_CLIENT_NOT_AVAILABLE',
+    INFO_CLIENT_NOT_AVAILABLE: 'INFO_CLIENT_NOT_AVAILABLE',
+    SUBSCRIPTION_CLIENT_NOT_AVAILABLE: 'SUBSCRIPTION_CLIENT_NOT_AVAILABLE',
+    NO_ACCOUNT_SELECTED: 'NO_ACCOUNT_SELECTED',
+    KEYRING_LOCKED: 'KEYRING_LOCKED',
+    INVALID_ADDRESS_FORMAT: 'INVALID_ADDRESS_FORMAT',
+    TRANSFER_FAILED: 'TRANSFER_FAILED',
+    SWAP_FAILED: 'SWAP_FAILED',
+    SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
+    PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
+    BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
+    BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
+    INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
+    INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
+    REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
+    POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
+    MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
+    TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
+    ORDER_REJECTED: 'ORDER_REJECTED',
+    SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
+    SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
+    NETWORK_ERROR: 'NETWORK_ERROR',
   },
 }));
 
@@ -39,8 +98,11 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
+const mockTrack = jest.fn();
+
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: jest.fn(() => ({ isEligible: true })),
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 const mockUsePerpsEligibility = usePerpsEligibility as jest.MockedFunction<
@@ -55,12 +117,6 @@ jest.mock('../../hooks/perps/stream', () => ({
 
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
-}));
-
-jest.mock('../../components/app/perps/perps-wallet-account-header', () => ({
-  PerpsWalletAccountHeader: () => (
-    <div data-testid="perps-wallet-account-header-mock" />
-  ),
 }));
 
 const mockGetIsPerpsExperienceAvailable =
@@ -195,6 +251,30 @@ describe('PerpsWithdrawPage', () => {
     expect(
       screen.getByTestId('perps-withdraw-summary-receive-value'),
     ).toHaveTextContent('—');
+  });
+
+  it('renders back button and Withdraw title in the header', async () => {
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    expect(
+      screen.getByTestId('perps-withdraw-back-button'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-header-title')).toHaveTextContent(
+      messages.perpsWithdrawFundsTitle.message,
+    );
+  });
+
+  it('clicking the back button navigates home', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    await user.click(screen.getByTestId('perps-withdraw-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   it('redirects when perps experience is disabled', async () => {
@@ -585,5 +665,150 @@ describe('PerpsWithdrawPage', () => {
     await flushRejectedWithdrawRoutesPromises();
 
     expect(screen.getByTestId('perps-withdraw-page')).toBeInTheDocument();
+  });
+
+  describe('analytics', () => {
+    it('fires PerpsWithdrawalTransaction with success on successful withdrawal', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+      await settleInitialWithdrawRoutesFetch();
+
+      const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await awaitSubmitPromisesForMethod('perpsWithdraw');
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Withdrawal Transaction',
+          expect.objectContaining({
+            status: 'success',
+            size: '50',
+          }),
+        );
+      });
+
+      await waitForWithdrawHandlerSettled();
+    });
+
+    it('fires PerpsWithdrawalTransaction with failed status when withdrawal fails', async () => {
+      const user = userEvent.setup();
+      mockSubmit.mockImplementation((method: string) => {
+        if (method === 'perpsGetWithdrawalRoutes') {
+          return Promise.resolve([
+            {
+              assetId:
+                'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: 'eip155:42161',
+              contractAddress:
+                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+              constraints: { minAmount: '1.01' },
+            },
+          ]);
+        }
+        if (method === 'perpsValidateWithdrawal') {
+          return Promise.resolve({ isValid: true });
+        }
+        if (method === 'perpsWithdraw') {
+          return Promise.resolve({ success: false, error: 'provider_error' });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+      await settleInitialWithdrawRoutesFetch();
+
+      const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await awaitSubmitPromisesForMethod('perpsWithdraw');
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Withdrawal Transaction',
+          expect.objectContaining({
+            status: 'failed',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'provider_error',
+          }),
+        );
+      });
+
+      await waitForWithdrawHandlerSettled();
+      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+    });
+
+    it('fires PerpsError when withdrawal throws an exception', async () => {
+      const user = userEvent.setup();
+      mockSubmit.mockImplementation((method: string) => {
+        if (method === 'perpsGetWithdrawalRoutes') {
+          return Promise.resolve([
+            {
+              assetId:
+                'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: 'eip155:42161',
+              contractAddress:
+                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+              constraints: { minAmount: '1.01' },
+            },
+          ]);
+        }
+        if (method === 'perpsValidateWithdrawal') {
+          return Promise.resolve({ isValid: true });
+        }
+        if (method === 'perpsWithdraw') {
+          return Promise.reject(new Error('network'));
+        }
+        if (method === 'perpsClearWithdrawResult') {
+          return Promise.resolve(undefined);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+      await settleInitialWithdrawRoutesFetch();
+
+      const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await waitFor(() => {
+        expect(mockSubmit).toHaveBeenCalledWith(
+          'perpsWithdraw',
+          expect.any(Array),
+        );
+      });
+      const withdrawCallIndex = mockSubmit.mock.calls.findIndex(
+        (call) => call[0] === 'perpsWithdraw',
+      );
+      await act(async () => {
+        await (
+          mockSubmit.mock.results[withdrawCallIndex].value as Promise<unknown>
+        ).catch(() => undefined);
+      });
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Error',
+          expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'backend',
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'network',
+          }),
+        );
+      });
+
+      await waitForWithdrawHandlerSettled();
+      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+    });
   });
 });

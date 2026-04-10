@@ -123,7 +123,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
           await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
@@ -266,7 +266,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
           await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();

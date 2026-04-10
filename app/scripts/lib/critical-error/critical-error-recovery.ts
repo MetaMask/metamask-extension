@@ -1,4 +1,4 @@
-import type { Backup } from '../../../../shared/lib/backup';
+import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
   CriticalErrorType,

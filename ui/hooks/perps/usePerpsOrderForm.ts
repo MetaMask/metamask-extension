@@ -1,16 +1,18 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { OrderType } from '@metamask/perps-controller';
-import { useFormatters } from '../useFormatters';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+
+import {
+  mockOrderFormDefaults,
+  calculatePositionSize,
+  calculateMarginRequired,
+  estimateLiquidationPrice,
+} from '../../components/app/perps/order-entry/order-entry.mocks';
 import type {
   OrderFormState,
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
-import {
-  mockOrderFormDefaults,
-  calculatePositionSize,
-  estimateLiquidationPrice,
-} from '../../components/app/perps/order-entry/order-entry.mocks';
+import { useFormatters } from '../useFormatters';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -31,6 +33,8 @@ export type UsePerpsOrderFormOptions = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /** Initial leverage for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -85,6 +89,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
+ * @param options.initialLeverage
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -97,6 +102,7 @@ export function usePerpsOrderForm({
   onFormStateChange,
   onSubmit,
   orderType = 'market',
+  initialLeverage,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -140,6 +146,7 @@ export function usePerpsOrderForm({
       asset,
       direction: initialDirection,
       type: orderType,
+      ...(initialLeverage !== undefined && { leverage: initialLeverage }),
     };
   });
 
@@ -167,6 +174,7 @@ export function usePerpsOrderForm({
     asset: string;
     initialDirection: 'long' | 'short';
     existingPositionDigest: string | undefined;
+    initialLeverage: number | undefined;
   } | null>(null);
   useEffect(() => {
     const existingPositionDigest =
@@ -186,7 +194,8 @@ export function usePerpsOrderForm({
       prev.mode === mode &&
       prev.asset === asset &&
       prev.initialDirection === initialDirection &&
-      prev.existingPositionDigest === existingPositionDigest
+      prev.existingPositionDigest === existingPositionDigest &&
+      prev.initialLeverage === initialLeverage
     ) {
       return;
     }
@@ -196,6 +205,7 @@ export function usePerpsOrderForm({
       asset,
       initialDirection,
       existingPositionDigest,
+      initialLeverage,
     };
 
     setClosePercent(100);
@@ -216,9 +226,10 @@ export function usePerpsOrderForm({
         asset,
         direction: initialDirection,
         type: typeForReset,
+        ...(initialLeverage !== undefined && { leverage: initialLeverage }),
       });
     }
-  }, [mode, asset, initialDirection]);
+  }, [mode, asset, initialDirection, initialLeverage]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -246,10 +257,11 @@ export function usePerpsOrderForm({
       };
     }
 
-    // For new/modify modes, calculate based on form amount
-    // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/gu, '');
-    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
+    // For new/modify modes, calculate based on form amount.
+    // Strip commas because amount can be programmatically set via formatNumber
+    // (e.g. from slider / token input / percent input) which includes locale
+    // grouping separators.
+    const amount = Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
 
     if (amount === 0) {
       return {
@@ -267,31 +279,30 @@ export function usePerpsOrderForm({
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
       const parsedLimitPrice = Number.parseFloat(
-        formState.limitPrice.replaceAll(',', ''),
+        formState.limitPrice.replace(/,/gu, ''),
       );
-      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+      if (Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
       }
     }
 
-    // User enters MARGIN amount. Position value = margin × leverage
-    const positionValue = amount * formState.leverage;
-    const positionSize = calculatePositionSize(positionValue, effectivePrice);
-    const marginRequired = amount; // The entered amount IS the margin
+    // User enters SIZE (position notional value). Margin = size / leverage
+    const positionSize = calculatePositionSize(amount, effectivePrice);
+    const marginRequired = calculateMarginRequired(amount, formState.leverage);
     const liquidationPrice = estimateLiquidationPrice(
       effectivePrice,
       formState.leverage,
       formState.direction === 'long',
     );
-    // Mock fee calculation: 0.05% of position value (not margin)
-    const estimatedFees = positionValue * 0.0005;
+    // Mock fee calculation: 0.05% of position size
+    const estimatedFees = amount * 0.0005;
 
     return {
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
       liquidationPriceRaw: liquidationPrice,
-      orderValue: formatCurrencyWithMinThreshold(positionValue, 'USD'),
+      orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
   }, [
@@ -318,9 +329,18 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, balancePercent }));
   }, []);
 
-  const handleLeverageChange = useCallback((leverage: number) => {
-    setFormState((prev) => ({ ...prev, leverage }));
-  }, []);
+  const handleLeverageChange = useCallback(
+    (leverage: number) => {
+      setFormState((prev) => {
+        const amount = parseFloat(prev.amount.replace(/,/gu, '')) || 0;
+        const maxSize = availableBalance * leverage;
+        const balancePercent =
+          maxSize > 0 ? Math.min(Math.round((amount / maxSize) * 100), 100) : 0;
+        return { ...prev, leverage, balancePercent };
+      });
+    },
+    [availableBalance],
+  );
 
   const handleAutoCloseEnabledChange = useCallback((enabled: boolean) => {
     setFormState((prev) => ({ ...prev, autoCloseEnabled: enabled }));

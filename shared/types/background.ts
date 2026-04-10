@@ -160,6 +160,7 @@ export type ControllerStatePropertiesEnumerated = {
   quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
@@ -253,7 +254,6 @@ export type ControllerStatePropertiesEnumerated = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
-  useBlockie: PreferencesControllerState['useBlockie'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
   overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];

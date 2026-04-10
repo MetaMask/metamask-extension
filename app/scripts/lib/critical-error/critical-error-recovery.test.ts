@@ -4,7 +4,7 @@ import {
   METHOD_REPAIR_DATABASE_TIMEOUT,
 } from '../../../../shared/constants/state-corruption';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import type { Backup } from '../../../../shared/lib/backup';
+import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { captureException } from '../../../../shared/lib/sentry';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {

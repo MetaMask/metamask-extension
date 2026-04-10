@@ -10,15 +10,13 @@ import {
   EditGasModes,
   GasRecommendations,
 } from '../../../../shared/constants/gas';
-import {
-  selectNetworkConfigurationByChainId,
-  selectTransactionMetadata,
-} from '../../../selectors';
+import { selectTransactionMetadata } from '../../../selectors';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../../../shared/lib/conversion.utils';
+import { useSupportsEIP1559 } from '../components/confirm/info/hooks/useSupportsEIP1559';
 import { useTransactionFunctions } from './useTransactionFunctions';
 import { useLegacyCancelSpeedupFlow } from './useLegacyCancelSpeedupFlow';
 
@@ -30,6 +28,7 @@ export type UseCancelSpeedupGasStateReturn = {
     | LegacyGasPriceEstimate
     | Record<string, never>
     | null;
+  isGasEstimatesLoading: boolean;
   cancelTransaction: () => void;
   speedUpTransaction: () => void;
   updateTransactionToTenPercentIncreasedGasFee: (
@@ -53,33 +52,18 @@ export function useCancelSpeedupGasState(
     selectTransactionMetadata(state, transaction?.id),
   );
 
-  const network = useSelector((state: Record<string, unknown>) =>
-    selectNetworkConfigurationByChainId(state, transaction?.chainId),
+  const effectiveTransaction = useMemo(() => {
+    return transactionFromStore ?? transaction;
+  }, [transactionFromStore, transaction]);
+
+  const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates(
+    effectiveTransaction.networkClientId,
   );
 
-  const networkClientId = (
-    network as {
-      rpcEndpoints?: { networkClientId?: string }[];
-      defaultRpcEndpointIndex?: number;
-    }
-  )?.rpcEndpoints?.[
-    (network as { defaultRpcEndpointIndex?: number })
-      ?.defaultRpcEndpointIndex ?? 0
-  ]?.networkClientId;
-
-  const effectiveTransaction = useMemo(() => {
-    const sourceTx = transactionFromStore ?? transaction;
-    return {
-      ...sourceTx,
-      networkClientId:
-        (sourceTx as TransactionMeta & { networkClientId?: string })
-          .networkClientId ?? networkClientId,
-    };
-  }, [transactionFromStore, transaction, networkClientId]);
-
-  const { gasFeeEstimates } = useGasFeeEstimates(networkClientId);
-
-  const isLegacy = !effectiveTransaction?.txParams?.maxFeePerGas;
+  const { supportsEIP1559 } = useSupportsEIP1559(
+    effectiveTransaction as TransactionMeta,
+  );
+  const isLegacy = !supportsEIP1559;
 
   // EIP-1559 flow
   const gasLimitNum = Number(
@@ -99,7 +83,7 @@ export function useCancelSpeedupGasState(
     defaultEstimateToUse: GasRecommendations.medium,
     editGasMode,
     estimatedBaseFee: (gasFeeEstimates as GasFeeEstimates)?.estimatedBaseFee,
-    gasFeeEstimates: gasFeeEstimates ?? undefined,
+    gasFeeEstimates,
     gasLimit: gasLimitNum,
     maxPriorityFeePerGas: maxPriorityFeePerGasGwei,
     transaction: effectiveTransaction as TransactionMeta,
@@ -108,7 +92,7 @@ export function useCancelSpeedupGasState(
   // Legacy flow
   const legacyFunctions = useLegacyCancelSpeedupFlow({
     transaction: effectiveTransaction as TransactionMeta,
-    gasFeeEstimates: gasFeeEstimates ?? undefined,
+    gasFeeEstimates,
   });
 
   const {
@@ -121,6 +105,7 @@ export function useCancelSpeedupGasState(
   return {
     effectiveTransaction: effectiveTransaction as TransactionMeta,
     gasFeeEstimates: gasFeeEstimates ?? null,
+    isGasEstimatesLoading,
     cancelTransaction,
     speedUpTransaction,
     updateTransactionToTenPercentIncreasedGasFee,

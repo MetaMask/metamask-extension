@@ -4,11 +4,12 @@ import {
   METHOD_REPAIR_DATABASE,
   VaultCorruptionType,
 } from '../../../../shared/constants/state-corruption';
-import { type Backup, hasVault } from '../../../../shared/lib/backup';
 import {
+  type Backup,
   PersistenceError,
   PersistenceManager,
-} from '../stores/persistence-manager';
+  hasVault,
+} from '../../../../shared/lib/stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
 import { requestRepair } from '../repair';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';

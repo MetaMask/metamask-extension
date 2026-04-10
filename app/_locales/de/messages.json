@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Erweitert"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Wenn Ihre Transaktion in den Block aufgenommen wird, wird die Differenz zwischen Ihrer maximalen Grundgebühr und der tatsächlichen Grundgebühr erstattet. Der Gesamtbetrag wird berechnet als maximale Grundgebühr (in GWEI) * Gaslimit."
-  },
   "advancedDetailsDataDesc": {
     "message": "Daten"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Speichern Sie diese Werte als Standard für das $1-Netzwerk.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "Erweiterte Genehmigungen"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
   "airDropPatternDescription": {
     "message": "Der On-Chain-Verlauf des Tokens zeigt frühere Fälle von verdächtigen Airdrop-Aktivitäten."
@@ -1080,9 +1070,6 @@
   "bridgeFee": {
     "message": "Bridge-Gebühr"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Eine neue suchen?"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 auf $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Warnung vor Preiseinfluss"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Ihr Angebot ist abgelaufen."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Die Angebote sind nach den geschätzten Gesamtkosten einschließlich des Wechselkurses und der Netzwerkgebühr sortiert."
@@ -1996,9 +1980,6 @@
   "currentQuestion": {
     "message": "Frage $1 von 2"
   },
-  "currentTitle": {
-    "message": "Aktuell:"
-  },
   "currentlyUnavailable": {
     "message": "Nicht verfügbar in diesem Netzwerk"
   },
@@ -2051,12 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Website vorgeschlagen"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Seite (hoch)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Seite"
   },
   "dappSwapAdvantage": {
     "message": "Sparen und verdienen Sie mit MetaMask-Swaps"
@@ -2422,9 +2397,6 @@
   "dontShowThisAgain": {
     "message": "Nicht mehr anzeigen"
   },
-  "downArrow": {
-    "message": "Abwärtspfeil"
-  },
   "download": {
     "message": "Herunterladen"
   },
@@ -2517,19 +2489,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Gas-Limit muss mindestens $1 betragen"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gas-Limit muss größer als $1 und kleiner als $2 sein",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Die maximale Grundgebühr darf nicht niedriger sein als die Prioritätsgebühr."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Die maximale Grundgebühr ist höher als erforderlich."
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Die maximale Grundgebühr ist für aktuelle Netzwerkkonditionen niedrig."
-  },
   "editGasMaxFeeHigh": {
     "message": "Die maximale Grundgebühr ist höher als erforderlich."
   },
@@ -2542,20 +2501,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Die maximale Prioritätsgebühr muss größer als 0 GWEI sein."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Die Prioritätsgebühr muss größer als 0 sein."
-  },
   "editGasMaxPriorityFeeHigh": {
-    "message": "Die maximale Prioritätsgebühr ist höher als nötig. Sie können mehr zahlen als nötig."
-  },
-  "editGasMaxPriorityFeeHighV2": {
     "message": "Die maximale Prioritätsgebühr ist höher als nötig. Sie können mehr zahlen als nötig."
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Die maximale Prioritätsgebühr ist niedrig für aktuelle Netzwerkkonditionen."
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Die Prioritätsgebühr ist niedrig für aktuelle Netzwerkkonditionen."
   },
   "editGasPriceTooLow": {
     "message": "Gas-Preis muss größer als 0 sein"
@@ -2959,9 +2909,6 @@
   "from": {
     "message": "Von"
   },
-  "fromTokenLists": {
-    "message": "Von Token-Liste: $1"
-  },
   "function": {
     "message": "Funktion: $1"
   },
@@ -2977,9 +2924,6 @@
   },
   "gasLimitTooLow": {
     "message": "Gas-Limit muss mindestens 21.000 betragen"
-  },
-  "gasLimitV2": {
-    "message": "Gas-Limit"
   },
   "gasPrice": {
     "message": "Gas-Preis"
@@ -3344,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Alle ignorieren"
-  },
-  "ignoreTokenWarning": {
-    "message": "Wenn Sie Tokens verbergen, werden sie nicht in Ihrer Wallet angezeigt. Sie können sie aber immer noch hinzufügen, indem Sie nach ihnen suchen."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3409,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
   },
-  "importSelectedTokens": {
-    "message": "Ausgewählte Tokens importieren?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Nur die Tokens, die Sie ausgewählt haben, erscheinen in Ihrer Wallet. Verborgene Tokens können Sie später jederzeit importieren, indem Sie nach ihnen suchen."
-  },
   "importTokenQuestion": {
     "message": "Token importieren?"
   },
@@ -3433,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Wallet $1 importiert",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 importieren",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Importiert",
@@ -3740,9 +3668,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Das Gerät wurde nicht verbunden. Wenn Sie Ihren Ledger verbinden möchten, klicken Sie bitte erneut auf „Weiter“ und genehmigen Sie die HID-Verbindung",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "Richtungspfeil"
   },
   "lightTheme": {
     "message": "Leicht"
@@ -4113,10 +4038,6 @@
   },
   "musdBuyMusd": {
     "message": "mUSD kaufen"
-  },
-  "musdClaimClaimingTo": {
-    "message": "Einfordern auf",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdClaimTitle": {
     "message": "Bonus einfordern",
@@ -4760,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Erfahren Sie, wie es funktioniert"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 neue Tokens in diesem Konto gefunden",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 neues Token in diesem Konto gefunden."
-  },
   "numberOfTokens": {
     "message": "Anzahl von Tokens"
   },
@@ -5391,9 +5305,6 @@
     "message": "verfügbar",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Verfügbares Guthaben"
-  },
   "perpsAvailableToClose": {
     "message": "Zum Schließen verfügbar"
   },
@@ -5418,9 +5329,6 @@
   },
   "perpsCloseShort": {
     "message": "Short-Position schließen"
-  },
-  "perpsClosedShort": {
-    "message": "Geschlossene Short-Position"
   },
   "perpsConfirmCloseLong": {
     "message": "Long-Position schließen"
@@ -5509,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "beinhaltet GuV $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Höhere Position"
-  },
   "perpsLearnBasics": {
     "message": "Lernen Sie die Grundlagen von Perps"
   },
@@ -5555,12 +5460,6 @@
   "perpsMarkets": {
     "message": "Märkte"
   },
-  "perpsMax": {
-    "message": "Max."
-  },
-  "perpsMaxRemovable": {
-    "message": "Maximal entfernbar"
-  },
   "perpsMid": {
     "message": "Mittelkurs"
   },
@@ -5596,9 +5495,6 @@
     "message": "Short-Position $1 eröffnen",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Geöffnete Long-Position"
-  },
   "perpsOraclePrice": {
     "message": "Oracle-Preis"
   },
@@ -5613,9 +5509,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Positionsgröße"
   },
   "perpsPositions": {
     "message": "Positionen"
@@ -5665,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Größe"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Finanzierungsrate: hoch bis niedrig"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Finanzierungsrate: niedrig bis hoch"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Offenes Interesse: hoch bis niedrig"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Offenes Interesse: niedrig bis hoch"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Preisänderung: hoch zu niedrig"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Preisänderung: niedrig zu hoch"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volumen: hoch bis niedrig"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volumen: niedrig bis hoch"
   },
   "perpsStartNewTrade": {
     "message": "Einen neuen Trade starten"
@@ -5825,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Bitte bestätigen"
-  },
-  "plusXMore": {
-    "message": "+ $1 mehr",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "Blog-Post."
@@ -8505,9 +8370,6 @@
   "swapSource": {
     "message": "Liquiditätsquelle"
   },
-  "swapSuggested": {
-    "message": "Swap vorgeschlagen"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps sind komplexe und zeitkritische Transaktionen. Wir empfehlen diese Gas-Gebühr für ein gutes Gleichgewicht zwischen Kosten und Vertrauen in einen erfolgreichen Swap."
   },
@@ -8684,9 +8546,6 @@
   "tokenDetails": {
     "message": "Token-Details"
   },
-  "tokenFoundTitle": {
-    "message": "1 neues Token gefunden"
-  },
   "tokenId": {
     "message": "Token-ID"
   },
@@ -8728,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 neue Tokens gefunden",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Tokens in der Sammlung"
@@ -8927,9 +8782,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12 Std:"
-  },
   "txAlertTitle": {
     "message": "Diese Transaktion wird rückgängig gemacht"
   },
@@ -9015,9 +8867,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Unbeständiger Token-Preis"
-  },
-  "upArrow": {
-    "message": "Pfeil nach oben"
   },
   "update": {
     "message": "Update"
@@ -9277,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Sie genehmigen"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Sie haben die Transaktion abgelehnt."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Sie müssen Zugriff auf die Kamera erlauben, um diese Funktion nutzen zu können."

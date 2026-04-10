@@ -389,9 +389,6 @@
   "advanced": {
     "message": "एडवांस्ड"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "जब आपका ट्रांसेक्शन ब्लॉक में शामिल हो जाता है, तो आपके अधिकतम बेस फ़ीस और वास्तविक बेस फ़ीस के बीच का कोई भी अंतर वापस कर दिया जाता है। कुल अमाउंट को अधिकतम बेस फ़ीस (GWEI में) * गैस लिमिट के रुप में कैलकुलेट किया जाता है।"
-  },
   "advancedDetailsDataDesc": {
     "message": "डेटा"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "$1 नेटवर्क के लिए इन मूल्यों को मेरे डिफॉल्ट के रूप में सहेजें।",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "एडवांस्डअनुमतियां"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "प्रायोरिटी फ़ीस (उर्फ \"माइनर टिप\") सीधे माइनरों के पास जाती है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करती है।"
   },
   "airDropPatternDescription": {
     "message": "टोकन के ऑन-चेन इतिहास से संदिग्ध एयरड्रॉप गतिविधियों के पूर्व उदाहरणों का पता चलता है।"
@@ -1080,9 +1070,6 @@
   "bridgeFee": {
     "message": "ब्रिज फीस"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "एक नया लाएं?"
-  },
   "bridgeFromTo": {
     "message": "$1 $2 को $3 से ब्रिज करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1168,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "कीमत के असर को लेकर चेतावनी"
-  },
-  "bridgeQuoteExpired": {
-    "message": "आपका कोट करने का समय समाप्त हो गया है"
   },
   "bridgeQuotesSortedByCost": {
     "message": "कोटेशन को अनुमानित कुल लागत के आधार पर क्रमबद्ध किया जाता है, जिसमें एक्सचेंज रेट और नेटवर्क शुल्क शामिल होते हैं।"
@@ -1996,9 +1980,6 @@
   "currentQuestion": {
     "message": "2 सवालों में से सवाल $1 ​"
   },
-  "currentTitle": {
-    "message": "मौजूदा:"
-  },
   "currentlyUnavailable": {
     "message": "इस नेटवर्क पर उपलब्ध नहीं है"
   },
@@ -2051,12 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "सुझावित साइट"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "साइट (हाई)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "साइट"
   },
   "dappSwapAdvantage": {
     "message": "MetaMask स्वैप के साथ बचत करें और कमाएँ"
@@ -2422,9 +2397,6 @@
   "dontShowThisAgain": {
     "message": "इसे दोबारा न दिखाएँ"
   },
-  "downArrow": {
-    "message": "डाउन एरो"
-  },
   "download": {
     "message": "डाउनलोड करें"
   },
@@ -2517,19 +2489,6 @@
   "editGasLimitOutOfBounds": {
     "message": "गैस लिमिट कम से कम $1 होनी चाहिए"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "गैस लिमिट $1 से अधिक और $2 से कम होनी चाहिए",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "अधिकतम बेस फ़ीस प्रायोरिटी फ़ीस से कम नहीं हो सकती है।"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "अधिकतम बेस फ़ीस आवश्यकता से अधिक है"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "मौजूदा नेटवर्क स्थितियों के लिए अधिकतम बेस फ़ीस कम है"
-  },
   "editGasMaxFeeHigh": {
     "message": "अधिकतम फ़ीस आवश्यकता से अधिक है"
   },
@@ -2542,20 +2501,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "अधिकतम प्रायोरिटी फ़ीस 0 GWEI से अधिक होनी चाहिए"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "प्रायोरिटी फ़ीस 0 से अधिक होनी चाहिए।"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "अधिकतम प्रायोरिटी फ़ीस आवश्यकता से अधिक है। आप आवश्यकता से अधिक पेमेंट कर सकते हैं।"
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "प्रायोरिटी फ़ीस आवश्यकता से अधिक है। आप आवश्यकता से अधिक पेमेंट कर सकते हैं"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "मौजूदा नेटवर्क स्थितियों के लिए अधिकतम बेस फ़ीस कम है"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "मौजूदा नेटवर्क स्थितियों के लिए प्रायोरिटी फ़ीस कम है"
   },
   "editGasPriceTooLow": {
     "message": "गैस प्राइस 0 से अधिक होना चाहिए"
@@ -2959,9 +2909,6 @@
   "from": {
     "message": "भेजने वाले"
   },
-  "fromTokenLists": {
-    "message": "टोकन लिस्टों से: $1"
-  },
   "function": {
     "message": "फंक्शन: $1"
   },
@@ -2977,9 +2924,6 @@
   },
   "gasLimitTooLow": {
     "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
-  },
-  "gasLimitV2": {
-    "message": "गैस लिमिट"
   },
   "gasPrice": {
     "message": "गैस प्राइस"
@@ -3344,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "सभी को अनदेखा करें"
-  },
-  "ignoreTokenWarning": {
-    "message": "अगर आप टोकनों को छुपाते हैं तो वो आपके वॉलेट में दिखाई नहीं देंगे। हालांकि, तब भी आप उन्हें खोजकर जोड़ सकते हैं।"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3409,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
   },
-  "importSelectedTokens": {
-    "message": "चुना गया टोकन इम्पोर्ट करें?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "आपके द्वारा चुने गए टोकन ही आपके वॉलेट में दिखाई देंगे। आप छिपे हुए टोकनों को खोजकर बाद में कभी भी इंपोर्ट कर सकते हैं।"
-  },
   "importTokenQuestion": {
     "message": "टोकन इम्पोर्ट करें?"
   },
@@ -3433,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "वॉलेट $1 को इंपोर्ट किया गया",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 इम्पोर्ट करें",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "इम्पोर्ट किया गया",
@@ -3740,9 +3668,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger डिवाइस कनेक्ट नहीं था। यदि आप अपना Ledger कनेक्ट करना चाहते हैं, तो कृपया 'जारी रखें' पर फिर से क्लिक करें और HID कनेक्शन को एप्रूव करें",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "लेवल एरो"
   },
   "lightTheme": {
     "message": "हल्का"
@@ -4113,10 +4038,6 @@
   },
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
-  },
-  "musdClaimClaimingTo": {
-    "message": "इसमें क्लेम किया जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",
@@ -4760,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "जानें कैसे"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "इस अकाउंट में 1 नया टोकन पाया गया"
-  },
   "numberOfTokens": {
     "message": "टोकन की संख्या"
   },
@@ -5391,9 +5305,6 @@
     "message": "उपलब्ध",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "उपलब्ध बैलेंस"
-  },
   "perpsAvailableToClose": {
     "message": "क्लोज़ करने के लिए उपलब्ध है"
   },
@@ -5418,9 +5329,6 @@
   },
   "perpsCloseShort": {
     "message": "शॉर्ट क्लोज़ करें"
-  },
-  "perpsClosedShort": {
-    "message": "शॉर्ट को क्लोज़ किया गया"
   },
   "perpsConfirmCloseLong": {
     "message": "लॉन्ग क्लोज़ करें"
@@ -5509,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "इसमें P&L $1 शामिल है"
   },
-  "perpsIncreasedPosition": {
-    "message": "पोज़िशन बढ़ाई गई"
-  },
   "perpsLearnBasics": {
     "message": "पर्प्स की मूल बातें सीखें"
   },
@@ -5555,12 +5460,6 @@
   "perpsMarkets": {
     "message": "मार्केट"
   },
-  "perpsMax": {
-    "message": "मैक्स"
-  },
-  "perpsMaxRemovable": {
-    "message": "मैक्स रेमूवेबल"
-  },
   "perpsMid": {
     "message": "मिड"
   },
@@ -5596,9 +5495,6 @@
     "message": "शॉर्ट $1 को ओपन करें",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "खुला लॉन्ग"
-  },
   "perpsOraclePrice": {
     "message": "Oracle प्राइस"
   },
@@ -5613,9 +5509,6 @@
   },
   "perpsPosition": {
     "message": "पोज़िशन"
-  },
-  "perpsPositionSize": {
-    "message": "पोज़िशन साइज़"
   },
   "perpsPositions": {
     "message": "पोजीशन्स"
@@ -5665,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "आकार"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "फंडिंग रेट: ज़्यादा से कम"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "फंडिंग रेट: कम से ज़्यादा"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "ओपन इंटरेस्ट: ज़्यादा से कम"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "ओपन इंटरेस्ट: कम से ज़्यादा"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "प्राइस परिवर्तन: ज़्यादा से कम"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "प्राइस परिवर्तन: कम से ज़्यादा"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "वॉल्यूम: ज़्यादा से कम"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "वॉल्यूम: कम से ज़्यादा"
   },
   "perpsStartNewTrade": {
     "message": "एक नया ट्रेड शुरू करें"
@@ -5825,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "कृपया कन्फर्म करें"
-  },
-  "plusXMore": {
-    "message": "+ $1 और",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ब्लॉग पोस्ट।"
@@ -8505,9 +8370,6 @@
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },
-  "swapSuggested": {
-    "message": "विनिमय का सुझाव"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "विनिमय जटिल और समय के प्रति संवेदनशील ट्रांसेक्शन हैं। हम एक सफल विनिमय की लागत और विश्वास के बीच अच्छे संतुलन के लिए इस गैस फ़ीस की अनुशंसा करते हैं।"
   },
@@ -8684,9 +8546,6 @@
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
-  "tokenFoundTitle": {
-    "message": "1 नया टोकन मिला"
-  },
   "tokenId": {
     "message": "टोकन आईडी"
   },
@@ -8728,10 +8587,6 @@
   "tokensCount": {
     "message": "टोकन",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 नए टोकन मिले",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "संग्रह में टोकन"
@@ -8927,9 +8782,6 @@
   "tutorial": {
     "message": "ट्यूटोरियल"
   },
-  "twelveHrTitle": {
-    "message": "12 घंटे:"
-  },
   "txAlertTitle": {
     "message": "यह ट्रांसेक्शन वापस कर दिया जाएगा"
   },
@@ -9015,9 +8867,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "टोकन की कीमत अस्थिर"
-  },
-  "upArrow": {
-    "message": "अप एरो"
   },
   "update": {
     "message": "अपडेट करें"
@@ -9277,9 +9126,6 @@
   },
   "youApprove": {
     "message": "आप एप्रूव करते हैं"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "आपने ट्रांसेक्शन अस्वीकार कर दिया।"
   },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का इस्तेमाल करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"

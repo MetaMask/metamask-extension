@@ -77,7 +77,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.exitSettings();
+        await settingsPage.clickBackButton();
 
         console.log('Step 4: Verify main balance on homepage and account menu');
         await homepage.checkExpectedBalanceIsDisplayed(
@@ -107,9 +107,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 7: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToDeveloperOptions();
         await settingsPage.toggleShowFiatOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         console.log('Step 8: Verify USD balance on Sepolia network');
         await homepage.checkExpectedBalanceIsDisplayed(

@@ -1,14 +1,21 @@
 # Aggregates all CI job results and posts a commit status.
 #
 # Called exclusively by main.yml via workflow_call. Extracted to keep
-# main.yml lean, not for reuse — it is tightly coupled to Main's
+# main.yml lean, not for reuse — it is tightly coupled to main.yml's
 # job graph and event context.
 #
 # Responsibilities:
 #   1. Check that all jobs passed (from caller's needs-json)
-#   2. Post "All jobs pass" commit status (success or failure)
-#   3. Fail the job if any checks failed
-#   4. Log merge group failures to Google Sheets
+#   2. Retry gate: defer commit status when retry-ci label is present
+#      on merge_group failures, giving triage time to retry
+#   3. Post "All jobs pass" commit status (success or failure)
+#   4. Emit Sentry events (resolved-at-attempt, merge queue outcome)
+#   5. Fail the job if any checks failed
+#   6. Log merge group failures to Google Sheets
+#
+# The merge queue requires two checks (configured via a repository
+# ruleset, classic branch protection, or both — either works).
+# See the "Retry gate" comment block below for details.
 
 name: CI status gate (controls all-jobs-pass)
 
@@ -29,9 +36,8 @@ jobs:
     name: CI status gate (controls all-jobs-pass)
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    permissions:
-      statuses: write
     env:
+      BRANCH: ${{ github.head_ref || github.ref_name }}
       RUN_ID: ${{ github.run_id }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
@@ -59,13 +65,84 @@ jobs:
               }
             }
 
-            if (process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
+            if (process.env.BUILDS_FROM_RUN && process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
               core.warning(`Builds were used from a different GHA run: ${process.env.BUILDS_FROM_RUN}`);
               core.info('Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it.');
               allPassed = false;
             }
 
             core.setOutput('checkResult', allPassed ? 'success' : 'failure');
+
+      # ── Retry gate (merge queue only) ──────────────────────────────
+      #
+      # When a merge_group run fails, we want the triage workflow
+      # (triage-and-retry-system.yml) to have a chance to classify the
+      # failure and retry before the merge queue ejects the PR.
+      #
+      # Problem: the merge queue has TWO independent checks that can
+      # trigger ejection, and one is fast:
+      #
+      #   Rule 1 — Merge queue > "Require all queue entries to pass
+      #     required checks" (ALLGREEN)
+      #     Monitors check suites directly. When main.yml's suite
+      #     completes with failure this rule wants to eject
+      #     *immediately*.
+      #
+      #   Rule 2 — Status checks > "All jobs pass"
+      #     Monitors the commit status posted by this workflow.
+      #
+      # (These can be configured as ruleset rules, classic branch
+      # protection rules, or both — the mechanism works either way.)
+      #
+      # Both rules must be satisfied before the queue can merge or
+      # eject. We exploit this: if we *skip posting the commit status*
+      # on early attempts, rule 2 stays pending, which blocks rule 1
+      # from ejecting — even though the suite already failed.
+      #
+      # Timeline of a merge_group retry:
+      #   1. main.yml attempt 1 fails → suite completes with failure
+      #   2. This step sees retry-ci label → skips commit status
+      #   3. Rule 1 wants to eject, but "All jobs pass" is pending → blocked
+      #   4. Triage fires (workflow_run completed) → calls gh run rerun
+      #   5. main.yml attempt 2 starts → suite resets to in_progress
+      #   6. If attempt 2 passes → commit status posted as success → merge
+      #      If attempt 2 fails without retry-ci → commit status posted as failure → eject
+      #
+      # The retry-ci label is removed by triage after each retry, so
+      # the user must re-add it to authorize additional retries.
+      # A hard limit of 4 attempts applies (run_attempt < 4 below).
+      # On attempt 4+, the commit status is always posted immediately.
+      # Keep this in sync with MAX_ATTEMPTS in classify-failures.mts.
+      # ────────────────────────────────────────────────────────────────
+      - name: Check retry-ci label (merge queue only)
+        id: retry-gate
+        if: >-
+          ${{
+            github.event_name == 'merge_group'
+            && steps.check.outputs.checkResult == 'failure'
+            && github.run_attempt < 4
+          }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "$BRANCH" =~ gh-readonly-queue/[^/]+/pr-([0-9]+)- ]]; then
+            PR="${BASH_REMATCH[1]}"
+            if ! RAW_LABELS=$(gh pr view "$PR" --repo "${{ github.repository }}" --json labels --jq '.labels[].name' 2>&1); then
+              echo "::warning::Could not fetch labels for PR #$PR — defaulting to no retry"
+              echo "skip-status=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            LABELS=$(echo "$RAW_LABELS" | tr '\n' ',')
+            # Exact match: LABELS is comma-separated ("a,b,c,"), so wrapping
+            # both sides in commas ensures "retry-ci-v2" doesn't false-match.
+            if [[ ",${LABELS}," == *",retry-ci,"* ]]; then
+              echo "PR #$PR has retry-ci label — deferring commit status for triage retry"
+              echo "skip-status=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "PR #$PR does not have retry-ci label"
+          fi
+          echo "skip-status=false" >> "$GITHUB_OUTPUT"
 
       # Post a commit status named "All jobs pass".
       #
@@ -75,15 +152,11 @@ jobs:
       # suites exist (one per triggered workflow), and the check can land
       # in the wrong suite — one the merge queue doesn't monitor. Commit
       # statuses have no suites, so they always work reliably.
-      #
-      # No continue-on-error here: if the API call fails, we WANT the job
-      # to fail so check-retry-ci can re-run it. Adding continue-on-error
-      # would make the job "succeed" without posting the status, leaving
-      # the merge queue stuck.
       - name: Post commit status
+        if: ${{ !cancelled() && steps.retry-gate.outputs.skip-status != 'true' }}
         uses: actions/github-script@v8
         env:
-          STATUS_STATE: ${{ steps.check.outputs.checkResult }}
+          STATUS_STATE: ${{ steps.check.outputs.checkResult || 'failure' }}
         with:
           script: |
             const state = process.env.STATUS_STATE;
@@ -99,10 +172,130 @@ jobs:
             });
             core.info(`Posted commit status: ${state}`);
 
+      # ── Emit Sentry events ───────────────────────────────────────
+      #
+      # Conditionally emits two events in a single step (DSN parsed once):
+      #   1. resolved-at-attempt — when a retried run succeeds (attempt > 1)
+      #   2. merge-queue-outcome — merged vs ejected for every final MQ run
+      - name: Emit Sentry events
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: actions/github-script@v8
+        env:
+          SENTRY_DSN: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+          CI_RESULT: ${{ steps.check.outputs.checkResult || 'failure' }}
+          ATTEMPT: ${{ github.run_attempt }}
+          EVENT_NAME: ${{ github.event_name }}
+          SKIP_STATUS: ${{ steps.retry-gate.outputs.skip-status }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        with:
+          script: |
+            const dsn = process.env.SENTRY_DSN;
+            if (!dsn) {
+              core.info('SENTRY_DSN_PERFORMANCE not set — skipping');
+              return;
+            }
+
+            const dsnMatch = dsn.match(/^https:\/\/([^@]+)@([^/]+)\/(.+)$/);
+            if (!dsnMatch) {
+              core.warning('Could not parse SENTRY_DSN — skipping');
+              return;
+            }
+            const [, sentryKey, sentryHost, sentryProject] = dsnMatch;
+
+            // Normalize branch and extract PR number
+            const rawBranch = process.env.BRANCH;
+            const branch = rawBranch.replace(/^gh-readonly-queue\/([^/]+)\/.*/, '$1');
+            const prNumber = process.env.PR_NUMBER
+              || (rawBranch.match(/gh-readonly-queue\/[^/]+\/pr-(\d+)-/) || [])[1]
+              || '';
+
+            const attempt = Number(process.env.ATTEMPT);
+            const events = [];
+
+            // 1. Resolved at attempt N (success after retry)
+            if (process.env.CI_RESULT === 'success' && attempt > 1) {
+              events.push({
+                body: `CI resolved at attempt ${attempt}`,
+                attrs: {
+                  'ci.retry.event': 'resolved',
+                  'ci.retry.resolvedAtAttempt': attempt,
+                  'ci.retry.triggerEvent': process.env.EVENT_NAME,
+                },
+              });
+            }
+
+            // 2. Merge queue outcome (only when status is final)
+            if (process.env.EVENT_NAME === 'merge_group'
+                && process.env.SKIP_STATUS !== 'true') {
+              const outcome = process.env.CI_RESULT === 'success'
+                ? 'merged' : 'ejected';
+              events.push({
+                body: `Merge queue ${outcome}`,
+                attrs: {
+                  'ci.mergeQueue.event': 'outcome',
+                  'ci.mergeQueue.outcome': outcome,
+                },
+              });
+            }
+
+            if (events.length === 0) return;
+
+            const toAttr = (v) =>
+              typeof v === 'number'
+                ? { value: v, type: 'integer' }
+                : { value: String(v), type: 'string' };
+
+            for (const { body, attrs } of events) {
+              const now = new Date();
+              const traceId = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+                .map(b => b.toString(16).padStart(2, '0')).join('');
+
+              const attributes = {
+                'ci.retry.runId':       toAttr(process.env.RUN_ID),
+                'ci.retry.date':        toAttr(now.toISOString().slice(0, 10)),
+                'ci.targetBranch':      toAttr(branch),
+                ...(prNumber ? { 'ci.prNumber': toAttr(prNumber) } : {}),
+                'sentry.severity_text': toAttr('info'),
+                ...Object.fromEntries(
+                  Object.entries(attrs).map(([k, v]) => [k, toAttr(v)]),
+                ),
+              };
+
+              const payload = JSON.stringify({ items: [{
+                timestamp: Math.floor(now.getTime() / 1000),
+                level: 'info',
+                body,
+                severity_number: 9,
+                trace_id: traceId,
+                attributes,
+              }]});
+
+              const envelope = [
+                JSON.stringify({ dsn, sent_at: now.toISOString() }),
+                '{"type":"log","item_count":1,"content_type":"application/vnd.sentry.items.log+json"}',
+                payload,
+              ].join('\n');
+
+              const res = await fetch(
+                `https://${sentryHost}/api/${sentryProject}/envelope/`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-sentry-envelope',
+                    'X-Sentry-Auth': `Sentry sentry_version=7, sentry_key=${sentryKey}, sentry_client=github-script/1.0`,
+                  },
+                  body: envelope,
+                },
+              );
+              core.info(`Sentry (${body}): ${res.status}`);
+            }
+
       - name: Fail job if checks failed
-        if: ${{ steps.check.outputs.checkResult == 'failure' }}
+        if: ${{ steps.check.outputs.checkResult != 'success' }}
         run: exit 1
 
+      # This reporting method has probably been superseded by the Sentry logging, and may be removed later.
       - name: Log merge group failure
         if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
         uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
