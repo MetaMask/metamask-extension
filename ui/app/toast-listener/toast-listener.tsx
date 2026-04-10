@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   selectNonEvmTransactionsForToast,
   selectEvmTransactionsForToast,
@@ -9,18 +10,18 @@ import { selectBridgeHistoryForToast } from '../../ducks/bridge-status/selectors
 import { useTransactionLifecycle } from '../../hooks/useTransactionLifecycle';
 import { useNonEvmTransactionLifecycle } from '../../hooks/useNonEvmTransactionLifecycle';
 import { useBridgeHistoryLifecycle } from '../../hooks/useBridgeHistoryLifecycle';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../helpers/utils/transaction-display';
+import { useTransactionDisplay } from '../../helpers/utils/transaction-display';
 import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
-import type { Handlers } from '../../components/ui/toast/types';
+import type {
+  Handlers,
+  ToastTransactionContext,
+} from '../../components/ui/toast/types';
 
 type EvmTx = ReturnType<typeof selectEvmTransactionsForToast>[number];
 type NonEvmTx = ReturnType<typeof selectNonEvmTransactionsForToast>[number];
 
-const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
+const ToastContent = ({ context }: { context: ToastTransactionContext }) => {
+  const { title } = useTransactionDisplay(context);
   return <ToastContentBase title={title} />;
 };
 
@@ -29,26 +30,51 @@ const ToastContent = ({ status }: { status: TransactionStatus }) => {
  */
 function useEvmTransactionToasts() {
   const data = useSelector(selectEvmTransactionsForToast);
+  const networkConfigs = useSelector(getNetworkConfigurationsByChainId);
 
   const handlers = useMemo<Handlers<EvmTx>>(
     () => ({
       onPending: (tx) => {
-        toast.loading(<ToastContent status="pending" />, {
-          id: `tx-${tx.id}`,
-        });
+        const ticker = networkConfigs[tx.chainId]?.nativeCurrency ?? '';
+        toast.loading(
+          <ToastContent
+            context={{
+              status: 'pending',
+              transactionType: tx.type,
+              params: [ticker],
+            }}
+          />,
+          { id: `tx-${tx.id}` },
+        );
       },
       onSuccess: (tx) => {
-        toast.success(<ToastContent status="success" />, {
-          id: `tx-${tx.id}`,
-        });
+        const ticker = networkConfigs[tx.chainId]?.nativeCurrency ?? '';
+        toast.success(
+          <ToastContent
+            context={{
+              status: 'success',
+              transactionType: tx.type,
+              params: [ticker],
+            }}
+          />,
+          { id: `tx-${tx.id}` },
+        );
       },
       onFailure: (tx) => {
-        toast.error(<ToastContent status="failed" />, {
-          id: `tx-${tx.id}`,
-        });
+        const ticker = networkConfigs[tx.chainId]?.nativeCurrency ?? '';
+        toast.error(
+          <ToastContent
+            context={{
+              status: 'failed',
+              transactionType: tx.type,
+              params: [ticker],
+            }}
+          />,
+          { id: `tx-${tx.id}` },
+        );
       },
     }),
-    [],
+    [networkConfigs],
   );
 
   useTransactionLifecycle(data, handlers);
@@ -63,17 +89,17 @@ function useNonEvmTransactionToasts() {
   const handlers = useMemo<Handlers<NonEvmTx>>(
     () => ({
       onPending: (tx) => {
-        toast.loading(<ToastContent status="pending" />, {
+        toast.loading(<ToastContent context={{ status: 'pending' }} />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
       onSuccess: (tx) => {
-        toast.success(<ToastContent status="success" />, {
+        toast.success(<ToastContent context={{ status: 'success' }} />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
       onFailure: (tx) => {
-        toast.error(<ToastContent status="failed" />, {
+        toast.error(<ToastContent context={{ status: 'failed' }} />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
@@ -93,17 +119,17 @@ function useBridgeHistoryToasts() {
   const handlers = useMemo(
     () => ({
       onPending: (key: string) => {
-        toast.loading(<ToastContent status="pending" />, {
+        toast.loading(<ToastContent context={{ status: 'pending' }} />, {
           id: `bridge-tx-${key}`,
         });
       },
       onSuccess: (key: string) => {
-        toast.success(<ToastContent status="success" />, {
+        toast.success(<ToastContent context={{ status: 'success' }} />, {
           id: `bridge-tx-${key}`,
         });
       },
       onFailure: (key: string) => {
-        toast.error(<ToastContent status="failed" />, {
+        toast.error(<ToastContent context={{ status: 'failed' }} />, {
           id: `bridge-tx-${key}`,
         });
       },

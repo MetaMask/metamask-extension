@@ -8,6 +8,7 @@ import {
   selectNonEvmTransactionsForToast,
 } from '../../selectors/toast';
 import { selectBridgeHistoryForToast } from '../../ducks/bridge-status/selectors';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { ToastListener } from './toast-listener';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
@@ -30,11 +31,25 @@ jest.mock('../../ducks/bridge-status/selectors', () => ({
   selectBridgeHistoryForToast: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  getNetworkConfigurationsByChainId: jest.fn(),
+}));
+
 jest.mock('../../components/ui/toast/toast', () => ({
   ToastContent: () => null,
 }));
 
+jest.mock('../../helpers/utils/transaction-display', () => ({
+  useTransactionDisplay: ({ status }: { status: string }) => ({
+    title: status,
+  }),
+}));
+
 const mockUseSelector = jest.mocked(useSelector);
+
+const mockNetworkConfigs = {
+  '0x1': { nativeCurrency: 'ETH' },
+};
 
 type TestState = {
   evmTxs: object[];
@@ -67,6 +82,9 @@ beforeEach(() => {
     }
     if (selector === selectBridgeHistoryForToast) {
       return state.bridgeHistory;
+    }
+    if (selector === getNetworkConfigurationsByChainId) {
+      return mockNetworkConfigs;
     }
     return undefined;
   });

@@ -3,3 +3,9 @@ export type Handlers<TTxn> = {
   onSuccess?: (transaction: TTxn) => void;
   onFailure?: (transaction: TTxn) => void;
 };
+
+export type ToastTransactionContext = {
+  status: 'pending' | 'success' | 'failed';
+  transactionType?: string;
+  params?: string[];
+};

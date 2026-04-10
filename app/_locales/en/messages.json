@@ -9004,6 +9004,26 @@
   "tooltipSatusConnectedUpperCase": {
     "message": "Connected"
   },
+  "toastSendConfirmed": {
+    "message": "Sent $1",
+    "description": "$1 is the token symbol, e.g. ETH"
+  },
+  "toastSendFailed": {
+    "message": "Send failed"
+  },
+  "toastSendPending": {
+    "message": "Sending $1",
+    "description": "$1 is the token symbol, e.g. ETH"
+  },
+  "toastSwapConfirmed": {
+    "message": "Swapped"
+  },
+  "toastSwapFailed": {
+    "message": "Swap failed"
+  },
+  "toastSwapPending": {
+    "message": "Swapping"
+  },
   "total": {
     "message": "Total"
   },
