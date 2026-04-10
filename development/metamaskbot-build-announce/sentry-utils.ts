@@ -74,6 +74,7 @@ function formatCiBranchFilterToken(branch: string): string {
  * @param options.buildType
  * @param options.logMessage - Exact log message string to match (same as send-to-sentry: `${benchmarkType}.${jsonKey}`).
  * @param options.orBranches - Extra `ci.branch` values OR'd with `branchName` (deduped).
+ * @returns `null` if DSN is missing/invalid or if no non-empty branch remains after trim/dedupe.
  */
 export function buildPerformanceSentryLogsUrl(
   branchName: string,
@@ -97,10 +98,14 @@ export function buildPerformanceSentryLogsUrl(
   const { organization, projectId, useRootSentryHost } = parsed;
 
   const branchParts = [
-    branchName,
+    branchName.trim(),
     ...(options?.orBranches ?? []).map((b) => b.trim()),
-  ].filter(Boolean);
+  ].filter((b) => b.length > 0);
   const uniqueBranches = [...new Set(branchParts)];
+
+  if (uniqueBranches.length === 0) {
+    return null;
+  }
 
   const branchFilter =
     uniqueBranches.length === 1

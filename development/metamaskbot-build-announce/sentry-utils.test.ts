@@ -97,6 +97,17 @@ describe('buildPerformanceSentryLogsUrl', () => {
     expect(url).toContain('logsQuery=ci.branch%3Amain');
   });
 
+  it('returns null when no branch remains after trim (empty branchName, no orBranches)', () => {
+    expect(buildPerformanceSentryLogsUrl('')).toBeNull();
+    expect(buildPerformanceSentryLogsUrl('   ')).toBeNull();
+  });
+
+  it('allows empty branchName when orBranches supplies a branch', () => {
+    const url = buildPerformanceSentryLogsUrl('', { orBranches: ['main'] });
+
+    expect(url).toContain('logsQuery=ci.branch%3Amain');
+  });
+
   it('returns null when SENTRY_DSN_PERFORMANCE is unset', () => {
     delete process.env.SENTRY_DSN_PERFORMANCE;
 
