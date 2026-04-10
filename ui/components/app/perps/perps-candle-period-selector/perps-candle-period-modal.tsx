@@ -2,7 +2,10 @@ import React from 'react';
 import {
   Box,
   ButtonBase,
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
+  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -13,9 +16,6 @@ import {
   ModalContent,
   ModalOverlay,
   ModalContentSize,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
 } from '../../../component-library';
 import {
   AlignItems,
