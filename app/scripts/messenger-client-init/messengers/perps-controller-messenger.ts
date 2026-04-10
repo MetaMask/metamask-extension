@@ -18,6 +18,7 @@ import {
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -29,7 +30,8 @@ type AllowedActions =
   | TransactionControllerAddTransactionAction
   | RemoteFeatureFlagControllerGetStateAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction
+  | MetaMetricsControllerTrackEventAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
@@ -72,6 +74,7 @@ export function getPerpsControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'AuthenticationController:getBearerToken',
+      'MetaMetricsController:trackEvent',
     ],
     events: [
       'RemoteFeatureFlagController:stateChange',

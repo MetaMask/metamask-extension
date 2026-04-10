@@ -9,6 +9,12 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import type { Position } from '../types';
 import {
   UpdateTPSLModalContent,
@@ -41,6 +47,22 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
     null,
   );
+
+  const hasExistingTpsl = Boolean(
+    position.takeProfitPrice || position.stopLossPrice,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasExistingTpsl
+        ? PERPS_EVENT_VALUE.SCREEN_TYPE.UPDATE_TP_SL
+        : PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TP_SL,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+    resetKey: position.symbol,
+  });
 
   const handleSubmitStateChange = useCallback(
     (state: UpdateTPSLSubmitState) => {

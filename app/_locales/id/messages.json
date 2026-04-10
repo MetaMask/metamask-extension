@@ -2909,9 +2909,6 @@
   "from": {
     "message": "Dari"
   },
-  "fromTokenLists": {
-    "message": "Dari daftar token: $1"
-  },
   "function": {
     "message": "Fungsi: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Abaikan semua"
-  },
-  "ignoreTokenWarning": {
-    "message": "Jika Anda menyembunyikan token, token tersebut tidak akan ditampilkan di dompet Anda. Namun, Anda masih dapat menambahkannya dengan mencarinya."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
   },
-  "importSelectedTokens": {
-    "message": "Impor token yang dipilih?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Hanya token yang dipilih yang akan muncul di dompet Anda. Anda selalu dapat mengimpor token tersembunyi nanti dengan mencarinya."
-  },
   "importTokenQuestion": {
     "message": "Impor token?"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Dompet $1 diimpor",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Impor $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Diimpor",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Pelajari caranya"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 token baru ditemukan di akun ini",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 token baru ditemukan di akun ini"
-  },
   "numberOfTokens": {
     "message": "Jumlah token"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Harap konfirmasikan"
-  },
-  "plusXMore": {
-    "message": "+ $1 lagi",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "postingan blog."
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "Detail token"
   },
-  "tokenFoundTitle": {
-    "message": "1 token baru ditemukan"
-  },
   "tokenId": {
     "message": "ID Token"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 token baru ditemukan",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Token dalam koleksi"

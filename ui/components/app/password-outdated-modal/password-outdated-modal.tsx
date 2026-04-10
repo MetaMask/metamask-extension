@@ -16,6 +16,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -26,7 +27,6 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
-import { setShowPasswordChangeToast } from '../toast-master/utils';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -96,7 +96,7 @@ export default function PasswordOutdatedModal() {
             className="w-full"
             onClick={async () => {
               // remove the password change toast from the app state
-              await dispatch(setShowPasswordChangeToast(null));
+              toast.dismiss();
               await dispatch(lockMetamask());
               navigate(DEFAULT_ROUTE);
             }}
