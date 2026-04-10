@@ -1,5 +1,7 @@
-import OnboardingController from '../controllers/onboarding';
-import { OnboardingControllerMessenger } from './messengers';
+import {
+  OnboardingController,
+  OnboardingControllerMessenger,
+} from '../controllers/onboarding';
 import { ControllerInitFunction } from './types';
 
 /**

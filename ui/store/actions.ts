@@ -6079,6 +6079,15 @@ export async function getLedgerPublicKey(
 }
 
 /**
+ * Fetch the features/capabilities of the connected Trezor device.
+ *
+ * @returns The Trezor device features response including model, capabilities, and session info
+ */
+export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
+  return await submitRequestToBackground('getTrezorFeatures');
+}
+
+/**
  * This method deduplicates error reports to sentry by maintaining a state
  * object 'singleExceptions' in the app slice. The only place this state object
  * is accessed from is within this method, to check if it has already seen and

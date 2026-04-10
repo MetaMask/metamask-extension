@@ -205,6 +205,7 @@ const mockUsePerpsMarketFills = jest
 
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -514,6 +515,20 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeGreaterThanOrEqual(1);
     });
 
+    it('displays leverage value in position details', () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <PerpsMarketDetailPage />,
+        store,
+      );
+
+      expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
+      expect(
+        getByText(new RegExp(`${messages.perpsLong.message} 3x`, 'u')),
+      ).toBeInTheDocument();
+    });
+
     it('displays stats section', async () => {
       const store = mockStore(createMockState(true));
 
@@ -592,7 +607,9 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
-      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      const modifyMenu = screen.getByTestId('perps-modify-menu');
+      expect(modifyMenu).toBeInTheDocument();
+      expect(modifyMenu.parentElement).toBe(document.body);
       expect(
         screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
@@ -619,7 +636,9 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-margin-card'));
-      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      const marginMenu = screen.getByTestId('perps-margin-menu');
+      expect(marginMenu).toBeInTheDocument();
+      expect(marginMenu.parentElement).toBe(document.body);
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
@@ -712,6 +731,72 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByTestId('perps-decrease-margin-modal'),
       ).toBeInTheDocument();
+    });
+
+    it('updates the selected candle period from the More menu', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+
+      expect(
+        screen.getByTestId('perps-candle-period-modal'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandleIntervals.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodMinutes.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodHours.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodDays.message),
+      ).toBeInTheDocument();
+
+      const morePeriodOption = screen.getByTestId(
+        'perps-candle-period-modal-30m',
+      );
+      expect(morePeriodOption).toBeInTheDocument();
+
+      fireEvent.click(morePeriodOption);
+
+      expect(screen.getByText('30min')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not mark 1min as selected after selecting 1M from the modal', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
+
+      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('closes the candle period modal when the close button is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByLabelText(messages.close.message));
+
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays Close Long button text for long position', async () => {

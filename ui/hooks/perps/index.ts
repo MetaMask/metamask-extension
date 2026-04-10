@@ -28,6 +28,11 @@ export type {
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
 
+export { usePerpsEventTracking } from './usePerpsEventTracking';
+export type {
+  PerpsTrackEventFn,
+  UsePerpsEventTrackingDeclarativeOptions,
+} from './usePerpsEventTracking';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

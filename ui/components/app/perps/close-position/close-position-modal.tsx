@@ -27,6 +27,12 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import {
   getDisplayName,
   getPositionDirection,
@@ -238,6 +244,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
+  const { track } = usePerpsEventTracking();
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -348,9 +365,37 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         }),
       ]);
       if (!result.success) {
-        throw new Error(result.error || 'Failed to close position');
+        const message = result.error || 'Failed to close position';
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+        });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+        });
+        const { errorMessage, toast } = getCloseFailureToastConfig({
+          error: new Error(message),
+          isPartialClose,
+          t,
+          formatCurrencyWithMinThreshold,
+        });
+        setError(errorMessage);
+        replacePerpsToastByKey(toast);
+        return;
       }
-
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      });
       replacePerpsToastByKey(
         getCloseSuccessToastConfig({
           isPartialClose,
@@ -361,6 +406,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       );
       onClose();
     } catch (err) {
+      const errMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+      });
+
       const { errorMessage, toast } = getCloseFailureToastConfig({
         error: err,
         isPartialClose,
@@ -374,17 +434,19 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     }
   }, [
     isSubmitDisabled,
+    replacePerpsToastByKey,
+    isPartialClose,
     position,
     closeSize,
-    currentPrice,
     displayName,
-    formatNumber,
-    isPartialClose,
-    onClose,
     t,
-    formatCurrencyWithMinThreshold,
+    formatNumber,
+    currentPrice,
+    track,
+    closePercent,
+    onClose,
     formatPercentWithMinThreshold,
-    replacePerpsToastByKey,
+    formatCurrencyWithMinThreshold,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {

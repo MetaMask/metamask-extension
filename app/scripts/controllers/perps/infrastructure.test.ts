@@ -1,4 +1,13 @@
-import { createPerpsInfrastructure } from './infrastructure';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '../../../../shared/constants/perps-events';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  createPerpsInfrastructure,
+  type InfrastructureDeps,
+} from './infrastructure';
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -19,13 +28,23 @@ function setupSentryScope() {
 }
 
 describe('createPerpsInfrastructure', () => {
+  const mockTrackEvent = jest.fn();
+
+  function getDeps(): InfrastructureDeps {
+    return { trackEvent: mockTrackEvent };
+  }
+
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
     delete (globalThis as Record<string, unknown>).sentry;
   });
 
   it('returns a valid PerpsPlatformDependencies object', () => {
-    const infrastructure = createPerpsInfrastructure();
+    const infrastructure = createPerpsInfrastructure(getDeps());
 
     expect(infrastructure.logger).toBeDefined();
     expect(infrastructure.debugLogger).toBeDefined();
@@ -39,10 +58,37 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.rewards).toBeDefined();
   });
 
+  describe('metrics', () => {
+    it('trackPerpsEvent forwards to trackEvent with Perps category and timestamp', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+
+      infrastructure.metrics.trackPerpsEvent(PerpsAnalyticsEvent.ScreenViewed, {
+        [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+          PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: PerpsAnalyticsEvent.ScreenViewed,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+            PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+        },
+      });
+    });
+
+    it('reports metrics as enabled', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.metrics.isEnabled()).toBe(true);
+    });
+  });
+
   describe('logger', () => {
     describe('when sentry.withScope is not available', () => {
       it('falls back to captureException without scope', () => {
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         const error = new Error('test error');
 
         logger.error(error);
@@ -51,7 +97,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('does not throw when options are provided but withScope is unavailable', () => {
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         const error = new Error('test error');
 
         expect(() =>
@@ -71,7 +117,7 @@ describe('createPerpsInfrastructure', () => {
       it('always sets the feature:perps tag', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         logger.error(new Error('test'));
 
         expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
@@ -80,7 +126,7 @@ describe('createPerpsInfrastructure', () => {
       it('forwards errors to captureException inside the scope', () => {
         setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         const error = new Error('test error');
         logger.error(error);
 
@@ -90,7 +136,7 @@ describe('createPerpsInfrastructure', () => {
       it('sets extra tags from options on the scope', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         logger.error(new Error('test'), {
           tags: { provider: 'hyperliquid', network: 'mainnet' },
         });
@@ -105,7 +151,7 @@ describe('createPerpsInfrastructure', () => {
       it('converts numeric tag values to strings', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         logger.error(new Error('test'), { tags: { retryCount: 3 } });
 
         expect(mockScope.setTag).toHaveBeenCalledWith('retryCount', '3');
@@ -114,7 +160,7 @@ describe('createPerpsInfrastructure', () => {
       it('sets Sentry context from options', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         logger.error(new Error('test'), {
           context: {
             name: 'PerpsController',
@@ -131,7 +177,7 @@ describe('createPerpsInfrastructure', () => {
       it('sets Sentry extras from options', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         logger.error(new Error('test'), {
           extras: { requestPayload: '{"coin":"ETH"}' },
         });
@@ -144,7 +190,7 @@ describe('createPerpsInfrastructure', () => {
       it('works correctly when options are omitted', () => {
         const mockScope = setupSentryScope();
 
-        const { logger } = createPerpsInfrastructure();
+        const { logger } = createPerpsInfrastructure(getDeps());
         const error = new Error('bare error');
         logger.error(error);
 
@@ -156,25 +202,9 @@ describe('createPerpsInfrastructure', () => {
     });
   });
 
-  describe('metrics', () => {
-    it('reports metrics as disabled', () => {
-      const { metrics } = createPerpsInfrastructure();
-
-      expect(metrics.isEnabled()).toBe(false);
-    });
-
-    it('does not throw when tracking an event', () => {
-      const { metrics } = createPerpsInfrastructure();
-
-      expect(() =>
-        metrics.trackPerpsEvent('test_event' as never, {} as never),
-      ).not.toThrow();
-    });
-  });
-
   describe('performance', () => {
     it('returns a numeric timestamp', () => {
-      const { performance: perf } = createPerpsInfrastructure();
+      const { performance: perf } = createPerpsInfrastructure(getDeps());
 
       expect(typeof perf.now()).toBe('number');
     });
@@ -183,7 +213,7 @@ describe('createPerpsInfrastructure', () => {
   describe('tracer', () => {
     describe('when sentry is not available', () => {
       it('does not throw on trace', () => {
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
 
         expect(() =>
           tracer.trace({
@@ -195,7 +225,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('does not throw on endTrace', () => {
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
 
         expect(() =>
           tracer.endTrace({ name: 'Perps Place Order' as never, id: '1' }),
@@ -203,7 +233,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('does not throw on setMeasurement', () => {
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
 
         expect(() =>
           tracer.setMeasurement('test', 100, 'millisecond'),
@@ -217,7 +247,7 @@ describe('createPerpsInfrastructure', () => {
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'abc',
@@ -240,7 +270,7 @@ describe('createPerpsInfrastructure', () => {
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'abc',
@@ -264,7 +294,7 @@ describe('createPerpsInfrastructure', () => {
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'abc',
@@ -280,7 +310,7 @@ describe('createPerpsInfrastructure', () => {
         (globalThis as Record<string, unknown>).sentry = {
           startSpanManual: jest.fn(),
         };
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
 
         expect(() =>
           tracer.endTrace({ name: 'Perps Place Order' as never, id: 'nope' }),
@@ -292,7 +322,7 @@ describe('createPerpsInfrastructure', () => {
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'abc',
@@ -315,7 +345,7 @@ describe('createPerpsInfrastructure', () => {
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'abc',
@@ -339,7 +369,7 @@ describe('createPerpsInfrastructure', () => {
         });
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.trace({
           name: 'Perps Place Order' as never,
           id: 'dup',
@@ -363,7 +393,7 @@ describe('createPerpsInfrastructure', () => {
         });
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
 
         // Fill the map to capacity (MAX_PENDING_SPANS = 50)
         for (let i = 0; i < 50; i++) {
@@ -391,7 +421,7 @@ describe('createPerpsInfrastructure', () => {
         const setMeasurement = jest.fn();
         (globalThis as Record<string, unknown>).sentry = { setMeasurement };
 
-        const { tracer } = createPerpsInfrastructure();
+        const { tracer } = createPerpsInfrastructure(getDeps());
         tracer.setMeasurement('perps.latency', 42, 'millisecond');
 
         expect(setMeasurement).toHaveBeenCalledWith(
@@ -405,27 +435,27 @@ describe('createPerpsInfrastructure', () => {
 
   describe('streamManager', () => {
     it('does not throw on pauseChannel', () => {
-      const { streamManager } = createPerpsInfrastructure();
+      const { streamManager } = createPerpsInfrastructure(getDeps());
 
       expect(() => streamManager.pauseChannel('test')).not.toThrow();
     });
 
     it('does not throw on resumeChannel', () => {
-      const { streamManager } = createPerpsInfrastructure();
+      const { streamManager } = createPerpsInfrastructure(getDeps());
 
       expect(() => streamManager.resumeChannel('test')).not.toThrow();
     });
 
     it('does not throw on clearAllChannels', () => {
-      const { streamManager } = createPerpsInfrastructure();
+      const { streamManager } = createPerpsInfrastructure(getDeps());
 
       expect(() => streamManager.clearAllChannels()).not.toThrow();
     });
   });
 
   describe('featureFlags', () => {
-    it('validates a version-gated flag', () => {
-      const infrastructure = createPerpsInfrastructure();
+    it('validateVersionGated returns true as default stub', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
       const result = infrastructure.featureFlags.validateVersionGated({
         enabled: true,
         minimumVersion: '1.0.0',
@@ -436,20 +466,20 @@ describe('createPerpsInfrastructure', () => {
 
   describe('marketDataFormatters', () => {
     it('formats volume as compact USD', () => {
-      const { marketDataFormatters } = createPerpsInfrastructure();
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       const formatted = marketDataFormatters.formatVolume(1_200_000_000);
       expect(formatted).toContain('1.2');
       expect(formatted).toContain('B');
     });
 
     it('formats fiat as USD with 2 decimals', () => {
-      const { marketDataFormatters } = createPerpsInfrastructure();
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
       expect(formatted).toContain('50,000.12');
     });
 
     it('formats percentage', () => {
-      const { marketDataFormatters } = createPerpsInfrastructure();
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       const formatted = marketDataFormatters.formatPercentage(2.5);
       expect(formatted).toContain('2.50');
       expect(formatted).toContain('%');
@@ -458,7 +488,7 @@ describe('createPerpsInfrastructure', () => {
 
   describe('rewards', () => {
     it('returns 0 discount as default stub', async () => {
-      const infrastructure = createPerpsInfrastructure();
+      const infrastructure = createPerpsInfrastructure(getDeps());
       const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
         'eip155:42161:0x1234',
       );
@@ -468,7 +498,7 @@ describe('createPerpsInfrastructure', () => {
 
   describe('cacheInvalidator', () => {
     it('does not throw on invalidate', () => {
-      const infrastructure = createPerpsInfrastructure();
+      const infrastructure = createPerpsInfrastructure(getDeps());
       expect(() =>
         infrastructure.cacheInvalidator.invalidate({
           cacheType: 'positions',
@@ -477,7 +507,7 @@ describe('createPerpsInfrastructure', () => {
     });
 
     it('does not throw on invalidateAll', () => {
-      const infrastructure = createPerpsInfrastructure();
+      const infrastructure = createPerpsInfrastructure(getDeps());
       expect(() =>
         infrastructure.cacheInvalidator.invalidateAll(),
       ).not.toThrow();

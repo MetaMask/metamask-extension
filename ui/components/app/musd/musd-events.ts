@@ -319,15 +319,19 @@ export type MusdClaimBonusStatusUpdatedEventProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   transaction_type: 'merklClaim';
-  /** Network chain ID (hex) */
+  /** Linea mainnet chain ID (hex); always Merkl claim chain for this event */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   network_chain_id: string;
-  /** Network name */
+  /** Network name for Linea */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   network_name: string;
-  /** Amount claimed in decimal format (only for confirmed/failed/dropped) */
+  /**
+   * mUSD amount in token base units (6 decimals), as a decimal string (e.g.
+   * `'5000000'` for 5 mUSD), or `'0'` for a zero payout. Not human-readable
+   * fractional dollars despite the legacy property name.
+   */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   amount_claimed_decimal?: string;

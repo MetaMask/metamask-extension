@@ -23,8 +23,20 @@ import type {
   PerpsTraceValue,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
+import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
+import {
+  MetaMetricsEventCategory,
+  type MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+
+/**
+ * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
+ */
+export type InfrastructureDeps = {
+  trackEvent: (payload: MetaMetricsEventPayload) => void;
+};
 
 const debugLog = createProjectLogger('perps');
 
@@ -59,14 +71,25 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(): PerpsMetrics {
+function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
   return {
-    isEnabled: () => false,
+    // isEnabled always true: the MetaMetricsController.trackEvent messenger action is a
+    // no-op when the user has not opted into analytics, so consent filtering is
+    // enforced at that layer rather than here. Mobile delegates this check to
+    // analytics.isEnabled() directly because it uses a different analytics stack.
+    isEnabled: () => true,
     trackPerpsEvent: (
-      _event: PerpsAnalyticsEvent,
-      _properties: PerpsAnalyticsProperties,
+      event: PerpsAnalyticsEvent,
+      properties: PerpsAnalyticsProperties,
     ) => {
-      // TODO: Integrate with MetaMetrics when ready
+      deps.trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          ...properties,
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+        },
+      });
     },
   };
 }
@@ -223,13 +246,16 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
+ * @param deps - Platform hooks (e.g. MetaMetrics `trackEvent`).
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
-export function createPerpsInfrastructure(): PerpsPlatformDependencies {
+export function createPerpsInfrastructure(
+  deps: InfrastructureDeps,
+): PerpsPlatformDependencies {
   return {
     logger: createLogger(),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(),
+    metrics: createMetrics(deps),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),

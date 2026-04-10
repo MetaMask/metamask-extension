@@ -3105,7 +3105,8 @@
     "message": "이어서 다음 사항을 확인하세요."
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledger 잠금이 해제되었습니다"
+    "message": "$1 잠금이 해제되었습니다",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "이더리움 앱이 열려 있습니다"
