@@ -60,7 +60,7 @@ export const mockSpotPrices = async (
  */
 export async function mockPriceApi(
   mockServer: Mockttp,
-  ethPrice: number = 1,
+  ethPrice: number = MOCK_ETH_CONVERSION_RATE,
   chainId: `0x${string}` = '0x1',
 ) {
   const chainIdDecimal = Number.parseInt(chainId, 16);

@@ -160,12 +160,17 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param options.unifiedEvmAccountsApiBalances
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = 1700 },
+  {
+    chainId,
+    ethConversionInUsd = 1700,
+    unifiedEvmAccountsApiBalances = {},
+  } = {},
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
@@ -1212,6 +1217,175 @@ async function setupMocking(
           partialSupport: {
             balances: [42220, 43114],
           },
+        },
+      };
+    });
+
+  // Tokens API (assets-unify-state): required alongside Accounts API v5 so EVM balances load.
+  await server
+    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:59144',
+        'eip155:42161',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:137',
+        'eip155:56',
+        'eip155:1337',
+      ],
+      partialSupport: [],
+    });
+
+  await server
+    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results = [];
+
+      const pushIf = (predicate, entry) => {
+        if (predicate) {
+          results.push(entry);
+        }
+      };
+
+      pushIf(assetIds.includes('eip155:1/slip44:60'), {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      });
+
+      pushIf(assetIds.includes('eip155:1337/slip44:60'), {
+        assetId: 'eip155:1337/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      });
+
+      const usdcMainnet =
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+      const usdtMainnet =
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
+      const daiMainnet =
+        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+      if (
+        assetIds.includes(usdcMainnet) ||
+        assetIds.includes(usdcMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdcMainnet,
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(usdtMainnet) ||
+        assetIds.includes(usdtMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdtMainnet,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(daiMainnet) ||
+        assetIds.includes(daiMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: daiMainnet,
+          name: 'Dai Stablecoin',
+          symbol: 'DAI',
+          decimals: 18,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+
+  // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
+          partialSupport: {
+            balances: [42220, 43114],
+          },
+        },
+      };
+    });
+
+  // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
+  // Default: 25 ETH native per requested chain for the default fixture account. Override via
+  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
+      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+
+      const mainnetNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
+          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+          : null;
+      const mainnetAdditional = Array.isArray(
+        unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
+      )
+        ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
+        : [];
+
+      const balances = [];
+      for (const id of accountIds) {
+        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+          continue;
+        }
+        const parts = id.split(':');
+        const chainRef = parts[1];
+        const nativeBalance =
+          chainRef === '1' && mainnetNativeOverride !== null
+            ? mainnetNativeOverride
+            : '25';
+
+        balances.push({
+          accountId: id,
+          assetId: `eip155:${chainRef}/slip44:60`,
+          balance: nativeBalance,
+        });
+
+        if (chainRef === '1' && mainnetAdditional.length > 0) {
+          for (const row of mainnetAdditional) {
+            if (row?.assetId && row.balance !== undefined) {
+              balances.push({
+                accountId: id,
+                assetId: row.assetId,
+                balance: String(row.balance),
+              });
+            }
+          }
+        }
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
         },
       };
     });

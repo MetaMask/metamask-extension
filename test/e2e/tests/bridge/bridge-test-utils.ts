@@ -918,18 +918,26 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
       const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
 
       const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
-        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
-          tokenEntry('dai', 1.0),
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+          'dai',
+          1.0,
+        ),
         'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
           tokenEntry('dai', 1.0),
-        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da':
-          tokenEntry('musd', 0.9999),
+        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
+          'musd',
+          0.9999,
+        ),
       };
 
       const json =
         vsCurrency === 'usd'
           ? {
-              'eip155:1/slip44:60': tokenEntry('ethereum', 2000.0, 2.5),
+              'eip155:1/slip44:60': tokenEntry(
+                'ethereum',
+                ETH_CONVERSION_RATE_USD,
+                2.5,
+              ),
               ...stablecoins,
             }
           : {
@@ -1425,6 +1433,9 @@ export const getBridgeFixtures = (
         : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1769,6 +1780,9 @@ export const getBridgeL2Fixtures = (
         : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
