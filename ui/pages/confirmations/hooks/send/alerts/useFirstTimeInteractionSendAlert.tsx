@@ -56,7 +56,7 @@ export function useFirstTimeInteractionSendAlert(): SendAlert | null {
     if (shouldSkip) {
       return undefined;
     }
-    const chainIdNum = parseInt(chainId, 16);
+    const chainIdNum = Number.parseInt(chainId, 16);
     return checkFirstTimeInteraction({ from, to, chainId: chainIdNum });
   }, [to, from, chainId, shouldSkip]);
 

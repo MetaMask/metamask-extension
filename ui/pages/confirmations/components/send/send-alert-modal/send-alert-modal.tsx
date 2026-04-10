@@ -6,7 +6,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconColor,
   IconName,

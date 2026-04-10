@@ -1,4 +1,5 @@
 import React from 'react';
+import { act, waitFor } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -115,11 +116,15 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -156,13 +161,17 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByRole } = render();
 
-    fireEvent.change(getAllByRole('textbox')[1], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[1], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(
-      getByRole('button', { name: messages.insufficientFundsSend.message }),
-    );
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.insufficientFundsSend.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -211,13 +220,17 @@ describe('AmountRecipient', () => {
       },
     });
 
-    fireEvent.change(getAllByRole('textbox')[2], {
-      target: { value: '###' },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[2], {
+        target: { value: '###' },
+      });
     });
 
-    fireEvent.click(
-      getByRole('button', { name: messages.invalidHexData.message }),
-    );
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.invalidHexData.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -285,15 +298,19 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
 
-    await new Promise(process.nextTick);
-
-    expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -365,15 +382,19 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText(messages.continue.message));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
 
-    await new Promise(process.nextTick);
-
-    expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
     expect(mockCaptureAmountSelected).not.toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
@@ -386,7 +407,7 @@ describe('AmountRecipient', () => {
       message: 'This may result in fund loss.',
     };
 
-    it('shows alert modal instead of submitting when there are unacknowledged alerts', () => {
+    it('shows alert modal instead of submitting when there are unacknowledged alerts', async () => {
       const mockHandleSubmit = jest.fn();
       jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
         handleSubmit: mockHandleSubmit,
@@ -425,7 +446,9 @@ describe('AmountRecipient', () => {
       const continueButton = getByText(messages.continue.message);
       expect(continueButton).not.toBeDisabled();
 
-      fireEvent.click(continueButton);
+      await act(async () => {
+        fireEvent.click(continueButton);
+      });
 
       expect(mockHandleSubmit).not.toHaveBeenCalled();
       expect(
@@ -487,12 +510,16 @@ describe('AmountRecipient', () => {
 
       const { getByText, getByTestId } = render();
 
-      fireEvent.click(getByText(messages.continue.message));
-      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      await act(async () => {
+        fireEvent.click(getByText(messages.continue.message));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
 
-      await new Promise(process.nextTick);
-
-      expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+      });
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
 
@@ -533,12 +560,16 @@ describe('AmountRecipient', () => {
 
       const { getByTestId } = render();
 
-      fireEvent.click(getByTestId('recipient-alert-icon'));
-      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      await act(async () => {
+        fireEvent.click(getByTestId('recipient-alert-icon'));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
 
-      await new Promise(process.nextTick);
-
-      expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalled();
+      });
       expect(mockHandleSubmit).not.toHaveBeenCalled();
     });
   });
