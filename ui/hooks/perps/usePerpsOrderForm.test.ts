@@ -357,6 +357,68 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
+    it('calculates margin as size divided by leverage', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('10000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size = $10000, leverage = 10x → margin = $1000
+      // marginRequired should NOT equal the amount (size) when leverage > 1
+      expect(result.current.calculations.marginRequired).not.toBeNull();
+      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).not.toContain(
+        '10,000',
+      );
+    });
+
+    it('sets orderValue equal to size (not size × leverage)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(5);
+      });
+
+      // orderValue should be $5000 (the size), not $25000 (size × leverage)
+      expect(result.current.calculations.orderValue).toContain('5,000');
+      expect(result.current.calculations.orderValue).not.toContain('25,000');
+    });
+
+    it('recalculates balancePercent when leverage changes', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size $5000, available $1000, leverage 10x → maxSize $10000 → 50%
+      expect(result.current.formState.balancePercent).toBe(50);
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+      });
+
+      // Same size $5000, now leverage 5x → maxSize $5000 → 100%
+      expect(result.current.formState.balancePercent).toBe(100);
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',
@@ -405,7 +467,9 @@ describe('usePerpsOrderForm', () => {
       });
 
       expect(result.current.calculations.positionSize).toContain('BTC');
-      expect(result.current.calculations.orderValue).toBe('$3,000.00');
+      // Amount is treated as notional position size (TAT-2684 fix), so
+      // orderValue equals the entered amount ($1000) regardless of leverage.
+      expect(result.current.calculations.orderValue).toBe('$1,000.00');
     });
   });
 

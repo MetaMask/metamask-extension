@@ -184,7 +184,11 @@ import {
 } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
-import { getIsSmartTransaction } from '../../shared/lib/selectors';
+import {
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsEnabled,
+} from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -317,14 +321,14 @@ import {
   rejectAllApprovals,
   rejectOriginApprovals,
 } from './lib/approval/utils';
-import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
+import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
-} from './controller-init/multichain';
+} from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
@@ -333,14 +337,14 @@ import {
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
-} from './controller-init/assets';
-import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
-import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
-import { PerpsControllerInit } from './controller-init/perps-controller-init';
+} from './messenger-client-init/assets';
+import { TransactionControllerInit } from './messenger-client-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
-import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
-import { initControllers } from './controller-init/utils';
+import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
+import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
+import { initControllers } from './messenger-client-init/utils';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -352,93 +356,94 @@ import {
   SnapRegistryControllerInit,
   WebSocketServiceInit,
   MultichainRoutingServiceInit,
-} from './controller-init/snaps';
+} from './messenger-client-init/snaps';
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
-} from './controller-init/core-backend';
-import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
-import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
-import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
-import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
-import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+} from './messenger-client-init/core-backend';
+import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
+import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
+import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
-import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
+import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
+import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
-} from './controller-init/seedless-onboarding';
+} from './messenger-client-init/seedless-onboarding';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
-import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
-import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
+import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
+import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
-import { TokenListControllerInit } from './controller-init/token-list-controller-init';
-import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
-import { TokensControllerInit } from './controller-init/tokens-controller-init';
-import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
-import { StaticAssetsControllerInit } from './controller-init/static-assets-controller-init';
-import { RatesControllerInit } from './controller-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
-import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
-import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
-import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
+import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
+import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
+import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
+import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
+import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
+import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
+import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
+import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
+import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
+import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
+import { GasFeeControllerInit } from './messenger-client-init/confirmations/gas-fee-controller-init';
+import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import {
   SubscriptionControllerInit,
   SubscriptionServiceInit,
-} from './controller-init/subscription';
-import { ConnectivityControllerInit } from './controller-init/connectivity';
-import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
-import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
-import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { BridgeControllerInit } from './controller-init/bridge-controller-init';
-import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
-import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
-import { AppStateControllerInit } from './controller-init/app-state-controller-init';
-import { PermissionControllerInit } from './controller-init/permission-controller-init';
-import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
-import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
-import { KeyringControllerInit } from './controller-init/keyring-controller-init';
-import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
-import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
-import { NetworkControllerInit } from './controller-init/network-controller-init';
-import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
-import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
-import { AccountsControllerInit } from './controller-init/accounts-controller-init';
-import { PhishingControllerInit } from './controller-init/phishing-controller-init';
-import { AlertControllerInit } from './controller-init/alert-controller-init';
-import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
-import { LoggingControllerInit } from './controller-init/logging-controller-init';
-import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
-import { StorageServiceInit } from './controller-init/storage-service-init';
-import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
-import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
-import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
-import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
-import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
-import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
-import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
-import { RewardsDataServiceInit } from './controller-init/rewards-data-service-init';
-import { RewardsControllerInit } from './controller-init/rewards-controller-init';
+} from './messenger-client-init/subscription';
+import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
+import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
+import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
+import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
+import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
+import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
+import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
+import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
+import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
+import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
+import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
+import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
+import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
+import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
+import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
+import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
+import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
+import { AccountsControllerInit } from './messenger-client-init/accounts-controller-init';
+import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
+import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
+import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
+import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
+import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
+import { StorageServiceInit } from './messenger-client-init/storage-service-init';
+import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
+import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
+import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
+import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
+import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
+import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
+import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
+import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
+import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
+import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
   ClaimsServiceInit,
-} from './controller-init/claims';
+} from './messenger-client-init/claims';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
-import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
-import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
+import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -572,7 +577,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    /** @type {import('./controller-init/utils').InitFunctions} */
+    /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
@@ -1001,6 +1006,10 @@ export default class MetamaskController extends EventEmitter {
                   .dismissSmartAccountSuggestionEnabled,
               getIsSmartTransaction: (chainId) =>
                 getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              getSmartTransactionsPreferenceEnabled: () =>
+                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+              getSmartTransactionsEnabled: (chainId) =>
+                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
               isAtomicBatchSupported:
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
@@ -1015,6 +1024,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        const addTransactionExtraOptions =
+          await getAddTransactionSendCallExtraOptions({
+            req,
+            networkController: this.networkController,
+            keyringController: this.keyringController,
+          });
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
@@ -1023,12 +1038,16 @@ export default class MetamaskController extends EventEmitter {
           processSendCalls: processSendCalls.bind(
             null,
             {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
+              addTransaction: async (txParams, options) =>
+                this.txController.addTransaction(txParams, {
+                  ...options,
+                  ...addTransactionExtraOptions,
+                }),
+              addTransactionBatch: async (request) =>
+                this.txController.addTransactionBatch({
+                  ...request,
+                  ...addTransactionExtraOptions,
+                }),
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,
@@ -2761,7 +2780,7 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
@@ -6258,6 +6277,7 @@ export default class MetamaskController extends EventEmitter {
         transactionParams.from,
       ),
       transactionController: this.txController,
+      keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
@@ -8251,6 +8271,12 @@ export default class MetamaskController extends EventEmitter {
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
+      },
+      getSmartTransactionsPreferenceEnabled: () => {
+        return getSmartTransactionsPreferenceEnabled(this._getMetaMaskState());
+      },
+      getSmartTransactionsEnabled: (chainId) => {
+        return getSmartTransactionsEnabled(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(

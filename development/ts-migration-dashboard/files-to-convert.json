@@ -52,8 +52,6 @@
   "app/scripts/lib/rpc-method-middleware/handlers/switch-ethereum-chain.test.js",
   "app/scripts/lib/rpc-method-middleware/handlers/watch-asset.test.js",
   "app/scripts/lib/rpc-method-middleware/index.js",
-  "app/scripts/lib/segment/analytics.js",
-  "app/scripts/lib/segment/analytics.test.js",
   "app/scripts/lib/segment/index.js",
   "app/scripts/lib/setup-initial-state-hooks.js",
   "app/scripts/lib/setupSentry.js",

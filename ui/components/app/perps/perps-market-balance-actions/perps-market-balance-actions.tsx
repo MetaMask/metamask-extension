@@ -13,9 +13,17 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import {
   invokePerpsBalanceAction,
@@ -43,6 +51,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   onLearnMore,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
@@ -60,12 +69,28 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
     if (!isEligible) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     invokePerpsBalanceAction(onAddFunds);
-  }, [isEligible, onAddFunds]);
+  }, [isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     invokePerpsBalanceAction(onWithdraw);
-  }, [onWithdraw]);
+  }, [onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
     onLearnMore?.();

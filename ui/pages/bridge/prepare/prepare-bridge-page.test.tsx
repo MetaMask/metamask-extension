@@ -1,7 +1,10 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import { act, render } from '@testing-library/react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  QuoteStreamCompleteReason,
+} from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -353,5 +356,88 @@ describe('PrepareBridgePage', () => {
       await userEvent.paste('2abc.131.123456123456123456123456');
     });
     expect(input).toHaveDisplayValue('2.131');
+  });
+
+  it('should render error banner with reason from getBridgeUnavailableQuoteReason when no quotes are available', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 6,
+          symbol: 'USDC',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          ),
+        },
+        toToken: {
+          iconUrl: 'http://url',
+          symbol: 'UNI',
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 6,
+          chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          ),
+        },
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          srcChainId: 1,
+          destChainId: 59144,
+          walletAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          slippage: 0.5,
+        },
+        quoteStreamComplete: {
+          hasQuotes: false,
+          quoteCount: 0,
+          reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(getByTestId('bridge-no-options-available')).toBeInTheDocument();
+    expect(getByTestId('bridge-no-options-available')).toHaveTextContent(
+      'No quotes available. Try a smaller amount.',
+    );
   });
 });
