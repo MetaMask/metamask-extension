@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -219,7 +219,7 @@ const DeveloperOptionsTab = () => {
   };
 
   const isPerpsTestnet = useSelector(selectPerpsIsTestnet);
-  const perpsTestnetToggleRef = React.createRef<HTMLDivElement>();
+  const perpsTestnetToggleRef = useRef<HTMLDivElement>(null);
 
   const handleTogglePerpsTestnet = useCallback(
     async (_value: boolean): Promise<void> => {
