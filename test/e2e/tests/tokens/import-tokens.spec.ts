@@ -14,24 +14,25 @@ const ETH_CONVERSION_RATE_USD = 1700;
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .withQuery({
-        assetIds:
-          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215,eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca,eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3',
-        vsCurrency: 'ETH',
-      })
+      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
+            'eip155:1/slip44:60': {
+              price: 1700,
+            },
+            'eip155:59144/slip44:60': {
+              price: 1700,
+            },
             'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-              eth: 0.0002,
+              price: 0.0002 * 1700,
             },
             'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
-              eth: 0.0003,
+              price: 0.0003 * 1700,
             },
             'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
-              eth: 0.0001,
+              price: 0.0001 * 1700,
             },
           },
         };
@@ -229,9 +230,75 @@ async function mockPolygonBridgeApi(mockServer: Mockttp) {
   ];
 }
 
+async function mockAssetsV3(mockServer: Mockttp) {
+  return mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const assetMap: Record<
+        string,
+        { assetId: string; name: string; symbol: string; decimals: number }
+      > = {
+        'eip155:1': {
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        'eip155:59144': {
+          assetId: 'eip155:59144/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        'eip155:8453': {
+          assetId: 'eip155:8453/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+          assetId: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
+          name: 'Chai',
+          symbol: 'CHAI',
+          decimals: 18,
+        },
+        '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+          assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
+          name: 'Changex',
+          symbol: 'CHANGE',
+          decimals: 18,
+        },
+        '0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+          assetId: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+          name: 'Chain Games',
+          symbol: 'CHAIN',
+          decimals: 18,
+        },
+        '0xc2132d05d31c914a87c6611c10748aeb04b58e8f': {
+          assetId:
+            'eip155:137/erc20:0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+          name: 'Polygon Bridged USDT (Polygon)',
+          symbol: 'USDT',
+          decimals: 6,
+        },
+      };
+
+      const results = Object.entries(assetMap)
+        .filter(([key]) => assetIds.includes(key))
+        .map(([, value]) => value);
+
+      return { statusCode: 200, json: results };
+    });
+}
+
 async function mockTokensAndPrices(mockServer: Mockttp) {
   return [
     await mockPriceFetch(mockServer),
+    await mockAssetsV3(mockServer),
     ...(await mockTokens(mockServer)),
     ...(await mockPolygonBridgeApi(mockServer)),
     await mockSpotPricesV3(mockServer),
