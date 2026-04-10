@@ -418,6 +418,11 @@ class FixtureBuilderV2 {
     });
   }
 
+  // NOTE: consider this when using this fixture:
+  //   - Multiple chains enabled → homepage shows "Popular networks" filter.
+  //   - Single chain enabled → homepage shows "Current network" single-chain filter.
+  // This is a full assignment, not a merge — only the networks listed here will be enabled.
+  // The reason for not using a merge is because if we do, then localhost will also be enabled (default) and we end up mixing Custom networks with Popular networks, a Frankenstein state not possible in production.
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
