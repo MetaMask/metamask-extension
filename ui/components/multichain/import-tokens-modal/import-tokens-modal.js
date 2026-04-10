@@ -399,13 +399,15 @@ export const ImportTokensModal = ({ onClose }) => {
           ]),
         );
 
-        await dispatch(
+        dispatch(
           importCustomAssetsBatch(
             selectedAccount.id,
             assets,
             pendingMetadataByAssetId,
           ),
-        );
+        ).catch((error) => {
+          console.error('Failed to import custom assets', error);
+        });
       }
 
       addedTokenValues.forEach((pendingToken) => {
