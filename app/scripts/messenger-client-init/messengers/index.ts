@@ -306,7 +306,6 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
-export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
