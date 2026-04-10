@@ -200,16 +200,20 @@ export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 /* Solana Mainnet scope in CAIP-2 format */
 export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
 
-/* CAIP-2 EVM chain scopes used in MM Connect Multichain tests */
+/* CAIP-2 EVM chain scopes used in MM Connect Multichain tests.
+ * On localhost the playground pre-checks eip155:1337, so we use that
+ * instead of eip155:1 to avoid unchecking it (which triggers a React
+ * stale-closure race in handleCheckboxChange). */
 export const MM_CONNECT_EVM_CHAINS = {
-  ETHEREUM: 'eip155:1',
+  LOCALHOST: 'eip155:1337',
   POLYGON: 'eip155:137',
   LINEA: 'eip155:59144',
 } as const;
 
 /* All featured CAIP-2 chain IDs available in the MM Connect playground */
 export const MM_CONNECT_FEATURED_CHAIN_IDS = [
-  'eip155:1', // Ethereum Mainnet (pre-checked on page load)
+  'eip155:1337', // Localhost 8545 (pre-checked on page load in local E2E env)
+  'eip155:1', // Ethereum Mainnet
   'eip155:59144', // Linea Mainnet
   'eip155:42161', // Arbitrum One
   'eip155:43114', // Avalanche C-Chain

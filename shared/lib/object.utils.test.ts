@@ -26,6 +26,30 @@ describe('object.utils', () => {
       expect(result).toStrictEqual({ arr: [1, 'hello', null] });
     });
 
+    it('treats an array mask like false: surfaces typeof only (e.g. empty Sentry `[]`)', () => {
+      const obj = { a: 1, b: 'x', c: null, d: [1, 2] };
+      const result = maskObject(obj, {
+        a: [],
+        b: [],
+        c: [],
+        d: [],
+      });
+
+      expect(result).toStrictEqual({
+        a: 'number',
+        b: 'string',
+        c: null,
+        d: 'object',
+      });
+    });
+
+    it('does not recurse when the mask value is an array (non-empty array mask)', () => {
+      const obj = { nested: { x: 1 } };
+      const result = maskObject(obj, { nested: [true] });
+
+      expect(result).toStrictEqual({ nested: 'object' });
+    });
+
     it('returns type markers for excluded null and undefined values', () => {
       const obj = { nullValue: null, undefinedValue: undefined };
       const result = maskObject(obj, {
