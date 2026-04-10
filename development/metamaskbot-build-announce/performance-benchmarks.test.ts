@@ -859,7 +859,7 @@ describe('buildBenchmarkSection', () => {
       );
 
       const health = computeEntryHealth(entry, undefined);
-      let rowIcon = COMPARISON_SEVERITY.Pass.icon;
+      let rowIcon: string = COMPARISON_SEVERITY.Pass.icon;
       if (health === EntryHealth.Fail) {
         rowIcon = COMPARISON_SEVERITY.Regression.icon;
       } else if (health === EntryHealth.Warn) {

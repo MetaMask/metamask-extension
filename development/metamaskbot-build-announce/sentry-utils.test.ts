@@ -111,11 +111,13 @@ describe('buildPerformanceSentryLogsUrl', () => {
 
   it('does not quote wildcard branch patterns so ci.branch:release/* matches release branches', () => {
     const url = buildPerformanceSentryLogsUrl(['main', 'release/*']);
-    const logsQuery = new URL(url).searchParams.get('logsQuery');
+    expect(url).not.toBeNull();
+    const logsQuery = new URL(url as string).searchParams.get('logsQuery');
     expect(logsQuery).toBe('(ci.branch:main OR ci.branch:release/*)');
     expect(logsQuery).not.toContain('"release/*"');
 
     const singleWildcard = buildPerformanceSentryLogsUrl(['release/*']);
+    expect(singleWildcard).not.toBeNull();
     expect(
       new URL(singleWildcard as string).searchParams.get('logsQuery'),
     ).toBe('ci.branch:release/*');
