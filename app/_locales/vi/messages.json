@@ -3105,7 +3105,8 @@
     "message": "Tiếp tục để đảm bảo:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Thiết bị Ledger của bạn đã được mở khóa"
+    "message": "Thiết bị $1 của bạn đã được mở khóa",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Ứng dụng Ethereum đang mở"
