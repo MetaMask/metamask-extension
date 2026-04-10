@@ -1,5 +1,4 @@
 export { getOAuthServiceMessenger } from './oauth-service-messenger';
-export type { OAuthServiceMessenger } from './oauth-service-messenger';
 export {
   getSeedlessOnboardingControllerMessenger,
   getSeedlessOnboardingControllerInitMessenger,

@@ -333,7 +333,7 @@
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^20.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
-    "@metamask/eth-trezor-keyring": "^9.0.0",
+    "@metamask/eth-trezor-keyring": "^9.1.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^26.1.0",
     "@metamask/gator-permissions-controller": "^3.0.0",

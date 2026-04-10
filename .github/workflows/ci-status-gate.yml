@@ -26,10 +26,11 @@ on:
         description: JSON-encoded needs context from the caller (toJson(needs)). Used to check that all upstream jobs passed.
         required: true
         type: string
-      builds-from-run:
-        description: Run ID that produced the build artifacts. Used to warn when builds come from a different run (builds-from-run shortcut).
-        required: true
+      skip-builds:
+        description: Whether [skip-builds] was used — blocks merge since builds were reused without hash verification.
+        required: false
         type: string
+        default: 'false'
 
 jobs:
   gate:
@@ -49,29 +50,35 @@ jobs:
         uses: actions/github-script@v8
         env:
           NEEDS_JSON: ${{ inputs.needs-json }}
-          BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
+          SKIP_BUILDS: ${{ inputs.skip-builds }}
         with:
           script: |
             const needs = JSON.parse(process.env.NEEDS_JSON);
             let allPassed = true;
+            const errors = [];
 
             for (const [job, { result }] of Object.entries(needs)) {
               if (!result) {
-                core.error(`Could not determine result for job: ${job}`);
+                errors.push(`Could not determine result for job: ${job}`);
                 allPassed = false;
               } else if (result !== 'success' && result !== 'skipped') {
-                core.error(`${job} did not succeed (result: ${result})`);
+                errors.push(`${job} did not succeed (result: ${result})`);
                 allPassed = false;
               }
             }
 
-            if (process.env.BUILDS_FROM_RUN && process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
-              core.warning(`Builds were used from a different GHA run: ${process.env.BUILDS_FROM_RUN}`);
-              core.info('Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it.');
+            if (process.env.SKIP_BUILDS === 'true') {
+              errors.push(
+                '[skip-builds] was used — builds were reused without hash verification. ' +
+                'Remove the [skip-builds] tag or label and push again to merge.',
+              );
               allPassed = false;
             }
 
+            for (const msg of errors) core.error(msg);
+
             core.setOutput('checkResult', allPassed ? 'success' : 'failure');
+            core.setOutput('errors', errors.join('\n'));
 
       # ── Retry gate (merge queue only) ──────────────────────────────
       #
@@ -292,8 +299,16 @@ jobs:
             }
 
       - name: Fail job if checks failed
-        if: ${{ steps.check.outputs.checkResult != 'success' }}
-        run: exit 1
+        if: ${{ steps.check.outputs.checkResult == 'failure' }}
+        env:
+          ERRORS: ${{ steps.check.outputs.errors }}
+        run: |
+          # Re-emit each error from the `check` step so they appear in this
+          # step's annotations (users land here, not on the `check` step).
+          while IFS= read -r line; do
+            [[ -n "$line" ]] && echo "::error::$line"
+          done <<< "$ERRORS"
+          exit 1
 
       # This reporting method has probably been superseded by the Sentry logging, and may be removed later.
       - name: Log merge group failure

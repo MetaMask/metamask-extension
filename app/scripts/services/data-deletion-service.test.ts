@@ -1,9 +1,17 @@
 import nock from 'nock';
 
 import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import {
   DataDeletionService,
   RETRIES,
   MAX_CONSECUTIVE_FAILURES,
+  DataDeletionServiceMessenger,
 } from './data-deletion-service';
 
 // We're not customizing the default max delay
@@ -1194,6 +1202,22 @@ function mockDataDeletionStatusInterceptor(
   );
 }
 
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<DataDeletionServiceMessenger>,
+  MessengerEvents<DataDeletionServiceMessenger>
+>;
+
+function getMessenger(): DataDeletionServiceMessenger {
+  const rootMessenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+  return new Messenger({
+    namespace: 'DataDeletionService',
+    parent: rootMessenger,
+  });
+}
+
 /**
  * Get default options for the DataDeletionService.
  *
@@ -1206,5 +1230,6 @@ function getDefaultOptions(): ConstructorParameters<
     analyticsDataDeletionEndpoint: mockAnalyticsDataDeletionEndpoint,
     analyticsDataDeletionSourceId: mockSourceId,
     timeout: defaultTimeout,
+    messenger: getMessenger(),
   };
 }
