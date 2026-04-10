@@ -2,14 +2,14 @@ import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
-import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
+  AvatarAccountSize,
+  Box,
+  BoxBackgroundColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, IconName } from '../../component-library';
 import { EditNetworksModal } from '../../multichain/edit-networks-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -116,8 +116,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
       <Box
         padding={4}
         gap={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.LG}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}

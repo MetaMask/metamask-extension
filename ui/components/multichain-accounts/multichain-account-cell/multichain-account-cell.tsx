@@ -4,24 +4,18 @@ import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  Box as BoxDeprecated,
-  SensitiveText,
-  Text as TextDeprecated,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor as TextColorDeprecated,
-  TextVariant as TextVariantDeprecated,
-} from '../../../helpers/constants/design-system';
+import { SensitiveText } from '../../component-library';
+import { TextVariant as TextVariantDeprecated } from '../../../helpers/constants/design-system';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
 import {
   STATUS_CONNECTED,
@@ -106,10 +100,10 @@ export const MultichainAccountCell = ({
   );
 
   return (
-    <BoxDeprecated
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       style={{
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
@@ -122,58 +116,57 @@ export const MultichainAccountCell = ({
       key={`multichain-account-cell-${accountId}`}
       backgroundColor={
         selected && !startAccessory
-          ? BackgroundColor.backgroundMuted
-          : BackgroundColor.transparent
+          ? BoxBackgroundColor.BackgroundMuted
+          : BoxBackgroundColor.Transparent
       }
     >
       {startAccessory}
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Start}
         style={{ minWidth: 0, flex: 1 }}
       >
         <AccountCellAvatar
           seedAddress={seedAddressIcon}
           connectionStatus={connectionStatus}
         />
-        <BoxDeprecated style={{ overflow: 'hidden' }}>
+        <Box marginLeft={3} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <TextDeprecated
+          <Text
             className="multichain-account-cell__account-name"
-            variant={TextVariantDeprecated.bodyMdMedium}
-            marginLeft={3}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             ellipsis
           >
             {accountName}
-          </TextDeprecated>
+          </Text>
           {walletName && (
-            <TextDeprecated
+            <Text
               className="multichain-account-cell__account-name"
-              color={TextColorDeprecated.textAlternative}
-              variant={TextVariantDeprecated.bodySmMedium}
-              marginLeft={3}
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               ellipsis
             >
               {walletName}
-            </TextDeprecated>
+            </Text>
           )}
           {showDefaultAddress && (
             <Box
               flexDirection={BoxFlexDirection.Row}
-              marginLeft={3}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               data-testid="multichain-account-cell-hovered-addresses"
             >
               <MultichainAccountCellDefaultAddress groupId={accountId} />
             </Box>
           )}
-        </BoxDeprecated>
-      </BoxDeprecated>
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        </Box>
+      </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
         <SensitiveText
@@ -186,17 +179,17 @@ export const MultichainAccountCell = ({
         >
           {balance}
         </SensitiveText>
-        <BoxDeprecated
+        <Box
           className="multichain-account-cell__end_accessory"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexEnd}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.End}
           data-testid="multichain-account-cell-end-accessory"
           aria-label={`${ariaLabelName} options`}
         >
           {endAccessory}
-        </BoxDeprecated>
-      </BoxDeprecated>
-    </BoxDeprecated>
+        </Box>
+      </Box>
+    </Box>
   );
 };
