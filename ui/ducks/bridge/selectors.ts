@@ -222,6 +222,24 @@ export const getFromChains = createDeepEqualSelector(
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
+    const allChains: Record<CaipChainId, BridgeNetwork> = {
+      ...Object.fromEntries(
+        FEATURED_RPCS.filter(({ chainId }) =>
+          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+        ).map((rpc) => {
+          const caipChainId = formatChainIdToCaip(rpc.chainId);
+          return [
+            caipChainId,
+            {
+              chainId: caipChainId,
+              name: rpc.name,
+            },
+          ];
+        }),
+      ),
+      ...allBridgeableNetworks,
+    };
+
     const filteredNetworks: BridgeNetwork[] = [];
     chainRanking?.forEach(({ chainId, name }) => {
       const shouldAddSolana = isSolanaChainId(chainId)
@@ -231,8 +249,7 @@ export const getFromChains = createDeepEqualSelector(
         ? hasBitcoinAccount
         : true;
       const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
-      const matchedNetwork = allBridgeableNetworks[chainId];
-      // If all conditions are met, add the network to the list
+      const matchedNetwork = allChains[chainId];
       if (
         [
           shouldAddSolana,
