@@ -338,6 +338,11 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToPrepareSwap(navigate));
+          } else if (
+            isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
+            swapComplete
+          ) {
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           } else {
             navigate(DEFAULT_ROUTE);
           }

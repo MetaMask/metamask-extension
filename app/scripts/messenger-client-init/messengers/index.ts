@@ -227,7 +227,6 @@ export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
@@ -251,10 +250,7 @@ export {
 } from './decrypt-message-controller-messenger';
 export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
-export type {
-  EncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerInitMessenger,
-} from './encryption-public-key-controller-messenger';
+export type { EncryptionPublicKeyControllerInitMessenger } from './encryption-public-key-controller-messenger';
 export {
   getEncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
@@ -307,9 +303,7 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
-export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   PermissionControllerMessenger,

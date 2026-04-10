@@ -7358,7 +7358,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -7820,7 +7822,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }

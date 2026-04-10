@@ -61,6 +61,7 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   backedUpStateKeys,
   hasVault,
