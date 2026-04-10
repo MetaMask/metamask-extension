@@ -1,7 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage, {
-  BridgeQuote,
-} from '../pages/bridge/quote-page';
+import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import ActivityListPage from '../pages/home/activity-list';
 import AccountListPage from '../pages/account-list-page';
 import HomePage from '../pages/home/homepage';
