@@ -604,7 +604,7 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
-    it('does not subscribe outside confirmation routes', () => {
+    it('subscribes to WebHID events for Ledger when not on a hardware wallet route', () => {
       setupHook({}, {}, [DEFAULT_ROUTE]);
 
       expect(webConnectionUtils.subscribeToWebHidEvents).toHaveBeenCalledWith(
