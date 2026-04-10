@@ -13,6 +13,7 @@ import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
+  mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -71,12 +72,9 @@ describe('Token Details', function () {
       marketCap: 12,
     };
 
-    const expectedPrice = formatCurrency(
-      `${marketData.price * ethConversionInUsd}`,
-      'USD',
-    );
+    const expectedPrice = formatCurrency(`${marketData.price}`, 'USD');
 
-    const expectedMarketCap = '$120.00K';
+    const expectedMarketCap = '$12.00';
 
     await withFixtures(
       {
@@ -144,6 +142,7 @@ describe('Token Details', function () {
               pricePercentChange1d: 0,
             },
           }),
+          await mockHistoricalPricesV3(mockServer, 'eip155:1', 'slip44:60'),
         ],
       },
       async ({ driver }: { driver: Driver }) => {

@@ -183,3 +183,30 @@ export const mockHistoricalPrices = async (
       },
     }));
 };
+
+/**
+ * Mocks the v3 historical prices endpoint used by `useHistoricalPrices`.
+ *
+ * The v3 endpoint path is `/v3/historical-prices/{caipChainId}/{assetType}`,
+ * e.g. `https://price.api.cx.metamask.io/v3/historical-prices/eip155:1/slip44:60`
+ * for native ETH on mainnet.
+ *
+ * @param mockServer - Mockttp instance.
+ * @param caipChainId - CAIP-2 chain id (e.g. `eip155:1`).
+ * @param assetType - CAIP asset type segment (e.g. `slip44:60` or `erc20:0xABC…`).
+ * @param prices - Price data points as `[timestamp, price]` tuples. Defaults to empty array.
+ */
+export const mockHistoricalPricesV3 = async (
+  mockServer: Mockttp,
+  caipChainId: string,
+  assetType: string,
+  prices: [number, number][] = [],
+) => {
+  return mockServer
+    .forGet(`${PRICE_API_URL}/v3/historical-prices/${caipChainId}/${assetType}`)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { prices },
+    }));
+};
