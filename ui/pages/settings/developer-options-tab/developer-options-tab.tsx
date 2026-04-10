@@ -221,9 +221,12 @@ const DeveloperOptionsTab = () => {
   const isPerpsTestnet = useSelector(selectPerpsIsTestnet);
   const perpsTestnetToggleRef = React.createRef<HTMLDivElement>();
 
-  const handleTogglePerpsTestnet = useCallback((_value: boolean): void => {
-    void perpsToggleTestnet();
-  }, []);
+  const handleTogglePerpsTestnet = useCallback(
+    async (_value: boolean): Promise<void> => {
+      await perpsToggleTestnet();
+    },
+    [],
+  );
 
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 

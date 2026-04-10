@@ -63,7 +63,11 @@ describe('Develop options tab', () => {
     const originalMetaMaskDebug = process.env.METAMASK_DEBUG;
 
     afterEach(() => {
-      process.env.METAMASK_DEBUG = originalMetaMaskDebug;
+      if (originalMetaMaskDebug === undefined) {
+        delete process.env.METAMASK_DEBUG;
+      } else {
+        process.env.METAMASK_DEBUG = originalMetaMaskDebug;
+      }
     });
 
     it('should not render perps-testnet-toggle when METAMASK_DEBUG is not set', () => {
