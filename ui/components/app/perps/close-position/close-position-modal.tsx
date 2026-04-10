@@ -32,7 +32,10 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import {
   getDisplayName,
   getPositionDirection,
@@ -49,6 +52,7 @@ import {
   usePerpsToast,
   type PerpsToastKeyConfig,
 } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
 
 type ClosePositionParams = {
@@ -244,7 +248,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
+  const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -327,6 +333,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   );
 
   const isSubmitDisabled =
+    !isEligible ||
     !isPriceValid ||
     closePercent <= 0 ||
     isSubmitting ||
@@ -334,6 +341,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     isPartialCloseBelowMinNotional;
 
   const handleClose = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (isSubmitDisabled) {
       return;
     }
@@ -433,6 +444,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
+    isEligible,
     isSubmitDisabled,
     replacePerpsToastByKey,
     isPartialClose,
@@ -633,6 +645,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           }}
         />
       </ModalContent>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Modal>
   );
 };

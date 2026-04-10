@@ -13,6 +13,7 @@ import { CancelOrderModal } from './cancel-order-modal';
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockTrack = jest.fn();
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -21,7 +22,7 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -484,6 +485,24 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('disables cancel button and shows geo-block modal when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-cancel-order-button')).toBeDisabled();
+
+      fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     });
   });
 

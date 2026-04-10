@@ -66,6 +66,7 @@ import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constant
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -185,6 +186,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -604,12 +606,11 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleOrderSubmit = useCallback(async () => {
-    if (
-      !isEligible ||
-      !orderFormState ||
-      !selectedAddress ||
-      currentPrice <= 0
-    ) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!orderFormState || !selectedAddress || currentPrice <= 0) {
       return;
     }
 
@@ -1125,7 +1126,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           size={ButtonSize.Lg}
           onClick={handleOrderSubmit}
           disabled={isSubmitDisabled}
-          title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
           className={twMerge(
             'w-full',
             isSubmitDisabled && 'opacity-70 cursor-not-allowed',
@@ -1135,6 +1135,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           {isOrderPending ? t('perpsSubmitting') : submitButtonText}
         </Button>
       </Box>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

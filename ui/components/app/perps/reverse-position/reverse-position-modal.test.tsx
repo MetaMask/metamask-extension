@@ -81,6 +81,10 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     REVERSE_FAILED: 'perpsToastReverseFailed',

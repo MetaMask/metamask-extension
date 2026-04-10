@@ -24,13 +24,17 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -75,7 +79,9 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -104,6 +110,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   );
 
   const handleSave = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
 
@@ -145,6 +155,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
+    isEligible,
     onClose,
     position.symbol,
     positionForFlip,
@@ -236,10 +247,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           submitButtonProps={{
             'data-testid': 'perps-reverse-position-modal-save',
             children: isSubmitting ? t('perpsSubmitting') : t('save'),
-            disabled: isSubmitting,
+            disabled: !isEligible || isSubmitting,
           }}
         />
       </ModalContent>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Modal>
   );
 };

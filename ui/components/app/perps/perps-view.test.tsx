@@ -68,6 +68,10 @@ jest.mock('../../../hooks/perps/stream', () => {
   };
 });
 
+jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
 jest.mock('./perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
 }));

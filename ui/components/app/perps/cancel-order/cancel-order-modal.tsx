@@ -36,10 +36,14 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
 
 export type CancelOrderModalProps = {
@@ -65,10 +69,12 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -112,6 +118,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   }, [order.orderType, isBuy, t]);
 
   const handleCancel = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
     try {
@@ -152,6 +162,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
+    isEligible,
     order.orderId,
     order.symbol,
     order.orderType,
@@ -361,7 +372,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               size={ButtonSize.Lg}
               isFullWidth
               isDanger
-              isDisabled={isSubmitting}
+              isDisabled={!isEligible || isSubmitting}
               isLoading={isSubmitting}
               onClick={handleCancel}
               data-testid="perps-cancel-order-button"
@@ -371,6 +382,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           </Box>
         </ModalBody>
       </ModalContent>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Modal>
   );
 };
