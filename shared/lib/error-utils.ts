@@ -176,7 +176,7 @@ export function getErrorHtml(
     ? `<a
           id="critical-error-restore-link"
           class="critical-error__link"
-          href="#">${lodashEscape(t('stateCorruptionRestoreAccountsFromBackup'))}</a>`
+          href="#">${lodashEscape(t('criticalErrorAttemptRecovery'))}</a>`
     : '';
 
   let footerContent: string;

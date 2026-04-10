@@ -54,7 +54,7 @@ function mockGetErrorHtmlWithOptionalRestoreLink() {
     <div>
       <input type="checkbox" id="critical-error-checkbox" checked />
       <button id="critical-error-button">Restart</button>
-      ${hasBackup ? '<a id="critical-error-restore-link" href="#">Restore accounts</a>' : ''}
+      ${hasBackup ? '<a id="critical-error-restore-link" href="#">Attempt recovery</a>' : ''}
     </div>
   `;
 }

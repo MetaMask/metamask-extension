@@ -197,7 +197,7 @@ async function handleRestartAction(
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
  * @param currentLocale - Optional locale context for translations.
- * @param port - Optional port for background communication (needed for restore accounts functionality).
+ * @param port - Optional port for background communication (needed for vault recovery functionality).
  * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.

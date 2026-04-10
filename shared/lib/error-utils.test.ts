@@ -273,12 +273,12 @@ describe('Error utils Tests', function () {
       expect(html).toContain('Something broke');
     });
 
-    it('includes restore accounts link when hasBackup is true', async () => {
+    it('includes attempt recovery link when hasBackup is true', async () => {
       const messagesWithBackup: I18NMessageDict = {
         ...enMessages,
         criticalErrorFooter: { message: '$1 $2 or $3' },
-        stateCorruptionRestoreAccountsFromBackup: {
-          message: 'Restore accounts from backup',
+        criticalErrorAttemptRecovery: {
+          message: 'Attempt recovery',
         },
       };
       jest.mocked(fetchLocale).mockResolvedValue(messagesWithBackup);
@@ -297,7 +297,7 @@ describe('Error utils Tests', function () {
       );
 
       expect(html).toContain('critical-error-restore-link');
-      expect(html).toContain('Restore accounts from backup');
+      expect(html).toContain('Attempt recovery');
     });
   });
 });

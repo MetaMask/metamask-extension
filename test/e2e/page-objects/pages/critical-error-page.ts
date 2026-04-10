@@ -65,19 +65,19 @@ class CriticalErrorPage {
   }
 
   /**
-   * Click the "Restore accounts" link (shown on critical error when backup exists)
+   * Click the "Attempt recovery" link (shown on critical error when backup exists)
    * and handle the confirmation alert.
    *
-   * @param options - Options for the restore action.
+   * @param options - Options for the attempt recovery action.
    * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
    */
-  async clickRestoreAccountsLink({
+  async clickAttemptRecoveryLink({
     confirm,
   }: {
     confirm: boolean;
   }): Promise<void> {
     console.log(
-      `Click Restore accounts link and ${confirm ? 'confirm' : 'dismiss'} the alert`,
+      `Click Attempt recovery link and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
 
     await this.driver.waitForSelector(this.restoreAccountsLink);
