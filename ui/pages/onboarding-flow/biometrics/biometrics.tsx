@@ -27,40 +27,30 @@ import {
   generatePasskeyRegistrationOptions,
 } from '../../../store/actions';
 
-export type BiometricsProps = {
-  getVaultPassword: () => string | null;
-  clearVaultPassword: () => void;
-};
-
-export default function Biometrics({
-  getVaultPassword,
-  clearVaultPassword,
-}: BiometricsProps) {
+/**
+ * Passkey enrollment uses the vault encryption key from the background
+ * (`exportEncryptionKey`) wrapped with a passkey-derived key — not the account password.
+ */
+export default function Biometrics() {
   const navigate = useNavigate();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [isEnrolling, setIsEnrolling] = useState(false);
 
   const goToNextStep = useCallback(() => {
-    clearVaultPassword();
     navigate(
       firstTimeFlowType === FirstTimeFlowType.create
         ? ONBOARDING_REVIEW_SRP_ROUTE
         : ONBOARDING_METAMETRICS,
       { replace: true },
     );
-  }, [clearVaultPassword, firstTimeFlowType, navigate]);
+  }, [firstTimeFlowType, navigate]);
 
   const handleMaybeLater = () => {
     goToNextStep();
   };
 
   const handleSetUpBiometrics = async () => {
-    const password = getVaultPassword();
-    if (!password) {
-      goToNextStep();
-      return;
-    }
     setIsEnrolling(true);
     try {
       const options = await generatePasskeyRegistrationOptions();

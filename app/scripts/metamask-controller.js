@@ -4317,7 +4317,6 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     await this.submitEncryptionKey(encryptionKey);
-    this.passkeyController.clearPasskeyAuthenticationSession();
   }
 
   /**

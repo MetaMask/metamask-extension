@@ -48,8 +48,6 @@ type CreatePasswordProps = {
     secretRecoveryPhrase: string,
   ) => void;
   secretRecoveryPhrase: string;
-  /** Called with the vault password immediately before navigating to the biometrics setup screen. */
-  stagePasswordForBiometrics?: (password: string) => void;
 };
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -60,7 +58,6 @@ export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
-  stagePasswordForBiometrics,
 }: CreatePasswordProps) {
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
@@ -211,7 +208,6 @@ export default function CreatePassword({
     if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
-      stagePasswordForBiometrics?.(password);
       navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
     }
   };
@@ -276,7 +272,6 @@ export default function CreatePassword({
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else {
-      stagePasswordForBiometrics?.(password);
       navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
     }
   };

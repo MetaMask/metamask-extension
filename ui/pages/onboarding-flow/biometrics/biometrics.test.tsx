@@ -56,12 +56,6 @@ jest.mock('../../../store/actions', () => {
 });
 
 const mockUseNavigate = jest.fn();
-const mockClearVaultPassword = jest.fn();
-
-const defaultBiometricsProps = {
-  getVaultPassword: () => 'vault-password-test',
-  clearVaultPassword: mockClearVaultPassword,
-};
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -78,27 +72,20 @@ const buildMockStore = (firstTimeFlowType: FirstTimeFlowType) =>
 describe('Biometrics', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
-    mockClearVaultPassword.mockClear();
     jest.mocked(completePasskeyRegistration).mockClear();
     jest.mocked(generatePasskeyRegistrationOptions).mockClear();
   });
 
   it('renders and matches snapshot', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { container } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(container).toMatchSnapshot();
   });
 
   it('renders the heading text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(
       getByText(messages.unlockWithBiometrics.message),
@@ -107,10 +94,7 @@ describe('Biometrics', () => {
 
   it('renders the description text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(
       getByText(messages.biometricsDescription.message),
@@ -119,30 +103,21 @@ describe('Biometrics', () => {
 
   it('renders the set up biometrics button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(getByText(messages.setUpBiometrics.message)).toBeInTheDocument();
   });
 
   it('renders the maybe later button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(getByText(messages.maybeLater.message)).toBeInTheDocument();
   });
 
   it('renders the biometrics image', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByAltText } = renderWithProvider(
-      <Biometrics {...defaultBiometricsProps} />,
-      mockStore,
-    );
+    const { getByAltText } = renderWithProvider(<Biometrics />, mockStore);
 
     expect(getByAltText('Biometrics')).toBeInTheDocument();
   });
@@ -150,14 +125,10 @@ describe('Biometrics', () => {
   describe('maybe later navigation', () => {
     it('navigates to SRP review route when flow type is create', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByText } = renderWithProvider(
-        <Biometrics {...defaultBiometricsProps} />,
-        mockStore,
-      );
+      const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
-      expect(mockClearVaultPassword).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,
         {
@@ -168,14 +139,10 @@ describe('Biometrics', () => {
 
     it('navigates to MetaMetrics route when flow type is import', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.import);
-      const { getByText } = renderWithProvider(
-        <Biometrics {...defaultBiometricsProps} />,
-        mockStore,
-      );
+      const { getByText } = renderWithProvider(<Biometrics />, mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
-      expect(mockClearVaultPassword).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
         replace: true,
       });
@@ -183,41 +150,15 @@ describe('Biometrics', () => {
   });
 
   describe('set up biometrics', () => {
-    it('stores passkey record and navigates when vault password is available', async () => {
+    it('completes passkey registration using background encryption key and navigates', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(
-        <Biometrics {...defaultBiometricsProps} />,
-        mockStore,
-      );
+      const { getByTestId } = renderWithProvider(<Biometrics />, mockStore);
 
       fireEvent.click(getByTestId('biometrics-set-up-button'));
 
       await waitFor(() => {
         expect(completePasskeyRegistration).toHaveBeenCalled();
       });
-      expect(mockClearVaultPassword).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_REVIEW_SRP_ROUTE,
-        {
-          replace: true,
-        },
-      );
-    });
-
-    it('skips enrollment and navigates when vault password is missing', () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(
-        <Biometrics
-          getVaultPassword={() => null}
-          clearVaultPassword={mockClearVaultPassword}
-        />,
-        mockStore,
-      );
-
-      fireEvent.click(getByTestId('biometrics-set-up-button'));
-
-      expect(completePasskeyRegistration).not.toHaveBeenCalled();
-      expect(mockClearVaultPassword).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,
         {

@@ -3,10 +3,10 @@ import {
   webauthnWireBinaryToBytes,
 } from '@metamask/passkey-controller';
 import type {
-  AuthenticationResponseJSON as PasskeyAuthenticationResponse,
-  PublicKeyCredentialCreationOptionsJSON as PasskeyRegistrationOptions,
-  PublicKeyCredentialRequestOptionsJSON as PasskeyAuthenticationOptions,
-  RegistrationResponseJSON as PasskeyRegistrationResponse,
+  PasskeyAuthenticationOptions,
+  PasskeyRegistrationOptions,
+  PasskeyAuthenticationResponse,
+  PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
 
 type PrfExtensionClient = {
@@ -80,6 +80,11 @@ export class PasskeyCeremonyExtensionAdapter {
       publicKey.attestation =
         options.attestation as AttestationConveyancePreference;
     }
+    if (options.hints !== undefined && options.hints.length > 0) {
+      (
+        publicKey as PublicKeyCredentialCreationOptions & { hints?: string[] }
+      ).hints = [...options.hints];
+    }
     if (options.extensions?.prf?.eval?.first) {
       publicKey.extensions = {
         prf: {
@@ -142,26 +147,22 @@ export class PasskeyCeremonyExtensionAdapter {
         type: 'public-key' as const,
         id: toBufferSource(webauthnWireBinaryToBytes(d.id)),
       })),
-      userVerification: options.userVerification as UserVerificationRequirement,
+      userVerification: options.userVerification,
+      timeout: options.timeout,
+      rpId: options.rpId,
+      // TODO: add hints
+      extensions: options.extensions?.prf?.eval?.first
+        ? {
+            prf: {
+              eval: {
+                first: toBufferSource(
+                  webauthnWireBinaryToBytes(options.extensions.prf.eval.first),
+                ),
+              },
+            },
+          }
+        : undefined,
     };
-
-    if (options.timeout !== undefined) {
-      requestOptions.timeout = options.timeout;
-    }
-    if (options.rpId !== undefined) {
-      requestOptions.rpId = options.rpId;
-    }
-    if (options.extensions?.prf?.eval?.first) {
-      requestOptions.extensions = {
-        prf: {
-          eval: {
-            first: toBufferSource(
-              webauthnWireBinaryToBytes(options.extensions.prf.eval.first),
-            ),
-          },
-        },
-      } as AuthenticationExtensionsClientInputs;
-    }
 
     // get credential from the browser
     const credential = await navigator.credentials.get({
