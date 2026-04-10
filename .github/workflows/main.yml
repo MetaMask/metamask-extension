@@ -274,6 +274,7 @@ jobs:
       is-high-risk-environment: false
       build-name: build-dist-webpack
       build-command: yarn webpack:lavamoat:build --zip
+      bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -539,117 +540,6 @@ jobs:
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
-  build-source-map-explorer:
-    needs:
-      - get-requirements
-      - prep-deps
-      - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          name: build-dist-browserify
-          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
-
-      - run: ./development/source-map-explorer.sh
-
-      - name: Upload 'source-map-explorer' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/source-map-explorer
-          path: build-artifacts/source-map-explorer
-
-  build-lavamoat-viz:
-    needs:
-      - get-requirements
-      - prep-deps
-      - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      GOOGLE_PROD_CLIENT_ID: 00000000000
-      APPLE_PROD_CLIENT_ID: 00000000000
-      GOOGLE_BETA_CLIENT_ID: 00000000000
-      APPLE_BETA_CLIENT_ID: 00000000000
-      GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-      APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-      GOOGLE_FLASK_CLIENT_ID: 00000000000
-      APPLE_FLASK_CLIENT_ID: 00000000000
-    outputs:
-      lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Download changed-files artifact
-        if: ${{ env.BRANCH != 'main' }}
-        id: download-changed-files
-        continue-on-error: true
-        uses: actions/download-artifact@v7
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      # if the changed-files artifact does not exist, we get the diff
-      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
-        if: ${{ steps.download-changed-files.outcome == 'failure' }}
-
-      - name: See if lavamoat policy files have changed
-        id: lavamoat-policy-changed
-        run: |
-          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
-          if [ -f "changed-files/changed-files.json" ]; then
-            if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
-              echo "Lavamoat policy file changes detected."
-              echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "No Lavamoat policy file changes detected."
-              echo "lavamoat-policy-changed=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
-            echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Download artifact 'build-dist-browserify'
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
-        uses: actions/download-artifact@v7
-        with:
-          name: build-dist-browserify
-          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
-
-      - run: ./.github/scripts/create-lavamoat-viz.sh
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
-
-      - name: Upload 'build-viz' to S3
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/lavamoat-viz
-          path: build-artifacts/build-viz
-
   publish-prerelease:
     name: Publish prerelease
     # publish-prerelease when releases are enabled.
@@ -685,9 +575,7 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-source-map-explorer.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-lavamoat-viz.result)
+        contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result)
       }}
     needs:
       - get-requirements
@@ -715,11 +603,8 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
-      - build-source-map-explorer
-      - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -732,7 +617,7 @@ jobs:
     # Only run for release branches, not forks
     if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
-      - build-dist-browserify
+      - build-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: release-ci
@@ -818,8 +703,6 @@ jobs:
       - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
-      - build-source-map-explorer
-      - build-lavamoat-viz
       - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
     with:

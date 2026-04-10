@@ -5450,6 +5450,12 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Failed to cancel one or more orders. Try again."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Failed to close one or more positions. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -5480,6 +5486,9 @@
   "perpsConfirmCloseShort": {
     "message": "Close Short"
   },
+  "perpsConnectionTimeout": {
+    "message": "Connection timed out. Please try again."
+  },
   "perpsContactSupport": {
     "message": "Contact support"
   },
@@ -5491,6 +5500,9 @@
   },
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
+  },
+  "perpsDepositFailed": {
+    "message": "Deposit could not be completed. Try again."
   },
   "perpsDepositFundsTitle": {
     "message": "Deposit funds to Perps"
@@ -5572,6 +5584,9 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientMargin": {
+    "message": "Insufficient margin to place this order."
+  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5636,6 +5651,9 @@
   "perpsMore": {
     "message": "More"
   },
+  "perpsNetworkError": {
+    "message": "A network error occurred. Please try again."
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
@@ -5668,8 +5686,14 @@
   "perpsOrderDate": {
     "message": "Date"
   },
+  "perpsOrderFailed": {
+    "message": "Order could not be placed. Try again."
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
+  },
+  "perpsOrderRejected": {
+    "message": "Your order was rejected. Try again."
   },
   "perpsOrderStatus": {
     "message": "Status"
@@ -5688,6 +5712,9 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsRateLimitExceeded": {
+    "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
     "message": "Recent Activity"
@@ -5735,11 +5762,17 @@
   "perpsSeeAll": {
     "message": "See All"
   },
+  "perpsServiceUnavailable": {
+    "message": "Service temporarily unavailable. Please try again later."
+  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
   "perpsSortByFundingRate": {
     "message": "Funding rate"
@@ -5998,6 +6031,9 @@
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
+  },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Enter a valid destination address."
   },
   "perpsWithdrawInvalidAmount": {
     "message": "Enter a valid amount."
