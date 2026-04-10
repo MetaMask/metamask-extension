@@ -125,6 +125,12 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /**
+   * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
+   * Used for margin calculation to match mobile's source of truth.
+   * Falls back to currentPrice when not yet available.
+   */
+  markPrice?: number;
 };
 
 /**

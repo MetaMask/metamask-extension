@@ -49,20 +49,35 @@ export const mockMaxLeverage: Record<string, number> = {
 export const mockAvailableBalance = 10125.0;
 
 /**
- * Calculate position size from USD amount and price
+ * Calculate position size from USD amount and price, rounded to asset size decimals.
+ *
+ * Mirrors HyperLiquid's server-side rounding: orders are quantised to `szDecimals`
+ * decimal places, so the effective notional (positionSize × price) can differ
+ * slightly from the user-entered USD amount. This rounding must be applied before
+ * computing margin to match the values shown on mobile.
+ *
+ * When `szDecimals` is not provided (market info not yet loaded) the raw unrounded
+ * division is returned as a safe fallback.
  *
  * @param usdAmount - Amount in USD
  * @param assetPrice - Current asset price
- * @returns Position size in asset units
+ * @param szDecimals - HyperLiquid size decimals for the asset (optional; omit to skip rounding)
+ * @returns Position size in asset units, rounded to szDecimals when provided
  */
 export function calculatePositionSize(
   usdAmount: number,
   assetPrice: number,
+  szDecimals?: number,
 ): number {
   if (assetPrice === 0) {
     return 0;
   }
-  return usdAmount / assetPrice;
+  const raw = usdAmount / assetPrice;
+  if (szDecimals === undefined) {
+    return raw;
+  }
+  const factor = Math.pow(10, szDecimals);
+  return Math.round(raw * factor) / factor;
 }
 
 /**

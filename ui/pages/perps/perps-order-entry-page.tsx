@@ -398,6 +398,14 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
+  // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
+  // This is the price the exchange uses for actual margin assessment and liquidation
+  // triggers, so using it here makes the pre-trade margin estimate match mobile.
+  // Falls back to currentPrice until the stream delivers its first update.
+  const oraclePrice = livePrice?.markPrice
+    ? parseFloat(livePrice.markPrice)
+    : currentPrice;
+
   const availableBalance = account
     ? Number.parseFloat(account.availableBalance)
     : 0;
@@ -1086,6 +1094,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}
+          markPrice={oraclePrice}
           maxLeverage={maxLeverage}
           availableBalance={availableBalance}
           initialDirection={orderDirection}

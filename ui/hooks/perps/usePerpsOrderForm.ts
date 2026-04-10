@@ -85,6 +85,25 @@ export type UsePerpsOrderFormOptions = {
    * Defaults to 50 when market data is unavailable.
    */
   maxLeverage?: number;
+  /**
+   * HyperLiquid size decimals for this asset (from MarketInfo.szDecimals).
+   * Controls how position size is rounded before computing notional and margin,
+   * mirroring mobile's calculatePositionSize → markPrice × roundedSize → / leverage chain.
+   * Defaults to 0 (no rounding) when market info is unavailable.
+   */
+  szDecimals?: number;
+  /**
+   * Oracle mark price for this asset (oraclePx from HyperLiquid's activeAssetCtx feed).
+   * Used exclusively for margin calculation (position-size rounding + notional + marginRequired).
+   * This is the price HyperLiquid itself uses to assess margin requirements, so using it
+   * here matches what mobile shows for pre-trade margin estimates.
+   *
+   * For limit orders the user-supplied limit price is used instead (that is the expected
+   * fill price, making it more accurate than the oracle price for margin on limit orders).
+   *
+   * Falls back to currentPrice when not yet available.
+   */
+  markPrice?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -141,6 +160,8 @@ export type UsePerpsOrderFormReturn = {
  * @param options.orderType - Order type: 'market' or 'limit'
  * @param options.initialLeverage
  * @param options.maxLeverage - Maximum leverage for the asset (used in liquidation price formula)
+ * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
+ * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -155,6 +176,8 @@ export function usePerpsOrderForm({
   orderType = 'market',
   initialLeverage,
   maxLeverage = 50,
+  szDecimals,
+  markPrice,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -337,10 +360,27 @@ export function usePerpsOrderForm({
       }
     }
 
-    const positionSize = calculatePositionSize(amount, effectivePrice);
-    const openingFee = amount * PERPS_MARKET_ORDER_FEE_RATE;
-    // Margin required = initial margin + opening fee (total cost to open)
-    const marginRequired = amount / formState.leverage + openingFee;
+    // For margin/position-size calculation, prefer the oracle mark price (oraclePx
+    // from HyperLiquid's activeAssetCtx) because that is what the exchange uses to
+    // assess margin requirements — matching what mobile shows for pre-trade estimates.
+    // Limit orders use the limit price (the expected fill price) for accuracy.
+    // Falls back to effectivePrice when the oracle price is not yet available.
+    const effectiveMarginPrice =
+      formState.type === 'limit'
+        ? effectivePrice
+        : (markPrice ?? effectivePrice);
+
+    const positionSize = calculatePositionSize(
+      amount,
+      effectiveMarginPrice,
+      szDecimals,
+    );
+    // Notional is the actual USD value of the rounded position (may differ slightly
+    // from the user's input amount due to szDecimals quantisation).
+    const notional = positionSize * effectiveMarginPrice;
+    // Margin = initial margin only (fees are a separate line item, not added to margin)
+    const marginRequired = notional / formState.leverage;
+    const estimatedFees = amount * PERPS_MARKET_ORDER_FEE_RATE;
     const liquidationPriceValue = calculateLiquidationPrice(
       effectivePrice,
       formState.leverage,
@@ -357,7 +397,7 @@ export function usePerpsOrderForm({
       ),
       liquidationPriceRaw: liquidationPriceValue,
       orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
-      estimatedFees: formatCurrencyWithMinThreshold(openingFee, 'USD'),
+      estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
   }, [
     formState.amount,
@@ -371,6 +411,8 @@ export function usePerpsOrderForm({
     closePercent,
     asset,
     maxLeverage,
+    szDecimals,
+    markPrice,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
   ]);
