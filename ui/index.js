@@ -442,8 +442,7 @@ function setupStateHooks(store) {
   // Agentic dev hooks — expose internals for CDP automation
   if (process.env.METAMASK_DEBUG) {
     globalThis.stateHooks.store = store;
-    globalThis.stateHooks.submitRequestToBackground =
-      submitRequestToBackground;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
 }
