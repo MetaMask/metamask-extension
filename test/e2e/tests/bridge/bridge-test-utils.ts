@@ -41,6 +41,7 @@ import {
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  getMockAssetsPrice,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
@@ -1343,6 +1344,7 @@ export const getBridgeFixtures = (
           'eip155:42161/slip44:60': { amount: '25' },
         },
       },
+      assetsPrice: getMockAssetsPrice(ethConversionRate),
     });
 
   if (withErc20) {
