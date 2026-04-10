@@ -341,11 +341,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     isPartialCloseBelowMinNotional;
 
   const handleClose = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
+    if (isSubmitDisabled) {
       return;
     }
-    if (isSubmitDisabled) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
       return;
     }
 
@@ -444,8 +444,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
-    isEligible,
     isSubmitDisabled,
+    isEligible,
     replacePerpsToastByKey,
     isPartialClose,
     position,
