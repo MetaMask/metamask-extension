@@ -872,11 +872,12 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, TP input is initialized to position's existing TP (3200.00)
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3,087.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3,087.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -888,41 +889,42 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, SL input is initialized to position's existing SL (2600.00)
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2,612.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2,612.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44,700.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44,700.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45,300.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45,300.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
