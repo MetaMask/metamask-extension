@@ -313,9 +313,6 @@ class TransactionConfirmation extends Confirmation {
     );
     await this.driver.waitForSelector(
       this.recipientAddressDisplay(address.substring(0, 6)),
-      {
-        timeout: 10000,
-      },
     );
   }
 
