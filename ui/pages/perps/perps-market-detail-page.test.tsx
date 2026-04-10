@@ -478,7 +478,9 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
-      expect(getByText(/Long 3x/)).toBeInTheDocument();
+      expect(
+        getByText(new RegExp(`${messages.perpsLong.message} 3x`)),
+      ).toBeInTheDocument();
     });
 
     it('displays stats section', () => {
