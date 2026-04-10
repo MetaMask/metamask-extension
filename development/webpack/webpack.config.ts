@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
+  IgnorePlugin,
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
@@ -241,6 +242,17 @@ if (args.bundleAnalyzer) {
     new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
   );
 }
+
+// @metamask/perps-controller v2.0.0 ships a dynamic import for MYXProvider.mjs
+// but excludes the file from the package via `files` in package.json. webpack
+// treats this as a hard "Module not found" error, so we must stop it from
+// attempting to resolve the import. The existing ignoreWarnings entry below
+// only suppresses warnings — not errors — so we need IgnorePlugin here.
+// TODO: Remove once @metamask/perps-controller adds /* webpackIgnore: true */
+// to the dynamic import in its dist (or ships MYXProvider.mjs).
+plugins.push(
+  new IgnorePlugin({ resourceRegExp: /providers\/MYXProvider\.mjs$/u }),
+);
 
 // #endregion plugins
 
