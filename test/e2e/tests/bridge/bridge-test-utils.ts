@@ -939,10 +939,22 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
                 ETH_CONVERSION_RATE_USD,
                 2.5,
               ),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                ETH_CONVERSION_RATE_USD,
+                2.5,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                ETH_CONVERSION_RATE_USD,
+                2.5,
+              ),
               ...stablecoins,
             }
           : {
-              'eip155:1/slip44:60': tokenEntry('ethereum', 1, 0),
+              'eip155:1/slip44:60': tokenEntry('ethereum', 3010, 0),
+              'eip155:59144/slip44:60': tokenEntry('ethereum', 3010, 0),
+              'eip155:42161/slip44:60': tokenEntry('ethereum', 3010, 0),
               ...stablecoins,
             };
 
