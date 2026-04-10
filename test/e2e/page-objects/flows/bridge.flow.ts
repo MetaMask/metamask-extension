@@ -5,7 +5,6 @@ import BridgeQuotePage, {
 import ActivityListPage from '../pages/home/activity-list';
 import AccountListPage from '../pages/account-list-page';
 import HomePage from '../pages/home/homepage';
-import home from 'ui/pages/home';
 
 /**
  * Execute a bridge transaction and checks the activity list

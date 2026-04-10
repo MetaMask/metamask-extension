@@ -8,9 +8,7 @@ import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage, {
-  BridgeQuote,
-} from '../../page-objects/pages/bridge/quote-page';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
