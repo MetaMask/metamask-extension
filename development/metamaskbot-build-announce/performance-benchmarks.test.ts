@@ -992,7 +992,7 @@ describe('buildBenchmarkSection', () => {
       expect(html).not.toContain('metamask.sentry.io/explore/logs');
     });
 
-    it('still includes Sentry row link when branch env vars are unset (uses ci.branch:main in URL)', () => {
+    it('still includes Sentry row link when branch env vars are unset (ORs main and release/* in URL)', () => {
       // Force-empty so CI-injected GITHUB_HEAD_REF cannot satisfy `||` chain (delete is not always enough).
       process.env.BRANCH = '';
       process.env.GITHUB_HEAD_REF = '';
@@ -1008,6 +1008,7 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('>[CI log]</a>');
       expect(html).toContain('metamask.sentry.io/explore/logs');
       expect(html).toContain('ci.branch%3Amain');
+      expect(html).toContain('OR+ci.branch%3A%22release%2F*%22');
       expect(html).toContain('message%3Abenchmark.loadNewAccount');
     });
 

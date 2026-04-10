@@ -79,11 +79,18 @@ describe('buildPerformanceSentryLogsUrl', () => {
     delete process.env.SENTRY_DSN_PERFORMANCE;
   });
 
-  it('builds Sentry Logs Explorer URL with branch filter', () => {
-    const url = buildPerformanceSentryLogsUrl('feat/my-branch');
+  it('builds explore/logs URL from SENTRY_DSN_PERFORMANCE with branch and optional filters', () => {
+    const url = buildPerformanceSentryLogsUrl(['feat/my-branch'], {
+      browser: 'chrome',
+      buildType: 'browserify',
+      logMessage: 'benchmark.timerName',
+    });
 
     expect(url).toContain('https://metamask.sentry.io/explore/logs/');
     expect(url).toContain('ci.branch%3A%22feat%2Fmy-branch%22');
+    expect(url).toContain('ci.browser%3Achrome');
+    expect(url).toContain('ci.buildType%3Abrowserify');
+    expect(url).toContain('message%3Abenchmark.timerName');
     expect(url).toContain('project=4510302346608640');
     expect(url).toContain('statsPeriod=2w');
     expect(url).toContain('logsSortBys=-timestamp');
@@ -91,119 +98,40 @@ describe('buildPerformanceSentryLogsUrl', () => {
     expect(url).toContain('logsFields=message');
   });
 
-  it('reads DSN from SENTRY_DSN_PERFORMANCE', () => {
-    const url = buildPerformanceSentryLogsUrl('main');
+  it('returns null when DSN is missing, invalid, or no branch remains after trim', () => {
+    expect(buildPerformanceSentryLogsUrl([])).toBeNull();
+    expect(buildPerformanceSentryLogsUrl(['', '   '])).toBeNull();
 
-    expect(url).toContain('logsQuery=ci.branch%3Amain');
-  });
-
-  it('returns null when no branch remains after trim (empty branchName, no orBranches)', () => {
-    expect(buildPerformanceSentryLogsUrl('')).toBeNull();
-    expect(buildPerformanceSentryLogsUrl('   ')).toBeNull();
-  });
-
-  it('allows empty branchName when orBranches supplies a branch', () => {
-    const url = buildPerformanceSentryLogsUrl('', { orBranches: ['main'] });
-
-    expect(url).toContain('logsQuery=ci.branch%3Amain');
-  });
-
-  it('returns null when SENTRY_DSN_PERFORMANCE is unset', () => {
     delete process.env.SENTRY_DSN_PERFORMANCE;
+    expect(buildPerformanceSentryLogsUrl(['main'])).toBeNull();
 
-    const url = buildPerformanceSentryLogsUrl('main');
-
-    expect(url).toBeNull();
-  });
-
-  it('returns null when SENTRY_DSN_PERFORMANCE is invalid', () => {
     process.env.SENTRY_DSN_PERFORMANCE = 'invalid-dsn';
-
-    const url = buildPerformanceSentryLogsUrl('main');
-
-    expect(url).toBeNull();
+    expect(buildPerformanceSentryLogsUrl(['main'])).toBeNull();
   });
 
-  it('handles branch names with special characters', () => {
-    const url = buildPerformanceSentryLogsUrl('feature/add-new-thing');
-
-    expect(url).toContain('ci.branch%3A%22feature%2Fadd-new-thing%22');
-  });
-
-  it('includes browser filter when provided', () => {
-    const url = buildPerformanceSentryLogsUrl('main', { browser: 'chrome' });
-
-    expect(url).toContain('ci.branch%3Amain');
-    expect(url).toContain('ci.browser%3Achrome');
-  });
-
-  it('includes buildType filter when provided', () => {
-    const url = buildPerformanceSentryLogsUrl('main', {
-      buildType: 'browserify',
+  it('oRs multiple branches, skips empty entries, and dedupes', () => {
+    const orUrl = buildPerformanceSentryLogsUrl(['feat/x', 'main'], {
+      logMessage: 'm',
     });
+    expect(orUrl).toContain('OR');
+    expect(orUrl).toContain('ci.branch%3A%22feat%2Fx%22');
+    expect(orUrl).toContain('ci.branch%3Amain');
 
-    expect(url).toContain('ci.buildType%3Abrowserify');
+    expect(
+      buildPerformanceSentryLogsUrl(['', 'main'], { logMessage: 'm' }),
+    ).toContain('logsQuery=ci.branch%3Amain');
+
+    const deduped = buildPerformanceSentryLogsUrl(['main', 'main']);
+    expect(deduped).toContain('logsQuery=ci.branch%3Amain');
+    expect(deduped).not.toContain('OR');
   });
 
-  it('includes exact message filter (same string CI sends to Sentry)', () => {
-    const url = buildPerformanceSentryLogsUrl('main', {
-      logMessage: 'benchmark.firefox-browserify-startupStandardHome',
-    });
+  it('uses https://sentry.io/explore/logs when DSN host is legacy sentry.io', () => {
+    process.env.SENTRY_DSN_PERFORMANCE =
+      'https://public_key@sentry.io/4510302346608640';
 
-    expect(url).toContain(
-      'message%3Abenchmark.firefox-browserify-startupStandardHome',
+    expect(buildPerformanceSentryLogsUrl(['main'])).toContain(
+      'https://sentry.io/explore/logs/',
     );
-  });
-
-  it('supports userAction.* messages', () => {
-    const url = buildPerformanceSentryLogsUrl('main', {
-      logMessage: 'userAction.loadNewAccount',
-    });
-
-    expect(url).toContain('message%3AuserAction.loadNewAccount');
-  });
-
-  it('combines all filters when all options provided', () => {
-    const url = buildPerformanceSentryLogsUrl('feat/test', {
-      browser: 'firefox',
-      buildType: 'webpack',
-      logMessage: 'benchmark.test-benchmark',
-    });
-
-    expect(url).toContain('ci.branch%3A%22feat%2Ftest%22');
-    expect(url).toContain('ci.browser%3Afirefox');
-    expect(url).toContain('ci.buildType%3Awebpack');
-    expect(url).toContain('message%3Abenchmark.test-benchmark');
-  });
-
-  it('uses https://sentry.io/explore/logs for legacy sentry.io DSN host', () => {
-    const legacyDsn = 'https://public_key@sentry.io/4510302346608640';
-    process.env.SENTRY_DSN_PERFORMANCE = legacyDsn;
-
-    const url = buildPerformanceSentryLogsUrl('main');
-
-    expect(url).toContain('https://sentry.io/explore/logs/');
-    expect(url).toContain('project=4510302346608640');
-  });
-
-  it('oRs orBranches with branchName when logMessage is set', () => {
-    const url = buildPerformanceSentryLogsUrl('feat/xyz', {
-      orBranches: ['main'],
-      logMessage: 'benchmark.chrome-browserify-startupStandardHome',
-    });
-
-    expect(url).toContain('ci.branch%3A%22feat%2Fxyz%22');
-    expect(url).toContain('OR');
-    expect(url).toContain('ci.branch%3Amain');
-    expect(url).toContain(
-      'message%3Abenchmark.chrome-browserify-startupStandardHome',
-    );
-  });
-
-  it('dedupes when branchName is main and orBranches includes main', () => {
-    const url = buildPerformanceSentryLogsUrl('main', { orBranches: ['main'] });
-
-    expect(url).toContain('logsQuery=ci.branch%3Amain');
-    expect(url).not.toContain('OR');
   });
 });

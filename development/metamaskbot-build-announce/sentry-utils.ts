@@ -68,23 +68,23 @@ function formatCiBranchFilterToken(branch: string): string {
 /**
  * Sentry Logs Explorer URL for the performance project (`SENTRY_DSN_PERFORMANCE`), with branch and optional CI filters.
  *
- * @param branchName
+ * @param branches - `ci.branch` values; trimmed, deduped, then OR'd in the Logs Explorer query (read-only; not mutated).
  * @param options
  * @param options.browser
  * @param options.buildType
- * @param options.logMessage - Exact log message string to match (same as send-to-sentry: `${benchmarkType}.${jsonKey}`).
- * @param options.orBranches - Extra `ci.branch` values OR'd with `branchName` (deduped).
+ * @param options.logMessage
  * @returns `null` if DSN is missing/invalid or if no non-empty branch remains after trim/dedupe.
  */
 export function buildPerformanceSentryLogsUrl(
-  branchName: string,
+  branches: readonly string[],
   options?: {
     browser?: string;
     buildType?: string;
     logMessage?: string;
-    orBranches?: string[];
   },
 ): string | null {
+  const { browser, buildType, logMessage } = options ?? {};
+
   const dsn = process.env.SENTRY_DSN_PERFORMANCE;
   if (!dsn) {
     return null;
@@ -97,10 +97,7 @@ export function buildPerformanceSentryLogsUrl(
 
   const { organization, projectId, useRootSentryHost } = parsed;
 
-  const branchParts = [
-    branchName.trim(),
-    ...(options?.orBranches ?? []).map((b) => b.trim()),
-  ].filter((b) => b.length > 0);
+  const branchParts = branches.map((b) => b.trim()).filter((b) => b.length > 0);
   const uniqueBranches = [...new Set(branchParts)];
 
   if (uniqueBranches.length === 0) {
@@ -115,14 +112,14 @@ export function buildPerformanceSentryLogsUrl(
           .join(' OR ')})`;
 
   const filters: string[] = [branchFilter];
-  if (options?.browser) {
-    filters.push(`ci.browser:${options.browser}`);
+  if (browser) {
+    filters.push(`ci.browser:${browser}`);
   }
-  if (options?.buildType) {
-    filters.push(`ci.buildType:${options.buildType}`);
+  if (buildType) {
+    filters.push(`ci.buildType:${buildType}`);
   }
-  if (options?.logMessage) {
-    filters.push(`message:${options.logMessage}`);
+  if (logMessage) {
+    filters.push(`message:${logMessage}`);
   }
 
   const params = new URLSearchParams({

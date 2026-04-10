@@ -54,11 +54,14 @@ const BENCHMARK_LINK_CI_LOG = '[CI log]';
 
 const BENCHMARK_ROW_SENTRY_LINK = '[Sentry log · main/release]';
 
+/** Matches main and `refs/heads/release/*` benchmark pushes (see run-benchmarks.yml). */
+const BENCHMARK_ROW_SENTRY_LOG_BRANCHES = ['main', 'release/*'] as const;
+
 const BENCHMARK_CI_LOG_TITLE =
   'Open the benchmark artifact log for this CI run';
 
 const BENCHMARK_ROW_SENTRY_TITLE =
-  'Sentry Logs Explorer: ci.branch:main and message matching CI structured logs (e.g. benchmark.* or userAction.*).';
+  'Sentry Logs Explorer: ci.branch:main OR ci.branch:release/* and message matching CI structured logs (e.g. benchmark.* or userAction.*).';
 
 function escapeHtmlAttr(value: string): string {
   return value
@@ -529,7 +532,7 @@ function buildCiLogLinkHtml(logHref: string | undefined): string {
 }
 
 /**
- * One Sentry Logs Explorer link per benchmark row: matches send-to-sentry message + `ci.branch:main`.
+ * One Sentry Logs Explorer link per benchmark row: matches send-to-sentry message + `ci.branch` on main or release lines.
  *
  * @param entry - Any row entry for this benchmark (same benchmarkName / benchmarkType).
  */
@@ -538,7 +541,7 @@ function buildBenchmarkRowSentryLinkHtml(
 ): string {
   const type = entry.benchmarkType ?? BENCHMARK_TYPE.BENCHMARK;
   const logMessage = `${type}.${entry.benchmarkName}`;
-  const url = buildPerformanceSentryLogsUrl('main', {
+  const url = buildPerformanceSentryLogsUrl(BENCHMARK_ROW_SENTRY_LOG_BRANCHES, {
     logMessage,
   });
   if (!url) {
