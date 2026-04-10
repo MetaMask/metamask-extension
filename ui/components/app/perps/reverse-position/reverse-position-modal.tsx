@@ -247,7 +247,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           submitButtonProps={{
             'data-testid': 'perps-reverse-position-modal-save',
             children: isSubmitting ? t('perpsSubmitting') : t('save'),
-            disabled: !isEligible || isSubmitting,
+            disabled: isSubmitting,
           }}
         />
       </ModalContent>

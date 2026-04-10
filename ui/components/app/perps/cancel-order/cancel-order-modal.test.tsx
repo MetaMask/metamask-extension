@@ -489,7 +489,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('geo-blocking', () => {
-    it('disables cancel button and shows geo-block modal when user is not eligible', async () => {
+    it('shows geo-block modal instead of canceling when user is not eligible', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
 
       renderWithProvider(
@@ -497,9 +497,14 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('perps-cancel-order-button')).toBeDisabled();
+      const cancelButton = screen.getByTestId('perps-cancel-order-button');
+      expect(cancelButton).toBeEnabled();
 
-      fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
 
       mockUsePerpsEligibility.mockReturnValue({ isEligible: true });

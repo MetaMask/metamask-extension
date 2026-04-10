@@ -407,10 +407,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: !isEligible || isSaving,
+      submitDisabled: isSaving,
       submitButtonTitle: undefined,
     });
-  }, [onSubmitStateChange, handleSave, isSaving, isEligible, t]);
+  }, [onSubmitStateChange, handleSave, isSaving, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>

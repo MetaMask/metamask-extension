@@ -333,7 +333,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   );
 
   const isSubmitDisabled =
-    !isEligible ||
     !isPriceValid ||
     closePercent <= 0 ||
     isSubmitting ||

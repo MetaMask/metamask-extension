@@ -433,7 +433,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   const isSubmitDisabled =
-    !isEligible ||
     !selectedAddress ||
     isOrderPending ||
     isLimitPriceInvalid ||

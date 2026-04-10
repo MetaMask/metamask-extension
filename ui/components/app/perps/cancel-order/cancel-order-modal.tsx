@@ -372,7 +372,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               size={ButtonSize.Lg}
               isFullWidth
               isDanger
-              isDisabled={!isEligible || isSubmitting}
+              isDisabled={isSubmitting}
               isLoading={isSubmitting}
               onClick={handleCancel}
               data-testid="perps-cancel-order-button"

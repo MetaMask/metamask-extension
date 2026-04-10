@@ -371,7 +371,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible ||
     !isValid ||
     isSaving ||
     Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
