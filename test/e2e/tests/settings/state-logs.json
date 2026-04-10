@@ -1144,7 +1144,7 @@
       }
     },
     "networksWithTransactionActivity": {},
-    "newPrivacyPolicyToastClickedOrClosed": "null",
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},

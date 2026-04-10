@@ -184,7 +184,11 @@ import {
 } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
-import { getIsSmartTransaction } from '../../shared/lib/selectors';
+import {
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsEnabled,
+} from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -440,6 +444,7 @@ import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
+import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -598,6 +603,7 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -717,6 +723,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = controllersByName.AppStateController;
     this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.dataDeletionService = controllersByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       controllersByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
@@ -1002,6 +1009,10 @@ export default class MetamaskController extends EventEmitter {
                   .dismissSmartAccountSuggestionEnabled,
               getIsSmartTransaction: (chainId) =>
                 getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              getSmartTransactionsPreferenceEnabled: () =>
+                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+              getSmartTransactionsEnabled: (chainId) =>
+                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
               isAtomicBatchSupported:
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
@@ -2772,7 +2783,7 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
@@ -2819,6 +2830,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5313,6 +5325,19 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async getTrezorFeatures() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.trezor },
+      async (keyring) => {
+        if (typeof keyring.bridge.getFeatures !== 'function') {
+          throw new Error('Trezor bridge does not support getFeatures');
+        }
+
+        return await keyring.bridge.getFeatures();
+      },
+    );
+  }
+
   /**
    * Get hardware type that will be sent for metrics logging.
    *
@@ -7340,7 +7365,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -7802,7 +7829,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -8263,6 +8292,12 @@ export default class MetamaskController extends EventEmitter {
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
+      },
+      getSmartTransactionsPreferenceEnabled: () => {
+        return getSmartTransactionsPreferenceEnabled(this._getMetaMaskState());
+      },
+      getSmartTransactionsEnabled: (chainId) => {
+        return getSmartTransactionsEnabled(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(

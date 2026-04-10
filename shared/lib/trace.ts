@@ -1,6 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
+import type {
+  TraceCallback as ControllerTraceCallback,
+  TraceRequest as ControllerTraceRequest,
+  TraceContext as ControllerTraceContext,
+} from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
 
 /**
@@ -253,6 +258,23 @@ export function trace<T>(
 
   return traceCallback(request, fn);
 }
+
+/**
+ * Adapter that wraps the extension's synchronous {@link trace} function into the
+ * async {@link ControllerTraceCallback} signature expected by `@metamask/assets-controller`.
+ * @param req - The trace request.
+ * @param fn - The trace callback.
+ * @returns The result of the trace.
+ */
+export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
+  req: ControllerTraceRequest,
+  fn?: (ctx?: ControllerTraceContext) => Result,
+): Promise<Result> =>
+  Promise.resolve(
+    fn
+      ? trace({ ...req, name: req.name as TraceName }, fn)
+      : trace({ ...req, name: req.name as TraceName }),
+  ) as Promise<Result>;
 
 /**
  * End a pending trace that was started without a callback.

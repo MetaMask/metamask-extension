@@ -91,11 +91,11 @@ import {
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
 import { PerpsController } from '@metamask/perps-controller';
-import OnboardingController from '../controllers/onboarding';
+import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
-import OAuthService from '../services/oauth/oauth-service';
+import { OAuthService } from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
@@ -104,12 +104,13 @@ import { SubscriptionService } from '../services/subscription/subscription-servi
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
-import AppMetadataController from '../controllers/app-metadata';
-import DecryptMessageController from '../controllers/decrypt-message';
-import EncryptionPublicKeyController from '../controllers/encryption-public-key';
+import { AppMetadataController } from '../controllers/app-metadata';
+import { DecryptMessageController } from '../controllers/decrypt-message';
+import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { DataDeletionService } from '../services/data-deletion-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -131,6 +132,7 @@ export type Controller =
   | ClaimsController
   | CronjobController
   | CurrencyRateController
+  | DataDeletionService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController

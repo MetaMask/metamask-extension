@@ -16,6 +16,7 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { TEST_CHAINS } from '../../../shared/constants/network';
+import { NetworkOrderControllerMethodActions } from './network-order-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -43,16 +44,15 @@ export type NetworkOrderStateChange = {
   payload: [NetworkOrderControllerState, Patch[]];
 };
 
-// Describes the action for updating the networks list
-export type NetworkOrderControllerUpdateNetworksListAction = {
-  type: `${typeof controllerName}:updateNetworksList`;
-  handler: NetworkOrderController['updateNetworksList'];
-};
+export type NetworkOrderControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  NetworkOrderControllerState
+>;
 
 // Union of all possible actions for the messenger
-export type NetworkOrderControllerMessengerActions =
-  | ControllerGetStateAction<typeof controllerName, NetworkOrderControllerState>
-  | NetworkOrderControllerUpdateNetworksListAction;
+export type NetworkOrderControllerActions =
+  | NetworkOrderControllerGetStateAction
+  | NetworkOrderControllerMethodActions;
 
 export type NetworkOrderControllerMessengerEvents =
   | ControllerStateChangeEvent<
@@ -72,7 +72,7 @@ type AllowedEvents =
 // Type for the messenger of NetworkOrderController
 export type NetworkOrderControllerMessenger = Messenger<
   typeof controllerName,
-  NetworkOrderControllerMessengerActions | AllowedActions,
+  NetworkOrderControllerActions | AllowedActions,
   NetworkOrderControllerMessengerEvents | AllowedEvents
 >;
 
@@ -90,6 +90,11 @@ const metadata: StateMetadata<NetworkOrderControllerState> = {
     usedInUi: true,
   },
 };
+
+const MESSENGER_EXPOSED_METHODS = [
+  'onNetworkControllerStateChange',
+  'updateNetworksList',
+] as const;
 
 /**
  * Controller that updates the order of the network list.
@@ -129,6 +134,11 @@ export class NetworkOrderController extends BaseController<
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

@@ -9,7 +9,7 @@ import {
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
-import OAuthService from './oauth-service';
+import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
 
