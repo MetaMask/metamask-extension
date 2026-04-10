@@ -96,6 +96,7 @@ jest.mock('../../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: mockNavigateNext,
     navigateToId: mockNavigateToId,
