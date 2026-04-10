@@ -392,7 +392,9 @@ class AssetListPage {
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.waitForSelector(this.importTokenModalTitle, {
+      waitAtLeastGuard: 2000,
+    });
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);

@@ -7,6 +7,9 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { login } from '../../page-objects/flows/login.flow';
+import { getMockAssetsPrice } from '../bridge/constants';
+
+const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
@@ -34,6 +37,64 @@ async function mockPriceFetch(mockServer: Mockttp) {
         };
       }),
   ];
+}
+
+async function mockSpotPricesV3(mockServer: Mockttp) {
+  const nativeAssets: Record<string, string> = {
+    'eip155:1/slip44:60': 'ethereum',
+    'eip155:59144/slip44:60': 'ethereum',
+    'eip155:8453/slip44:60': 'ethereum',
+  };
+
+  const erc20Assets: Record<string, { symbol: string; usdPrice: number }> = {
+    'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+      symbol: 'chain',
+      usdPrice: 0.01,
+    },
+    'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+      symbol: 'changex',
+      usdPrice: 0.05,
+    },
+    'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+      symbol: 'chai',
+      usdPrice: 0.02,
+    },
+  };
+
+  return await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = (url.searchParams.get('assetIds') ?? '').toLowerCase();
+
+      const json: Record<string, Record<string, unknown>> = {};
+
+      for (const [id, name] of Object.entries(nativeAssets)) {
+        if (assetIds.includes(id)) {
+          json[id] = {
+            id: name,
+            price: ETH_CONVERSION_RATE_USD,
+            marketCap: 112500000,
+            totalVolume: 4500000,
+            dilutedMarketCap: 120000000,
+            pricePercentChange1d: 0,
+          };
+        }
+      }
+
+      for (const [id, { symbol }] of Object.entries(erc20Assets)) {
+        if (assetIds.includes(id)) {
+          json[id] = {
+            id: symbol,
+            price: 0,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          };
+        }
+      }
+
+      return { statusCode: 200, json };
+    });
 }
 
 async function mockTokens(mockServer: Mockttp) {
@@ -173,6 +234,7 @@ async function mockTokensAndPrices(mockServer: Mockttp) {
     await mockPriceFetch(mockServer),
     ...(await mockTokens(mockServer)),
     ...(await mockPolygonBridgeApi(mockServer)),
+    await mockSpotPricesV3(mockServer),
   ];
 }
 describe('Import flow', function () {
@@ -224,6 +286,53 @@ describe('Import flow', function () {
               },
             },
           })
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/slip44:60': { amount: '25' },
+                'eip155:59144/slip44:60': { amount: '25' },
+              },
+            },
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+            assetsInfo: {
+              'eip155:1/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:59144/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:8453/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHAIN',
+                name: 'Chain Games',
+              },
+              'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHANGE',
+                name: 'ChangeX',
+              },
+              'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                type: 'erc20',
+                decimals: 18,
+                symbol: 'CHAI',
+                name: 'Chai',
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokensAndPrices,
@@ -242,13 +351,12 @@ describe('Import flow', function () {
 
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
-        // ERC20 Tokens: Chain Games, Chai
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH
+        // ERC20 Tokens: Chain Games, Chai, ChangeX
         await tokenList.checkTokenItemNumber(6);
-        await tokenList.checkTokenExistsInList('Ether');
+        await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
-        // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
-        // await tokenList.checkTokenExistsInList('Changex');
+        await tokenList.checkTokenExistsInList('ChangeX');
         await tokenList.checkTokenExistsInList('Chai');
       },
     );
@@ -298,6 +406,35 @@ describe('Import flow', function () {
                     symbol: 'USDT',
                   },
                 },
+              },
+            },
+          })
+          .withAssetsController({
+            assetsBalance: {
+              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+                'eip155:1/slip44:60': { amount: '25' },
+                'eip155:59144/slip44:60': { amount: '25' },
+              },
+            },
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+            assetsInfo: {
+              'eip155:1/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:59144/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
+              'eip155:8453/slip44:60': {
+                type: 'native',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
             },
           })
