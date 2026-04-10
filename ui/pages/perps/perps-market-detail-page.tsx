@@ -1345,10 +1345,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                         ? TextColor.SuccessDefault
                         : TextColor.ErrorDefault
                     }
+                    data-testid="perps-position-leverage"
                   >
                     {parseFloat(position.size) >= 0
                       ? t('perpsLong')
-                      : t('perpsShort')}
+                      : t('perpsShort')}{' '}
+                    {position.leverage.value}x
                   </Text>
                 </Box>
 

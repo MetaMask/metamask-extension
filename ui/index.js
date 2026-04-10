@@ -50,7 +50,10 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  submitRequestToBackground,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
@@ -434,6 +437,13 @@ function setupStateHooks(store) {
   // Expose metrics APIs for E2E benchmark harness
   if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
     exposeLongTaskMetricsForTesting();
+  }
+
+  // Agentic dev hooks — expose internals for CDP automation
+  if (process.env.METAMASK_DEBUG) {
+    globalThis.stateHooks.store = store;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
+    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
 }
 

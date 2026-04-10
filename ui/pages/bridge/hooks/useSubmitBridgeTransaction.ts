@@ -159,7 +159,7 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigate(DEFAULT_ROUTE, {
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
       state: { stayOnHomePage: true },
       replace: true,
     });

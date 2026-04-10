@@ -16,7 +16,6 @@ import { login } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
@@ -89,11 +88,10 @@ describe('Send ETH - Max Amount', function () {
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const gasFeeModal = new GasFeeModal(driver);
 
           // open gas fee modal and set custom values
-          await sendTokenConfirmPage.clickEditGasFeeIcon();
+          await transactionConfirmation.openGasFeeModal();
           await gasFeeModal.setCustomEIP1559GasFee({
             maxBaseFee: '30',
             priorityFee: '8.5',
@@ -101,7 +99,7 @@ describe('Send ETH - Max Amount', function () {
           });
 
           // has correct updated value on the confirm screen the transaction
-          await sendTokenConfirmPage.checkNativeCurrency('$1.00');
+          await transactionConfirmation.checkGasFeeFiat('$1.00');
 
           // verify max amount after gas fee changes
           await transactionConfirmation.checkSendAmountConversion('$42,494.90');
@@ -139,16 +137,15 @@ describe('Send ETH - Max Amount', function () {
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const gasFeeModal = new GasFeeModal(driver);
 
           // update estimates to low
-          await sendTokenConfirmPage.clickEditGasFeeIcon();
+          await transactionConfirmation.openGasFeeModal();
           await gasFeeModal.checkPageIsLoaded();
           await gasFeeModal.selectLowGasFee();
 
           // has correct updated value on the confirm screen the transaction
-          await sendTokenConfirmPage.checkNativeCurrency('$0.73');
+          await transactionConfirmation.checkGasFeeFiat('$0.73');
 
           // verify max amount after gas fee changes
           await driver.waitForSelector({
@@ -272,10 +269,8 @@ describe('Send ETH - Max Amount', function () {
         await sendPage.fillAmount('10'); // update the value
         await sendPage.pressContinueButton();
 
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-
-        await sendTokenConfirmationPage.checkPageIsLoaded();
-        await sendTokenConfirmationPage.clickOnConfirm();
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         await validateTransaction(driver, '-10');
       },
