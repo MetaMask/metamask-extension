@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Usage: bun run report-failing-tests/parse-test-failures.ts test-runs-chrome.json test-failures-chrome.csv
+// Usage: bun run report-failing-tests/parse-test-failures.ts test-runs-firefox.json test-runs-firefox.csv
 
 // ── Types matching test-runs-chrome.json ──
 
