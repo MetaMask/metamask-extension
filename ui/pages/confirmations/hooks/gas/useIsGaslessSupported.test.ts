@@ -160,7 +160,7 @@ describe('useIsGaslessSupported', () => {
     });
   });
 
-  it('returns isSupported false for hardware wallets even when smart transactions are supported', async () => {
+  it('returns isSupported true for hardware wallets when smart transactions with sendBundle are supported', async () => {
     isHardwareWalletMock.mockReturnValue(true);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: true,
@@ -170,19 +170,21 @@ describe('useIsGaslessSupported', () => {
 
     const result = await runHook();
 
+    // Hardware wallets can use the sendBundle path (standard EIP-1559 signing only)
     expect(result).toStrictEqual({
-      isSupported: false,
+      isSupported: true,
       isSmartTransaction: true,
       pending: false,
     });
   });
 
-  it('returns isSupported false for hardware wallets even when relay is supported', async () => {
+  it('returns isSupported false for hardware wallets when only relay (7702) is supported but not sendBundle', async () => {
     isHardwareWalletMock.mockReturnValue(true);
     isRelaySupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
 
+    // Relay (7702) check must NOT be made for hardware wallets
     expect(isRelaySupportedMock).not.toHaveBeenCalled();
 
     expect(result).toStrictEqual({
