@@ -80,6 +80,8 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { formatPerpsPrice } from '../../components/app/perps/utils/formatPerpsPrice';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -254,6 +256,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const locale = useSelector(getIntlLocale);
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const {
@@ -1396,7 +1399,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                   >
                     {position.liquidationPrice
-                      ? `$${position.liquidationPrice}`
+                      ? formatPerpsPrice(
+                          parseFloat(position.liquidationPrice),
+                          locale,
+                        )
                       : '-'}
                   </Text>
                 </Box>

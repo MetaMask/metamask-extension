@@ -23,6 +23,11 @@ import type {
   PerpsTraceValue,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
+import {
+  formatPerpsPrice,
+  PRICE_RANGES_UNIVERSAL,
+  type PerpsPriceRange,
+} from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
@@ -210,13 +215,6 @@ function createMarketDataFormatters(): MarketDataFormatters {
     maximumFractionDigits: 1,
   });
 
-  const fiatFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
   const percentFormatter = new Intl.NumberFormat('en-US', {
     style: 'percent',
     minimumFractionDigits: 2,
@@ -225,10 +223,18 @@ function createMarketDataFormatters(): MarketDataFormatters {
 
   return {
     formatVolume: (value: number) => compactFormatter.format(value),
-    formatPerpsFiat: (value: number) => fiatFormatter.format(value),
+    formatPerpsFiat: (value: number, options?: { ranges?: unknown[] }) => {
+      const customRanges = options?.ranges as PerpsPriceRange[] | undefined;
+      // When ranges are provided they are applied; otherwise the default
+      // PRICE_RANGES_UNIVERSAL inside formatPerpsPrice is used.
+      if (customRanges) {
+        return formatPerpsPrice(value, 'en-US', customRanges);
+      }
+      return formatPerpsPrice(value);
+    },
     formatPercentage: (percent: number) =>
       percentFormatter.format(percent / 100),
-    priceRangesUniversal: [],
+    priceRangesUniversal: PRICE_RANGES_UNIVERSAL,
   };
 }
 

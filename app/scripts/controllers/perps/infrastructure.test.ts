@@ -472,10 +472,13 @@ describe('createPerpsInfrastructure', () => {
       expect(formatted).toContain('B');
     });
 
-    it('formats fiat as USD with 2 decimals', () => {
+    it('formats fiat using adaptive significant-digit rules', () => {
       const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      // $10,000–$100,000 range: 5 sig figs, 0 decimals → "$50,000"
       const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
-      expect(formatted).toContain('50,000.12');
+      expect(formatted).toContain('50,000');
+      // Verify it does NOT include the decimal portion (correct sig-fig truncation)
+      expect(formatted).not.toContain('50,000.1');
     });
 
     it('formats percentage', () => {
