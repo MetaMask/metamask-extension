@@ -53,7 +53,11 @@ import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_EXPANDED_ROUTE,
 } from '../../helpers/constants/routes';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -910,6 +914,19 @@ const PerpsMarketDetailPage: React.FC = () => {
   const handleOrderClick = useCallback((order: Order) => {
     setCancelOrderTarget(order);
   }, []);
+
+  // In the expanded / full-size view, use the dedicated full-width trading page
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN &&
+    decodedSymbol
+  ) {
+    return (
+      <Navigate
+        to={`${PERPS_MARKET_EXPANDED_ROUTE}/${encodeURIComponent(decodedSymbol)}`}
+        replace
+      />
+    );
+  }
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
