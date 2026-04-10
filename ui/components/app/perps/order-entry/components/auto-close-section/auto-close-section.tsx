@@ -45,6 +45,8 @@ import {
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
  * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
+ * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
+ * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -56,6 +58,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   direction,
   currentPrice,
   entryPrice: entryPriceProp,
+  orderType,
+  limitPrice,
 }) => {
   const t = useI18nContext();
 
@@ -222,30 +226,41 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [priceToPercent, stopLossPrice],
   );
 
+  const isLimitWithPrice = orderType === 'limit' && Boolean(limitPrice?.trim());
+  const validationReferencePrice = useMemo(() => {
+    if (isLimitWithPrice && limitPrice) {
+      const parsed = Number.parseFloat(limitPrice.replaceAll(/[$,]/gu, ''));
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
+    }
+    return currentPrice;
+  }, [isLimitWithPrice, limitPrice, currentPrice]);
+
+  const priceLabel = isLimitWithPrice ? 'entry' : 'current';
+
   const isTpInvalid = useMemo(
     () =>
       Boolean(
         takeProfitPrice.trim() &&
-          currentPrice > 0 &&
+          validationReferencePrice > 0 &&
           !isValidTakeProfitPrice(takeProfitPrice, {
-            currentPrice,
+            currentPrice: validationReferencePrice,
             direction,
           }),
       ),
-    [takeProfitPrice, currentPrice, direction],
+    [takeProfitPrice, validationReferencePrice, direction],
   );
 
   const isSlInvalid = useMemo(
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          currentPrice > 0 &&
+          validationReferencePrice > 0 &&
           !isValidStopLossPrice(stopLossPrice, {
-            currentPrice,
+            currentPrice: validationReferencePrice,
             direction,
           }),
       ),
-    [stopLossPrice, currentPrice, direction],
+    [stopLossPrice, validationReferencePrice, direction],
   );
 
   const tpErrorMessage = useMemo(() => {
@@ -254,9 +269,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     }
     return t('perpsTakeProfitInvalidPrice', [
       getTakeProfitErrorDirection(direction),
-      'current',
+      priceLabel,
     ]);
-  }, [isTpInvalid, direction, t]);
+  }, [isTpInvalid, direction, priceLabel, t]);
 
   const slErrorMessage = useMemo(() => {
     if (!isSlInvalid) {
@@ -264,9 +279,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     }
     return t('perpsStopLossInvalidPrice', [
       getStopLossErrorDirection(direction),
-      'current',
+      priceLabel,
     ]);
-  }, [isSlInvalid, direction, t]);
+  }, [isSlInvalid, direction, priceLabel, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>

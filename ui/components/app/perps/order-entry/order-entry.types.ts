@@ -209,6 +209,10 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Order type – used to pick the correct validation reference price */
+  orderType?: OrderType;
+  /** Limit price string – used as the reference price for limit-order TP/SL validation */
+  limitPrice?: string;
 };
 
 /**
