@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 
 const mockStore = configureStore({
@@ -25,12 +26,10 @@ describe('PerpsGeoBlockModal', () => {
     renderWithProvider(<PerpsGeoBlockModal {...defaultProps} />, mockStore);
 
     expect(
-      screen.getByText('Perps unavailable in your region'),
+      screen.getByText(messages.perpsGeoBlockedTitle.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Perps trading isn't available in your location due to local restrictions or sanctions.",
-      ),
+      screen.getByText(messages.perpsGeoBlockedDescription.message),
     ).toBeInTheDocument();
   });
 
