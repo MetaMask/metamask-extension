@@ -267,7 +267,8 @@
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
-    "@metamask/messenger@npm:^0.3.0": "^1.1.1"
+    "@metamask/messenger@npm:^0.3.0": "^1.1.1",
+    "@metamask/perps-controller": "npm:@metamask-previews/perps-controller@2.0.0-preview-dff83af4c"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
