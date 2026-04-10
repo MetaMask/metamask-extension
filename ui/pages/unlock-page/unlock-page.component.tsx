@@ -34,10 +34,6 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import {
-  prepareAssertionParams,
-  unwrapEncryptionKeyFromAssertion,
-} from '@metamask/passkey-controller';
-import {
   FormTextField,
   TextFieldType,
   FormTextFieldSize,
@@ -67,9 +63,9 @@ import ConnectionsRemovedModal from '../../components/app/connections-removed-mo
 import { captureException } from '../../../shared/lib/sentry';
 import { PasskeyCeremonyExtensionAdapter } from '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
 import {
-  getPasskeyRecord,
+  generatePasskeyAuthenticationOptions,
   isPasskeyEnrolled,
-  submitEncryptionKey,
+  unlockWithPasskey,
 } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
@@ -553,8 +549,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
     this.setState({ error: null, passkeyInProgress: true });
     try {
-      const record = await getPasskeyRecord();
-      if (!record) {
+      const isEnrolled = await isPasskeyEnrolled();
+      if (!isEnrolled) {
         this.setState({
           error: (this.context as UnlockPageContext).t('passkeyUnlockFailed'),
           passkeyInProgress: false,
@@ -562,14 +558,11 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         });
         return;
       }
-      const adapter = new PasskeyCeremonyExtensionAdapter();
-      const params = prepareAssertionParams(record);
-      const assertion = await adapter.getAssertion(params);
-      const encryptionKey = await unwrapEncryptionKeyFromAssertion(
-        record,
-        assertion,
-      );
-      await submitEncryptionKey(encryptionKey, record.encryptionSalt);
+      const authOptions = await generatePasskeyAuthenticationOptions();
+      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
+      const authenticationResponse =
+        await passkeyAdapter.startAuthentication(authOptions);
+      await unlockWithPasskey(authenticationResponse);
       await this.props.forceUpdateMetamaskState();
 
       let redirectTo = DEFAULT_ROUTE;

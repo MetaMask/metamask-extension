@@ -88,7 +88,12 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-import { PasskeyRecord } from '@metamask/passkey-controller';
+import type {
+  AuthenticationResponseJSON as PasskeyAuthenticationResponse,
+  PublicKeyCredentialCreationOptionsJSON as PasskeyRegitrationOptions,
+  PublicKeyCredentialRequestOptionsJSON as PasskeyAuthenticationOptions,
+  RegistrationResponseJSON as PasskeyRegistrationResponse,
+} from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
@@ -1154,36 +1159,39 @@ export function submitEncryptionKey(
   ]);
 }
 
-/** Serializable WebAuthn credential creation outcome (for background bridge). */
-export type PasskeyEnrollmentCeremonyPayload = {
-  credentialId: number[];
-  userHandle: number[];
-  prfEnabled: boolean;
-  prfFirst?: number[];
-};
+export function generatePasskeyRegistrationOptions(): Promise<PasskeyRegitrationOptions> {
+  return submitRequestToBackground('generatePasskeyRegistrationOptions');
+}
+
+export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
+}
 
 /**
- * Completes passkey enrollment in the background after the UI runs WebAuthn creation.
- * The vault encryption key is never returned to the UI.
- * @param ceremony
- * @param prfSalt
+ * Finishes WebAuthn passkey registration in the background after the UI runs `create()`.
+ * Persists the passkey record; the vault encryption key is never returned to the UI.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
  */
-export function completePasskeyEnrollment(
-  ceremony: PasskeyEnrollmentCeremonyPayload,
-  prfSalt: number[],
+export function completePasskeyRegistration(
+  registrationResponse: PasskeyRegistrationResponse,
 ): Promise<void> {
-  return submitRequestToBackground('completePasskeyEnrollment', [
-    ceremony,
-    prfSalt,
+  return submitRequestToBackground('completePasskeyRegistration', [
+    registrationResponse,
   ]);
 }
 
-export function setPasskeyRecord(record: PasskeyRecord): Promise<void> {
-  return submitRequestToBackground('setPasskeyRecord', [record]);
-}
-
-export function getPasskeyRecord(): Promise<PasskeyRecord | null> {
-  return submitRequestToBackground('getPasskeyRecord', []);
+/**
+ * Finishes passkey unlock in the background (unwrap vault key, submit encryption key).
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function unlockWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('unlockWithPasskey', [
+    authenticationResponse,
+  ]);
 }
 
 export function isPasskeyEnrolled(): Promise<boolean> {

@@ -130,7 +130,6 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
-import { buildPasskeyRecord } from '@metamask/passkey-controller';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -2807,14 +2806,12 @@ export default class MetamaskController extends EventEmitter {
       submitEncryptionKey: this.submitEncryptionKey.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
 
-      // passkey (UI runs WebAuthn ceremony; background builds record — encryption key never sent to UI)
-      completePasskeyEnrollment: this.completePasskeyEnrollment.bind(this),
-      setPasskeyRecord: this.passkeyController.setPasskeyRecord.bind(
-        this.passkeyController,
-      ),
-      getPasskeyRecord: this.passkeyController.getPasskeyRecord.bind(
-        this.passkeyController,
-      ),
+      generatePasskeyRegistrationOptions:
+        this.generatePasskeyRegistrationOptions.bind(this),
+      generatePasskeyAuthenticationOptions:
+        this.generatePasskeyAuthenticationOptions.bind(this),
+      completePasskeyRegistration: this.completePasskeyRegistration.bind(this),
+      unlockWithPasskey: this.unlockWithPasskey.bind(this),
       isPasskeyEnrolled: this.passkeyController.isPasskeyEnrolled.bind(
         this.passkeyController,
       ),
@@ -4267,42 +4264,60 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Completes passkey enrollment after the UI runs WebAuthn credential creation.
-   * Exports the vault encryption key only in the background, builds the passkey
-   * record, and persists it. The encryption key is never exposed to the UI.
+   * Starts passkey registration: stores a registration session and returns creation options.
    *
-   * @param {object} ceremonyPayload - Serializable WebAuthn creation outcome from the UI.
-   * @param {number[]} ceremonyPayload.credentialId - Raw credential id bytes.
-   * @param {number[]} ceremonyPayload.userHandle - User handle bytes.
-   * @param {boolean} ceremonyPayload.prfEnabled - Whether the PRF extension was enabled.
-   * @param {number[]} [ceremonyPayload.prfFirst] - First PRF output bytes when present.
-   * @param {number[]} prfSaltBytes - PRF salt bytes from prepareCreationParams().
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
+   */
+  async generatePasskeyRegistrationOptions() {
+    return this.passkeyController.generatePasskeyRegistrationOptions();
+  }
+
+  /**
+   * Starts passkey unlock: stores an authentication session and returns request options.
+   *
+   * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
+   */
+  async generatePasskeyAuthenticationOptions() {
+    return this.passkeyController.generatePasskeyAuthenticationOptions();
+  }
+
+  /**
+   * Completes passkey registration after the UI runs WebAuthn credential creation.
+   * Verifies the challenge against the open registration session, then exports the vault
+   * encryption key only in the background, builds the passkey record, and persists it.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Wire response from the UI.
    * @returns {Promise<void>}
    */
-  async completePasskeyEnrollment(ceremonyPayload, prfSaltBytes) {
+  async completePasskeyRegistration(registrationResponse) {
     const encryptionKey = await this.keyringController.exportEncryptionKey();
     const { encryptionSalt } = this.keyringController.state;
     if (!encryptionSalt) {
       throw new Error('Missing encryption salt for passkey enrollment');
     }
-    const { credentialId, userHandle, prfEnabled, prfFirst } = ceremonyPayload;
-    const ceremonyResult = {
-      credentialId: new Uint8Array(credentialId),
-      userHandle: new Uint8Array(userHandle),
-      prfEnabled,
-      prfFirst:
-        Array.isArray(prfFirst) && prfFirst.length > 0
-          ? new Uint8Array(prfFirst).buffer
-          : undefined,
-    };
-    const prfSalt = new Uint8Array(prfSaltBytes);
-    const record = await buildPasskeyRecord(
+    await this.passkeyController.completePasskeyRegistration({
+      registrationResponse,
       encryptionKey,
       encryptionSalt,
-      ceremonyResult,
-      prfSalt,
+    });
+  }
+
+  /**
+   * Completes passkey unlock in the background: verifies auth challenge, unwraps vault key, submits it.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
+   * @returns {Promise<void>}
+   */
+  async unlockWithPasskey(authenticationResponse) {
+    const isEnrolled = this.passkeyController.isPasskeyEnrolled();
+    if (!isEnrolled) {
+      throw new Error('Passkey is not enrolled');
+    }
+    const encryptionKey = await this.passkeyController.unwrapVaultEncryptionKey(
+      authenticationResponse,
     );
-    this.passkeyController.setPasskeyRecord(record);
+    await this.submitEncryptionKey(encryptionKey);
+    this.passkeyController.clearPasskeyAuthenticationSession();
   }
 
   /**
@@ -5123,10 +5138,9 @@ export default class MetamaskController extends EventEmitter {
    * is up to date with known accounts once the vault is decrypted.
    *
    * @param {string} encryptionKey - The user's encryption key
-   * @param {string} [encryptionSalt] - Optional salt (e.g. from passkey enrollment record)
    */
-  async submitEncryptionKey(encryptionKey, encryptionSalt) {
-    await this.submitPasswordOrEncryptionKey({ encryptionKey, encryptionSalt });
+  async submitEncryptionKey(encryptionKey) {
+    await this.submitPasswordOrEncryptionKey({ encryptionKey });
   }
 
   /**
@@ -5137,23 +5151,15 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} params - The function parameters.
    * @param {string} params.password - The user's password.
    * @param {string} params.encryptionKey - The user's encryption key.
-   * @param {string} [params.encryptionSalt] - Optional salt for encryption key unlock.
    */
-  async submitPasswordOrEncryptionKey({
-    password,
-    encryptionKey,
-    encryptionSalt,
-  }) {
+  async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
     await this.offscreenPromise;
 
     if (encryptionKey) {
-      await this.keyringController.submitEncryptionKey(
-        encryptionKey,
-        encryptionSalt,
-      );
+      await this.keyringController.submitEncryptionKey(encryptionKey);
     } else {
       await this.keyringController.submitPassword(password);
       if (isSocialLoginFlow) {

@@ -45,7 +45,12 @@ jest.mock('../../store/actions.ts', () => ({
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
   isPasskeyEnrolled: jest.fn().mockResolvedValue(false),
-  getPasskeyRecord: jest.fn().mockResolvedValue(null),
+  generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
+    challenge: 'AQ',
+    allowCredentials: [{ id: 'AQ', type: 'public-key' }],
+    userVerification: 'required',
+  }),
+  unlockWithPasskey: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockElement = document.createElement('svg');

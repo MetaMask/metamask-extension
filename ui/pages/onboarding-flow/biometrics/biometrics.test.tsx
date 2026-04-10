@@ -9,24 +9,24 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-import { completePasskeyEnrollment } from '../../../store/actions';
+import {
+  completePasskeyRegistration,
+  generatePasskeyRegistrationOptions,
+} from '../../../store/actions';
 import Biometrics from './biometrics';
-
-jest.mock('@metamask/passkey-controller', () => ({
-  prepareCreationParams: jest.fn(() => ({
-    prfSalt: new Uint8Array(32),
-    userHandle: new Uint8Array(16),
-  })),
-}));
 
 jest.mock(
   '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
   () => ({
     PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
-      createCredential: jest.fn().mockResolvedValue({
-        credentialId: new Uint8Array([1, 2, 3]),
-        userHandle: new Uint8Array([4, 5, 6]),
-        prfEnabled: true,
+      startRegistration: jest.fn().mockResolvedValue({
+        id: 'AQ',
+        rawId: 'AQ',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
       }),
     })),
   }),
@@ -36,7 +36,22 @@ jest.mock('../../../store/actions', () => {
   const actual = jest.requireActual('../../../store/actions');
   return {
     ...actual,
-    completePasskeyEnrollment: jest.fn().mockResolvedValue(undefined),
+    generatePasskeyRegistrationOptions: jest.fn().mockResolvedValue({
+      rp: { name: 'MetaMask' },
+      user: { id: 'AQ', name: 'MetaMask User', displayName: 'MetaMask' },
+      challenge: 'AQ',
+      pubKeyCredParams: [
+        { alg: -7, type: 'public-key' },
+        { alg: -257, type: 'public-key' },
+      ],
+      authenticatorSelection: {
+        residentKey: 'preferred',
+        userVerification: 'required',
+        authenticatorAttachment: 'platform',
+      },
+      extensions: { prf: { eval: { first: 'AQ' } } },
+    }),
+    completePasskeyRegistration: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -64,7 +79,8 @@ describe('Biometrics', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
     mockClearVaultPassword.mockClear();
-    jest.mocked(completePasskeyEnrollment).mockClear();
+    jest.mocked(completePasskeyRegistration).mockClear();
+    jest.mocked(generatePasskeyRegistrationOptions).mockClear();
   });
 
   it('renders and matches snapshot', () => {
@@ -177,7 +193,7 @@ describe('Biometrics', () => {
       fireEvent.click(getByTestId('biometrics-set-up-button'));
 
       await waitFor(() => {
-        expect(completePasskeyEnrollment).toHaveBeenCalled();
+        expect(completePasskeyRegistration).toHaveBeenCalled();
       });
       expect(mockClearVaultPassword).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -200,7 +216,7 @@ describe('Biometrics', () => {
 
       fireEvent.click(getByTestId('biometrics-set-up-button'));
 
-      expect(completePasskeyEnrollment).not.toHaveBeenCalled();
+      expect(completePasskeyRegistration).not.toHaveBeenCalled();
       expect(mockClearVaultPassword).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,

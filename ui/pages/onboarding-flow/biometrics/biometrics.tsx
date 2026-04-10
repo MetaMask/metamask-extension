@@ -15,10 +15,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  prepareCreationParams,
-  type CredentialCreationResult,
-} from '@metamask/passkey-controller';
-import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
@@ -26,31 +22,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PasskeyCeremonyExtensionAdapter } from '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
-import { completePasskeyEnrollment } from '../../../store/actions';
-
-function uint8ArrayToNumberArray(bytes: Uint8Array): number[] {
-  return Array.from(bytes);
-}
-
-function credentialCreationResultToPayload(result: CredentialCreationResult): {
-  credentialId: number[];
-  userHandle: number[];
-  prfEnabled: boolean;
-  prfFirst?: number[];
-} {
-  const base = {
-    credentialId: uint8ArrayToNumberArray(result.credentialId),
-    userHandle: uint8ArrayToNumberArray(result.userHandle),
-    prfEnabled: result.prfEnabled,
-  };
-  if (result.prfFirst === undefined) {
-    return base;
-  }
-  return {
-    ...base,
-    prfFirst: uint8ArrayToNumberArray(new Uint8Array(result.prfFirst)),
-  };
-}
+import {
+  completePasskeyRegistration,
+  generatePasskeyRegistrationOptions,
+} from '../../../store/actions';
 
 export type BiometricsProps = {
   getVaultPassword: () => string | null;
@@ -88,13 +63,11 @@ export default function Biometrics({
     }
     setIsEnrolling(true);
     try {
-      const adapter = new PasskeyCeremonyExtensionAdapter();
-      const params = prepareCreationParams();
-      const result = await adapter.createCredential(params);
-      await completePasskeyEnrollment(
-        credentialCreationResultToPayload(result),
-        uint8ArrayToNumberArray(params.prfSalt),
-      );
+      const options = await generatePasskeyRegistrationOptions();
+      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
+      const registrationResponse =
+        await passkeyAdapter.startRegistration(options);
+      await completePasskeyRegistration(registrationResponse);
     } catch {
       // User cancelled or authenticator unavailable — continue onboarding
     } finally {
