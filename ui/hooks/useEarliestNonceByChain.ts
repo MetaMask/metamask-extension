@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
 import { hexToDecimal } from '../../shared/lib/conversion.utils';
+import { PENDING_STATUS_HASH } from '../helpers/constants/transactions';
 
 type TransactionGroup = {
   nonce?: string;
+  primaryTransaction?: {
+    status?: string;
+  };
   initialTransaction?: {
     chainId?: string;
   };
@@ -10,10 +14,11 @@ type TransactionGroup = {
 
 /**
  * Calculates the earliest (lowest) nonce per chain for pending transactions.
- * Used to determine which transaction can be sped up (must process in nonce order).
+ * Only groups whose primaryTransaction has a pending status are considered;
+ * confirmed locals that remain in the list for display are ignored.
  *
- * @param transactionGroups - Array of pending transaction groups
- * @returns Map of chainId to earliest nonce value (as number)
+ * @param transactionGroups - Array of transaction groups (pending and non-pending)
+ * @returns Map of chainId to earliest pending nonce value (as number)
  */
 export function useEarliestNonceByChain(
   transactionGroups: TransactionGroup[],
@@ -22,15 +27,22 @@ export function useEarliestNonceByChain(
     const nonceMap: Record<string, number> = {};
 
     transactionGroups.forEach((txGroup) => {
-      const { nonce } = txGroup;
+      const { nonce, primaryTransaction } = txGroup;
       const chainId = txGroup.initialTransaction?.chainId;
 
-      if (nonce && chainId) {
-        const nonceValue = Number(hexToDecimal(nonce));
+      if (
+        !nonce ||
+        !chainId ||
+        !primaryTransaction?.status ||
+        !(primaryTransaction.status in PENDING_STATUS_HASH)
+      ) {
+        return;
+      }
 
-        if (!(chainId in nonceMap) || nonceValue < nonceMap[chainId]) {
-          nonceMap[chainId] = nonceValue;
-        }
+      const nonceValue = Number(hexToDecimal(nonce));
+
+      if (!(chainId in nonceMap) || nonceValue < nonceMap[chainId]) {
+        nonceMap[chainId] = nonceValue;
       }
     });
 

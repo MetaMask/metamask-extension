@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { IconName, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPinnedAccountsList,
@@ -10,18 +11,15 @@ import {
 
 import { MenuItem } from '../../ui/menu';
 import {
-  IconName,
   ModalFocus,
   Popover,
   PopoverPosition,
   PopoverRole,
-  Text,
 } from '../../component-library';
 import {
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 
 const METRICS_LOCATION = 'Account Options';
@@ -141,12 +139,12 @@ export const AccountListItemMenu = ({
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             address={account.address}
-            textProps={{ variant: TextVariant.bodySm }}
+            textProps={{ variant: TextVariant.BodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            textProps={{ variant: TextVariant.bodySm }}
+            textProps={{ variant: TextVariant.BodySm }}
             account={account}
           />
           {isHidden ? null : (
@@ -160,7 +158,7 @@ export const AccountListItemMenu = ({
               }}
               iconNameLegacy={isPinned ? IconName.Unpin : IconName.Pin}
             >
-              <Text variant={TextVariant.bodySm}>
+              <Text variant={TextVariant.BodySm}>
                 {isPinned ? t('unpin') : t('pinToTop')}
               </Text>
             </MenuItem>
@@ -176,7 +174,7 @@ export const AccountListItemMenu = ({
             }}
             iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
           >
-            <Text variant={TextVariant.bodySm}>
+            <Text variant={TextVariant.BodySm}>
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
