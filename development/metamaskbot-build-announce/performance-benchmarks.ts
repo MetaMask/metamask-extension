@@ -487,6 +487,14 @@ function buildHealthMap(
   return map;
 }
 
+/** Strips `platform-buildType-` prefix from benchmark keys (aligned with artifact filename parsing in utils). */
+const BENCHMARK_ENTRY_DISPLAY_NAME_PATTERN = new RegExp(
+  `^(?:${Object.values(BENCHMARK_PLATFORMS).join(
+    '|',
+  )})-(?:${Object.values(BENCHMARK_BUILD_TYPES).join('|')})-(.+)$`,
+  'u',
+);
+
 /**
  * Extracts the display name from a benchmark name.
  * For startup benchmarks with platform prefix (e.g., 'chrome-browserify-startupStandardHome'),
@@ -495,9 +503,7 @@ function buildHealthMap(
  * @param benchmarkName
  */
 function extractDisplayName(benchmarkName: string): string {
-  const match = benchmarkName.match(
-    /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
-  );
+  const match = benchmarkName.match(BENCHMARK_ENTRY_DISPLAY_NAME_PATTERN);
   return match ? match[1] : benchmarkName;
 }
 
@@ -550,6 +556,25 @@ function buildBenchmarkRowSentryLinkHtml(
   return `<a href="${url}" title="${escapeHtmlAttr(BENCHMARK_ROW_SENTRY_TITLE)}">${BENCHMARK_ROW_SENTRY_LINK}</a>`;
 }
 
+const BENCHMARK_ROW_SENTRY_UNAVAILABLE_TITLE =
+  'Sentry Logs Explorer link requires SENTRY_DSN_PERFORMANCE with a valid DSN in CI.';
+
+/**
+ * Second line under the benchmark name in tables: always present.
+ * Clickable when {@link buildBenchmarkRowSentryLinkHtml} can build a URL; otherwise same label in a span.
+ *
+ * @param entry - Benchmark row identity (name and optional type for the Sentry query).
+ */
+function buildBenchmarkRowSentryLineHtml(
+  entry: Pick<BenchmarkEntry, 'benchmarkName' | 'benchmarkType'>,
+): string {
+  const linked = buildBenchmarkRowSentryLinkHtml(entry);
+  if (linked) {
+    return linked;
+  }
+  return `<span title="${escapeHtmlAttr(BENCHMARK_ROW_SENTRY_UNAVAILABLE_TITLE)}">${BENCHMARK_ROW_SENTRY_LINK}</span>`;
+}
+
 /**
  * Counts the number of failing and warning benchmark entries.
  *
@@ -583,15 +608,9 @@ function countHealthEntries(
  * Only returns timer breakdown if entry has multiple timers (user journey benchmarks).
  *
  * @param entry - Benchmark entry with all stats (mean, p75, p95)
- * @param baselineMetrics - Historical baseline for comparison (optional)
- * @param logHref
- * @returns HTML string with timer breakdown, or empty string if single timer
+ * @returns HTML timer breakdown (empty if single timer). Omits [CI log] links; the table cell adds {@link buildCiLogLinkHtml} above this block.
  */
-function formatTimerDetails(
-  entry: BenchmarkEntry,
-  baselineMetrics: HistoricalBaselineReference[string] | undefined,
-  logHref?: string,
-): string {
+function formatTimerDetails(entry: BenchmarkEntry): string {
   const timerCount = Object.keys(entry.mean).length;
 
   if (timerCount <= 1) {
@@ -635,9 +654,7 @@ function formatTimerDetails(
         return null;
       }
 
-      const linksHtml = buildCiLogLinkHtml(logHref);
-      const logsLine = linksHtml ? `<br>${linksHtml}` : '';
-      return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
+      return `<div>${icon} <code>${metricName}</code></div>`;
     })
     .filter((item) => item !== null)
     .join('');
@@ -875,11 +892,7 @@ export function buildBenchmarkSection(
               const icon = HEALTH_ICON[health];
               const logHref = entry.artifactUrl ?? runUrl;
 
-              const timerDetails = formatTimerDetails(
-                entry,
-                baselineMetrics,
-                logHref,
-              );
+              const timerDetails = formatTimerDetails(entry);
 
               const rowLinks = buildCiLogLinkHtml(logHref);
 
@@ -903,12 +916,15 @@ export function buildBenchmarkSection(
           const sampleEntry = orderedCombos
             .map((combo) => entryLookup.get(`${benchmarkName}|${combo}`))
             .find((e): e is BenchmarkEntry => Boolean(e));
-          const rowSentryHtml = sampleEntry
-            ? buildBenchmarkRowSentryLinkHtml(sampleEntry)
-            : '';
-          const benchmarkCell = rowSentryHtml
-            ? `<td align="left">${displayName}<br>${rowSentryHtml}</td>`
-            : `<td align="left">${displayName}</td>`;
+          const sentrySource: Pick<
+            BenchmarkEntry,
+            'benchmarkName' | 'benchmarkType'
+          > = sampleEntry ?? {
+            benchmarkName,
+            benchmarkType: undefined,
+          };
+          const rowSentryLine = buildBenchmarkRowSentryLineHtml(sentrySource);
+          const benchmarkCell = `<td align="left">${displayName}<br>${rowSentryLine}</td>`;
           return `<tr>${benchmarkCell}${cells}</tr>`;
         })
         .join('');
@@ -1028,12 +1044,15 @@ function buildHealthMatrixHtml(
         .join('');
       const displayName = extractDisplayName(benchmark);
       const rowEntry = allEntries.find((e) => e.benchmarkName === benchmark);
-      const rowSentryHtml = rowEntry
-        ? buildBenchmarkRowSentryLinkHtml(rowEntry)
-        : '';
-      const benchmarkCell = rowSentryHtml
-        ? `<td>${displayName}<br>${rowSentryHtml}</td>`
-        : `<td>${displayName}</td>`;
+      const sentrySource: Pick<
+        BenchmarkEntry,
+        'benchmarkName' | 'benchmarkType'
+      > = rowEntry ?? {
+        benchmarkName: benchmark,
+        benchmarkType: undefined,
+      };
+      const rowSentryLine = buildBenchmarkRowSentryLineHtml(sentrySource);
+      const benchmarkCell = `<td>${displayName}<br>${rowSentryLine}</td>`;
       return `<tr>${benchmarkCell}${cells}</tr>`;
     })
     .join('');

@@ -109,6 +109,18 @@ describe('buildPerformanceSentryLogsUrl', () => {
     expect(buildPerformanceSentryLogsUrl(['main'])).toBeNull();
   });
 
+  it('does not quote wildcard branch patterns so ci.branch:release/* matches release branches', () => {
+    const url = buildPerformanceSentryLogsUrl(['main', 'release/*']);
+    const logsQuery = new URL(url).searchParams.get('logsQuery');
+    expect(logsQuery).toBe('(ci.branch:main OR ci.branch:release/*)');
+    expect(logsQuery).not.toContain('"release/*"');
+
+    const singleWildcard = buildPerformanceSentryLogsUrl(['release/*']);
+    expect(
+      new URL(singleWildcard as string).searchParams.get('logsQuery'),
+    ).toBe('ci.branch:release/*');
+  });
+
   it('oRs multiple branches, skips empty entries, and dedupes', () => {
     const orUrl = buildPerformanceSentryLogsUrl(['feat/x', 'main'], {
       logMessage: 'm',

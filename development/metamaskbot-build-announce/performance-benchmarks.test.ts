@@ -487,8 +487,9 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
-    expect(html).toContain('<td align="left">loadNewAccount</td>');
-    expect(html).toContain('<td align="left">confirmTx</td>');
+    expect(html).toContain('<td align="left">loadNewAccount<br>');
+    expect(html).toContain('<td align="left">confirmTx<br>');
+    expect(html).toContain('[Sentry log · main/release]');
   });
 
   it('shows 🟢 in the cell when p95 is above baseline but within absolute threshold', () => {
@@ -832,21 +833,43 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
-    it('shows CI log without icon when timers are present', () => {
+    it('shows row health icon and CI log before timer details when breakdown is present', () => {
       const entry = makeEntry({
         benchmarkName: 'swap',
-        mean: { timer1: 100, timer2: 200 },
-        p75: { timer1: 110, timer2: 220 },
-        p95: { timer1: 120, timer2: 240 },
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 5000,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 4500,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 5500,
+        },
       });
 
+      const runUrl = 'https://github.com/actions/runs/123';
       const html = buildBenchmarkSection(
         withEntries([entry]),
         'Test',
         undefined,
-        'https://github.com/actions/runs/123',
+        runUrl,
       );
-      expect(html).not.toMatch(/🟢 <a href=.*>\[CI log\]<\/a><br\/>/u);
+
+      const health = computeEntryHealth(entry, undefined);
+      let rowIcon = COMPARISON_SEVERITY.Pass.icon;
+      if (health === EntryHealth.Fail) {
+        rowIcon = COMPARISON_SEVERITY.Regression.icon;
+      } else if (health === EntryHealth.Warn) {
+        rowIcon = COMPARISON_SEVERITY.Warn.icon;
+      }
+
+      // Cell layout: `${icon} ${rowLinks}<br>${timerDetails}` (literal <br>, not <br/>)
+      expect(html).toContain(`${rowIcon} <a href="${runUrl}"`);
+      expect(html).toContain('[CI log]</a><br>');
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
     });
 
     it('shows icon with CI log when no timers present', () => {
@@ -978,7 +1001,7 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('>[Sentry log · main/release]</a>');
     });
 
-    it('omits Sentry Logs Explorer link when SENTRY_DSN_PERFORMANCE is unset', () => {
+    it('shows Sentry row label as non-link span when SENTRY_DSN_PERFORMANCE is unset', () => {
       process.env.BRANCH = 'feat/test';
       delete process.env.SENTRY_DSN_PERFORMANCE;
       const html = buildBenchmarkSection(
@@ -989,6 +1012,8 @@ describe('buildBenchmarkSection', () => {
         BASELINE_PASS,
       );
       expect(html).toContain('>[CI log]</a>');
+      expect(html).toContain('[Sentry log · main/release]</span>');
+      expect(html).toContain('requires SENTRY_DSN_PERFORMANCE');
       expect(html).not.toContain('metamask.sentry.io/explore/logs');
     });
 
@@ -1008,11 +1033,11 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('>[CI log]</a>');
       expect(html).toContain('metamask.sentry.io/explore/logs');
       expect(html).toContain('ci.branch%3Amain');
-      expect(html).toContain('OR+ci.branch%3A%22release%2F*%22');
+      expect(html).toContain('OR+ci.branch%3Arelease%2F*');
       expect(html).toContain('message%3Abenchmark.loadNewAccount');
     });
 
-    it('puts row Sentry under the benchmark name and CI log only in timer detail lines', () => {
+    it('puts row Sentry under the benchmark name; single CI log above timer detail lines', () => {
       process.env.BRANCH = 'main';
       process.env.SENTRY_DSN_PERFORMANCE = mockDsn;
       const entry = makeEntry({

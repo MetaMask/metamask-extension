@@ -58,8 +58,9 @@ describe('buildArtifactsBody', () => {
       lavamoatPolicyChanged: false,
     });
 
-    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-webpack');
+    expect(result).toContain(
+      `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
+    );
   });
 
   it('omits build links when postNewBuilds is false', async () => {

@@ -52,7 +52,8 @@ export function parseSentryDSN(dsn: string): ParsedSentryDsn | null {
 }
 
 /**
- * Branch token for `ci.branch:` in Logs Explorer (quote if `/` or spaces).
+ * Branch token for `ci.branch:` in Logs Explorer.
+ * Quotes values that contain `/` or whitespace so the query parses as one token.
  * @param branch
  */
 function formatCiBranchFilterToken(branch: string): string {
@@ -60,7 +61,8 @@ function formatCiBranchFilterToken(branch: string): string {
   if (!trimmed) {
     return trimmed;
   }
-  return /[/\s]/u.test(trimmed)
+  const needsQuoting = /[/\s]/u.test(trimmed) && !trimmed.includes('*');
+  return needsQuoting
     ? `"${trimmed.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"')}"`
     : trimmed;
 }
