@@ -1,9 +1,11 @@
-import DecryptMessageController from '../../controllers/decrypt-message';
+import {
+  DecryptMessageController,
+  DecryptMessageControllerMessenger,
+} from '../../controllers/decrypt-message';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getDecryptMessageControllerMessenger,
-  DecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
 } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';

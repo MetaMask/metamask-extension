@@ -6,6 +6,7 @@
  */
 
 import { createProjectLogger } from '@metamask/utils';
+import type * as Sentry from '@sentry/browser';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -22,15 +23,46 @@ import type {
   PerpsTraceValue,
   InvalidateCacheParams,
 } from '@metamask/perps-controller';
+import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
+import {
+  MetaMetricsEventCategory,
+  type MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+
+/**
+ * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
+ */
+export type InfrastructureDeps = {
+  trackEvent: (payload: MetaMetricsEventPayload) => void;
+};
 
 const debugLog = createProjectLogger('perps');
 
 function createLogger(): PerpsLogger {
   return {
-    error: (error) => {
-      captureException(error);
+    error: (error, options) => {
+      const withScope = globalThis.sentry?.withScope;
+      if (!withScope) {
+        captureException(error);
+        return;
+      }
+      withScope((scope: Sentry.Scope) => {
+        scope.setTag('feature', 'perps');
+        if (options?.tags) {
+          for (const [k, v] of Object.entries(options.tags)) {
+            scope.setTag(k, String(v));
+          }
+        }
+        if (options?.context) {
+          scope.setContext(options.context.name, options.context.data);
+        }
+        if (options?.extras) {
+          scope.setExtras(options.extras);
+        }
+        captureException(error);
+      });
     },
   };
 }
@@ -39,14 +71,25 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(): PerpsMetrics {
+function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
   return {
-    isEnabled: () => false,
+    // isEnabled always true: the MetaMetricsController.trackEvent messenger action is a
+    // no-op when the user has not opted into analytics, so consent filtering is
+    // enforced at that layer rather than here. Mobile delegates this check to
+    // analytics.isEnabled() directly because it uses a different analytics stack.
+    isEnabled: () => true,
     trackPerpsEvent: (
-      _event: PerpsAnalyticsEvent,
-      _properties: PerpsAnalyticsProperties,
+      event: PerpsAnalyticsEvent,
+      properties: PerpsAnalyticsProperties,
     ) => {
-      // TODO: Integrate with MetaMetrics when ready
+      deps.trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          ...properties,
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+        },
+      });
     },
   };
 }
@@ -57,26 +100,84 @@ function createPerformance(): PerpsPerformance {
   };
 }
 
+const MAX_PENDING_SPANS = 50;
+
 function createTracer(): PerpsTracer {
+  const pendingSpans = new Map<
+    string,
+    {
+      setAttribute: (key: string, value: PerpsTraceValue) => void;
+      end: () => void;
+    }
+  >();
+
   return {
-    trace: (_params: {
+    trace: (params: {
       name: PerpsTraceName;
       id: string;
       op: string;
       tags?: Record<string, PerpsTraceValue>;
       data?: Record<string, PerpsTraceValue>;
     }) => {
-      // TODO: Integrate with Sentry tracing when ready
+      const startSpanManual = globalThis.sentry?.startSpanManual;
+      if (!startSpanManual) {
+        return;
+      }
+
+      const key = `${params.name}:${params.id}`;
+
+      // End any existing span with the same key before overwriting to avoid
+      // leaking the old span reference when trace() is called twice with the
+      // same name/id pair.
+      const existing = pendingSpans.get(key);
+      if (existing) {
+        existing.end();
+        pendingSpans.delete(key);
+      }
+
+      // Evict the oldest pending span when the map is at capacity so the map
+      // cannot grow unboundedly over long browser sessions.
+      if (pendingSpans.size >= MAX_PENDING_SPANS) {
+        const oldestKey = pendingSpans.keys().next().value;
+        if (oldestKey !== undefined) {
+          pendingSpans.get(oldestKey)?.end();
+          pendingSpans.delete(oldestKey);
+        }
+      }
+
+      startSpanManual(
+        {
+          name: params.name,
+          op: params.op,
+          attributes: { ...params.tags, ...params.data },
+        },
+        (span: {
+          setAttribute: (key: string, value: PerpsTraceValue) => void;
+          end: () => void;
+        }) => {
+          pendingSpans.set(key, span);
+        },
+      );
     },
-    endTrace: (_params: {
+    endTrace: (params: {
       name: PerpsTraceName;
       id: string;
       data?: Record<string, PerpsTraceValue>;
     }) => {
-      // TODO: End Sentry span
+      const key = `${params.name}:${params.id}`;
+      const pending = pendingSpans.get(key);
+      if (pending) {
+        if (params.data) {
+          for (const [attrKey, attrValue] of Object.entries(params.data)) {
+            pending.setAttribute(attrKey, attrValue);
+          }
+        }
+        pending.end();
+        pendingSpans.delete(key);
+      }
     },
-    setMeasurement: (_name: string, _value: number, _unit: string) => {
-      // TODO: Set Sentry measurement
+    setMeasurement: (name: string, value: number, unit: string) => {
+      globalThis.sentry?.setMeasurement?.(name, value, unit);
     },
   };
 }
@@ -145,13 +246,16 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
+ * @param deps - Platform hooks (e.g. MetaMetrics `trackEvent`).
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
-export function createPerpsInfrastructure(): PerpsPlatformDependencies {
+export function createPerpsInfrastructure(
+  deps: InfrastructureDeps,
+): PerpsPlatformDependencies {
   return {
     logger: createLogger(),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(),
+    metrics: createMetrics(deps),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),

@@ -3105,7 +3105,8 @@
     "message": "继续以确保："
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "您的 Ledger 已解锁"
+    "message": "您的 $1 已解锁",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "以太坊应用已打开"

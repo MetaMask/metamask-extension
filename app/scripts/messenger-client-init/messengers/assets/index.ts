@@ -29,7 +29,6 @@ export type {
 } from './assets-contract-controller-messenger';
 
 export { getNetworkOrderControllerMessenger } from './network-order-controller-messenger';
-export type { NetworkOrderControllerMessenger } from './network-order-controller-messenger';
 
 export {
   getNetworkEnablementControllerMessenger,

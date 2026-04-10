@@ -37,29 +37,32 @@ describe('buildArtifactsBody', () => {
   const makeArtifacts = () =>
     getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
 
-  it('includes build links when postNewBuilds is true', () => {
+  it('includes build links when builds are fresh (buildsFromSha matches shortSha)', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: true,
+      buildsFromSha: 'abc1234',
     });
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('build-dist-webpack');
+    expect(result).toContain('Builds ready [abc1234]');
+    expect(result).not.toContain('reused from');
   });
 
-  it('omits build links when postNewBuilds is false', () => {
+  it('includes build links and reused tag when builds are reused', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
-      shortSha: 'abc1234',
+      shortSha: 'def5678',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
     });
 
-    expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
+    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
+    expect(result).toContain('Builds ready [def5678] [reused from abc1234]');
   });
 
   it('wraps everything in a collapsible details element with the sha', () => {
@@ -68,7 +71,7 @@ describe('buildArtifactsBody', () => {
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
     });
 
     expect(result).toContain('<details>');
@@ -83,7 +86,7 @@ describe('buildArtifactsBody', () => {
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
     });
 
     expect(result).toContain(
@@ -98,7 +101,7 @@ describe('buildArtifactsBody', () => {
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
     });
 
     expect(result).toContain(
@@ -106,6 +109,18 @@ describe('buildArtifactsBody', () => {
     );
     expect(result).toContain(
       `<a href="${HOST}/bundle-size/webpack/bundle_size_stats.json">Webpack Bundle Size Stats</a>`,
+    );
+  });
+
+  it('uses allArtifacts link with the runId passed to getArtifactLinks', () => {
+    const links = getArtifactLinks(
+      HOST,
+      'MetaMask',
+      'metamask-extension',
+      '55',
+    );
+    expect(links.allArtifacts.url).toBe(
+      'https://github.com/MetaMask/metamask-extension/actions/runs/55#artifacts',
     );
   });
 });
