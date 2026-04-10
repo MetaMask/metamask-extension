@@ -6,6 +6,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockAccountState } from '../mocks';
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsLiveAccount = jest.fn(() => ({
+  account: mockAccountState,
+  isInitialLoading: false,
+}));
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
@@ -23,10 +27,7 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveAccount: () => ({
-    account: mockAccountState,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveAccount: () => mockUsePerpsLiveAccount(),
 }));
 
 // eslint-disable-next-line import-x/first
@@ -42,6 +43,10 @@ describe('PerpsMarketBalanceActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: mockAccountState,
+      isInitialLoading: false,
+    });
   });
 
   it('renders balance information', () => {
@@ -83,17 +88,14 @@ describe('PerpsMarketBalanceActions', () => {
 
     it('shows geo-block modal from empty state add-funds button when not eligible', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
-
-      jest.mock('../../../../hooks/perps/stream', () => ({
-        usePerpsLiveAccount: () => ({
-          account: {
-            ...mockAccountState,
-            totalBalance: '0',
-            unrealizedPnl: '0',
-          },
-          isInitialLoading: false,
-        }),
-      }));
+      mockUsePerpsLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          totalBalance: '0',
+          unrealizedPnl: '0',
+        },
+        isInitialLoading: false,
+      });
 
       const onAddFunds = jest.fn();
       renderWithProvider(
@@ -101,11 +103,12 @@ describe('PerpsMarketBalanceActions', () => {
         mockStore,
       );
 
-      const addFundsButtons = screen.queryAllByText(/add funds/iu);
-      if (addFundsButtons.length > 0) {
-        fireEvent.click(addFundsButtons[0]);
-        expect(onAddFunds).not.toHaveBeenCalled();
-      }
+      fireEvent.click(
+        screen.getByTestId('perps-balance-actions-add-funds-empty'),
+      );
+
+      expect(onAddFunds).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
   });
 });
