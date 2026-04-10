@@ -243,13 +243,16 @@ if (args.bundleAnalyzer) {
   );
 }
 
-// @metamask/perps-controller v2.0.0 ships a dynamic import for MYXProvider.mjs
-// but excludes the file from the package via `files` in package.json. webpack
-// treats this as a hard "Module not found" error, so we must stop it from
-// attempting to resolve the import. The existing ignoreWarnings entry below
-// only suppresses warnings — not errors — so we need IgnorePlugin here.
-// TODO: Remove once @metamask/perps-controller adds /* webpackIgnore: true */
-// to the dynamic import in its dist (or ships MYXProvider.mjs).
+// Workaround for a bug in @metamask/perps-controller's publish pipeline.
+// The core source uses /* webpackIgnore: true */ on the dynamic MYXProvider
+// import (see packages/perps-controller/src/PerpsController.ts), but
+// ts-bridge strips the magic comment during JS emit. The published dist
+// ends up with a plain import("./providers/MYXProvider.mjs") pointing at a
+// file that is intentionally excluded from `files` in the package. webpack
+// treats this as a hard "Module not found" error (ignoreWarnings below only
+// handles warnings, not errors), so we must stop it from trying to resolve
+// the import at all.
+// TODO: Remove once core fixes its build to preserve the magic comment.
 plugins.push(
   new IgnorePlugin({ resourceRegExp: /providers\/MYXProvider\.mjs$/u }),
 );
