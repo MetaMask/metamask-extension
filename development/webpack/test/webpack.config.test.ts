@@ -414,7 +414,7 @@ ${Object.entries(env)
       (plugin) =>
         plugin instanceof IgnorePlugin &&
         (
-          plugin as { options: { resourceRegExp: RegExp } }
+          plugin as unknown as { options: { resourceRegExp: RegExp } }
         ).options.resourceRegExp.test('providers/MYXProvider.mjs'),
     );
     assert.ok(
