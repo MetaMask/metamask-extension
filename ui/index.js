@@ -389,9 +389,6 @@ function setupStateHooks(store) {
     ) {
       await actions.captureTestBackgroundError(msg);
     };
-    window.stateHooks.perpsInjectPositions = function (positions) {
-      getPerpsStreamManager().positions.pushData(positions);
-    };
   }
 
   /**
