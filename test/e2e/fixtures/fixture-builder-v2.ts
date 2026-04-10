@@ -23,6 +23,7 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import {
+  type NetworkMetadata,
   type NetworkState,
   NetworkStatus,
   RpcEndpointType,
@@ -565,6 +566,7 @@ class FixtureBuilderV2 {
           }[];
         }
       >;
+      networksMetadata: Record<string, NetworkMetadata>;
     };
     const chainConfig =
       networkController.networkConfigurationsByChainId[chainId];
@@ -577,6 +579,10 @@ class FixtureBuilderV2 {
       });
       chainConfig.defaultRpcEndpointIndex = chainConfig.rpcEndpoints.length - 1;
       networkController.selectedNetworkClientId = localClientId;
+      networkController.networksMetadata[localClientId] = {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      };
     }
     return this;
   }

@@ -10,7 +10,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
+import { MOCK_META_METRICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -1451,7 +1451,6 @@ export const getBridgeL2Fixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
-    .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
     .withNetworkRpcUrlOnLocalhost('0xe708')
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokenListController({
