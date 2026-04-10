@@ -39,6 +39,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'revokeRefreshToken',
   'renewRefreshToken',
   'getMarketingConsent',
+  'setMarketingConsent',
 ] as const;
 
 export class OAuthService {
