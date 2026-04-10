@@ -38,6 +38,7 @@ export const SrpListItem = ({
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
+        gap={2}
       >
         <PreferredAvatar
           address={seedAddress}
