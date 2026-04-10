@@ -10,7 +10,11 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
-import { add0x } from '@metamask/utils';
+import {
+  add0x,
+  createModuleLogger,
+  createProjectLogger,
+} from '@metamask/utils';
 
 import {
   LedgerAction,
@@ -18,6 +22,25 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+
+/*
+ * Investigation (extension GH 41602, mobile 28589): hardware preflight runs per
+ * confirmation via useHardwareFooter; gas-sponsored STX swaps add batch txs in
+ * useTransactionConfirm. Mobile shares eth-ledger-bridge-keyring and hw-app-eth;
+ * Extension adds LedgerAdapter preflight via getLedgerAppConfiguration.
+ * Repro: Monad USDC to MON swap with sponsorship; METAMASK_DEBUG logs config per step.
+ * Related changelog: 13.19 #39985 (swap HW errors), 13.22 #40597 (Ledger messages),
+ * 13.24 #40836 (send/dapp HW errors).
+ */
+
+/**
+ * Debug logger for Ledger offscreen operations. Enable with METAMASK_DEBUG when
+ * investigating device communication (e.g. extension issue 41602).
+ */
+const ledgerOffscreenDebugLog = createModuleLogger(
+  createProjectLogger('extension'),
+  'ledger-offscreen',
+);
 
 /**
  * Selectors that are used only by NFT standards (ERC721/ERC1155), not by ERC20.
@@ -165,10 +188,18 @@ export class LedgerOffscreenHandler {
           }
         }
 
+        // Never hold an open transport without a LedgerEth instance — partial init
+        // caused `getAppConfiguration` to use `ethApp?.getAppConfiguration()` and
+        // return undefined, which the UI misread as blind signing disabled (GH 41602).
+        if (this.transport && !this.ethApp) {
+          await this.closeTransport();
+        }
+
         this.transport = await this.openTransport();
         this.ethApp = new LedgerEth(this.transport);
         return true;
       } catch (error) {
+        await this.closeTransport();
         console.error('Ledger makeApp error:', error);
         throw error;
       } finally {
@@ -488,14 +519,17 @@ export class LedgerOffscreenHandler {
         return { appName, version };
       }
 
-      case LedgerAction.getAppConfiguration:
-        if (!this.transport) {
-          await this.makeApp();
+      case LedgerAction.getAppConfiguration: {
+        const app = await this.ensureApp();
+        const configuration = await app.getAppConfiguration();
+        if (process.env.METAMASK_DEBUG) {
+          ledgerOffscreenDebugLog.log(
+            'Ledger getAppConfiguration (METAMASK_DEBUG, issue 41602)',
+            configuration,
+          );
         }
-        if (!this.transport) {
-          throw new Error('No transport available');
-        }
-        return this.ethApp?.getAppConfiguration();
+        return configuration;
+      }
 
       case LedgerAction.getPublicKey:
         if (!params?.hdPath || typeof params.hdPath !== 'string') {

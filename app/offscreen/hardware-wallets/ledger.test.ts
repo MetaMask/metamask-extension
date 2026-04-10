@@ -253,6 +253,22 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    describe('getAppConfiguration', () => {
+      it('returns app configuration from the device', async () => {
+        const mockConfiguration = {
+          arbitraryDataEnabled: 1,
+          version: '1.0.0',
+        };
+        mockGetAppConfiguration.mockResolvedValue(mockConfiguration);
+
+        const response = await sendAction(LedgerAction.getAppConfiguration);
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(mockConfiguration);
+        expect(mockGetAppConfiguration).toHaveBeenCalled();
+      });
+    });
+
     describe('getPublicKey', () => {
       it('returns public key for valid hdPath', async () => {
         mockGetAddress.mockResolvedValue({

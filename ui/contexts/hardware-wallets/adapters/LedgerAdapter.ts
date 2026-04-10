@@ -1,4 +1,5 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
@@ -20,6 +21,11 @@ import {
   isWebHidAvailable,
   subscribeToWebHidEvents,
 } from '../webConnectionUtils';
+
+const ledgerAdapterDebugLog = createModuleLogger(
+  createProjectLogger('extension'),
+  'LedgerAdapter',
+);
 
 /**
  * Ledger adapter implementation
@@ -217,6 +223,10 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * on the Ledger device. Defaults to true. Set to false for simple sends (plain
    * native asset transfers) that don't involve contract interactions.
    * @returns true if device is ready
+   *
+   * Each transaction confirmation runs this preflight before Confirm (see
+   * useHardwareFooter). Set METAMASK_DEBUG to log getLedgerAppConfiguration output when
+   * diagnosing false blind signing errors on multi-step sponsored swaps (extension issue 41602).
    */
   async ensureDeviceReady(
     options?: EnsureDeviceReadyOptions,
@@ -242,7 +252,17 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // and dapp transactions. Simple sends (plain native asset transfers) do not
       // require blind signing since the Ledger can display them natively.
       if (requireBlindSigning) {
-        const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
+        const ledgerAppConfiguration = await getLedgerAppConfiguration();
+        if (process.env.METAMASK_DEBUG) {
+          ledgerAdapterDebugLog.log(
+            'Ledger app configuration (METAMASK_DEBUG, issue 41602)',
+            {
+              requireBlindSigning,
+              ledgerAppConfiguration,
+            },
+          );
+        }
+        const { arbitraryDataEnabled } = ledgerAppConfiguration;
         if (arbitraryDataEnabled !== 1) {
           throw createHardwareWalletError(
             ErrorCode.DeviceStateBlindSignNotSupported,
