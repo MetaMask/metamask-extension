@@ -574,7 +574,21 @@ export async function fetchTokenList(
   if (tokenlistUrl.startsWith('file://')) {
     // For local files, use fs module instead of fetch
     const fs = await import('fs').then((m) => m.promises);
-    const filePath = tokenlistUrl.replace('file://', '');
+    const path = await import('path').then((m) => m);
+
+    // Handle both file:// and file:/// URLs correctly
+    let filePath = tokenlistUrl.replace('file://', '');
+
+    // On Windows, file URLs might have an extra slash
+    if (process.platform === 'win32' && !filePath.startsWith('/')) {
+      filePath = '/' + filePath;
+    }
+
+    // Resolve to absolute path
+    filePath = path.resolve(filePath);
+
+    console.log(`[TOKENLIST] Reading from file: ${filePath}`);
+
     const fileContent = await fs.readFile(filePath, 'utf-8');
     data = JSON.parse(fileContent);
   } else {
@@ -620,9 +634,17 @@ export async function fetchTokenList(
   });
 
   // Filter for tokens matching the specified chain ID
-  const filteredTokens = normalizedTokens.filter(
-    (token: Token) => token.chainId === chainId,
-  );
+  // Normalize chainId values to ensure proper numeric comparison
+  const filteredTokens = normalizedTokens.filter((token: Token) => {
+    // Convert both to numbers to ensure proper comparison
+    const tokenChainId =
+      typeof token.chainId === 'string'
+        ? parseInt(token.chainId, 10)
+        : Number(token.chainId);
+    const targetChainId = Number(chainId);
+
+    return tokenChainId === targetChainId;
+  });
 
   if (filteredTokens.length === 0) {
     console.warn(
@@ -631,7 +653,11 @@ export async function fetchTokenList(
 
     // Log available chain IDs to help debug
     const availableChainIds = [
-      ...new Set(normalizedTokens.map((t: Token) => t.chainId)),
+      ...new Set(
+        normalizedTokens.map((t: Token) =>
+          typeof t.chainId === 'string' ? parseInt(t.chainId, 10) : Number(t.chainId),
+        ),
+      ),
     ];
     console.warn(
       `[WARN] Available chain IDs in tokenlist: ${availableChainIds.join(', ')}`,

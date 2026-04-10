@@ -92,6 +92,69 @@
       "name": "Tether Gold",
       "symbol": "XAUT",
       "decimals": 6
+    },
+    {
+      "chainId": 57073,
+      "address": "0x2d270e6886d130d724215a266106e6832161eaed",
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "chainId": 57073,
+      "address": "0x71052bae71c25c78e37fd12e5ff1101a71d9018f",
+      "name": "Chainlink Token",
+      "symbol": "LINK",
+      "decimals": 18
+    },
+    {
+      "chainId": 57073,
+      "address": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "name": "Tether",
+      "symbol": "USDT0",
+      "decimals": 6
+    },
+    {
+      "chainId": 57073,
+      "address": "0xa3d68b74bf0528fdd07263c60d6488749044914b",
+      "name": "Wrapped eETH",
+      "symbol": "weETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 57073,
+      "address": "0xe343167631d89b6ffc58b88d6b7fb0228795491d",
+      "name": "USDG",
+      "symbol": "USDG",
+      "decimals": 6
+    },
+    {
+      "chainId": 57073,
+      "address": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+      "name": "NVDAX",
+      "symbol": "NVDAx",
+      "decimals": 18
+    },
+    {
+      "chainId": 57073,
+      "address": "0xfc421ad3c883bf9e7c4f42de845c4e4405799e73",
+      "name": "GHO",
+      "symbol": "GHO",
+      "decimals": 18
+    },
+    {
+      "chainId": 57073,
+      "address": "0xf1815bd50389c46847f0bda824ec8da914045d14",
+      "name": "Stargate Bridged USDC",
+      "symbol": "USDC.e",
+      "decimals": 6
+    },
+    {
+      "chainId": 57073,
+      "address": "0x80eede496655fb9047dd39d9f418d5483ed600df",
+      "name": "FRXUSD",
+      "symbol": "frxUSD",
+      "decimals": 18
     }
   ]
 }

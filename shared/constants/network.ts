@@ -356,7 +356,7 @@ export const MEGAETH_MAINNET_DISPLAY_NAME = 'MegaETH';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
-export const INK_DISPLAY_NAME = 'Ink Mainnet';
+export const INK_DISPLAY_NAME = 'Ink';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
 export const SONEIUM_TESTNET_DISPLAY_NAME = 'Soneium Minato Testnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
@@ -496,6 +496,7 @@ export const CURRENCY_SYMBOLS = {
   TEMPO_MAINNET: 'USD',
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
+  INK: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
@@ -919,6 +920,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_DISPLAY_NAME,
+  [CHAIN_IDS.INK_SEPOLIA]: INK_SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.INK]: INK_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {

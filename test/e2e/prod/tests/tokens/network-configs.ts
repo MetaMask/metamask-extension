@@ -8,6 +8,8 @@
  * No code changes needed - just update this data file!
  */
 
+import * as path from 'path';
+
 export type NetworkConfig = {
   /**
    * Unique identifier for the network (used in test names and reports)
@@ -458,7 +460,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     rpcUrl: 'https://rpc.ankr.com/chiliz',
     rpcName: 'Chiliz RPC',
     tokenlistUrl:
-      'https://raw.githubusercontent.com/chiliz-c hain/token-list/main/tokenlist.json',
+      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
     blockExplorerUrl: 'https://scan.chiliz.com',
   },
   // {
@@ -505,6 +507,16 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
   //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
   // },
+  {
+    networkId: 'Ink',
+    networkName: 'Ink',
+    chainId: 57073,
+    symbol: 'ETH', // adjust if the native symbol differs
+    rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+    rpcName: 'Ink RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
+  },
 ];
 
 /**

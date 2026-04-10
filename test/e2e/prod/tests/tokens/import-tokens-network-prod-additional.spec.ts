@@ -209,6 +209,8 @@ async function runTokenImportTest(
           const importPromise = assetListPage.importCustomTokenByChain(
             toHex(networkConfig.chainId).toString(),
             token.address,
+            token.symbol,
+            token.decimals.toString(),
           );
 
           // Race between import and timeout
@@ -236,10 +238,7 @@ async function runTokenImportTest(
 
             try {
               // Try to close the import modal if it's still open
-              const closeButton =
-                '[data-testid="import-tokens-modal-close-button"]';
-              const cancelButton =
-                '[data-testid="import-tokens-modal-cancel-button"]';
+              const closeButton = '[data-testid="modal-header-close-button"]';
 
               // Try close button first
               const closeElements = await driver.findElements(closeButton);
@@ -247,12 +246,9 @@ async function runTokenImportTest(
                 await driver.clickElement(closeButton);
                 await driver.delay(500);
               } else {
-                // Try cancel button
-                const cancelElements = await driver.findElements(cancelButton);
-                if (cancelElements.length > 0) {
-                  await driver.clickElement(cancelButton);
-                  await driver.delay(500);
-                }
+                // If no close button, try pressing Escape key
+                await driver.pressKeyboardKey('Escape');
+                await driver.delay(500);
               }
             } catch (cleanupError) {
               console.log(

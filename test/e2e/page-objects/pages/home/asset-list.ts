@@ -316,26 +316,54 @@ class AssetListPage {
     await this.driver.waitForSelector(this.tokenAddressInput);
 
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.waitForSelector(this.tokenSymbolTitle);
 
-    if (symbol) {
-      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
-      await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
-        waitAtLeastGuard: 1000,
-      });
+    // If symbol and decimals are provided, skip waiting for RPC detection
+    // and fill them directly to avoid timeout on slow RPC endpoints
+    if (symbol && decimals) {
+      console.log(`[IMPORT] Token metadata provided - skipping RPC detection (${symbol}/${decimals})`);
+      // Wait for form to be ready
+      await this.driver.delay(500);
+
+      // Fill symbol directly without waiting for RPC
       await this.driver.fill(this.tokenSymbolInput, symbol);
-    }
+      await this.driver.delay(300);
 
-    if (decimals) {
-      await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
-        waitAtLeastGuard: 1000,
-      });
+      // Fill decimals
       await this.driver.fill(this.tokenDecimalsInput, decimals);
+    } else {
+      // Original flow: wait for RPC to detect symbol/decimals
+      console.log(`[IMPORT] Token metadata NOT provided - waiting for RPC detection`);
+      await this.driver.waitForSelector(this.tokenSymbolTitle, {
+        timeout: 30000, // Increased timeout for slow RPCs
+      });
+
+      if (symbol) {
+        // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+        await this.driver.waitForSelector(this.importTokensNextButton, {
+          state: 'disabled',
+          waitAtLeastGuard: 1000,
+        });
+        await this.driver.fill(this.tokenSymbolInput, symbol);
+      }
+
+      if (decimals) {
+        await this.driver.waitForSelector(this.importTokensNextButton, {
+          state: 'disabled',
+          waitAtLeastGuard: 1000,
+        });
+        await this.driver.fill(this.tokenDecimalsInput, decimals);
+      }
     }
 
-    await this.driver.waitForSelector(this.tokenDecimalsTitle);
+    // ALWAYS wait for decimals field to be visible and stable before proceeding
+    // This ensures form is ready for BOTH metadata-provided and RPC-detected flows
+    console.log(`[IMPORT] Waiting for form to be stable before clicking Next...`);
+    await this.driver.waitForSelector(this.tokenDecimalsTitle, {
+      timeout: 10000,
+    });
+    await this.driver.delay(300); // Small delay to ensure form is fully stable
+
+    console.log(`[IMPORT] Form is ready. Clicking Next button...`);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.clickElementAndWaitToDisappear(
