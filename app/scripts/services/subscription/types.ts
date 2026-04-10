@@ -52,7 +52,7 @@ export const SERVICE_NAME = 'SubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
-type AllowedAction =
+type AllowedActions =
   | SubscriptionControllerGetPricingAction
   | SubscriptionControllerStartShieldSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
@@ -86,7 +86,7 @@ export type SubscriptionServiceEvent = never;
 
 export type SubscriptionServiceMessenger = Messenger<
   ServiceName,
-  SubscriptionServiceMethodActions | AllowedAction,
+  SubscriptionServiceMethodActions | AllowedActions,
   SubscriptionServiceEvent
 >;
 
