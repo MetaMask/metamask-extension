@@ -19,7 +19,10 @@ import {
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
-import { getIsSocialLoginFlow, getMetaMaskHdKeyrings } from '../../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getMetaMaskHdKeyrings,
+} from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';

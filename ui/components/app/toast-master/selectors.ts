@@ -149,7 +149,9 @@ export function selectShowConnectAccountGroupToast(
  * @param state - Redux state object.
  * @returns The new wallet number to display, or false if the toast should be hidden.
  */
-export function selectNewSrpAdded(state: Pick<State, 'appState'>): number | false {
+export function selectNewSrpAdded(
+  state: Pick<State, 'appState'>,
+): number | false {
   return state.appState.showNewSrpAddedToast || false;
 }
 
