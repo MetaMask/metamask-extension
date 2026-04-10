@@ -729,10 +729,18 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByTestId('perps-candle-period-modal'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Candle intervals')).toBeInTheDocument();
-      expect(screen.getByText('Minutes')).toBeInTheDocument();
-      expect(screen.getByText('Hours')).toBeInTheDocument();
-      expect(screen.getByText('Days')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandleIntervals.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodMinutes.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodHours.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodDays.message),
+      ).toBeInTheDocument();
 
       const morePeriodOption = screen.getByTestId(
         'perps-candle-period-modal-30m',
@@ -745,6 +753,23 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.queryByTestId('perps-candle-period-modal'),
       ).not.toBeInTheDocument();
+    });
+
+    it('does not mark 1min as selected after selecting 1M from the modal', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
+
+      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
+        'bg-muted',
+      );
     });
 
     it('closes the candle period modal when the close button is clicked', async () => {

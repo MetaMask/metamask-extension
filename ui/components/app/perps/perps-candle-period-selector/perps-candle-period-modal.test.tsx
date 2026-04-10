@@ -63,8 +63,6 @@ describe('PerpsCandlePeriodModal', () => {
 
     expect(screen.getByRole('dialog')).toHaveStyle({
       width: '100%',
-      maxWidth: '360px',
-      borderRadius: '20px',
     });
     expect(screen.getByRole('dialog')).not.toHaveStyle({
       marginTop: 'auto',

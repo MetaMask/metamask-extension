@@ -32,7 +32,7 @@ import { CandlePeriod, CANDLE_PERIODS } from '../constants/chartConfig';
 import { isMatchingPeriod } from './perps-candle-period-utils';
 
 type CandlePeriodSection = {
-  title: string;
+  titleKey: string;
   periods: readonly {
     label: string;
     value: CandlePeriod;
@@ -41,7 +41,7 @@ type CandlePeriodSection = {
 
 const CANDLE_PERIOD_MODAL_SECTIONS: CandlePeriodSection[] = [
   {
-    title: 'Minutes',
+    titleKey: 'perpsCandlePeriodMinutes',
     periods: CANDLE_PERIODS.filter((period) =>
       [
         CandlePeriod.OneMinute,
@@ -53,7 +53,7 @@ const CANDLE_PERIOD_MODAL_SECTIONS: CandlePeriodSection[] = [
     ),
   },
   {
-    title: 'Hours',
+    titleKey: 'perpsCandlePeriodHours',
     periods: CANDLE_PERIODS.filter((period) =>
       [
         CandlePeriod.OneHour,
@@ -65,7 +65,7 @@ const CANDLE_PERIOD_MODAL_SECTIONS: CandlePeriodSection[] = [
     ),
   },
   {
-    title: 'Days',
+    titleKey: 'perpsCandlePeriodDays',
     periods: CANDLE_PERIODS.filter((period) =>
       [
         CandlePeriod.OneDay,
@@ -110,8 +110,6 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
           marginTop: 'auto',
           width: '100%',
           maxWidth: '100%',
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
           borderTopLeftRadius: '20px',
           borderTopRightRadius: '20px',
           borderBottomLeftRadius: 0,
@@ -126,7 +124,6 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
           width: '100%',
           maxWidth: '360px',
           borderRadius: '20px',
-          overflow: 'hidden',
         },
       };
 
@@ -155,7 +152,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
               fontWeight={FontWeight.Bold}
               className="text-center"
             >
-              Candle intervals
+              {t('perpsCandleIntervals')}
             </Text>
             <ButtonIcon
               iconName={IconName.Close}
@@ -170,7 +167,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
         <Box className="flex flex-col gap-2 px-4 pt-1 pb-5">
           {CANDLE_PERIOD_MODAL_SECTIONS.map((section, sectionIndex) => (
             <Box
-              key={section.title}
+              key={section.titleKey}
               className={twMerge(
                 'flex flex-col gap-2',
                 sectionIndex > 0 && 'pt-5',
@@ -181,7 +178,7 @@ export const PerpsCandlePeriodModal: React.FC<PerpsCandlePeriodModalProps> = ({
                 color={TextColor.TextAlternative}
                 fontWeight={FontWeight.Medium}
               >
-                {section.title}
+                {t(section.titleKey)}
               </Text>
 
               <div className="grid grid-cols-5 gap-2">
