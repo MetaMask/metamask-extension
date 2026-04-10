@@ -16,6 +16,8 @@ import {
   mockInitialFullScan,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+  mockTokensV3Assets,
+  mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
@@ -29,6 +31,8 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
