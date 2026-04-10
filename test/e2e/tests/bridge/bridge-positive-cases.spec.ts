@@ -26,6 +26,7 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await bridgeTransaction({
           driver,
           quote: {
@@ -103,6 +104,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -188,6 +190,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 
@@ -218,6 +221,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 
@@ -251,6 +255,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 
@@ -288,6 +293,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 

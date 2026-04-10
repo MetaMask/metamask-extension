@@ -1294,7 +1294,12 @@ export const getQuoteNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    });
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1349,7 +1354,12 @@ export const getBridgeNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    });
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1404,7 +1414,12 @@ export const getInsufficientFundsFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    });
 
   return {
     fixtures: fixtureBuilder.build(),

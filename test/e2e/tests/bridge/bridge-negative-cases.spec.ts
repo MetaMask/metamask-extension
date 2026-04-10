@@ -31,6 +31,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -66,6 +67,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -120,6 +122,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -149,6 +152,7 @@ describe('Bridge functionality', function (this: Suite) {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'USD',
@@ -189,6 +193,7 @@ describe('Bridge functionality', function (this: Suite) {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
@@ -229,6 +234,7 @@ describe('Bridge functionality', function (this: Suite) {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           'ETH',
