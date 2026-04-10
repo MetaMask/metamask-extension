@@ -70,7 +70,7 @@ describe('Develop options tab', () => {
       }
     });
 
-    it('should not render perps-testnet-toggle when METAMASK_DEBUG is not set', () => {
+    it('does not render perps-testnet-toggle when METAMASK_DEBUG is not set', () => {
       delete process.env.METAMASK_DEBUG;
       const { queryByTestId } = renderWithProvider(
         <DeveloperOptionsTab />,
@@ -79,7 +79,7 @@ describe('Develop options tab', () => {
       expect(queryByTestId('perps-testnet-toggle')).not.toBeInTheDocument();
     });
 
-    it('should render perps-testnet-toggle when METAMASK_DEBUG is set', () => {
+    it('renders perps-testnet-toggle when METAMASK_DEBUG is set', () => {
       process.env.METAMASK_DEBUG = 'true';
       const { getByTestId } = renderWithProvider(
         <DeveloperOptionsTab />,
@@ -88,7 +88,7 @@ describe('Develop options tab', () => {
       expect(getByTestId('perps-testnet-toggle')).toBeInTheDocument();
     });
 
-    it('should call perpsToggleTestnet when toggle is clicked', () => {
+    it('calls perpsToggleTestnet when toggle is clicked', () => {
       process.env.METAMASK_DEBUG = 'true';
       const { getByTestId } = renderWithProvider(
         <DeveloperOptionsTab />,
