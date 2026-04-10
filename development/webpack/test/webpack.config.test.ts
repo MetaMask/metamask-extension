@@ -297,6 +297,24 @@ ${Object.entries(env)
       undefined,
       'Progress plugin should be absent',
     );
+
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
+    );
+    assert.strictEqual(
+      bundleAnalyzerPlugin,
+      undefined,
+      'BundleAnalyzerPlugin should be absent without --bundleAnalyzer',
+    );
+  });
+
+  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
+    const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
+    const instance = getWebpackInstance(config);
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
+    );
+    assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
   });
 
   it('should allow disabling source maps', () => {
