@@ -767,7 +767,6 @@ const PerpsOrderEntryPage: React.FC = () => {
         ? closePartialToastDescription
         : undefined;
     }
-
     if (inProgressToastKey !== undefined) {
       replacePerpsToastByKey({
         key: inProgressToastKey,
