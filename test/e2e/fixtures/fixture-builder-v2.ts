@@ -570,7 +570,12 @@ class FixtureBuilderV2 {
     };
     const chainConfig =
       networkController.networkConfigurationsByChainId[chainId];
-    if (chainConfig) {
+    if (!chainConfig) {
+      throw new Error(
+        `withNetworkRpcUrlOnLocalhost: no network configuration found for chain ${chainId}`,
+      );
+    }
+    {
       const localClientId = `${chainId}-local`;
       chainConfig.rpcEndpoints.push({
         networkClientId: localClientId,
