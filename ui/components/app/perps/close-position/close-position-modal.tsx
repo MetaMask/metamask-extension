@@ -277,6 +277,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setClosePercent(100);
       setIsSubmitting(false);
       setError(null);
+      setIsGeoBlockModalOpen(false);
     }
   }, [isOpen]);
 

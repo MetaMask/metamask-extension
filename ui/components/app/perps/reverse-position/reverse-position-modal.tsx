@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -82,6 +82,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsGeoBlockModalOpen(false);
+    }
+  }, [isOpen]);
+
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,

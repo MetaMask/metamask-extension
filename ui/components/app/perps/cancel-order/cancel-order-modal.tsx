@@ -80,6 +80,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
     if (isOpen) {
       setIsSubmitting(false);
       setError(null);
+      setIsGeoBlockModalOpen(false);
     }
   }, [isOpen]);
 
