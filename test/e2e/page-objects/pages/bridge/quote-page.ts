@@ -230,9 +230,11 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
-  submitQuote = async () => {
+  submitQuote = async ({ dismissStatusPage = true } = {}) => {
     await this.driver.clickElement(this.submitButton);
-    await this.dismissStatusPage();
+    if (dismissStatusPage) {
+      await this.dismissStatusPage();
+    }
   };
 
   dismissStatusPage = async () => {
