@@ -10,6 +10,10 @@ import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TabsProps, TabChild } from './tabs.types';
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(value, max));
+}
+
 async function startTransition(
   direction: 'forward' | 'backward',
   update: () => void,
@@ -119,11 +123,9 @@ export const Tabs = <TKey extends string = string>({
       return null;
     }
 
-    if (activeTabIndex >= validChildren.length || activeTabIndex < 0) {
-      throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
-    }
+    const clampedIndex = clamp(activeTabIndex, 0, validChildren.length - 1);
 
-    const activeChild = validChildren[activeTabIndex];
+    const activeChild = validChildren[clampedIndex];
     return activeChild?.props.children || null;
   };
 
