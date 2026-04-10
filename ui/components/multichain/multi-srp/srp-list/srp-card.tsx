@@ -156,10 +156,7 @@ export const SrpCard = ({
       </Box>
       {showAccounts && (
         <Box>
-          <Box
-            marginTop={2}
-            marginBottom={2}
-          />
+          <Box marginTop={2} marginBottom={2} />
           {multichainAccounts.map((group) => {
             return (
               <SrpListItem
