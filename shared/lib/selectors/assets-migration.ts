@@ -22,6 +22,7 @@ import {
   CurrencyRateState,
   MarketDataDetails,
   TokenRatesControllerState,
+  RatesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -34,6 +35,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
 import { createDeepEqualSelector } from './selector-creators';
 
@@ -51,11 +53,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // tokenBalances: DONE
 //
 // CurrencyRateController
-// currencyRates: TODO
-// currentCurrency: TODO
+// currencyRates: DONE
+// currentCurrency: DONE
 //
 // TokenRatesController
-// marketData: TODO
+// marketData: DONE
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -66,14 +68,14 @@ import { createDeepEqualSelector } from './selector-creators';
 // balances: DONE
 //
 // MultichainAssetsRatesController
-// conversionRates: TODO
+// conversionRates: DONE
 // historicalPrices: TODO (This state should be removed)
+//
+// RatesController
+// rates: DONE
 //
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
-//
-// RatesController
-// rates: TODO (This state should be removed)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -90,6 +92,9 @@ const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
       state.metamask?.remoteFeatureFlags ?? {},
   ],
   (remoteFeatureFlags) => {
+    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+      return false;
+    }
     const featureFlag = remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG] as
       | AssetsUnifyStateFeatureFlag
       | undefined;
@@ -320,6 +325,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
       state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
+      state.metamask?.customAssets ?? {},
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
@@ -328,6 +335,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     tokenBalances,
     assetsInfo,
     assetsBalance,
+    customAssets,
     internalAccountsById,
   ) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -335,7 +343,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     }
 
     const result: TokenBalancesControllerState['tokenBalances'] = {};
-
     for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
       const internalAccount = internalAccountsById[accountId];
       if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
@@ -353,7 +360,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
 
-        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
           metadata.type === 'native'
@@ -365,6 +371,48 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         result[accountAddress][hexChainId][assetAddress] =
           // TODO: Use raw value from state when available
           parseBalanceWithDecimals(assetBalance.amount, metadata.decimals);
+      }
+    }
+
+    // Custom EVM tokens may have metadata (assetsInfo) but no balance
+    // in assetsBalance yet (the async fetch hasn't completed).  Add a
+    // zero-balance placeholder so selectAllEvmAssets doesn't filter them out.
+    for (const [accountId, assetIds] of Object.entries(customAssets)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      const accountAddress = internalAccount.address as Hex;
+      result[accountAddress] ??= {};
+      const accountBalances = assetsBalance[accountId] ?? {};
+
+      for (const assetId of assetIds) {
+        if (accountBalances[assetId]) {
+          continue;
+        }
+
+        const metadata = assetsInfo[assetId];
+        if (!metadata || metadata.type === 'native') {
+          continue;
+        }
+
+        const assetType = parseCaipAssetType(assetId);
+
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+        const assetAddress = toChecksumHexAddress(
+          assetType.assetReference,
+        ) as Hex;
+
+        if (!result[accountAddress]?.[hexChainId]?.[assetAddress]) {
+          result[accountAddress][hexChainId] ??= {};
+          result[accountAddress][hexChainId][assetAddress] =
+            parseBalanceWithDecimals('0', metadata.decimals);
+        }
       }
     }
 
@@ -634,15 +682,8 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: AssetsControllerState }) =>
       state.metamask?.assetsPrice ?? {},
-    getCurrencyRateControllerCurrentCurrency,
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    currencyRates,
-    assetsInfo,
-    assetsPrice,
-    currentCurrency,
-  ) => {
+  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
@@ -668,29 +709,16 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         continue;
       }
 
-      // assetsInfo may use slip44:60 (EVM standard) for native tokens while assetsPrice
-      // uses the chain-specific slip44 (e.g., slip44:9005 for AVAX on eip155:43114).
-      // Fall back to any slip44 key for the same chain when the direct lookup misses.
-      let price = assetsPrice[assetId];
-      if (!price) {
-        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
-        const fallbackKey = Object.keys(assetsPrice).find((key) =>
-          key.startsWith(chainNativePrefix),
-        );
-        if (fallbackKey) {
-          price = assetsPrice[fallbackKey];
-        }
-      }
+      const price = assetsPrice[assetId];
 
-      if (!price) {
+      if (price?.assetPriceType !== 'fungible') {
         continue;
       }
 
       result[metadata.symbol] = {
         conversionDate: price.lastUpdated / 1000,
         conversionRate: price.price,
-        // This cannot be populated unless the selected currency is already USD
-        usdConversionRate: currentCurrency === 'usd' ? price.price : null,
+        usdConversionRate: price.usdPrice,
       };
     }
 
@@ -736,21 +764,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
         continue;
       }
 
-      // assetsPrice may use a chain-specific slip44 (e.g., slip44:9005 for AVAX)
-      // while assetsInfo uses slip44:60 (EVM standard). Fall back to any slip44
-      // key for the same chain when the direct lookup misses.
-      // Guard: only attempt fallback for slip44 (native) assets to avoid
-      // misattributing an ERC-20 price entry to the native token address.
-      let metadata = assetsInfo[assetId];
-      if (!metadata && assetType.assetNamespace === 'slip44') {
-        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
-        const fallbackKey = Object.keys(assetsInfo).find((key) =>
-          key.startsWith(chainNativePrefix),
-        );
-        if (fallbackKey) {
-          metadata = assetsInfo[fallbackKey];
-        }
-      }
+      const metadata = assetsInfo[assetId];
       if (!metadata) {
         continue;
       }
@@ -867,6 +881,69 @@ export const getMultichainAssetsRatesControllerConversionRates =
     MultichainAssetsRatesControllerState,
     'conversionRates'
   >;
+
+export const getRatesControllerRates = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: RatesControllerState }) => state.metamask.rates ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsPrice ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, rates, assetsInfo, assetsPrice) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return rates;
+    }
+
+    const result: RatesControllerState['rates'] = {};
+
+    for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+      const symbol = metadata.symbol.toLowerCase();
+
+      // Skip if we already have an entry for this symbol
+      if (result[symbol]) {
+        continue;
+      }
+
+      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const price = assetsPrice[assetId];
+
+      // Skip if not a native asset, if evm or if not fungible
+      if (
+        metadata.type !== 'native' ||
+        assetType.chain.namespace === KnownCaipNamespace.Eip155 ||
+        price?.assetPriceType !== 'fungible'
+      ) {
+        continue;
+      }
+
+      result[symbol] = {
+        conversionDate: price.lastUpdated,
+        conversionRate: price.price,
+        usdConversionRate: price.usdPrice,
+      };
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<RatesControllerState, 'rates'>;
+
+export const getRatesControllerFiatCurrency = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: RatesControllerState }) => state.metamask.fiatCurrency,
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.selectedCurrency,
+  ],
+  (isAssetsUnifyStateEnabled, fiatCurrency, selectedCurrency) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return fiatCurrency;
+    }
+
+    return selectedCurrency;
+  },
+) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
 
 function parseBalanceWithDecimals(
   balanceString: string,

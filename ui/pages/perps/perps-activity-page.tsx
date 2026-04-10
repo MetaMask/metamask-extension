@@ -17,16 +17,22 @@ import {
   IconName,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
-import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
 import {
   Dropdown,
@@ -41,7 +47,7 @@ import {
 const PerpsActivityPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
 
@@ -82,11 +88,23 @@ const PerpsActivityPage: React.FC = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
+  // Navigate to the market detail page when an order transaction is clicked
+  const handleTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      if (transaction.type === 'order') {
+        navigate(
+          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
+        );
+      }
+    },
+    [navigate],
+  );
+
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
@@ -189,6 +207,11 @@ const PerpsActivityPage: React.FC = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
+                      onClick={
+                        transaction.type === 'order'
+                          ? handleTransactionClick
+                          : undefined
+                      }
                     />
                   ))}
                 </Box>

@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
-import { get, has, set, unset, cloneDeep } from 'lodash';
+import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
@@ -12,7 +12,7 @@ import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const FEATURE_FLAGS_RESPONSE = [
@@ -1187,7 +1187,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1370,7 +1370,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);

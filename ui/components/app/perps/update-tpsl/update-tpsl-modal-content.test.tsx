@@ -1,25 +1,36 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
-import { UpdateTPSLModalContent } from './update-tpsl-modal-content';
+import {
+  UpdateTPSLModalContent,
+  type UpdateTPSLSubmitState,
+} from './update-tpsl-modal-content';
 
-const mockGetPerpsController = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+jest.mock('../perps-toast', () => ({
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -34,16 +45,59 @@ const positionWithoutTPSL = mockPositions[2]; // LINK: TP=undefined, SL=undefine
 const defaultProps = {
   position: positionWithTPSL,
   currentPrice: 2900,
-  selectedAddress: '0x123',
   onClose: jest.fn(),
 };
+
+/**
+ * Mirrors UpdateTPSLModal footer so unit tests can reach the primary action
+ * @param props
+ */
+const TpslContentWithTestFooter: React.FC<
+  React.ComponentProps<typeof UpdateTPSLModalContent>
+> = (props) => {
+  const [submitState, setSubmitState] =
+    React.useState<UpdateTPSLSubmitState | null>(null);
+  return (
+    <>
+      <UpdateTPSLModalContent {...props} onSubmitStateChange={setSubmitState} />
+      {submitState ? (
+        <button
+          type="button"
+          data-testid="perps-update-tpsl-modal-submit"
+          onClick={submitState.onSubmit}
+          disabled={submitState.submitDisabled}
+          title={submitState.submitButtonTitle}
+        >
+          {submitState.isSaving
+            ? messages.perpsSubmitting.message
+            : messages.perpsSaveChanges.message}
+        </button>
+      ) : null}
+    </>
+  );
+};
+
+function renderTpslModalContent(
+  props: Partial<React.ComponentProps<typeof UpdateTPSLModalContent>> = {},
+) {
+  return renderWithProvider(
+    <TpslContentWithTestFooter {...defaultProps} {...props} />,
+    mockStore,
+  );
+}
 
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPerpsController.mockResolvedValue({
-      updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-      getPositions: jest.fn().mockResolvedValue(mockPositions),
+    mockReplacePerpsToastByKey.mockReset();
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsUpdatePositionTPSL') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsGetPositions') {
+        return Promise.resolve(mockPositions);
+      }
+      return Promise.resolve({ success: true });
     });
     mockGetPerpsStreamManager.mockReturnValue({
       setOptimisticTPSL: jest.fn(),
@@ -57,10 +111,7 @@ describe('UpdateTPSLModalContent', () => {
 
   describe('rendering', () => {
     it('renders Take Profit and Stop Loss sections', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       expect(
         screen.getByText(messages.perpsTakeProfit.message),
@@ -71,10 +122,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('renders TP preset buttons', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       expect(screen.getByText('+10%')).toBeInTheDocument();
       expect(screen.getByText('+25%')).toBeInTheDocument();
@@ -83,10 +131,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('renders SL preset buttons', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       expect(screen.getByText('-10%')).toBeInTheDocument();
       expect(screen.getByText('-25%')).toBeInTheDocument();
@@ -95,10 +140,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('renders the save button', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       expect(
         screen.getByText(messages.perpsSaveChanges.message),
@@ -106,10 +148,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('renders four text inputs (TP price, TP %, SL price, SL %)', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const priceInputs = screen.getAllByPlaceholderText('0.00');
       const percentInputs = screen.getAllByPlaceholderText('0.0');
@@ -120,10 +159,7 @@ describe('UpdateTPSLModalContent', () => {
 
   describe('initialization', () => {
     it('initializes TP/SL prices from position data', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const priceInputs = screen.getAllByPlaceholderText('0.00');
       const tpInput = priceInputs[0] as HTMLInputElement;
@@ -134,13 +170,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('initializes with empty inputs when position has no TP/SL', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={positionWithoutTPSL}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({ position: positionWithoutTPSL });
 
       const priceInputs = screen.getAllByPlaceholderText('0.00');
       const tpInput = priceInputs[0] as HTMLInputElement;
@@ -149,14 +179,77 @@ describe('UpdateTPSLModalContent', () => {
       expect(tpInput.value).toBe('');
       expect(slInput.value).toBe('');
     });
+
+    it('does not reset TP/SL fields when position updates with the same symbol', () => {
+      const { rerender } = renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        mockStore,
+      );
+
+      const tpInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+      const slInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      fireEvent.change(tpInput, { target: { value: '4000' } });
+      fireEvent.change(slInput, { target: { value: '2500' } });
+
+      const polledPosition = {
+        ...positionWithTPSL,
+        unrealizedPnl: '400.00',
+        stopLossPrice: undefined,
+        takeProfitPrice: undefined,
+      };
+      rerender(
+        <TpslContentWithTestFooter
+          {...defaultProps}
+          position={polledPosition}
+        />,
+      );
+
+      expect(
+        (screen.getAllByPlaceholderText('0.00')[0] as HTMLInputElement).value,
+      ).toBe('4000');
+      expect(
+        (screen.getAllByPlaceholderText('0.00')[1] as HTMLInputElement).value,
+      ).toBe('2500');
+    });
+  });
+
+  describe('estimated P&L', () => {
+    it('shows estimated P&L at take profit and stop loss when prices are set', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-tp-pnl-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-sl-pnl-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsEstimatedPnlAtTakeProfit.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsEstimatedPnlAtStopLoss.message),
+      ).toBeInTheDocument();
+    });
+
+    it('hides estimated P&L rows when TP/SL prices are cleared', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      expect(
+        screen.queryByTestId('perps-update-tpsl-estimated-tp-pnl-row'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-update-tpsl-estimated-sl-pnl-row'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('presets', () => {
     it('sets TP price when a TP preset is clicked', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       fireEvent.click(screen.getByText('+25%'));
 
@@ -170,10 +263,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('sets SL price when a SL preset is clicked', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       fireEvent.click(screen.getByText('-25%'));
 
@@ -189,10 +279,7 @@ describe('UpdateTPSLModalContent', () => {
 
   describe('price input', () => {
     it('allows typing a TP price directly', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const tpInput = screen.getAllByPlaceholderText('0.00')[0];
       fireEvent.change(tpInput, { target: { value: '3500' } });
@@ -201,10 +288,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('allows clearing the TP price input', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const tpInput = screen.getAllByPlaceholderText('0.00')[0];
       fireEvent.change(tpInput, { target: { value: '' } });
@@ -213,13 +297,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('formats the TP price on blur', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={positionWithoutTPSL}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({ position: positionWithoutTPSL });
 
       const tpInput = screen.getAllByPlaceholderText('0.00')[0];
       fireEvent.change(tpInput, { target: { value: '3500' } });
@@ -231,13 +309,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('formats the SL price on blur', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={positionWithoutTPSL}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({ position: positionWithoutTPSL });
 
       const slInput = screen.getAllByPlaceholderText('0.00')[1];
       fireEvent.change(slInput, { target: { value: '2500' } });
@@ -251,10 +323,7 @@ describe('UpdateTPSLModalContent', () => {
 
   describe('percent input', () => {
     it('updates TP price when a percent value is typed', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const percentInputs = screen.getAllByPlaceholderText('0.0');
       const tpPercentInput = percentInputs[0];
@@ -269,10 +338,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('updates SL price when a percent value is typed', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const percentInputs = screen.getAllByPlaceholderText('0.0');
       const slPercentInput = percentInputs[1];
@@ -287,10 +353,7 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('clears TP price when percent input is cleared', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       const tpPercentInput = screen.getAllByPlaceholderText('0.0')[0];
       fireEvent.change(tpPercentInput, { target: { value: '' } });
@@ -303,31 +366,25 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('submit', () => {
-    it('calls updatePositionTPSL and onClose on successful save', async () => {
+    it('calls perpsUpdatePositionTPSL and onClose on successful save', async () => {
       const onClose = jest.fn();
-      const updatePositionTPSL = jest.fn().mockResolvedValue({ success: true });
-      const getPositions = jest.fn().mockResolvedValue(mockPositions);
 
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL,
-        getPositions,
-      });
-
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} onClose={onClose} />,
-        mockStore,
-      );
+      renderTpslModalContent({ onClose });
 
       const saveButton = screen.getByText(messages.perpsSaveChanges.message);
       fireEvent.click(saveButton);
 
       await waitFor(() => {
-        expect(mockGetPerpsController).toHaveBeenCalledWith('0x123');
-        expect(updatePositionTPSL).toHaveBeenCalledWith({
-          symbol: positionWithTPSL.symbol,
-          takeProfitPrice: '3200.00',
-          stopLossPrice: '2600.00',
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithTPSL.symbol,
+              takeProfitPrice: '3200.00',
+              stopLossPrice: '2600.00',
+            },
+          ],
+        );
       });
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
@@ -335,30 +392,22 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
-      const updatePositionTPSL = jest.fn().mockResolvedValue({ success: true });
-
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
-      });
-
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={positionWithoutTPSL}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({ position: positionWithoutTPSL });
 
       const saveButton = screen.getByText(messages.perpsSaveChanges.message);
       fireEvent.click(saveButton);
 
       await waitFor(() => {
-        expect(updatePositionTPSL).toHaveBeenCalledWith({
-          symbol: positionWithoutTPSL.symbol,
-          takeProfitPrice: undefined,
-          stopLossPrice: undefined,
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithoutTPSL.symbol,
+              takeProfitPrice: undefined,
+              stopLossPrice: undefined,
+            },
+          ],
+        );
       });
     });
 
@@ -374,10 +423,7 @@ describe('UpdateTPSLModalContent', () => {
         pushPositionsWithOverrides: jest.fn(),
       });
 
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
@@ -390,62 +436,117 @@ describe('UpdateTPSLModalContent', () => {
         expect(pushData).toHaveBeenCalled();
       });
     });
+
+    it('runs delayed refetch reconciliation after modal closes', async () => {
+      jest.useFakeTimers();
+      try {
+        const pushPositionsWithOverrides = jest.fn();
+        mockGetPerpsStreamManager.mockReturnValue({
+          setOptimisticTPSL: jest.fn(),
+          positions: {
+            getCachedData: jest.fn().mockReturnValue(mockPositions),
+            pushData: jest.fn(),
+          },
+          pushPositionsWithOverrides,
+        });
+
+        const onClose = jest.fn();
+        const { unmount } = renderTpslModalContent({ onClose });
+        onClose.mockImplementation(() => {
+          unmount();
+        });
+
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+        await waitFor(() => {
+          expect(onClose).toHaveBeenCalledTimes(1);
+        });
+
+        await act(async () => {
+          jest.advanceTimersByTime(2500);
+        });
+
+        await waitFor(() => {
+          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
+        });
+        await waitFor(() => {
+          expect(pushPositionsWithOverrides).toHaveBeenCalledWith(
+            mockPositions,
+          );
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe('error handling', () => {
-    it('displays an error when updatePositionTPSL fails', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Server error' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+    it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: false, error: 'Server error' });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve({ success: true });
       });
 
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
-      );
+      renderTpslModalContent();
 
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Server error')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Server error',
+        });
       });
+      expect(screen.queryByText('Server error')).not.toBeInTheDocument();
     });
 
-    it('displays a generic error when an exception is thrown', async () => {
-      mockGetPerpsController.mockRejectedValue(new Error('Network failure'));
-
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} />,
-        mockStore,
+    it('shows generic toast error when an exception is thrown', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network failure'),
       );
+
+      renderTpslModalContent();
 
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Network failure')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Network failure',
+        });
       });
+      expect(screen.queryByText('Network failure')).not.toBeInTheDocument();
     });
 
     it('does not call onClose when save fails', async () => {
       const onClose = jest.fn();
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'fail' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: false, error: 'fail' });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve({ success: true });
       });
 
-      renderWithProvider(
-        <UpdateTPSLModalContent {...defaultProps} onClose={onClose} />,
-        mockStore,
-      );
+      renderTpslModalContent({ onClose });
 
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('fail')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'fail',
+        });
       });
       expect(onClose).not.toHaveBeenCalled();
     });
@@ -456,14 +557,10 @@ describe('UpdateTPSLModalContent', () => {
     const shortPosition = mockPositions[1];
 
     it('calculates TP preset correctly for a short position', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={shortPosition}
-          currentPrice={45000}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({
+        position: shortPosition,
+        currentPrice: 45000,
+      });
 
       fireEvent.click(screen.getByText('+10%'));
 
@@ -477,14 +574,10 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('calculates SL preset correctly for a short position', () => {
-      renderWithProvider(
-        <UpdateTPSLModalContent
-          {...defaultProps}
-          position={shortPosition}
-          currentPrice={45000}
-        />,
-        mockStore,
-      );
+      renderTpslModalContent({
+        position: shortPosition,
+        currentPrice: 45000,
+      });
 
       fireEvent.click(screen.getByText('-10%'));
 

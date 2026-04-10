@@ -10,7 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
 // Switch Account is not available in BIP44 stage 2
@@ -35,7 +35,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Upgrade Account
         const headerNavbar = new HeaderNavbar(driver);

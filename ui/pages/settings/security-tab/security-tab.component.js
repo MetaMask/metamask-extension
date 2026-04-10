@@ -6,13 +6,14 @@ import {
   addUrlProtocolPrefix,
   getEnvironmentType,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
@@ -101,12 +102,9 @@ export default class SecurityTab extends PureComponent {
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
-    useExternalNameSources: PropTypes.bool.isRequired,
-    setUseExternalNameSources: PropTypes.func.isRequired,
     setBasicFunctionalityModalOpen: PropTypes.func.isRequired,
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
-    petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func,
@@ -193,8 +191,8 @@ export default class SecurityTab extends PureComponent {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          is_metrics_opted_in: true,
-          has_marketing_consent: Boolean(value),
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(value),
           location: 'Settings',
         },
       });
@@ -1061,41 +1059,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderExternalNameSourcesToggle() {
-    const { t } = this.context;
-    const { useExternalNameSources, setUseExternalNameSources } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[15]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('externalNameSourcesSetting')}</span>
-          <div className="settings-page__content-description">
-            {t('externalNameSourcesSettingDescription')}
-          </div>
-        </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="useExternalNameSources"
-        >
-          <ToggleButton
-            value={useExternalNameSources}
-            onToggle={(value) => setUseExternalNameSources(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderSimulationsToggle() {
     const { t } = this.context;
     const {
@@ -1327,7 +1290,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const { petnamesEnabled, dataCollectionForMarketing } = this.props;
+    const { dataCollectionForMarketing } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
@@ -1396,17 +1359,6 @@ export default class SecurityTab extends PureComponent {
           {this.renderDisplayNftMediaToggle()}
           {this.renderNftDetectionToggle()}
         </div>
-
-        {petnamesEnabled && (
-          <>
-            <span className="settings-page__security-tab-sub-header">
-              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
-            </span>
-            <div className="settings-page__content-padded">
-              {this.renderExternalNameSourcesToggle()}
-            </div>
-          </>
-        )}
 
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}

@@ -51,6 +51,9 @@ class Confirmation {
 
   private scrollToBottomButton = '.confirm-scroll-to-bottom__button';
 
+  private securityProviderBannerAlert =
+    '[data-testid="security-provider-banner-alert"]';
+
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
   constructor(driver: Driver) {
@@ -75,6 +78,19 @@ class Confirmation {
 
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
+  }
+
+  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      this.securityProviderBannerAlert,
+      {
+        waitAtLeastGuard: 1000,
+      },
+    );
+  }
+
+  async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
+    await this.driver.waitForSelector(this.securityProviderBannerAlert);
   }
 
   async clickFooterConfirmButton() {

@@ -437,8 +437,10 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
  * Handles common formats from TrezorError.toString() and wrapped error messages.
  * @param message
  */
-function extractTrezorCodeFromMessage(message: string): string | null {
-  const match = message.match(/(?:code:\s*)([A-Za-z]+_[A-Za-z0-9_]+)/u);
+
+export function extractTrezorCodeFromMessage(message: string): string | null {
+  const TREZOR_CODE_REGEX = /code:\s*([A-Za-z]+_\w+)/u;
+  const match = TREZOR_CODE_REGEX.exec(message);
   return match?.[1] ?? null;
 }
 
@@ -449,17 +451,81 @@ function extractTrezorCodeFromMessage(message: string): string | null {
  * @param error - The error to inspect
  * @returns The error message string
  */
-function extractMessageFromUnknownError(error: unknown): string {
+export function extractMessageFromUnknownError(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
 
-  const message = (error as { message?: unknown })?.message;
-  if (typeof message === 'string') {
-    return message;
+  if (typeof error === 'object' && error !== null) {
+    const errorLike = error as { message?: unknown };
+    const { message } = errorLike;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (
+      typeof message === 'number' ||
+      typeof message === 'boolean' ||
+      typeof message === 'bigint'
+    ) {
+      return String(message);
+    }
+
+    try {
+      return JSON.stringify(error, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      );
+    } catch {
+      return String(error);
+    }
   }
 
   return String(error);
+}
+
+/**
+ * Check whether an error's message/stack contains user-cancel text.
+ *
+ * @param error - The error to inspect
+ * @returns True if the error text indicates a user cancellation/rejection
+ */
+export function hasUserRejectedMessage(error: unknown): boolean {
+  const message = extractMessageFromUnknownError(error).toLowerCase();
+  const rawStack =
+    typeof error === 'object' && error !== null
+      ? (error as { stack?: unknown }).stack
+      : undefined;
+  let stack = '';
+
+  if (rawStack !== null && rawStack !== undefined) {
+    if (
+      typeof rawStack === 'number' ||
+      typeof rawStack === 'boolean' ||
+      typeof rawStack === 'bigint'
+    ) {
+      stack = String(rawStack);
+    } else if (typeof rawStack === 'string') {
+      stack = rawStack;
+    } else {
+      const stringifiedStack = rawStack.toString();
+      stack =
+        stringifiedStack === '[object Object]'
+          ? extractMessageFromUnknownError(rawStack)
+          : stringifiedStack;
+    }
+  }
+
+  stack = stack.toLowerCase();
+
+  return (
+    message.includes('popup closed') ||
+    message.includes('user rejected') ||
+    message.includes('cancelled') ||
+    message.includes('canceled') ||
+    stack.includes('popup closed') ||
+    stack.includes('user rejected') ||
+    stack.includes('cancelled') ||
+    stack.includes('canceled')
+  );
 }
 
 /**
@@ -590,6 +656,10 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
  * @returns True if the error matches known HW error shapes
  */
 export function isHardwareWalletError(error: unknown): boolean {
+  if (error instanceof KeyringControllerError) {
+    return isHardwareWalletError(error.cause);
+  }
+
   if (error instanceof HardwareWalletError) {
     return true;
   }
@@ -608,12 +678,15 @@ export function isHardwareWalletError(error: unknown): boolean {
 
   const errorAsAny = error as {
     name?: string;
+    cause?: unknown;
     data?: { cause?: { name?: string } };
   };
 
   return (
     errorAsAny?.name === 'HardwareWalletError' ||
-    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError' ||
+    (errorAsAny?.name === 'KeyringControllerError' &&
+      isHardwareWalletError(errorAsAny?.cause))
   );
 }
 
@@ -628,6 +701,15 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   if (
     errorCode === ErrorCode.UserRejected ||
     errorCode === ErrorCode.UserCancelled
+  ) {
+    return true;
+  }
+
+  const errorCause = (error as { cause?: unknown })?.cause;
+  if (
+    (errorCode === ErrorCode.Unknown || errorCode === null) &&
+    (isHardwareWalletError(error) || isHardwareWalletError(errorCause)) &&
+    (hasUserRejectedMessage(error) || hasUserRejectedMessage(errorCause))
   ) {
     return true;
   }
@@ -680,25 +762,36 @@ export function toHardwareWalletError(
   }
 
   if (error instanceof KeyringControllerError) {
-    if (walletType === HardwareWalletType.Trezor) {
-      const trezorCauseCode = (error.cause as { code?: unknown })?.code;
-      if (typeof trezorCauseCode === 'string') {
-        const mappedTrezorCauseCode =
-          mapTrezorStructuredCodeToErrorCode(trezorCauseCode);
-        if (mappedTrezorCauseCode !== null) {
-          return createHardwareWalletError(
-            mappedTrezorCauseCode,
-            walletType,
-            getErrorMessage(error.cause),
-            {
-              cause: error?.cause instanceof Error ? error.cause : undefined,
-            },
-          );
-        }
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (
+      walletType === HardwareWalletType.Trezor &&
+      (causeCode === ErrorCode.Unknown || causeCode === null)
+    ) {
+      const inferredCauseCode = mapTrezorErrorToErrorCode(error.cause);
+      if (inferredCauseCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredCauseCode,
+          walletType,
+          getErrorMessage(error.cause),
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
+      }
+
+      const inferredKeyringCode = mapTrezorErrorToErrorCode(error);
+      if (inferredKeyringCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredKeyringCode,
+          walletType,
+          error.message,
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
       }
     }
 
-    const causeCode = getHardwareWalletErrorCode(error.cause);
     if (causeCode !== null) {
       return createHardwareWalletError(
         causeCode,

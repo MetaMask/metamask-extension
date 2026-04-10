@@ -27,14 +27,17 @@ jest.mock('../../../store/actions', () => ({
 function runHook({
   gasFeeTokens,
   selectedGasFeeToken,
+  excludeNativeTokenForFee,
 }: {
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
+  excludeNativeTokenForFee?: boolean;
 } = {}) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken,
+      excludeNativeTokenForFee,
     }),
   );
 
@@ -102,6 +105,33 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
+  it('selects first gas fee token if gas fee token already selected but doesnt correspond to any gasFeeTokens (only if `excludeNativeTokenForFee` is set)', async () => {
+    const { store } = runHook({
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      gasFeeTokens: [
+        {
+          // When a gasFeeToken is available but is not the same as `selectedGasFeeToken`.
+          tokenAddress: '0x9876543210000000000000000000000000000000',
+        } as unknown as GasFeeToken,
+      ],
+      excludeNativeTokenForFee: true,
+    });
+
+    await flushAsyncUpdates();
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      '0x9876543210000000000000000000000000000000',
+    );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
+  });
+
   it('does not select first gas fee token if no gas fee tokens', async () => {
     runHook({ gasFeeTokens: [] });
 
@@ -143,6 +173,21 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     );
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
+  });
+
+  it('does not select first gas fee token if gasless not supported', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    runHook();
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
   it('does not select first gas fee token if sufficient balance', async () => {
@@ -224,13 +269,16 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
   it('does not select if transactionId is falsy', async () => {
     const state = getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-        selectedGasFeeToken: undefined,
-      }),
+      // Remove transactionId
+      Object.assign(
+        genUnapprovedContractInteractionConfirmation({
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: undefined,
+        }),
+        { id: '' },
+      ),
     );
-    // Remove transactionId
-    state.metamask.transactions = [];
+
     renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
 
     await flushAsyncUpdates();

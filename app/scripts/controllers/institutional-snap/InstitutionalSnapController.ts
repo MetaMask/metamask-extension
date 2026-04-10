@@ -4,7 +4,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   BaseController,
@@ -20,15 +20,18 @@ import {
   InstitutionalSnapRequestSearchParameters,
   InstitutionalSnapResponse,
 } from './institutional-snap-controller.types';
+import type { InstitutionalSnapControllerMethodActions } from './InstitutionalSnapController-method-action-types';
 
 const SNAP_ID = INSTITUTIONAL_WALLET_SNAP_ID;
 
 const controllerName = 'InstitutionalSnapController';
 
-type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
+type SnapRPCRequest = Parameters<
+  SnapControllerHandleRequestAction['handler']
+>[0];
 
 export type AllowedActions =
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | AccountsControllerGetAccountByAddressAction
   | TransactionControllerUpdateCustodialTransactionAction;
 
@@ -38,28 +41,21 @@ export type InstitutionalSnapControllerGetStateAction =
     InstitutionalSnapControllerControllerState
   >;
 
-export type InstitutionalSnapControllerPublishHookAction = {
-  type: `${typeof controllerName}:publishHook`;
-  handler: InstitutionalSnapController['deferPublicationHook'];
-};
-
-export type InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction =
-  {
-    type: `${typeof controllerName}:beforeCheckPendingTransactionHook`;
-    handler: InstitutionalSnapController['beforeCheckPendingTransactionHook'];
-  };
-
 export type InstitutionalSnapControllerStateChangeEvent =
   ControllerStateChangeEvent<
     typeof controllerName,
     InstitutionalSnapControllerControllerState
   >;
 
+const MESSENGER_EXPOSED_METHODS = [
+  'publishHook',
+  'beforeCheckPendingTransactionHook',
+] as const;
+
 type Actions =
   | AllowedActions
   | InstitutionalSnapControllerGetStateAction
-  | InstitutionalSnapControllerPublishHookAction
-  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction;
+  | InstitutionalSnapControllerMethodActions;
 
 type Events = InstitutionalSnapControllerStateChangeEvent;
 
@@ -98,12 +94,13 @@ export class InstitutionalSnapController extends BaseController<
       metadata,
     });
 
-    this.#registerMessageHandlers();
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
-  async deferPublicationHook(
-    transactionMeta: TransactionMeta,
-  ): Promise<boolean> {
+  async publishHook(transactionMeta: TransactionMeta): Promise<boolean> {
     const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
 
     if (shouldDefer) {
@@ -124,18 +121,6 @@ export class InstitutionalSnapController extends BaseController<
     transactionMeta: TransactionMeta,
   ): Promise<boolean> {
     return !(await this.#shouldDeferPublication(transactionMeta));
-  }
-
-  #registerMessageHandlers() {
-    this.messenger.registerActionHandler(
-      `${controllerName}:publishHook`,
-      this.deferPublicationHook.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:beforeCheckPendingTransactionHook`,
-      this.beforeCheckPendingTransactionHook.bind(this),
-    );
   }
 
   async #handleSnapRequest(args: SnapRPCRequest) {

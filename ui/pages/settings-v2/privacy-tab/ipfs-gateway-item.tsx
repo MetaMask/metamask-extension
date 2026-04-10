@@ -13,8 +13,9 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { THIRD_PARTY_API_ITEMS } from '../search-config';
 
 export const IpfsGatewayItem = () => {
   const t = useI18nContext();
@@ -71,14 +72,19 @@ export const IpfsGatewayItem = () => {
   return (
     <Box className={ipfsToggle ? 'mb-4' : undefined}>
       <SettingsToggleItem
-        title={t('ipfsGateway')}
+        title={t(THIRD_PARTY_API_ITEMS['ipfs-gateway'])}
         description={t('ipfsGatewayDescriptionV2')}
         value={ipfsToggle}
         onToggle={handleToggle}
         dataTestId="ipfs-gateway-toggle"
+        containerDataTestId="ipfsToggle"
       />
       {ipfsToggle && (
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={1}
+          marginHorizontal={4}
+        >
           <FormTextField
             value={ipfsGatewayValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

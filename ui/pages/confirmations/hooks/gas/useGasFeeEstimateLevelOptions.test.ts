@@ -25,16 +25,20 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
   useFeeCalculations: jest.fn(),
 }));
 
-jest.mock('../transactions/useTransactionNativeTicker', () => ({
-  useTransactionNativeTicker: () => 'ETH',
-}));
-
 jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+const mockState = {
+  metamask: {
+    networkConfigurationsByChainId: {},
+  },
+};
+
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector?.(mockState) ?? undefined,
 }));
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
@@ -53,6 +57,24 @@ describe('useGasFeeEstimateLevelOptions', () => {
         preciseNativeCurrencyFee: '0.001',
       }),
     } as unknown as ReturnType<typeof useFeeCalculations>);
+  });
+
+  it('returns empty array when currentConfirmation is undefined', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: undefined,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {},
+    } as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    expect(result.current).toEqual([]);
   });
 
   it('returns empty array when gas fee estimate type is GasPrice', () => {
@@ -84,6 +106,7 @@ describe('useGasFeeEstimateLevelOptions', () => {
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: {
         id: '1',
+        chainId: '0x1',
         networkClientId: 'mainnet',
         userFeeLevel: 'medium',
         gasLimitNoBuffer: '0x5208',
@@ -133,6 +156,8 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current[1].key).toBe(GasFeeEstimateLevel.Medium);
     expect(result.current[2].key).toBe(GasFeeEstimateLevel.High);
     expect(result.current[1].isSelected).toBe(true);
+    // networkConfigurationsByChainId is empty in mockState; fallback ticker must not be the string "undefined"
+    expect(result.current[0].value).toBe('0.001 ETH');
   });
 
   it('skips high option when it has the same fees as medium for FeeMarket type', () => {

@@ -21,7 +21,7 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
 } from '../../../selectors';
-import { getIsPerpsEnabled } from '../../../selectors/perps';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
@@ -30,8 +30,11 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import { PerpsControllerProvider } from '../../../providers/perps';
-import { PerpsTabView } from '../../app/perps';
+import {
+  PerpsToastProvider,
+  PerpsView,
+  PerpsViewStreamBoundary,
+} from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
@@ -146,7 +149,7 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   return (
     <>
@@ -176,17 +179,19 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {isPerpsEnabled && (
+        {isPerpsExperienceAvailable && (
           <Tab
             name={t('perps')}
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <ErrorBoundary key="perps">
-              <PerpsControllerProvider>
-                <PerpsTabView />
-              </PerpsControllerProvider>
-            </ErrorBoundary>
+            <PerpsToastProvider>
+              <ErrorBoundary key="perps">
+                <PerpsViewStreamBoundary>
+                  <PerpsView />
+                </PerpsViewStreamBoundary>
+              </ErrorBoundary>
+            </PerpsToastProvider>
           </Tab>
         )}
 

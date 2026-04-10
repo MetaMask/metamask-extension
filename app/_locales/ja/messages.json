@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "オプション"
+  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
@@ -386,9 +389,6 @@
   "advanced": {
     "message": "高度な設定"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
-  },
   "advancedDetailsDataDesc": {
     "message": "データ"
   },
@@ -404,13 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "これらの値を$1ネットワークのデフォルトとして保存する",
-    "description": "$1 is the current network name."
-  },
-  "advancedGasFeeModalTitle": {
-    "message": "ガス代の高度な設定"
-  },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "高度なアクセス許可"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
@@ -697,6 +687,10 @@
     "message": "$1の使用上限を承認する",
     "description": "The token symbol that is being approved"
   },
+  "approveToken": {
+    "message": "$1を承認",
+    "description": "Used in the transaction details summary to describe an approval transaction. $1 is the symbol of the token being approved."
+  },
   "approved": {
     "message": "承認済み"
   },
@@ -726,6 +720,10 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
+  "asterdexReferralSubtitle": {
+    "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
   },
@@ -745,6 +743,30 @@
     "message": "サードパーティAPIを使用して、ウォレットに送られた新しいトークンを検出・表示します。アプリがこれらのサービスからデータを自動的に取得しないようにするには、オフにしてください。$1",
     "description": "$1 is a link to a support article"
   },
+  "autoDetectTokensDescriptionV2": {
+    "message": "ウォレットに送信された新しいトークンを表示します。"
+  },
+  "autoLock": {
+    "message": "自動ロック"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "15秒後"
+  },
+  "autoLockAfter1Minute": {
+    "message": "1分後"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "30秒後"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "5分後"
+  },
+  "autoLockAfterMinutes": {
+    "message": "$1分後"
+  },
+  "autoLockNever": {
+    "message": "絶対に"
+  },
   "autoLockTimeLimit": {
     "message": "オートロックタイマー (分)"
   },
@@ -762,6 +784,9 @@
   },
   "backToHome": {
     "message": "ホームに戻る"
+  },
+  "backUpIncomplete": {
+    "message": "バックアップ未完了"
   },
   "backup": {
     "message": "バックアップ"
@@ -833,24 +858,21 @@
     "message": "MetaMaskは、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能を提供します。インターネットサービスを使用すると、この場合はMetaMaskに、ユーザーのIPアドレスが共有されます。これは他のどのWebサイトにアクセスした場合も同様で、MetaMaskはこのデータを一時的に使用し、ユーザーのデータを販売することは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
+  "basicConfigurationDescriptionV2": {
+    "message": "トークンの詳細やガス設定などの基本機能が含まれます。この機能をオンにすることで、最適な体験が得られます。詳細については、$1をお読みください。",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
   "basicConfigurationLabel": {
     "message": "基本機能"
   },
   "basicConfigurationModalCheckbox": {
     "message": "理解したうえで続行します"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "これは、MetaMaskでの時間が完全に最適化されないことを意味します。基本機能 (トークンの詳細、最適なガス設定など) は利用できません。"
   },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "これをオフにすると、$1、$2のすべての機能も無効になります。",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "セキュリティとプライバシー、バックアップと同期"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "通知"
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "この機能をオフにすると、プライバシー、バックアップと同期、通知の一部機能も無効になります。"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMaskでの時間を最適化するには、この機能をオンにする必要があります。基本機能 (トークンの詳細、最適なガス設定など) は、Web3エクスペリエンスに重要です。"
@@ -860,6 +882,48 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
+  },
+  "basicFunctionalityRequired_description": {
+    "message": "この機能は、基本機能をオフにしている間は利用できません。オンにするには、下のトグルボタンをご利用ください。"
+  },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "ホームページに移動"
+  },
+  "basicFunctionalityRequired_openCreateSnapAccountPage": {
+    "message": "アカウントの作成ページを開く"
+  },
+  "basicFunctionalityRequired_openDefiPage": {
+    "message": "DeFiページを開く"
+  },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "mUSDの変換ページを開く"
+  },
+  "basicFunctionalityRequired_openNotificationsPage": {
+    "message": "通知ページを開く"
+  },
+  "basicFunctionalityRequired_openPerpsPage": {
+    "message": "パーペチュアルページを開く"
+  },
+  "basicFunctionalityRequired_openRewardsPage": {
+    "message": "リワードページを開く"
+  },
+  "basicFunctionalityRequired_openSnapsPage": {
+    "message": "Snapsページを開く"
+  },
+  "basicFunctionalityRequired_openSwapsPage": {
+    "message": "スワップページを開く"
+  },
+  "basicFunctionalityRequired_openTransactionShieldPage": {
+    "message": "トランザクションシールドページを開く"
+  },
+  "basicFunctionalityRequired_reviewInSettings": {
+    "message": "設定で確認"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "基本機能はオフになっています"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "基本機能"
   },
   "bestQuote": {
     "message": "最も有利なクォート"
@@ -1006,15 +1070,33 @@
   "bridgeFee": {
     "message": "ブリッジ手数料"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "新しいものを取得しますか？"
-  },
   "bridgeFromTo": {
     "message": "$1 $2を$3にブリッジ",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
   },
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
+  },
+  "bridgeLowestCost": {
+    "message": "最低コスト"
+  },
+  "bridgeMarketClosedAction": {
+    "message": "市場が取引時間外です"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "この株式トークンは現在取引時間外です。市場が取引を開始してから再度お試しください。"
+  },
+  "bridgeMarketClosedModalDescription": {
+    "message": "このトークンをサポートしている市場は、現在取引時間外です。トークンはいつでもオンチェーンで送金できます。"
+  },
+  "bridgeMarketClosedModalLearnMore": {
+    "message": "詳細。"
+  },
+  "bridgeMarketClosedModalTitle": {
+    "message": "市場が取引時間外です"
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "市場が取引時間外です"
   },
   "bridgeNoMMFee": {
     "message": "MM手数料なし"
@@ -1050,14 +1132,32 @@
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
+  "bridgePriceImpactHigh": {
+    "message": "高プライスインパクト"
+  },
+  "bridgePriceImpactHighDescription": {
+    "message": "取引サイズと流動性の関係で、受取額が市場価格よりも約$1少なくなります。これはすでにクォートに反映されています。"
+  },
+  "bridgePriceImpactNormalDescription": {
+    "message": "これは、お客様の取引でトークンの市場価格がどのように変化するかを示します。プライスインパクトは、取引サイズ、流動性、プロバイダーの手数料によって変わります。MetaMaskはプライスインパクトをコントロールできません。"
+  },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
+  },
+  "bridgePriceImpactVeryHigh": {
+    "message": "非常に高いプライスインパクト"
+  },
+  "bridgePriceImpactVeryHighDescription": {
+    "message": "このスワップで、トークンの市場価格の約$1を失います。より有利なレートを希望する場合は、取引のサイズを小さくするか、より流動性の高いルートをお試しください。"
+  },
+  "bridgePriceImpactWarningAriaLabel": {
+    "message": "プライスインパクトに関する警告の詳細を読む"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "プライスインパクトに関する警告"
   },
-  "bridgeQuoteExpired": {
-    "message": "クォートがタイムアウトしました。"
+  "bridgeQuotesSortedByCost": {
+    "message": "クォートは、為替レートとネットワーク手数料を含む推定総コストで並べ替えられています。"
   },
   "bridgeReceive": {
     "message": "$2で$1を受け取っています",
@@ -1074,6 +1174,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "ネットワークを選択"
+  },
+  "bridgeSelectQuote": {
+    "message": "クォートを選択"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "トークン、金額、送金先アカウントを選択します"
@@ -1226,16 +1329,11 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "cancelPopoverTitle": {
+  "cancelTransactionDescription": {
+    "message": "このトランザクションはキャンセルされ、このネットワーク手数料が元の手数料に代わって適用されます。"
+  },
+  "cancelTransactionTitle": {
     "message": "トランザクションのキャンセル"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "このガス代が元のガス代に$1されます。",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "トランザクションを$1するには、ネットワークに認識されるようガス代を10%以上増やす必要があります。",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
     "message": "キャンセル済み"
@@ -1255,6 +1353,9 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "このトークンシンボルは、入力されたネットワーク名またはチェーンIDと一致しません。人気のトークンの多くはシンボルが似ているため、詐欺師がそれを利用してより価値の高いトークンを送り返すように仕向ける可能性があります。続行する前にすべてを確認してください。"
+  },
+  "changeInSettings": {
+    "message": "設定で変更"
   },
   "changePasswordDetailsSocial": {
     "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。"
@@ -1393,6 +1494,9 @@
   "confirmFieldMaxAllowance": {
     "message": "最大割当"
   },
+  "confirmFieldNeverExpires": {
+    "message": "有効期限なし"
+  },
   "confirmFieldPaymaster": {
     "message": "手数料の支払元"
   },
@@ -1429,6 +1533,9 @@
   },
   "confirmFieldTooltipPaymaster": {
     "message": "このトランザクションの手数料は、ペイマスターのスマートコントラクトにより支払われます。"
+  },
+  "confirmFieldTotalExposure": {
+    "message": "合計エクスポージャー"
   },
   "confirmGasFeeTokenBalance": {
     "message": "残高:"
@@ -1549,6 +1656,9 @@
   },
   "confirmTitleSIWESignature": {
     "message": "サインイン要求"
+  },
+  "confirmTitleSending": {
+    "message": "送信中"
   },
   "confirmTitleSetApprovalForAllRevokeTransaction": {
     "message": "アクセス許可を取り消す"
@@ -1705,6 +1815,15 @@
   "connectionsRemovedModalTitle": {
     "message": "接続が解除されました"
   },
+  "contactDeleted": {
+    "message": "連絡先が削除されました"
+  },
+  "contactDetails": {
+    "message": "連絡先の詳細"
+  },
+  "contactUpdated": {
+    "message": "連絡先が更新されました"
+  },
   "contactUs": {
     "message": "お問い合わせ"
   },
@@ -1745,6 +1864,9 @@
   "copiedExclamation": {
     "message": "コピーしました。"
   },
+  "copiedToClipboard": {
+    "message": "クリップボードにコピーしました"
+  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
@@ -1759,6 +1881,9 @@
   },
   "copyTransactionId": {
     "message": "トランザクションIDをコピー"
+  },
+  "correct": {
+    "message": "正解"
   },
   "create": {
     "message": "作成"
@@ -1784,7 +1909,7 @@
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
   },
   "createPasswordDetailsSocial": {
-    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。",
+    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。$1",
     "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
@@ -1852,8 +1977,8 @@
     "message": "現在のネットワーク",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
-  "currentTitle": {
-    "message": "現在:"
+  "currentQuestion": {
+    "message": "問題 $1 / 2"
   },
   "currentlyUnavailable": {
     "message": "このネットワークでは利用できません"
@@ -1907,16 +2032,6 @@
   },
   "dappSuggestedHigh": {
     "message": "おすすめのサイト"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "サイト (高)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "サイト"
-  },
-  "dappSuggestedTooltip": {
-    "message": "$1はこの価格を推奨しています。",
-    "description": "$1 represents the Dapp's origin"
   },
   "dappSwapAdvantage": {
     "message": "MetaMaskスワップで貯めて収益化"
@@ -2053,6 +2168,9 @@
   "deepLink_theHomePage": {
     "message": "ホームページ"
   },
+  "deepLink_theMusdEducationPage": {
+    "message": "mUSDの変換に関する学習ページ"
+  },
   "deepLink_theNFTsPage": {
     "message": "NFTページ"
   },
@@ -2070,6 +2188,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "MetaMaskリワードページ"
+  },
+  "deepLink_theSellPage": {
+    "message": "売却ページ"
   },
   "deepLink_theSwapsPage": {
     "message": "スワップページ"
@@ -2122,11 +2243,18 @@
     "message": "これにより、このデバイスでの使用に関連した過去のMetaMetricsデータが削除されます。このデータが削除された後も、ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。$1をご覧ください。",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後ほど再度お試しください"
+    "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後ほど再度お試しください。"
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "現在このデータを削除できません"
+  },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "削除できません"
   },
   "deleteMetaMetricsDataModalDesc": {
     "message": "すべてのMetaMetricsデータを削除しようとしています。よろしいですか？"
@@ -2135,8 +2263,11 @@
     "message": "MetaMetricsデータを削除しますか？"
   },
   "deleteMetaMetricsDataRequestedDescription": {
-    "message": "このアクションは$1に開始しました。このプロセスには最長30日間かかる場合があります。$2をご覧ください",
+    "message": "$1で削除を開始しました。このプロセスには最長30日間かかる場合があります。$2をご覧ください。",
     "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "データは30日以内に削除されます"
   },
   "deleteNetworkIntro": {
     "message": "このネットワークを削除した場合、このネットワーク内の資産を見るには、再度ネットワークの追加が必要になります。"
@@ -2245,17 +2376,14 @@
   "dismissReminderField": {
     "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "すべてのアカウントで「スマートアカウントへの切り替え」の提案が表示されないようにするには、これをオンにします。スマートアカウントでは、より高速なトランザクション、低いネットワーク手数料、柔軟な支払方法が利用できるようになります。"
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "「スマートアカウントへの切り替え」の提案を閉じる"
-  },
   "displayNftMedia": {
     "message": "NFTメディアの表示"
   },
   "displayNftMediaDescription": {
     "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
+  },
+  "displayNftMediaDescriptionV2": {
+    "message": "NFTの自動検出はこの機能に依拠しています。"
   },
   "doNotShare": {
     "message": "これは誰とも共有しないでください"
@@ -2269,8 +2397,8 @@
   "dontShowThisAgain": {
     "message": "今後表示しない"
   },
-  "downArrow": {
-    "message": "下矢印"
+  "download": {
+    "message": "ダウンロード"
   },
   "downloadAppDescription": {
     "message": "MetaMaskをどこにいても利用できるようにしましょう。Face IDを有効にしておけば、たとえパスワードを忘れても常にアクセス可能です。"
@@ -2352,9 +2480,6 @@
   "editAddressNickname": {
     "message": "アドレスのニックネームを編集"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "キャンセル用のガス代を変更"
-  },
   "editContact": {
     "message": "連絡先を編集"
   },
@@ -2363,22 +2488,6 @@
   },
   "editGasLimitOutOfBounds": {
     "message": "ガスリミットは$1以上にする必要があります"
-  },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "ガスリミットは$1より大きく、$2未満でなければなりません",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "ガスリミットは、使用しても構わないガスの最大単位数です。ガスの単位数は、「最大優先手数料」および「最大手数料」の乗数になります。"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基本料金を優先手数料よりも低くすることはできません"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "最大基本料金が必要以上です"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "現在のネットワーク状況に対して最大基本料金が低いです"
   },
   "editGasMaxFeeHigh": {
     "message": "最大手数料が必要以上です"
@@ -2392,32 +2501,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0gweiより高くなければなりません"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "優先手数料は0より高くなければなりません。"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "最大優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "現在のネットワーク状況に対して最大優先手数料が低いです"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
   "editGasPriceTooLow": {
     "message": "ガス価格は0より高くなければなりません"
-  },
-  "editGasPriceTooltip": {
-    "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
-  },
-  "editGasSubTextFeeLabel": {
-    "message": "最大手数料:"
-  },
-  "editGasTitle": {
-    "message": "優先度を編集"
   },
   "editGasTooLow": {
     "message": "処理時間不明"
@@ -2442,9 +2533,6 @@
   },
   "editPermissions": {
     "message": "アクセス許可を編集"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "スピードアップ用のガス代を変更"
   },
   "editSpendingCap": {
     "message": "使用上限の編集"
@@ -2650,6 +2738,9 @@
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス価格が提供されています。"
   },
+  "ethereumAndEvms": {
+    "message": "イーサリアムとEVM"
+  },
   "ethereumProviderAccess": {
     "message": "イーサリアムプロバイダーに$1へのアクセス権を付与する",
     "description": "The parameter is the name of the requesting origin"
@@ -2697,6 +2788,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "当社は、Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、やり取りするアドレスに使用するニックネームの提案を取得します。これらのソースは対象となるアドレスとユーザーのIPアドレスを把握できます。ユーザーのアカウントアドレスはサードパーティに公開されません。"
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、ユーザーがやり取りするアドレスのニックネームの提案を取得します。"
+  },
   "failed": {
     "message": "失敗"
   },
@@ -2714,9 +2808,6 @@
   },
   "fast": {
     "message": "高速"
-  },
-  "feeDetails": {
-    "message": "手数料の詳細"
   },
   "fieldRequired": {
     "message": "$1は必須項目です"
@@ -2831,27 +2922,11 @@
   "gas": {
     "message": "ガス"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "推奨ガス代を編集"
-  },
-  "gasDisplayDappWarning": {
-    "message": "このガス代は$1により推奨されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1 にお問い合わせください。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitRecommended": {
-    "message": "ガス代上限の推奨値は$1です。それ未満の場合は失敗する可能性があります。"
-  },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
-  },
-  "gasLimitV2": {
-    "message": "ガスリミット"
-  },
-  "gasOption": {
-    "message": "ガスのオプション"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -3033,10 +3108,14 @@
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledgerのロックが解除されていること"
+    "message": "$1のロックが解除されていること",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "ブラインド署名を有効にする"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Ledgerでイーサリアムアプリが開いていること"
@@ -3077,6 +3156,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "こちらをクリックしてください"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "イーサリアムアプリを開く"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1が接続されました",
@@ -3204,6 +3286,9 @@
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
+  "iUnderstand": {
+    "message": "理解しています"
+  },
   "id": {
     "message": "ID"
   },
@@ -3307,6 +3392,9 @@
   },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
+  },
+  "incorrect": {
+    "message": "不正解"
   },
   "infuraBlockedNotification": {
     "message": "MetaMaskがブロックチェーンのホストに接続できません。考えられる理由$1を確認してください。",
@@ -3430,6 +3518,9 @@
   "ipfsGatewayDescription": {
     "message": "MetaMaskは、サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。これらのサービスの使用時には、IPアドレスが当該サービスに公開される可能性があります。"
   },
+  "ipfsGatewayDescriptionV2": {
+    "message": "サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。下から希望のIPFSゲートウェイを選択してください。"
+  },
   "ipfsToggleModalDescriptionOne": {
     "message": "MetaMaskは、サードパーティサービスを使用してIPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関連する情報の表示、様々なトークンのアイコンの取得を行います。これらのサービスの使用時には、IPアドレスが当該サービスに公開される可能性があります。"
   },
@@ -3483,17 +3574,8 @@
   "knownTokenWarning": {
     "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
   },
-  "l1Fee": {
-    "message": "L1手数料"
-  },
-  "l1FeeTooltip": {
-    "message": "L1ガス代"
-  },
-  "l2Fee": {
-    "message": "L2手数料"
-  },
-  "l2FeeTooltip": {
-    "message": "L2ガス代"
+  "language": {
+    "message": "言語"
   },
   "lastSold": {
     "message": "前回の売却"
@@ -3504,12 +3586,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "安全上の理由により、現在このテキストは選択できません。"
-  },
-  "layer1Fees": {
-    "message": "レイヤー1手数料"
-  },
-  "layer2Fees": {
-    "message": "レイヤー 2 手数料"
   },
   "learnHow": {
     "message": "方法"
@@ -3613,9 +3689,6 @@
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "levelArrow": {
-    "message": "水平矢印"
-  },
   "lightTheme": {
     "message": "ライト"
   },
@@ -3643,9 +3716,6 @@
   "links": {
     "message": "リンク"
   },
-  "loadMore": {
-    "message": "さらにロード"
-  },
   "loading": {
     "message": "読み込み中..."
   },
@@ -3654,6 +3724,9 @@
   },
   "loadingTokenList": {
     "message": "トークンリストをロードしています"
+  },
+  "localCurrency": {
+    "message": "現地通貨"
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -3728,6 +3801,15 @@
   "makeAnotherSwap": {
     "message": "新しいスワップの作成"
   },
+  "makeSmartContractsEasier": {
+    "message": "スマートコントラクトを読みやすく"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMaskは、4byte.directoryとSourcifyを使用してこの情報を変換します。"
+  },
+  "manage": {
+    "message": "管理"
+  },
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
   },
@@ -3742,6 +3824,9 @@
   },
   "managePermissions": {
     "message": "アクセス許可の管理"
+  },
+  "manageWalletRecovery": {
+    "message": "ウォレットの復元の管理"
   },
   "marketCap": {
     "message": "時価総額"
@@ -3773,9 +3858,6 @@
   "maxFeeTooltip": {
     "message": "トランザクションの支払いに提供される最大手数料"
   },
-  "maxPriorityFee": {
-    "message": "最大優先手数料"
-  },
   "medium": {
     "message": "マーケット"
   },
@@ -3785,6 +3867,10 @@
   },
   "memo": {
     "message": "メモ"
+  },
+  "merklRewardsClaimBonus": {
+    "message": "ボーナスを請求する",
+    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
   },
   "merklRewardsToastFailed": {
     "message": "mUSDボーナスの請求に失敗しました",
@@ -3966,17 +4052,66 @@
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdClaimClaimingTo": {
-    "message": "入金先:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
+  "musdBoostTitle": {
+    "message": "ステーブルコインで$1%をゲット",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "mUSDを購入"
+  },
+  "musdClaimTitle": {
+    "message": "ボーナスを請求する",
+    "description": "Title for the mUSD bonus claim confirmation screen"
+  },
+  "musdClaimableBonus": {
+    "message": "獲得できるボーナス",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "mUSDを保有することで獲得した年換算のボーナスです。ボーナスはLineaで毎日請求できます。$1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "$1をmUSDに変換",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "mUSDに変換済み",
+    "message": "mUSDへの変換完了",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSDへの変換に失敗しました"
+  },
+  "musdConversionToastInProgress": {
+    "message": "$1 → mUSDに変換中",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConvert": {
+    "message": "変換"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "換金して$1%獲得",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdEducationGetStarted": {
+    "message": "利用を開始する"
+  },
+  "musdEducationHeadline": {
+    "message": "ステーブルコインで$1%をゲット",
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
+  },
+  "musdEducationNotNow": {
+    "message": "後で"
+  },
+  "musdGetBonusPercentage": {
+    "message": "$1%のmUSDボーナスを獲得",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdGetMusd": {
+    "message": "mUSDを入手"
+  },
+  "musdTermsApply": {
+    "message": "諸条件が適用されます。"
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
@@ -4140,9 +4275,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "ネットワーク手数料"
-  },
-  "networkIsBusy": {
-    "message": "ネットワークが混雑しています。ガス代が高く、見積もりはあまり正確ではありません。"
   },
   "networkMenu": {
     "message": "ネットワークメニュー"
@@ -4308,8 +4440,14 @@
   "nftAutoDetectionEnabled": {
     "message": "NFTの自動検出が有効になりました"
   },
+  "nftBought": {
+    "message": "$1を購入しました"
+  },
   "nftEmptyDescription": {
     "message": "NFTの世界が無限に広がっています。さっそくコレクションを始めましょう。"
+  },
+  "nftMinted": {
+    "message": "$1をミントしました"
   },
   "nftOptions": {
     "message": "NFTオプション"
@@ -4558,10 +4696,10 @@
     "message": "問題が発生しました。もう一度お試しください。"
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。通知を使用するには、プロファイルを使用してデバイス間で一部の設定を同期します。$1"
+    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。通知を使用するには、プロファイルを使用してデバイス間で一部の設定を同期します。この機能を使用する際に当社がユーザーのプライバシーをどのように保護するのか、$1。"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "この機能を使用する際に当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください。"
+    "message": "方法"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 の新しいトークンがこのアカウントで見つかりました",
@@ -5163,6 +5301,15 @@
   "perpsActivity": {
     "message": "アクティビティ"
   },
+  "perpsAddExposure": {
+    "message": "エクスポージャーを追加"
+  },
+  "perpsAddExposureDescriptionLong": {
+    "message": "ロングポジションのサイズを増やします"
+  },
+  "perpsAddExposureDescriptionShort": {
+    "message": "ショートポジションのサイズを増やします"
+  },
   "perpsAddFunds": {
     "message": "資金を追加"
   },
@@ -5171,6 +5318,9 @@
   },
   "perpsAddMargin": {
     "message": "証拠金を追加"
+  },
+  "perpsAddMarginDescription": {
+    "message": "証拠金を増やして清算のリスクを減らします"
   },
   "perpsAddToFavorites": {
     "message": "お気に入りに追加"
@@ -5182,8 +5332,12 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "利用可能残高"
+  "perpsAvailableToClose": {
+    "message": "クローズに利用可能"
+  },
+  "perpsAvailableToTrade": {
+    "message": "取引に利用可能",
+    "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "すべてキャンセル"
@@ -5197,11 +5351,11 @@
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
+  "perpsClosePosition": {
+    "message": "ポジションのクローズ"
+  },
   "perpsCloseShort": {
     "message": "ショートをクローズ"
-  },
-  "perpsClosedShort": {
-    "message": "ショートをクローズしました"
   },
   "perpsConfirmCloseLong": {
     "message": "ロングをクローズ"
@@ -5242,6 +5396,12 @@
   "perpsEntryPrice": {
     "message": "エントリー価格"
   },
+  "perpsEstSize": {
+    "message": "推定サイズ"
+  },
+  "perpsExploreMarkets": {
+    "message": "市場を探索"
+  },
   "perpsFees": {
     "message": "手数料"
   },
@@ -5275,11 +5435,14 @@
   "perpsFundingRateTooltip": {
     "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
   },
+  "perpsGeoBlockedTooltip": {
+    "message": "お住まいの地域ではパーペチュアル取引は利用できません"
+  },
   "perpsGiveFeedback": {
     "message": "ご意見をお聞かせください"
   },
-  "perpsIncreasedPosition": {
-    "message": "拡大したポジション"
+  "perpsIncludesPnl": {
+    "message": "損益込み $1"
   },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
@@ -5296,6 +5459,9 @@
   "perpsLimitPrice": {
     "message": "リミット価格"
   },
+  "perpsLiquidationDistance": {
+    "message": "清算価格との距離"
+  },
   "perpsLiquidationPrice": {
     "message": "清算価格"
   },
@@ -5304,6 +5470,9 @@
   },
   "perpsMargin": {
     "message": "証拠金"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "証拠金を減額すると、清算価格が近づきます。十分な余裕を確保するようにしてください。"
   },
   "perpsMarket": {
     "message": "マーケット"
@@ -5317,9 +5486,6 @@
   },
   "perpsMarkets": {
     "message": "市場"
-  },
-  "perpsMax": {
-    "message": "最大額"
   },
   "perpsMid": {
     "message": "中間値"
@@ -5342,6 +5508,9 @@
   "perpsOpenInterest": {
     "message": "取組高"
   },
+  "perpsOpenInterestTooltip": {
+    "message": "このパーペチュアルのすべての未決済ポジションを組み合わせた評価額"
+  },
   "perpsOpenLong": {
     "message": "$1のロングをオープン",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5353,8 +5522,11 @@
     "message": "$1のショートをオープン",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "ロングをオープンしました"
+  "perpsOraclePrice": {
+    "message": "オラクル価格"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "バリデーターにより報告された外部価格の中央値で、資金調達率の計算に使用されます"
   },
   "perpsOrders": {
     "message": "注文"
@@ -5365,20 +5537,42 @@
   "perpsPosition": {
     "message": "ポジション"
   },
-  "perpsPositionSize": {
-    "message": "ポジションサイズ"
-  },
   "perpsPositions": {
     "message": "ポジション"
   },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
   },
+  "perpsReduceExposure": {
+    "message": "エクスポージャーを減らす"
+  },
+  "perpsReduceExposureDescriptionLong": {
+    "message": "ロングポジションのサイズを減らします"
+  },
+  "perpsReduceExposureDescriptionShort": {
+    "message": "ショートポジションのサイズを減らします"
+  },
   "perpsRemoveMargin": {
     "message": "証拠金を減額"
   },
+  "perpsRemoveMarginDescription": {
+    "message": "ポジションから余分な証拠金を引き出します"
+  },
   "perpsReturn": {
     "message": "損益率"
+  },
+  "perpsReversePosition": {
+    "message": "ポジションを反転"
+  },
+  "perpsReversePositionDescriptionLong": {
+    "message": "ロングポジションを反転してショートにします"
+  },
+  "perpsReversePositionDescriptionShort": {
+    "message": "ショートポジションを反転してロングにします"
+  },
+  "perpsSaveChanges": {
+    "message": "変更を保存",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "市場を検索"
@@ -5391,12 +5585,6 @@
   },
   "perpsSize": {
     "message": "サイズ"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "価格変動: 大きい順"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "価格変動: 小さい順"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
@@ -5491,6 +5679,9 @@
   "perpsTutorialWatchLiquidationTitle": {
     "message": "清算に注意"
   },
+  "perpsTutorialWhatArePerpsDescription": {
+    "message": "MetaMaskはパーペチュアル先物、略してパーペチュアルをサポートするようになりました。これにより、トークン自体を購入することなく、トークンの価格変動を対象に取引できます。"
+  },
   "perpsTutorialWhatArePerpsSubtitle": {
     "message": "仕組みは次のとおりです。"
   },
@@ -5500,8 +5691,14 @@
   "perpsUnrealizedPnl": {
     "message": "含み損益"
   },
+  "perpsWatchlist": {
+    "message": "ウォッチリスト"
+  },
   "perpsWithdraw": {
     "message": "出金"
+  },
+  "perpsYouWillReceive": {
+    "message": "受取額"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
@@ -5550,6 +5747,9 @@
   },
   "popularNetworks": {
     "message": "人気のネットワーク"
+  },
+  "preferencesAndDisplay": {
+    "message": "基本設定と表示"
   },
   "prev": {
     "message": "前へ"
@@ -5610,6 +5810,9 @@
   },
   "privateNetwork": {
     "message": "プライベートネットワーク"
+  },
+  "proceed": {
+    "message": "先に進む"
   },
   "proceedWithTransaction": {
     "message": "それでも続行"
@@ -5772,6 +5975,12 @@
   },
   "queued": {
     "message": "キュー待ち"
+  },
+  "quizIntroduction": {
+    "message": "シークレットリカバリーフレーズを表示するには、2つの質問に正しく答える必要があります."
+  },
+  "quotedTotalCost": {
+    "message": "合計コスト: $1"
   },
   "rank": {
     "message": "ランキング"
@@ -5996,25 +6205,27 @@
   "revealSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをバックアップしてください"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "シークレットリカバリーフレーズを確認"
+  },
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1は$2を提供します。",
+    "message": "$1があれば、ウォレット、資金、アカウントに自由にアクセスできます。",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "シークレットリカバリーフレーズ (SRP)"
+    "message": "シークレットリカバリーフレーズです。"
   },
   "revealSeedWordsText": {
     "message": "テキスト"
   },
   "revealSeedWordsWarning": {
-    "message": "誰にも画面を見られていないことを確認してください。$1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "誰にも画面を見られていないことを確認してください。MetaMaskサポートがフレーズをお尋ねすることはありません。"
   },
   "revealSensitiveContent": {
     "message": "機密コンテンツを確認"
@@ -6193,8 +6404,20 @@
   "rewardsQRCodeTitle": {
     "message": "モバイルアプリを入手"
   },
+  "rewardsSignInFailed": {
+    "message": "サインインできませんでした",
+    "description": "Text shown when the opt-in sign attempt failed, with a retry affordance"
+  },
+  "rewardsSignInToViewPoints": {
+    "message": "サインインしてポイントを確認",
+    "description": "Text shown when user needs to sign in to view their rewards points"
+  },
   "rewardsSignUp": {
     "message": "リワードにサインアップ"
+  },
+  "rewardsSigningIn": {
+    "message": "サインインしています...",
+    "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rpcNameOptional": {
     "message": "RPC名 (オプション)"
@@ -6270,6 +6493,12 @@
   "securityAlertsDescription": {
     "message": "この機能は、トランザクションと署名要求を能動的に確認し、悪質または異常なアクティビティに関するアラートを発します。$1",
     "description": "Link to learn more about security alerts"
+  },
+  "securityAlertsDescriptionV2": {
+    "message": "この機能は、トランザクションと署名要求を能動的に確認し、悪質なアクティビティに関するアラートを発します。$1"
+  },
+  "securityAndPassword": {
+    "message": "セキュリティとパスワード"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
@@ -6458,9 +6687,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
-  },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "署名およびトランザクション要求"
   },
   "shieldClaim": {
     "message": "請求を送信"
@@ -7080,6 +7306,12 @@
   "showAdvancedDetails": {
     "message": "高度な詳細を表示"
   },
+  "showDefaultAddress": {
+    "message": "デフォルトのアドレスを表示"
+  },
+  "showDefaultAddressDescription": {
+    "message": "ホーム画面とアカウントリストで常に表示されるデフォルトのアドレスを設定します。"
+  },
   "showExtensionInFullSizeView": {
     "message": "拡張機能をフルサイズで表示"
   },
@@ -7091,6 +7323,10 @@
   },
   "showFiatConversionInTestnetsDescription": {
     "message": "これを選択すると、テストネット上に法定通貨の換算レートが表示されます"
+  },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "テストネットワーク上でネットワークトークンを現地通貨として表示します。この機能をオンにするよう求められた場合、詐欺の可能性があります。これはテスト目的のみです。$1",
+    "description": "$1 is the 'Learn more' link"
   },
   "showHexData": {
     "message": "16進データを表示"
@@ -7216,6 +7452,9 @@
   "simulationsSettingDescription": {
     "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "トランザクションを確定する前に残高の増減を予測します。これはトランザクションの最終的な結果を保証するものではありません。$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "予測される残高の増減"
   },
@@ -7249,6 +7488,12 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "このオプションを有効にすると、MetaMaskでディープリンクを開く際に表示されるインタースティシャル画面がスキップされます。「ディープリンク」とは、https://link.metamask.io/homeなど、MetaMaskが開くようになっているリンクのことです。これらのリンクは、第三者によって偽装されている場合があります。インタースティシャル画面は、MetaMask内でユーザーのアカウント、トークン、履歴、残高、設定、その他機微情報に該当する可能性のある情報を表示する恐れのあるページを誤って開かないように、ユーザーを保護するものです。この設定は、MetaMaskによって署名されたリンクにのみ適用されます。"
   },
+  "skipLinkConfirmationScreens": {
+    "message": "リンクの確認画面をスキップ"
+  },
+  "skipLinkConfirmationScreensDescription": {
+    "message": "MetaMaskからリンクを開く際には、アカウント、残高、トランザクション履歴などの機微な情報が誤って表示されないように確認画面が表示されます。MetaMaskからのリンクで確認画面を省略する場合は、これをオンにしてください。"
+  },
   "slippage": {
     "message": "スリッページ"
   },
@@ -7264,14 +7509,32 @@
   "smartAccount": {
     "message": "スマートアカウント"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "DAppからのスマートアカウントリクエスト"
+  },
   "smartAccountLabel": {
     "message": "スマートアカウント"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "DAppからのスマートアカウントリクエスト"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "スマートアカウントに切り替える"
+  },
+  "smartContractAddress": {
+    "message": "スマートコントラクトアドレス"
+  },
+  "smartContractAddressWarning": {
+    "message": "この受取人のアドレスはトークンの直接送金に対応していない可能性があり、資金を失うおそれがあります。これが送金を受け取れるコントラクトであることを確信している場合のみ、続行してください。"
   },
   "smartContracts": {
     "message": "スマートコントラクト"
@@ -7530,14 +7793,11 @@
   "speedUpCancellation": {
     "message": "このキャンセルを高速化"
   },
-  "speedUpExplanation": {
-    "message": "現在のネットワーク状況に基づきガス代を更新し、10%以上 (ネットワークによる要件) 増額させました。"
+  "speedUpTransactionDescription": {
+    "message": "このネットワーク手数料が元の手数料に代わって適用されます。"
   },
-  "speedUpPopoverTitle": {
+  "speedUpTransactionTitle": {
     "message": "トランザクションを高速化"
-  },
-  "speedUpTooltipText": {
-    "message": "新しいガス代"
   },
   "spender": {
     "message": "使用者"
@@ -7738,7 +7998,7 @@
     "message": "シークレットリカバリーフレーズの復元方法"
   },
   "stateLogError": {
-    "message": "ステートログの取得中にエラーが発生しました。"
+    "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"
   },
   "stateLogFileName": {
     "message": "MetaMaskステートログ"
@@ -7748,6 +8008,9 @@
   },
   "stateLogsDescription": {
     "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
+  },
+  "stateLogsModalDescription": {
+    "message": "ステートログは、ユーザーが遭遇する可能性のある問題のデバッグに役立ちます。ステートログにはパブリックアカウントアドレスとトランザクションが含まれるため、サポート目的でMetaMaskにのみ送信してください。"
   },
   "status": {
     "message": "ステータス"
@@ -7820,6 +8083,9 @@
   "stxFailureDescription": {
     "message": "急激な市場の変化により、障害が発生することがあります。問題が解決しない場合は$1にご連絡ください。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "スマートトランザクションをオンにして、トランザクションの信頼性と安全性を高めましょう。$1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "スマートトランザクションをオンにして、サポートされているネットワーク上でのトランザクションの信頼性と安全性を高めましょう。$1"
@@ -8135,9 +8401,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSuggested": {
-    "message": "スワップが提案されました"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
   },
@@ -8258,9 +8521,18 @@
   "themeDescription": {
     "message": "お好みのMetaMaskテーマを選択してください。"
   },
+  "thirdPartyApis": {
+    "message": "サードパーティAPI"
+  },
+  "thirdPartyApisDescription": {
+    "message": "IPアドレスやイーサリアムアドレスのサードパーティAPIとの共有方法を選択します。変更はMetaMaskエクスペリエンスに影響を与えます。"
+  },
   "thirdPartySoftware": {
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
+  "thisContactWillBeDeleted": {
+    "message": "この連絡先は削除されます。"
   },
   "time": {
     "message": "時間"
@@ -8288,6 +8560,9 @@
   },
   "tokenContractError": {
     "message": "このアドレスはトークンコントラクトアドレスです。このアドレスにトークンを送ると、トークンが失われます。"
+  },
+  "tokenContractWarning": {
+    "message": "トークンコントラクトに関する警告"
   },
   "tokenCount": {
     "message": "トークン",
@@ -8325,6 +8600,9 @@
   "tokenStandard": {
     "message": "トークン規格"
   },
+  "tokenStock": {
+    "message": "株式"
+  },
   "tokenStream": {
     "message": "トークンストリーム"
   },
@@ -8351,14 +8629,8 @@
   "tokensInCollection": {
     "message": "コレクションのトークン"
   },
-  "tooltipSatusConnected": {
-    "message": "接続済み"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "接続済み"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "未接続"
   },
   "total": {
     "message": "合計"
@@ -8374,9 +8646,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "金額 + 手数料"
   },
   "transactionError": {
     "message": "トランザクションエラー。コントラクトコードで例外がスローされました。"
@@ -8500,6 +8769,15 @@
   "troubleStartingTitle": {
     "message": "MetaMaskの起動中に問題が発生しました。"
   },
+  "trustSignalBlockDescription": {
+    "message": "このサイトに接続すると、資産をすべて失う可能性があります。"
+  },
+  "trustSignalBlockTitle": {
+    "message": "悪質なサイトが検出されました"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "それでも接続する"
+  },
   "tryAgain": {
     "message": "再試行してください"
   },
@@ -8542,9 +8820,6 @@
   "tutorial": {
     "message": "チュートリアル"
   },
-  "twelveHrTitle": {
-    "message": "12時間:"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -8558,6 +8833,9 @@
   "unableToConnectTo": {
     "message": "$1に接続できません。",
     "description": "Message shown when network connection fails. $1 is the network name."
+  },
+  "unableToDownload": {
+    "message": "ダウンロードできません"
   },
   "unapproved": {
     "message": "未承認"
@@ -8628,9 +8906,6 @@
   "unstableTokenPriceTitle": {
     "message": "トークン価格が不安定です"
   },
-  "upArrow": {
-    "message": "上矢印"
-  },
   "update": {
     "message": "更新"
   },
@@ -8688,8 +8963,14 @@
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "アカウントの残高リクエストを一斉に行うことで、より素早く残高更新を取得できます。これにより、アカウントの残高を一斉に取得できるので、更新がより迅速になり、エクスペリエンスが向上します。この機能がオフの場合、サードパーティがユーザーのアカウントをお互いに関連付けなくなる可能性があります。"
   },
+  "useMultiAccountBalanceCheckerSettingDescriptionV2": {
+    "message": "すべてのアカウントの残高の最新情報を一度に送信します。複数アカウントをより迅速に管理でき、総合的なユーザー体験が向上します。"
+  },
   "useNftDetection": {
     "message": "NFTを自動検出"
+  },
+  "useNftDetectionDescription": {
+    "message": "すべてのNFTを表示します (エアドロップ詐欺による偽のNFTを含む)。"
   },
   "useNftDetectionDescriptionText": {
     "message": "MetaMaskが、サードパーティサービス を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
@@ -8705,6 +8986,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMaskは$1というサードパーティサービスを利用して、正確かつ標準化されたネットワーク情報を表示しています。これにより、悪質なネットワークや正しくないネットワークに接続してしまう可能性が減ります。この機能を使用すると、ユーザーのIPアドレスがchainid.networkに公開されます。"
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "悪意のある、または正しくないネットワークに接続する可能性が低くなります。MetaMaskは$1を使用して、正確かつ標準化されたネットワーク情報を表示します。"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -8880,9 +9164,6 @@
   },
   "youApprove": {
     "message": "以下を承認します"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "トランザクションを拒否しました。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import LoginPage from '../page-objects/pages/login-page';
@@ -19,7 +19,7 @@ describe('eth_requestAccounts', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // eth_requestAccounts
         const testDapp = new TestDapp(driver);
@@ -104,6 +104,42 @@ describe('eth_requestAccounts', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
+
+        // Wait for snaps to load in persisted state so the permission grant does not reject non-EVM accounts.
+        // Ensure snaps exist and their snapStates/unencryptedSnapStates are populated before proceeding
+        const nonEvmSnapIds = [
+          'npm:@metamask/bitcoin-wallet-snap',
+          'npm:@metamask/solana-wallet-snap',
+          'npm:@metamask/tron-wallet-snap',
+        ];
+        await driver.waitUntil(
+          async () => {
+            const persistedState = await driver.executeScript(
+              'return window.stateHooks.getPersistedState()',
+            );
+            const snapController = persistedState?.data?.SnapController ?? {};
+            const snaps = snapController.snaps ?? {};
+            const snapStates = snapController.snapStates ?? {};
+            const unencryptedSnapStates =
+              snapController.unencryptedSnapStates ?? {};
+
+            const snapsRegistered = nonEvmSnapIds.every((id) => id in snaps);
+            const snapStatesNotEmpty =
+              Object.keys(snapStates).length > 0 &&
+              Object.keys(unencryptedSnapStates).length > 0;
+            const nonEvmSnapsHaveState = nonEvmSnapIds.every(
+              (id) =>
+                (snapStates[id] && String(snapStates[id]).length > 0) ||
+                (unencryptedSnapStates[id] &&
+                  String(unencryptedSnapStates[id]).length > 0),
+            );
+
+            return (
+              snapsRegistered && snapStatesNotEmpty && nonEvmSnapsHaveState
+            );
+          },
+          { timeout: 20000, interval: 1000 },
+        );
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,

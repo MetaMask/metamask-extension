@@ -15,6 +15,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -28,7 +29,7 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -39,13 +40,33 @@ import {
   usePerpsLivePositions,
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
+  usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
-import { getPerpsController } from '../../providers/perps';
+import {
+  selectPerpsTradeConfigurations,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
+import {
+  CandlePeriod,
+  TimeDuration,
+} from '../../components/app/perps/constants/chartConfig';
+import { usePerpsEligibility } from '../../hooks/perps';
+import { useFormatters } from '../../hooks/useFormatters';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
+import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
+  getChangeColor,
+  getPositionPnlRatio,
+  normalizeTpslPrices,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
+import {
+  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
+  isNearLiquidationPrice as checkNearLiquidationPrice,
+} from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
@@ -56,6 +77,55 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import {
+  PERPS_TOAST_KEYS,
+  type PerpsToastKey,
+  type PerpsToastRouteState,
+  usePerpsToast,
+} from '../../components/app/perps/perps-toast';
+
+const ORDER_MODE_TOAST_KEYS: Record<
+  OrderMode,
+  {
+    inProgress?: PerpsToastKey;
+    failed: PerpsToastKey;
+  }
+> = {
+  new: {
+    inProgress: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.ORDER_FAILED,
+  },
+  modify: {
+    failed: PERPS_TOAST_KEYS.UPDATE_FAILED,
+  },
+  close: {
+    inProgress: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
+  },
+};
+
+const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
+  /^an unknown error occurred$/iu,
+  /^failed to place order$/iu,
+  /^unknown error$/iu,
+  /^error$/iu,
+];
+
+const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
+  /insufficient margin/iu,
+  /insufficient balance/iu,
+  /insufficient liquidity|IOC.*cancel/iu,
+  /\bno liquidity\b/iu,
+  /rate limit/iu,
+  /timeout/iu,
+  /network error/iu,
+  /slippage/iu,
+  /order rejected/iu,
+  /reduce only|reduceOnly/iu,
+  /position would flip/iu,
+  /service unavailable|503|temporarily unavailable/iu,
+  /fetch failed|connection failed/iu,
+];
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -72,14 +142,14 @@ function formStateToOrderParams(
   existingPositionSize?: string,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
-  const marginAmount = parseFloat(formState.amount) || 0;
+  const marginAmount = Number.parseFloat(formState.amount) || 0;
   const positionSize =
     currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
-      ? Math.abs(parseFloat(existingPositionSize)).toString()
+      ? Math.abs(Number.parseFloat(existingPositionSize)).toString()
       : positionSize.toString();
-  const cleanAmount = formState.amount.replace(/,/gu, '');
+  const cleanAmount = formState.amount.replaceAll(',', '');
 
   const params: OrderParams = {
     symbol: formState.asset,
@@ -92,13 +162,13 @@ function formStateToOrderParams(
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
+    params.price = formState.limitPrice.replaceAll(',', '');
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
+    params.takeProfitPrice = formState.takeProfitPrice.replaceAll(',', '');
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
+    params.stopLossPrice = formState.stopLossPrice.replaceAll(',', '');
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -114,14 +184,19 @@ function formStateToOrderParams(
  */
 const PerpsOrderEntryPage: React.FC = () => {
   const t = useI18nContext();
+  const { formatNumber } = useFormatters();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
-  const { triggerDeposit } = usePerpsDeposit();
+  const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { formatPercentWithMinThreshold } = useFormatters();
+  const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -134,6 +209,14 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  // Same candle stream as market detail (default 5m) so header price matches chart line.
+  const { candleData } = usePerpsLiveCandles({
+    symbol: decodedSymbol ?? '',
+    interval: CandlePeriod.FiveMinutes,
+    duration: TimeDuration.YearToDate,
+    throttleMs: 1000,
+  });
 
   const directionParam = searchParams.get('direction');
   const modeParam = searchParams.get('mode');
@@ -156,10 +239,11 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [orderCalculations, setOrderCalculations] =
     useState<OrderCalculations | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
     null,
   );
+  const [pendingOrderToastDescription, setPendingOrderToastDescription] =
+    useState<string | null>(null);
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
 
@@ -167,9 +251,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
+    const cleaned = orderFormState.limitPrice?.replaceAll(',', '') ?? '';
+    const parsed = Number.parseFloat(cleaned);
+    return !cleaned || Number.isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
   const market = useMemo(() => {
@@ -198,40 +282,40 @@ const PerpsOrderEntryPage: React.FC = () => {
       setLivePrice(undefined);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol], includeMarketData: true },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const {
+          timestamp: ts,
+          markPrice: mark,
+          percentChange24h,
+        } = update as {
+          timestamp?: number;
+          markPrice?: string;
+          percentChange24h?: string;
+        };
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark,
+          percentChange24h,
         });
-      } catch {
-        // Controller not ready
       }
-    };
-    subscribe();
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -243,39 +327,33 @@ const PerpsOrderEntryPage: React.FC = () => {
       setTopOfBook(null);
       return undefined;
     }
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToOrderBook({
-          symbol: decodedSymbol,
-          levels: 1,
-          nSigFigs: 5,
-          mantissa: 2,
-          callback: (orderBook) => {
-            if (
-              orderBook.bids.length > 0 &&
-              orderBook.asks.length > 0 &&
-              orderBook.midPrice
-            ) {
-              setTopOfBook({
-                midPrice: parseFloat(orderBook.midPrice),
-              });
-            }
-          },
-        });
-      } catch {
-        // Controller not ready
+    // Activate background orderBook stream for this symbol
+    submitRequestToBackground('perpsActivateOrderBookStream', [
+      { symbol: decodedSymbol },
+    ]).catch(() => {
+      // Controller not ready
+    });
+
+    // Subscribe to order book updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
+      if (!orderBook) {
+        return;
       }
-    };
-    subscribe();
+      if (
+        orderBook.bids.length > 0 &&
+        orderBook.asks.length > 0 &&
+        orderBook.midPrice
+      ) {
+        setTopOfBook({
+          midPrice: parseFloat(orderBook.midPrice),
+        });
+      }
+    });
+
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivateOrderBookStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -286,29 +364,56 @@ const PerpsOrderEntryPage: React.FC = () => {
     return parseFloat(market.price.replace(/[$,]/gu, ''));
   }, [market]);
 
-  const currentPrice = useMemo(() => {
-    if (livePrice?.markPrice) {
-      const p = parseFloat(livePrice.markPrice);
-      if (!Number.isNaN(p) && p > 0) {
-        return p;
-      }
+  const chartCurrentPrice = useMemo(() => {
+    if (!candleData?.candles?.length) {
+      return 0;
     }
-    if (livePrice?.price) {
-      const p =
-        typeof livePrice.price === 'string'
-          ? parseFloat(livePrice.price)
-          : livePrice.price;
-      if (!Number.isNaN(p) && p > 0) {
-        return p;
-      }
-    }
-    return marketPrice;
-  }, [livePrice, marketPrice]);
+    const lastCandle = candleData.candles.at(-1);
+    return lastCandle?.close ? Number.parseFloat(lastCandle.close) : 0;
+  }, [candleData]);
 
-  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
+  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
+
+  const availableBalance = account
+    ? Number.parseFloat(account.availableBalance)
+    : 0;
+
+  const isLimitPriceUnfavorable = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
+    return checkLimitPriceUnfavorable(
+      orderFormState.limitPrice ?? '',
+      currentPrice,
+      orderDirection,
+    );
+  }, [orderType, orderFormState, orderDirection, currentPrice]);
+
+  const isNearLiquidation = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
+    return checkNearLiquidationPrice(
+      currentPrice,
+      orderCalculations?.liquidationPriceRaw,
+      orderDirection,
+    );
+  }, [
+    orderType,
+    orderFormState,
+    orderDirection,
+    currentPrice,
+    orderCalculations,
+  ]);
 
   const isSubmitDisabled =
-    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
+    !isEligible ||
+    !selectedAddress ||
+    isOrderPending ||
+    isLimitPriceInvalid ||
+    isLimitPriceUnfavorable ||
+    isNearLiquidation ||
+    currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
     if (!market) {
@@ -316,6 +421,17 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
+
+  const DEFAULT_LEVERAGE = 3;
+  const initialLeverage = useMemo(() => {
+    if (!decodedSymbol || orderMode !== 'new') {
+      return undefined;
+    }
+    const env = isTestnet ? 'testnet' : 'mainnet';
+    const config = tradeConfigurations[env]?.[decodedSymbol];
+    const saved = config?.leverage ?? DEFAULT_LEVERAGE;
+    return Math.min(saved, maxLeverage);
+  }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
 
   const existingPositionForOrder = useMemo(() => {
     if (!position) {
@@ -330,14 +446,112 @@ const PerpsOrderEntryPage: React.FC = () => {
     };
   }, [position]);
 
-  const handleBackClick = useCallback(() => {
-    if (!decodedSymbol) {
-      return;
+  const displayPrice = useMemo(() => {
+    if (chartCurrentPrice > 0) {
+      return `$${formatNumber(chartCurrentPrice, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
     }
-    navigate(
-      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
-    );
-  }, [navigate, decodedSymbol]);
+    return market?.price ?? '$0.00';
+  }, [chartCurrentPrice, market?.price, formatNumber]);
+
+  const displayChange =
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
+
+  const handleBackClick = useCallback(
+    (perpsToastKey?: PerpsToastKey, perpsToastDescription?: string) => {
+      if (!decodedSymbol) {
+        return;
+      }
+
+      const marketDetailPath = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(
+        decodedSymbol,
+      )}`;
+
+      if (!perpsToastKey) {
+        navigate(marketDetailPath);
+        return;
+      }
+
+      const toastRouteState: PerpsToastRouteState = {
+        perpsToastKey,
+        ...(perpsToastDescription ? { perpsToastDescription } : {}),
+      };
+      navigate(marketDetailPath, { state: toastRouteState });
+    },
+    [navigate, decodedSymbol],
+  );
+
+  const getTradeActionToastDescription = useCallback(() => {
+    if (orderMode === 'modify' || !orderFormState) {
+      return undefined;
+    }
+
+    const directionLabel = (() => {
+      if (orderMode === 'close' && position?.size) {
+        return Number.parseFloat(position.size) >= 0
+          ? t('perpsLong')
+          : t('perpsShort');
+      }
+      return orderFormState.direction === 'long'
+        ? t('perpsLong')
+        : t('perpsShort');
+    })();
+
+    const rawAssetSymbol = orderFormState.asset;
+    const displayAssetSymbol = getDisplayName(rawAssetSymbol);
+
+    const formattedPositionSize = orderCalculations?.positionSize?.trim();
+    if (formattedPositionSize) {
+      const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
+        ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+        : formattedPositionSize;
+
+      if (rawAmount) {
+        return t('perpsToastOrderPlacementSubtitle', [
+          directionLabel,
+          rawAmount,
+          displayAssetSymbol,
+        ]);
+      }
+    }
+
+    if (orderMode !== 'close' || !position?.size) {
+      return undefined;
+    }
+
+    const absoluteSize = Math.abs(Number.parseFloat(position.size));
+    if (Number.isNaN(absoluteSize)) {
+      return undefined;
+    }
+
+    const rawAmount = absoluteSize.toString();
+
+    return t('perpsToastOrderPlacementSubtitle', [
+      directionLabel,
+      rawAmount,
+      displayAssetSymbol,
+    ]);
+  }, [orderCalculations, orderFormState, orderMode, position, t]);
+
+  const getCloseSuccessToastDescription = useCallback(() => {
+    if (orderMode !== 'close' || !position) {
+      return undefined;
+    }
+
+    const pnlRatio = getPositionPnlRatio(position);
+    if (pnlRatio === undefined || Number.isNaN(pnlRatio)) {
+      return undefined;
+    }
+
+    const formattedPnl = formatPercentWithMinThreshold(pnlRatio);
+    if (!formattedPnl) {
+      return undefined;
+    }
+
+    return t('perpsToastClosePnlSubtitle', [formattedPnl]);
+  }, [formatPercentWithMinThreshold, orderMode, position, t]);
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
@@ -361,73 +575,174 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    setSubmitError(null);
+    setPendingOrderToastDescription(null);
+
+    const tradeActionToastDescription = getTradeActionToastDescription();
+    const closeSuccessToastDescription =
+      getCloseSuccessToastDescription() ?? tradeActionToastDescription;
+
+    const inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+    const inProgressToastDescription =
+      inProgressToastKey === PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS
+        ? undefined
+        : tradeActionToastDescription;
+    if (inProgressToastKey) {
+      replacePerpsToastByKey({
+        key: inProgressToastKey,
+        ...(inProgressToastDescription
+          ? { description: inProgressToastDescription }
+          : {}),
+      });
+    }
 
     try {
-      const controller = await getPerpsController(selectedAddress);
-
       if (orderMode === 'close' && position) {
         const closeParams = {
           symbol: orderFormState.asset,
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await controller.closePosition(closeParams);
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to close position');
-        }
-      } else if (orderMode === 'modify' && position) {
-        const cleanTp =
-          orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
-            : undefined;
-        const cleanSl =
-          orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? orderFormState.stopLossPrice.replace(/,/gu, '')
-            : undefined;
-        const result = await controller.updatePositionTPSL({
-          symbol: orderFormState.asset,
-          takeProfitPrice: cleanTp || undefined,
-          stopLossPrice: cleanSl || undefined,
-        });
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to update TP/SL');
-        }
-      } else {
-        const orderParams = formStateToOrderParams(
-          orderFormState,
-          currentPrice,
-          orderMode,
-          position?.size,
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsClosePosition',
+          [closeParams],
         );
-        const result = await controller.placeOrder(orderParams);
         if (!result.success) {
-          throw new Error(result.error || 'Failed to place order');
+          throw new Error(result.error ?? 'Failed to close position');
         }
-
-        if (orderFormState.type === 'limit') {
-          handleBackClick();
-          return;
-        }
-        setPendingOrderSymbol(orderFormState.asset);
+        handleBackClick(
+          PERPS_TOAST_KEYS.TRADE_SUCCESS,
+          closeSuccessToastDescription,
+        );
         return;
       }
-      handleBackClick();
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An unknown error occurred',
+
+      if (orderMode === 'modify' && position) {
+        const marginAmount =
+          Number.parseFloat(orderFormState.amount.replaceAll(',', '')) || 0;
+
+        if (marginAmount > 0) {
+          // Add to position: place order with additional size + TP/SL
+          const orderParams = formStateToOrderParams(
+            orderFormState,
+            currentPrice,
+            orderMode,
+            position?.size,
+          );
+          const result = await submitRequestToBackground<{
+            success: boolean;
+            error?: string;
+          }>('perpsPlaceOrder', [orderParams]);
+          if (!result.success) {
+            throw new Error(result.error ?? 'Failed to add to position');
+          }
+
+          submitRequestToBackground('perpsSaveTradeConfiguration', [
+            orderFormState.asset,
+            orderFormState.leverage,
+          ]).catch((e) => {
+            console.warn('[Perps] Save trade configuration failed:', e);
+          });
+
+          // Existing position is already in `allPositions`, so pending-order
+          // confirmation would resolve immediately; navigate like limit orders.
+          handleBackClick(
+            PERPS_TOAST_KEYS.ORDER_PLACED,
+            tradeActionToastDescription,
+          );
+          return;
+        }
+
+        // Amount is 0: only update TP/SL
+        const { takeProfitPrice, stopLossPrice } = normalizeTpslPrices({
+          takeProfitPrice: orderFormState.autoCloseEnabled
+            ? orderFormState.takeProfitPrice
+            : undefined,
+          stopLossPrice: orderFormState.autoCloseEnabled
+            ? orderFormState.stopLossPrice
+            : undefined,
+        });
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdatePositionTPSL',
+          [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
+        );
+        if (!result.success) {
+          throw new Error(result.error ?? 'Failed to update TP/SL');
+        }
+        handleBackClick(PERPS_TOAST_KEYS.UPDATE_SUCCESS);
+        return;
+      }
+
+      const orderParams = formStateToOrderParams(
+        orderFormState,
+        currentPrice,
+        orderMode,
+        position?.size,
       );
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsPlaceOrder',
+        [orderParams],
+      );
+      if (!result.success) {
+        throw new Error(result.error ?? 'Failed to place order');
+      }
+
+      submitRequestToBackground('perpsSaveTradeConfiguration', [
+        orderFormState.asset,
+        orderFormState.leverage,
+      ]).catch((e) => {
+        console.warn('[Perps] Save trade configuration failed:', e);
+      });
+
+      if (orderFormState.type === 'limit') {
+        handleBackClick(
+          PERPS_TOAST_KEYS.ORDER_PLACED,
+          tradeActionToastDescription,
+        );
+        return;
+      }
+      setPendingOrderToastDescription(tradeActionToastDescription ?? null);
+      setPendingOrderSymbol(orderFormState.asset);
+    } catch (error) {
+      if (inProgressToastKey) {
+        hidePerpsToast();
+      }
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+      const normalizedErrorMessage = errorMessage.trim();
+      const shouldUseOrderFailedFallback =
+        failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
+        (normalizedErrorMessage.length === 0 ||
+          ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ) ||
+          !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ));
+      const failedToastDescription = shouldUseOrderFailedFallback
+        ? t('perpsToastOrderFailedDescriptionFallback')
+        : normalizedErrorMessage;
+
+      replacePerpsToastByKey({
+        key: failedToastKey,
+        description: failedToastDescription,
+      });
     } finally {
       setIsSubmitting(false);
     }
   }, [
     isEligible,
     orderFormState,
-    selectedAddress,
     orderMode,
     position,
+    selectedAddress,
     currentPrice,
+    getTradeActionToastDescription,
+    getCloseSuccessToastDescription,
     handleBackClick,
+    hidePerpsToast,
+    replacePerpsToastByKey,
+    t,
   ]);
 
   useEffect(() => {
@@ -439,10 +754,17 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
     if (hasPosition) {
       setPendingOrderSymbol(null);
+      const toastDescription = pendingOrderToastDescription ?? undefined;
+      setPendingOrderToastDescription(null);
       setIsSubmitting(false);
-      handleBackClick();
+      handleBackClick(PERPS_TOAST_KEYS.ORDER_FILLED, toastDescription);
     }
-  }, [pendingOrderSymbol, allPositions, handleBackClick]);
+  }, [
+    pendingOrderSymbol,
+    allPositions,
+    handleBackClick,
+    pendingOrderToastDescription,
+  ]);
 
   useEffect(() => {
     if (!pendingOrderSymbol) {
@@ -450,13 +772,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     const timeout = setTimeout(() => {
       setPendingOrderSymbol(null);
+      setPendingOrderToastDescription(null);
       setIsSubmitting(false);
+      hidePerpsToast();
       handleBackClick();
     }, 15000);
     return () => clearTimeout(timeout);
-  }, [pendingOrderSymbol, handleBackClick]);
+  }, [pendingOrderSymbol, handleBackClick, hidePerpsToast]);
 
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
   if (!symbol || !decodedSymbol) {
@@ -471,7 +795,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
-            onClick={handleBackClick}
+            onClick={() => handleBackClick()}
             aria-label={t('back')}
             className="p-2 cursor-pointer"
           >
@@ -518,7 +842,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
     >
-      {/* Header: Back (left) + Long/Short toggle (centered) + spacer (right) */}
+      {/* Header: Back (left) + Asset symbol, price, % gain (centered) + spacer (right) */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -529,7 +853,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       >
         <Box
           data-testid="perps-order-entry-back-button"
-          onClick={handleBackClick}
+          onClick={() => handleBackClick()}
           aria-label={t('back')}
           className="w-9 shrink-0 cursor-pointer"
         >
@@ -540,15 +864,41 @@ const PerpsOrderEntryPage: React.FC = () => {
           />
         </Box>
         <Box
-          flexDirection={BoxFlexDirection.Row}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
           className="flex-1 min-w-0"
         >
-          <DirectionTabs
-            direction={orderDirection}
-            onDirectionChange={setOrderDirection}
-          />
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Bold}
+            color={TextColor.TextDefault}
+            data-testid="perps-order-entry-asset-symbol"
+          >
+            {displayName}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Baseline}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              data-testid="perps-order-entry-price"
+            >
+              {displayPrice}
+            </Text>
+            {displayChange && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={getChangeColor(displayChange)}
+                data-testid="perps-order-entry-change"
+              >
+                {displayChange}
+              </Text>
+            )}
+          </Box>
         </Box>
         <Box className="w-9 shrink-0" aria-hidden="true" />
       </Box>
@@ -558,11 +908,17 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
         className={twMerge(
           'flex-1 overflow-y-auto overflow-x-hidden',
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
+        <DirectionTabs
+          direction={orderDirection}
+          onDirectionChange={setOrderDirection}
+        />
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}
@@ -579,6 +935,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
+          initialLeverage={initialLeverage}
         />
       </Box>
 
@@ -598,24 +955,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             estimatedFees={orderCalculations.estimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
           />
-        )}
-        {submitError && (
-          <Box
-            className="bg-error-muted rounded-lg"
-            padding={3}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
-          >
-            <Icon
-              name={IconName.Warning}
-              size={IconSize.Sm}
-              color={IconColor.ErrorDefault}
-            />
-            <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-              {submitError}
-            </Text>
-          </Box>
         )}
         <Button
           variant={ButtonVariant.Primary}

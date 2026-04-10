@@ -22,6 +22,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -48,6 +49,7 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
+  getBridgeUnavailableQuoteReason,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -151,11 +153,14 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
+  const bridgeUnavailableQuotesReason = useSelector(
+    getBridgeUnavailableQuoteReason,
+  );
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: unvalidatedQuote,
+    activeQuote: unvalidatedQuote ?? null,
     toToken,
     isQuoteExpired,
   });
@@ -171,13 +176,16 @@ const PrepareBridgePage = ({
     fromChain,
   });
 
-  const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.assetId)
-      ? gasIncluded || gasIncluded7702
-      : true;
-
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
+
+  const effectiveGasIncluded = gasIncluded;
+  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
+
+  const shouldShowMaxButton =
+    fromToken && isNativeAddress(fromToken.assetId)
+      ? effectiveGasIncluded || effectiveGasIncluded7702
+      : true;
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
@@ -291,8 +299,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: gasIncluded || gasIncluded7702,
-      gasIncluded7702,
+      gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
+      gasIncluded7702: effectiveGasIncluded7702,
     };
   }, [
     fromToken?.assetId,
@@ -304,8 +312,8 @@ const PrepareBridgePage = ({
     selectedAccount?.address,
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
-    gasIncluded,
-    gasIncluded7702,
+    effectiveGasIncluded,
+    effectiveGasIncluded7702,
     isInsufficientBalance,
   ]);
 
@@ -647,7 +655,7 @@ const PrepareBridgePage = ({
             <Column paddingInline={4}>
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
+                description={t(bridgeUnavailableQuotesReason)}
                 data-testid="bridge-error-banner"
                 descriptionProps={{
                   'data-testid': 'bridge-no-options-available',
@@ -668,6 +676,9 @@ const PrepareBridgePage = ({
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
+                if (wasTxDeclined) {
+                  dispatch(setWasTxDeclined(false));
+                }
                 if (!quoteParams) {
                   return;
                 }

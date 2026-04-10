@@ -1,7 +1,17 @@
-import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import { getTrezorFeatures } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
+import {
+  getMissingCapabilities,
+  isTrezorModelOne,
+  isTrezorModelUsingTrezorSuite,
+} from './trezorUtils';
 import { TrezorAdapter } from './TrezorAdapter';
 
 jest.mock('../../../store/actions', () => ({
@@ -12,7 +22,6 @@ jest.mock('../webConnectionUtils', () => ({
   ...jest.requireActual('../webConnectionUtils'),
   getConnectedTrezorDevices: jest.fn(),
   isWebUsbAvailable: jest.fn(),
-  subscribeToWebUsbEvents: jest.fn(),
 }));
 
 const mockGetTrezorFeatures = getTrezorFeatures as jest.MockedFunction<
@@ -26,12 +35,9 @@ const mockIsWebUsbAvailable =
   webConnectionUtils.isWebUsbAvailable as jest.MockedFunction<
     typeof webConnectionUtils.isWebUsbAvailable
   >;
-const mockSubscribeToWebUsbEvents =
-  webConnectionUtils.subscribeToWebUsbEvents as jest.MockedFunction<
-    typeof webConnectionUtils.subscribeToWebUsbEvents
-  >;
 
 type TrezorFeaturesPayload = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   session_id: string | null;
   model: string;
   initialized: boolean;
@@ -43,10 +49,15 @@ const createMockFeaturesResponse = (
   payload: Partial<TrezorFeaturesPayload> = {},
 ) => ({
   payload: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     session_id: 'session-id',
     model: 'T',
     initialized: true,
-    capabilities: ['Capability_Bitcoin', 'Capability_Solana', 'Capability_Ethereum'],
+    capabilities: [
+      'Capability_Bitcoin',
+      'Capability_Solana',
+      'Capability_Ethereum',
+    ],
     unlocked: true,
     ...payload,
   },
@@ -55,11 +66,8 @@ const createMockFeaturesResponse = (
 describe('TrezorAdapter', () => {
   let adapter: TrezorAdapter;
   let mockOptions: HardwareWalletAdapterOptions;
-  let mockUnsubscribe: jest.Mock;
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
-  let capturedOnConnect: ((device: USBDevice) => void) | null = null;
-  let capturedOnDisconnect: ((device: USBDevice) => void) | null = null;
 
   const createMockOptions = (): HardwareWalletAdapterOptions => ({
     onDisconnect: jest.fn(),
@@ -72,22 +80,12 @@ describe('TrezorAdapter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockOptions = createMockOptions();
-    mockUnsubscribe = jest.fn();
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    consoleLogSpy = jest
+      .spyOn(console, 'log')
+      .mockImplementation(() => undefined);
     consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    capturedOnConnect = null;
-    capturedOnDisconnect = null;
-
-    mockSubscribeToWebUsbEvents.mockImplementation(
-      (_walletType, onConnect, onDisconnect) => {
-        capturedOnConnect = onConnect;
-        capturedOnDisconnect = onDisconnect;
-        return mockUnsubscribe;
-      },
-    );
-
     mockIsWebUsbAvailable.mockReturnValue(true);
     mockGetConnectedTrezorDevices.mockResolvedValue([{} as USBDevice]);
     mockGetTrezorFeatures.mockResolvedValue(createMockFeaturesResponse());
@@ -103,35 +101,8 @@ describe('TrezorAdapter', () => {
   });
 
   describe('constructor and events', () => {
-    it('subscribes to WebUSB events', () => {
-      expect(mockSubscribeToWebUsbEvents).toHaveBeenCalledWith(
-        'trezor',
-        expect.any(Function),
-        expect.any(Function),
-      );
-    });
-
-    it('emits Disconnected event when unplugged while connected', async () => {
-      await adapter.connect();
-      (mockOptions.onDeviceEvent as jest.Mock).mockClear();
-
-      capturedOnDisconnect?.({} as USBDevice);
-
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
-        event: DeviceEvent.Disconnected,
-      });
+    it('initializes disconnected state', () => {
       expect(adapter.isConnected()).toBe(false);
-    });
-
-    it('does not emit unplug event when not connected', () => {
-      capturedOnDisconnect?.({} as USBDevice);
-      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
-    });
-
-    it('keeps onConnect callback as no-op', () => {
-      capturedOnConnect?.({} as USBDevice);
-      expect(adapter.isConnected()).toBe(false);
-      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
     });
   });
 
@@ -173,9 +144,20 @@ describe('TrezorAdapter', () => {
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           event: DeviceEvent.Disconnected,
-          error: expect.objectContaining({ code: ErrorCode.DeviceDisconnected }),
+          error: expect.objectContaining({
+            code: ErrorCode.DeviceDisconnected,
+          }),
         }),
       );
+      expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('converts unexpected errors during device check', async () => {
+      mockGetConnectedTrezorDevices.mockRejectedValue(
+        new Error('USB access denied'),
+      );
+
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
       expect(adapter.isConnected()).toBe(false);
     });
   });
@@ -193,9 +175,9 @@ describe('TrezorAdapter', () => {
       expect(adapter.isConnected()).toBe(false);
     });
 
-    it('unsubscribes from WebUSB events on destroy', () => {
+    it('resets connected state on destroy', () => {
       adapter.destroy();
-      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+      expect(adapter.isConnected()).toBe(false);
     });
   });
 
@@ -213,6 +195,7 @@ describe('TrezorAdapter', () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
           model: 'safe 7',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           session_id: null,
         }),
       );
@@ -265,6 +248,7 @@ describe('TrezorAdapter', () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
           model: 'T',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           session_id: null,
         }),
       );
@@ -305,12 +289,20 @@ describe('TrezorAdapter', () => {
       await adapter.connect();
       expect(adapter.isConnected()).toBe(true);
 
-      const connectionClosedError = new HardwareWalletError('Connection closed', {
-        code: ErrorCode.ConnectionClosed,
-      });
+      const connectionClosedError = new HardwareWalletError(
+        'Connection closed',
+        {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Connection closed',
+        },
+      );
       mockGetTrezorFeatures.mockRejectedValue(connectionClosedError);
 
-      await expect(adapter.ensureDeviceReady()).rejects.toBe(connectionClosedError);
+      await expect(adapter.ensureDeviceReady()).rejects.toBe(
+        connectionClosedError,
+      );
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
         event: DeviceEvent.Disconnected,
@@ -320,15 +312,106 @@ describe('TrezorAdapter', () => {
     });
 
     it('wraps unknown errors as HardwareWalletError', async () => {
-      mockGetTrezorFeatures.mockRejectedValue(new Error('feature fetch failed'));
+      mockGetTrezorFeatures.mockRejectedValue(
+        new Error('feature fetch failed'),
+      );
 
-      await expect(adapter.ensureDeviceReady()).rejects.toThrow(HardwareWalletError);
+      await expect(adapter.ensureDeviceReady()).rejects.toThrow(
+        HardwareWalletError,
+      );
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           event: DeviceEvent.Disconnected,
           error: expect.any(HardwareWalletError),
         }),
       );
+    });
+  });
+});
+
+describe('trezorUtils', () => {
+  describe('isTrezorModelUsingTrezorSuite', () => {
+    it('returns true for safe 7', () => {
+      expect(isTrezorModelUsingTrezorSuite('safe 7')).toBe(true);
+    });
+
+    it('returns true for Safe 7 (case insensitive)', () => {
+      expect(isTrezorModelUsingTrezorSuite('Safe 7')).toBe(true);
+    });
+
+    it('returns false for other models', () => {
+      expect(isTrezorModelUsingTrezorSuite('T')).toBe(false);
+      expect(isTrezorModelUsingTrezorSuite('1')).toBe(false);
+    });
+  });
+
+  describe('getMissingCapabilities', () => {
+    it('returns empty array when all capabilities are present', () => {
+      expect(
+        getMissingCapabilities([
+          'Capability_Bitcoin',
+          'Capability_Solana',
+          'Capability_Ethereum',
+        ]),
+      ).toEqual([]);
+    });
+
+    it('returns missing capabilities', () => {
+      expect(getMissingCapabilities(['Capability_Bitcoin'])).toEqual([
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('returns all capabilities when input is empty', () => {
+      expect(getMissingCapabilities([])).toEqual([
+        'Capability_Bitcoin',
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('handles non-array input', () => {
+      expect(getMissingCapabilities(null)).toEqual([
+        'Capability_Bitcoin',
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('filters out non-string entries', () => {
+      expect(
+        getMissingCapabilities([
+          'Capability_Bitcoin',
+          123,
+          'Capability_Ethereum',
+        ]),
+      ).toEqual(['Capability_Solana']);
+    });
+  });
+
+  describe('isTrezorModelOne', () => {
+    it('returns true for model "1"', () => {
+      expect(isTrezorModelOne('1')).toBe(true);
+    });
+
+    it('returns true for model "T1B1"', () => {
+      expect(isTrezorModelOne('T1B1')).toBe(true);
+    });
+
+    it('returns true for model containing "model one"', () => {
+      expect(isTrezorModelOne('Trezor Model One')).toBe(true);
+    });
+
+    it('returns false for other models', () => {
+      expect(isTrezorModelOne('T')).toBe(false);
+      expect(isTrezorModelOne('safe 7')).toBe(false);
+    });
+
+    it('returns false for non-string input', () => {
+      expect(isTrezorModelOne(123)).toBe(false);
+      expect(isTrezorModelOne(null)).toBe(false);
+      expect(isTrezorModelOne(undefined)).toBe(false);
     });
   });
 });

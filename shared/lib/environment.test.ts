@@ -1,6 +1,8 @@
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
   getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
+  getIsAssetsUnifiedStateIncludedInBuild,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -96,5 +98,59 @@ describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   it('should return false when GATOR_PERMISSIONS_REVOCATION_ENABLED is undefined', () => {
     delete process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED;
     expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsAssetsUnifiedStateIncludedInBuild', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.ASSETS_UNIFIED_STATE_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.ASSETS_UNIFIED_STATE_ENABLED = originalValue;
+  });
+
+  it('returns true when ASSETS_UNIFIED_STATE_ENABLED is "true"', () => {
+    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(true);
+  });
+
+  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is "false"', () => {
+    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  });
+
+  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is undefined', () => {
+    delete process.env.ASSETS_UNIFIED_STATE_ENABLED;
+    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  });
+});
+
+describe('getIsPerpsIncludedInBuild', () => {
+  let originalPerpsEnabled: string | undefined;
+
+  beforeAll(() => {
+    originalPerpsEnabled = process.env.PERPS_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.PERPS_ENABLED = originalPerpsEnabled;
+  });
+
+  it('returns true when PERPS_ENABLED is "true"', () => {
+    process.env.PERPS_ENABLED = 'true';
+    expect(getIsPerpsIncludedInBuild()).toBe(true);
+  });
+
+  it('returns false when PERPS_ENABLED is "false"', () => {
+    process.env.PERPS_ENABLED = 'false';
+    expect(getIsPerpsIncludedInBuild()).toBe(false);
+  });
+
+  it('returns false when PERPS_ENABLED is undefined', () => {
+    delete process.env.PERPS_ENABLED;
+    expect(getIsPerpsIncludedInBuild()).toBe(false);
   });
 });

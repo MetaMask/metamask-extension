@@ -3,6 +3,7 @@ import {
   ChainId,
   type QuoteMetadata,
   type QuoteResponse,
+  QuoteStreamCompleteReason,
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -22,6 +23,7 @@ import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import {
@@ -59,10 +61,12 @@ import {
   getFromAmountInCurrency,
   getValidatedFromValue,
   getPriceImpact,
-  getFormattedPriceImpact,
+  getFormattedPriceImpactPercentage,
+  getFormattedPriceImpactFiat,
   getIsStockMarketClosed,
   getWarningLabels,
   getIsQuoteExpired,
+  getBridgeUnavailableQuoteReason,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -616,6 +620,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
@@ -648,6 +653,7 @@ describe('Bridge selectors', () => {
           "chainId": "eip155:1",
           "decimals": 18,
           "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
           "symbol": "DEST",
@@ -682,6 +688,7 @@ describe('Bridge selectors', () => {
         symbol: 'mUSD',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
 
@@ -749,6 +756,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
@@ -1834,6 +1842,109 @@ describe('Bridge selectors', () => {
         expect(result.isPriceImpactError).toBe(isPriceImpactError);
       },
     );
+
+    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+          fromTokenInputValue: '0.001',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromNativeBalance: '10000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '10000000000000000' },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=false for non-sponsored Monad swap even when remaining balance < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: false,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, but no 7702 sponsorship so no reserve applies
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '80',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '80000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
   });
 
   describe('getFromTokenBalance', () => {
@@ -1946,10 +2057,8 @@ describe('Bridge selectors', () => {
           internalAccounts: {
             selectedAccount: MOCK_EVM_ACCOUNT.id,
           },
-          accountTree: {
-            // This account group only has 1 Solana account
-            selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
-          },
+          // This account group only has 1 Solana account
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
         },
       });
 
@@ -3011,7 +3120,7 @@ describe('Bridge selectors', () => {
           })) as unknown as QuoteResponse[],
         },
       });
-      const result = getFormattedPriceImpact(state as never);
+      const result = getFormattedPriceImpactPercentage(state as never);
       expect(result).toBe('15%');
     });
 
@@ -3019,8 +3128,73 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getFormattedPriceImpact(state as never);
+      const result = getFormattedPriceImpactPercentage(state as never);
       expect(result).toBe('0%');
+    });
+  });
+
+  describe('getFormattedPriceImpactFiat', () => {
+    it('returns a formatted fiat string when active quote has both fiat amounts', () => {
+      // ETH (native, OP) → ETH (native, ARB); quoteRequest srcChainId/destChainId must be set
+      // so selectBridgeQuotesWithMetadata can look up exchange rates and compute valueInCurrency.
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes:
+            DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as unknown as QuoteResponse[],
+          quoteRequest: {
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: 42161,
+            destTokenAddress: zeroAddress(),
+          },
+        },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
+          },
+        },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+    });
+
+    it('returns undefined when there are no quotes', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when sentAmount.valueInCurrency is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
+            ...quote,
+            sentAmount: { ...quote.sentAmount, valueInCurrency: null },
+          })) as unknown as QuoteResponse[],
+        },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
+            ...quote,
+            toTokenAmount: { ...quote.toTokenAmount, valueInCurrency: null },
+          })) as unknown as QuoteResponse[],
+        },
+        metamaskStateOverrides: { currentCurrency: 'usd' },
+      });
+      const result = getFormattedPriceImpactFiat(state as never);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -3179,6 +3353,100 @@ describe('Bridge selectors', () => {
       });
       const result = getIsQuoteExpired(state as never, Date.now());
       expect(typeof result).toBe('boolean');
+    });
+  });
+
+  describe('getBridgeUnavailableQuoteReason', () => {
+    it('returns noOptionsAvailableMessage when quoteStreamComplete is null', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: null,
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
+    });
+
+    it('returns noOptionsAvailableMessage when quoteStreamComplete has no reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
+    });
+
+    it('returns bridgeQuoteStreamCompleteAmountTooHigh for AMOUNT_TOO_HIGH reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteAmountTooHigh');
+    });
+
+    it('returns bridgeQuoteStreamCompleteAmountTooLow for AMOUNT_TOO_LOW reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.AMOUNT_TOO_LOW,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteAmountTooLow');
+    });
+
+    it('returns bridgeQuoteStreamCompleteRetry for RETRY reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.RETRY,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteRetry');
+    });
+
+    it('returns bridgeQuoteStreamCompleteTokenNotSupported for TOKEN_NOT_SUPPORTED reason', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 0,
+            hasQuotes: false,
+            reason: QuoteStreamCompleteReason.TOKEN_NOT_SUPPORTED,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('bridgeQuoteStreamCompleteTokenNotSupported');
+    });
+
+    it('returns noOptionsAvailableMessage when quoteStreamComplete has quotes', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: {
+          quoteStreamComplete: {
+            quoteCount: 2,
+            hasQuotes: true,
+          },
+        },
+      });
+      const result = getBridgeUnavailableQuoteReason(state as never);
+      expect(result).toBe('noOptionsAvailableMessage');
     });
   });
 });

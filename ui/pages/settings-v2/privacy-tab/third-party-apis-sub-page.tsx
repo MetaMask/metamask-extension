@@ -1,6 +1,7 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import {
@@ -11,11 +12,12 @@ import {
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { THIRD_PARTY_API_ITEMS } from '../search-config';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
 
 const NetworkDetailsCheckToggleItem = createToggleItem({
   name: 'NetworkDetailsCheckToggleItem',
-  titleKey: 'useSafeChainsListValidation',
+  titleKey: THIRD_PARTY_API_ITEMS['network-details-check'],
   formatDescription: (t) =>
     t('useSafeChainsListValidationDescriptionV2', [
       <b key="network-details-website">
@@ -26,11 +28,12 @@ const NetworkDetailsCheckToggleItem = createToggleItem({
     state.metamask.useSafeChainsListValidation,
   action: setUseSafeChainsListValidation,
   dataTestId: 'network-details-check-toggle',
+  containerDataTestId: 'useSafeChainsListValidation',
 });
 
 const ShowENSDomainsToggleItem = createToggleItem({
   name: 'ShowENSDomainsToggleItem',
-  titleKey: 'ensDomainsSettingTitle',
+  titleKey: THIRD_PARTY_API_ITEMS['show-ens-domains'],
   formatDescription: (t) => (
     <>
       {t('ensDomainsSettingDescriptionIntroduction')}
@@ -45,11 +48,12 @@ const ShowENSDomainsToggleItem = createToggleItem({
     state.metamask.useAddressBarEnsResolution,
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
+  containerDataTestId: 'ipfs-gateway-resolution-container',
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
   name: 'MakeSmartContractsEasierToggleItem',
-  titleKey: 'makeSmartContractsEasier',
+  titleKey: THIRD_PARTY_API_ITEMS['make-smart-contracts-easier'],
   descriptionKey: 'makeSmartContractsEasierDescription',
   selector: (state: MetaMaskReduxState) => state.metamask.use4ByteResolution,
   action: setUse4ByteResolution,
@@ -58,12 +62,19 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
 
 const ProposedNicknamesToggleItem = createToggleItem({
   name: 'ProposedNicknamesToggleItem',
-  titleKey: 'externalNameSourcesSetting',
+  titleKey: THIRD_PARTY_API_ITEMS['proposed-nicknames'],
   descriptionKey: 'externalNameSourcesSettingDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     state.metamask.useExternalNameSources,
   action: setUseExternalNameSources,
   dataTestId: 'proposed-nicknames-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_external_name_sources: newValue,
+    }),
+  },
 });
 
 /** Registry of setting items for the Third-party APIs sub-page */

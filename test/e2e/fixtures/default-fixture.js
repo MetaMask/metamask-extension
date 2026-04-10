@@ -245,8 +245,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showTestNetworks: false,
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
-          petnamesEnabled: true,
-          showDefaultAddress: false,
+          showDefaultAddress: true,
           showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
@@ -259,7 +258,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           avatarType: 'maskicon',
         },
         theme: 'light',
-        useBlockie: false,
         useNftDetection: false,
         usePhishDetect: true,
         useTokenDetection: false,

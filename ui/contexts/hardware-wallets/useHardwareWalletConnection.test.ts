@@ -18,7 +18,7 @@ describe('useHardwareWalletConnection', () => {
     abortControllerRef: { current: AbortController | null };
     adapterRef: { current: HardwareWalletAdapter | null };
     connectingPromiseRef: { current: Promise<void> | null };
-    ensureDeviceReadyPromiseRef: { current: Map<boolean, Promise<boolean>> };
+    ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
     isConnectingRef: { current: boolean };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };

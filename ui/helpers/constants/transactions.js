@@ -2,6 +2,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransactionStatus } from '../../../shared/constants/transaction';
 
 export const PENDING_STATUS_HASH = {
   [TransactionStatus.unapproved]: true,
@@ -27,4 +28,36 @@ export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.incoming,
   TransactionType.gasPayment,
   TransactionType.relayDeposit,
+]);
+
+// EVM transaction types excluded from toast notifications
+export const TOAST_EXCLUDED_TRANSACTION_TYPES = new Set([
+  TransactionType.swapApproval,
+  TransactionType.bridgeApproval,
+  TransactionType.bridge,
+  TransactionType.shieldSubscriptionApprove,
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+]);
+
+// Non-EVM transaction types excluded from toast notifications.
+export const TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES = new Set([
+  'approve',
+  'receive',
+]);
+
+export const TRANSACTION_PENDING_STATUSES = new Set([
+  TransactionStatus.submitted,
+  SmartTransactionStatus.pending,
+]);
+
+export const TRANSACTION_SUCCESS_STATUSES = new Set([
+  TransactionStatus.confirmed,
+  SmartTransactionStatus.success,
+]);
+
+export const TRANSACTION_FAILED_STATUSES = new Set([
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  SmartTransactionStatus.cancelled,
 ]);

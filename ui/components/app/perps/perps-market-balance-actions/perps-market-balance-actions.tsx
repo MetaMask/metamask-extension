@@ -17,20 +17,27 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import {
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from '../perps-balance-dropdown';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
   showActionButtons?: boolean;
+  /** Whether add funds transaction creation is in progress */
+  isAddFundsLoading?: boolean;
   /** Callback when Add funds button is pressed */
-  onAddFunds?: () => void;
+  onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
-  onWithdraw?: () => void;
+  onWithdraw?: PerpsBalanceActionHandler;
   /** Callback when Learn more button is pressed */
   onLearnMore?: () => void;
 };
 
 const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   showActionButtons = true,
+  isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
   onLearnMore,
@@ -53,11 +60,11 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
     if (!isEligible) {
       return;
     }
-    onAddFunds?.();
+    invokePerpsBalanceAction(onAddFunds);
   }, [isEligible, onAddFunds]);
 
   const handleWithdraw = useCallback(() => {
-    onWithdraw?.();
+    invokePerpsBalanceAction(onWithdraw);
   }, [onWithdraw]);
 
   const handleLearnMore = useCallback(() => {
@@ -117,8 +124,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible}
+            disabled={!isEligible || isAddFundsLoading}
             title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
@@ -183,8 +191,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible}
+            disabled={!isEligible || isAddFundsLoading}
             title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"

@@ -6,11 +6,11 @@ import {
 import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  Messenger,
   MOCK_ANY_NAMESPACE,
+  Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 
@@ -189,6 +189,39 @@ describe('EnforceSimulationHook', () => {
         })) ?? {};
 
       expect(updateTransaction).toBeUndefined();
+    });
+
+    it('container types exist but user opted out (empty array)', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getAfterSimulateHook();
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: {
+            ...TRANSACTION_META_MOCK,
+            containerTypes: [],
+          },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+    });
+
+    it('before sign hook respects user opt-out (empty container types)', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getBeforeSignHook();
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: {
+            ...TRANSACTION_META_MOCK,
+            containerTypes: [],
+          },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
     });
   });
 });

@@ -17,7 +17,7 @@ import {
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 import {
   MetaMetricsEventCategory,
@@ -63,7 +63,6 @@ export default class SettingsTab extends PureComponent {
     setCurrentCurrency: PropTypes.func,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
-    useBlockie: PropTypes.bool,
     currentCurrency: PropTypes.string,
     showNativeTokenAsMainBalance: PropTypes.bool,
     setShowNativeTokenAsMainBalancePreference: PropTypes.func,
@@ -301,15 +300,9 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const { useBlockie, avatarType, setAvatarType, selectedAddress } =
-      this.props;
+    const { avatarType, setAvatarType, selectedAddress } = this.props;
 
-    let currentAvatarType;
-    if (avatarType !== undefined) {
-      currentAvatarType = avatarType;
-    } else if (useBlockie) {
-      currentAvatarType = 'blockies';
-    }
+    const currentAvatarType = avatarType;
 
     return (
       <Box

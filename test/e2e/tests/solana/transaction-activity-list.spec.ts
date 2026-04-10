@@ -5,7 +5,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   commonSolanaTxConfirmedDetailsFixture,
@@ -25,7 +25,7 @@ describe('Transaction activity list', function (this: Suite) {
         }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
@@ -66,9 +66,9 @@ describe('Transaction activity list', function (this: Suite) {
         }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);

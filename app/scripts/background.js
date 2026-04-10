@@ -6,12 +6,13 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-// eslint-disable-next-line import/order -- intentional first import for Sentry
+// eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
+import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -27,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_FILE,
+  POPUP_INIT_FILE,
+  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -85,7 +89,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import/first */
+/* eslint-enable import-x/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -113,6 +117,7 @@ const lazyListener =
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
+const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
@@ -152,6 +157,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -180,6 +186,7 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
+let failedTxCount = 0;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -668,7 +675,6 @@ function saveTimestamp() {
  * @property {object} marketData - A map from chain ID -> contract address -> an object containing the token's market data.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
- * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
@@ -1260,8 +1266,10 @@ function trackDappView(remotePort) {
 
 /**
  * Emit App Opened event
+ *
+ * @param {string} environmentType - The environment type where the app is opening
  */
-function emitAppOpenedMetricEvent() {
+function emitAppOpenedMetricEvent(environmentType) {
   const { metaMetricsId, participateInMetaMetrics } =
     controller.metaMetricsController.state;
 
@@ -1273,6 +1281,7 @@ function emitAppOpenedMetricEvent() {
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,
     category: MetaMetricsEventCategory.App,
+    environmentType,
   });
 }
 
@@ -1288,6 +1297,7 @@ function trackAppOpened(environment) {
     ENVIRONMENT_TYPE_POPUP,
     ENVIRONMENT_TYPE_NOTIFICATION,
     ENVIRONMENT_TYPE_FULLSCREEN,
+    ENVIRONMENT_TYPE_SIDEPANEL,
   ];
 
   // Check if any UI instances are currently open
@@ -1300,7 +1310,7 @@ function trackAppOpened(environment) {
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
-    emitAppOpenedMetricEvent();
+    emitAppOpenedMetricEvent(environment);
   }
 }
 
@@ -1629,6 +1639,7 @@ export function setupController(
       updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
+        clearFailedTxBadge();
         openPopupCount += 1;
         finished(portStream, () => {
           openPopupCount -= 1;
@@ -1639,6 +1650,7 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        clearFailedTxBadge();
         openSidePanelCount += 1;
         // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
         // This handles the case where user connected to dapp while sidepanel was closed
@@ -1823,6 +1835,52 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    'TransactionController:transactionFailed',
+    onTransactionFailed,
+  );
+
+  controller.controllerMessenger.subscribe(
+    'TransactionController:transactionDropped',
+    onTransactionFailed,
+  );
+
+  function setClientOpenOptions(tab) {
+    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
+    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
+
+    try {
+      if (isManifestV3) {
+        browser.action.setPopup({ popup });
+        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
+      } else {
+        browser.browserAction.setPopup({ popup });
+      }
+    } catch (e) {
+      console.error('Error setting extension action URLs:', e);
+    }
+  }
+
+  function onTransactionFailed() {
+    if (isClientOpenStatus()) {
+      return;
+    }
+
+    failedTxCount += 1;
+    setClientOpenOptions('activity');
+    updateBadge();
+  }
+
+  function clearFailedTxBadge() {
+    if (!failedTxCount) {
+      return;
+    }
+
+    failedTxCount = 0;
+    setClientOpenOptions();
+    updateBadge();
+  }
+
   /**
    * Formats a count for display as a badge label.
    *
@@ -1842,10 +1900,13 @@ export function setupController(
     const pendingApprovalCount = getPendingApprovalCount();
 
     let label = '';
-    const badgeColor = BADGE_COLOR_APPROVAL;
+    let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
+    } else if (failedTxCount) {
+      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
+      badgeColor = BADGE_COLOR_FAILED;
     }
 
     try {

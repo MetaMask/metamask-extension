@@ -1,6 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
+import type {
+  TraceCallback as ControllerTraceCallback,
+  TraceRequest as ControllerTraceRequest,
+  TraceContext as ControllerTraceContext,
+} from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
 
 /**
@@ -84,6 +89,10 @@ export enum TraceName {
   CreateMultichainAccount = 'Create Multichain Account',
   DiscoverAccounts = 'Discover Accounts',
   EvmDiscoverAccounts = 'EVM Discover Accounts',
+  // mUSD / 1-Click Convert
+  MusdConversionNavigation = 'mUSD Conversion Navigation',
+  MusdConversionQuote = 'mUSD Conversion Quote',
+  MusdConversionConfirm = 'mUSD Conversion Confirm',
   BackgroundRpc = 'Background RPC',
   MessengerCall = 'Messenger Call',
 }
@@ -100,6 +109,9 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  // mUSD Conversion
+  MusdConversionOperation = 'musd.conversion.operation',
+  MusdConversionDataFetch = 'musd.conversion.data_fetch',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -246,6 +258,23 @@ export function trace<T>(
 
   return traceCallback(request, fn);
 }
+
+/**
+ * Adapter that wraps the extension's synchronous {@link trace} function into the
+ * async {@link ControllerTraceCallback} signature expected by `@metamask/assets-controller`.
+ * @param req - The trace request.
+ * @param fn - The trace callback.
+ * @returns The result of the trace.
+ */
+export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
+  req: ControllerTraceRequest,
+  fn?: (ctx?: ControllerTraceContext) => Result,
+): Promise<Result> =>
+  Promise.resolve(
+    fn
+      ? trace({ ...req, name: req.name as TraceName }, fn)
+      : trace({ ...req, name: req.name as TraceName }),
+  ) as Promise<Result>;
 
 /**
  * End a pending trace that was started without a callback.

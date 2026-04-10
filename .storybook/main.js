@@ -22,6 +22,7 @@ module.exports = {
   env: (config) => ({
     ...config,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
+    ENABLE_ENFORCED_SIMULATIONS: process.env.ENABLE_ENFORCED_SIMULATIONS || '',
   }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({

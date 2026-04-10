@@ -38,6 +38,14 @@ export type ErrorContent =
   | ErrorContentWithoutIcon
   | ErrorContentWithDescription;
 
+/**
+ * Conditionally append a recovery instruction to the list.
+ *
+ * @param instructions - Existing recovery instruction strings
+ * @param shouldAdd - Whether to append the new instruction
+ * @param instruction - The instruction to append when `shouldAdd` is true
+ * @returns A new array with the instruction appended, or the original array unchanged
+ */
 function addRecoveryInstruction(
   instructions: string[],
   shouldAdd: boolean,
@@ -116,7 +124,7 @@ export function buildErrorContent(
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: addRecoveryInstruction(
-          [t('hardwareWalletErrorRecoveryUnlock1')],
+          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
         ),

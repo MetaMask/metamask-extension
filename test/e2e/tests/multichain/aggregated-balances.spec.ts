@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -60,7 +60,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         console.log('// Step 1: Log in and set up page objects');
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
@@ -77,7 +77,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.exitSettings();
+        await settingsPage.clickBackButton();
 
         console.log('Step 4: Verify main balance on homepage and account menu');
         await homepage.checkExpectedBalanceIsDisplayed(
@@ -107,9 +107,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 7: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToDeveloperOptions();
         await settingsPage.toggleShowFiatOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         console.log('Step 8: Verify USD balance on Sepolia network');
         await homepage.checkExpectedBalanceIsDisplayed(

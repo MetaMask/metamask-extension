@@ -51,53 +51,65 @@ export type UsePerpsStreamManagerReturn = {
  * ```
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
-  const [isInitializing, setIsInitializing] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [isReady, setIsReady] = useState(false);
-
   // Get the selected account address from Redux
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
 
   const streamManager = getPerpsStreamManager();
 
+  // Track whether streamManager is ready for this address.
+  // Initialize synchronously in case init was already done by a previous call
+  const [isReady, setIsReady] = useState(
+    () =>
+      selectedAddress !== null && streamManager.isInitialized(selectedAddress),
+  );
+  const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
     if (!selectedAddress) {
-      setIsInitializing(false);
-      setError(new Error('No account selected'));
       setIsReady(false);
-      return;
+      setError(new Error('No account selected'));
+      return undefined;
     }
 
-    // Check if already initialized for this address
+    // Already initialized by a previous call
     if (streamManager.isInitialized(selectedAddress)) {
-      setIsInitializing(false);
-      setError(null);
       setIsReady(true);
-      return;
+      setError(null);
+      return undefined;
     }
 
-    // Initialize
-    setIsInitializing(true);
-    setError(null);
-    setIsReady(false);
+    let cancelled = false;
 
+    setIsReady(false);
+    setError(null);
+
+    // initForAddress deduplicates: multiple hooks sharing this singleton
+    // only trigger a single perpsInit RPC + channel reset round-trip.
     streamManager
-      .init(selectedAddress)
+      .initForAddress(selectedAddress)
       .then(() => {
-        setIsInitializing(false);
+        if (cancelled) {
+          return;
+        }
         setIsReady(true);
       })
       .catch((err: unknown) => {
+        if (cancelled) {
+          return;
+        }
         console.error('[usePerpsStreamManager] Init failed:', err);
-        setIsInitializing(false);
         setError(err instanceof Error ? err : new Error(String(err)));
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedAddress, streamManager]);
 
   return {
     streamManager: isReady ? streamManager : null,
-    isInitializing,
+    isInitializing: !isReady && !error && selectedAddress !== null,
     error,
     selectedAddress,
   };

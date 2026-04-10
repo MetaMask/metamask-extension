@@ -16,16 +16,16 @@ import {
 import {
   selectTutorialModalOpen,
   selectTutorialActiveStep,
-  setTutorialModalOpen,
   setTutorialActiveStep,
   markTutorialCompleted,
   PerpsTutorialStep,
   TUTORIAL_STEPS_ORDER,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -60,14 +60,15 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   );
 
   const handleClose = useCallback(() => {
-    dispatch(setTutorialModalOpen(false));
-    dispatch(setTutorialActiveStep(PerpsTutorialStep.WhatArePerps));
+    dispatch(markTutorialCompleted());
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
     onClose?.();
   }, [dispatch, onClose]);
 
   const handleContinue = useCallback(() => {
     if (isLastStep) {
       dispatch(markTutorialCompleted());
+      submitRequestToBackground('perpsMarkTutorialCompleted', []);
     } else {
       const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
       dispatch(setTutorialActiveStep(nextStep));
@@ -75,7 +76,8 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   }, [dispatch, isLastStep, currentStepIndex]);
 
   const handleSkip = useCallback(() => {
-    dispatch(setTutorialModalOpen(false));
+    dispatch(markTutorialCompleted());
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
   }, [dispatch]);
 
   const renderContent = useCallback(() => {

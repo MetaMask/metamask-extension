@@ -295,14 +295,15 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
 
-  // The participate in MetaMetrics checkbox defaults to checked.
+  // The participate in MetaMetrics checkbox defaults to checked, but may
+  // already reflect a previously saved value (e.g. after vault recovery).
   // - If opting in (true): do not click; just validate it's checked.
-  // - If opting out (false): click once to uncheck and validate it's unchecked.
+  // - If opting out (false): ensure it's unchecked without assuming its
+  //   current state, to avoid accidentally re-checking it.
   if (participateInMetaMetrics) {
     await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
-    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
-    await onboardingMetricsPage.validateParticipateInMetaMetricsIsUnchecked();
+    await onboardingMetricsPage.ensureParticipateInMetaMetricsIsUnchecked();
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
@@ -527,7 +528,10 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 };
 
 /**
- * Add custom network in onboarding privacy settings
+ * Add custom network in onboarding privacy settings, then finish onboarding,
+ * navigate to home, and enable “Show test networks” from Settings → Networks
+ * before any later flow that switches the asset list to Localhost (e.g. wallet
+ * fixture export).
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.

@@ -9,6 +9,7 @@ import {
   SmartTransactionsState,
 } from '../../../../shared/lib/selectors';
 import { isRelaySupported } from '../../../store/actions';
+import { isHardwareWallet } from '../../../selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 
@@ -28,14 +29,21 @@ type UseGasIncluded7702Params = {
 };
 
 /**
- * Custom hook to check if gasless 7702 is supported for Smart Accounts
+ * Custom hook to check if gasless 7702 is supported for Smart Accounts.
+ *
+ * This hook serves as the **request-time HW wallet gate** for 7702 gas
+ * sponsorship, matching the mobile `useIsGasIncluded7702Supported` pattern.
+ * When the active account is a hardware wallet the hook returns `false`,
+ * which causes the quote request to be sent with `gasIncluded7702=false`.
+ * The backend then returns `gasSponsored=false` directly, so no post-quote
+ * normalization is necessary.
  *
  * @param params - Configuration object
  * @param params.isSwap - Whether this is a swap transaction
  * @param params.selectedAccount - The selected account
  * @param params.fromChain - The source chain
  * @param params.isSendBundleSupportedForChain - Whether send bundle is supported for the chain
- * @returns Whether gasless 7702 is supported
+ * @returns Whether gasless 7702 is supported (always `false` for HW wallets)
  */
 export function useGasIncluded7702({
   isSwap,
@@ -57,12 +65,14 @@ export function useGasIncluded7702({
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
   const isSmartTransaction = useSelector(getIsStxEnabled);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   useEffect(() => {
     let isCancelled = false;
 
     const checkGasIncluded7702Support = async () => {
       if (
+        isHardwareWalletAccount ||
         (isSendBundleSupportedForChain && isSmartTransaction) ||
         (!isSwap && !isGaslessBridgeWith7702Enabled) ||
         !selectedAccount?.address ||
@@ -101,6 +111,7 @@ export function useGasIncluded7702({
     };
   }, [
     fromChain?.chainId,
+    isHardwareWalletAccount,
     isSendBundleSupportedForChain,
     isSmartTransaction,
     isGaslessBridgeWith7702Enabled,
@@ -108,5 +119,9 @@ export function useGasIncluded7702({
     selectedAccount?.address,
   ]);
 
+  // Hardware wallets cannot use EIP-7702 gasless; do not request 7702 quotes.
+  if (isHardwareWalletAccount) {
+    return false;
+  }
   return isGasIncluded7702Supported;
 }

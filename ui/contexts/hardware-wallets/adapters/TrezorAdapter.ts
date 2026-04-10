@@ -14,24 +14,30 @@ import {
   isWebUsbAvailable,
   subscribeToWebUsbEvents,
 } from '../webConnectionUtils';
+import {
+  getMissingCapabilities,
+  isTrezorModelOne,
+  isTrezorModelUsingTrezorSuite,
+} from './trezorUtils';
 
 const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
-const REQUIRED_TREZOR_CAPABILITIES = [
-  'Capability_Bitcoin',
-  'Capability_Solana',
-  'Capability_Ethereum',
-] as const;
-type RequiredTrezorCapability = (typeof REQUIRED_TREZOR_CAPABILITIES)[number];
 
-const TREZOR_MODELS_USING_TREZOR_SUITE = ['safe 7'];
+const CONNECTION_RESET_ERROR_CODES: ReadonlySet<ErrorCode> = new Set([
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionClosed,
+]);
 
-const isTrezorModelUsingTrezorSuite = (model: string): boolean => {
-  const normalizedModel = model.toLowerCase();
-  return TREZOR_MODELS_USING_TREZOR_SUITE.includes(normalizedModel);
+type TrezorFeaturesPayload = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  session_id: string | null;
+  model: string;
+  initialized: boolean;
+  capabilities: string[];
+  unlocked: boolean;
 };
 
 /**
- * Trezor adapter implementation
+ * Trezor adapter implementation.
  * Verifies WebUSB device presence for Trezor hardware wallets.
  * Actual signing operations happen through MetaMask's normal flow via KeyringController.
  */
@@ -40,7 +46,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
-  private unsubscribeUsbEvents: (() => void) | null = null;
+  private unsubscribeUsbEvents?: () => void;
 
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
@@ -81,46 +87,40 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Connect to Trezor device
-   * Verifies device is physically connected via WebUSB
-   *
+   * Connect to Trezor device.
+   * Verifies WebUSB availability and confirms a physical device is present.
    */
   async connect(): Promise<void> {
-    try {
-      // Step 1: Check WebUSB availability
-      if (!isWebUsbAvailable()) {
-        throw createHardwareWalletError(
+    if (!isWebUsbAvailable()) {
+      this.#handleConnectionError(
+        createHardwareWalletError(
           ErrorCode.ConnectionTransportMissing,
           HardwareWalletType.Trezor,
           'WebUSB is not available',
-        );
-      }
+        ),
+      );
+    }
 
-      // Step 2: Check if device is physically connected
-      const isDeviceConnected = await this.checkDeviceConnected();
-      if (!isDeviceConnected) {
-        throw createHardwareWalletError(
+    let isDeviceConnected: boolean;
+    try {
+      isDeviceConnected = await this.checkDeviceConnected();
+    } catch (error) {
+      this.#handleConnectionError(
+        toHardwareWalletError(error, HardwareWalletType.Trezor),
+      );
+    }
+
+    if (!isDeviceConnected) {
+      this.#handleConnectionError(
+        createHardwareWalletError(
           ErrorCode.DeviceDisconnected,
           HardwareWalletType.Trezor,
           'Trezor device not found. Please connect your Trezor device.',
-        );
-      }
-
-      this.connected = true;
-    } catch (error) {
-      // Clean up on error
-      this.connected = false;
-
-      const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
-      const deviceEvent = getDeviceEventForError(hwError.code);
-
-      this.options.onDeviceEvent({
-        event: deviceEvent,
-        error: hwError,
-      });
-
-      throw hwError;
+        ),
+      );
     }
+
+    this.connected = true;
   }
 
   /**
@@ -149,22 +149,18 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    // Unsubscribe from WebUSB events
     this.unsubscribeUsbEvents?.();
-    this.unsubscribeUsbEvents = null;
-
+    this.unsubscribeUsbEvents = undefined;
     this.connected = false;
   }
 
   /**
-   * Verify the device is ready for operations
-   * Throws HardwareWalletError from the KeyringController/Trezor keyring
-   * These errors are already properly formatted and include all necessary metadata
+   * Verify the device is ready for operations.
    *
    * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
    * The device just needs to be connected and unlocked, which is verified during signing operations.
    *
-   * @param options
+   * @param options - Optional preflight checks (e.g. message size limits)
    * @returns true if device is ready
    */
   async ensureDeviceReady(
@@ -175,159 +171,146 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     }
 
     try {
-      // Check if the Trezor Connect session has been established.
-      // This doesn't open a popup - it just checks internal session state.
-      // The actual PIN/passphrase prompts happen during signing operations.
-      const features = await getTrezorFeatures();
-      const {
-        payload: {
-          session_id: sessionId,
-          model,
-          initialized,
-          capabilities,
-          unlocked,
-        },
-      } = features;
-
-      // For Trezor 5 and below, the usb will not be active until it is unlocked.
-      if (!unlocked) {
-        throw createHardwareWalletError(
-          ErrorCode.AuthenticationDeviceLocked,
-          HardwareWalletType.Trezor,
-          'Trezor is not unlocked. Please unlock your device.',
-        );
-      }
-
-      if (!initialized) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceNotReady,
-          HardwareWalletType.Trezor,
-          'Trezor is not initialized.',
-        );
-      }
-
-      // For model 7 and above popups are not used, therefore session is null
-      // Check if session exists (indicates Trezor Connect is initialized)
-      if (!sessionId && !isTrezorModelUsingTrezorSuite(model)) {
-        throw createHardwareWalletError(
-          ErrorCode.ConnectionClosed,
-          HardwareWalletType.Trezor,
-          'Trezor session not established. Please reconnect your device.',
-        );
-      }
-
-      const missingCapabilities = getMissingCapabilities(
-        capabilities,
-        REQUIRED_TREZOR_CAPABILITIES,
-      );
-      if (missingCapabilities.length > 0) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceMissingCapability,
-          HardwareWalletType.Trezor,
-          `Trezor device is missing required capabilities: ${missingCapabilities.join(
-            ', ',
-          )}.`,
-          {
-            metadata: {
-              capabilities,
-              missingCapabilities,
-            },
-          },
-        );
-      }
-
-      if (
-        options?.preflightMessageBytes &&
-        isTrezorModelOne(model) &&
-        options.preflightMessageBytes > TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES
-      ) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceMissingCapability,
-          HardwareWalletType.Trezor,
-          `Trezor Model One does not support signing messages larger than ${TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES} bytes.`,
-          {
-            metadata: {
-              preflightMessageBytes: options.preflightMessageBytes,
-            },
-          },
-        );
-      }
-
+      const payload = await this.#fetchDeviceFeatures();
+      this.#validateDeviceState(payload);
+      this.#validateCapabilities(payload.capabilities);
+      this.#validateModelOneMessageSize(payload.model, options);
       return true;
     } catch (error) {
-      if (error instanceof HardwareWalletError && error.code !== undefined) {
-        // Emit appropriate device events with the properly reconstructed error
-        const deviceEvent = getDeviceEventForError(
-          error.code,
-          DeviceEvent.Disconnected,
-        );
-        this.options.onDeviceEvent({
-          event: deviceEvent,
-          error,
-        });
-
-        // Reset connection state for disconnection-related errors
-        const shouldResetConnection = [
-          ErrorCode.DeviceDisconnected,
-          ErrorCode.ConnectionClosed,
-        ].includes(error.code);
-
-        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
-          this.connected = false;
-        }
-
-        throw error;
-      }
-
-      // Convert unknown errors to HardwareWalletError
-      const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
-      const deviceEvent = getDeviceEventForError(
-        hwError.code,
-        DeviceEvent.Disconnected,
-      );
-
-      this.options.onDeviceEvent({
-        event: deviceEvent,
-        error: hwError,
-      });
-
-      // Reset connection state for disconnection-related errors
-      if (deviceEvent === DeviceEvent.Disconnected) {
-        this.connected = false;
-      }
-
-      throw hwError;
+      this.#handleDeviceReadyError(error);
+      throw error instanceof HardwareWalletError
+        ? error
+        : toHardwareWalletError(error, HardwareWalletType.Trezor);
     }
   }
-}
 
-function getMissingCapabilities(
-  capabilities: unknown,
-  requiredCapabilities: readonly RequiredTrezorCapability[],
-): RequiredTrezorCapability[] {
-  const capabilitiesSet = new Set(
-    Array.isArray(capabilities)
-      ? capabilities.filter(
-          (capability): capability is RequiredTrezorCapability =>
-            typeof capability === 'string',
-        )
-      : [],
-  );
-
-  return requiredCapabilities.filter(
-    (requiredCapability) => !capabilitiesSet.has(requiredCapability),
-  );
-}
-
-function isTrezorModelOne(model: unknown): boolean {
-  if (typeof model !== 'string') {
-    return false;
+  /**
+   * Fetch the device feature payload from the Trezor Connect session.
+   *
+   * @returns Normalized feature payload (model, sessionId, capabilities, etc.)
+   */
+  async #fetchDeviceFeatures(): Promise<TrezorFeaturesPayload> {
+    const features = await getTrezorFeatures();
+    return features.payload;
   }
 
-  const normalizedModel = model.toLowerCase();
-  return (
-    normalizedModel === '1' ||
-    normalizedModel === 't1b1' ||
-    normalizedModel.includes('model one')
-  );
+  /**
+   * Validate unlocked, initialized, and session state from device features.
+   *
+   * @param payload - The device feature payload to validate
+   */
+  #validateDeviceState(payload: TrezorFeaturesPayload): void {
+    if (!payload.unlocked) {
+      throw createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Trezor,
+        'Trezor is not unlocked. Please unlock your device.',
+      );
+    }
+
+    if (!payload.initialized) {
+      throw createHardwareWalletError(
+        ErrorCode.DeviceNotReady,
+        HardwareWalletType.Trezor,
+        'Trezor is not initialized.',
+      );
+    }
+
+    if (!payload.session_id && !isTrezorModelUsingTrezorSuite(payload.model)) {
+      throw createHardwareWalletError(
+        ErrorCode.ConnectionClosed,
+        HardwareWalletType.Trezor,
+        'Trezor session not established. Please reconnect your device.',
+      );
+    }
+  }
+
+  /**
+   * Validate that the device reports all required capabilities.
+   *
+   * @param capabilities - Raw capabilities list from device features
+   */
+  #validateCapabilities(capabilities: unknown): void {
+    const missing = getMissingCapabilities(capabilities);
+    if (missing.length > 0) {
+      throw createHardwareWalletError(
+        ErrorCode.DeviceMissingCapability,
+        HardwareWalletType.Trezor,
+        `Trezor device is missing required capabilities: ${missing.join(', ')}.`,
+        { metadata: { capabilities, missingCapabilities: missing } },
+      );
+    }
+  }
+
+  /**
+   * Validate preflight message size for Trezor Model One devices.
+   *
+   * @param model - The device model identifier
+   * @param options - The ensureDeviceReady options containing preflightMessageBytes
+   */
+  #validateModelOneMessageSize(
+    model: string,
+    options?: EnsureDeviceReadyOptions,
+  ): void {
+    if (
+      options?.preflightMessageBytes &&
+      isTrezorModelOne(model) &&
+      options.preflightMessageBytes > TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES
+    ) {
+      throw createHardwareWalletError(
+        ErrorCode.DeviceMissingCapability,
+        HardwareWalletType.Trezor,
+        `Trezor Model One does not support signing messages larger than ${TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES} bytes.`,
+        { metadata: { preflightMessageBytes: options.preflightMessageBytes } },
+      );
+    }
+  }
+
+  /**
+   * Handle errors during ensureDeviceReady by emitting device events
+   * and resetting connection state when appropriate.
+   *
+   * @param error - The error caught during device readiness check
+   */
+  #handleDeviceReadyError(error: unknown): void {
+    const hwError =
+      error instanceof HardwareWalletError
+        ? error
+        : toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+    const deviceEvent = getDeviceEventForError(
+      hwError.code,
+      DeviceEvent.Disconnected,
+    );
+
+    this.options.onDeviceEvent({
+      event: deviceEvent,
+      error: hwError,
+    });
+
+    if (
+      CONNECTION_RESET_ERROR_CODES.has(hwError.code) ||
+      deviceEvent === DeviceEvent.Disconnected
+    ) {
+      this.connected = false;
+    }
+  }
+
+  /**
+   * Handle a connection error by emitting the appropriate device event
+   * and resetting connection state before re-throwing.
+   *
+   * @param hwError - The hardware wallet error to handle
+   */
+  #handleConnectionError(hwError: HardwareWalletError): never {
+    this.connected = false;
+
+    const deviceEvent = getDeviceEventForError(hwError.code);
+    this.options.onDeviceEvent({
+      event: deviceEvent,
+      error: hwError,
+    });
+
+    throw hwError;
+  }
 }

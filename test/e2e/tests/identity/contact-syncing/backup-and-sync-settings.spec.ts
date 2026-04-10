@@ -12,7 +12,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -39,7 +39,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
@@ -123,7 +123,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
           await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
@@ -159,7 +159,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const { getCurrentContacts } = arrangeContactSyncingTestUtils(
             driver,
@@ -208,7 +208,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
@@ -266,7 +266,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
           await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();

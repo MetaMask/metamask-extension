@@ -11,14 +11,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as Actions from '../../../store/actions';
 import configureStore from '../../../store/store';
 
-import { useGasEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
-
-jest.mock('./useGasEstimates', () => ({
-  useGasEstimates: jest.fn(),
-}));
-useGasEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
 
 jest.mock('../../../selectors', () => ({
   checkNetworkAndAccountSupports1559: () => true,
@@ -61,6 +55,35 @@ describe('useMaxPriorityFeePerGasInput', () => {
     const { result } = renderUseTransactionFunctions();
     result.current.cancelTransaction();
     expect(mock).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls createCancelTransaction with gas at least previousGas × CANCEL_RATE when previousGas is set (replacement not underpriced)', () => {
+    const createCancelSpy = jest
+      .spyOn(Actions, 'createCancelTransaction')
+      .mockImplementation(() => ({ type: '' }));
+    const { result } = renderUseTransactionFunctions({
+      editGasMode: EditGasModes.cancel,
+      transaction: {
+        id: 'tx-123',
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: {
+          maxFeePerGas: '0x5',
+          maxPriorityFeePerGas: '0x5',
+          gasLimit: '0x5208',
+        },
+        previousGas: {
+          maxFeePerGas: '0x10',
+          maxPriorityFeePerGas: '0x10',
+          gasLimit: '0x5208',
+        },
+      },
+    });
+    result.current.cancelTransaction();
+    expect(createCancelSpy).toHaveBeenCalledTimes(1);
+    const [, gasValues] = createCancelSpy.mock.calls[0];
+    // 0x10 * 1.1 = 17.6 -> 18 = 0x12 (minimum for replacement)
+    expect(parseInt(gasValues.maxFeePerGas, 16) >= 0x12).toBe(true);
+    expect(parseInt(gasValues.maxPriorityFeePerGas, 16) >= 0x12).toBe(true);
   });
 
   it('should invoke action createSpeedUpTransaction when speedUpTransaction callback is invoked', () => {

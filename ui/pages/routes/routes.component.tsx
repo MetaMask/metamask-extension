@@ -1,18 +1,11 @@
 /* eslint-disable jsdoc/check-tag-names */
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useLocation,
-  useNavigationType,
-  Navigate,
-  Outlet,
-} from 'react-router-dom';
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
-import type { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
@@ -36,6 +29,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -71,6 +65,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
@@ -83,11 +78,9 @@ import {
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  oldestPendingConfirmationSelector,
-  getUnapprovedTransactions,
-  getPendingApprovals,
 } from '../../selectors';
 import { useTheme } from '../../hooks/useTheme';
+import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
   hideImportNftsModal,
@@ -112,8 +105,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
+import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
@@ -124,12 +118,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
-import {
-  isCorrectDeveloperTransactionType,
-  isCorrectSignatureApprovalType,
-} from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
@@ -139,12 +128,14 @@ import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
-import { createRouteWithLayout } from '../../layouts/route-with-layout';
-import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { Toaster } from '../../components/ui/toast/toast';
+import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -158,7 +149,6 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.js'));
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -244,448 +234,266 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const PerpsWithdrawPage = mmLazy(
+  () => import('../perps/perps-withdraw-page.tsx'),
+);
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
+const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
-const NotificationsSettingsRedirect = () => (
-  <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
-);
+const SettingsV2LegacyRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const canonicalPath = pathname.replace(
+    LEGACY_SETTINGS_V2_ROUTE,
+    SETTINGS_ROUTE,
+  );
 
-// Perps pages wrapped with PerpsControllerProvider
-const WrappedPerpsMarketDetailPage = () => (
-  <PerpsControllerProvider>
-    <PerpsMarketDetailPage />
-  </PerpsControllerProvider>
-);
-
-const WrappedMarketListView = () => (
-  <PerpsControllerProvider>
-    <MarketListView />
-  </PerpsControllerProvider>
-);
-
-const WrappedPerpsActivityPage = () => (
-  <PerpsControllerProvider>
-    <PerpsActivityPage />
-  </PerpsControllerProvider>
-);
-
-const WrappedPerpsOrderEntryPage = () => (
-  <PerpsControllerProvider>
-    <PerpsOrderEntryPage />
-  </PerpsControllerProvider>
-);
+  return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
+};
 
 export const routeConfig = [
-  createRouteWithLayout({
-    path: `${ONBOARDING_ROUTE}/*`,
-    component: OnboardingFlow,
-    layout: LegacyLayout,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: LOCK_ROUTE,
-    component: Lock,
-    layout: LegacyLayout,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: UNLOCK_ROUTE,
-    component: UnlockPage,
-    layout: LegacyLayout,
-    initialized: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: DEEP_LINK_ROUTE,
-    component: DeepLink,
-    layout: LegacyLayout,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: BASIC_FUNCTIONALITY_OFF_ROUTE,
-    component: BasicFunctionalityOff,
-    layout: LegacyLayout,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: RESTORE_VAULT_ROUTE,
-    component: RestoreVaultPage,
-    layout: LegacyLayout,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
-    component: RevealSeedConfirmation,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: IMPORT_SRP_ROUTE,
-    component: ImportSrpPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${SETTINGS_ROUTE}/*`,
-    component: Settings,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${SETTINGS_V2_ROUTE}/*`,
-    component: SettingsV2,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: '/notifications/settings',
-    component: NotificationsSettingsRedirect,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openNotificationsPage',
-  }),
-  createRouteWithLayout({
-    path: `${NOTIFICATIONS_ROUTE}/:uuid`,
-    component: NotificationDetails,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openNotificationsPage',
-  }),
-  createRouteWithLayout({
-    path: NOTIFICATIONS_ROUTE,
-    component: Notifications,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openNotificationsPage',
-  }),
   {
-    path: CONTACTS_ROUTE,
-    element: (
-      <RootLayout>
-        <Authenticated>
-          <Outlet />
-        </Authenticated>
-      </RootLayout>
-    ),
-    children: contactsRoutes,
+    element: <LegacyLayout />,
+    children: [
+      {
+        path: `${ONBOARDING_ROUTE}/*`,
+        element: <OnboardingFlow />,
+      },
+      {
+        path: LOCK_ROUTE,
+        element: <Lock />,
+      },
+      {
+        element: <RequireOnboarded />,
+        children: [
+          {
+            path: UNLOCK_ROUTE,
+            element: <UnlockPage />,
+          },
+        ],
+      },
+      {
+        path: DEEP_LINK_ROUTE,
+        element: <DeepLink />,
+      },
+      {
+        path: BASIC_FUNCTIONALITY_OFF_ROUTE,
+        element: <BasicFunctionalityOff />,
+      },
+      {
+        path: RESTORE_VAULT_ROUTE,
+        element: <RestoreVaultPage />,
+      },
+    ],
   },
-  createRouteWithLayout({
-    path: SNAPS_ROUTE,
-    component: SnapList,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openSnapsPage',
-  }),
-  createRouteWithLayout({
-    path: SNAPS_VIEW_ROUTE,
-    component: SnapView,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openSnapsPage',
-  }),
-  createRouteWithLayout({
-    path: `${SEND_ROUTE}/:page?`,
-    component: SendPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
-    component: ConfirmDecryptMessage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-    component: ConfirmEncryptionPublicKey,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
-    component: Confirm,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-    component: CrossChainSwapTxDetails,
-    layout: LegacyLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openSwapsPage',
-  }),
-  createRouteWithLayout({
-    path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-    component: CrossChainSwap,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openSwapsPage',
-  }),
-  createRouteWithLayout({
-    path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-    component: ConfirmAddSuggestedTokenPage,
-    layout: LegacyLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-    component: ConfirmAddSuggestedNftPage,
-    layout: LegacyLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
-    component: ConfirmationPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${NEW_ACCOUNT_ROUTE}/*`,
-    component: CreateAccountPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${CONNECT_ROUTE}/:id/*`,
-    component: PermissionsConnect,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${ASSET_ROUTE}/image/:asset/:id`,
-    component: NftFullImage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${ASSET_ROUTE}/:chainId/:asset/:id`,
-    component: Asset,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${ASSET_ROUTE}/:chainId/:asset/`,
-    component: Asset,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${ASSET_ROUTE}/:chainId`,
-    component: Asset,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${DEFI_ROUTE}/:chainId/:protocolId`,
-    component: DeFiPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey: 'basicFunctionalityRequired_openDefiPage',
-  }),
-  createRouteWithLayout({
-    path: `${MUSD_CONVERSION_ROUTE}/*`,
-    component: MusdConversionPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openMusdConversionPage',
-  }),
-  createRouteWithLayout({
-    path: PERMISSIONS,
-    component: PermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: GATOR_PERMISSIONS,
-    component: GatorPermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${TOKEN_TRANSFER_ROUTE}/:origin`,
-    component: GatorPermissionsTokenTransferPermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: TOKEN_TRANSFER_ROUTE,
-    component: GatorPermissionsTokenTransferPermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`,
-    component: GatorPermissionsReviewPermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
-    component: GatorPermissionsReviewPermissionsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: REVIEW_PERMISSIONS,
-    component: MultichainReviewPermissions,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: ACCOUNT_LIST_PAGE_ROUTE,
-    component: AccountList,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
-    component: MultichainAccountAddressListPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
-    component: MultichainAccountPrivateKeyListPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: ADD_WALLET_PAGE_ROUTE,
-    component: AddWalletPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-    component: MultichainAccountDetailsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
-    component: SmartAccountPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
-    component: WalletDetailsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
-  createRouteWithLayout({
-    path: NONEVM_BALANCE_CHECK_ROUTE,
-    component: NonEvmBalanceCheck,
-    layout: LegacyLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openCreateSnapAccountPage',
-  }),
-  createRouteWithLayout({
-    path: SHIELD_PLAN_ROUTE,
-    component: ShieldPlan,
-    layout: LegacyLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openTransactionShieldPage',
-  }),
-  createRouteWithLayout({
-    path: REWARDS_ROUTE,
-    component: RewardsPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openRewardsPage',
-  }),
-  createRouteWithLayout({
-    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    component: WrappedPerpsMarketDetailPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openPerpsPage',
-  }),
-  createRouteWithLayout({
-    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-    component: WrappedPerpsOrderEntryPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openPerpsPage',
-  }),
-  createRouteWithLayout({
-    path: PERPS_ACTIVITY_ROUTE,
-    component: WrappedPerpsActivityPage,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openPerpsPage',
-  }),
-  createRouteWithLayout({
-    path: PERPS_MARKET_LIST_ROUTE,
-    component: WrappedMarketListView,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityOpenPageCtaKey:
-      'basicFunctionalityRequired_openPerpsPage',
-  }),
-  createRouteWithLayout({
-    path: DEFAULT_ROUTE,
-    component: Home,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-  }),
+  {
+    element: <RequireAuthenticated />,
+    children: [
+      {
+        path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
+        element: <RevealSeedConfirmation />,
+      },
+      {
+        path: IMPORT_SRP_ROUTE,
+        element: <ImportSrpPage />,
+      },
+      {
+        path: `${SETTINGS_ROUTE}/*`,
+        element: <SettingsV2 />,
+      },
+      {
+        path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
+        element: <SettingsV2LegacyRedirect />,
+      },
+      {
+        path: `${SEND_ROUTE}/:page?`,
+        element: <SendPage />,
+      },
+      {
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
+        element: <ConfirmDecryptMessage />,
+      },
+      {
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+        element: <ConfirmEncryptionPublicKey />,
+      },
+      {
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
+        element: <Confirm />,
+      },
+      {
+        path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+        element: <ConfirmAddSuggestedTokenPage />,
+      },
+      {
+        path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+        element: <ConfirmAddSuggestedNftPage />,
+      },
+      {
+        path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
+        element: <ConfirmationPage />,
+      },
+      {
+        path: `${NEW_ACCOUNT_ROUTE}/*`,
+        element: <CreateAccountPage />,
+      },
+      {
+        path: `${CONNECT_ROUTE}/:id/*`,
+        element: <PermissionsConnect />,
+      },
+      {
+        path: `${ASSET_ROUTE}/image/:asset/:id`,
+        element: <NftFullImage />,
+      },
+      {
+        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+        element: <Asset />,
+      },
+      {
+        path: PERMISSIONS,
+        element: <PermissionsPage />,
+      },
+      {
+        path: GATOR_PERMISSIONS,
+        element: <GatorPermissionsPage />,
+      },
+      {
+        path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
+        element: <GatorPermissionsTokenTransferPermissionsPage />,
+      },
+      {
+        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
+        element: <GatorPermissionsReviewPermissionsPage />,
+      },
+      {
+        path: REVIEW_PERMISSIONS,
+        element: <MultichainReviewPermissions />,
+      },
+      {
+        path: ACCOUNT_LIST_PAGE_ROUTE,
+        element: <AccountList />,
+      },
+      {
+        path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+        element: <MultichainAccountAddressListPage />,
+      },
+      {
+        path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+        element: <MultichainAccountPrivateKeyListPage />,
+      },
+      {
+        path: ADD_WALLET_PAGE_ROUTE,
+        element: <AddWalletPage />,
+      },
+      {
+        path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        element: <MultichainAccountDetailsPage />,
+      },
+      {
+        path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
+        element: <SmartAccountPage />,
+      },
+      {
+        path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+        element: <WalletDetailsPage />,
+      },
+      {
+        path: CONTACTS_ROUTE,
+        children: contactsRoutes,
+      },
+      {
+        path: DEFAULT_ROUTE,
+        element: <Home />,
+      },
+      {
+        element: <RequireBasicFunctionality />,
+        children: [
+          {
+            path: '/notifications/settings',
+            element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
+          },
+          {
+            path: `${NOTIFICATIONS_ROUTE}/:uuid`,
+            element: <NotificationDetails />,
+          },
+          {
+            path: NOTIFICATIONS_ROUTE,
+            element: <Notifications />,
+          },
+          {
+            path: SNAPS_ROUTE,
+            element: <SnapList />,
+          },
+          {
+            path: SNAPS_VIEW_ROUTE,
+            element: <SnapView />,
+          },
+          {
+            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
+            element: <CrossChainSwapTxDetails />,
+          },
+          {
+            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+            element: <CrossChainSwap />,
+          },
+          {
+            path: `${DEFI_ROUTE}/:chainId/:protocolId`,
+            element: <DeFiPage />,
+          },
+          {
+            path: `${MUSD_CONVERSION_ROUTE}/*`,
+            element: <MusdConversionPage />,
+          },
+          {
+            path: NONEVM_BALANCE_CHECK_ROUTE,
+            element: <NonEvmBalanceCheck />,
+          },
+          {
+            path: SHIELD_PLAN_ROUTE,
+            element: <ShieldPlan />,
+          },
+          {
+            path: REWARDS_ROUTE,
+            element: <RewardsPage />,
+          },
+          {
+            element: <PerpsLayout />,
+            children: [
+              {
+                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+                element: <PerpsMarketDetailPage />,
+              },
+              {
+                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+                element: <PerpsOrderEntryPage />,
+              },
+              {
+                path: PERPS_ACTIVITY_ROUTE,
+                element: <PerpsActivityPage />,
+              },
+              {
+                path: PERPS_MARKET_LIST_ROUTE,
+                element: <MarketListView />,
+              },
+              {
+                path: PERPS_WITHDRAW_ROUTE,
+                element: <PerpsWithdrawPage />,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navType = useNavigationType();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -700,13 +508,6 @@ export default function Routes() {
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
   );
-  const oldestPendingApproval = useAppSelector(
-    oldestPendingConfirmationSelector,
-  );
-  const pendingApprovals = useAppSelector(getPendingApprovals);
-  const transactionsMetadata = useAppSelector(
-    getUnapprovedTransactions,
-  ) as Record<string, TransactionMeta>;
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -756,6 +557,8 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
   const prevPropsRef = useRef({
     isUnlocked,
@@ -818,10 +621,8 @@ export default function Routes() {
 
   // Track location changes for metrics
   useEffect(() => {
-    if (navType === 'PUSH') {
-      dispatch(pageChanged(location.pathname));
-    }
-  }, [location.pathname, navType, dispatch]);
+    dispatch(pageChanged(location.pathname));
+  }, [location.pathname, dispatch]);
 
   useEffect(() => {
     setTheme(theme);
@@ -860,20 +661,6 @@ export default function Routes() {
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
     : null;
 
-  const paramsConfirmationId: string = location.pathname.split(
-    '/confirm-transaction/',
-  )[1];
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-  const pendingApproval = pendingApprovals.find(
-    (approval) => approval.id === confirmationId,
-  );
-  const isCorrectApprovalType = isCorrectSignatureApprovalType(
-    pendingApproval?.type as ApprovalType | undefined,
-  );
-  const isCorrectTransactionType = isCorrectDeveloperTransactionType(
-    transactionsMetadata[confirmationId]?.type,
-  );
-
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
@@ -886,13 +673,13 @@ export default function Routes() {
     ) &&
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
-    !isCorrectApprovalType &&
-    !isCorrectTransactionType &&
+    !isUsingRedesignedConfirmationType &&
     // We don't want to show the loading screen on the deep link route, as it
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const environmentType = getEnvironmentType();
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
     <div
@@ -904,6 +691,8 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
+      {isInteractiveUI() && <ToastListener />}
+
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
@@ -944,6 +733,8 @@ export default function Routes() {
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
+
+      <Toaster />
       <Modals />
     </div>
   );

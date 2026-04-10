@@ -39,7 +39,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  useBlockie: false,
   featureFlags: {},
   currentLocale: '',
   preferences: {
@@ -48,7 +47,6 @@ const initialState = {
     showFiatInTestnets: false,
     showTestNetworks: false,
     smartTransactionsOptInStatus: true,
-    petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,

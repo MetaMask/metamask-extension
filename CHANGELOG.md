@@ -7,6 +7,105 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.25.0]
+
+### Added
+
+- Recent Activity on the Perps tab and related UI improvements (#41174)
+- Default address shown by default with a hoverable network group (optional default address) below each account name on the account list (#41138)
+- Perps watchlist (#40991)
+- Deep links for Perps: open the Perps tab, a specific market, or the market list with a pre-selected filter (#41143)
+- Search in Settings V2 (#41080)
+- Logos for Stable network and its native token (#40879)
+- Bridging from EVM chains to other wallet addresses (#40990)
+- Perps live stream hooks in the UI (#40779)
+- "Paid by MetaMask" on the Activity "Total gas fee" row when the transaction was a gas-sponsored swap (#40757)
+
+### Changed
+
+- mUSD conversion education and confirmation copy: clearer bonus layout, Relay attribution in the header, wider info popover, accessible bonus tooltip labels, aligned home mUSD CTA with the asset overview CTA, and removed unused `musdEarnBonusPercentage` locale keys (#41233)
+- Migrated stock and market closure components to the design-system-react library and adjusted styling to design guidelines (#41059)
+- Migrated to historical prices v3 (#41112)
+- Multichain network avatars remain visible when default address mode is enabled (#41238)
+- Reverted the asset verified badge in the swaps asset picker (#41163)
+- mUSD education splash screen no longer shows extra empty space at the bottom on shorter screens (#41077)
+
+### Fixed
+
+- Activity tab error state (#41266)
+- NFT detail page in fullscreen (#41210)
+- Gas editor from cancel or speed-up flow aligned with the main transaction confirmation flow (#40734)
+- Order exposure increase bug (#41028)
+- Perps positions and balance not updating when switching between accounts (#41168)
+- Order entry header visuals and persisted order values (#41025)
+- Canceling Solana transactions no longer leaves the wallet loading indefinitely (#41055)
+- Translation error on the Reveal Secret Recovery Phrase page that could crash the extension for the Irish (ga) locale (#41047)
+
+## [13.24.0]
+
+### Added
+
+- Added check for hiding Cancel and Speed up in the activity list when the user has selected another token to pay for gas (#40804)
+- Added Security & Password page to the redesigned settings (#40959)
+- Authenticate transaction submission to sentinel and transaction API (#40667)
+- Enable hardware wallet error management in send and dapp flow. (#40836)
+
+### Changed
+
+- Updates wording and styles in basic functionality modal (#40954)
+- Use design-system-react components on shield confirmation screens (#40832)
+
+### Fixed
+
+- Fixed banner display in sidebar view (#40988)
+- Fixed EIP-712 typed data signing for Ledger Nano S devices (#41017)
+- Fixed MegaETH explorer button to display "View on Megaeth Explorer" instead of "View on MEGA Mainnet Explorer" (#41003)
+- Fixed non-EVM account changed notifications not selecting the correct account on page reload for Tron and Solana (#40927)
+- Fixed "Proposed nicknames" appearing as a non-functional result in Settings search (#40772)
+- Swap activity history details (#40993)
+- Refresh token list immediately after import when assetsUnifyState is enabled (#40919)
+- (import-tokens) validate duplicate token checks by selected network (#40969)
+- Resolve slip44 key mismatch for native tokens in assets-unify-state selectors (#40964)
+- Fixed a Sentry error during startup for users upgrading from older versions without TransactionController state (#40765)
+- Fixed a crash on the contacts page when an internal account had corrupted or missing metadata. (#40955)
+- Fixed an issue with Snaps links (#40950)
+- Fix missing locale. (#40923)
+
+## [13.23.0]
+
+### Added
+
+- Add support for additional icon colors in Snaps `Icon` component (#40790)
+- Enables token permissions via EIP-7715 (#40813)
+- Prevent MUSD reward claiming in geoblocked regions (#40634)
+- Improves the loading experience during quote fetching (#40702)
+- Link asset details page from bridge asset list (#40356)
+- Update the bridge quotes list modal UI (#40720)
+- Replaced the Settings contacts tab with a standalone Contacts page accessible from the global menu (#40714)
+- Added CowSwap intent submission through the bridge status controller (#40483)
+- Added market-closed handling and stock badges for Ondo RWA tokens in token details and token selection views (#40493)
+- When no expiry is specified for an EIP-7715 `wallet_requestExecutionPermissions` permission, show "Never expires" (#40703)
+- Increase swap submission friction when price impact is high (#40586)
+- Trigger malicious website scanning when any EIP-7715 RPC method is executed (#40587)
+- Tab transitions (#40611)
+- Added confirmation modals for `block` trust signals on the connect page (#40348)
+
+### Changed
+
+- UI transitions (#40588)
+- Replace deprecated identicon in suggested token page (#40687)
+
+### Fixed
+
+- Fix 'claim bonus' transactions being displayed as 'contract interaction' after reload (#40834)
+- Disable closing price impact modal while submitting a trade (#40811)
+- Fix memoization issue in top-level context provider that was causing cascading re-renders (#39309)
+- Fixed background-to-UI state sync starvation that caused UI to become stuck indefinitely during large account syncs (#40331)
+- Remove thrown exceptions in migration 196 when `NetworkEnablementController` is absent or `NetworkEnablementController.nativeAssetIdentifiers` is missing (#40764)
+- Maintain activity tab scroll position (#40681)
+- NFT tab scroll position (#40643)
+- Network list migration (#40579)
+
 ## [13.22.0]
 
 ### Added
@@ -1918,7 +2017,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...HEAD
+[13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
+[13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
+[13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
 [13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1

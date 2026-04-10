@@ -123,9 +123,6 @@ export const lavamoatPlugin = (args: Args) =>
         'Promise',
         'JSON',
         'Date',
-        'setTimeout',
-        'clearTimeout',
-        'ResizeObserver',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -134,15 +131,20 @@ export const lavamoatPlugin = (args: Args) =>
         'sentryHooks',
         'sentry',
         'logEncryptedVault',
-        'history', // needed by Sentry and react-router-dom v6 HashRouter
+        // needed by Sentry and react-router-dom v6 HashRouter
+        'history',
         // globals used by react-dom
         'getSelection',
         // globals opera needs to function
         'opr',
+        // for @popperjs/core and snap simple keyring site
+        'devicePixelRatio',
+        // for @tanstack/react-virtual
+        'ResizeObserver',
+        'setTimeout',
+        'clearTimeout',
         // globals used by e2e
-        ...(args.test
-          ? ['ret_nodes', 'browser', 'chrome', 'indexedDB', 'devicePixelRatio']
-          : []),
+        ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
       ],
     },
   });

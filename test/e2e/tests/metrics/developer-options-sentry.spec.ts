@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { MOCK_META_METRICS_ID } from '../../constants';
@@ -39,7 +39,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
         const errorPage = new ErrorPage(driver);
         await errorPage.checkPageIsLoaded();
@@ -65,7 +65,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
@@ -87,7 +87,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
