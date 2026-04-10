@@ -233,6 +233,8 @@
     "isWalletResetInProgress": "boolean",
     "keyrings": "object",
     "knownMethodData": "object",
+    "lastCompletedWithdrawalTimestamp": null,
+    "lastCompletedWithdrawalTxHashes": "object",
     "lastDepositResult": null,
     "lastDepositTransactionId": null,
     "lastError": null,
