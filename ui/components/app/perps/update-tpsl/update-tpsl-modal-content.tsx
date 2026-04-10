@@ -17,6 +17,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -24,13 +28,17 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
-import { normalizeTpslPrices } from '../utils';
+import { normalizeTpslPrices, deriveTpslType } from '../utils';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
@@ -84,6 +92,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   onSubmitStateChange,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
@@ -328,10 +337,41 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           },
         ],
       );
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to update TP/SL');
-      }
+      const derivedTpslType = deriveTpslType({
+        takeProfitPrice: cleanTpPrice,
+        stopLossPrice: cleanSlPrice,
+        hasExistingTpsl: Boolean(
+          position.takeProfitPrice || position.stopLossPrice,
+        ),
+      });
 
+      if (!result.success) {
+        const failMessage = result.error || 'Failed to update TP/SL';
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
+        });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+          description: failMessage,
+        });
+        return;
+      }
+      track(MetaMetricsEventName.PerpsRiskManagement, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
+        [PERPS_EVENT_PROPERTY.SIZE]: position.size,
+      });
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
@@ -368,6 +408,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.UPDATE_FAILED,
         description: errorMessage,
@@ -384,6 +428,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     onClose,
     position,
     replacePerpsToastByKey,
+    track,
   ]);
 
   useLayoutEffect(() => {

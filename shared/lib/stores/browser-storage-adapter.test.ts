@@ -34,7 +34,7 @@ describe('BrowserStorageAdapter', () => {
       const result = await adapter.getItem('TestController', 'myKey');
 
       expect(mockGet).toHaveBeenCalledWith(fullKey);
-      expect(result).toEqual({ result: { data: 'test' } });
+      expect(result).toStrictEqual({ result: { data: 'test' } });
     });
 
     it('returns {} when key does not exist', async () => {
@@ -42,7 +42,7 @@ describe('BrowserStorageAdapter', () => {
 
       const result = await adapter.getItem('TestController', 'nonExistent');
 
-      expect(result).toEqual({});
+      expect(result).toStrictEqual({});
     });
 
     it('returns { error } on failure', async () => {
@@ -51,7 +51,7 @@ describe('BrowserStorageAdapter', () => {
 
       const result = await adapter.getItem('TestController', 'myKey');
 
-      expect(result).toEqual({ error });
+      expect(result).toStrictEqual({ error });
     });
   });
 
@@ -106,7 +106,7 @@ describe('BrowserStorageAdapter', () => {
 
       const keys = await adapter.getAllKeys('TestController');
 
-      expect(keys).toEqual(['key1', 'key2']);
+      expect(keys).toStrictEqual(['key1', 'key2']);
     });
 
     it('returns empty array when no keys exist', async () => {
@@ -114,7 +114,7 @@ describe('BrowserStorageAdapter', () => {
 
       const keys = await adapter.getAllKeys('TestController');
 
-      expect(keys).toEqual([]);
+      expect(keys).toStrictEqual([]);
     });
 
     it('throws on failure', async () => {

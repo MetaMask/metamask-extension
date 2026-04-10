@@ -17,8 +17,15 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
+import {
+  usePerpsLiveMarketData,
+  usePerpsLiveAccount,
+} from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
   isHip3Market,
@@ -42,6 +49,8 @@ import {
   VALID_MARKET_FILTERS,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../hooks/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown } from './components/sort-dropdown';
@@ -143,10 +152,12 @@ export const MarketListView: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const { track } = usePerpsEventTracking();
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+  const { account } = usePerpsLiveAccount();
 
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
@@ -169,6 +180,22 @@ export const MarketListView: React.FC = () => {
 
   // Use stream loading state
   const isLoading = marketsLoading;
+
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading && account !== null,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
+    },
+  });
 
   // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
   const hasUncategorizedMarkets = useMemo(() => {
@@ -227,18 +254,43 @@ export const MarketListView: React.FC = () => {
     [],
   );
 
-  const handleFilterChange = useCallback((filter: MarketFilter) => {
-    setSelectedFilter(filter);
-  }, []);
+  const handleFilterChange = useCallback(
+    (filter: MarketFilter) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.TAB_NAME]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
+      });
+      setSelectedFilter(filter);
+    },
+    [track],
+  );
 
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+        [PERPS_EVENT_PROPERTY.ASSET]: market.symbol,
+      });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate],
+    [navigate, track],
   );
+
+  const handleSearchClick = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.SEARCH_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
+    });
+  }, [track]);
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -283,6 +335,7 @@ export const MarketListView: React.FC = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           onClear={handleSearchClear}
+          onInputClick={handleSearchClick}
           autoFocus
         />
       </Box>

@@ -1,20 +1,12 @@
+import EventEmitter from 'events';
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
-import {
-  captureException,
-  captureMessage,
-} from '../../../../shared/lib/sentry';
-import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
-import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
-import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
+import { captureException, captureMessage } from '../sentry';
+import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import { getManifestFlags } from '../manifestFlags';
+import { VaultCorruptionType } from '../../constants/state-corruption';
+import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -46,6 +38,29 @@ export const backedUpStateKeys = [
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
+
+export type VaultCorruptionDetectedEvent = {
+  backup: Backup;
+  corruptionType: VaultCorruptionType;
+};
+
+export type SplitStateMigrationSucceededEvent = {
+  state: MetaMaskStateType;
+};
+
+export type SplitStateMigrationFailedEvent = {
+  state: MetaMaskStateType;
+};
+
+export type PersistenceManagerEventMap = {
+  vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
+  splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
+  splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+};
+
+export type PersistenceManagerOptions = {
+  localStore: BaseStore;
+};
 
 /**
  * This Error represents an error that occurs during persistence operations.
@@ -159,7 +174,7 @@ const STATE_LOCK = 'state-lock';
  * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
-export class PersistenceManager {
+export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap> {
   /**
    * DefaultStorageKind is a static property that defines the default storage
    * kind to be used by the PersistenceManager. It checks if the code is running
@@ -216,7 +231,8 @@ export class PersistenceManager {
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  constructor({ localStore }: { localStore: BaseStore }) {
+  constructor({ localStore }: PersistenceManagerOptions) {
+    super();
     this.#localStore = localStore;
   }
 
@@ -724,11 +740,10 @@ export class PersistenceManager {
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
-              trackVaultCorruptionEvent(
+              this.emit('vaultCorruptionDetected', {
                 backup,
-                MetaMetricsEventName.VaultCorruptionDetected,
                 corruptionType,
-              );
+              });
 
               // We've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now).
@@ -927,18 +942,10 @@ export class PersistenceManager {
       );
 
       if (migrationStatus === 'succeeded') {
-        trackEarlySegmentEvent({
-          state,
-          event: MetaMetricsEventName.StateMigrationSucceeded,
-          category: MetaMetricsEventCategory.StateMigration,
-        });
+        this.emit('splitStateMigrationSucceeded', { state });
       }
     } catch (error) {
-      trackEarlySegmentEvent({
-        state,
-        event: MetaMetricsEventName.StateMigrationFailed,
-        category: MetaMetricsEventCategory.StateMigration,
-      });
+      this.emit('splitStateMigrationFailed', { state });
 
       throw error;
     }

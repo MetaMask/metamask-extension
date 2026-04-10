@@ -1,6 +1,6 @@
 import { StorageService } from '@metamask/storage-service';
 import { getRootMessenger } from '../lib/messenger';
-import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -10,7 +10,7 @@ import {
 import { StorageServiceInit } from './storage-service-init';
 
 jest.mock('@metamask/storage-service');
-jest.mock('../lib/stores/browser-storage-adapter');
+jest.mock('../../../shared/lib/stores/browser-storage-adapter');
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<StorageServiceMessenger>
