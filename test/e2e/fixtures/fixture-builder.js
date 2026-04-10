@@ -1251,7 +1251,6 @@ class FixtureBuilder {
         },
       },
       allIgnoredTokens: {},
-      allDetectedTokens: {},
     });
     return this;
   }

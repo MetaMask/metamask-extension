@@ -125,6 +125,7 @@ export function mockWebpack(
   const entries: Record<string, EntryDescriptionNormalized> = {};
   const compiler = {
     context: '',
+    modifiedFiles: undefined,
     hooks: {
       entryOption: {
         tap(

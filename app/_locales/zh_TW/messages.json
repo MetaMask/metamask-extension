@@ -777,10 +777,6 @@
   "personalAddressDetected": {
     "message": "偵測到這是個人位址，請輸入代幣合約位址"
   },
-  "plusXMore": {
-    "message": "+ $1 更多",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
   "prev": {
     "message": "前一頁"
   },

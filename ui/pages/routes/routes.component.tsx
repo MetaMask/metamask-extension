@@ -734,7 +734,7 @@ export default function Routes() {
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
 
-      <Toaster />
+      {isUnlocked ? <Toaster /> : null}
       <Modals />
     </div>
   );

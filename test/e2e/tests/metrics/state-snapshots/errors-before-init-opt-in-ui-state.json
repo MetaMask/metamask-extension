@@ -45,7 +45,7 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
-      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,

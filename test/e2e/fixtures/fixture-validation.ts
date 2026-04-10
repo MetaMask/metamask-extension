@@ -52,6 +52,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
   'data.AppStateController.lastUpdatedAt',
+  'data.AppStateController.newPrivacyPolicyToastClickedOrClosed',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',

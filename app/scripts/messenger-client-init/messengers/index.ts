@@ -245,7 +245,6 @@ export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
 } from './currency-rate-controller-messenger';
-export type { DecryptMessageControllerMessenger } from './decrypt-message-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
