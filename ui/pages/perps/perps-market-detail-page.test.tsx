@@ -778,7 +778,7 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-candle-period-more'));
-      fireEvent.click(screen.getByLabelText('Close'));
+      fireEvent.click(screen.getByLabelText(messages.close.message));
 
       expect(
         screen.queryByTestId('perps-candle-period-modal'),

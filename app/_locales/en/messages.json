@@ -5407,18 +5407,6 @@
   "perpsActivity": {
     "message": "Activity"
   },
-  "perpsCandleIntervals": {
-    "message": "Candle intervals"
-  },
-  "perpsCandlePeriodDays": {
-    "message": "Days"
-  },
-  "perpsCandlePeriodHours": {
-    "message": "Hours"
-  },
-  "perpsCandlePeriodMinutes": {
-    "message": "Minutes"
-  },
   "perpsAddExposure": {
     "message": "Add exposure"
   },
@@ -5477,6 +5465,18 @@
   },
   "perpsCancelOrder": {
     "message": "Cancel order"
+  },
+  "perpsCandleIntervals": {
+    "message": "Candle intervals"
+  },
+  "perpsCandlePeriodDays": {
+    "message": "Days"
+  },
+  "perpsCandlePeriodHours": {
+    "message": "Hours"
+  },
+  "perpsCandlePeriodMinutes": {
+    "message": "Minutes"
   },
   "perpsCloseAll": {
     "message": "Close all"
