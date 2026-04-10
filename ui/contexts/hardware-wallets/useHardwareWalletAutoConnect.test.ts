@@ -232,6 +232,51 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
     });
 
+    it('handles native Trezor device connect event through WebUSB', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValueOnce(false).mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs({
+              adapterRef: { current: mockAdapter },
+              connectRef: { current: mockConnectRef },
+            }),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebUsbEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      connectCallback({ productId: 123 } as USBDevice);
+      await flushPromises();
+
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
+      expect(mockConnectRef).toHaveBeenCalled();
+      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
+    });
+
     it('handles native device connect event when connect function throws', async () => {
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
@@ -330,6 +375,49 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
       ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+    });
+
+    it('handles native Trezor device disconnect event through WebUSB', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs({
+              adapterRef: { current: mockAdapter },
+            }),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebUsbEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      disconnectCallback({ productId: 123 } as USBDevice);
+      await flushPromises();
+
+      expect(mockHandleDisconnect).toHaveBeenCalled();
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
     });
 
     it('ignores disconnect when not connected', async () => {
@@ -486,6 +574,36 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
+    it('unsubscribes from WebUSB events for Trezor on cleanup', () => {
+      const mockUnsubscribe = jest.fn();
+      (webConnectionUtils.subscribeToWebUsbEvents as jest.Mock).mockReturnValue(
+        mockUnsubscribe,
+      );
+
+      const { unmount } = renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs(),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      unmount();
+
+      expect(mockUnsubscribe).toHaveBeenCalled();
+    });
+
     it('does not subscribe outside confirmation routes', () => {
       setupHook({}, {}, [DEFAULT_ROUTE]);
 
@@ -551,6 +669,50 @@ describe('useHardwareWalletAutoConnect', () => {
 
       expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
         HardwareWalletType.Ledger,
+      );
+      expect(mockConnectRef).toHaveBeenCalled();
+    });
+
+    it('auto-connects Trezor when a paired device is discovered', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValueOnce(false).mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs({
+              adapterRef: { current: mockAdapter },
+              connectRef: { current: mockConnectRef },
+            }),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      await waitFor(() => {
+        expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
+      });
+
+      expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
+        HardwareWalletType.Trezor,
       );
       expect(mockConnectRef).toHaveBeenCalled();
     });
