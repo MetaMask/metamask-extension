@@ -22,14 +22,9 @@ export const pendingConfirmationsSortedSelector = createSelector(
       .sort((a1, a2) => a1.time - a2.time),
 );
 
-const firstPendingConfirmationSelector = createSelector(
+export const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
   (pendingConfirmations) => pendingConfirmations[0],
-);
-
-export const oldestPendingConfirmationSelector = createDeepEqualSelector(
-  firstPendingConfirmationSelector,
-  (firstPendingConfirmation) => firstPendingConfirmation,
 );
 
 export function selectDappSwapComparisonData(

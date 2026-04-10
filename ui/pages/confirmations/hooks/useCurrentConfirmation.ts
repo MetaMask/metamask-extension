@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getUnapprovedTransaction,
-  oldestPendingConfirmationSelector,
-  selectPendingApproval,
+  firstPendingConfirmationSelector,
+  internalSelectPendingApproval,
 } from '../../../selectors';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { internalSelectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -26,12 +26,15 @@ import {
  */
 const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
+  const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
   const confirmationId =
     providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
 
   const pendingApproval = useSelector((state) =>
-    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
+    internalSelectPendingApproval(
+      state as ApprovalsMetaMaskState,
+      confirmationId,
+    ),
   );
 
   const transactionMetadata = useSelector((state) =>
@@ -41,7 +44,7 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
   ) as TransactionMeta | undefined;
 
   const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
+    internalSelectUnapprovedMessage(state, confirmationId),
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
