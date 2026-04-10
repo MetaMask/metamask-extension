@@ -1322,11 +1322,20 @@
     "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/useAddEthereumChainRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
+    "ui/pages/confirmations/hooks/useApprovalRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
     "ui/pages/confirmations/hooks/useAutomaticGasFeeTokenSelect.test.ts": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmActions.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/useConfirmationAlertMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1370,6 +1379,9 @@
     "ui/pages/confirmations/hooks/useSetConfirmationAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/useSignatureRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
     "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
@@ -1381,6 +1393,9 @@
     },
     "ui/pages/confirmations/hooks/useTypesSignSimulationEnabledInfo.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useTransactionMetadataRequest.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/selectors/confirm.test.ts": {
       "Reselect: Identity function warnings": 1
