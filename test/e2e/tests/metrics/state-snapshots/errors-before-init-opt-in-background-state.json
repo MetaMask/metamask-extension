@@ -4,6 +4,7 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
+    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
@@ -153,9 +154,7 @@
       },
       "nativeAssetIdentifiers": "object"
     },
-    "NetworkOrderController": {
-      "orderedNetworkList": "object"
-    },
+    "NetworkOrderController": { "orderedNetworkList": "object" },
     "NftController": {
       "allNftContracts": "object",
       "allNfts": "object",
