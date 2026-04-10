@@ -106,19 +106,21 @@ export class BundleSizeStatsPlugin {
       compilation.hooks.processAssets.tap(
         { name: NAME, stage: Infinity },
         () => {
-          const entrypoints = Object.fromEntries(
-            Array.from(compilation.entrypoints)
-              .toSorted(([left], [right]) => left.localeCompare(right))
-              .map(([name, entrypoint]) => [
-                name,
-                getEntrypointAssets(compilation, entrypoint, this.browsers),
-              ])
-              .filter(
-                ([, entrypoint]) =>
-                  entrypoint.initialFiles.length > 0 ||
-                  entrypoint.asyncFiles.length > 0,
-              ),
-          );
+          const entrypointEntries = Array.from(compilation.entrypoints)
+            .toSorted(([left], [right]) => left.localeCompare(right))
+            .map(([name, entrypoint]): [string, WebpackEntrypointFiles] => [
+              name,
+              getEntrypointAssets(compilation, entrypoint, this.browsers),
+            ])
+            .filter(
+              ([, entrypoint]) =>
+                entrypoint.initialFiles.length > 0 ||
+                entrypoint.asyncFiles.length > 0,
+            );
+          const entrypoints = Object.fromEntries(entrypointEntries) as Record<
+            string,
+            WebpackEntrypointFiles
+          >;
           const source = new RawSource(
             JSON.stringify(createWebpackBundleStats(entrypoints), null, 2),
           );

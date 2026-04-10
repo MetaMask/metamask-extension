@@ -11,7 +11,6 @@ import {
   type WebpackPluginInstance,
   type MemoryCacheOptions,
   type FileCacheOptions,
-  type CacheGroupsContext,
   type Chunk,
   type ChunkGroup,
   type Module,
@@ -38,6 +37,7 @@ import {
   getWebpackSurfaceFromChunkName,
   getWebpackSurfaceLayer,
   getWebpackRuntimeChunkName,
+  type WebpackSurface,
 } from './utils/surfaces';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -306,6 +306,14 @@ const reactCompiler = getReactCompilerLoader({
   threadLoaderEnabled: threadLoader !== null,
 });
 
+type CacheGroupContext = {
+  chunkGraph: {
+    getModuleRuntimes(module: Module): Iterable<unknown>;
+  };
+};
+
+type SharedSurface = Extract<WebpackSurface, 'background' | 'ui'>;
+
 function createSurfaceCacheGroup({
   name,
   test,
@@ -315,7 +323,7 @@ function createSurfaceCacheGroup({
   layer,
 }: {
   name: string;
-  test: RegExp | ((module: Module, context: CacheGroupsContext) => boolean);
+  test: RegExp | ((module: Module, context: CacheGroupContext) => boolean);
   chunks: (chunk: Chunk) => boolean;
   minChunks?: number;
   priority?: number;
@@ -336,19 +344,19 @@ function createSurfaceCacheGroup({
 function getChunkGroupSurfaceNames(
   chunkGroup: ChunkGroup,
   seenChunkGroups = new Set<ChunkGroup>(),
-) {
+): Set<WebpackSurface> {
   if (seenChunkGroups.has(chunkGroup)) {
-    return new Set();
+    return new Set<WebpackSurface>();
   }
 
   seenChunkGroups.add(chunkGroup);
   const directSurface = getWebpackSurfaceFromChunkName(chunkGroup.name);
 
   if (directSurface) {
-    return new Set([directSurface]);
+    return new Set<WebpackSurface>([directSurface]);
   }
 
-  return new Set(
+  return new Set<WebpackSurface>(
     chunkGroup
       .getParents()
       .flatMap((parent) => [
@@ -357,19 +365,21 @@ function getChunkGroupSurfaceNames(
   );
 }
 
-function getChunkSurfaceName(chunk: Chunk) {
+function getChunkSurfaceName(chunk: Chunk): WebpackSurface | null {
   const directSurface = getWebpackSurfaceFromChunkName(chunk.name);
   if (directSurface) {
     return directSurface;
   }
 
-  const chunkSurfaces = new Set(
+  const chunkSurfaces = new Set<WebpackSurface>(
     Array.from(chunk.groupsIterable).flatMap((chunkGroup) => [
       ...getChunkGroupSurfaceNames(chunkGroup),
     ]),
   );
 
-  return chunkSurfaces.size === 1 ? chunkSurfaces.values().next().value : null;
+  return chunkSurfaces.size === 1
+    ? (Array.from(chunkSurfaces)[0] ?? null)
+    : null;
 }
 
 function isChunkableSurfaceChunk(chunk: Chunk) {
@@ -378,7 +388,7 @@ function isChunkableSurfaceChunk(chunk: Chunk) {
 
 function isChunkInSurface(
   chunk: Chunk,
-  surface: 'background' | 'ui' | 'auxiliaryPages',
+  surface: SharedSurface | 'auxiliaryPages',
 ) {
   return (
     isChunkableSurfaceChunk(chunk) && getChunkSurfaceName(chunk) === surface
@@ -413,22 +423,48 @@ function getRuntimeSurfaceName(runtimeName: string) {
   return getWebpackSurfaceFromChunkName(runtimeName);
 }
 
-function moduleUsesSurface(
-  module: Module,
-  cacheGroupContext: CacheGroupsContext,
-  surface: 'background' | 'ui',
-) {
-  return Array.from(
-    cacheGroupContext.chunkGraph.getModuleRuntimes(module),
-  ).some((runtime) =>
-    (typeof runtime === 'string' ? [runtime] : [...(runtime ?? [])]).some(
-      (runtimeName) => getRuntimeSurfaceName(runtimeName) === surface,
-    ),
+function getRuntimeNames(runtime: unknown): string[] {
+  if (typeof runtime === 'string') {
+    return [runtime];
+  }
+
+  if (
+    typeof runtime !== 'object' ||
+    runtime === null ||
+    !(Symbol.iterator in runtime)
+  ) {
+    return [];
+  }
+
+  return Array.from(runtime as Iterable<unknown>).filter(
+    (value): value is string => typeof value === 'string',
   );
 }
 
-function createSharedSurfaceTest(pattern: RegExp) {
-  return (module: Module, cacheGroupContext: CacheGroupsContext) =>
+function moduleUsesSurface(
+  module: Module,
+  cacheGroupContext: CacheGroupContext,
+  surface: SharedSurface,
+): boolean {
+  for (const runtime of cacheGroupContext.chunkGraph.getModuleRuntimes(
+    module,
+  )) {
+    if (
+      getRuntimeNames(runtime).some(
+        (runtimeName) => getRuntimeSurfaceName(runtimeName) === surface,
+      )
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function createSharedSurfaceTest(
+  pattern: RegExp,
+): (module: Module, cacheGroupContext: CacheGroupContext) => boolean {
+  return (module: Module, cacheGroupContext: CacheGroupContext) =>
     moduleMatchesPattern(module, pattern) &&
     moduleUsesSurface(module, cacheGroupContext, 'background') &&
     moduleUsesSurface(module, cacheGroupContext, 'ui');
@@ -481,6 +517,13 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // Allow ESM-style `.js` specifiers in TS source while still resolving the
+    // underlying `.ts` source files during bundling.
+    extensionAlias: {
+      '.js': ['.js', '.ts', '.tsx'],
+      '.mjs': ['.mjs', '.mts'],
+      '.cjs': ['.cjs', '.cts'],
+    },
     // TODO: Remove this workaround after upgrading to React 18
     // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
     // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,

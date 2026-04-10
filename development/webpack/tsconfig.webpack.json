@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "esModuleInterop": true,
     "incremental": true,
     "isolatedModules": true,
-    "outDir": "../.webpack",
+    "outDir": "../../.webpack",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true

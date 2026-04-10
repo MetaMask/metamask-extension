@@ -141,6 +141,11 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const fallback = options.resolve.fallback as Record<string, false>;
+    assert.deepStrictEqual(options.resolve.extensionAlias, {
+      '.js': ['.js', '.ts', '.tsx'],
+      '.mjs': ['.mjs', '.mts'],
+      '.cjs': ['.cjs', '.cts'],
+    });
     assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
@@ -188,32 +193,24 @@ ${Object.entries(env)
       false,
       'unnamed chunks should remain self-contained',
     );
+    const { splitChunks } = options.optimization;
+    assert(splitChunks);
+    const cacheGroups = splitChunks.cacheGroups ?? {};
 
-    assert.deepStrictEqual(
-      Object.keys(
-        options.optimization.splitChunks?.cacheGroups ?? {},
-      ).toSorted(),
-      [
-        'auxiliaryPagesJs',
-        'auxiliaryPagesVendor',
-        'backgroundJs',
-        'backgroundVendor',
-        'commonJs',
-        'commonVendor',
-        'default',
-        'defaultVendors',
-        'uiJs',
-        'uiVendor',
-      ],
-    );
-    assert.strictEqual(
-      options.optimization.splitChunks?.cacheGroups?.default,
-      false,
-    );
-    assert.strictEqual(
-      options.optimization.splitChunks?.cacheGroups?.defaultVendors,
-      false,
-    );
+    assert.deepStrictEqual(Object.keys(cacheGroups).toSorted(), [
+      'auxiliaryPagesJs',
+      'auxiliaryPagesVendor',
+      'backgroundJs',
+      'backgroundVendor',
+      'commonJs',
+      'commonVendor',
+      'default',
+      'defaultVendors',
+      'uiJs',
+      'uiVendor',
+    ]);
+    assert.strictEqual(cacheGroups.default, false);
+    assert.strictEqual(cacheGroups.defaultVendors, false);
 
     const manifestPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',

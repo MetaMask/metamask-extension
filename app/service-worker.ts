@@ -6,7 +6,7 @@ const { chrome } = globalThis;
 
 globalThis.stateHooks = globalThis.stateHooks || ({} as typeof stateHooks);
 globalThis.stateHooks.runtimeInitialization ??= import(
-  /* webpackChunkName: "common-startup" */ './scripts/load/runtime-startup'
+  /* webpackChunkName: "common-startup" */ './scripts/load/runtime-startup.js'
 ).then(({ initializeRuntime }) => initializeRuntime());
 
 // this needs to be run early so we can begin listening to these browser events

@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import {
@@ -62,29 +61,70 @@ function normalizeRelativePath(filePath: string): string {
   return filePath.split(path.sep).join(path.posix.sep);
 }
 
+function getSetUnion<TValue>(...sets: Iterable<TValue>[]): Set<TValue> {
+  const result = new Set<TValue>();
+
+  for (const set of sets) {
+    for (const value of set) {
+      result.add(value);
+    }
+  }
+
+  return result;
+}
+
+function getSetIntersection<TValue>(
+  left: ReadonlySet<TValue>,
+  right: ReadonlySet<TValue>,
+): Set<TValue> {
+  const result = new Set<TValue>();
+
+  for (const value of left) {
+    if (right.has(value)) {
+      result.add(value);
+    }
+  }
+
+  return result;
+}
+
+function getSetDifference<TValue>(
+  left: ReadonlySet<TValue>,
+  right: ReadonlySet<TValue>,
+): Set<TValue> {
+  const result = new Set<TValue>();
+
+  for (const value of left) {
+    if (!right.has(value)) {
+      result.add(value);
+    }
+  }
+
+  return result;
+}
+
 async function getDistFileStats(distDirectory: string): Promise<FileStat[]> {
   const rootDirectory = path.resolve(distDirectory);
+  const fileStats: FileStat[] = [];
 
-  return (
-    await Array.fromAsync(
-      fs.glob('**/*', { cwd: rootDirectory, withFileTypes: true }),
-      async (entry): Promise<FileStat | null> => {
-        if (!entry.isFile()) {
-          return null;
-        }
+  for await (const entry of fs.glob('**/*', {
+    cwd: rootDirectory,
+    withFileTypes: true,
+  })) {
+    if (!entry.isFile()) {
+      continue;
+    }
 
-        const absolutePath = path.join(entry.parentPath, entry.name);
-        const stats = await fs.stat(absolutePath);
+    const absolutePath = path.join(entry.parentPath, entry.name);
+    const stats = await fs.stat(absolutePath);
 
-        return {
-          name: normalizeRelativePath(
-            path.relative(rootDirectory, absolutePath),
-          ),
-          size: stats.size,
-        };
-      },
-    )
-  ).flatMap((file) => (file ? [file] : []));
+    fileStats.push({
+      name: normalizeRelativePath(path.relative(rootDirectory, absolutePath)),
+      size: stats.size,
+    });
+  }
+
+  return fileStats;
 }
 
 async function getDistFileSizeMap(
@@ -251,7 +291,7 @@ function getWebpackSurfaceAssetNamesFromInitialAssets(
     ),
   );
 
-  return new Set(initialAssetNames).union(asyncAssetNames);
+  return getSetUnion(initialAssetNames, asyncAssetNames);
 }
 
 function createFileStatsFromAssetNames(
@@ -284,20 +324,28 @@ function partitionSurfaceAssets({
   contentScriptAssets: Set<string>;
   assetSizeMap: ReadonlyMap<string, number>;
 }): BundleSizeArtifact {
-  const commonAssets = backgroundAssets
-    .intersection(uiAssets)
-    .difference(contentScriptAssets);
-  const backgroundOnlyAssets = backgroundAssets
-    .difference(commonAssets)
-    .difference(contentScriptAssets);
-  const uiOnlyAssets = uiAssets
-    .difference(commonAssets)
-    .difference(contentScriptAssets);
-  const auxiliaryPageOnlyAssets = auxiliaryPageAssets
-    .difference(contentScriptAssets)
-    .difference(commonAssets)
-    .difference(backgroundOnlyAssets)
-    .difference(uiOnlyAssets);
+  const commonAssets = getSetDifference(
+    getSetIntersection(backgroundAssets, uiAssets),
+    contentScriptAssets,
+  );
+  const backgroundOnlyAssets = getSetDifference(
+    getSetDifference(backgroundAssets, commonAssets),
+    contentScriptAssets,
+  );
+  const uiOnlyAssets = getSetDifference(
+    getSetDifference(uiAssets, commonAssets),
+    contentScriptAssets,
+  );
+  const auxiliaryPageOnlyAssets = getSetDifference(
+    getSetDifference(
+      getSetDifference(
+        getSetDifference(auxiliaryPageAssets, contentScriptAssets),
+        commonAssets,
+      ),
+      backgroundOnlyAssets,
+    ),
+    uiOnlyAssets,
+  );
 
   return createBundleSizeArtifact(bundler, {
     background: createFileStatsFromAssetNames(
@@ -451,7 +499,7 @@ export async function writeBundleSizeArtifact(
 }
 
 async function main(): Promise<void> {
-  const { argv } = yargs(hideBin(process.argv))
+  const argv = yargs(hideBin(process.argv))
     .usage('$0 [options]', 'Capture bundle size stats', (_yargs) =>
       _yargs
         .option('bundler', {
@@ -460,7 +508,8 @@ async function main(): Promise<void> {
           demandOption: true,
           type: 'string',
         })
-        .option('dist-dir', {
+        .option('distDir', {
+          alias: 'dist-dir',
           description: 'Path to the built platform dist directory',
           demandOption: true,
           normalize: true,
@@ -473,13 +522,11 @@ async function main(): Promise<void> {
           type: 'string',
         }),
     )
-    .strict();
-  const { bundler, out } = argv as {
-    bundler: BundleSizeBundler;
-    distDir: string;
-    out?: string;
-  };
-  const distDirectory = argv['dist-dir'] as string;
+    .strict()
+    .parseSync();
+  const bundler = argv.bundler as BundleSizeBundler;
+  const distDirectory = argv.distDir as string;
+  const out = argv.out as string | undefined;
 
   const artifact =
     bundler === 'browserify'
@@ -493,11 +540,7 @@ async function main(): Promise<void> {
   }
 }
 
-const isDirectExecution =
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
-if (isDirectExecution) {
+if (require.main === module) {
   main().catch((error) => {
     exitWithError(error);
   });
