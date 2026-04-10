@@ -54,8 +54,11 @@ describe('Check balance', function (this: Suite) {
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const nonEvmHomePage = new NonEvmHomepage(driver);
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        await nonEvmHomePage.checkPageIsLoaded({ amount: '$10.18' });
+        // TRX ($1.79) + USDT ($2.80) + HTX DAO ($5.30) + USDD ($0.29) ≈ $10.18
+        await nonEvmHomePage.checkPageIsLoaded({
+          amount: '$10.18',
+          timeout: 30000,
+        });
       },
     );
   });

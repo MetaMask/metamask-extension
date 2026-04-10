@@ -142,7 +142,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
         });
       }
 
-      if (assetIds.includes('tron:728126428')) {
+      if (assetIds.includes('tron:728126428/slip44:195')) {
         results.push({
           assetId: TRON_NATIVE_CAIP_ASSET_ID,
           name: 'Tron',
@@ -151,6 +151,51 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
           coingeckoId: 'tron',
+        });
+      }
+
+      if (assetIds.includes('TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6')) {
+        results.push({
+          assetId: 'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+          name: 'HTX',
+          symbol: 'HTX',
+          decimals: 18,
+        });
+      }
+
+      if (assetIds.includes('TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh')) {
+        results.push({
+          assetId: 'tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+          name: 'SEED',
+          symbol: 'SEED',
+          decimals: 6,
+        });
+      }
+
+      if (assetIds.includes('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t')) {
+        results.push({
+          assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+
+      if (assetIds.includes('TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz')) {
+        results.push({
+          assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+          name: 'Decentralized USD',
+          symbol: 'USDD',
+          decimals: 18,
+        });
+      }
+
+      if (assetIds.includes('trc10:1005074')) {
+        results.push({
+          assetId: 'tron:728126428/trc10:1005074',
+          name: 'GasFreeTransferSolution',
+          symbol: 'GasFree4uCOM',
+          decimals: 6,
         });
       }
 
