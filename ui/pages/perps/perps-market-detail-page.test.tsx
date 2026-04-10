@@ -525,7 +525,7 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
       expect(
-        getByText(new RegExp(`${messages.perpsLong.message} 3x`)),
+        getByText(new RegExp(`${messages.perpsLong.message} 3x`, 'u')),
       ).toBeInTheDocument();
     });
 
