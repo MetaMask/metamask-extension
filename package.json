@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.27.0",
+  "version": "13.28.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -318,7 +318,7 @@
     "@metamask/delegation-controller": "^2.0.2",
     "@metamask/delegation-core": "^0.2.0-rc.1",
     "@metamask/delegation-deployments": "^1.0.0",
-    "@metamask/design-system-react": "^0.14.0",
+    "@metamask/design-system-react": "^0.16.0",
     "@metamask/design-system-tailwind-preset": "^0.6.1",
     "@metamask/design-tokens": "^8.3.0",
     "@metamask/eip-5792-middleware": "3.0.3",
@@ -402,7 +402,7 @@
     "@metamask/transaction-pay-controller": "^19.0.0",
     "@metamask/tron-wallet-snap": "^1.25.1",
     "@metamask/user-operation-controller": "^41.1.0",
-    "@metamask/utils": "^11.10.0",
+    "@metamask/utils": "^11.11.0",
     "@ngraveio/bc-ur": "^1.1.13",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",

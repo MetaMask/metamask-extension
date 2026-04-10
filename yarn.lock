@@ -6175,11 +6175,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@metamask/design-system-react@npm:0.14.0"
+"@metamask/design-system-react@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@metamask/design-system-react@npm:0.16.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.7.0"
+    "@metamask/design-system-shared": "npm:^0.9.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6190,18 +6190,18 @@ __metadata:
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/17506712e71331f73c9cafa03b4ad7f4bfef3d97df8a71f6e79be8440712740561be765a7f0cdd717c5b366a42a30362e62d8bb205c64a88757e69470be2a322
+  checksum: 10/42b7e5456c1d2d1e820b4f54f9e2e857a839703869a4709b66a80eee88e2a7150b781db82e5cff212b83323b81e6386da61f773887b65dc89e9ded255eb396fb
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/design-system-shared@npm:0.7.0"
+"@metamask/design-system-shared@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/design-system-shared@npm:0.9.0"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
-  checksum: 10/6029af5621f4a80a1cdcfea226ab4391fce466ee8c0ed6259c0aa06e4ec4029c7b0049c93e6d53cf0bb0a77e630574c92242f80280d7a10e3fb1fdf0b9656a42
+  checksum: 10/d1c7d54fac099b119b9f4ad6580289abba3fdbc699db13ebceb23c17c1d162987237625e3bf67397bf869e286951cc8edf9879c600f74dfef50f5447b898d61f
   languageName: node
   linkType: hard
 
@@ -34100,7 +34100,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.2"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^1.0.0"
-    "@metamask/design-system-react": "npm:^0.14.0"
+    "@metamask/design-system-react": "npm:^0.16.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.3.0"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
@@ -34206,7 +34206,7 @@ __metadata:
     "@metamask/transaction-pay-controller": "npm:^19.0.0"
     "@metamask/tron-wallet-snap": "npm:^1.25.1"
     "@metamask/user-operation-controller": "npm:^41.1.0"
-    "@metamask/utils": "npm:^11.10.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
