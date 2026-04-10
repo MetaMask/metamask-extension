@@ -1334,9 +1334,6 @@
     "ui/pages/confirmations/hooks/useConfirmActions.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/confirmations/hooks/useConfirmationAlertMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
     },
@@ -1344,6 +1341,9 @@
       "MetaMask: Background connection not initialized": 7,
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 6
+    },
+    "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/useConfirmationNetworkInfo.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1379,11 +1379,11 @@
     "ui/pages/confirmations/hooks/useSetConfirmationAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/useSignatureRequest.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
     "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useSignatureRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 4
@@ -1391,11 +1391,11 @@
     "ui/pages/confirmations/hooks/useSyncConfirmPath.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/useTypesSignSimulationEnabledInfo.test.ts": {
-      "Reselect: Identity function warnings": 3
-    },
     "ui/pages/confirmations/hooks/useTransactionMetadataRequest.test.ts": {
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/confirmations/hooks/useTypesSignSimulationEnabledInfo.test.ts": {
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/selectors/confirm.test.ts": {
       "Reselect: Identity function warnings": 1
