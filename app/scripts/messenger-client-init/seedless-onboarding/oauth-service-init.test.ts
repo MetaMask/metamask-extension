@@ -1,9 +1,11 @@
 import { ControllerInitRequest } from '../types';
-import { getOAuthServiceMessenger } from '../messengers/seedless-onboarding';
+import {
+  getOAuthServiceMessenger,
+  OAuthServiceMessenger,
+} from '../messengers/seedless-onboarding';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { OAuthService } from '../../services/oauth/oauth-service';
-import { OAuthServiceMessenger } from '../../services/oauth/types';
+import OAuthService from '../../services/oauth/oauth-service';
 import { OAuthServiceInit } from './oauth-service-init';
 
 function buildInitRequestMock(): jest.Mocked<

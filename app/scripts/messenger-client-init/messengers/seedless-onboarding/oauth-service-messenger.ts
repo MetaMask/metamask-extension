@@ -1,10 +1,11 @@
-import {
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
-import { OAuthServiceMessenger } from '../../../services/oauth/types';
+import { Messenger } from '@metamask/messenger';
+import { OAuthServiceAction } from '../../../services/oauth/types';
 import { RootMessenger } from '../../../lib/messenger';
+import { OnboardingControllerGetStateAction } from '../../../controllers/onboarding';
+
+type AllowedActions = OAuthServiceAction | OnboardingControllerGetStateAction;
+
+export type OAuthServiceMessenger = ReturnType<typeof getOAuthServiceMessenger>;
 
 /**
  * Get a restricted messenger for the OAuthService. This is scoped to the
@@ -14,12 +15,14 @@ import { RootMessenger } from '../../../lib/messenger';
  * @returns The restricted messenger.
  */
 export function getOAuthServiceMessenger(
-  messenger: RootMessenger<
-    MessengerActions<OAuthServiceMessenger>,
-    MessengerEvents<OAuthServiceMessenger>
-  >,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  const oauthMessenger: OAuthServiceMessenger = new Messenger({
+  const oauthMessenger = new Messenger<
+    'OAuthService',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
     namespace: 'OAuthService',
     parent: messenger,
   });

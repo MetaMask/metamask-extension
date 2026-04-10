@@ -39,13 +39,12 @@ export type HardwareWalletRefs = {
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   /**
-   * Stores pending ensureDeviceReady promises keyed by a dedup key derived
-   * from requireBlindSigning and preflightMessageBytes. This prevents duplicate
-   * checks for the same option combination while allowing different option
-   * sets to run independently.
+   * Stores pending ensureDeviceReady promises keyed by requireBlindSigning.
+   * This prevents duplicate checks for the same option while allowing different
+   * option sets to run independently.
    */
   ensureDeviceReadyPromiseRef: React.MutableRefObject<
-    Map<string, Promise<boolean>>
+    Map<boolean, Promise<boolean>>
   >;
   /**
    * Flag to prevent concurrent connection attempts.
@@ -54,7 +53,6 @@ export type HardwareWalletRefs = {
   isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
-  isEnsuringDeviceReadyRef: React.MutableRefObject<boolean>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
   connectRef: React.MutableRefObject<(() => Promise<void>) | null>;
   walletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
@@ -93,13 +91,12 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
-  const ensureDeviceReadyPromiseRef = useRef<Map<string, Promise<boolean>>>(
+  const ensureDeviceReadyPromiseRef = useRef<Map<boolean, Promise<boolean>>>(
     new Map(),
   );
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
-  const isEnsuringDeviceReadyRef = useRef(false);
   const currentConnectionIdRef = useRef<number | null>(null);
   const connectRef = useRef<(() => Promise<void>) | null>(null);
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
@@ -128,7 +125,6 @@ export const useHardwareWalletStateManager = () => {
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
-      isEnsuringDeviceReadyRef,
       currentConnectionIdRef,
       connectRef,
       walletTypeRef,

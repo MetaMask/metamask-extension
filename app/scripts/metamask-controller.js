@@ -444,7 +444,6 @@ import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
-import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -603,7 +602,6 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
-      DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -723,7 +721,6 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = controllersByName.AppStateController;
     this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
-    this.dataDeletionService = controllersByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       controllersByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
@@ -2830,7 +2827,6 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
-      getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5322,19 +5318,6 @@ export default class MetamaskController extends EventEmitter {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
-    );
-  }
-
-  async getTrezorFeatures() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.trezor },
-      async (keyring) => {
-        if (typeof keyring.bridge.getFeatures !== 'function') {
-          throw new Error('Trezor bridge does not support getFeatures');
-        }
-
-        return await keyring.bridge.getFeatures();
-      },
     );
   }
 

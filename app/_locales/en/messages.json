@@ -3171,16 +3171,11 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "Restart your device and try connecting again"
   },
-  "hardwareWalletErrorRecoveryConnection4": {
-    "message": "Your $1 device is unlocked",
-    "description": "$1 is the hardware wallet type"
-  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Your $1 device is unlocked",
-    "description": "$1 is the hardware wallet type"
+    "message": "Your Ledger is unlocked"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"

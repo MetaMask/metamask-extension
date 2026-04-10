@@ -7,7 +7,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { getInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
@@ -23,7 +23,7 @@ import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
-import { getMemoizedCurrentCurrency } from '../../../../selectors/snaps';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
 /**
  * An asset for the SnapUIAssetSelector.
@@ -65,11 +65,14 @@ export const useSnapAssetSelectorData = ({
   addresses,
   chainIds,
 }: UseSnapAssetSelectorDataParams) => {
-  const currentCurrency = useSelector(getMemoizedCurrentCurrency);
+  const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
   const { formatTokenQuantity } = useFormatters();
 
-  const parsedAccounts = addresses.map(parseCaipAccountId);
+  const parsedAccounts = useMemo(
+    () => addresses.map(parseCaipAccountId),
+    [addresses],
+  );
 
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, parsedAccounts[0].address),
@@ -86,11 +89,14 @@ export const useSnapAssetSelectorData = ({
    * @param balance - The balance to format.
    * @returns The formatted balance.
    */
-  const formatFiatBalance = (balance: number | null = 0) =>
-    formatWithThreshold(balance, 0.01, locale, {
-      style: 'currency',
-      currency: currentCurrency.toUpperCase(),
-    });
+  const formatFiatBalance = useCallback(
+    (balance: number | null = 0) =>
+      formatWithThreshold(balance, 0.01, locale, {
+        style: 'currency',
+        currency: currentCurrency.toUpperCase(),
+      }),
+    [locale, currentCurrency],
+  );
 
   /**
    * Formats a non-EVM asset for the SnapUIAssetSelector.
@@ -98,29 +104,36 @@ export const useSnapAssetSelectorData = ({
    * @param asset - The asset to format.
    * @returns The formatted asset.
    */
-  const formatAsset = (asset: TokenWithFiatAmount) => {
-    const networkName =
-      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-        asset.chainId as AllowedBridgeChainIds
-      ] ?? networks[asset.chainId]?.name;
+  const formatAsset = useCallback(
+    (asset: TokenWithFiatAmount) => {
+      const networkName =
+        NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+          asset.chainId as AllowedBridgeChainIds
+        ] ?? networks[asset.chainId]?.name;
 
-    return {
-      icon: asset.image,
-      symbol: asset.symbol,
-      name: asset.title,
-      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
-      networkName,
-      networkIcon: getImageForChainId(asset.chainId),
-      fiat: formatFiatBalance(asset.secondary),
-      chainId: asset.chainId as CaipChainId,
-      address: asset.address as CaipAssetType,
-    };
-  };
+      return {
+        icon: asset.image,
+        symbol: asset.symbol,
+        name: asset.title,
+        balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
+        networkName,
+        networkIcon: getImageForChainId(asset.chainId),
+        fiat: formatFiatBalance(asset.secondary),
+        chainId: asset.chainId as CaipChainId,
+        address: asset.address as CaipAssetType,
+      };
+    },
+    [formatFiatBalance, formatTokenQuantity, networks],
+  );
 
   // Filter the chain IDs to only include the requested ones.
-  const requestedChainIds = parsedAccounts
-    .map((chainId) => chainId)
-    .filter(({ chainId }) => (chainIds ? chainIds?.includes(chainId) : true));
+  const requestedChainIds = useMemo(
+    () =>
+      parsedAccounts.filter(({ chainId }) =>
+        chainIds ? chainIds.includes(chainId) : true,
+      ),
+    [parsedAccounts, chainIds],
+  );
 
   const formattedAssets = useMemo(() => {
     // Filter the assets by the requested chain IDs
@@ -142,7 +155,7 @@ export const useSnapAssetSelectorData = ({
     const formatted: SnapUIAsset[] = filteredAssets.map(formatAsset);
 
     return formatted;
-  }, [assets]);
+  }, [assets, formatAsset, requestedChainIds]);
 
   return formattedAssets;
 };

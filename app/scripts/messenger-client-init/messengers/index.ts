@@ -209,7 +209,6 @@ import { getProfileMetricsControllerMessenger } from './profile-metrics-controll
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
-import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -473,10 +472,6 @@ export const CONTROLLER_MESSENGERS = {
   CurrencyRateController: {
     getMessenger: getCurrencyRateControllerMessenger,
     getInitMessenger: getCurrencyRateControllerInitMessenger,
-  },
-  DataDeletionService: {
-    getMessenger: getDataDeletionServiceMessenger,
-    getInitMessenger: noop,
   },
   DecryptMessageController: {
     getMessenger: getDecryptMessageControllerMessenger,
