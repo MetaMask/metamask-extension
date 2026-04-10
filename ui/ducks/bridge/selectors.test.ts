@@ -158,7 +158,7 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns the fromChain if toToken is not set', () => {
+    it('returns the first toChain when toToken is not set', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -174,19 +174,8 @@ describe('Bridge selectors', () => {
       const result = getToChain(state as never);
 
       expect(result).toStrictEqual({
-        blockExplorerUrls: ['https://localhost/blockExplorer/0x1'],
         chainId: 'eip155:1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
         name: 'Test',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: expect.any(String),
-            type: 'custom',
-            url: 'https://localhost/rpc/0x1',
-          },
-        ],
       });
     });
   });
@@ -318,7 +307,7 @@ describe('Bridge selectors', () => {
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
-      expect(resultsInCaip.length).toBe(10);
+      expect(resultsInCaip.length).toBe(9);
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
         'eip155:56',
@@ -329,9 +318,8 @@ describe('Bridge selectors', () => {
         'eip155:10',
         'eip155:59144',
         'eip155:137',
-        'eip155:10',
       ]);
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(9);
       expect(result).toMatchInlineSnapshot(`
         [
           {
@@ -369,10 +357,6 @@ describe('Bridge selectors', () => {
           {
             "chainId": "eip155:137",
             "name": "Polygon",
-          },
-          {
-            "chainId": "eip155:10",
-            "name": "OP",
           },
         ]
       `);
@@ -559,9 +543,7 @@ describe('Bridge selectors', () => {
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
-      // Check that there are no duplicates
-      expect(resultsInCaip.length).toBe(10);
-      // Check that the results are in the correct order
+      expect(resultsInCaip.length).toBe(9);
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
         'eip155:56',
@@ -572,9 +554,8 @@ describe('Bridge selectors', () => {
         'eip155:10',
         'eip155:59144',
         'eip155:137',
-        'eip155:10',
       ]);
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(9);
       expect(result.map((r) => NETWORK_TO_SHORT_NETWORK_NAME_MAP[r.chainId]))
         .toMatchInlineSnapshot(`
         [
@@ -587,7 +568,6 @@ describe('Bridge selectors', () => {
           "OP",
           "Linea",
           "Polygon",
-          "OP",
         ]
       `);
       expect(result).not.toContain(undefined);
