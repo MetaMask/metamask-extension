@@ -4,9 +4,7 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {
-      "accountsByChainId": "object"
-    },
+    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
@@ -73,6 +71,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": "object",
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
@@ -285,11 +284,7 @@
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
-    "TokenBalancesController": {
-      "tokenBalances": "object"
-    },
-    "AssetsController": "object",
-    "TokenListController": {},
+    "TokenBalancesController": { "tokenBalances": "object" },
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},

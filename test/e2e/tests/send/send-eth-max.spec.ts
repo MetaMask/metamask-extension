@@ -16,7 +16,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
-import { mockPriceApi, mockSpotPrices } from '../tokens/utils/mocks';
+import { mockEthPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -30,6 +30,46 @@ const PREFERENCES_STATE_MOCK = {
   useNonceField: true,
 };
 
+/**
+ * With assets-unify enabled (forced on in test builds),
+ * `getCurrencyRateControllerCurrencyRates` derives the ETH conversion rate from
+ * AssetsController.assetsPrice keyed by the first native EVM entry in assetsInfo
+ * (lexicographic = eip155:1/slip44:60 = mainnet).
+ *
+ * FixtureBuilder v1 starts from default-fixture.js which has no
+ * AssetsController, so we must seed both assetsInfo (so the selector has entries
+ * to iterate) and assetsPrice (so it can read the price) for the native ETH
+ * assets the tests rely on.
+ */
+const ETH_NATIVE_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
+
+const ASSETS_PRICE_ETH_1700 = {
+  assetPriceType: 'fungible' as const,
+  id: 'ethereum',
+  price: 1700,
+  usdPrice: 1700,
+};
+
+const ASSETS_CONTROLLER_ETH_1700 = {
+  assetsInfo: {
+    'eip155:1/slip44:60': ETH_NATIVE_INFO,
+    'eip155:1337/slip44:60': ETH_NATIVE_INFO,
+  },
+  assetsPrice: {
+    'eip155:1/slip44:60': ASSETS_PRICE_ETH_1700,
+    'eip155:1337/slip44:60': ASSETS_PRICE_ETH_1700,
+  },
+};
+
+const ETH_USD_PRICE = 1700;
+
 describe('Send ETH - Max Amount', function () {
   // This test is flaky in FF - so we are skipping it for now
   // eslint-disable-next-line mocha/no-skipped-tests
@@ -38,18 +78,16 @@ describe('Send ETH - Max Amount', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController(ASSETS_CONTROLLER_ETH_1700)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
         },
       },
       async ({ driver }) => {
@@ -71,18 +109,15 @@ describe('Send ETH - Max Amount', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
+            .withAssetsController(ASSETS_CONTROLLER_ETH_1700)
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, {
-              'eip155:1337/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
+            await mockEthPrices(mockServer, ETH_USD_PRICE, [
+              CHAIN_IDS.MAINNET,
+              CHAIN_IDS.LOCALHOST,
+            ]);
           },
         },
         async ({ driver }) => {
@@ -122,18 +157,15 @@ describe('Send ETH - Max Amount', function () {
         {
           fixtures: new FixtureBuilderV2()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
+            .withAssetsController(ASSETS_CONTROLLER_ETH_1700)
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
+            await mockEthPrices(mockServer, ETH_USD_PRICE, [
+              CHAIN_IDS.MAINNET,
+              CHAIN_IDS.LOCALHOST,
+            ]);
           },
         },
         async ({ driver }) => {
@@ -174,19 +206,16 @@ describe('Send ETH - Max Amount', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController(ASSETS_CONTROLLER_ETH_1700)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-          return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
         },
       },
       async ({ driver, mockServer }) => {
@@ -251,17 +280,15 @@ describe('Send ETH - Max Amount', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController(ASSETS_CONTROLLER_ETH_1700)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
         },
       },
       async ({ driver }) => {

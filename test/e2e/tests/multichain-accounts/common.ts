@@ -9,7 +9,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
-import { getMockAssetsPrice, MOCK_ASSETS_PRICE } from '../bridge/constants';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -50,9 +49,6 @@ export async function withMultichainAccountsDesignEnabled(
             },
           },
         })
-        .withAssetsController({
-          assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
-        })
         .build();
       break;
     default:
@@ -68,9 +64,6 @@ export async function withMultichainAccountsDesignEnabled(
               usdConversionRate: MOCK_ETH_CONVERSION_RATE,
             },
           },
-        })
-        .withAssetsController({
-          assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
         })
         .build();
       break;

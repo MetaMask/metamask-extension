@@ -10,6 +10,14 @@ import { Ganache } from '../../seeder/ganache';
  * By default, validates the displayed balance. Use {@link localNode} or {@link expectedBalance}
  * for specific checks, or set {@link validateBalance} to false to skip validation entirely.
  *
+ * **Assets unify state:** Default E2E mocks (`mock-e2e.js`) serve Tokens API + Accounts API v5
+ * so balances load. The default mainnet native balance is **25 ETH**; aggregated fiat uses the
+ * same `ethConversionInUsd` passed to `withFixtures` and the global `price.api` v3 mock for
+ * `eip155:1/slip44:60`. If you assert a custom fiat string via `expectedBalance` (e.g. `'$85,000.00'`),
+ * pass `withFixtures({ unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '…' }, ethConversionInUsd })`
+ * so v5 matches that total. Use `getUnifiedMainnetNativeEthHumanForFiatTotal(expectedUsd, ethConversionInUsd)`
+ * from `test/e2e/helpers.js` to compute the native amount string.
+ *
  * @param driver - The webdriver instance.
  * @param options - Optional configuration for the login flow.
  * @param options.expectedBalance - An expected balance string to verify on the homepage.

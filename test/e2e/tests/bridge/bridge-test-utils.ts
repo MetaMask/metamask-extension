@@ -38,7 +38,6 @@ import {
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
   SSE_RESPONSE_HEADER,
-  getMockAssetsPrice,
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
@@ -900,38 +899,53 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
+  const tokenEntry = (
+    id: string,
+    price: number,
+    pricePercentChange1d: number = 0.1,
+  ) => ({
+    assetPriceType: 'fungible',
+    id,
+    price,
+    usdPrice: price,
+    pricePercentChange1d,
+  });
+
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:1/slip44:60': {
-            usd: 2000.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 2.5,
-          },
-          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
-            usd: 0.9999,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-        },
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+
+      const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+          'dai',
+          1.0,
+        ),
+        'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+          tokenEntry('dai', 1.0),
+        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
+          'musd',
+          0.9999,
+        ),
       };
+
+      const json =
+        vsCurrency === 'usd'
+          ? {
+              'eip155:1/slip44:60': tokenEntry(
+                'ethereum',
+                ETH_CONVERSION_RATE_USD,
+                2.5,
+              ),
+              ...stablecoins,
+            }
+          : {
+              'eip155:1/slip44:60': tokenEntry('ethereum', 1, 0),
+              ...stablecoins,
+            };
+
+      return { statusCode: 200, json };
     });
 }
 
@@ -1280,9 +1294,6 @@ export const getBridgeFixtures = (
       pna25Acknowledged: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withAssetsController({
-      assetsPrice: getMockAssetsPrice(ethConversionRate),
-    })
     .withBridgeControllerDefaultState()
     .withTokensController({
       allTokens: {
@@ -1422,6 +1433,9 @@ export const getBridgeFixtures = (
         : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1594,20 +1608,11 @@ export const getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
   withSmartTransactions: boolean = true,
-  ethConversionRate: number = ETH_CONVERSION_RATE_USD,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withAssetsController({
-      assetsBalance: {
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1/slip44:60': { amount: '25' },
-        },
-      },
-      assetsPrice: getMockAssetsPrice(ethConversionRate),
-    })
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
@@ -1708,9 +1713,6 @@ export const getBridgeL2Fixtures = (
         },
       },
     })
-    .withAssetsController({
-      assetsPrice: getMockAssetsPrice(3010),
-    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true, // Mainnet
@@ -1778,6 +1780,9 @@ export const getBridgeL2Fixtures = (
         : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {

@@ -90,6 +90,9 @@ async function mockPhpConversion(mockServer: Mockttp) {
   ];
 }
 
+const ETH_PRICE_PHP = 100000;
+const ETH_PRICE_USD = 2500; // 100,000 PHP / 40 PHP per USD
+
 describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
     await withFixtures(
@@ -102,6 +105,16 @@ describe('Localization', function () {
             preferences: {
               showFiatInTestnets: true,
               showNativeTokenAsMainBalance: false,
+            },
+          })
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': {
+                assetPriceType: 'fungible' as const,
+                id: 'ethereum',
+                price: ETH_PRICE_PHP,
+                usdPrice: ETH_PRICE_USD,
+              },
             },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })

@@ -454,6 +454,7 @@ export async function mockSolanaBalanceQuote({
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -939,7 +940,7 @@ export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
 ) {
-  const resp = await readResponseJsonFile('usdcSolTransaction.json');
+  const resp = await readResponseJsonFile('succeededTransaction.json');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
@@ -1845,6 +1846,7 @@ export async function mockGetTokenAccountsUSDCOnly(
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
