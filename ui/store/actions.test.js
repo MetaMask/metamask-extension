@@ -4618,7 +4618,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'HIDE_WARNING' },
-        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));

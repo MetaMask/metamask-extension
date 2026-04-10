@@ -33,7 +33,7 @@ const createMockPrivacyPolicyState = (
 });
 
 const createMockAppState = (
-  showNewSrpAddedToast?: boolean,
+  showNewSrpAddedToast?: number | false,
   showCopyAddressToast?: boolean,
 ) => ({
   appState: {
@@ -236,10 +236,16 @@ describe('#getShowPrivacyPolicyToast', () => {
 });
 
 describe('#getShowNewSrpAddedToast', () => {
-  it('returns true if the user has not seen the toast', () => {
-    const mockStateData = createMockAppState(true);
+  it('returns the wallet number when set', () => {
+    const mockStateData = createMockAppState(2);
     const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(true);
+    expect(result).toBe(2);
+  });
+
+  it('returns false when not set', () => {
+    const mockStateData = createMockAppState(false);
+    const result = selectNewSrpAdded(mockStateData);
+    expect(result).toBe(false);
   });
 });
 
