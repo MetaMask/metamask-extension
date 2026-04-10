@@ -1,4 +1,6 @@
 import { Driver } from '../../webdriver/driver';
+import AssetListPage from '../pages/home/asset-list';
+import HomePage from '../pages/home/homepage';
 import NetworkManager from '../pages/network-manager';
 
 export const switchToNetworkFromNetworkSelect = async (
@@ -6,8 +8,16 @@ export const switchToNetworkFromNetworkSelect = async (
   networkCategory: string,
   networkName: string,
 ) => {
+  const assetListPage = new AssetListPage(driver);
   const networkManager = new NetworkManager(driver);
-  await networkManager.openNetworkManager();
+  const homePage = new HomePage(driver);
+
+  const nonEvmNetworks = ['Bitcoin', 'Solana', 'Tron'];
+  if (nonEvmNetworks.includes(networkName)) {
+    // Wait for snap accounts to be ready before switching networks, to prevent race conditions
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
+  await assetListPage.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };

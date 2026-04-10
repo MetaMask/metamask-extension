@@ -29,8 +29,10 @@ import {
   findNetworkClientIdByChainId,
   setMusdConversionEducationSeen,
 } from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   buildMusdConversionTx,
+  ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
@@ -124,7 +126,7 @@ function findExistingPendingMusdConversion(params: {
  * @returns Object with state and actions for mUSD conversion
  */
 export function useMusdConversion(): UseMusdConversionResult {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);
@@ -201,6 +203,11 @@ export function useMusdConversion(): UseMusdConversionResult {
       try {
         setError(null);
 
+        const ensureMusdTokenPromise = ensureMusdTokenImportedForChain(
+          chainId,
+          dispatch,
+        );
+
         const existing = findExistingPendingMusdConversion({
           unapprovedTransactions: unapprovedTransactions as Record<
             string,
@@ -268,6 +275,8 @@ export function useMusdConversion(): UseMusdConversionResult {
           tags: navTraceTags,
         });
 
+        await ensureMusdTokenPromise;
+
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
@@ -298,6 +307,7 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
     },
     [
+      dispatch,
       isFeatureEnabled,
       isUserGeoBlocked,
       educationSeen,

@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "ब्रिज फीस"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "एक नया लाएं?"
-  },
   "bridgeFromTo": {
     "message": "$1 $2 को $3 से ब्रिज करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "कीमत के असर को लेकर चेतावनी"
-  },
-  "bridgeQuoteExpired": {
-    "message": "आपका कोट करने का समय समाप्त हो गया है"
   },
   "bridgeQuotesSortedByCost": {
     "message": "कोटेशन को अनुमानित कुल लागत के आधार पर क्रमबद्ध किया जाता है, जिसमें एक्सचेंज रेट और नेटवर्क शुल्क शामिल होते हैं।"
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "भेजने वाले"
   },
-  "fromTokenLists": {
-    "message": "टोकन लिस्टों से: $1"
-  },
   "function": {
     "message": "फंक्शन: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "सभी को अनदेखा करें"
-  },
-  "ignoreTokenWarning": {
-    "message": "अगर आप टोकनों को छुपाते हैं तो वो आपके वॉलेट में दिखाई नहीं देंगे। हालांकि, तब भी आप उन्हें खोजकर जोड़ सकते हैं।"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
   },
-  "importSelectedTokens": {
-    "message": "चुना गया टोकन इम्पोर्ट करें?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "आपके द्वारा चुने गए टोकन ही आपके वॉलेट में दिखाई देंगे। आप छिपे हुए टोकनों को खोजकर बाद में कभी भी इंपोर्ट कर सकते हैं।"
-  },
   "importTokenQuestion": {
     "message": "टोकन इम्पोर्ट करें?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "वॉलेट $1 को इंपोर्ट किया गया",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 इम्पोर्ट करें",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "इम्पोर्ट किया गया",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
-  "musdClaimClaimingTo": {
-    "message": "इसमें क्लेम किया जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "जानें कैसे"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "इस अकाउंट में 1 नया टोकन पाया गया"
   },
   "numberOfTokens": {
     "message": "टोकन की संख्या"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "शॉर्ट क्लोज़ करें"
   },
-  "perpsClosedShort": {
-    "message": "शॉर्ट को क्लोज़ किया गया"
-  },
   "perpsConfirmCloseLong": {
     "message": "लॉन्ग क्लोज़ करें"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "इसमें P&L $1 शामिल है"
   },
-  "perpsIncreasedPosition": {
-    "message": "पोज़िशन बढ़ाई गई"
-  },
   "perpsLearnBasics": {
     "message": "पर्प्स की मूल बातें सीखें"
   },
@@ -5537,9 +5495,6 @@
     "message": "शॉर्ट $1 को ओपन करें",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "खुला लॉन्ग"
-  },
   "perpsOraclePrice": {
     "message": "Oracle प्राइस"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "आकार"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "फंडिंग रेट: ज़्यादा से कम"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "फंडिंग रेट: कम से ज़्यादा"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "ओपन इंटरेस्ट: ज़्यादा से कम"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "ओपन इंटरेस्ट: कम से ज़्यादा"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "प्राइस परिवर्तन: ज़्यादा से कम"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "प्राइस परिवर्तन: कम से ज़्यादा"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "वॉल्यूम: ज़्यादा से कम"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "वॉल्यूम: कम से ज़्यादा"
   },
   "perpsStartNewTrade": {
     "message": "एक नया ट्रेड शुरू करें"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "कृपया कन्फर्म करें"
-  },
-  "plusXMore": {
-    "message": "+ $1 और",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "ब्लॉग पोस्ट।"
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
-  "tokenFoundTitle": {
-    "message": "1 नया टोकन मिला"
-  },
   "tokenId": {
     "message": "टोकन आईडी"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "टोकन",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 नए टोकन मिले",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "संग्रह में टोकन"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "आप एप्रूव करते हैं"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "आपने ट्रांसेक्शन अस्वीकार कर दिया।"
   },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का इस्तेमाल करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"

@@ -311,6 +311,10 @@ const Footer = () => {
     !isHardwareWalletReady &&
     !hasUnconfirmedDangerAlerts;
 
+  const onReconnectHardwareWalletCta = useCallback(async () => {
+    await onSubmitPreflightCheck({ trackConnectCta: true });
+  }, [onSubmitPreflightCheck]);
+
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
@@ -464,7 +468,7 @@ const Footer = () => {
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"
-              onClick={onSubmitPreflightCheck}
+              onClick={onReconnectHardwareWalletCta}
               size={ButtonSize.Lg}
             >
               {walletType

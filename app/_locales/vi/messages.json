@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "Phí cầu nối"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "Tìm nạp báo giá mới?"
-  },
   "bridgeFromTo": {
     "message": "Cầu nối $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Cảnh báo tác động giá"
-  },
-  "bridgeQuoteExpired": {
-    "message": "Báo giá của bạn đã hết hạn."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Các báo giá được sắp xếp theo tổng chi phí ước tính, bao gồm tỷ giá và phí mạng."
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "Từ"
   },
-  "fromTokenLists": {
-    "message": "Từ danh sách token: $1"
-  },
   "function": {
     "message": "Chức năng: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Bỏ qua tất cả"
-  },
-  "ignoreTokenWarning": {
-    "message": "Nếu bạn ẩn token, chúng sẽ không hiển thị trong ví của bạn. Tuy nhiên, bạn vẫn có thể thêm chúng thông qua chức năng tìm kiếm."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
   },
-  "importSelectedTokens": {
-    "message": "Nhập các token đã chọn?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Chỉ những token đã chọn mới xuất hiện trong ví của bạn. Sau đó, bạn luôn có thể nhập các token đã ẩn thông qua chức năng tìm kiếm."
-  },
   "importTokenQuestion": {
     "message": "Nhập token?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Đã nhập ví $1",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Nhập $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Đã nhập",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "Nhận vào",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Tìm hiểu cách thức"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "Tìm thấy $1 token mới trong tài khoản này",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "Tìm thấy 1 token mới trong tài khoản này"
   },
   "numberOfTokens": {
     "message": "Số lượng token"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
   },
-  "perpsClosedShort": {
-    "message": "Đã đóng vị thế bán khống"
-  },
   "perpsConfirmCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "bao gồm Lãi/Lỗ $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "Đã tăng vị thế"
-  },
   "perpsLearnBasics": {
     "message": "Tìm hiểu những kiến thức cơ bản về hợp đồng vĩnh cửu"
   },
@@ -5537,9 +5495,6 @@
     "message": "Mở vị thế bán khống $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "Đã mở vị thế mua khống"
-  },
   "perpsOraclePrice": {
     "message": "Giá nguồn cấp dữ liệu"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "Kích thước"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Tỷ lệ tài trợ: cao đến thấp"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Tỷ lệ tài trợ: thấp đến cao"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Lãi suất mở: cao đến thấp"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Lãi suất mở: thấp đến cao"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Biến động giá: cao đến thấp"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Biến động giá: thấp đến cao"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Khối lượng: cao đến thấp"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Khối lượng: thấp đến cao"
   },
   "perpsStartNewTrade": {
     "message": "Bắt đầu giao dịch mới"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Vui lòng xác nhận"
-  },
-  "plusXMore": {
-    "message": "+ $1 khác",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "bài đăng blog."
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "Thông tin token"
   },
-  "tokenFoundTitle": {
-    "message": "Đã tìm thấy 1 token mới"
-  },
   "tokenId": {
     "message": "ID token"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "Đã tìm thấy $1 token mới",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Token trong bộ sưu tập"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "Bạn phê duyệt"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "Bạn đã từ chối giao dịch."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."

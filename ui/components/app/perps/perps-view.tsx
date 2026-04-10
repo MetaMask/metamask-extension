@@ -6,7 +6,8 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -17,6 +18,16 @@ import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/const
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../providers/perps';
+import {
+  selectPerpsIsFirstTimeUser,
+  selectPerpsIsTestnet,
+} from '../../../selectors/perps-controller';
+import {
+  selectTutorialCompleted,
+  setTutorialModalOpen,
+} from '../../../ducks/perps';
+
+import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -47,6 +58,10 @@ type BatchCloseResult = {
 
 export const PerpsView: React.FC = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
@@ -61,26 +76,38 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const {
-    cryptoMarkets: allCryptoMarkets,
-    hip3Markets: allHip3Markets,
-    isInitialLoading: marketsLoading,
-  } = usePerpsLiveMarketData();
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
 
   const {
-    transactions: recentActivityTransactions,
+    transactions: allRecentActivityTransactions,
     isLoading: recentActivityLoading,
     error: recentActivityError,
   } = usePerpsTransactionHistory();
 
+  // Recent Activity shows only trade executions, deposits, and withdrawals.
+  // Open orders are already surfaced in PerpsPositionsOrders above.
+  // Funding payments belong in the full activity page.
+  const recentActivityTransactions = useMemo(
+    () =>
+      allRecentActivityTransactions.filter(
+        (tx) =>
+          tx.type === 'trade' ||
+          tx.type === 'deposit' ||
+          tx.type === 'withdrawal',
+      ),
+    [allRecentActivityTransactions],
+  );
+
   // Show only user-placed limit orders resting on the orderbook.
-  // Excludes all position-attached orders:
+  // Excludes:
   // - isTrigger: TP/SL trigger orders
-  // - reduceOnly: close/reduce orders tied to positions
-  // - triggerPrice: any order with a trigger condition (TP/SL variant)
-  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  // - isSynthetic: synthetic/virtual orders not placed directly by the user
   const orders = useMemo(() => {
-    return allOrders.filter((order) => order.status === 'open');
+    return allOrders.filter(
+      (order) =>
+        order.status === 'open' && !order.isTrigger && !order.isSynthetic,
+    );
   }, [allOrders]);
 
   const applyPositionsSnapshot = useCallback((next: Position[]) => {
@@ -132,8 +159,11 @@ export const PerpsView: React.FC = () => {
         [{ cancelAll: true }],
       );
       if (!result?.success) {
-        setBatchActionError(t('somethingWentWrong'));
-        return;
+        const failureCount = result?.failureCount ?? 0;
+        if (failureCount > 0 || result === undefined || result === null) {
+          setBatchActionError(t('somethingWentWrong'));
+          return;
+        }
       }
       const fresh = await submitRequestToBackground<Order[]>(
         'perpsGetOpenOrders',
@@ -150,14 +180,23 @@ export const PerpsView: React.FC = () => {
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
 
-  // Limit markets to 5 for explore sections
-  const cryptoMarkets = useMemo(() => {
-    return allCryptoMarkets.slice(0, 5);
-  }, [allCryptoMarkets]);
+  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
-  const hip3Markets = useMemo(() => {
-    return allHip3Markets.slice(0, 5);
-  }, [allHip3Markets]);
+  // Auto-open tutorial modal the first time a user enters the perps domain.
+  // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
+  // the local tutorialCompleted flag so that a skip/complete before the backend
+  // state propagates doesn't reopen the modal on the next effect run.
+  // Explicitly skips when isFirstTimeUser is undefined so that unhydrated
+  // controller state is never treated as "first-time user = true".
+  useEffect(() => {
+    if (isLoading || tutorialCompleted || isFirstTimeUser === undefined) {
+      return;
+    }
+    const networkKey = isTestnet ? 'testnet' : 'mainnet';
+    if (isFirstTimeUser[networkKey]) {
+      dispatch(setTutorialModalOpen(true));
+    }
+  }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
 
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
@@ -167,7 +206,7 @@ export const PerpsView: React.FC = () => {
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        data-testid="perps-tab-view-loading"
+        data-testid="perps-view-loading"
       >
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
@@ -183,7 +222,7 @@ export const PerpsView: React.FC = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-tab-view"
+      data-testid="perps-view"
     >
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
@@ -192,13 +231,13 @@ export const PerpsView: React.FC = () => {
         onWithdraw={triggerWithdraw}
       />
 
+      {/* Positions + Orders sections */}
       {batchActionError ? (
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
           {batchActionError}
         </Text>
       ) : null}
 
-      {/* Positions + Orders sections */}
       <PerpsPositionsOrders
         positions={positions}
         orders={orders}
@@ -212,10 +251,7 @@ export const PerpsView: React.FC = () => {
       <PerpsWatchlist />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+      <PerpsExploreMarkets markets={allMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity

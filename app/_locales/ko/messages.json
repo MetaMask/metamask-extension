@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "브릿지 수수료"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "새로 가져올까요?"
-  },
   "bridgeFromTo": {
     "message": "$3(으)로 $1 $2 브릿지",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "가격 영향 경고"
-  },
-  "bridgeQuoteExpired": {
-    "message": "견적이 만료되었습니다."
   },
   "bridgeQuotesSortedByCost": {
     "message": "견적은 환율과 네트워크 수수료가 포함된 예상 총비용 순으로 정렬됩니다."
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "발신:"
   },
-  "fromTokenLists": {
-    "message": "가져올 토큰 목록: $1"
-  },
   "function": {
     "message": "기능: $1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "모두 무시"
-  },
-  "ignoreTokenWarning": {
-    "message": "토큰을 숨기면 지갑에 표시되지 않습니다. 하지만 이를 검색하여 추가할 수 있습니다."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
-  "importSelectedTokens": {
-    "message": "선택한 토큰을 가져올까요?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "선택한 토큰만 지갑에 표시됩니다. 토큰 검색을 통해 언제든지 나중에 숨긴 토큰도 가져올 수 있습니다."
-  },
   "importTokenQuestion": {
     "message": "토큰을 가져오시겠습니까?"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "지갑 $1 가져오기 완료",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 불러오기",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "가져옴",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimClaimingTo": {
-    "message": "다음으로 수령:",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "방법 확인하기"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "계정에서 $1개의 새로운 토큰이 발견됨",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "계정에서 1개의 새 토큰을 찾았습니다"
   },
   "numberOfTokens": {
     "message": "토큰 수"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "숏 청산"
   },
-  "perpsClosedShort": {
-    "message": "청산된 숏"
-  },
   "perpsConfirmCloseLong": {
     "message": "롱 청산"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "손익 $1 포함"
   },
-  "perpsIncreasedPosition": {
-    "message": "포지션 증가"
-  },
   "perpsLearnBasics": {
     "message": "무기한 선물 기초 배우기"
   },
@@ -5537,9 +5495,6 @@
     "message": "$1 숏 포지션 열기",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "오픈한 롱"
-  },
   "perpsOraclePrice": {
     "message": "오라클 가격"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "규모"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "펀딩비: 높은 순"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "펀딩비: 낮은 순"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "미결제 약정: 높은 순"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "미결제 약정: 낮은 순"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "가격 변동: 내림차순"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "가격 변동: 올림차순"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "거래량: 높은 순"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "거래량: 낮은 순"
   },
   "perpsStartNewTrade": {
     "message": "새 거래 시작"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "컨펌하세요"
-  },
-  "plusXMore": {
-    "message": "+ $1개 추가",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "블로그 게시물에서 확인할 수 있습니다."
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "토큰 상세 정보"
   },
-  "tokenFoundTitle": {
-    "message": "$1개의 새 토큰을 찾았습니다"
-  },
   "tokenId": {
     "message": "토큰 ID"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "토큰",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1개의 새 토큰을 찾았습니다",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "컬렉션에 보유 중인 토큰"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "승인 사항:"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "트랜잭션을 거부했습니다."
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."

@@ -1070,9 +1070,6 @@
   "bridgeFee": {
     "message": "跨链桥费用"
   },
-  "bridgeFetchNewQuotes": {
-    "message": "获取一个新的？"
-  },
   "bridgeFromTo": {
     "message": "将 $1 $2 桥接到 $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1158,9 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "价格影响警告"
-  },
-  "bridgeQuoteExpired": {
-    "message": "您的报价已超时。"
   },
   "bridgeQuotesSortedByCost": {
     "message": "报价按预估总成本排序，该成本包括汇率及网络费用。"
@@ -2915,9 +2909,6 @@
   "from": {
     "message": "自"
   },
-  "fromTokenLists": {
-    "message": "从代币列表：$1"
-  },
   "function": {
     "message": "功能：$1"
   },
@@ -3297,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "忽略所有"
-  },
-  "ignoreTokenWarning": {
-    "message": "您隐藏的代币将不会显示在您的钱包中。但是，您仍然可以通过搜索将其添加。"
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3362,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
-  "importSelectedTokens": {
-    "message": "要导入所选代币吗？"
-  },
-  "importSelectedTokensDescription": {
-    "message": "只有您选择的代币才会出现在您的钱包中。您可以随时使用搜索功能来导入隐藏的代币。"
-  },
   "importTokenQuestion": {
     "message": "导入代币？"
   },
@@ -3386,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "钱包 $1 已导入",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "导入$1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "已导入",
@@ -4064,10 +4039,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimClaimingTo": {
-    "message": "领取并存入",
-    "description": "Label for the account row in the mUSD claim confirmation screen"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -4709,13 +4680,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "了解操作方法"
-  },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "在此账户中发现 $1 新代币",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "在此账户中找到1枚新代币"
   },
   "numberOfTokens": {
     "message": "代币数量"
@@ -5366,9 +5330,6 @@
   "perpsCloseShort": {
     "message": "平仓空头仓位"
   },
-  "perpsClosedShort": {
-    "message": "平仓空头仓位"
-  },
   "perpsConfirmCloseLong": {
     "message": "平仓多头仓位"
   },
@@ -5456,9 +5417,6 @@
   "perpsIncludesPnl": {
     "message": "含盈亏 $1"
   },
-  "perpsIncreasedPosition": {
-    "message": "已加仓"
-  },
   "perpsLearnBasics": {
     "message": "了解永续合约的基础知识"
   },
@@ -5537,9 +5495,6 @@
     "message": "开立空头仓位 $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
-  "perpsOpenedLong": {
-    "message": "已开设多头仓位"
-  },
   "perpsOraclePrice": {
     "message": "预言机价格"
   },
@@ -5603,30 +5558,6 @@
   },
   "perpsSize": {
     "message": "规模"
-  },
-  "perpsSortFundingRateHighToLow": {
-    "message": "资金费率：从高到低"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "资金费率：从低到高"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "未平仓合约：从高到低"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "未平仓合约：从低到高"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "价格变化：从高到低"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "价格变化：从低到高"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "交易量：从高到低"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "交易量：从低到高"
   },
   "perpsStartNewTrade": {
     "message": "开始新交易"
@@ -5763,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "请确认"
-  },
-  "plusXMore": {
-    "message": "另外 $1 项",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "博客文章。"
@@ -8619,9 +8546,6 @@
   "tokenDetails": {
     "message": "代币详情"
   },
-  "tokenFoundTitle": {
-    "message": "找到1枚新代币"
-  },
   "tokenId": {
     "message": "代币ID"
   },
@@ -8663,10 +8587,6 @@
   "tokensCount": {
     "message": "代币",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "发现$1新代币",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "收藏品中的代币"
@@ -9206,9 +9126,6 @@
   },
   "youApprove": {
     "message": "您批准"
-  },
-  "youDeclinedTheTransaction": {
-    "message": "您拒绝了该交易。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"

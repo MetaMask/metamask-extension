@@ -8,14 +8,13 @@ import {
   REWARDS_API_URL,
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
-import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
-import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
   OptInStatusDto,
   OptInStatusInputDto,
 } from '../../../../shared/types/rewards';
+import { getNormalizedLocale } from '../../../../shared/constants/locales';
 import type {
   LoginResponseDto,
   MobileLoginDto,
@@ -28,6 +27,8 @@ import type {
   SiweLoginDto,
   SiweJoinDto,
 } from './rewards-controller.types';
+import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';
+import { RewardsDataServiceMessenger } from './rewards-data-service-types';
 
 /**
  * Custom error for invalid timestamps
@@ -66,6 +67,24 @@ export class SeasonNotFoundError extends Error {
   }
 }
 
+const MESSENGER_EXPOSED_METHODS = [
+  'login',
+  'siweLogin',
+  'estimatePoints',
+  'mobileOptin',
+  'getSeasonStatus',
+  'fetchGeoLocation',
+  'validateReferralCode',
+  'mobileJoin',
+  'siweJoin',
+  'getOptInStatus',
+  'getSeasonMetadata',
+  'getDiscoverSeasons',
+  'generateChallenge',
+] as const;
+
+export type RewardsDataServiceActions = RewardsDataServiceMethodActions;
+
 /**
  * Custom error for account already registered (409 conflict)
  */
@@ -86,17 +105,6 @@ const GEOLOCATION_URLS = {
   DEV: 'https://on-ramp.dev-api.cx.metamask.io/geolocation',
   PROD: 'https://on-ramp.api.cx.metamask.io/geolocation',
 };
-
-/**
- * Normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
- *
- * @param locale - extension locale
- * @returns normalised locale
- */
-export const getNormalisedLocale = (locale: string): string =>
-  Intl.getCanonicalLocales(
-    locale ? locale.replace(/_/gu, '-') : FALLBACK_LOCALE,
-  )[0];
 
 /**
  * Data service for rewards API endpoints
@@ -121,58 +129,9 @@ export class RewardsDataService {
     this.#fetch = fetchFunction;
     this.#rewardsApiUrl = this.getRewardsApiBaseUrl();
 
-    // Register all action handlers
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:login`,
-      this.login.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:siweLogin`,
-      this.siweLogin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:estimatePoints`,
-      this.estimatePoints.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:mobileOptin`,
-      this.mobileOptin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getSeasonStatus`,
-      this.getSeasonStatus.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:fetchGeoLocation`,
-      this.fetchGeoLocation.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:validateReferralCode`,
-      this.validateReferralCode.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:mobileJoin`,
-      this.mobileJoin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:siweJoin`,
-      this.siweJoin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getOptInStatus`,
-      this.getOptInStatus.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getSeasonMetadata`,
-      this.getSeasonMetadata.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getDiscoverSeasons`,
-      this.getDiscoverSeasons.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:generateChallenge`,
-      this.generateChallenge.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -202,7 +161,7 @@ export class RewardsDataService {
       const hasRegionCode = /^[a-z]{2}[-_][a-z]{2}$/iu.test(currentLocale);
 
       // Only normalize if locale doesn't already have a region code
-      return hasRegionCode ? currentLocale : getNormalisedLocale(currentLocale);
+      return hasRegionCode ? currentLocale : getNormalizedLocale(currentLocale);
     } catch (error) {
       log.warn('Failed to get locale from PreferencesController:', error);
       try {

@@ -27,6 +27,11 @@ import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import {
+  setupLongTaskObserver,
+  setupLongTaskSentryReporting,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -48,6 +53,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -206,6 +212,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
 
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
+
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
@@ -409,6 +418,23 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    exposeLongTaskMetricsForTesting();
+  }
 }
 
 /**

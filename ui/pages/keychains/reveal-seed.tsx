@@ -32,6 +32,7 @@ import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { useBoolean } from '../../hooks/useBoolean';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -63,7 +64,7 @@ function RevealSeedPage() {
   const [seedWords, setSeedWords] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { value: showPassword, toggle } = useBoolean();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -202,11 +203,14 @@ function RevealSeedPage() {
     [dispatch, password, keyringId, trackEvent, hdEntropyIndex],
   );
 
-  const togglePasswordVisibility = useCallback((event: React.MouseEvent) => {
-    event.stopPropagation();
-    event.preventDefault();
-    setShowPassword((prev) => !prev);
-  }, []);
+  const togglePasswordVisibility = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      event.preventDefault();
+      toggle();
+    },
+    [toggle],
+  );
 
   const openSupportArticle = useCallback(() => {
     trackEvent({

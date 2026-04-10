@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { hasVolume, parseVolume } from '../../../components/app/perps/utils';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
@@ -103,9 +104,26 @@ export function usePerpsLiveMarketData(
     return true;
   });
 
-  // Derive crypto and HIP-3 markets
-  const cryptoMarkets = markets.filter((m) => !m.marketSource);
-  const hip3Markets = markets.filter((m) => m.marketSource);
+  const compareByVolumeDesc = useCallback(
+    (a: PerpsMarketData, b: PerpsMarketData) =>
+      parseVolume(b.volume) - parseVolume(a.volume),
+    [],
+  );
+
+  // Filter out markets with no trading volume (inactive/delisted)
+  const activeMarkets = useMemo(() => {
+    return markets.filter(hasVolume).sort(compareByVolumeDesc);
+  }, [markets, compareByVolumeDesc]);
+
+  // Derive crypto and HIP-3 markets from active markets, sorted by 24h volume descending
+  const cryptoMarkets = useMemo(
+    () => activeMarkets.filter((m) => !m.marketSource),
+    [activeMarkets],
+  );
+  const hip3Markets = useMemo(
+    () => activeMarkets.filter((m) => m.marketSource),
+    [activeMarkets],
+  );
 
   // Manual refresh function
   const refresh = useCallback(() => {
@@ -168,7 +186,7 @@ export function usePerpsLiveMarketData(
   }
 
   return {
-    markets,
+    markets: activeMarkets,
     cryptoMarkets,
     hip3Markets,
     isInitialLoading,
