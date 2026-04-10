@@ -2909,9 +2909,6 @@
   "from": {
     "message": "Von"
   },
-  "fromTokenLists": {
-    "message": "Von Token-Liste: $1"
-  },
   "function": {
     "message": "Funktion: $1"
   },
@@ -3291,12 +3288,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Alle ignorieren"
-  },
-  "ignoreTokenWarning": {
-    "message": "Wenn Sie Tokens verbergen, werden sie nicht in Ihrer Wallet angezeigt. Sie können sie aber immer noch hinzufügen, indem Sie nach ihnen suchen."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3347,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
   },
-  "importSelectedTokens": {
-    "message": "Ausgewählte Tokens importieren?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Nur die Tokens, die Sie ausgewählt haben, erscheinen in Ihrer Wallet. Verborgene Tokens können Sie später jederzeit importieren, indem Sie nach ihnen suchen."
-  },
   "importTokenQuestion": {
     "message": "Token importieren?"
   },
@@ -3380,10 +3365,6 @@
   "importWalletSuccess": {
     "message": "Wallet $1 importiert",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 importieren",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Importiert",
@@ -4700,13 +4681,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Erfahren Sie, wie es funktioniert"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 neue Tokens in diesem Konto gefunden",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 neues Token in diesem Konto gefunden."
-  },
   "numberOfTokens": {
     "message": "Anzahl von Tokens"
   },
@@ -5720,10 +5694,6 @@
   },
   "pleaseConfirm": {
     "message": "Bitte bestätigen"
-  },
-  "plusXMore": {
-    "message": "+ $1 mehr",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "Blog-Post."
@@ -8576,9 +8546,6 @@
   "tokenDetails": {
     "message": "Token-Details"
   },
-  "tokenFoundTitle": {
-    "message": "1 neues Token gefunden"
-  },
   "tokenId": {
     "message": "Token-ID"
   },
@@ -8620,10 +8587,6 @@
   "tokensCount": {
     "message": "token",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 neue Tokens gefunden",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Tokens in der Sammlung"

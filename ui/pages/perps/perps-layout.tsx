@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
+import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 
 /**
  * Layout wrapper for all Perps pages.
@@ -16,6 +17,7 @@ import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive'
  */
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
+  usePerpsLifecycleBreadcrumbs();
 
   return (
     <PerpsToastProvider>
