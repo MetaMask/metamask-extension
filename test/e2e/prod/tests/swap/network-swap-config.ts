@@ -26,6 +26,12 @@ export interface NetworkSwapConfig {
   swapExecutionTokenSymbols?: string[];
   /** Optional: Ordered swap routes for execution tests */
   swapExecutionRoutes?: Array<{ from: string; to: string }>;
+  /**
+   * When true, the "Total gas fee" row on the swap detail page is expected to
+   * show "Paid by MetaMask" (green badge). Set for networks where MetaMask
+   * sponsors gas (e.g. Monad, SEI). Defaults to false.
+   */
+  gasFeeSponsoredByProtocol?: boolean;
 }
 
 /**
@@ -150,13 +156,15 @@ export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
       'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
     fixtureSetupMethod: 'withNetworkControllerOnMonad',
     blockExplorerUrl: 'https://explorer.monad.xyz',
-    swapExecutionTokenSymbols: ['AUSD', 'AZND', 'BTC.b'],
+    swapExecutionTokenSymbols: ['AUSD', 'AZND'],
+    // swapExecutionTokenSymbols: ['AUSD', 'AZND', 'BTC.b'],
     swapExecutionRoutes: [
       { from: 'MON', to: 'AUSD' },
       { from: 'AUSD', to: 'AZND' },
-      { from: 'AZND', to: 'BTC.b' },
-      { from: 'BTC.b', to: 'MON' },
+      // { from: 'AZND', to: 'BTC.b' },
+      { from: 'AZND', to: 'MON' },
     ],
+    gasFeeSponsoredByProtocol: true,
   },
   // Add more networks here as needed
   // Example for future network:

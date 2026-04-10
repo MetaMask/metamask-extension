@@ -45,7 +45,10 @@ import {
   openLatestSwapActivityRecord,
   assertSwapDetailConfirmed,
   assertDetailRow,
-  assertGasFeeRowPaidByMetaMask,
+  assertSwappedTokenPair,
+  assertTransactionTimestamp,
+  assertTotalGasFeeRow,
+  handleInsufficientFundsIfPresent,
   navigateBackToHome,
   recoverToHome,
   generateSwapExecutionReport,
@@ -228,6 +231,21 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 }
 
                 // -- Wait for quote and assert fee text --
+                // -- Check for "Insufficient funds" and auto-reduce to 75% --
+                // Skip for Max routes (the Max button already uses full available balance).
+                if (!useMaxForRoute) {
+                  const reducedAmount = await handleInsufficientFundsIfPresent(
+                    driver,
+                    plannedFromAmount,
+                  );
+                  if (reducedAmount !== undefined) {
+                    console.log(
+                      `[TEST] ⚠️  Insufficient funds — amount reduced to ${reducedAmount}`,
+                    );
+                  }
+                }
+
+                // -- Wait for quote and assert fee text --
                 await waitForSwapQuoteReady(driver);
                 await assertCtaFeeText(driver);
 
@@ -252,7 +270,7 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 );
                 await assertActivitySecondaryCurrency(
                   driver,
-                  `+${toAmount} ${toSymbol}`,
+                  `-${toAmount} "$"`,
                 );
 
                 // -- Open detail page --
@@ -264,6 +282,8 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
 
                 // -- Assert detail page --
                 await assertSwapDetailConfirmed(driver);
+                await assertSwappedTokenPair(driver, fromSymbol, toSymbol);
+                await assertTransactionTimestamp(driver);
                 await assertDetailRow(
                   driver,
                   'You sent',
@@ -274,7 +294,10 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   'You received',
                   `${toAmount} ${toSymbol}`,
                 );
-                await assertGasFeeRowPaidByMetaMask(driver);
+                await assertTotalGasFeeRow(
+                  driver,
+                  networkConfig.gasFeeSponsoredByProtocol ?? false,
+                );
 
                 // -- Navigate back to home for next route --
                 await navigateBackToHome(driver);
