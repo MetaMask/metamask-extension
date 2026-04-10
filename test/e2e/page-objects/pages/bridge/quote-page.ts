@@ -163,19 +163,18 @@ class BridgeQuotePage {
     );
   };
 
-  searchForAsset = async (
+  searchForAssetAndSelect = async (
     token: string,
     assetPicker = this.sourceAssetPickerButton,
   ) => {
     console.log(`Opening asset picker`);
     await this.driver.clickElement(assetPicker);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
-    const assetElement = await this.driver.findElement({
+    await this.driver.clickElement({
       css: this.tokenButton,
       text: token,
     });
-    return assetElement;
   };
 
   goToAssetPage = async (
@@ -189,7 +188,7 @@ class BridgeQuotePage {
 
     console.log(`Opening asset picker`);
     await this.driver.clickElement(assetPicker);
-    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
     const assetElement = await this.driver.findElement({
       tag: 'button',

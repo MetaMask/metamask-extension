@@ -225,7 +225,7 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 
-        await (await bridgePage.searchForAsset('DAI')).click();
+        await bridgePage.searchForAssetAndSelect('DAI');
         console.log('Selected source asset DAI');
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -261,8 +261,7 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        const srcAssetElement = await bridgePage.searchForAsset('mUSD');
-        await srcAssetElement.click();
+        await bridgePage.searchForAssetAndSelect('mUSD');
         console.log('Selected source asset mUSD');
 
         console.log('Checking that asset picker is visible');
@@ -299,15 +298,13 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await (await bridgePage.searchForAsset('DAI')).click();
+        await bridgePage.searchForAssetAndSelect('DAI');
         console.log('Selected source asset DAI');
 
-        await (
-          await bridgePage.searchForAsset(
-            'USDC',
-            bridgePage.destinationAssetPickerButton,
-          )
-        ).click();
+        await bridgePage.searchForAssetAndSelect(
+          'USDC',
+          bridgePage.destinationAssetPickerButton,
+        );
         console.log('Selected dest asset USDC');
 
         await bridgePage.goToAssetPage(
