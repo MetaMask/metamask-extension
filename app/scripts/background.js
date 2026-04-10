@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_FILE,
+  POPUP_INIT_FILE,
+  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -55,11 +58,11 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -103,7 +106,7 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
- * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -154,6 +157,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const POPUP_LAUNCH_FILE = isFirefox ? POPUP_FILE : POPUP_INIT_FILE;
 
 /**
  * Parses port connection info for routing decisions.
@@ -960,7 +964,7 @@ export async function loadStateFromPersistence(backup) {
   // read from disk
   // first from preferred, async API:
   /**
-   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   * @type {import("../../shared/lib/stores/base-store").MetaMaskStorageStructure | undefined}
    */
   let preMigrationVersionedData;
   if (backup) {
@@ -1262,8 +1266,10 @@ function trackDappView(remotePort) {
 
 /**
  * Emit App Opened event
+ *
+ * @param {string} environmentType - The environment type where the app is opening
  */
-function emitAppOpenedMetricEvent() {
+function emitAppOpenedMetricEvent(environmentType) {
   const { metaMetricsId, participateInMetaMetrics } =
     controller.metaMetricsController.state;
 
@@ -1275,6 +1281,7 @@ function emitAppOpenedMetricEvent() {
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,
     category: MetaMetricsEventCategory.App,
+    environmentType,
   });
 }
 
@@ -1290,6 +1297,7 @@ function trackAppOpened(environment) {
     ENVIRONMENT_TYPE_POPUP,
     ENVIRONMENT_TYPE_NOTIFICATION,
     ENVIRONMENT_TYPE_FULLSCREEN,
+    ENVIRONMENT_TYPE_SIDEPANEL,
   ];
 
   // Check if any UI instances are currently open
@@ -1302,7 +1310,7 @@ function trackAppOpened(environment) {
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
-    emitAppOpenedMetricEvent();
+    emitAppOpenedMetricEvent(environment);
   }
 }
 
@@ -1837,18 +1845,29 @@ export function setupController(
     onTransactionFailed,
   );
 
-  function onTransactionFailed() {
-    failedTxCount += 1;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
+  function setClientOpenOptions(tab) {
+    const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
+    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
+
     try {
       if (isManifestV3) {
-        browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.action.setPopup({ popup });
+        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
       } else {
-        browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.browserAction.setPopup({ popup });
       }
     } catch (e) {
-      console.error('Error setting failed tx badge popup:', e);
+      console.error('Error setting extension action URLs:', e);
     }
+  }
+
+  function onTransactionFailed() {
+    if (isClientOpenStatus()) {
+      return;
+    }
+
+    failedTxCount += 1;
+    setClientOpenOptions('activity');
     updateBadge();
   }
 
@@ -1856,17 +1875,9 @@ export function setupController(
     if (!failedTxCount) {
       return;
     }
+
     failedTxCount = 0;
-    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
-    try {
-      if (isManifestV3) {
-        browser.action.setPopup({ popup: popupFile });
-      } else {
-        browser.browserAction.setPopup({ popup: popupFile });
-      }
-    } catch (e) {
-      console.error('Error clearing failed tx badge popup:', e);
-    }
+    setClientOpenOptions();
     updateBadge();
   }
 

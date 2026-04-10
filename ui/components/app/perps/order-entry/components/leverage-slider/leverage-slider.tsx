@@ -7,12 +7,18 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../../../shared/constants/perps-events';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
 import { PerpsSlider } from '../../../perps-slider';
+import { MetaMetricsEventName } from '../../../../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../../../../hooks/perps';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
 import { isDigitsOnlyInput } from '../../utils';
@@ -33,6 +39,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   minLeverage = 1,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const [inputValue, setInputValue] = useState<string>(String(leverage));
 
   useEffect(() => {
@@ -46,6 +53,20 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
       setInputValue(String(newValue));
     },
     [onLeverageChange],
+  );
+
+  const handleSliderChangeCommitted = useCallback(
+    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+      const newValue = Array.isArray(value) ? value[0] : value;
+      if (newValue !== leverage) {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.LEVERAGE_CHANGED,
+          [PERPS_EVENT_PROPERTY.LEVERAGE]: newValue,
+        });
+      }
+    },
+    [leverage, track],
   );
 
   const handleInputChange = useCallback(
@@ -92,6 +113,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             step={1}
             value={leverage}
             onChange={handleSliderChange}
+            onChangeCommitted={handleSliderChangeCommitted}
           />
         </Box>
         <Box className="shrink-0 w-20">

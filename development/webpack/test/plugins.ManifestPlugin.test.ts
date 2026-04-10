@@ -401,6 +401,34 @@ describe('ManifestPlugin', () => {
         assert.strictEqual(zipEntries.has('filename.js.map'), false);
       }
     });
+
+    it('sets build_id in the emitted manifest when setBuildId is enabled', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compilation.fullHash = 'test-full-hash';
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+        setBuildId: true,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      for (const browser of ['chrome', 'firefox'] as const) {
+        const manifest = JSON.parse(
+          compilation.assets[`${browser}/manifest.json`].source().toString(),
+        );
+
+        assert.strictEqual(manifest.build_id, 'test-full-hash');
+      }
+    });
   });
 
   describe('zip helpers', () => {
@@ -774,6 +802,11 @@ describe('ManifestPlugin', () => {
         json.base_property,
         'overridden_by_beta',
         'should override base property with beta value',
+      );
+      assert.strictEqual(
+        json.build_id,
+        undefined,
+        'should not emit build_id unless setBuildId is enabled',
       );
     });
 
@@ -1562,9 +1595,7 @@ describe('ManifestPlugin', () => {
       );
 
       // Simulate a watch rebuild where no watched files were modified
-      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
-        '/some/unrelated/file.ts',
-      ]);
+      compiler.modifiedFiles = new Set(['/some/unrelated/file.ts']);
 
       // Trigger a second compilation so resolveEntrypoints runs again
       const { compilation: compilation2, promise: promise2 } = mockWebpack(
@@ -1572,9 +1603,9 @@ describe('ManifestPlugin', () => {
         [],
         [],
       );
-      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      compilation2.compiler = compiler;
       // eslint-disable-next-line dot-notation
-      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      plugin['hookIntoPipelines'](compilation2);
       await promise2;
 
       // Manifest reference should be the same since prepareManifests was NOT called
@@ -1615,9 +1646,7 @@ describe('ManifestPlugin', () => {
 
       // Simulate a watch rebuild where the base manifest was modified.
       // resolveEntrypoints checks compiler.modifiedFiles.
-      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
-        baseManifestDep,
-      ]);
+      compiler.modifiedFiles = new Set([baseManifestDep]);
 
       // Run apply again to trigger a new compilation with modifiedFiles set
       const { compilation: compilation2, promise: promise2 } = mockWebpack(
@@ -1625,10 +1654,10 @@ describe('ManifestPlugin', () => {
         [],
         [],
       );
-      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      compilation2.compiler = compiler;
       // hookIntoPipelines registers processAssets which calls resolveEntrypoints
       // eslint-disable-next-line dot-notation
-      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      plugin['hookIntoPipelines'](compilation2);
       await promise2;
 
       // Should still produce valid output (manifests were re-read from disk)

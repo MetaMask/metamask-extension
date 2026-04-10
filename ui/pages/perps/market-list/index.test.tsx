@@ -20,6 +20,7 @@ jest.mock('react-router-dom', () => ({
 const mockUsePerpsLiveMarketData = jest.fn();
 jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
+  usePerpsLiveAccount: () => ({ account: null }),
 }));
 
 const mockStore = configureStore({
@@ -209,7 +210,7 @@ describe('MarketListView', () => {
       fireEvent.click(sortButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('sort-dropdown-menu')).toBeInTheDocument();
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
     });
   });
