@@ -6610,19 +6610,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eth-trezor-keyring@npm:9.0.0"
+"@metamask/eth-trezor-keyring@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@metamask/eth-trezor-keyring@npm:9.1.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/hw-wallet-sdk": "npm:^0.6.0"
+    "@metamask/keyring-api": "npm:^21.6.0"
+    "@metamask/keyring-utils": "npm:^3.2.0"
     "@metamask/utils": "npm:^11.1.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.5"
     "@trezor/connect-web": "npm:^9.6.0"
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/910c6abd6604f513dea4550aae93f72c8d74f8bb2d247f7ff916982faab0959917e050800729678651e622c206fdb8b7a4f652436f2914aeb2ac3d58d00278c5
+  checksum: 10/3508dab0433583ad0b7ba9b1fd3769dcef80d77cf7c46d115d88d02f65ba26dbe7f5b6aad2213ddf743ae7150d19881666c54526f08b034baedd268e29087a0c
   languageName: node
   linkType: hard
 
@@ -6800,6 +6803,13 @@ __metadata:
   version: 0.4.0
   resolution: "@metamask/hw-wallet-sdk@npm:0.4.0"
   checksum: 10/ef32e257f63674d8920a234e43933062c418ac893e1be06dee69c56a3966311646a0a20fa4a3063da02d37d6058a5efe2beecd5bac0f76cbfedbf752e3ca9f0e
+  languageName: node
+  linkType: hard
+
+"@metamask/hw-wallet-sdk@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/hw-wallet-sdk@npm:0.6.0"
+  checksum: 10/9f480cf66aa553118c3874807ff3b04c7e02f1d4ab1798e107dd7856a7113d9604a387e09ee48634aede600998f4f6098e9033235e91b8422c011505dd2716b4
   languageName: node
   linkType: hard
 
@@ -34122,7 +34132,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^20.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^9.0.0"
+    "@metamask/eth-trezor-keyring": "npm:^9.1.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"

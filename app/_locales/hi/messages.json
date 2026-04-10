@@ -3105,7 +3105,8 @@
     "message": "सुनिश्चित करते रहें कि:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "आपका लेजर अनलॉक है"
+    "message": "आपका $1 अनलॉक है",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "इथेरियम ऐप खुला है"
