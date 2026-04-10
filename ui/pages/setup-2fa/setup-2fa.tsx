@@ -107,9 +107,12 @@ function MobilePairQrContent({ t }: { t: (key: string) => string }) {
       <Box
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
-        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         className="rounded-2xl mt-6 mb-6"
-        style={{ width: 220, height: 220, overflow: 'hidden' }}
+        style={{
+          width: 220, height: 220, overflow: 'hidden',
+          background: '#ffffff', padding: 12,
+          border: '1px solid var(--color-border-muted)',
+        }}
         dangerouslySetInnerHTML={{ __html: qrHtml }}
       />
       <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">

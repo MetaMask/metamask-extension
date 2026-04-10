@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import qrCode from 'qrcode-generator';
 import {
   Box,
   BoxAlignItems,
@@ -43,6 +44,8 @@ const FACTOR_META: Record<FactorId, { nameKey: string; icon: IconName }> = {
 };
 
 const ALL_FACTORS: FactorId[] = ['authenticator', 'passkeys', 'email', 'sms'];
+
+const MOCK_RECOVERY_PAIR_URL = 'metamask://pair?session=2fa-recovery-session-abc123';
 
 type Step = 'intro' | 'identity-pick' | 'identity-verify' | 'second-pick' | 'second-verify' | 'recovering' | 'success';
 
@@ -136,6 +139,13 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
   const [otpFilled, setOtpFilled] = useState(false);
   const meta = FACTOR_META[factorId];
 
+  const mobileQrHtml = useMemo(() => {
+    const qr = qrCode(4, 'M');
+    qr.addData(MOCK_RECOVERY_PAIR_URL);
+    qr.make();
+    return qr.createTableTag(4, 12);
+  }, []);
+
   const header = (
     <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between} padding={4} className="shrink-0">
       <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" size={ButtonIconSize.Sm}
@@ -198,16 +208,26 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
     );
   }
 
-  // Authenticator — OTP only
+  // Authenticator — account hint + OTP
   if (factorId === 'authenticator') {
     return (
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
         {header}
         <Box className="flex-1" paddingHorizontal={4}>
           <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAAuthenticatorVerify')}</Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-4">
             {t('twoFAAuthenticatorSubtitle')}
           </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}
+            backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-xl px-3 py-3 mb-4"
+          >
+            <Icon name={IconName.SecurityKey} color={IconColor.IconAlternative} size={IconSize.Sm} />
+            <Box className="min-w-0">
+              <Text variant={TextVariant.BodySmMedium}>{t('twoFARecoverAuthenticatorAccount')}</Text>
+              <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>MetaMask</Text>
+            </Box>
+          </Box>
           <OtpInput onCodeChange={(_code, full) => setOtpFilled(full)} />
         </Box>
         <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>
@@ -219,7 +239,40 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
     );
   }
 
-  // Passkeys / Mobile — single action
+  // Mobile — QR code scan
+  if (factorId === 'mobile') {
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
+        {header}
+        <Box className="flex-1 flex flex-col items-center justify-start" paddingHorizontal={4}>
+          <Box
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+            className="rounded-2xl mt-6 mb-4"
+            style={{
+              width: 220, height: 220, overflow: 'hidden',
+              background: '#ffffff', padding: 12,
+              border: '1px solid var(--color-border-muted)',
+            }}
+            dangerouslySetInnerHTML={{ __html: mobileQrHtml }}
+          />
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">
+            {t('twoFARecoverMobileScanTitle')}
+          </Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center">
+            {t('twoFARecoverMobileScanSubtitle')}
+          </Text>
+        </Box>
+        <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={onVerified}>
+            {t('twoFADone')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  // Passkeys — single action
   return (
     <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
       {header}
@@ -229,7 +282,7 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
         </Box>
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">{t(meta.nameKey)}</Text>
         <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center">
-          {factorId === 'passkeys' ? t('twoFAPasskeysSubtitle') : t('twoFAMobileDeviceSubtitle')}
+          {t('twoFAPasskeysSubtitle')}
         </Text>
       </Box>
       <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>

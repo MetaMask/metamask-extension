@@ -452,7 +452,7 @@
     "message": "Recover your 2FA Wallet"
   },
   "twoFARecoverIntroBody": {
-    "message": "If you've lost access to your device, you can recover your 2FA wallet by verifying your identity. You'll need your cloud backup (email or phone) and one other factor."
+    "message": "Restore your 2FA wallet on this device by verifying two of the security factors you set up — such as email, phone, authenticator, or your linked mobile device."
   },
   "twoFAStartRecovery": {
     "message": "Start Recovery"
@@ -526,6 +526,12 @@
   "twoFAMobileDeviceSubtitle": {
     "message": "Scan this QR code with your MetaMask Mobile app to link it as a 2FA factor."
   },
+  "twoFARecoverMobileScanTitle": {
+    "message": "Scan with MetaMask Mobile"
+  },
+  "twoFARecoverMobileScanSubtitle": {
+    "message": "Open MetaMask on your phone and scan this QR code to approve recovery on this device."
+  },
   "twoFAMobileDeviceStep1": {
     "message": "Open MetaMask on your mobile device"
   },
@@ -587,10 +593,10 @@
     "message": "You'll be prompted for 2FA verification using this method whenever you send a transaction."
   },
   "twoFARecoveryFactorSuccessTitle": {
-    "message": "Recovery factor added"
+    "message": "Backup factor added"
   },
   "twoFARecoveryFactorSuccessBody": {
-    "message": "You can now recover your wallet if you lose access to this device."
+    "message": "This factor will be used alongside another to restore your 2FA wallet on a new device."
   },
   "twoFADevicePairing": {
     "message": "Device pairing"
@@ -679,6 +685,9 @@
   },
   "twoFAAuthenticatorVerify": {
     "message": "Verify and link"
+  },
+  "twoFARecoverAuthenticatorAccount": {
+    "message": "Look for this account in your authenticator app"
   },
   "twoFAAuthenticatorStep1": {
     "message": "Open authenticator app"

@@ -10,6 +10,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -63,10 +64,10 @@ function OtpInput({ onCodeChange }: { onCodeChange: (code: string, isFull: boole
         <input key={i} ref={(el) => { inputRefs.current[i] = el; }} type="text" inputMode="numeric" maxLength={1}
           value={digit} onChange={(e) => handleChange(i, e.target.value)} onKeyDown={(e) => handleKeyDown(i, e)} autoFocus={i === 0}
           style={{
-            width: 44, height: 52, borderRadius: 8,
-            border: digit ? '2px solid var(--color-primary-default)' : '2px solid var(--color-border-default)',
+            width: 44, height: 48, borderRadius: 8,
+            border: digit ? '2px solid var(--color-primary-default)' : '1.5px solid var(--color-border-default)',
             background: 'var(--color-background-default)', color: 'var(--color-text-default)',
-            fontSize: 22, fontWeight: 700, textAlign: 'center', outline: 'none',
+            fontSize: 20, fontWeight: 700, textAlign: 'center', outline: 'none',
           }}
         />
       ))}
@@ -88,10 +89,10 @@ function SigningProgress({ currentPhase, t }: { currentPhase: number; t: (key: s
         const isDone = i < currentPhase;
         const isActive = i === currentPhase;
         return (
-          <Box key={i} display={Display.Flex} alignItems={AlignItems.center} gap={3} style={{ padding: '6px 0' }}>
+          <Box key={i} display={Display.Flex} alignItems={AlignItems.center} gap={2} style={{ padding: '4px 0' }}>
             <Box
               className="rounded-full"
-              style={{ padding: 8 }}
+              style={{ padding: 6 }}
               backgroundColor={isDone ? BackgroundColor.successMuted : isActive ? BackgroundColor.primaryMuted : BackgroundColor.backgroundMuted}
             >
               {isDone ? (
@@ -197,21 +198,21 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
   return (
     <Modal isOpen={isOpen} onClose={onCancel} className="twofa-verify-modal">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent size={ModalContentSize.Md}>
         <ModalHeader onClose={modalStep === 'verify' ? onCancel : undefined}>
           {modalStep === 'signing' ? t('twoFASigningTitle') : t('twoFAApproveTitle')}
         </ModalHeader>
         <ModalBody>
           {modalStep === 'verify' && (
-            <Box display={Display.Flex} flexDirection={FlexDirection.Column} alignItems={AlignItems.center} gap={4}>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Column} alignItems={AlignItems.center} gap={3}>
               <Box
                 className="rounded-full"
-                style={{ padding: 16 }}
+                style={{ padding: 12 }}
                 backgroundColor={BackgroundColor.primaryMuted}
               >
-                <Icon name={IconName.SecurityTick} color={IconColor.primaryDefault} size={IconSize.Xl} />
+                <Icon name={IconName.SecurityTick} color={IconColor.primaryDefault} size={IconSize.Lg} />
               </Box>
-              <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative} textAlign={TextAlign.Center}>
+              <Text variant={TextVariant.bodySm} color={TextColor.textAlternative} textAlign={TextAlign.Center}>
                 {t('twoFAApproveSubtitle')}
               </Text>
 
@@ -222,7 +223,7 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
                     display={Display.Flex}
                     alignItems={AlignItems.center}
                     gap={2}
-                    style={{ padding: '8px 12px', borderRadius: 8 }}
+                    style={{ padding: '6px 10px', borderRadius: 8 }}
                     backgroundColor={BackgroundColor.backgroundMuted}
                     width={BlockSize.Full}
                   >
@@ -241,7 +242,7 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
 
                   {!needsOtp && (
                     <Box display={Display.Flex} flexDirection={FlexDirection.Column} alignItems={AlignItems.center} gap={2}>
-                      <Icon name={activeMeta.icon} color={IconColor.primaryDefault} size={IconSize.Xl} />
+                      <Icon name={activeMeta.icon} color={IconColor.primaryDefault} size={IconSize.Lg} />
                       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative} textAlign={TextAlign.Center}>
                         {t('twoFAPasskeysSubtitle')}
                       </Text>
@@ -275,7 +276,7 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
                         gap={2}
                         width={BlockSize.Full}
                         style={{
-                          padding: '10px 12px',
+                          padding: '8px 10px',
                           borderRadius: 8,
                           cursor: 'pointer',
                         }}
@@ -303,13 +304,13 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
           )}
 
           {modalStep === 'signing' && (
-            <Box display={Display.Flex} flexDirection={FlexDirection.Column} alignItems={AlignItems.center} gap={4}>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Column} alignItems={AlignItems.center} gap={3}>
               <Box
                 className="rounded-full animate-pulse"
-                style={{ padding: 16 }}
+                style={{ padding: 12 }}
                 backgroundColor={BackgroundColor.primaryMuted}
               >
-                <Icon name={IconName.SecurityTick} color={IconColor.primaryDefault} size={IconSize.Xl} />
+                <Icon name={IconName.SecurityTick} color={IconColor.primaryDefault} size={IconSize.Lg} />
               </Box>
               <Text variant={TextVariant.bodySm} color={TextColor.textAlternative} textAlign={TextAlign.Center}>
                 {t('twoFASigningSubtitle')}
@@ -325,14 +326,14 @@ export function TwoFAVerifyModal({ isOpen, onConfirmed, onCancel }: TwoFAVerifyM
               <Button
                 block
                 variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
+                size={ButtonSize.Md}
                 onClick={onCancel}
               >
                 {t('cancel')}
               </Button>
               <Button
                 block
-                size={ButtonSize.Lg}
+                size={ButtonSize.Md}
                 disabled={needsOtp && !otpFilled}
                 onClick={handleVerified}
                 startIconName={activeMeta.icon}
