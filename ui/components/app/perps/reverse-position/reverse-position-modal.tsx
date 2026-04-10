@@ -172,96 +172,109 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   ]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="perps-reverse-position-modal"
-    >
-      <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{t('perpsReversePosition')}</ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsDirection')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {directionLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsEstSize')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {estSizeLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsFees')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                —
-              </Text>
-            </Box>
-            {error && (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        data-testid="perps-reverse-position-modal"
+      >
+        <ModalOverlay />
+        <ModalContent size={ModalContentSize.Sm}>
+          <ModalHeader onClose={onClose}>
+            {t('perpsReversePosition')}
+          </ModalHeader>
+          <ModalBody>
+            <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               <Box
-                className="bg-error-muted rounded-lg px-3 py-2"
                 flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
+                  color={TextColor.TextAlternative}
                 >
-                  {error}
+                  {t('perpsDirection')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {directionLabel}
                 </Text>
               </Box>
-            )}
-          </Box>
-        </ModalBody>
-        <ModalFooter
-          onCancel={onClose}
-          onSubmit={handleSave}
-          cancelButtonProps={{
-            'data-testid': 'perps-reverse-position-modal-cancel',
-            children: t('cancel'),
-            disabled: isSubmitting,
-          }}
-          submitButtonProps={{
-            'data-testid': 'perps-reverse-position-modal-save',
-            children: isSubmitting ? t('perpsSubmitting') : t('save'),
-            disabled: isSubmitting,
-          }}
-        />
-      </ModalContent>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstSize')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {estSizeLabel}
+                </Text>
+              </Box>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsFees')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  —
+                </Text>
+              </Box>
+              {error && (
+                <Box
+                  className="bg-error-muted rounded-lg px-3 py-2"
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                  >
+                    {error}
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          </ModalBody>
+          <ModalFooter
+            onCancel={onClose}
+            onSubmit={handleSave}
+            cancelButtonProps={{
+              'data-testid': 'perps-reverse-position-modal-cancel',
+              children: t('cancel'),
+              disabled: isSubmitting,
+            }}
+            submitButtonProps={{
+              'data-testid': 'perps-reverse-position-modal-save',
+              children: isSubmitting ? t('perpsSubmitting') : t('save'),
+              disabled: isSubmitting,
+            }}
+          />
+        </ModalContent>
+      </Modal>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
       />
-    </Modal>
+    </>
   );
 };
