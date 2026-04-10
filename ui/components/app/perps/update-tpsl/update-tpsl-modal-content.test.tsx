@@ -23,8 +23,9 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -89,6 +90,7 @@ function renderTpslModalContent(
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdatePositionTPSL') {
@@ -588,6 +590,24 @@ describe('UpdateTPSLModalContent', () => {
       // Short position: SL at -10% means price goes UP by 10%
       // entry 45000 * 1.10 = 49500
       expect(numValue).toBeCloseTo(49500, 0);
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of saving when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderTpslModalContent();
+
+      const submitButton = screen.getByTestId('perps-update-tpsl-modal-submit');
+      expect(submitButton).toBeEnabled();
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });

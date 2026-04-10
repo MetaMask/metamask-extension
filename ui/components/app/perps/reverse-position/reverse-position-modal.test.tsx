@@ -81,8 +81,9 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -115,6 +116,7 @@ const defaultProps = {
 describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsFlipPosition') {
         return Promise.resolve({ success: true });
@@ -514,6 +516,26 @@ describe('ReversePositionModal', () => {
           ],
         );
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of reversing when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      const saveButton = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(saveButton).toBeEnabled();
+
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });

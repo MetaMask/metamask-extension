@@ -80,8 +80,9 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -109,6 +110,7 @@ const basePosition = mockPositions[0];
 describe('ClosePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -583,6 +585,34 @@ describe('ClosePositionModal', () => {
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of closing when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const submitButton = screen.getByTestId(
+        'perps-close-position-modal-submit',
+      );
+      expect(submitButton).toBeEnabled();
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });
