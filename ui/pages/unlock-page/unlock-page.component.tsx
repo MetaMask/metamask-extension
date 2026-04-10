@@ -207,6 +207,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     isWalletResetInProgress: PropTypes.bool,
   };
 
+  private isUnlockViewMounted = true;
+
   state: UnlockPageState = {
     password: '',
     error: null,
@@ -256,11 +258,17 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
   }
 
+  componentWillUnmount() {
+    this.isUnlockViewMounted = false;
+  }
+
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
+
+    let passkeyEnrolled = false;
     try {
-      const enrolled = await isPasskeyEnrolled();
-      this.setState({ passkeyAvailable: enrolled });
+      passkeyEnrolled = await isPasskeyEnrolled();
+      this.setState({ passkeyAvailable: passkeyEnrolled });
     } catch {
       this.setState({ passkeyAvailable: false });
     }
@@ -274,6 +282,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       if (!isAuthenticated) {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+        return;
       }
     }
     if (
@@ -281,6 +290,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       this.props.firstTimeFlowType === null
     ) {
       this.props.navigate(DEFAULT_ROUTE, { replace: true });
+      return;
+    }
+
+    // Auto WebAuthn when the unlock screen loads and a passkey is enrolled.
+    if (passkeyEnrolled) {
+      Promise.resolve().then(() => this.handlePasskeyUnlock());
     }
   }
 
@@ -540,6 +555,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handlePasskeyUnlock = async () => {
+    if (!this.isUnlockViewMounted) {
+      return;
+    }
     if (
       this.state.isLocked ||
       this.state.isSubmitting ||
@@ -547,12 +565,20 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     ) {
       return;
     }
-    this.setState({ error: null, passkeyInProgress: true });
+    // Use biometrics-first layout (full-width primary button + “Unlocking…”) whenever
+    // passkey runs—including when the user tapped the fingerprint icon from the password form.
+    this.setState({
+      error: null,
+      passkeyInProgress: true,
+      showPasswordForm: false,
+    });
+
+    const { t } = this.context as UnlockPageContext;
     try {
       const isEnrolled = await isPasskeyEnrolled();
       if (!isEnrolled) {
         this.setState({
-          error: (this.context as UnlockPageContext).t('passkeyUnlockFailed'),
+          error: t('passkeyUnlockFailed'),
           passkeyInProgress: false,
           showPasswordForm: true,
         });
@@ -560,8 +586,13 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       }
       const authOptions = await generatePasskeyAuthenticationOptions();
       const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
-      const authenticationResponse =
-        await passkeyAdapter.startAuthentication(authOptions);
+      const authenticationResponse = await passkeyAdapter
+        .startAuthentication(authOptions)
+        .catch((error) => {
+          // TODO: handle error message correctly
+          throw new Error(t('passkeyUnlockFailed'));
+        });
+
       await unlockWithPasskey(authenticationResponse);
       await this.props.forceUpdateMetamaskState();
 
@@ -579,17 +610,15 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         properties: { method: 'passkey' },
       });
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : (this.context as UnlockPageContext).t('passkeyUnlockFailed');
+      // TODO: handle error message correctly
       this.setState({
-        error: message,
-        passkeyInProgress: false,
+        error: t('passkeyUnlockFailed'),
         showPasswordForm: true,
       });
     } finally {
-      this.setState({ passkeyInProgress: false });
+      if (this.isUnlockViewMounted) {
+        this.setState({ passkeyInProgress: false });
+      }
     }
   };
 
@@ -794,18 +823,32 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     width={BlockSize.Full}
                     marginBottom={4}
                   />
-                  <ButtonIcon
-                    variant={ButtonIconVariant.Filled}
-                    ariaLabel={'biometric'}
-                    iconName={IconName.Fingerprint}
-                    size={ButtonIconSize.Lg}
-                    color={IconColor.IconAlternative}
-                    iconProps={{
-                      color: IconColor.IconAlternative,
-                      size: IconSize.Lg,
-                    }}
-                    className="flex self-center mb-4 h-12 w-12 rounded-lg"
-                  />
+                  {this.state.passkeyAvailable ? (
+                    <ButtonIcon
+                      variant={ButtonIconVariant.Filled}
+                      ariaLabel={
+                        this.state.passkeyInProgress
+                          ? t('unlocking')
+                          : t('unlockWithPasskey')
+                      }
+                      data-testid="unlock-with-passkey"
+                      iconName={IconName.Fingerprint}
+                      size={ButtonIconSize.Lg}
+                      color={IconColor.IconAlternative}
+                      iconProps={{
+                        color: IconColor.IconAlternative,
+                        size: IconSize.Lg,
+                      }}
+                      className="flex self-center mb-4 h-12 w-12 rounded-lg"
+                      disabled={
+                        isLocked ||
+                        this.state.isSubmitting ||
+                        this.state.passkeyInProgress
+                      }
+                      onClick={this.handlePasskeyUnlock}
+                      type="button"
+                    />
+                  ) : null}
                 </Box>
 
                 <Button
@@ -818,25 +861,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 >
                   {this.context.t('unlock')}
                 </Button>
-
-                {this.state.passkeyAvailable && (
-                  <Button
-                    variant={ButtonVariant.Secondary}
-                    size={ButtonSize.Lg}
-                    type="button"
-                    data-testid="unlock-with-passkey"
-                    disabled={
-                      isLocked ||
-                      this.state.isSubmitting ||
-                      this.state.passkeyInProgress
-                    }
-                    onClick={this.handlePasskeyUnlock}
-                  >
-                    {this.state.passkeyInProgress
-                      ? t('unlocking')
-                      : t('unlockWithPasskey')}
-                  </Button>
-                )}
 
                 <Button
                   variant={ButtonVariant.Tertiary}

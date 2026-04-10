@@ -89,10 +89,10 @@ import {
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
 import type {
-  AuthenticationResponseJSON as PasskeyAuthenticationResponse,
-  PublicKeyCredentialCreationOptionsJSON as PasskeyRegitrationOptions,
-  PublicKeyCredentialRequestOptionsJSON as PasskeyAuthenticationOptions,
-  RegistrationResponseJSON as PasskeyRegistrationResponse,
+  PasskeyAuthenticationResponse,
+  PasskeyRegistrationOptions,
+  PasskeyAuthenticationOptions,
+  PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';

@@ -7,6 +7,11 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  generatePasskeyAuthenticationOptions,
+  isPasskeyEnrolled,
+  unlockWithPasskey,
+} from '../../store/actions';
 import UnlockPageImport from '.';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
@@ -28,6 +33,24 @@ jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
   __esModule: true,
   default: () => <div data-testid="fox-appear-animation" />,
 }));
+
+jest.mock(
+  '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
+  () => ({
+    PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
+      startAuthentication: jest.fn().mockResolvedValue({
+        id: 'cred',
+        rawId: 'cred',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AQ',
+        },
+      }),
+    })),
+  }),
+);
 
 const mockTryUnlockMetamask = jest.fn(() => {
   return async () => {
@@ -75,6 +98,7 @@ describe('Unlock Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(isPasskeyEnrolled).mockResolvedValue(false);
   });
 
   it('should match snapshot', () => {
@@ -261,6 +285,24 @@ describe('Unlock Page', () => {
 
     await waitFor(() => {
       expect(queryByTestId('login-error-modal')).toBeInTheDocument();
+    });
+  });
+
+  it('starts passkey unlock on mount when a passkey is enrolled', async () => {
+    jest.mocked(isPasskeyEnrolled).mockResolvedValue(true);
+    const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+    const store = configureMockStore([thunk])({ metamask: {} });
+
+    renderWithProvider(
+      <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
+      store,
+      '/unlock',
+    );
+
+    await waitFor(() => {
+      expect(isPasskeyEnrolled).toHaveBeenCalled();
+      expect(generatePasskeyAuthenticationOptions).toHaveBeenCalled();
+      expect(unlockWithPasskey).toHaveBeenCalled();
     });
   });
 });
