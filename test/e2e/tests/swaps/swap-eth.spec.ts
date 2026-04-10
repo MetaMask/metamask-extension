@@ -1,9 +1,7 @@
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  bridgeTransaction,
-  getBridgeFixtures,
-} from '../bridge/bridge-test-utils';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp

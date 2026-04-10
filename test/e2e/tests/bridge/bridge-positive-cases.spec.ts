@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -7,7 +8,6 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
-  bridgeTransaction,
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   getBridgeFixtures,
 } from './bridge-test-utils';

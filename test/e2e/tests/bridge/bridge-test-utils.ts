@@ -11,10 +11,8 @@ import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HomePage from '../../page-objects/pages/home/homepage';
-import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
+
+import { MOCK_META_METRICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -92,116 +90,6 @@ export class BridgePage {
     });
   };
 }
-
-/**
- * Execute a bridge transaction and checks the activity list
- *
- * @param testParams - The test parameters
- * @param testParams.driver - The driver instance
- * @param testParams.quote - The quote input parameters
- * @param testParams.expectedTransactionsCount - The number of transactions to expect in the activity list
- * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
- * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
- * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
- * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
- * @param testParams.expectedStatus - The expected state of the transaction
- */
-export const bridgeTransaction = async ({
-  driver,
-  quote,
-  expectedTransactionsCount = 1,
-  expectedStatus = 'success',
-  expectedWalletBalance,
-  expectedSwapTokens,
-  expectedDestAmount,
-  submitDelay,
-}: {
-  driver: Driver;
-  quote: BridgeQuote;
-  expectedTransactionsCount: number;
-  expectedStatus?: 'success' | 'failed' | 'pending';
-  expectedWalletBalance?: string;
-  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
-  expectedDestAmount: string;
-  submitDelay?: number;
-}) => {
-  // Navigate to Bridge page
-  const homePage = new HomePage(driver);
-  await homePage.startSwapFlow();
-
-  const bridgePage = new BridgeQuotePage(driver);
-
-  await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
-  await bridgePage.enterBridgeQuote(quote);
-  await bridgePage.waitForQuote();
-  await bridgePage.checkExpectedNetworkFeeIsDisplayed();
-  submitDelay && (await driver.delay(submitDelay));
-  if (expectedDestAmount) {
-    await bridgePage.checkDestAmount(expectedDestAmount);
-  }
-  await bridgePage.submitQuote();
-
-  await homePage.goToActivityList();
-
-  const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(
-    expectedTransactionsCount,
-  );
-
-  const isBridge =
-    quote.fromChain && quote.toChain
-      ? quote.fromChain !== quote.toChain
-      : false;
-
-  let action = '';
-  const expectedSrcToken = quote.tokenFrom ?? expectedSwapTokens?.tokenFrom;
-  const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
-
-  if (quote.unapproved) {
-    action = isBridge
-      ? `Bridged to ${quote.toChain}`
-      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
-      action,
-      confirmedTx: expectedTransactionsCount,
-    });
-    await activityList.checkTxAction({
-      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
-      confirmedTx: expectedTransactionsCount,
-      txIndex: 2,
-    });
-  } else {
-    action = isBridge
-      ? `Bridged to ${quote.toChain}`
-      : `Swap ${expectedSrcToken} to ${expectedDestToken}`;
-    await activityList.checkTxAction({
-      action,
-      confirmedTx: expectedTransactionsCount,
-    });
-  }
-  // Check the amount of ETH deducted in the activity is correct
-  await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
-  );
-
-  await activityList.checkBridgeTransactionDetails(
-    action,
-    isBridge,
-    expectedStatus,
-    quote.amount,
-    expectedSrcToken,
-    expectedDestAmount,
-    expectedDestToken,
-  );
-
-  // Check the wallet ETH balance is correct
-  const accountListPage = new AccountListPage(driver);
-  if (expectedWalletBalance) {
-    await accountListPage.checkAccountValueAndSuffixDisplayed(
-      expectedWalletBalance,
-    );
-  }
-};
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer

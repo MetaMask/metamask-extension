@@ -7,8 +7,8 @@ import {
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import {
-  bridgeTransaction,
   getBridgeFixtures,
   EventTypes,
   EXPECTED_EVENT_TYPES,
