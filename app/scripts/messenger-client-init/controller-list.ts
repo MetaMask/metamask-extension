@@ -110,6 +110,7 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { DataDeletionService } from '../services/data-deletion-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -131,6 +132,7 @@ export type Controller =
   | ClaimsController
   | CronjobController
   | CurrencyRateController
+  | DataDeletionService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController
