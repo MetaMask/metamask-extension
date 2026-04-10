@@ -8144,3 +8144,8 @@ export function removeDeferredDeepLink(): ThunkAction<
     }
   };
 }
+
+export async function perpsToggleTestnet(): Promise<void> {
+  log.debug(`background.perpsToggleTestnet`);
+  await submitRequestToBackground<void>('perpsToggleTestnet');
+}
