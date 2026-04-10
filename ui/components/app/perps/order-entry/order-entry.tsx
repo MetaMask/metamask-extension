@@ -299,7 +299,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             currentPrice={currentPrice}
             leverage={
               mode === 'modify' && existingPosition?.leverage
-                ? existingPosition.leverage.value
+                ? existingPosition.leverage
                 : formState.leverage
             }
             entryPrice={
