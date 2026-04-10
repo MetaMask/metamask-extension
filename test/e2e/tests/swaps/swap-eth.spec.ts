@@ -10,10 +10,10 @@ import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and MUSD', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 

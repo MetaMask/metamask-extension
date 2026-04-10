@@ -11,7 +11,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeL2Fixtures(
         this.test?.fullTitle(),
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        true,
       ),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });

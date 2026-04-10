@@ -39,7 +39,10 @@ describe('Swap', function () {
   swapTestCases.forEach((testCase) => {
     it(testCase.name, async function () {
       await withFixtures(
-        getBridgeFixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
+        getBridgeFixtures({
+          title: this.test?.fullTitle(),
+          featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        }),
         async ({ driver }) => {
           await login(driver, { expectedBalance: '$225,730.11' });
 

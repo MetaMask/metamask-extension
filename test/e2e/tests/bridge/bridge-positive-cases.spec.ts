@@ -16,11 +16,11 @@ describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -88,11 +88,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('Execute bridge transactions on non enabled networks', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
@@ -129,11 +129,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('updates recommended bridge quote incrementally when SSE events are received', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -173,11 +173,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('Preserves bridge state when navigating from the source asset page', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -203,11 +203,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('Preserves bridge state when navigating from the dest asset page', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -236,11 +236,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('Preserves bridge state when navigating back from the asset page', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -273,11 +273,11 @@ describe('Bridge tests', function (this: Suite) {
 
   it('Resets bridge state when reopening the page', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
