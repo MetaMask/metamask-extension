@@ -82,6 +82,11 @@ export const Tabs = <TKey extends string = string>({
     }
   }, [activeTab, findChildByKey, activeTabIndex]);
 
+  const clampedIndex =
+    getValidChildren.length > 0
+      ? clamp(activeTabIndex, 0, getValidChildren.length - 1)
+      : 0;
+
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
       const direction = tabIndex > activeTabIndex ? 'forward' : 'backward';
@@ -110,7 +115,7 @@ export const Tabs = <TKey extends string = string>({
         ...child.props,
         onClick: (idx: number) => handleTabClick(idx, tabKey),
         tabIndex: index,
-        isActive: numberOfTabs > 1 && index === activeTabIndex,
+        isActive: numberOfTabs > 1 && index === clampedIndex,
         key: tabKey,
       });
     });
@@ -122,8 +127,6 @@ export const Tabs = <TKey extends string = string>({
     if (validChildren.length === 0) {
       return null;
     }
-
-    const clampedIndex = clamp(activeTabIndex, 0, validChildren.length - 1);
 
     const activeChild = validChildren[clampedIndex];
     return activeChild?.props.children || null;
