@@ -88,8 +88,8 @@ export const Tabs = <TKey extends string = string>({
       : 0;
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
-    if (tabIndex !== activeTabIndex) {
-      const direction = tabIndex > activeTabIndex ? 'forward' : 'backward';
+    if (tabIndex !== clampedIndex) {
+      const direction = tabIndex > clampedIndex ? 'forward' : 'backward';
 
       const applyUpdate = () => {
         setActiveTabIndex(tabIndex);
