@@ -3,348 +3,167 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import {
+  BUNDLE_SIZE_ARTIFACT_FILE,
+  BUNDLE_SIZE_SUMMARY_FILE,
+  WEBPACK_BUNDLE_STATS_FILE,
+  createBundleSizeArtifact,
+  createBundleSizeSummary,
+  isWebpackBundleStats,
+  type BundleSizeArtifact,
+  type BundleSizeBundler,
+  type FileStat,
+  type WebpackEntrypointFiles,
+  type WebpackBundleStats,
+} from '../../../development/lib/bundle-size';
 import { exitWithError } from '../../../development/lib/exit-with-error';
 import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
 
-const SCHEMA_VERSION = 2 as const;
+const uiHtmlFiles = [
+  'home.html',
+  'loading.html',
+  'notification.html',
+  'popup-init.html',
+  'popup.html',
+  'sidepanel.html',
+] as const;
 
-const backgroundFiles = [
-  'scripts/runtime-lavamoat.js',
-  'scripts/lockdown-more.js',
-  'scripts/sentry-install.js',
-  'scripts/policy-load.js',
-];
+const auxiliaryPageHtmlFiles = [
+  'offscreen.html',
+  'trezor-usb-permissions.html',
+] as const;
 
-const uiFiles = [
-  'scripts/sentry-install.js',
-  'scripts/runtime-lavamoat.js',
-  'scripts/lockdown-more.js',
-  'scripts/policy-load.js',
-];
-
-const contentScriptFiles = [
-  'scripts/contentscript.js',
+const extraContentScriptFiles = [
   'scripts/inpage.js',
   'vendor/trezor/content-script.js',
-];
-
-const webpackUiSurfaceEntrypoints = [
-  ['bootstrap'],
-  ['home'],
-  ['notification'],
-  ['popup'],
-  ['sidepanel'],
-  ['loading'],
-  ['popup-init'],
 ] as const;
 
-const webpackBackgroundSurfaceEntrypoints = [
-  ['service-worker', 'service-worker.js'],
-  ['offscreen'],
-  [
-    'usb-permissions',
-    'trezor-usb-permissions',
-    'vendor/trezor/usb-permissions.js',
-  ],
-] as const;
+const htmlScriptSrcRegex =
+  /<script\b[^>]*\bsrc=(['"])(?<src>[^'"#?]+(?:\.(?:mjs|cjs|js)))\1[^>]*>/giu;
 
-const webpackContentScriptEntrypoints = [
-  ['scripts/contentscript.js'],
-  ['scripts/inpage.js'],
-  ['vendor/trezor/content-script.js'],
-] as const;
+const browserifyRelativeScriptPathRegex =
+  /(['"`])(?<src>(?:\.\.?\/)[^'"`]+?\.js)\1/gu;
 
-const BackgroundFileRegex = /^background-[0-9]*\.js$/u;
-const CommonFileRegex = /^common-[0-9]*\.js$/u;
-const UIFileRegex = /^ui-[0-9]*\.js$/u;
+export { createBundleSizeSummary };
 
-export type Bundler = 'browserify' | 'webpack';
-
-export type BundlePart = 'background' | 'ui' | 'common' | 'contentScripts';
-
-export type FileStat = {
-  name: string;
-  size: number;
-};
-
-export type BundleStats = {
-  name: BundlePart;
-  size: number;
-  fileList: FileStat[];
-};
-
-export type BundleSizeArtifactV2 = {
-  schemaVersion: typeof SCHEMA_VERSION;
-  bundler: Bundler;
-  background: BundleStats;
-  ui: BundleStats;
-  common: BundleStats;
-  contentScripts: BundleStats;
-};
-
-export type BundleSizeSummaryV2 = {
-  schemaVersion: typeof SCHEMA_VERSION;
-  bundler: Bundler;
-  background: number;
-  ui: number;
-  common: number;
-  contentScripts: number;
-  timestamp: number;
-};
-
-type BundleStatsCollection = Record<BundlePart, FileStat[]>;
-
-type WebpackAssetReference = string | { name?: string | null };
-
-type WebpackChunkGroup = {
-  assets?: WebpackAssetReference[];
-};
-
-type WebpackStatsAsset = {
-  name?: string | null;
-  size?: number | null;
-};
-
-type WebpackStatsFile = {
-  assets?: WebpackStatsAsset[];
-  assetsByChunkName?: Record<string, string | string[]>;
-  entrypoints?:
-    | Record<string, WebpackChunkGroup>
-    | (WebpackChunkGroup & { name?: string | null })[];
-  namedChunkGroups?:
-    | Record<string, WebpackChunkGroup>
-    | (WebpackChunkGroup & { name?: string | null })[];
-};
-
-function sortFileStats(fileList: FileStat[]): FileStat[] {
-  return [...fileList].sort((left, right) =>
-    left.name.localeCompare(right.name),
-  );
-}
-
-function getBundleSize(fileList: FileStat[]): number {
-  return fileList.reduce((total, file) => total + file.size, 0);
-}
-
-function createBundleStats(
-  name: BundlePart,
-  fileList: FileStat[],
-): BundleStats {
-  const sortedFileList = sortFileStats(fileList);
-
-  return {
-    name,
-    size: getBundleSize(sortedFileList),
-    fileList: sortedFileList,
+type DistManifest = {
+  background?: {
+    ['service_worker']?: string;
   };
-}
-
-function createBundleSizeArtifact(
-  bundler: Bundler,
-  fileLists: BundleStatsCollection,
-): BundleSizeArtifactV2 {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    bundler,
-    background: createBundleStats('background', fileLists.background),
-    ui: createBundleStats('ui', fileLists.ui),
-    common: createBundleStats('common', fileLists.common),
-    contentScripts: createBundleStats(
-      'contentScripts',
-      fileLists.contentScripts,
-    ),
-  };
-}
-
-export function createBundleSizeSummary(
-  artifact: BundleSizeArtifactV2,
-): BundleSizeSummaryV2 {
-  return {
-    schemaVersion: artifact.schemaVersion,
-    bundler: artifact.bundler,
-    background: artifact.background.size,
-    ui: artifact.ui.size,
-    common: artifact.common.size,
-    contentScripts: artifact.contentScripts.size,
-    timestamp: Date.now(),
-  };
-}
-
-function isJavaScriptAsset(assetName: string): boolean {
-  return (
-    assetName.endsWith('.js') ||
-    assetName.endsWith('.mjs') ||
-    assetName.endsWith('.cjs')
-  );
-}
+  ['content_scripts']?: {
+    js?: string[];
+  }[];
+};
 
 function normalizeRelativePath(filePath: string): string {
   return filePath.split(path.sep).join(path.posix.sep);
 }
 
-async function listFilesRecursively(
-  rootDirectory: string,
-  currentDirectory = rootDirectory,
-): Promise<FileStat[]> {
-  const directoryEntries = await fs.readdir(currentDirectory, {
-    withFileTypes: true,
-  });
-  const fileLists = await Promise.all(
-    directoryEntries.map(async (entry) => {
-      const absolutePath = path.join(currentDirectory, entry.name);
+async function getDistFileStats(distDirectory: string): Promise<FileStat[]> {
+  const rootDirectory = path.resolve(distDirectory);
 
-      if (entry.isDirectory()) {
-        return await listFilesRecursively(rootDirectory, absolutePath);
-      }
+  return (
+    await Array.fromAsync(
+      fs.glob('**/*', { cwd: rootDirectory, withFileTypes: true }),
+      async (entry): Promise<FileStat | null> => {
+        if (!entry.isFile()) {
+          return null;
+        }
 
-      if (!entry.isFile()) {
-        return [];
-      }
+        const absolutePath = path.join(entry.parentPath, entry.name);
+        const stats = await fs.stat(absolutePath);
 
-      const stats = await fs.stat(absolutePath);
-
-      return [
-        {
+        return {
           name: normalizeRelativePath(
             path.relative(rootDirectory, absolutePath),
           ),
           size: stats.size,
-        },
-      ];
-    }),
-  );
-
-  return fileLists.flat();
+        };
+      },
+    )
+  ).flatMap((file) => (file ? [file] : []));
 }
 
-async function getDistFileStats(distDirectory: string): Promise<FileStat[]> {
-  const absoluteDistDirectory = path.resolve(distDirectory);
-  const files = await listFilesRecursively(absoluteDistDirectory);
-
-  return sortFileStats(files);
-}
-
-export async function collectBrowserifyBundleSizeArtifact(
+async function getDistFileSizeMap(
   distDirectory: string,
-): Promise<BundleSizeArtifactV2> {
-  const files = await getDistFileStats(distDirectory);
-  const fileLists: BundleStatsCollection = {
-    background: [],
-    ui: [],
-    common: [],
-    contentScripts: [],
-  };
-
-  for (const file of files) {
-    const baseName = path.posix.basename(file.name);
-
-    if (contentScriptFiles.includes(file.name)) {
-      fileLists.contentScripts.push(file);
-    }
-
-    if (CommonFileRegex.test(baseName)) {
-      fileLists.common.push(file);
-    } else if (
-      backgroundFiles.includes(file.name) ||
-      BackgroundFileRegex.test(baseName)
-    ) {
-      fileLists.background.push(file);
-    } else if (uiFiles.includes(file.name) || UIFileRegex.test(baseName)) {
-      fileLists.ui.push(file);
-    }
-  }
-
-  return createBundleSizeArtifact('browserify', fileLists);
+): Promise<ReadonlyMap<string, number>> {
+  return new Map(
+    (await getDistFileStats(distDirectory)).map(({ name, size }) => [
+      name,
+      size,
+    ]),
+  );
 }
 
-function normalizeChunkGroupMap<TChunkGroup extends { name?: string | null }>(
-  groups?: Record<string, TChunkGroup> | TChunkGroup[],
-): Record<string, TChunkGroup> {
-  if (!groups) {
-    return {};
-  }
-
-  if (!Array.isArray(groups)) {
-    return groups;
-  }
-
-  return groups.reduce<Record<string, TChunkGroup>>((result, group) => {
-    if (group.name) {
-      result[group.name] = group;
-    }
-    return result;
-  }, {});
+function isJavaScriptAsset(filePath: string): boolean {
+  return (
+    filePath.endsWith('.js') ||
+    filePath.endsWith('.mjs') ||
+    filePath.endsWith('.cjs')
+  );
 }
 
-function normalizeAssetName(asset: WebpackAssetReference): string | null {
-  if (typeof asset === 'string') {
-    return asset;
-  }
-
-  return asset.name ?? null;
+function isRuntimeAsset(filePath: string): boolean {
+  return path.posix.basename(filePath).startsWith('runtime-');
 }
 
-function getChunkGroupAssets(
-  stats: WebpackStatsFile,
-  groupName: string,
-): string[] {
-  const entrypoints = normalizeChunkGroupMap(stats.entrypoints);
-  const namedChunkGroups = normalizeChunkGroupMap(stats.namedChunkGroups);
-  const group = entrypoints[groupName] ?? namedChunkGroups[groupName];
-
-  if (group?.assets) {
-    return group.assets
-      .map(normalizeAssetName)
-      .filter((assetName): assetName is string => {
-        return Boolean(assetName) && isJavaScriptAsset(assetName);
-      });
-  }
-
-  const assetsByChunkName = stats.assetsByChunkName?.[groupName];
-  let assetNames: string[] = [];
-
-  if (Array.isArray(assetsByChunkName)) {
-    assetNames = assetsByChunkName;
-  } else if (assetsByChunkName) {
-    assetNames = [assetsByChunkName];
-  }
-
-  return assetNames.filter(isJavaScriptAsset);
+function resolveDistAssetPath(
+  distDirectory: string,
+  fromRelativePath: string,
+  assetPath: string,
+): string {
+  return normalizeRelativePath(
+    path.relative(
+      distDirectory,
+      path.resolve(distDirectory, path.dirname(fromRelativePath), assetPath),
+    ),
+  );
 }
 
-function getWebpackAssetSizeMap(
-  stats: WebpackStatsFile,
-): ReadonlyMap<string, number> {
-  const assetSizes = new Map<string, number>();
-
-  for (const asset of stats.assets ?? []) {
-    if (
-      !asset.name ||
-      typeof asset.size !== 'number' ||
-      !isJavaScriptAsset(asset.name)
-    ) {
-      continue;
-    }
-
-    assetSizes.set(asset.name, asset.size);
-  }
-
-  return assetSizes;
+async function readDistManifest(distDirectory: string): Promise<DistManifest> {
+  return JSON.parse(
+    await fs.readFile(path.join(distDirectory, 'manifest.json'), 'utf8'),
+  ) as DistManifest;
 }
 
-function getSurfaceAssetNames(
-  stats: WebpackStatsFile,
-  entrypointCandidates: readonly (readonly string[])[],
-): Set<string> {
+function getServiceWorkerPath(manifest: DistManifest): string {
+  const serviceWorkerPath = manifest.background?.service_worker;
+
+  if (!serviceWorkerPath) {
+    throw new Error(
+      'Bundle-size collector expects an MV3 manifest with background.service_worker',
+    );
+  }
+
+  return serviceWorkerPath;
+}
+
+async function getHtmlSurfaceAssetNames(
+  distDirectory: string,
+  htmlFiles: readonly string[],
+): Promise<Set<string>> {
   const assetNames = new Set<string>();
 
-  for (const candidateNames of entrypointCandidates) {
-    for (const entrypointName of candidateNames) {
-      for (const assetName of getChunkGroupAssets(stats, entrypointName)) {
-        assetNames.add(assetName);
+  for (const htmlFile of htmlFiles) {
+    const htmlPath = path.join(distDirectory, htmlFile);
+
+    try {
+      const html = await fs.readFile(htmlPath, 'utf8');
+
+      for (const match of html.matchAll(htmlScriptSrcRegex)) {
+        const scriptSource = match.groups?.src;
+        if (scriptSource) {
+          assetNames.add(
+            resolveDistAssetPath(distDirectory, htmlFile, scriptSource),
+          );
+        }
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+        throw error;
       }
     }
   }
@@ -352,77 +171,145 @@ function getSurfaceAssetNames(
   return assetNames;
 }
 
-function deleteAssetNames(
-  target: Set<string>,
-  namesToDelete: Iterable<string>,
-) {
-  for (const name of namesToDelete) {
-    target.delete(name);
-  }
-}
+async function getBrowserifyBackgroundAssetNames(
+  distDirectory: string,
+  serviceWorkerPath: string,
+): Promise<Set<string>> {
+  const serviceWorkerContents = await fs.readFile(
+    path.join(distDirectory, serviceWorkerPath),
+    'utf8',
+  );
+  const assetNames = new Set<string>([serviceWorkerPath]);
 
-function getIntersection(
-  left: ReadonlySet<string>,
-  right: ReadonlySet<string>,
-): Set<string> {
-  const intersection = new Set<string>();
-
-  for (const value of left) {
-    if (right.has(value)) {
-      intersection.add(value);
+  for (const match of serviceWorkerContents.matchAll(
+    browserifyRelativeScriptPathRegex,
+  )) {
+    const scriptSource = match.groups?.src;
+    if (scriptSource) {
+      for (const fileName of scriptSource.split(',')) {
+        assetNames.add(
+          resolveDistAssetPath(
+            distDirectory,
+            serviceWorkerPath,
+            fileName.trim(),
+          ),
+        );
+      }
     }
   }
 
-  return intersection;
+  return assetNames;
+}
+
+function getManifestContentScriptAssetNames(
+  manifest: DistManifest,
+  distFileSizeMap: ReadonlyMap<string, number>,
+): Set<string> {
+  const assetNames = new Set(
+    (manifest.content_scripts ?? []).flatMap(
+      (contentScript) => contentScript.js ?? [],
+    ),
+  );
+
+  for (const assetName of extraContentScriptFiles) {
+    if (distFileSizeMap.has(assetName)) {
+      assetNames.add(assetName);
+    }
+  }
+
+  return assetNames;
+}
+
+function getWebpackBackgroundEntrypoint(
+  stats: WebpackBundleStats,
+  serviceWorkerPath: string,
+): WebpackEntrypointFiles {
+  const entrypoint = Object.values(stats.entrypoints).find(({ initialFiles }) =>
+    initialFiles.some((file) => file.name === serviceWorkerPath),
+  );
+
+  if (!entrypoint) {
+    throw new Error(
+      `Unable to find webpack service worker entrypoint for "${serviceWorkerPath}"`,
+    );
+  }
+
+  return entrypoint;
+}
+
+function getWebpackSurfaceAssetNamesFromInitialAssets(
+  stats: WebpackBundleStats,
+  initialAssetNames: ReadonlySet<string>,
+): Set<string> {
+  const asyncAssetNames = new Set(
+    Object.values(stats.entrypoints).flatMap((entrypoint) =>
+      entrypoint.initialFiles.some(
+        ({ name }) => initialAssetNames.has(name) && !isRuntimeAsset(name),
+      )
+        ? entrypoint.asyncFiles.map(({ name }) => name)
+        : [],
+    ),
+  );
+
+  return new Set(initialAssetNames).union(asyncAssetNames);
 }
 
 function createFileStatsFromAssetNames(
   assetNames: Iterable<string>,
   sizeMap: ReadonlyMap<string, number>,
 ): FileStat[] {
-  const uniqueSortedNames = [...new Set(assetNames)].sort((left, right) =>
-    left.localeCompare(right),
-  );
+  return Array.from(new Set(assetNames), (name) => {
+    const size = sizeMap.get(name);
 
-  return uniqueSortedNames
-    .map((name) => {
-      const size = sizeMap.get(name);
+    if (typeof size !== 'number') {
+      throw new Error(`Missing size for emitted asset "${name}"`);
+    }
 
-      if (typeof size !== 'number') {
-        return null;
-      }
-
-      return { name, size };
-    })
-    .filter((file): file is FileStat => Boolean(file));
+    return { name, size };
+  });
 }
 
-export function collectWebpackBundleSizeArtifactFromStats(
-  stats: WebpackStatsFile,
-): BundleSizeArtifactV2 {
-  const assetSizeMap = getWebpackAssetSizeMap(stats);
-  const contentScriptAssets = getSurfaceAssetNames(
-    stats,
-    webpackContentScriptEntrypoints,
-  );
-  const uiAssets = getSurfaceAssetNames(stats, webpackUiSurfaceEntrypoints);
-  const backgroundAssets = getSurfaceAssetNames(
-    stats,
-    webpackBackgroundSurfaceEntrypoints,
-  );
+function partitionSurfaceAssets({
+  bundler,
+  backgroundAssets,
+  uiAssets,
+  auxiliaryPageAssets,
+  contentScriptAssets,
+  assetSizeMap,
+}: {
+  bundler: BundleSizeBundler;
+  backgroundAssets: Set<string>;
+  uiAssets: Set<string>;
+  auxiliaryPageAssets: Set<string>;
+  contentScriptAssets: Set<string>;
+  assetSizeMap: ReadonlyMap<string, number>;
+}): BundleSizeArtifact {
+  const commonAssets = backgroundAssets
+    .intersection(uiAssets)
+    .difference(contentScriptAssets);
+  const backgroundOnlyAssets = backgroundAssets
+    .difference(commonAssets)
+    .difference(contentScriptAssets);
+  const uiOnlyAssets = uiAssets
+    .difference(commonAssets)
+    .difference(contentScriptAssets);
+  const auxiliaryPageOnlyAssets = auxiliaryPageAssets
+    .difference(contentScriptAssets)
+    .difference(commonAssets)
+    .difference(backgroundOnlyAssets)
+    .difference(uiOnlyAssets);
 
-  deleteAssetNames(uiAssets, contentScriptAssets);
-  deleteAssetNames(backgroundAssets, contentScriptAssets);
-
-  const commonAssets = getIntersection(uiAssets, backgroundAssets);
-
-  deleteAssetNames(uiAssets, commonAssets);
-  deleteAssetNames(backgroundAssets, commonAssets);
-
-  return createBundleSizeArtifact('webpack', {
-    background: createFileStatsFromAssetNames(backgroundAssets, assetSizeMap),
-    ui: createFileStatsFromAssetNames(uiAssets, assetSizeMap),
+  return createBundleSizeArtifact(bundler, {
+    background: createFileStatsFromAssetNames(
+      backgroundOnlyAssets,
+      assetSizeMap,
+    ),
+    ui: createFileStatsFromAssetNames(uiOnlyAssets, assetSizeMap),
     common: createFileStatsFromAssetNames(commonAssets, assetSizeMap),
+    auxiliaryPages: createFileStatsFromAssetNames(
+      auxiliaryPageOnlyAssets,
+      assetSizeMap,
+    ),
     contentScripts: createFileStatsFromAssetNames(
       contentScriptAssets,
       assetSizeMap,
@@ -430,17 +317,110 @@ export function collectWebpackBundleSizeArtifactFromStats(
   });
 }
 
-export async function collectWebpackBundleSizeArtifact(
-  statsFile: string,
-): Promise<BundleSizeArtifactV2> {
-  const statsContents = await fs.readFile(statsFile, 'utf8');
-  const stats = JSON.parse(statsContents) as WebpackStatsFile;
+export async function collectBrowserifyBundleSizeArtifact(
+  distDirectory: string,
+): Promise<BundleSizeArtifact> {
+  const manifest = await readDistManifest(distDirectory);
+  const assetSizeMap = await getDistFileSizeMap(distDirectory);
+  const serviceWorkerPath = getServiceWorkerPath(manifest);
+  const [uiAssets, auxiliaryPageAssets, backgroundAssets] = await Promise.all([
+    getHtmlSurfaceAssetNames(distDirectory, uiHtmlFiles),
+    getHtmlSurfaceAssetNames(distDirectory, auxiliaryPageHtmlFiles),
+    getBrowserifyBackgroundAssetNames(distDirectory, serviceWorkerPath),
+  ]);
+  const contentScriptAssets = getManifestContentScriptAssetNames(
+    manifest,
+    assetSizeMap,
+  );
 
-  return collectWebpackBundleSizeArtifactFromStats(stats);
+  return partitionSurfaceAssets({
+    bundler: 'browserify',
+    backgroundAssets,
+    uiAssets,
+    auxiliaryPageAssets,
+    contentScriptAssets,
+    assetSizeMap,
+  });
+}
+
+export function collectWebpackBundleSizeArtifactFromStats(
+  stats: WebpackBundleStats,
+  {
+    manifest,
+    assetSizeMap,
+    uiInitialAssets,
+    auxiliaryPageInitialAssets,
+  }: {
+    manifest: DistManifest;
+    assetSizeMap: ReadonlyMap<string, number>;
+    uiInitialAssets: Set<string>;
+    auxiliaryPageInitialAssets: Set<string>;
+  },
+): BundleSizeArtifact {
+  const serviceWorkerPath = getServiceWorkerPath(manifest);
+  const backgroundEntrypoint = getWebpackBackgroundEntrypoint(
+    stats,
+    serviceWorkerPath,
+  );
+  const uiAssets = getWebpackSurfaceAssetNamesFromInitialAssets(
+    stats,
+    uiInitialAssets,
+  );
+  const auxiliaryPageAssets = getWebpackSurfaceAssetNamesFromInitialAssets(
+    stats,
+    auxiliaryPageInitialAssets,
+  );
+  const backgroundAssets = new Set(
+    [...backgroundEntrypoint.initialFiles, ...backgroundEntrypoint.asyncFiles]
+      .map(({ name }) => name)
+      .filter(isJavaScriptAsset),
+  );
+  const contentScriptAssets = getManifestContentScriptAssetNames(
+    manifest,
+    assetSizeMap,
+  );
+
+  return partitionSurfaceAssets({
+    bundler: 'webpack',
+    backgroundAssets,
+    uiAssets,
+    auxiliaryPageAssets,
+    contentScriptAssets,
+    assetSizeMap,
+  });
+}
+
+export async function collectWebpackBundleSizeArtifact(
+  distDirectory: string,
+): Promise<BundleSizeArtifact> {
+  const [assetSizeMap, manifest, uiInitialAssets, auxiliaryPageInitialAssets] =
+    await Promise.all([
+      getDistFileSizeMap(distDirectory),
+      readDistManifest(distDirectory),
+      getHtmlSurfaceAssetNames(distDirectory, uiHtmlFiles),
+      getHtmlSurfaceAssetNames(distDirectory, auxiliaryPageHtmlFiles),
+    ]);
+  const statsPath = path.join(
+    path.dirname(path.resolve(distDirectory)),
+    WEBPACK_BUNDLE_STATS_FILE,
+  );
+  const statsContents = await fs.readFile(statsPath, 'utf8');
+  const stats = JSON.parse(statsContents) as unknown;
+
+  if (!isWebpackBundleStats(stats)) {
+    throw new Error(`Invalid webpack bundle stats file at "${statsPath}"`);
+  }
+
+  return collectWebpackBundleSizeArtifactFromStats(stats, {
+    manifest,
+    assetSizeMap,
+    uiInitialAssets,
+    auxiliaryPageInitialAssets,
+  });
 }
 
 async function ensureOutputDirectory(outDirectory: string): Promise<void> {
-  const bundleSizePath = path.join(outDirectory, 'bundle_size.json');
+  const bundleSizePath = path.join(outDirectory, BUNDLE_SIZE_ARTIFACT_FILE);
   const outputDirectory = path.dirname(bundleSizePath);
   const existingParentDirectory =
     await getFirstParentDirectoryThatExists(outputDirectory);
@@ -455,17 +435,17 @@ async function ensureOutputDirectory(outDirectory: string): Promise<void> {
 }
 
 export async function writeBundleSizeArtifact(
-  artifact: BundleSizeArtifactV2,
+  artifact: BundleSizeArtifact,
   outDirectory: string,
 ): Promise<void> {
   await ensureOutputDirectory(outDirectory);
 
   await fs.writeFile(
-    path.join(outDirectory, 'bundle_size.json'),
+    path.join(outDirectory, BUNDLE_SIZE_ARTIFACT_FILE),
     JSON.stringify(artifact, null, 2),
   );
   await fs.writeFile(
-    path.join(outDirectory, 'bundle_size_stats.json'),
+    path.join(outDirectory, BUNDLE_SIZE_SUMMARY_FILE),
     JSON.stringify(createBundleSizeSummary(artifact), null, 2),
   );
 }
@@ -481,14 +461,8 @@ async function main(): Promise<void> {
           type: 'string',
         })
         .option('dist-dir', {
-          description: 'Path to the built dist directory',
+          description: 'Path to the built platform dist directory',
           demandOption: true,
-          normalize: true,
-          type: 'string',
-        })
-        .option('stats-file', {
-          description:
-            'Path to webpack bundle stats.json. Required when bundler is webpack.',
           normalize: true,
           type: 'string',
         })
@@ -501,26 +475,16 @@ async function main(): Promise<void> {
     )
     .strict();
   const { bundler, out } = argv as {
-    bundler: Bundler;
+    bundler: BundleSizeBundler;
     distDir: string;
     out?: string;
-    statsFile?: string;
   };
   const distDirectory = argv['dist-dir'] as string;
-  const statsFile = argv['stats-file'] as string | undefined;
 
   const artifact =
     bundler === 'browserify'
       ? await collectBrowserifyBundleSizeArtifact(distDirectory)
-      : await (() => {
-          if (!statsFile) {
-            throw new Error(
-              'The --stats-file option is required when --bundler webpack is used',
-            );
-          }
-
-          return collectWebpackBundleSizeArtifact(statsFile);
-        })();
+      : await collectWebpackBundleSizeArtifact(distDirectory);
 
   if (out) {
     await writeBundleSizeArtifact(artifact, out);

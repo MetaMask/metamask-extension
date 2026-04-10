@@ -19,52 +19,43 @@ if [[ -z "${GITHUB_REPOSITORY_OWNER:-}" ]]; then
     exit 1
 fi
 
-mkdir temp
+temp_dir="$(mktemp -d)"
+trap 'rm -rf "${temp_dir}"' EXIT
 
-git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git temp
+git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git "${temp_dir}"
 
-BROWSERIFY_BUNDLE_SIZE_FILE="test-artifacts/chrome/browserify/bundle_size_stats.json"
-WEBPACK_BUNDLE_SIZE_FILE="test-artifacts/chrome/webpack/bundle_size_stats.json"
-STATS_FILE="temp/stats/bundle_size_data.json"
-TEMP_FILE="temp/stats/bundle_size_data.temp.json"
+browserify_bundle_size_file='test-artifacts/chrome/browserify/bundle_size_stats.json'
+webpack_bundle_size_file='test-artifacts/chrome/webpack/bundle_size_stats.json'
+stats_file="${temp_dir}/stats/bundle_size_data.json"
+temp_stats_file="${temp_dir}/stats/bundle_size_data.temp.json"
 
-# Ensure the JSON file exists
-if [[ ! -f "${STATS_FILE}" ]]; then
-    echo "{}" > "${STATS_FILE}"
+if [[ ! -f "${stats_file}" ]]; then
+    echo '{}' > "${stats_file}"
 fi
 
-# Validate JSON files before modification
-jq . "${STATS_FILE}" > /dev/null || {
-    echo "Error: Existing stats JSON is invalid"
-    exit 1
-}
-jq . "${BROWSERIFY_BUNDLE_SIZE_FILE}" > /dev/null || {
-    echo "Error: Browserify bundle size JSON is invalid"
-    exit 1
-}
-jq . "${WEBPACK_BUNDLE_SIZE_FILE}" > /dev/null || {
-    echo "Error: Webpack bundle size JSON is invalid"
-    exit 1
-}
+for file in "${stats_file}" "${browserify_bundle_size_file}" "${webpack_bundle_size_file}"; do
+    jq -e . "${file}" > /dev/null
+done
 
-# Skip the commit if both stored bundler summaries already match the new ones
+browserify_bundle_size="$(< "${browserify_bundle_size_file}")"
+webpack_bundle_size="$(< "${webpack_bundle_size_file}")"
+
 if jq -e \
     --arg sha "${GITHUB_SHA}" \
-    --argjson browserify "$(cat "${BROWSERIFY_BUNDLE_SIZE_FILE}")" \
-    --argjson webpack "$(cat "${WEBPACK_BUNDLE_SIZE_FILE}")" \
+    --argjson browserify "${browserify_bundle_size}" \
+    --argjson webpack "${webpack_bundle_size}" \
     '
     .[$sha].browserify == $browserify and
     .[$sha].webpack == $webpack
-    ' "${STATS_FILE}" > /dev/null; then
+    ' "${stats_file}" > /dev/null; then
     echo "Bundle size stats for SHA ${GITHUB_SHA} are already up to date. No new commit needed."
     exit 0
 fi
 
-# Append new bundle size data correctly using jq
 jq \
     --arg sha "${GITHUB_SHA}" \
-    --argjson browserify "$(cat "${BROWSERIFY_BUNDLE_SIZE_FILE}")" \
-    --argjson webpack "$(cat "${WEBPACK_BUNDLE_SIZE_FILE}")" \
+    --argjson browserify "${browserify_bundle_size}" \
+    --argjson webpack "${webpack_bundle_size}" \
     '
     .[$sha] = (
       (if (.[$sha] | type) == "object" then .[$sha] else {} end) +
@@ -73,26 +64,15 @@ jq \
         webpack: $webpack
       }
     )
-    ' "${STATS_FILE}" > "${TEMP_FILE}"
+    ' "${stats_file}" > "${temp_stats_file}"
 
-# Overwrite the original JSON file with the corrected version
-mv "${TEMP_FILE}" "${STATS_FILE}"
+mv "${temp_stats_file}" "${stats_file}"
 
-cd temp
-
-git config user.email "metamaskbot@users.noreply.github.com"
-
-git config user.name "MetaMask Bot"
-
-# Only add the JSON file
-git add stats/bundle_size_data.json
-
-git commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
+git -C "${temp_dir}" config user.email "metamaskbot@users.noreply.github.com"
+git -C "${temp_dir}" config user.name "MetaMask Bot"
+git -C "${temp_dir}" add stats/bundle_size_data.json
+git -C "${temp_dir}" commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_bundlesize_stats"
 
-git push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" main
-
-cd ..
-
-rm -rf temp
+git -C "${temp_dir}" push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" main

@@ -669,7 +669,7 @@ function getOptions(
       array: false,
       default: false,
       description:
-        'Display full webpack stats after building and generate bundle analyzer artifacts',
+        'Display full webpack stats after building and generate bundle analyzer and bundle-size stats artifacts',
       group: toOrange('Options:'),
       type: 'boolean',
     },

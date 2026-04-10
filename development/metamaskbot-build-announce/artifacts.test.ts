@@ -13,10 +13,10 @@ describe('getArtifactLinks', () => {
     );
 
     expect(links.bundleSizeStats.browserify.url).toBe(
-      `${HOST}/bundle-size/browserify/bundle_size.json`,
+      `${HOST}/bundle-size/browserify/bundle_size_stats.json`,
     );
     expect(links.bundleSizeStats.webpack.url).toBe(
-      `${HOST}/bundle-size/webpack/bundle_size.json`,
+      `${HOST}/bundle-size/webpack/bundle_size_stats.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -102,10 +102,10 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/browserify/bundle_size.json">Browserify Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/browserify/bundle_size_stats.json">Browserify Bundle Size Stats</a>`,
     );
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/webpack/bundle_size.json">Webpack Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/webpack/bundle_size_stats.json">Webpack Bundle Size Stats</a>`,
     );
   });
 });

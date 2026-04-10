@@ -114,8 +114,8 @@ jobs:
         if: ${{ contains(inputs.build-name, 'mv2') }}
         run: yarn mozilla-lint
 
-      - name: Upload bundle stats to S3
-        if: ${{ inputs.stats && contains(inputs.build-name, 'webpack') && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+      - name: Upload bundle analyzer artifacts to S3
+        if: ${{ inputs.stats && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -124,7 +124,7 @@ jobs:
           path: dist/bundle-analyzer
 
       - name: Remove bundle analyzer HTML report from dist
-        if: ${{ inputs.stats && contains(inputs.build-name, 'webpack') && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ inputs.stats && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         run: rm -f dist/bundle-analyzer/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'

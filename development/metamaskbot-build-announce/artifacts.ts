@@ -6,10 +6,13 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../shared/constants/benchmarks';
+import {
+  BUNDLE_SIZE_SUMMARY_FILE,
+  WEBPACK_BUNDLE_ANALYZER_REPORT,
+  type BundleSizeBundler,
+} from '../lib/bundle-size';
 
 type ArtifactLink = { url: string; label: string };
-
-export type BundleSizeBundler = 'browserify' | 'webpack';
 
 type FlatArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
@@ -50,11 +53,11 @@ export function getArtifactLinks(
 ): ArtifactLinks {
   const bundleSizeStats: BundleSizeArtifactLinkMap = {
     browserify: {
-      url: `${hostUrl}/bundle-size/browserify/bundle_size.json`,
+      url: `${hostUrl}/bundle-size/browserify/${BUNDLE_SIZE_SUMMARY_FILE}`,
       label: 'Browserify Bundle Size Stats',
     },
     webpack: {
-      url: `${hostUrl}/bundle-size/webpack/bundle_size.json`,
+      url: `${hostUrl}/bundle-size/webpack/${BUNDLE_SIZE_SUMMARY_FILE}`,
       label: 'Webpack Bundle Size Stats',
     },
   };
@@ -65,7 +68,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Data',
     },
     bundleAnalyzer: {
-      url: `${hostUrl}/build-dist-webpack/bundle-analyzer/report.html`,
+      url: `${hostUrl}/build-dist-webpack/${WEBPACK_BUNDLE_ANALYZER_REPORT}`,
       label: 'Bundle Analyzer',
     },
     interactionStats: {

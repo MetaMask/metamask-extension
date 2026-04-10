@@ -169,14 +169,50 @@ ${Object.entries(env)
       'use-snow should not be chunked',
     );
     assert.strictEqual(
+      runtimeChunk.name({ name: 'home' }),
+      'runtime-ui',
+      'UI entrypoints should use the UI runtime chunk',
+    );
+    assert.strictEqual(
+      runtimeChunk.name({ name: 'offscreen' }),
+      'runtime-auxiliary-pages',
+      'auxiliary pages should use the auxiliary-page runtime chunk',
+    );
+    assert.strictEqual(
       runtimeChunk.name({ name: '< random >' }),
-      'runtime',
-      'other names should be chunked',
+      false,
+      'unknown chunk names should remain self-contained',
     );
     assert.strictEqual(
       runtimeChunk.name({}),
-      'runtime',
-      'chunks without a name name should be chunked',
+      false,
+      'unnamed chunks should remain self-contained',
+    );
+
+    assert.deepStrictEqual(
+      Object.keys(
+        options.optimization.splitChunks?.cacheGroups ?? {},
+      ).toSorted(),
+      [
+        'auxiliaryPagesJs',
+        'auxiliaryPagesVendor',
+        'backgroundJs',
+        'backgroundVendor',
+        'commonJs',
+        'commonVendor',
+        'default',
+        'defaultVendors',
+        'uiJs',
+        'uiVendor',
+      ],
+    );
+    assert.strictEqual(
+      options.optimization.splitChunks?.cacheGroups?.default,
+      false,
+    );
+    assert.strictEqual(
+      options.optimization.splitChunks?.cacheGroups?.defaultVendors,
+      false,
     );
 
     const manifestPlugin = options.plugins.find(
@@ -203,7 +239,6 @@ ${Object.entries(env)
       },
       'chrome',
     );
-    console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
       manifest_version: 3,
       name: 'name',
@@ -298,41 +333,31 @@ ${Object.entries(env)
       'Progress plugin should be absent',
     );
 
-    const bundleAnalyzerPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
+    const bundleAnalyzerReportPlugin = instance.options.plugins.find(
+      (plugin) =>
+        plugin && plugin.constructor.name === 'BundleAnalyzerReportPlugin',
     );
     assert.ok(
-      bundleAnalyzerPlugin,
-      'BundleAnalyzerPlugin should be present when --stats is enabled',
+      bundleAnalyzerReportPlugin,
+      'BundleAnalyzerReportPlugin should be present when --stats is enabled',
     );
   });
 
-  it('should include BundleAnalyzerPlugin and stats output when --stats is passed', () => {
+  it('should include bundle analyzer reporting plugins when --stats is passed', () => {
     const config: Configuration = getWebpackConfig(['--stats']);
     const instance = getWebpackInstance(config);
-    const bundleAnalyzerPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
-    ) as WebpackPluginInstance & {
-      opts?: {
-        analyzerMode?: string;
-        openAnalyzer?: boolean;
-        generateStatsFile?: boolean;
-        reportFilename?: string;
-        statsFilename?: string;
-      };
-    };
-    assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
-    assert.strictEqual(bundleAnalyzerPlugin.opts?.analyzerMode, 'static');
-    assert.strictEqual(bundleAnalyzerPlugin.opts?.openAnalyzer, false);
-    assert.strictEqual(bundleAnalyzerPlugin.opts?.generateStatsFile, true);
-    assert.strictEqual(
-      bundleAnalyzerPlugin.opts?.reportFilename,
-      'bundle-analyzer/report.html',
+    const bundleAnalyzerReportPlugin = instance.options.plugins.find(
+      (plugin) =>
+        plugin && plugin.constructor.name === 'BundleAnalyzerReportPlugin',
     );
-    assert.strictEqual(
-      bundleAnalyzerPlugin.opts?.statsFilename,
-      'bundle-analyzer/stats.json',
+    const bundleSizeStatsPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleSizeStatsPlugin',
     );
+    assert.ok(
+      bundleAnalyzerReportPlugin,
+      'BundleAnalyzerReportPlugin should be present',
+    );
+    assert.ok(bundleSizeStatsPlugin, 'BundleSizeStatsPlugin should be present');
   });
 
   it('should allow disabling source maps', () => {

@@ -474,10 +474,18 @@ jobs:
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
       - name: Measure browserify bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --bundler browserify --dist-dir artifacts/build-dist-browserify/dist/chrome --out test-artifacts/chrome/browserify
+        run: >-
+          yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts
+          --bundler browserify
+          --dist-dir artifacts/build-dist-browserify/dist/chrome
+          --out test-artifacts/chrome/browserify
 
       - name: Measure webpack bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --bundler webpack --dist-dir artifacts/build-dist-webpack/dist/chrome --stats-file artifacts/build-dist-webpack/dist/chrome/bundle-analyzer/stats.json --out test-artifacts/chrome/webpack
+        run: >-
+          yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts
+          --bundler webpack
+          --dist-dir artifacts/build-dist-webpack/dist/chrome
+          --out test-artifacts/chrome/webpack
 
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
