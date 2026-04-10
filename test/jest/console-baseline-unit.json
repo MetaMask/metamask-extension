@@ -389,6 +389,11 @@
       "MetaMask: Background connection not initialized": 73,
       "Reselect: Identity function warnings": 1
     },
+    "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx": {
+      "error: Error handled by React Router": 1,
+      "error: Error: Uncaught [ReferenceError: TextColor is": 1,
+      "error: React Router caught the following": 1
+    },
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },

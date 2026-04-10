@@ -235,7 +235,7 @@ export const MultichainAccountMenu = ({
         textKey: 'remove',
         iconName: DesignSystemIconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: TextColor.ErrorDefault,
+        textColor: DesignSystemTextColor.ErrorDefault,
       });
     }
 

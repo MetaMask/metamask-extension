@@ -120,7 +120,7 @@ describe('AddMultichainAccount', () => {
 
     // Check background color of icon box
     const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
-    expect(iconBox).toHaveClass('mm-box--background-color-transparent');
+    expect(iconBox).toHaveClass('bg-transparent');
   });
 
   it('prevents multiple clicks during loading state', () => {
@@ -170,7 +170,7 @@ describe('AddMultichainAccount', () => {
 
     // Check background color of icon box
     const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
-    expect(iconBox).toHaveClass('mm-box--background-color-info-muted');
+    expect(iconBox).toHaveClass('bg-info-muted');
   });
 
   it('fires trace and endTrace for CreateMultichainAccount on click', async () => {

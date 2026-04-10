@@ -35,7 +35,7 @@ const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
-const errorColorSelector = '.mm-box--color-error-default';
+const errorColorSelector = '.text-error-default';
 
 const mockState = {
   metamask: {
