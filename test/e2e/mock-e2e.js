@@ -160,7 +160,7 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @param options.unifiedEvmAccountsApiBalances
+ * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state).
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(

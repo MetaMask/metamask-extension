@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -55,7 +56,7 @@ describe('Privacy Mode', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer) =>
+        testSpecificMock: (mockServer: Mockttp) =>
           mockPriceApi(mockServer, MOCK_ETH_CONVERSION_RATE),
       },
       async ({ driver }: { driver: Driver }) => {
