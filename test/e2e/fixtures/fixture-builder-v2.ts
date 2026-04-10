@@ -33,6 +33,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -156,20 +157,14 @@ class FixtureBuilderV2 {
     assetsBalance = {},
     assetsPrice = {},
     assetsInfo = {},
-  }: {
-    assetsBalance?: Record<string, Record<string, { amount: string }>>;
-    assetsPrice?: Record<string, unknown>;
-    assetsInfo?: Record<string, unknown>;
-  } = {}): this {
+    selectedCurrency,
+  }: Partial<AssetsControllerState> = {}): this {
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
       (this.fixture.data as Record<string, unknown>).AssetsController = {};
     }
     const ac = (this.fixture.data as Record<string, unknown>)
-      .AssetsController as {
-      assetsBalance: Record<string, Record<string, { amount: string }>>;
-      assetsPrice: Record<string, unknown>;
-      assetsInfo: Record<string, unknown>;
-    };
+      .AssetsController as AssetsControllerState;
+
     if (!ac.assetsBalance) {
       ac.assetsBalance = {};
     }
@@ -178,6 +173,9 @@ class FixtureBuilderV2 {
     }
     if (!ac.assetsInfo) {
       ac.assetsInfo = {};
+    }
+    if (selectedCurrency) {
+      ac.selectedCurrency = selectedCurrency;
     }
     merge(ac.assetsBalance, assetsBalance);
     merge(ac.assetsPrice, assetsPrice);

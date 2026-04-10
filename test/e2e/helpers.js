@@ -162,7 +162,6 @@ function getUnifiedMainnetNativeEthHumanForFiatTotal(
 /**
  *
  * @param {object} options
- * @param {UnifiedEvmAccountsApiBalances} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state).
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {
