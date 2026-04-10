@@ -250,10 +250,7 @@ export {
 } from './decrypt-message-controller-messenger';
 export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
-export type {
-  EncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerInitMessenger,
-} from './encryption-public-key-controller-messenger';
+export type { EncryptionPublicKeyControllerInitMessenger } from './encryption-public-key-controller-messenger';
 export {
   getEncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
