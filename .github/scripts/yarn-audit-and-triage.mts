@@ -775,19 +775,23 @@ function main() {
     // The audit-diff step will handle pass/fail for PRs.
     // On push-to-main, this step always passes (baseline is uploaded).
     // No verdict heading here — the diff step writes the real pass/fail.
+    // Write details to a temp file so the workflow can append it AFTER the
+    // diff step's output, keeping the summary in logical order:
+    //   1. diff verdict  2. full details
     githubAnnotate(
       'notice',
       `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
     );
+    writeFileSync('/tmp/audit-details.md', detailsLines.join('\n'), 'utf8');
   }
 
-  writeStepSummary(
-    [
-      ...verdictLines,
-      ...(verdictLines.length > 0 ? [''] : []),
-      ...detailsLines,
-    ].join('\n'),
-  );
+  // When there's no diff step (no-baseline or release branch), write
+  // verdict + details together. When the diff step runs, the details
+  // are in /tmp/audit-details.md and appended by the workflow after the
+  // diff step writes its verdict to the summary.
+  if (verdictLines.length > 0) {
+    writeStepSummary([...verdictLines, '', ...detailsLines].join('\n'));
+  }
 }
 
 try {

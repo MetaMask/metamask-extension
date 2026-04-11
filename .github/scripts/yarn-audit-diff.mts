@@ -148,4 +148,13 @@ try {
 } catch (error) {
   console.error(error);
   process.exitCode = 1;
+} finally {
+  // Append the full advisory details written by yarn-audit-and-triage.mts,
+  // so they appear after the diff verdict in the step summary.
+  try {
+    const details = readFileSync('/tmp/audit-details.md', 'utf8');
+    writeStepSummary(`\n${details}`);
+  } catch {
+    // File may not exist (e.g. triage step failed before writing it).
+  }
 }
