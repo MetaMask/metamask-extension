@@ -59,7 +59,7 @@ jobs:
       # merge queue it has already passed the diff check. Any new advisory
       # that appeared on main since then wasn't introduced by this PR and
       # will be surfaced by the next push-to-main run.
-      - name: Find latest push-to-main run with baseline artifact
+      - name: Find latest completed push-to-main run
         id: find-baseline-run
         if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true

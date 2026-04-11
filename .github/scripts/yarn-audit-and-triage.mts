@@ -551,7 +551,12 @@ function main() {
   console.log(JSON.stringify(triage, null, 2));
 
   // Step summary
-  const summaryTitle = `All advisories on this branch: ${advisories.length} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;
+  const mode = noBaseline
+    ? 'no baseline'
+    : triage.isReleaseBranch
+      ? 'release branch'
+      : 'baseline available';
+  const summaryTitle = `yarn audit (${mode}): ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;
 
   const summaryLines: string[] = [];
   summaryLines.push(`<details>`);
@@ -734,12 +739,45 @@ function main() {
     );
 
     if (blockingProdAdvisories.length > 0) {
+      githubAnnotate(
+        'error',
+        `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate+ severity (no baseline — could not run diff).`,
+      );
+      writeStepSummary(
+        `\n\n### yarn audit: **FAILED**\n\nNo baseline artifact available — could not diff against main. Fell back to \`yarn audit --severity moderate --environment production\` criteria.\n\n**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.\n`,
+      );
       process.exitCode = 1;
+    } else {
+      githubAnnotate(
+        'notice',
+        `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev), 0 blocking (no baseline — could not run diff).`,
+      );
+      writeStepSummary(
+        `\n\n### yarn audit: **passed**\n\nNo baseline artifact available — could not diff against main. Fell back to \`yarn audit --severity moderate --environment production\` criteria.\n\n**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.\n`,
+      );
     }
   } else if (triage.decisions.blockReleaseCandidate) {
     // Release branches with any production advisory are blocked immediately;
     // the audit-diff step handles non-release PRs.
+    githubAnnotate(
+      'error',
+      `yarn audit FAILED: ${prodAdvisories.length} production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} on release branch — RC blocked.`,
+    );
+    writeStepSummary(
+      `\n\n### yarn audit: **FAILED**\n\nRelease branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.\n`,
+    );
     process.exitCode = 1;
+  } else {
+    // Normal path: baseline exists, not a release branch.
+    // The audit-diff step will handle pass/fail for PRs.
+    // On push-to-main, this step always passes (baseline is uploaded).
+    githubAnnotate(
+      'notice',
+      `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
+    );
+    writeStepSummary(
+      `\n\n### yarn audit: **passed**\n\nBaseline available — the audit diff step will check whether this PR introduces new advisories.\n`,
+    );
   }
 }
 
