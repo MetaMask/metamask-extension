@@ -14,24 +14,91 @@ import {
   AUDIT_CURRENT_FILE,
   BLOCKING_SEVERITIES,
   type ParsedAdvisory,
-  formatAdvisoryTree,
 } from './shared/audit-utils.mts';
 
 const BASELINE_URL =
   'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/audit-baseline/audit-baseline.json';
 
+const YARN_SHELL = process.platform === 'win32';
+
+/**
+ * Run `yarn npm audit` in pretty (non-JSON) mode and return the colored
+ * terminal output exactly as yarn renders it.
+ */
+function captureNativeAudit(): string {
+  const result = spawnSync(
+    'yarn',
+    [
+      'npm',
+      'audit',
+      '--recursive',
+      '--environment',
+      'production',
+      '--severity',
+      'moderate',
+    ],
+    {
+      encoding: 'utf8',
+      shell: YARN_SHELL,
+      env: { ...process.env, FORCE_COLOR: '1' },
+    },
+  );
+  return `${result.stdout ?? ''}${result.stderr ?? ''}`;
+}
+
 async function main() {
   mkdirSync('.tmp', { recursive: true });
 
   // -----------------------------------------------------------------------
-  // Step 1 — Run the triage script to produce .tmp/audit-current.json
+  // Step 1 — Download baseline from CloudFront
+  // -----------------------------------------------------------------------
+  console.log('Downloading baseline from main…\n');
+  let baseline: ParsedAdvisory[] | null = null;
+  try {
+    const response = await fetch(BASELINE_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const text = await response.text();
+    const parsed = JSON.parse(text) as unknown;
+    if (!Array.isArray(parsed)) {
+      throw new Error('Baseline is not a JSON array');
+    }
+    baseline = parsed as ParsedAdvisory[];
+    writeFileSync(
+      AUDIT_BASELINE_FILE,
+      JSON.stringify(baseline, null, 2),
+      'utf8',
+    );
+  } catch (error) {
+    console.log(`Could not download baseline: ${error}\n`);
+  }
+
+  // -----------------------------------------------------------------------
+  // No baseline — just run `yarn npm audit` natively (single audit run)
+  // -----------------------------------------------------------------------
+  if (!baseline) {
+    console.log('No baseline available — falling back to absolute audit.\n');
+    const nativeOutput = captureNativeAudit();
+    if (nativeOutput.trim()) {
+      process.stdout.write(nativeOutput);
+      process.exitCode = 1;
+    } else {
+      console.log(
+        'yarn audit: passed — no production vulnerabilities at moderate or higher severity.',
+      );
+    }
+    return;
+  }
+
+  // -----------------------------------------------------------------------
+  // Step 2 — Run the triage script to produce .tmp/audit-current.json
+  // (only needed when we have a baseline to diff against)
   // -----------------------------------------------------------------------
   console.log('Running yarn audit…\n');
   spawnSync('yarn', ['tsx', '.github/scripts/yarn-audit-and-triage.mts'], {
-    // stdout is piped (suppressed) — it contains CI-formatted JSON + annotations.
-    // stderr is inherited — real errors are visible.
     stdio: ['inherit', 'pipe', 'inherit'],
-    shell: true,
+    shell: YARN_SHELL,
     env: {
       ...process.env,
       CHECK_DEPRECATIONS: 'false',
@@ -61,49 +128,6 @@ async function main() {
   }
 
   // -----------------------------------------------------------------------
-  // Step 2 — Download baseline from CloudFront
-  // -----------------------------------------------------------------------
-  console.log('Downloading baseline from main…\n');
-  let baseline: ParsedAdvisory[];
-  try {
-    const response = await fetch(BASELINE_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    const text = await response.text();
-    baseline = JSON.parse(text) as ParsedAdvisory[];
-    if (!Array.isArray(baseline)) {
-      throw new Error('Baseline is not a JSON array');
-    }
-    writeFileSync(
-      AUDIT_BASELINE_FILE,
-      JSON.stringify(baseline, null, 2),
-      'utf8',
-    );
-  } catch (error) {
-    console.log(`Could not download baseline: ${error}\n`);
-    console.log(
-      'No baseline available — showing absolute results (severity >= moderate).\n',
-    );
-    const blocking = current.filter(
-      (a) =>
-        a.affectsProduction && BLOCKING_SEVERITIES.has(a.effectiveSeverity),
-    );
-    if (blocking.length === 0) {
-      console.log(
-        'yarn audit: passed — no production vulnerabilities at moderate or higher severity.',
-      );
-    } else {
-      console.log(
-        `yarn audit: FAILED — ${blocking.length} production vulnerabilit${blocking.length === 1 ? 'y' : 'ies'}\n`,
-      );
-      console.log(blocking.map(formatAdvisoryTree).join('\n\n'));
-      process.exitCode = 1;
-    }
-    return;
-  }
-
-  // -----------------------------------------------------------------------
   // Step 3 — Diff: new advisories at moderate+ severity (by GHSA ID)
   // -----------------------------------------------------------------------
   const baselineIds = new Set(
@@ -123,14 +147,24 @@ async function main() {
     return;
   }
 
-  // New advisories found — fail.
+  // New advisories found — re-run native audit for colored output, then
+  // print only the blocks that correspond to new advisory IDs.
+  const nativeOutput = captureNativeAudit();
+  const newIds = new Set(newAdvisories.map((a) => a.id));
+
+  // Split native output into per-advisory blocks (each starts with "└─").
+  const blocks = nativeOutput.split(/(?=└─)/);
+  const matchingBlocks = blocks.filter((block) => {
+    // Extract the ID from "ID: <number>" in the block (ignoring ANSI codes).
+    const idMatch = block.replace(/\x1b\[[0-9;]*m/g, '').match(/ID:\s*(\d+)/);
+    return idMatch && newIds.has(Number(idMatch[1]));
+  });
+
   console.log(
     `yarn audit: FAILED — ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'}\n`,
   );
-  console.log(
-    'Your dependency changes introduced new vulnerabilities:\n',
-  );
-  console.log(newAdvisories.map(formatAdvisoryTree).join('\n\n'));
+  console.log('Your dependency changes introduced new vulnerabilities:\n');
+  process.stdout.write(matchingBlocks.join('\n'));
   console.log(
     '\nIf a newer version of the affected package is available, upgrade to it.',
   );

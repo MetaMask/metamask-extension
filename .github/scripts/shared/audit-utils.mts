@@ -74,21 +74,28 @@ export const BLOCKING_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
 ]);
 
 // ---------------------------------------------------------------------------
-// Human-readable advisory tree (matches `yarn npm audit` output)
+// Human-readable advisory tree (plain text, for CI markdown summaries)
 // ---------------------------------------------------------------------------
 
-/** Format an advisory in the same tree style as `yarn npm audit`. */
+/** Display-friendly severity — reverses the internal medium→moderate normalization. */
+function displaySeverity(sev: YarnSeverity): string {
+  return sev === 'medium' ? 'moderate' : sev;
+}
+
+/** Format an advisory in the same tree style as `yarn npm audit` (plain text). */
 export function formatAdvisoryTree(a: ParsedAdvisory): string {
   const hasTreeVersions = a.treeVersions.length > 0;
   const hasDependents = a.dependents.length > 0;
   const hasSections = hasTreeVersions || hasDependents;
+
+  const sevDisplay = displaySeverity(a.effectiveSeverity);
 
   const lines: string[] = [];
   lines.push(`└─ ${a.moduleName}`);
   lines.push(`   ├─ ID: ${a.id ?? 'N/A'}`);
   lines.push(`   ├─ Issue: ${a.title}`);
   lines.push(`   ├─ URL: ${a.url}`);
-  lines.push(`   ├─ Severity: ${a.effectiveSeverity}`);
+  lines.push(`   ├─ Severity: ${sevDisplay}`);
   lines.push(
     `   ${hasSections ? '├' : '└'}─ Vulnerable Versions: ${a.vulnerableVersions}`,
   );
