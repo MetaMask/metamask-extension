@@ -22,6 +22,7 @@ import {
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import {
   getCompletedOnboarding,
+  getIsPasskeyRegistered,
   getIsWalletResetInProgress,
 } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
@@ -42,6 +43,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
+    isPasskeyRegistered: getIsPasskeyRegistered(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
   };
