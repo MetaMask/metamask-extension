@@ -38,6 +38,8 @@ export class PerpsDataChannel<TData> {
 
   private readonly name: string;
 
+  private generation = 0;
+
   constructor(options: PerpsDataChannelOptions<TData>) {
     this.initialValue = options.initialValue;
     this.cache = options.initialValue;
@@ -170,8 +172,14 @@ export class PerpsDataChannel<TData> {
     }
 
     this.isConnected = true;
+    const capturedGeneration = this.generation;
 
     this.unsubscribeFromSource = this.connectFn((data: TData) => {
+      // Skip if channel was reset since this connectFn started
+      if (this.generation !== capturedGeneration) {
+        return;
+      }
+
       // Update cache
       this.cache = data;
 
@@ -203,6 +211,7 @@ export class PerpsDataChannel<TData> {
    * Force disconnect and clear (used on account/network change)
    */
   reset(): void {
+    this.generation++;
     this.disconnect();
     this.clearCache();
     if (this.prewarmUnsubscribe) {
