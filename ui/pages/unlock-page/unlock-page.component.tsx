@@ -64,7 +64,6 @@ import { captureException } from '../../../shared/lib/sentry';
 import { PasskeyCeremonyExtensionAdapter } from '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
 import {
   generatePasskeyAuthenticationOptions,
-  isPasskeyEnrolled,
   unlockWithPasskey,
 } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
@@ -89,6 +88,7 @@ type UnlockPageProps = {
   resetWallet: () => Promise<void>;
   isPopup: boolean;
   isWalletResetInProgress: boolean;
+  isPasskeyRegistered: boolean;
 };
 
 type UnlockPageState = {
@@ -101,7 +101,6 @@ type UnlockPageState = {
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
   showPasswordForm: boolean;
-  passkeyAvailable: boolean;
   passkeyInProgress: boolean;
 };
 
@@ -205,6 +204,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * Indicates if the wallet is reset in progress
      */
     isWalletResetInProgress: PropTypes.bool,
+    /**
+     * Whether a passkey is registered
+     */
+    isPasskeyRegistered: PropTypes.bool,
   };
 
   private isUnlockViewMounted = true;
@@ -219,7 +222,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
     showPasswordForm: false,
-    passkeyAvailable: false,
     passkeyInProgress: false,
   };
 
@@ -247,7 +249,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
-      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
       const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
@@ -262,16 +263,28 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.isUnlockViewMounted = false;
   }
 
-  async componentDidMount() {
-    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-
-    let passkeyEnrolled = false;
-    try {
-      passkeyEnrolled = await isPasskeyEnrolled();
-      this.setState({ passkeyAvailable: passkeyEnrolled });
-    } catch {
-      this.setState({ passkeyAvailable: false });
+  componentDidUpdate(prevProps: UnlockPageProps) {
+    if (prevProps.isPasskeyRegistered && !this.props.isPasskeyRegistered) {
+      this.setState({ showPasswordForm: true });
+    } else if (
+      !prevProps.isPasskeyRegistered &&
+      this.props.isPasskeyRegistered
+    ) {
+      Promise.resolve().then(() => this.handlePasskeyUnlock());
     }
+  }
+
+  async componentDidMount() {
+    const {
+      isOnboardingCompleted,
+      isSocialLoginFlow,
+      isPasskeyRegistered: passkeyRegistered,
+    } = this.props;
+
+    this.setState((prev) => ({
+      showPasswordForm: passkeyRegistered ? prev.showPasswordForm : true,
+    }));
+
     if (isOnboardingCompleted) {
       await this.props.checkIsSeedlessPasswordOutdated();
     } else if (isSocialLoginFlow) {
@@ -293,8 +306,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
 
-    // Auto WebAuthn when the unlock screen loads and a passkey is enrolled.
-    if (passkeyEnrolled) {
+    // Auto WebAuthn when the unlock screen loads and a passkey is registered.
+    if (passkeyRegistered) {
       Promise.resolve().then(() => this.handlePasskeyUnlock());
     }
   }
@@ -575,8 +588,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     const { t } = this.context as UnlockPageContext;
     try {
-      const isEnrolled = await isPasskeyEnrolled();
-      if (!isEnrolled) {
+      if (!this.props.isPasskeyRegistered) {
         this.setState({
           error: t('passkeyUnlockFailed'),
           passkeyInProgress: false,
@@ -823,7 +835,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     width={BlockSize.Full}
                     marginBottom={4}
                   />
-                  {this.state.passkeyAvailable ? (
+                  {this.props.isPasskeyRegistered ? (
                     <ButtonIcon
                       variant={ButtonIconVariant.Filled}
                       ariaLabel={

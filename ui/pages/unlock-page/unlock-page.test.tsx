@@ -9,7 +9,6 @@ import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   generatePasskeyAuthenticationOptions,
-  isPasskeyEnrolled,
   unlockWithPasskey,
 } from '../../store/actions';
 import UnlockPageImport from '.';
@@ -67,7 +66,6 @@ jest.mock('../../store/actions.ts', () => ({
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
-  isPasskeyEnrolled: jest.fn().mockResolvedValue(false),
   generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
     challenge: 'AQ',
     allowCredentials: [{ id: 'AQ', type: 'public-key' }],
@@ -92,13 +90,12 @@ describe('Unlock Page', () => {
   process.env.METAMASK_BUILD_TYPE = 'main';
 
   const mockState = {
-    metamask: {},
+    metamask: { passkeyRecord: null },
   };
   const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(isPasskeyEnrolled).mockResolvedValue(false);
   });
 
   it('should match snapshot', () => {
@@ -112,15 +109,12 @@ describe('Unlock Page', () => {
       onSubmit: jest.fn(),
     };
 
-    const { queryByTestId, getByTestId } = renderWithProvider(
+    const { queryByTestId, findByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
     );
 
-    const usePasswordButton = getByTestId('unlock-use-password-button');
-    fireEvent.click(usePasswordButton);
-
-    const passwordField = queryByTestId('unlock-password');
+    const passwordField = await findByTestId('unlock-password');
     const loginButton = queryByTestId('unlock-submit');
 
     expect(passwordField).toBeInTheDocument();
@@ -140,22 +134,21 @@ describe('Unlock Page', () => {
     expect(props.onSubmit).toHaveBeenCalled();
   });
 
-  it('clicks imports seed button', () => {
+  it('clicks imports seed button', async () => {
     const mockStateNonUnlocked = {
       metamask: { completedOnboarding: true },
     };
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByText, findByTestId } = renderWithProvider(
       <UnlockPage />,
       store,
     );
 
-    const usePasswordButton = getByTestId('unlock-use-password-button');
-    fireEvent.click(usePasswordButton);
+    await findByTestId('unlock-password');
 
     fireEvent.click(getByText(messages.forgotPassword.message));
 
-    const resetPasswordButton = getByTestId('reset-password-modal-button');
+    const resetPasswordButton = await findByTestId('reset-password-modal-button');
 
     expect(resetPasswordButton).toBeInTheDocument();
 
@@ -181,14 +174,13 @@ describe('Unlock Page', () => {
       forceUpdateMetamaskState: mockForceUpdateMetamaskState,
     };
 
-    const { queryByText, getByTestId } = renderWithProvider(
+    const { queryByText, findByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       store,
       '/unlock',
     );
 
-    const usePasswordButton = getByTestId('unlock-use-password-button');
-    fireEvent.click(usePasswordButton);
+    await findByTestId('unlock-password');
 
     fireEvent.click(
       queryByText(messages.useDifferentLoginMethod.message) as HTMLElement,
@@ -234,7 +226,7 @@ describe('Unlock Page', () => {
       from: { pathname: intendedPath, search: intendedSearch },
     };
 
-    const { queryByTestId, getByTestId } = renderWithProvider(
+    const { queryByTestId, findByTestId } = renderWithProvider(
       <UnlockPage />,
       store,
       {
@@ -243,10 +235,9 @@ describe('Unlock Page', () => {
       } as unknown as string,
     );
 
-    const usePasswordButton = getByTestId('unlock-use-password-button');
-    fireEvent.click(usePasswordButton);
-
-    const passwordField = queryByTestId('unlock-password') as HTMLElement;
+    const passwordField = (await findByTestId(
+      'unlock-password',
+    )) as HTMLElement;
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;
     fireEvent.change(passwordField, { target: { value: 'a-password' } });
     fireEvent.click(loginButton);
@@ -269,16 +260,15 @@ describe('Unlock Page', () => {
     });
     const mockForceUpdateMetamaskState = jest.fn();
 
-    const { queryByTestId, getByTestId } = renderWithProvider(
+    const { queryByTestId, findByTestId } = renderWithProvider(
       <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
       store,
       '/unlock',
     );
 
-    const usePasswordButton = getByTestId('unlock-use-password-button');
-    fireEvent.click(usePasswordButton);
-
-    const passwordField = queryByTestId('unlock-password') as HTMLElement;
+    const passwordField = (await findByTestId(
+      'unlock-password',
+    )) as HTMLElement;
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;
     fireEvent.change(passwordField, { target: { value: 'a-password' } });
     fireEvent.click(loginButton);
@@ -288,10 +278,27 @@ describe('Unlock Page', () => {
     });
   });
 
-  it('starts passkey unlock on mount when a passkey is enrolled', async () => {
-    jest.mocked(isPasskeyEnrolled).mockResolvedValue(true);
+  it('shows password unlock when no passkey is registered', async () => {
+    const { queryByTestId } = renderWithProvider(<UnlockPage />, mockStore);
+
+    await waitFor(() => {
+      expect(queryByTestId('unlock-biometrics')).not.toBeInTheDocument();
+      expect(queryByTestId('unlock-password')).toBeInTheDocument();
+    });
+  });
+
+  it('starts passkey unlock on mount when a passkey is registered', async () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
-    const store = configureMockStore([thunk])({ metamask: {} });
+    const store = configureMockStore([thunk])({
+      metamask: {
+        passkeyRecord: {
+          credentialId: 'cred',
+          derivationMethod: 'prf',
+          wrappedEncryptionKey: 'e30',
+          iv: 'e30',
+        },
+      },
+    });
 
     renderWithProvider(
       <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
@@ -300,7 +307,6 @@ describe('Unlock Page', () => {
     );
 
     await waitFor(() => {
-      expect(isPasskeyEnrolled).toHaveBeenCalled();
       expect(generatePasskeyAuthenticationOptions).toHaveBeenCalled();
       expect(unlockWithPasskey).toHaveBeenCalled();
     });

@@ -29,34 +29,58 @@ exports[`Unlock Page should match snapshot 1`] = `
       <div
         class="flex flex-col items-center min-h-[250px] w-full"
       >
-        <div
-          class="flex flex-col gap-4 items-center w-full"
+        <form
+          class="w-full flex flex-col items-center"
         >
+          <div
+            class="flex flex-row gap-2 items-center justify-center w-full"
+          >
+            <div
+              class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+              >
+                <input
+                  aria-label="Password"
+                  autocomplete="off"
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                  data-testid="unlock-password"
+                  focused="true"
+                  id="password"
+                  placeholder="Enter your password"
+                  type="password"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-            data-testid="unlock-biometrics"
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full mb-4"
+            data-testid="unlock-submit"
+            disabled=""
+            role="button"
+            type="submit"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Unlock
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default mb-4 w-full text-primary-default"
+            data-testid="unlock-forgot-password-button"
             role="button"
             type="button"
           >
             <span
               class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              Unlock with biometrics
+              Forgot password?
             </span>
           </button>
-          <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-primary-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-            data-testid="unlock-use-password-button"
-            role="button"
-            type="button"
-          >
-            <span
-              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-            >
-              Use password
-            </span>
-          </button>
-        </div>
+        </form>
       </div>
     </div>
     <div

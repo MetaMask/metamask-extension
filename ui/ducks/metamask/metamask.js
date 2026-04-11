@@ -644,3 +644,11 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
 }
+
+/**
+ * @param {object} state - Redux root state
+ * @returns {boolean} True when `PasskeyController` has a persisted passkey (`passkeyRecord`).
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
