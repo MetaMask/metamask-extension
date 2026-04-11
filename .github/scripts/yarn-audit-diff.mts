@@ -8,13 +8,22 @@ import {
 } from './shared/audit-utils.mts';
 
 // ---------------------------------------------------------------------------
+// Pipeline contract
+// ---------------------------------------------------------------------------
+// This script is step 2 of the audit pipeline (PR only):
+//   1. yarn-audit-and-triage.mts  → writes AUDIT_CURRENT_FILE & AUDIT_DETAILS_FILE
+//   2. yarn-audit-diff.mts (this) → reads both, compares current vs baseline
+//
+// The workflow only invokes this script when a real baseline was downloaded
+// from a completed push-to-main run. The `finally` block appends the details
+// file (written by step 1) to the step summary after the diff verdict.
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function readAdvisories(filePath: string | null): ParsedAdvisory[] | null {
-  if (!filePath) {
-    return null;
-  }
+function readAdvisories(filePath: string): ParsedAdvisory[] | null {
   try {
     const text = readFileSync(filePath, 'utf8').trim();
     if (!text || text === '[]') {
@@ -45,20 +54,13 @@ async function main() {
   }
 
   const baseline = readAdvisories(AUDIT_BASELINE_FILE);
-  const baselineIsEmpty = !baseline || baseline.length === 0;
-
-  // ------------------------------------------------------------------
-  // Missing / empty baseline
-  // ------------------------------------------------------------------
-  if (baselineIsEmpty) {
-    // No baseline = treat all current advisories as new → block.
+  if (!baseline || baseline.length === 0) {
+    // Should not happen — the workflow only runs this step when the baseline
+    // was successfully downloaded. Log a warning and pass through.
     console.log(
-      `::warning::No baseline found. Treating all ${current.length} advisory/advisories as new.`,
+      '::warning::Baseline file is empty or missing; nothing to diff.',
     );
-    writeStepSummary(
-      `\n> **Audit diff:** No baseline — treating all **${current.length}** advisor${current.length === 1 ? 'y' : 'ies'} as new.\n`,
-    );
-    process.exitCode = 1;
+    writeStepSummary(`\n> **Audit diff:** Baseline empty — skipping diff.\n`);
     return;
   }
 

@@ -12,6 +12,20 @@ import {
   writeStepSummary,
 } from './shared/audit-utils.mts';
 
+// ---------------------------------------------------------------------------
+// Pipeline contract
+// ---------------------------------------------------------------------------
+// This script is step 1 of the audit pipeline:
+//   1. yarn-audit-and-triage.mts (this) → runs `yarn audit`, classifies
+//      advisories, writes AUDIT_CURRENT_FILE (JSON) and optionally
+//      AUDIT_DETAILS_FILE (markdown for the step summary).
+//   2. yarn-audit-diff.mts → compares current vs baseline, fails on new
+//      advisories. Appends AUDIT_DETAILS_FILE to its step summary.
+//
+// When no baseline is available (NO_BASELINE=true), this script handles
+// the pass/fail verdict itself using production-moderate+ criteria.
+// ---------------------------------------------------------------------------
+
 type YarnAuditTreeLeaf = {
   ID?: number;
   Issue?: string;
@@ -29,16 +43,6 @@ type YarnAuditTreeNode = {
 
 type DeprecationFinding = {
   message: string;
-};
-
-type TriageSummary = {
-  branch: string;
-  isReleaseBranch: boolean;
-  advisories: ParsedAdvisory[];
-  deprecations: DeprecationFinding[];
-  decisions: {
-    blockReleaseCandidate: boolean;
-  };
 };
 
 const DEFAULT_BRANCH = 'main';
@@ -402,27 +406,257 @@ function formatAdvisoryLine(advisory: ParsedAdvisory): string {
   return `[${scope}] ${sev}${downgraded} ${advisory.moduleName} ${id} — ${advisory.title}${url}`;
 }
 
-function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
-  // Rules:
-  // - high sev development dependency advisory:
-  //   - if Issue includes `ReDoS` or `DoS`, recategorize as low
-  //   - otherwise: yarn-audit-diff.mts exits non-zero if it's a new advisory
-  // - low/medium sev development dependency advisory OR any deprecation:
-  //   - Create issue (push to main only), highlight in daily Slack message
-  // - Any severity production dependency advisory:
-  //   - Block RC until resolved
+// ---------------------------------------------------------------------------
+// Tracking issue creation (push-to-main only)
+// ---------------------------------------------------------------------------
 
-  const blockReleaseCandidate =
-    summary.isReleaseBranch &&
-    summary.advisories.some((advisory) => advisory.affectsProduction);
+function maybeCreateTrackingIssue(
+  trackOnlyDev: ParsedAdvisory[],
+  deprecations: DeprecationFinding[],
+): void {
+  if (
+    !CREATE_TRACKING_ISSUE ||
+    (trackOnlyDev.length === 0 && deprecations.length === 0) ||
+    process.env.GITHUB_EVENT_NAME !== 'push' ||
+    BRANCH !== 'main'
+  ) {
+    return;
+  }
 
-  return {
-    ...summary,
-    decisions: {
-      blockReleaseCandidate,
-    },
-  };
+  const repo = getRepoFromEnv();
+  if (!repo) {
+    githubAnnotate(
+      'warning',
+      'CREATE_TRACKING_ISSUE=true but missing GITHUB_REPOSITORY; skipping issue creation.',
+    );
+    return;
+  }
+
+  const token = getGitHubToken();
+  const trackingKey = sha256Short(
+    JSON.stringify({
+      advisories: trackOnlyDev
+        .map((a) => ({
+          id: a.id,
+          moduleName: a.moduleName,
+          severity: a.effectiveSeverity,
+          url: a.url,
+          rule: a.matchedIssueRule,
+        }))
+        .sort((a, b) => `${a.moduleName}`.localeCompare(`${b.moduleName}`)),
+      deprecations: [...deprecations]
+        .map((d) => d.message)
+        .sort((a, b) => a.localeCompare(b)),
+    }),
+  );
+
+  const title = `Dependency audit triage (${trackingKey})`;
+  const existingNumber = searchIssueByTitle({
+    owner: repo.owner,
+    repo: repo.repo,
+    title,
+    token,
+  });
+
+  if (existingNumber) {
+    githubAnnotate(
+      'notice',
+      `Tracking issue already exists: https://github.com/${repo.owner}/${repo.repo}/issues/${existingNumber}`,
+    );
+    return;
+  }
+
+  const bodyLines: string[] = [
+    'Automated dependency audit triage.',
+    '',
+    `- Branch: ${BRANCH}`,
+    `- Release branch: ${IS_RELEASE_BRANCH}`,
+    '',
+  ];
+
+  if (trackOnlyDev.length > 0) {
+    bodyLines.push('## Dev advisories (track)');
+    for (const advisory of trackOnlyDev) {
+      bodyLines.push(`- ${formatAdvisoryLine(advisory)}`);
+    }
+    bodyLines.push('');
+  }
+
+  if (deprecations.length > 0) {
+    bodyLines.push('## Deprecations');
+    for (const dep of deprecations) {
+      bodyLines.push(`- ${dep.message}`);
+    }
+    bodyLines.push('');
+  }
+
+  bodyLines.push('## Action');
+  bodyLines.push('- Triage and plan remediation.');
+  bodyLines.push('- Include in daily Slack dependency triage message.');
+
+  try {
+    const issueNumber = createIssueViaRest({
+      owner: repo.owner,
+      repo: repo.repo,
+      title,
+      body: bodyLines.join('\n'),
+      token,
+    });
+    githubAnnotate(
+      'notice',
+      `Created tracking issue: https://github.com/${repo.owner}/${repo.repo}/issues/${issueNumber}`,
+    );
+  } catch (error) {
+    githubAnnotate(
+      'warning',
+      `Failed to create tracking issue (check token permissions): ${String(error)}`,
+    );
+  }
 }
+
+// ---------------------------------------------------------------------------
+// Summary & verdict (writes step summary and/or details file)
+// ---------------------------------------------------------------------------
+
+function buildSummaryAndVerdict({
+  advisories,
+  prodAdvisories,
+  devAdvisories,
+  deprecations,
+  downgraded,
+  trackOnlyDev,
+  blockReleaseCandidate,
+}: {
+  advisories: ParsedAdvisory[];
+  prodAdvisories: ParsedAdvisory[];
+  devAdvisories: ParsedAdvisory[];
+  deprecations: DeprecationFinding[];
+  downgraded: ParsedAdvisory[];
+  trackOnlyDev: ParsedAdvisory[];
+  blockReleaseCandidate: boolean;
+}): void {
+  const verdictLines: string[] = [];
+
+  const detailsLines: string[] = [];
+  detailsLines.push('<details>');
+  detailsLines.push('<summary>Full details</summary>');
+  detailsLines.push('');
+  detailsLines.push(`- Branch: \`${BRANCH}\``);
+  detailsLines.push(`- Release branch: \`${IS_RELEASE_BRANCH}\``);
+  detailsLines.push(
+    `- Advisories: **${advisories.length}** (prod: **${prodAdvisories.length}**, dev: **${devAdvisories.length}**)`,
+  );
+  detailsLines.push(
+    `- Deprecations: **${deprecations.length}**${
+      CHECK_DEPRECATIONS ? '' : ' (check disabled)'
+    }`,
+  );
+  detailsLines.push('');
+
+  if (downgraded.length > 0) {
+    detailsLines.push('### Downgraded (ReDoS/DoS rule)');
+    detailsLines.push('');
+    for (const advisory of downgraded) {
+      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
+    }
+    detailsLines.push('');
+  }
+
+  if (trackOnlyDev.length > 0 || deprecations.length > 0) {
+    detailsLines.push('### Track (issue + Slack reminder)');
+    detailsLines.push('');
+    for (const advisory of trackOnlyDev) {
+      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
+    }
+    for (const dep of deprecations) {
+      detailsLines.push(`- [deprecation] ${dep.message}`);
+    }
+    detailsLines.push('');
+  }
+
+  if (IS_RELEASE_BRANCH) {
+    detailsLines.push('### Release branch decision');
+    detailsLines.push('');
+    detailsLines.push(
+      blockReleaseCandidate
+        ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
+        : '- No production advisories on a release branch — RC not blocked.',
+    );
+    detailsLines.push('');
+  }
+
+  detailsLines.push('</details>');
+
+  if (noBaseline) {
+    // No baseline → fall back to `yarn audit --severity moderate --environment production`.
+    const fallbackBlockingSeverities: YarnSeverity[] = [
+      'medium',
+      'high',
+      'critical',
+    ];
+    const blockingProdAdvisories = prodAdvisories.filter((a) =>
+      fallbackBlockingSeverities.includes(a.effectiveSeverity),
+    );
+
+    if (blockingProdAdvisories.length > 0) {
+      githubAnnotate(
+        'error',
+        `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate+ severity (no baseline — could not run diff).`,
+      );
+      verdictLines.push(
+        `### yarn audit: **FAILED**`,
+        '',
+        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        '',
+        `**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.`,
+      );
+      process.exitCode = 1;
+    } else {
+      githubAnnotate(
+        'notice',
+        `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev), 0 blocking (no baseline — could not run diff).`,
+      );
+      verdictLines.push(
+        `### yarn audit: **passed**`,
+        '',
+        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        '',
+        `**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.`,
+      );
+    }
+  } else if (blockReleaseCandidate) {
+    githubAnnotate(
+      'error',
+      `yarn audit FAILED: ${prodAdvisories.length} production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} on release branch — RC blocked.`,
+    );
+    verdictLines.push(
+      `### yarn audit: **FAILED**`,
+      '',
+      `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
+    );
+    process.exitCode = 1;
+  } else {
+    // Normal path: baseline exists, not a release branch.
+    // The diff step writes the pass/fail verdict; we just emit details
+    // to a temp file so it can append them after its own output.
+    githubAnnotate(
+      'notice',
+      `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
+    );
+    writeFileSync(AUDIT_DETAILS_FILE, detailsLines.join('\n'), 'utf8');
+  }
+
+  // When there's no diff step (no-baseline or release branch), write
+  // verdict + details together. When the diff step runs, the details
+  // are in .tmp/audit-details.md and appended by the diff script.
+  if (verdictLines.length > 0) {
+    writeStepSummary([...verdictLines, '', ...detailsLines].join('\n'));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// main
+// ---------------------------------------------------------------------------
 
 function main() {
   const audit = runYarnAudit();
@@ -479,17 +713,10 @@ function main() {
   const advisories = merged;
   const deprecations = runYarnInstallForDeprecations();
 
-  const triage = decide({
-    branch: BRANCH,
-    isReleaseBranch: IS_RELEASE_BRANCH,
-    advisories,
-    deprecations,
-  });
-
   // Write the current advisories to disk for use by the audit-diff step.
   writeFileSync(
     AUDIT_CURRENT_FILE,
-    JSON.stringify(triage.advisories, null, 2),
+    JSON.stringify(advisories, null, 2),
     'utf8',
   );
 
@@ -502,61 +729,25 @@ function main() {
     (a) => a.effectiveSeverity === 'low' || a.effectiveSeverity === 'medium',
   );
 
+  // Block release candidates when any production advisory is present.
+  const blockReleaseCandidate =
+    IS_RELEASE_BRANCH &&
+    advisories.some((advisory) => advisory.affectsProduction);
+
   // Console output (machine readable)
-  console.log(JSON.stringify(triage, null, 2));
-
-  // Step summary — verdict first, then collapsible full details.
-  const verdictLines: string[] = [];
-
-  const detailsLines: string[] = [];
-  detailsLines.push('<details>');
-  detailsLines.push('<summary>Full details</summary>');
-  detailsLines.push('');
-  detailsLines.push(`- Branch: \`${triage.branch}\``);
-  detailsLines.push(`- Release branch: \`${triage.isReleaseBranch}\``);
-  detailsLines.push(
-    `- Advisories: **${advisories.length}** (prod: **${prodAdvisories.length}**, dev: **${devAdvisories.length}**)`,
+  console.log(
+    JSON.stringify(
+      {
+        branch: BRANCH,
+        isReleaseBranch: IS_RELEASE_BRANCH,
+        advisories,
+        deprecations,
+        blockReleaseCandidate,
+      },
+      null,
+      2,
+    ),
   );
-  detailsLines.push(
-    `- Deprecations: **${deprecations.length}**${
-      CHECK_DEPRECATIONS ? '' : ' (check disabled)'
-    }`,
-  );
-  detailsLines.push('');
-
-  if (downgraded.length > 0) {
-    detailsLines.push('### Downgraded (ReDoS/DoS rule)');
-    detailsLines.push('');
-    for (const advisory of downgraded) {
-      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
-    }
-    detailsLines.push('');
-  }
-
-  if (trackOnlyDev.length > 0 || deprecations.length > 0) {
-    detailsLines.push('### Track (issue + Slack reminder)');
-    detailsLines.push('');
-    for (const advisory of trackOnlyDev) {
-      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
-    }
-    for (const dep of deprecations) {
-      detailsLines.push(`- [deprecation] ${dep.message}`);
-    }
-    detailsLines.push('');
-  }
-
-  if (triage.isReleaseBranch) {
-    detailsLines.push('### Release branch decision');
-    detailsLines.push('');
-    detailsLines.push(
-      triage.decisions.blockReleaseCandidate
-        ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
-        : '- No production advisories on a release branch — RC not blocked.',
-    );
-    detailsLines.push('');
-  }
-
-  detailsLines.push('</details>');
 
   // Slack highlight: emit a single, copy-pastable line.
   if (SLACK_HIGHLIGHT && (trackOnlyDev.length > 0 || deprecations.length > 0)) {
@@ -572,181 +763,17 @@ function main() {
     );
   }
 
-  // Create an issue for non-blocking but track-worthy findings.
-  // Only run on push to main — not on PRs, not on other branches.
-  if (
-    CREATE_TRACKING_ISSUE &&
-    (trackOnlyDev.length > 0 || deprecations.length > 0) &&
-    process.env.GITHUB_EVENT_NAME === 'push' &&
-    BRANCH === 'main'
-  ) {
-    const repo = getRepoFromEnv();
+  maybeCreateTrackingIssue(trackOnlyDev, deprecations);
 
-    if (!repo) {
-      githubAnnotate(
-        'warning',
-        'CREATE_TRACKING_ISSUE=true but missing GITHUB_REPOSITORY; skipping issue creation.',
-      );
-    } else {
-      const token = getGitHubToken();
-      const trackingKey = sha256Short(
-        JSON.stringify({
-          advisories: trackOnlyDev
-            .map((a) => ({
-              id: a.id,
-              moduleName: a.moduleName,
-              severity: a.effectiveSeverity,
-              url: a.url,
-              rule: a.matchedIssueRule,
-            }))
-            .sort((a, b) => `${a.moduleName}`.localeCompare(`${b.moduleName}`)),
-          deprecations: [...deprecations]
-            .map((d) => d.message)
-            .sort((a, b) => a.localeCompare(b)),
-        }),
-      );
-
-      const title = `Dependency audit triage (${trackingKey})`;
-      const existingNumber = searchIssueByTitle({
-        owner: repo.owner,
-        repo: repo.repo,
-        title,
-        token,
-      });
-
-      if (existingNumber) {
-        githubAnnotate(
-          'notice',
-          `Tracking issue already exists: https://github.com/${repo.owner}/${repo.repo}/issues/${existingNumber}`,
-        );
-      } else {
-        const bodyLines: string[] = [];
-        bodyLines.push('Automated dependency audit triage.');
-        bodyLines.push('');
-        bodyLines.push(`- Branch: ${BRANCH}`);
-        bodyLines.push(`- Release branch: ${IS_RELEASE_BRANCH}`);
-        bodyLines.push('');
-
-        if (trackOnlyDev.length > 0) {
-          bodyLines.push('## Dev advisories (track)');
-          for (const advisory of trackOnlyDev) {
-            bodyLines.push(`- ${formatAdvisoryLine(advisory)}`);
-          }
-          bodyLines.push('');
-        }
-
-        if (deprecations.length > 0) {
-          bodyLines.push('## Deprecations');
-          for (const dep of deprecations) {
-            bodyLines.push(`- ${dep.message}`);
-          }
-          bodyLines.push('');
-        }
-
-        bodyLines.push('## Action');
-        bodyLines.push('- Triage and plan remediation.');
-        bodyLines.push('- Include in daily Slack dependency triage message.');
-
-        try {
-          const issueNumber = createIssueViaRest({
-            owner: repo.owner,
-            repo: repo.repo,
-            title,
-            body: bodyLines.join('\n'),
-            token,
-          });
-
-          githubAnnotate(
-            'notice',
-            `Created tracking issue: https://github.com/${repo.owner}/${repo.repo}/issues/${issueNumber}`,
-          );
-        } catch (error) {
-          githubAnnotate(
-            'warning',
-            `Failed to create tracking issue (check token permissions): ${String(error)}`,
-          );
-        }
-      }
-    }
-  }
-
-  if (noBaseline) {
-    // No baseline available for a diff — either the artifact is missing (first
-    // rollout / expired) or this is a fork PR whose read-only token couldn't
-    // download it.  Fall back to the same criteria as the package.json `audit`
-    // script (`yarn audit --environment production --severity moderate`): block
-    // on any moderate+ severity production advisory.  Dev-only and low/info
-    // prod advisories are ignored.
-    const fallbackBlockingSeverities: YarnSeverity[] = [
-      'medium',
-      'high',
-      'critical',
-    ];
-    const blockingProdAdvisories = prodAdvisories.filter((a) =>
-      fallbackBlockingSeverities.includes(a.effectiveSeverity),
-    );
-
-    if (blockingProdAdvisories.length > 0) {
-      githubAnnotate(
-        'error',
-        `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate+ severity (no baseline — could not run diff).`,
-      );
-      verdictLines.push(
-        `### yarn audit: **FAILED**`,
-        '',
-        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
-        '',
-        `**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.`,
-      );
-      process.exitCode = 1;
-    } else {
-      githubAnnotate(
-        'notice',
-        `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev), 0 blocking (no baseline — could not run diff).`,
-      );
-      verdictLines.push(
-        `### yarn audit: **passed**`,
-        '',
-        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
-        '',
-        `**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.`,
-      );
-    }
-  } else if (triage.decisions.blockReleaseCandidate) {
-    // Release branches with any production advisory are blocked immediately;
-    // the audit-diff step handles non-release PRs.
-    githubAnnotate(
-      'error',
-      `yarn audit FAILED: ${prodAdvisories.length} production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} on release branch — RC blocked.`,
-    );
-    verdictLines.push(
-      `### yarn audit: **FAILED**`,
-      '',
-      `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
-    );
-    process.exitCode = 1;
-  } else {
-    // Normal path: baseline exists, not a release branch.
-    // The audit-diff step will handle pass/fail for PRs.
-    // On push-to-main, this step always passes (baseline is uploaded).
-    // No verdict heading here — the diff step writes the real pass/fail.
-    // Write details to a temp file so the workflow can append it AFTER the
-    // diff step's output, keeping the summary in logical order:
-    //   1. diff verdict  2. full details
-    githubAnnotate(
-      'notice',
-      `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
-    );
-    writeFileSync(AUDIT_DETAILS_FILE, detailsLines.join('\n'), 'utf8');
-  }
-
-  // When there's no diff step (no-baseline or release branch), write
-  // verdict + details together. When the diff step runs, the details
-  // are in .tmp/audit-details.md and appended by the diff script after it
-  // diff step writes its verdict to the summary.
-  if (verdictLines.length > 0) {
-    writeStepSummary([...verdictLines, '', ...detailsLines].join('\n'));
-  }
+  buildSummaryAndVerdict({
+    advisories,
+    prodAdvisories,
+    devAdvisories,
+    deprecations,
+    downgraded,
+    trackOnlyDev,
+    blockReleaseCandidate,
+  });
 }
 
 try {
