@@ -140,12 +140,13 @@ async function main() {
   const nativeOutput = captureNativeAudit();
   const newIds = new Set(newAdvisories.map((a) => a.id));
 
-  // Split native output into per-advisory blocks (each starts with "└─").
-  // The "└─" may be wrapped in ANSI escape codes, so allow them in the split.
-  const ansi = '(?:\\x1b\\[[0-9;]*m)*';
-  const blocks = nativeOutput.split(new RegExp(`(?=${ansi}└─)`));
+  // Split native output into per-advisory blocks.  Each block starts with
+  // "├─" or "└─" at column 0 (possibly wrapped in ANSI codes).  Inner tree
+  // lines (Tree Versions, Dependents) are always indented, so a newline
+  // followed by a non-space box-drawing char at column 0 marks the boundary.
+  const blockBoundary = /\n(?=(?:\x1b\[[0-9;]*m)*[├└]─)/;
+  const blocks = nativeOutput.split(blockBoundary);
   const matchingBlocks = blocks.filter((block) => {
-    // Extract the ID from "ID: <number>" in the block (ignoring ANSI codes).
     const idMatch = block.replace(/\x1b\[[0-9;]*m/g, '').match(/ID:\s*(\d+)/);
     return idMatch && newIds.has(Number(idMatch[1]));
   });
