@@ -4,7 +4,7 @@
  * introduced by your changes — matching CI behavior.
  *
  * Usage:
- *   yarn audit:diff
+ *   yarn audit
  */
 
 import { spawnSync } from 'child_process';
@@ -17,7 +17,7 @@ import {
 } from './shared/audit-utils.mts';
 
 const BASELINE_URL =
-  'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/audit-baseline/audit-baseline.json';
+  'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/audit-baseline';
 
 const YARN_SHELL = process.platform === 'win32';
 

@@ -584,7 +584,7 @@ function buildSummaryAndVerdict({
         '',
         'If a newer version of the affected package is available, upgrade to it.',
         '',
-        'Run `yarn audit:diff` locally to reproduce.',
+        'Run `yarn audit` locally to reproduce.',
         '',
         '```',
         blockingProdAdvisories.map(formatAdvisoryTree).join('\n\n'),

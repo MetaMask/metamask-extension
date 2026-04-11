@@ -104,7 +104,7 @@ async function main() {
     newAdvisories.map(formatAdvisoryTree).join('\n\n'),
     '```',
     '',
-    'Run `yarn audit:diff` locally to reproduce.',
+    'Run `yarn audit` locally to reproduce.',
     '',
   ];
   writeStepSummary(diffSummaryLines.join('\n'));
