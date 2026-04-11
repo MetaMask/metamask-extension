@@ -1,13 +1,9 @@
 // This file is used only for manifest version 3
+import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
-
-globalThis.stateHooks = globalThis.stateHooks || ({} as typeof stateHooks);
-globalThis.stateHooks.runtimeInitialization ??= import(
-  /* webpackChunkName: "common-startup" */ './scripts/load/runtime-startup.js'
-).then(({ initializeRuntime }) => initializeRuntime());
 
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
@@ -29,8 +25,6 @@ async function runImportScripts() {
   runImportScriptsInitiated = true;
 
   const startImportScriptsTime = performance.now();
-
-  await globalThis.stateHooks.runtimeInitialization;
 
   // eslint-disable-next-line import-x/extensions
   await import(/* webpackChunkName: "background" */ './scripts/background.js');
