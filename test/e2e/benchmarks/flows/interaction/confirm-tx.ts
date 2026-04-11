@@ -8,12 +8,13 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
+import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
 } from '../../../../../shared/constants/benchmarks';
 import { runUserActionBenchmark, collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -21,6 +22,7 @@ export const persona = BENCHMARK_PERSONA.STANDARD;
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    const steps: LongTaskStepResult[] = [];
     let webVitals;
 
     await withFixtures(
@@ -38,6 +40,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           amount: '1',
         });
 
+        await driver.resetLongTaskMetrics();
         const timestampBeforeAction = new Date();
 
         await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
@@ -57,6 +60,16 @@ export async function run(): Promise<BenchmarkRunResult> {
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
 
+        const longTaskData = await driver.collectLongTaskMetrics();
+        steps.push({
+          id: 'confirm_tx',
+          duration: loadingTimes,
+          longTaskCount: longTaskData?.count ?? 0,
+          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
+          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
+          tbt: longTaskData?.tbt ?? 0,
+        });
+
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
@@ -66,7 +79,10 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return {
-      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
+      timers: [
+        ...steps.map((s) => ({ id: s.id, value: s.duration })),
+        ...buildLongTaskTimerResults(steps),
+      ],
       webVitals,
     };
   }, BENCHMARK_TYPE.USER_ACTION);

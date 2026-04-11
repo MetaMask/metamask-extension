@@ -12,6 +12,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -19,15 +23,23 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
-import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
@@ -44,10 +56,19 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-
   // Fetch real transaction data from the Perps controller
   const { transactions, isLoading, error, refetch } =
     usePerpsTransactionHistory();
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
 
   // Refetch on mount to ensure fresh data
   useEffect(() => {
@@ -82,8 +103,20 @@ const PerpsActivityPage: React.FC = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
+
+  // Navigate to the market detail page when an order transaction is clicked
+  const handleTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      if (transaction.type === 'order') {
+        navigate(
+          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
+        );
+      }
+    },
+    [navigate],
+  );
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -189,6 +222,11 @@ const PerpsActivityPage: React.FC = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
+                      onClick={
+                        transaction.type === 'order'
+                          ? handleTransactionClick
+                          : undefined
+                      }
                     />
                   ))}
                 </Box>

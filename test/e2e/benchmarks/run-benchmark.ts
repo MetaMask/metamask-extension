@@ -26,7 +26,6 @@ import {
 import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
-  THRESHOLD_REGISTRY,
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
@@ -34,6 +33,7 @@ import {
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
+import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import {
   validateResultThresholds,
   logThresholdResult,
@@ -192,7 +192,7 @@ async function runBenchmarkFile(
   const thresholdConfig = THRESHOLD_REGISTRY[registryKey];
   if (!thresholdConfig) {
     throw new Error(
-      `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+      `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
     );
   }
 

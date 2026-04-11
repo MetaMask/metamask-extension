@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
@@ -79,6 +79,10 @@ import {
   bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
+  hasProperty,
+  isObject,
+  isJsonRpcRequest,
+  isJsonRpcNotification,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -178,13 +182,18 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import {
   createEnsureOnboardingCompleteCallback,
   getTokenValueParam,
 } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
-import { getIsSmartTransaction } from '../../shared/lib/selectors';
+import {
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsEnabled,
+} from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -232,6 +241,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
+import { onStreamClosed } from '../../shared/lib/stream-utils';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -317,14 +327,14 @@ import {
   rejectAllApprovals,
   rejectOriginApprovals,
 } from './lib/approval/utils';
-import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
+import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
-} from './controller-init/multichain';
+} from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
@@ -333,14 +343,14 @@ import {
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
-} from './controller-init/assets';
-import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
-import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
-import { PerpsControllerInit } from './controller-init/perps-controller-init';
+} from './messenger-client-init/assets';
+import { TransactionControllerInit } from './messenger-client-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
-import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
-import { initControllers } from './controller-init/utils';
+import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
+import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
+import { initControllers } from './messenger-client-init/utils';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -352,93 +362,95 @@ import {
   SnapRegistryControllerInit,
   WebSocketServiceInit,
   MultichainRoutingServiceInit,
-} from './controller-init/snaps';
+} from './messenger-client-init/snaps';
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
-} from './controller-init/core-backend';
-import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
-import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
-import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
-import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
-import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+} from './messenger-client-init/core-backend';
+import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
+import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
+import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
-import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
+import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
+import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
-} from './controller-init/seedless-onboarding';
+} from './messenger-client-init/seedless-onboarding';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
-import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
-import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
+import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
+import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
-import { TokenListControllerInit } from './controller-init/token-list-controller-init';
-import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
-import { TokensControllerInit } from './controller-init/tokens-controller-init';
-import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
-import { StaticAssetsControllerInit } from './controller-init/static-assets-controller-init';
-import { RatesControllerInit } from './controller-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
-import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
-import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
-import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
+import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
+import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
+import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
+import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
+import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
+import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
+import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
+import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
+import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
+import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
+import { GasFeeControllerInit } from './messenger-client-init/confirmations/gas-fee-controller-init';
+import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import {
   SubscriptionControllerInit,
   SubscriptionServiceInit,
-} from './controller-init/subscription';
-import { ConnectivityControllerInit } from './controller-init/connectivity';
-import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
-import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
-import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { BridgeControllerInit } from './controller-init/bridge-controller-init';
-import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
-import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
-import { AppStateControllerInit } from './controller-init/app-state-controller-init';
-import { PermissionControllerInit } from './controller-init/permission-controller-init';
-import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
-import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
-import { KeyringControllerInit } from './controller-init/keyring-controller-init';
-import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
-import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
-import { NetworkControllerInit } from './controller-init/network-controller-init';
-import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
-import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
-import { AccountsControllerInit } from './controller-init/accounts-controller-init';
-import { PhishingControllerInit } from './controller-init/phishing-controller-init';
-import { AlertControllerInit } from './controller-init/alert-controller-init';
-import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
-import { LoggingControllerInit } from './controller-init/logging-controller-init';
-import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
-import { StorageServiceInit } from './controller-init/storage-service-init';
-import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
-import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
-import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
-import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
-import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
-import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
-import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
-import { RewardsDataServiceInit } from './controller-init/rewards-data-service-init';
-import { RewardsControllerInit } from './controller-init/rewards-controller-init';
+} from './messenger-client-init/subscription';
+import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
+import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
+import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
+import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
+import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
+import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
+import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
+import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
+import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
+import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
+import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
+import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
+import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
+import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
+import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
+import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
+import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
+import { AccountsControllerInit } from './messenger-client-init/accounts-controller-init';
+import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
+import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
+import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
+import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
+import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
+import { StorageServiceInit } from './messenger-client-init/storage-service-init';
+import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
+import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
+import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
+import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
+import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
+import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
+import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
+import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
+import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
+import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
   ClaimsServiceInit,
-} from './controller-init/claims';
+} from './messenger-client-init/claims';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
-import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
-import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
+import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
+import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -458,6 +470,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
+/**
+ * @typedef {import('@metamask/object-multiplex/dist/Substream').Substream} Substream
  */
 
 // Types of APIs
@@ -572,7 +588,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    /** @type {import('./controller-init/utils').InitFunctions} */
+    /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
@@ -597,6 +613,7 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -716,6 +733,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = controllersByName.AppStateController;
     this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.dataDeletionService = controllersByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       controllersByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
@@ -1001,6 +1019,10 @@ export default class MetamaskController extends EventEmitter {
                   .dismissSmartAccountSuggestionEnabled,
               getIsSmartTransaction: (chainId) =>
                 getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              getSmartTransactionsPreferenceEnabled: () =>
+                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+              getSmartTransactionsEnabled: (chainId) =>
+                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
               isAtomicBatchSupported:
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
@@ -1015,6 +1037,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        const addTransactionExtraOptions =
+          await getAddTransactionSendCallExtraOptions({
+            req,
+            networkController: this.networkController,
+            keyringController: this.keyringController,
+          });
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
@@ -1023,12 +1051,16 @@ export default class MetamaskController extends EventEmitter {
           processSendCalls: processSendCalls.bind(
             null,
             {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
+              addTransaction: async (txParams, options) =>
+                this.txController.addTransaction(txParams, {
+                  ...options,
+                  ...addTransactionExtraOptions,
+                }),
+              addTransactionBatch: async (request) =>
+                this.txController.addTransactionBatch({
+                  ...request,
+                  ...addTransactionExtraOptions,
+                }),
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,
@@ -2761,7 +2793,7 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
@@ -2808,6 +2840,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5302,6 +5335,19 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async getTrezorFeatures() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.trezor },
+      async (keyring) => {
+        if (typeof keyring.bridge.getFeatures !== 'function') {
+          throw new Error('Trezor bridge does not support getFeatures');
+        }
+
+        return await keyring.bridge.getFeatures();
+      },
+    );
+  }
+
   /**
    * Get hardware type that will be sent for metrics logging.
    *
@@ -6258,6 +6304,7 @@ export default class MetamaskController extends EventEmitter {
         transactionParams.from,
       ),
       transactionController: this.txController,
+      keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
@@ -6648,7 +6695,12 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    const { initializePatchStore } = this.setupPatchStoreConnection(
+      mux.createStream('patch-store'),
+    );
+    this.setupControllerConnection(mux.createStream('controller'), {
+      initializePatchStore,
+    });
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6739,16 +6791,38 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for providing our API over a stream using JSON-RPC.
+   * Sets up the substream responsible for collecting and sending state patches
+   * to a UI process.
    *
-   * @param {*} outStream - The stream to provide our API over.
+   * Whenever the state of a controller changes, we need to update the Redux
+   * root store on the UI side. However, we want to control which part of Redux
+   * is updated to prevent excessive rerenders.
+   *
+   * To do this, we use `PatchStore`, which wraps `memStore`, captures state
+   * updates as a deduplicated set of JSON patch objects, and then releases them
+   * to the UI process only when requested.
+   *
+   * For the UI side of this, see `ui/store/patch-store-substream-connection.ts`.
+   *
+   * @param {Substream} outStream - The substream that patch store messages are
+   * sent through.
+   * @returns {{ initializePatchStore: () => void }} Callbacks to call. The only
+   * one is `initializePatchStore`.
    */
-  setupControllerConnection(outStream) {
+  setupPatchStoreConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
-    let uiReady = false;
+    let isUiReady = false;
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream) || !uiReady) {
+      if (!isStreamWritable(outStream)) {
+        log.debug('Stream is closed, ignoring.');
+        return;
+      }
+
+      if (!isUiReady) {
+        log.debug(
+          "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
+        );
         return;
       }
 
@@ -6756,11 +6830,94 @@ export default class MetamaskController extends EventEmitter {
 
       outStream.write({
         jsonrpc: '2.0',
-        method: 'sendUpdate',
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [patches],
       });
     };
 
+    const initializePatchStore = () => {
+      patchStore.init();
+    };
+
+    const handleStartSendingPatches = () => {
+      isUiReady = true;
+      handleUpdate();
+    };
+
+    const handleGetStatePatches = (request) => {
+      const patches = patchStore.flushPendingPatches();
+      outStream.write({
+        id: request.id,
+        jsonrpc: '2.0',
+        result: patches,
+      });
+    };
+
+    const handleIncomingMessage = (message) => {
+      if (!isStreamWritable(outStream)) {
+        log.debug('Stream is closed, ignoring incoming message.');
+        return;
+      }
+
+      if (
+        !(
+          (isJsonRpcRequest(message) && typeof message.id === 'number') ||
+          isJsonRpcNotification(message)
+        )
+      ) {
+        outStream.write({
+          id:
+            isObject(message) && hasProperty(message, 'id') ? message.id : null,
+          jsonrpc: '2.0',
+          error: rpcErrors.invalidRequest(),
+        });
+        return;
+      }
+
+      const { method } = message;
+
+      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
+        handleStartSendingPatches();
+      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
+        handleGetStatePatches(message);
+      } else if (message.id === undefined) {
+        console.error(
+          `Unrecognized patch-store substream notification method: ${method}`,
+        );
+      } else {
+        outStream.write({
+          id: message.id,
+          jsonrpc: '2.0',
+          error: rpcErrors.methodNotFound({
+            message: `${method} not found`,
+          }),
+        });
+      }
+    };
+
+    outStream.on('data', handleIncomingMessage);
+
+    this.on('update', handleUpdate);
+
+    onStreamClosed(outStream, () => {
+      outStream.removeListener('data', handleIncomingMessage);
+      this.removeListener('update', handleUpdate);
+      patchStore.destroy();
+    });
+
+    return { initializePatchStore };
+  }
+
+  /**
+   * A method for providing our API over a stream using JSON-RPC.
+   *
+   * @param {Substream} outStream - The stream to provide our API over.
+   * @param {object} args - Additional arguments.
+   * @param {() => void} args.initializePatchStore - Function to call after
+   * retrieving state but before emitting the `startUISync` event, in order to
+   * initialize the patch store.
+   */
+  setupControllerConnection(outStream, { initializePatchStore }) {
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
@@ -6791,11 +6948,6 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.controllerApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
-      startSendingPatches: () => {
-        uiReady = true;
-        handleUpdate();
-      },
-      getStatePatches: () => patchStore.flushPendingPatches(),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,
       ),
@@ -6805,8 +6957,6 @@ export default class MetamaskController extends EventEmitter {
       messengerCall: (method, params = []) =>
         this.controllerMessenger.call(method, ...params),
     };
-
-    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -6819,12 +6969,13 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-      // Start tracking patches immediately after retrieving initial state for this UI connection
-      // to ensure we don't miss any patches, or include extra patches.
-      const initialState = this.getState();
-      patchStore.init();
 
-      // send notification to client-side
+      const initialState = this.getState();
+      // Start tracking patches immediately after retrieving initial state for
+      // this UI connection (to include with the `startUISync` notification) to
+      // ensure we don't miss any patches or include extra patches.
+      initializePatchStore();
+
       outStream.write({
         jsonrpc: '2.0',
         method: START_UI_SYNC,
@@ -6838,42 +6989,15 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    const outstreamEndHandler = () => {
-      if (!outStream.mmFinished) {
-        this.activeControllerConnections -= 1;
-        this.emit(
-          'controllerConnectionChanged',
-          this.activeControllerConnections,
-        );
-        outStream.mmFinished = true;
-        this.removeListener('update', handleUpdate);
-        patchStore.destroy();
-        messengerSubscriptions.clear();
-        perpsStream?.destroy();
-      }
-    };
-
-    // The presence of both of the below handlers may be redundant.
-    // After upgrading metamask/object-multiples to v2.0.0, which included
-    // an upgrade of readable-streams from v2 to v3, we saw that the
-    // `outStream.on('end'` handler was almost never being called. This seems to
-    // related to how v3 handles errors vs how v2 handles errors; there
-    // are "premature close" errors in both cases, although in the case
-    // of v2 they don't prevent `outStream.on('end'` from being called.
-    // At the time that this comment was committed, it was known that we
-    // need to investigate and resolve the underlying error, however,
-    // for expediency, we are not addressing them at this time. Instead, we
-    // can observe that `readableStream.finished` preserves the same
-    // functionality as we had when we relied on readable-stream v2. Meanwhile,
-    // the `outStream.on('end')` handler was observed to have been called at least once.
-    // In an abundance of caution to prevent against unexpected future behavioral changes in
-    // streams implementations, we redundantly use multiple paths to attach the same event handler.
-    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
-
-    outStream.mmFinished = false;
-    finished(outStream, outstreamEndHandler);
-    outStream.once('close', outstreamEndHandler);
-    outStream.once('end', outstreamEndHandler);
+    onStreamClosed(outStream, () => {
+      this.activeControllerConnections -= 1;
+      this.emit(
+        'controllerConnectionChanged',
+        this.activeControllerConnections,
+      );
+      messengerSubscriptions.clear();
+      perpsStream?.destroy();
+    });
   }
 
   /**
@@ -7328,7 +7452,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -7790,7 +7916,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -8251,6 +8379,12 @@ export default class MetamaskController extends EventEmitter {
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
+      },
+      getSmartTransactionsPreferenceEnabled: () => {
+        return getSmartTransactionsPreferenceEnabled(this._getMetaMaskState());
+      },
+      getSmartTransactionsEnabled: (chainId) => {
+        return getSmartTransactionsEnabled(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(

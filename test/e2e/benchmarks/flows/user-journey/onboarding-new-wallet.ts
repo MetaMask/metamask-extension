@@ -20,8 +20,11 @@ import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboa
 import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
@@ -32,12 +35,13 @@ import {
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
 export const persona = BENCHMARK_PERSONA.STANDARD;
 
 export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
@@ -58,19 +62,6 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerCreateWalletToSocial = new TimerHelper(
-          'createWalletToSocialScreen',
-        );
-        const timerSrpButtonToPassword = new TimerHelper('srpButtonToPwForm');
-        const timerPasswordToRecovery = new TimerHelper(
-          'createPwToRecoveryScreen',
-        );
-        const timerSkipToMetrics = new TimerHelper('skipBackupToMetricsScreen');
-        const timerAgreeToComplete = new TimerHelper(
-          'agreeButtonToOnboardingSuccess',
-        );
-        const timerDoneToAssetList = new TimerHelper('doneButtonToAssetList');
-
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
@@ -84,27 +75,42 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp(false);
-        await timerCreateWalletToSocial.measure(async () => {
-          await startOnboardingPage.checkSocialSignUpFormIsVisible();
-        });
-        performanceTracker.addTimer(timerCreateWalletToSocial);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'createWalletToSocialScreen',
+            async () => {
+              await startOnboardingPage.checkSocialSignUpFormIsVisible();
+            },
+          ),
+        );
 
         // Measure: SRP button to Password form
         await startOnboardingPage.clickCreateWithSrpButton();
-        await timerSrpButtonToPassword.measure(async () => {
-          const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-          await onboardingPasswordPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerSrpButtonToPassword);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'srpButtonToPwForm',
+            async () => {
+              const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+              await onboardingPasswordPage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Password to Recovery
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await timerPasswordToRecovery.measure(async () => {
-          const secureWalletPage = new SecureWalletPage(driver);
-          await secureWalletPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerPasswordToRecovery);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'createPwToRecoveryScreen',
+            async () => {
+              const secureWalletPage = new SecureWalletPage(driver);
+              await secureWalletPage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Skip recovery backup
         const secureWalletPage = new SecureWalletPage(driver);
@@ -112,35 +118,50 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
 
         // Measure: Skip to Metrics (Chrome only)
         if (!isFirefox) {
-          await timerSkipToMetrics.measure(async () => {
-            const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-            await onboardingMetricsPage.checkPageIsLoaded();
-          });
-          performanceTracker.addTimer(timerSkipToMetrics);
+          steps.push(
+            await measureStepWithLongTasks(
+              driver,
+              'skipBackupToMetricsScreen',
+              async () => {
+                const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+                await onboardingMetricsPage.checkPageIsLoaded();
+              },
+            ),
+          );
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickOnContinueButton();
         }
 
         // Measure: Agree to Complete
-        await timerAgreeToComplete.measure(async () => {
-          const onboardingCompletePage = new OnboardingCompletePage(driver);
-          await onboardingCompletePage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerAgreeToComplete);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'agreeButtonToOnboardingSuccess',
+            async () => {
+              const onboardingCompletePage = new OnboardingCompletePage(driver);
+              await onboardingCompletePage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Done to Asset list
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
-        await timerDoneToAssetList.measure(async () => {
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
-          const assetListPage = new AssetListPage(driver);
-          await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.waitForTokenToBeDisplayed('Ethereum');
-          await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
-        });
-        performanceTracker.addTimer(timerDoneToAssetList);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'doneButtonToAssetList',
+            async () => {
+              const homePage = new HomePage(driver);
+              await homePage.checkPageIsLoaded();
+              const assetListPage = new AssetListPage(driver);
+              await assetListPage.checkTokenListIsDisplayed();
+              await assetListPage.waitForTokenToBeDisplayed('Ethereum');
+              await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+            },
+          ),
+        );
 
         try {
           webVitals = await collectWebVitals(driver);
@@ -151,14 +172,14 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
