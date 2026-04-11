@@ -6,8 +6,10 @@ import { ghApi } from './shared/gh-api.mts';
 import {
   AUDIT_CURRENT_FILE,
   AUDIT_DETAILS_FILE,
+  BLOCKING_SEVERITIES,
   type YarnSeverity,
   type ParsedAdvisory,
+  formatAdvisoryTree,
   githubAnnotate,
   writeStepSummary,
 } from './shared/audit-utils.mts';
@@ -362,6 +364,8 @@ function extractAdvisories(records: unknown[]): ParsedAdvisory[] {
       isDevOnly: false,
       affectsProduction: false,
       matchedIssueRule: 'none',
+      treeVersions: leaf['Tree Versions'] ?? [],
+      dependents: leaf.Dependents ?? [],
     });
   }
 
@@ -564,13 +568,8 @@ function buildSummaryAndVerdict({
 
   if (noBaseline) {
     // No baseline → fall back to `yarn audit --severity moderate --environment production`.
-    const fallbackBlockingSeverities: YarnSeverity[] = [
-      'medium',
-      'high',
-      'critical',
-    ];
     const blockingProdAdvisories = prodAdvisories.filter((a) =>
-      fallbackBlockingSeverities.includes(a.effectiveSeverity),
+      BLOCKING_SEVERITIES.has(a.effectiveSeverity),
     );
 
     if (blockingProdAdvisories.length > 0) {
@@ -585,7 +584,11 @@ function buildSummaryAndVerdict({
         '',
         'If a newer version of the affected package is available, upgrade to it.',
         '',
-        'Run `yarn audit` locally to see details.',
+        'Run `yarn audit:diff` locally to reproduce.',
+        '',
+        '```',
+        blockingProdAdvisories.map(formatAdvisoryTree).join('\n\n'),
+        '```',
         '',
       );
       process.exitCode = 1;
@@ -610,6 +613,11 @@ function buildSummaryAndVerdict({
       `### yarn audit: **FAILED**`,
       '',
       `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
+      '',
+      '```',
+      prodAdvisories.map(formatAdvisoryTree).join('\n\n'),
+      '```',
+      '',
     );
     process.exitCode = 1;
   } else if (process.env.GITHUB_EVENT_NAME === 'push') {

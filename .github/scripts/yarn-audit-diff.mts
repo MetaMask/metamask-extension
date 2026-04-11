@@ -4,6 +4,7 @@ import {
   AUDIT_CURRENT_FILE,
   AUDIT_DETAILS_FILE,
   type ParsedAdvisory,
+  formatAdvisoryTree,
   writeStepSummary,
 } from './shared/audit-utils.mts';
 
@@ -79,9 +80,7 @@ async function main() {
     console.log(
       `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
     );
-    writeStepSummary(
-      `\n### yarn audit: **passed** — no new advisories\n`,
-    );
+    writeStepSummary(`\n### yarn audit: **passed** — no new advisories\n`);
     return;
   }
 
@@ -101,12 +100,11 @@ async function main() {
     '',
     'Your dependency changes introduced new vulnerabilities. If a newer version of the package is available, upgrade to it.',
     '',
-    ...newAdvisories.map(
-      (a) =>
-        `- **[${sevLabel(a)}]** \`${a.moduleName}\` — ${a.title} (<${a.url}>)`,
-    ),
+    '```',
+    newAdvisories.map(formatAdvisoryTree).join('\n\n'),
+    '```',
     '',
-    'Run `yarn audit` locally to see current production advisories.',
+    'Run `yarn audit:diff` locally to reproduce.',
     '',
   ];
   writeStepSummary(diffSummaryLines.join('\n'));

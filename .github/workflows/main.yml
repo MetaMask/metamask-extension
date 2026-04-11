@@ -137,6 +137,7 @@ jobs:
       }}
     permissions:
       contents: read
+      id-token: write # required for S3 upload of audit baseline
       issues: write # create tracking issues for non-blocking advisories
       pull-requests: write # post audit diff annotations on PRs
       actions: read # download audit-baseline artifact from prior push-to-main runs

@@ -123,6 +123,15 @@ jobs:
           name: audit-baseline
           path: .tmp/audit-baseline.json
 
+      - name: Upload audit baseline to S3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/audit-baseline
+          path: .tmp/audit-baseline.json
+
       # --- Diff (PR only, runs only when a real baseline was downloaded) ---
       - name: Compare vulnerabilities against main
         if: ${{ github.event_name == 'pull_request' && steps.download-baseline.outcome == 'success' }}
