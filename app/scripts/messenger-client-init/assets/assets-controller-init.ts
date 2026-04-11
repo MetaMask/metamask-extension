@@ -16,6 +16,7 @@ import {
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
  * Cached API client instance.
@@ -60,6 +61,8 @@ function safeGetTokenDetectionEnabled(
 /**
  * Returns a getter for basic functionality (use external services) from preferences.
  * When true, token/price APIs are used; when false, only RPC is used.
+ * Also returns false during onboarding (before the user has completed setup),
+ * matching the behavior of the UI polling hooks (useCurrencyRatePolling, useTokenRatesPolling).
  *
  * @param initMessenger - The initialization messenger.
  * @returns Getter that returns whether basic functionality is enabled (defaults to true on error).
@@ -69,6 +72,12 @@ function getIsBasicFunctionality(
 ): () => boolean {
   return (): boolean => {
     try {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      if (!completedOnboarding) {
+        return false;
+      }
       const preferencesState = initMessenger.call(
         'PreferencesController:getState',
       ) as { useExternalServices?: boolean } | undefined;
@@ -142,6 +151,7 @@ export const AssetsControllerInit: ControllerInitFunction<
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
@@ -154,6 +164,19 @@ export const AssetsControllerInit: ControllerInitFunction<
       (state: PreferencesState) =>
         (state as PreferencesState & { useExternalServices?: boolean })
           .useExternalServices ?? true,
+    );
+
+    // When onboarding completes, re-evaluate basic functionality so price
+    // subscriptions start (or stay stopped) based on the current preference.
+    // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
+    initMessenger.subscribe(
+      'OnboardingController:stateChange',
+      (completedOnboarding: boolean) => {
+        if (completedOnboarding) {
+          onChange(isBasicFunctionality());
+        }
+      },
+      (state: OnboardingControllerState) => state.completedOnboarding,
     );
   };
 

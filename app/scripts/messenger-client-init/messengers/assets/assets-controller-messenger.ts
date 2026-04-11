@@ -29,6 +29,10 @@ import type {
   SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -247,7 +251,13 @@ type PreferencesControllerGetStateAction = {
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
+
+/**
+ * Events needed during AssetsController initialization.
+ */
+type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -257,12 +267,12 @@ type AllowedInitializationActions =
  * @returns The restricted initialization messenger.
  */
 export function getAssetsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, AllowedInitializationEvents>,
 ) {
   const initMessenger = new Messenger<
     'AssetsControllerInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'AssetsControllerInit',
@@ -275,7 +285,9 @@ export function getAssetsControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
       'PreferencesController:getState',
+      'OnboardingController:getState',
     ],
+    events: ['OnboardingController:stateChange'],
   });
 
   return initMessenger;
