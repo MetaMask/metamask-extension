@@ -1015,6 +1015,8 @@
       }
     ],
     "knownMethodData": {},
+    "lastCompletedWithdrawalTimestamp": "null",
+    "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
