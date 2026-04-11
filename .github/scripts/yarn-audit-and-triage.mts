@@ -71,10 +71,13 @@ const SLACK_HIGHLIGHT = process.env.SLACK_HIGHLIGHT !== 'false';
 const YARN_BIN = 'yarn';
 const YARN_SHELL = process.platform === 'win32';
 
-// Set by the workflow when the PR originates from a fork repository.
-// Fork runs receive a read-only token and cannot write commit statuses or
-// download artifacts from other runs, so they use a different exit strategy.
-const IS_FORK_PR = process.env.IS_FORK_PR === 'true';
+// Set by the workflow when no baseline artifact could be downloaded — either
+// the baseline is missing (first rollout / expired artifact) or this is a fork
+// PR whose read-only token couldn't fetch it.  When true, the script falls
+// back to the same criteria as the package.json `audit` script:
+//   yarn audit --environment production --severity moderate
+// i.e. block on any moderate+ severity production advisory.
+const noBaseline = process.env.NO_BASELINE === 'true';
 const outputFileArg = (() => {
   const idx = process.argv.indexOf('--output-file');
   return idx !== -1 ? (process.argv[idx + 1] ?? null) : null;
@@ -714,18 +717,20 @@ function main() {
     }
   }
 
-  if (IS_FORK_PR) {
-    // Fork PRs have no token to run audit-diff, so block on any moderate+
-    // severity production advisory. Dev-only advisories are ignored (they
-    // reflect pre-existing repo state). Low/info prod advisories are also
-    // ignored to match the `yarn audit` script which uses --severity moderate.
-    const forkBlockingSeverities: YarnSeverity[] = [
+  if (noBaseline) {
+    // No baseline available for a diff — either the artifact is missing (first
+    // rollout / expired) or this is a fork PR whose read-only token couldn't
+    // download it.  Fall back to the same criteria as the package.json `audit`
+    // script (`yarn audit --environment production --severity moderate`): block
+    // on any moderate+ severity production advisory.  Dev-only and low/info
+    // prod advisories are ignored.
+    const fallbackBlockingSeverities: YarnSeverity[] = [
       'medium',
       'high',
       'critical',
     ];
     const blockingProdAdvisories = prodAdvisories.filter((a) =>
-      forkBlockingSeverities.includes(a.effectiveSeverity),
+      fallbackBlockingSeverities.includes(a.effectiveSeverity),
     );
 
     if (blockingProdAdvisories.length > 0) {

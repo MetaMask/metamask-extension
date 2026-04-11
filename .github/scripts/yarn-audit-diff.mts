@@ -16,13 +16,6 @@ const currentFile = (() => {
   return i !== -1 ? (args[i + 1] ?? null) : null;
 })();
 
-// When set, a missing or empty baseline exits 0 instead of 1.
-// Intended for initial rollout (before the first push-to-main deposits a
-// baseline artifact) and for new repository onboarding. The workflow passes
-// this flag until a baseline exists; once established, the flag is removed
-// from the workflow step.
-const skipIfNoBaseline = args.includes('--skip-if-no-baseline');
-
 // ---------------------------------------------------------------------------
 // Types (subset of ParsedAdvisory from yarn-audit-and-triage.mts)
 // ---------------------------------------------------------------------------
@@ -94,19 +87,6 @@ async function main() {
   // Missing / empty baseline
   // ------------------------------------------------------------------
   if (baselineIsEmpty) {
-    if (skipIfNoBaseline) {
-      // Rollout mode: no baseline available yet. Post success and exit 0 so
-      // this PR isn't blocked. Remove --skip-if-no-baseline after the first
-      // push-to-main run deposits the baseline artifact.
-      console.log(
-        '::notice::No baseline found — posting success (skip-if-no-baseline mode).',
-      );
-      writeStepSummary(
-        '\n> **Audit diff:** No baseline yet — diff skipped (rollout mode).\n',
-      );
-      return;
-    }
-
     // No baseline = treat all current advisories as new → block.
     console.log(
       `::warning::No baseline found. Treating all ${current.length} advisory/advisories as new.`,
