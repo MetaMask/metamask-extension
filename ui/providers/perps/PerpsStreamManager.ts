@@ -224,13 +224,17 @@ class PerpsStreamManager {
    * CLIENT_NOT_INITIALIZED errors. When the background controller loses
    * its initialization state (service worker restart, disconnect, etc.),
    * this method re-initializes it via perpsInit and retries the fetch.
+   *
+   * @param method - The background RPC method name to call.
+   * @param args - Arguments to pass to the RPC method.
+   * @returns The result from the background method.
    */
-  private async fetchWithRecovery<T>(
+  private async fetchWithRecovery<Result>(
     method: string,
     args: unknown[] = [],
-  ): Promise<T> {
+  ): Promise<Result> {
     try {
-      return await submitRequestToBackground<T>(method, args);
+      return await submitRequestToBackground<Result>(method, args);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       if (
@@ -245,7 +249,7 @@ class PerpsStreamManager {
           });
         }
         await this.reinitPromise;
-        return await submitRequestToBackground<T>(method, args);
+        return await submitRequestToBackground<Result>(method, args);
       }
       throw err;
     }
