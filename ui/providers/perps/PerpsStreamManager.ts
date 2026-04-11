@@ -102,6 +102,9 @@ class PerpsStreamManager {
   private pendingInit: { address: string; promise: Promise<void> } | null =
     null;
 
+  // Deduplicates concurrent auto-recovery perpsInit calls
+  private reinitPromise: Promise<void> | null = null;
+
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
   private readonly optimisticTPSLOverrides: Map<
     string,
@@ -114,7 +117,7 @@ class PerpsStreamManager {
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Position[]>('perpsGetPositions', [])
+        this.fetchWithRecovery<Position[]>('perpsGetPositions', [])
           .then((data) => {
             push(data ?? EMPTY_POSITIONS);
           })
@@ -134,7 +137,7 @@ class PerpsStreamManager {
 
     this.orders = new PerpsDataChannel<Order[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
+        this.fetchWithRecovery<Order[]>('perpsGetOpenOrders', [])
           .then((data) => {
             push(data ?? EMPTY_ORDERS);
           })
@@ -151,7 +154,7 @@ class PerpsStreamManager {
 
     this.account = new PerpsDataChannel<AccountState | null>({
       connectFn: (push) => {
-        submitRequestToBackground<AccountState>('perpsGetAccountState', [])
+        this.fetchWithRecovery<AccountState>('perpsGetAccountState', [])
           .then((data) => {
             push(data ?? null);
           })
@@ -168,7 +171,7 @@ class PerpsStreamManager {
 
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
       connectFn: (push) => {
-        submitRequestToBackground<PerpsMarketData[]>(
+        this.fetchWithRecovery<PerpsMarketData[]>(
           'perpsGetMarketDataWithPrices',
           [],
         )
@@ -214,6 +217,38 @@ class PerpsStreamManager {
     });
 
     this.candles = new CandleStreamChannel();
+  }
+
+  /**
+   * Fetch data from the background with automatic recovery from
+   * CLIENT_NOT_INITIALIZED errors. When the background controller loses
+   * its initialization state (service worker restart, disconnect, etc.),
+   * this method re-initializes it via perpsInit and retries the fetch.
+   */
+  private async fetchWithRecovery<T>(
+    method: string,
+    args: unknown[] = [],
+  ): Promise<T> {
+    try {
+      return await submitRequestToBackground<T>(method, args);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (
+        message.includes('CLIENT_NOT_INITIALIZED') ||
+        message.includes('CLIENT_REINITIALIZING')
+      ) {
+        if (!this.reinitPromise) {
+          this.reinitPromise = submitRequestToBackground<void>(
+            'perpsInit',
+          ).finally(() => {
+            this.reinitPromise = null;
+          });
+        }
+        await this.reinitPromise;
+        return await submitRequestToBackground<T>(method, args);
+      }
+      throw err;
+    }
   }
 
   /**
