@@ -102,7 +102,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # --- Audit ---
-      - name: Run audit and triage
+      - name: Check for vulnerabilities
         if: ${{ !cancelled() }}
         env:
           NO_BASELINE: ${{ github.event_name == 'pull_request' && steps.download-baseline.outcome != 'success' }}
@@ -124,7 +124,7 @@ jobs:
           path: .tmp/audit-baseline.json
 
       # --- Diff (PR only, runs only when a real baseline was downloaded) ---
-      - name: Run audit diff
+      - name: Compare vulnerabilities against main
         if: ${{ github.event_name == 'pull_request' && steps.download-baseline.outcome == 'success' }}
         run: |
           yarn tsx .github/scripts/yarn-audit-diff.mts

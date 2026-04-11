@@ -576,27 +576,29 @@ function buildSummaryAndVerdict({
     if (blockingProdAdvisories.length > 0) {
       githubAnnotate(
         'error',
-        `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate+ severity (no baseline — could not run diff).`,
+        `yarn audit FAILED: ${blockingProdAdvisories.length} production vulnerabilit${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.`,
       );
       verdictLines.push(
         `### yarn audit: **FAILED**`,
         '',
-        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        `**${blockingProdAdvisories.length}** production vulnerabilit${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate or higher severity.`,
         '',
-        `**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.`,
+        'If a newer version of the affected package is available, upgrade to it.',
+        '',
+        'Run `yarn audit` locally to see details.',
+        '',
       );
       process.exitCode = 1;
     } else {
       githubAnnotate(
         'notice',
-        `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev), 0 blocking (no baseline — could not run diff).`,
+        `yarn audit passed: no blocking production vulnerabilities.`,
       );
       verdictLines.push(
         `### yarn audit: **passed**`,
         '',
-        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        'No production vulnerabilities at moderate or higher severity.',
         '',
-        `**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.`,
       );
     }
   } else if (blockReleaseCandidate) {
@@ -610,14 +612,16 @@ function buildSummaryAndVerdict({
       `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
     );
     process.exitCode = 1;
-  } else {
-    // Normal path: baseline exists, not a release branch.
-    // The diff step writes the pass/fail verdict; we just emit details
-    // to a temp file so it can append them after its own output.
-    githubAnnotate(
-      'notice',
-      `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
+  } else if (process.env.GITHUB_EVENT_NAME === 'push') {
+    // Push-to-main: no diff step runs. Write a brief confirmation + details.
+    verdictLines.push(
+      `### Baseline updated: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'}`,
+      '',
+      `Production: ${prodAdvisories.length} | Dev-only: ${devAdvisories.length}`,
     );
+  } else {
+    // PR with baseline: the diff step writes the pass/fail verdict.
+    // Emit details to a temp file so the diff script can append them.
     writeFileSync(AUDIT_DETAILS_FILE, detailsLines.join('\n'), 'utf8');
   }
 

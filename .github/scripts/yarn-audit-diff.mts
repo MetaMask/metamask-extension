@@ -80,7 +80,7 @@ async function main() {
       `No new advisories. Current: ${current.length}, baseline: ${baseline.length}.`,
     );
     writeStepSummary(
-      `\n### No new advisories introduced by this PR\n\n(${current.length} current vs ${baseline.length} baseline)\n`,
+      `\n### yarn audit: **passed** — no new advisories\n`,
     );
     return;
   }
@@ -97,12 +97,16 @@ async function main() {
 
   const diffSummaryLines = [
     '',
-    `### ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'} introduced by this PR`,
+    `### yarn audit: **FAILED** — ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'}`,
+    '',
+    'Your dependency changes introduced new vulnerabilities. If a newer version of the package is available, upgrade to it.',
     '',
     ...newAdvisories.map(
       (a) =>
         `- **[${sevLabel(a)}]** \`${a.moduleName}\` — ${a.title} (<${a.url}>)`,
     ),
+    '',
+    'Run `yarn audit` locally to see current production advisories.',
     '',
   ];
   writeStepSummary(diffSummaryLines.join('\n'));
