@@ -1,32 +1,11 @@
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
-
-// ---------------------------------------------------------------------------
-// CLI args
-// ---------------------------------------------------------------------------
-
-const args = process.argv.slice(2);
-
-const baselineFile = (() => {
-  const i = args.indexOf('--baseline-file');
-  return i !== -1 ? (args[i + 1] ?? null) : null;
-})();
-
-const currentFile = (() => {
-  const i = args.indexOf('--current-file');
-  return i !== -1 ? (args[i + 1] ?? null) : null;
-})();
-
-// ---------------------------------------------------------------------------
-// Types (subset of ParsedAdvisory from yarn-audit-and-triage.mts)
-// ---------------------------------------------------------------------------
-
-type ParsedAdvisory = {
-  id: number | null;
-  moduleName: string;
-  title: string;
-  url: string;
-  effectiveSeverity?: string;
-};
+import { readFileSync } from 'fs';
+import {
+  AUDIT_BASELINE_FILE,
+  AUDIT_CURRENT_FILE,
+  AUDIT_DETAILS_FILE,
+  type ParsedAdvisory,
+  writeStepSummary,
+} from './shared/audit-utils.mts';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -51,36 +30,21 @@ function sevLabel(a: ParsedAdvisory): string {
   return (a.effectiveSeverity ?? 'unknown').toUpperCase();
 }
 
-function writeStepSummary(text: string): void {
-  const path = process.env.GITHUB_STEP_SUMMARY;
-  if (!path) return;
-  try {
-    if (!existsSync(path)) writeFileSync(path, '', 'utf8');
-    appendFileSync(path, text, 'utf8');
-  } catch {
-    // best-effort
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
 async function main() {
-  if (!currentFile) {
-    console.error('--current-file is required');
-    process.exitCode = 1;
-    return;
-  }
-
-  const current = readAdvisories(currentFile);
+  const current = readAdvisories(AUDIT_CURRENT_FILE);
   if (!current) {
-    console.error(`Could not read current advisories from: ${currentFile}`);
+    console.error(
+      `Could not read current advisories from: ${AUDIT_CURRENT_FILE}`,
+    );
     process.exitCode = 1;
     return;
   }
 
-  const baseline = readAdvisories(baselineFile);
+  const baseline = readAdvisories(AUDIT_BASELINE_FILE);
   const baselineIsEmpty = !baseline || baseline.length === 0;
 
   // ------------------------------------------------------------------
@@ -152,7 +116,7 @@ try {
   // Append the full advisory details written by yarn-audit-and-triage.mts,
   // so they appear after the diff verdict in the step summary.
   try {
-    const details = readFileSync('/tmp/audit-details.md', 'utf8');
+    const details = readFileSync(AUDIT_DETAILS_FILE, 'utf8');
     writeStepSummary(`\n${details}`);
   } catch {
     // File may not exist (e.g. triage step failed before writing it).

@@ -1,16 +1,16 @@
 import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
-import { appendFileSync, existsSync, writeFileSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import { getGitHubToken } from './shared/github-token.mts';
 import { ghApi } from './shared/gh-api.mts';
-
-type YarnSeverity =
-  | 'info'
-  | 'low'
-  | 'moderate'
-  | 'medium'
-  | 'high'
-  | 'critical';
+import {
+  AUDIT_CURRENT_FILE,
+  AUDIT_DETAILS_FILE,
+  type YarnSeverity,
+  type ParsedAdvisory,
+  githubAnnotate,
+  writeStepSummary,
+} from './shared/audit-utils.mts';
 
 type YarnAuditTreeLeaf = {
   ID?: number;
@@ -25,20 +25,6 @@ type YarnAuditTreeLeaf = {
 type YarnAuditTreeNode = {
   value?: string;
   children?: unknown;
-};
-
-type ParsedAdvisory = {
-  id: number | null;
-  moduleName: string;
-  title: string;
-  url: string;
-  vulnerableVersions: string;
-  patchedVersions: string;
-  originalSeverity: YarnSeverity;
-  effectiveSeverity: YarnSeverity;
-  isDevOnly: boolean;
-  affectsProduction: boolean;
-  matchedIssueRule: 'redos-dos-downgrade' | 'none';
 };
 
 type DeprecationFinding = {
@@ -78,10 +64,6 @@ const YARN_SHELL = process.platform === 'win32';
 //   yarn audit --environment production --severity moderate
 // i.e. block on any moderate+ severity production advisory.
 const noBaseline = process.env.NO_BASELINE === 'true';
-const outputFileArg = (() => {
-  const idx = process.argv.indexOf('--output-file');
-  return idx !== -1 ? (process.argv[idx + 1] ?? null) : null;
-})();
 
 function normalizeSeverity(severity: YarnSeverity | undefined): YarnSeverity {
   // Yarn Berry uses 'moderate' where the npm ecosystem uses 'medium'.
@@ -420,31 +402,6 @@ function formatAdvisoryLine(advisory: ParsedAdvisory): string {
   return `[${scope}] ${sev}${downgraded} ${advisory.moduleName} ${id} — ${advisory.title}${url}`;
 }
 
-function githubAnnotate(kind: 'error' | 'warning' | 'notice', message: string) {
-  // GitHub Actions workflow command format.
-  // https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
-  // Keep it plain; escaping is handled minimally.
-  const sanitized = message.replace(/\r?\n/g, ' ');
-  console.log(`::${kind}::${sanitized}`);
-}
-
-function writeStepSummary(summary: string) {
-  const stepSummaryPath = process.env.GITHUB_STEP_SUMMARY;
-  if (!stepSummaryPath) {
-    return;
-  }
-
-  try {
-    if (!existsSync(stepSummaryPath)) {
-      writeFileSync(stepSummaryPath, '', { encoding: 'utf8' });
-    }
-    appendFileSync(stepSummaryPath, summary, { encoding: 'utf8' });
-  } catch (error) {
-    // Best-effort only.
-    console.warn('Failed writing step summary:', error);
-  }
-}
-
 function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
   // Rules:
   // - high sev development dependency advisory:
@@ -530,13 +487,11 @@ function main() {
   });
 
   // Write the current advisories to disk for use by the audit-diff step.
-  if (outputFileArg) {
-    writeFileSync(
-      outputFileArg,
-      JSON.stringify(triage.advisories, null, 2),
-      'utf8',
-    );
-  }
+  writeFileSync(
+    AUDIT_CURRENT_FILE,
+    JSON.stringify(triage.advisories, null, 2),
+    'utf8',
+  );
 
   const prodAdvisories = advisories.filter((a) => a.affectsProduction);
   const devAdvisories = advisories.filter((a) => a.isDevOnly);
@@ -782,12 +737,12 @@ function main() {
       'notice',
       `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
     );
-    writeFileSync('/tmp/audit-details.md', detailsLines.join('\n'), 'utf8');
+    writeFileSync(AUDIT_DETAILS_FILE, detailsLines.join('\n'), 'utf8');
   }
 
   // When there's no diff step (no-baseline or release branch), write
   // verdict + details together. When the diff step runs, the details
-  // are in /tmp/audit-details.md and appended by the workflow after the
+  // are in .tmp/audit-details.md and appended by the diff script after it
   // diff step writes its verdict to the summary.
   if (verdictLines.length > 0) {
     writeStepSummary([...verdictLines, '', ...detailsLines].join('\n'));
