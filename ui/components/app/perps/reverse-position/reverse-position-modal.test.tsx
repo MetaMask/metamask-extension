@@ -7,6 +7,16 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+  }),
+}));
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -146,7 +156,7 @@ describe('ReversePositionModal', () => {
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
 
-    it('shows Cancel and Save buttons', () => {
+    it('shows Cancel and Confirm buttons', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
@@ -157,10 +167,20 @@ describe('ReversePositionModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('shows fees placeholder as em-dash', () => {
+    it('shows estimated flip fee', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('—')).toBeInTheDocument();
+      // ETH: 2 * 2.5 * 2900 * 0.0001 = 1.45 → displayed as -$1.45
+      expect(screen.getByText('-$1.45')).toBeInTheDocument();
+    });
+
+    it('shows Confirm button text instead of Save', () => {
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      const submitBtn = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(submitBtn).toHaveTextContent(messages.confirm.message);
     });
   });
 
