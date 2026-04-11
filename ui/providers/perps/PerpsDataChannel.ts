@@ -211,7 +211,7 @@ export class PerpsDataChannel<TData> {
    * Force disconnect and clear (used on account/network change)
    */
   reset(): void {
-    this.generation++;
+    this.generation += 1;
     this.disconnect();
     this.clearCache();
     if (this.prewarmUnsubscribe) {
