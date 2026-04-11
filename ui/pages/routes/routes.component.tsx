@@ -134,6 +134,8 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
+import { submitRequestToBackground } from '../../store/background-connection';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -556,6 +558,8 @@ export default function Routes() {
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
 
+  const isPerpsAvailable = useAppSelector(getIsPerpsExperienceAvailable);
+
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
   const prevPropsRef = useRef({
@@ -631,6 +635,19 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  // Eagerly initialize the background PerpsController at app boot so that
+  // perps RPC methods work immediately, matching mobile's startup behavior.
+  // Without this, perpsInit is only called lazily when the user navigates
+  // to the perps tab, causing CLIENT_NOT_INITIALIZED errors for any earlier call.
+  useEffect(() => {
+    if (isUnlocked && isPerpsAvailable) {
+      submitRequestToBackground('perpsInit').catch(() => {
+        // Initialization failure is non-fatal — the lazy init path
+        // and fetchWithRecovery will retry when the user reaches perps.
+      });
+    }
+  }, [isUnlocked, isPerpsAvailable]);
 
   const renderRoutes = () => {
     const routes = (
