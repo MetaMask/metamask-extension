@@ -24,7 +24,8 @@ const BASELINE_URL =
  * terminal output exactly as yarn renders it.
  */
 function captureNativeAudit(): string {
-  const cmd = 'yarn npm audit --recursive --environment production --severity moderate';
+  const cmd =
+    'yarn npm audit --recursive --environment production --severity moderate';
   const result = spawnSync(cmd, {
     encoding: 'utf8',
     shell: true,
@@ -140,7 +141,9 @@ async function main() {
   const newIds = new Set(newAdvisories.map((a) => a.id));
 
   // Split native output into per-advisory blocks (each starts with "└─").
-  const blocks = nativeOutput.split(/(?=└─)/);
+  // The "└─" may be wrapped in ANSI escape codes, so allow them in the split.
+  const ansi = '(?:\\x1b\\[[0-9;]*m)*';
+  const blocks = nativeOutput.split(new RegExp(`(?=${ansi}└─)`));
   const matchingBlocks = blocks.filter((block) => {
     // Extract the ID from "ID: <number>" in the block (ignoring ANSI codes).
     const idMatch = block.replace(/\x1b\[[0-9;]*m/g, '').match(/ID:\s*(\d+)/);
