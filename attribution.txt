@@ -1,4 +1,3 @@
-Nonsense
 abort-controller
 3.0.0 <https://github.com/mysticatea/abort-controller>
 MIT License

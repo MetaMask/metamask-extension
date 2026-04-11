@@ -16,9 +16,11 @@ const currentFile = (() => {
   return i !== -1 ? (args[i + 1] ?? null) : null;
 })();
 
-// When set, a missing or empty baseline posts `success` instead of `failure`.
-// Used during rollout before the first push-to-main deposits the baseline
-// artifact. Remove this flag after the first successful main push.
+// When set, a missing or empty baseline exits 0 instead of 1.
+// Intended for initial rollout (before the first push-to-main deposits a
+// baseline artifact) and for new repository onboarding. The workflow passes
+// this flag until a baseline exists; once established, the flag is removed
+// from the workflow step.
 const skipIfNoBaseline = args.includes('--skip-if-no-baseline');
 
 // ---------------------------------------------------------------------------
@@ -99,7 +101,9 @@ async function main() {
       console.log(
         '::notice::No baseline found — posting success (skip-if-no-baseline mode).',
       );
-      writeStepSummary('\n> **Audit diff:** No baseline yet — diff skipped (rollout mode).\n');
+      writeStepSummary(
+        '\n> **Audit diff:** No baseline yet — diff skipped (rollout mode).\n',
+      );
       return;
     }
 
@@ -140,7 +144,9 @@ async function main() {
     `Found ${newAdvisories.length} new advisory/advisories not in baseline.`,
   );
   for (const a of newAdvisories) {
-    console.log(`::error::New advisory [${sevLabel(a)}]: ${a.moduleName} — ${a.title} (${a.url})`);
+    console.log(
+      `::error::New advisory [${sevLabel(a)}]: ${a.moduleName} — ${a.title} (${a.url})`,
+    );
   }
 
   const diffSummaryLines = [
@@ -148,7 +154,8 @@ async function main() {
     `### ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'} introduced by this PR`,
     '',
     ...newAdvisories.map(
-      (a) => `- **[${sevLabel(a)}]** \`${a.moduleName}\` — ${a.title} (<${a.url}>)`,
+      (a) =>
+        `- **[${sevLabel(a)}]** \`${a.moduleName}\` — ${a.title} (<${a.url}>)`,
     ),
     '',
   ];

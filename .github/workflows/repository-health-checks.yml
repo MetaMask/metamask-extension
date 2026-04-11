@@ -22,6 +22,9 @@ jobs:
           # fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
 
+      # TEST OVERRIDES: The steps below are temporarily disabled for testing.
+      # Restore all commented-out steps before merging to main.
+
       # - name: ShellCheck Lint
       #   if: ${{ !cancelled() }}
       #   run: ./development/shellcheck.sh
@@ -115,13 +118,25 @@ jobs:
           run-id: ${{ steps.find-baseline-run.outputs.run-id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Write an empty baseline when the download failed (no prior run or artifact
+      # expired). The diff step detects this via the step id below and adds
+      # --skip-if-no-baseline so PRs are not blocked when no baseline exists yet.
       - name: Write empty baseline fallback
+        id: baseline-fallback
         if: ${{ github.event_name == 'pull_request' && (steps.find-baseline-run.outcome == 'failure' || steps.download-baseline.outcome == 'failure') }}
         run: echo '[]' > /tmp/audit-baseline.json
 
       - name: Run audit diff
         if: ${{ github.event_name == 'pull_request' }}
-        run: yarn tsx .github/scripts/yarn-audit-diff.mts --baseline-file /tmp/audit-baseline.json --current-file /tmp/audit-current.json
+        run: |
+          SKIP_FLAG=""
+          if [[ "${{ steps.baseline-fallback.outcome }}" == "success" ]]; then
+            SKIP_FLAG="--skip-if-no-baseline"
+          fi
+          yarn tsx .github/scripts/yarn-audit-diff.mts \
+            --baseline-file /tmp/audit-baseline.json \
+            --current-file /tmp/audit-current.json \
+            $SKIP_FLAG
 
       # - name: Detect yarn lock deduplications
       #   if: ${{ !cancelled() }}

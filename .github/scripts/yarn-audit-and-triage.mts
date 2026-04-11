@@ -71,6 +71,9 @@ const SLACK_HIGHLIGHT = process.env.SLACK_HIGHLIGHT !== 'false';
 const YARN_BIN = 'yarn';
 const YARN_SHELL = process.platform === 'win32';
 
+// Set by the workflow when the PR originates from a fork repository.
+// Fork runs receive a read-only token and cannot write commit statuses or
+// download artifacts from other runs, so they use a different exit strategy.
 const IS_FORK_PR = process.env.IS_FORK_PR === 'true';
 const outputFileArg = (() => {
   const idx = process.argv.indexOf('--output-file');
@@ -78,6 +81,8 @@ const outputFileArg = (() => {
 })();
 
 function normalizeSeverity(severity: YarnSeverity | undefined): YarnSeverity {
+  // Yarn Berry uses 'moderate' where the npm ecosystem uses 'medium'.
+  // Normalize to 'medium' so the rest of the code only deals with one term.
   if (severity === 'moderate') {
     return 'medium';
   }
@@ -709,11 +714,26 @@ function main() {
     }
   }
 
-  // Fork PRs: exit non-zero if any advisory exists (no token to post statuses).
-  // Internal PRs: always exit 0; the audit-diff step gates them by exiting non-zero.
-  if (IS_FORK_PR && advisories.length > 0) {
-    process.exitCode = 1;
+  if (IS_FORK_PR) {
+    // Fork PRs have no token to run audit-diff, so block on any moderate+
+    // severity production advisory. Dev-only advisories are ignored (they
+    // reflect pre-existing repo state). Low/info prod advisories are also
+    // ignored to match the `yarn audit` script which uses --severity moderate.
+    const forkBlockingSeverities: YarnSeverity[] = [
+      'medium',
+      'high',
+      'critical',
+    ];
+    const blockingProdAdvisories = prodAdvisories.filter((a) =>
+      forkBlockingSeverities.includes(a.effectiveSeverity),
+    );
+
+    if (blockingProdAdvisories.length > 0) {
+      process.exitCode = 1;
+    }
   } else if (triage.decisions.blockReleaseCandidate) {
+    // Release branches with any production advisory are blocked immediately;
+    // the audit-diff step handles non-release PRs.
     process.exitCode = 1;
   }
 }
