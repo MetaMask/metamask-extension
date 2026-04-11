@@ -120,11 +120,10 @@ function parseJsonOrNdjson(text: string): unknown[] {
 
 function spawnYarnAudit(environment: 'production' | 'development'): string {
   const result = spawnSync(
-    YARN_BIN,
-    ['npm', 'audit', '--recursive', '--environment', environment, '--json'],
+    `${YARN_BIN} npm audit --recursive --environment ${environment} --json`,
     {
       encoding: 'utf8',
-      shell: YARN_SHELL,
+      shell: true,
     },
   );
 
@@ -222,18 +221,10 @@ function runYarnInstallForDeprecations(): DeprecationFinding[] {
   // Yarn classic prints install warnings (including deprecations). We re-run
   // install with scripts disabled to collect deprecation warnings.
   const result = spawnSync(
-    YARN_BIN,
-    [
-      'install',
-      '--immutable',
-      '--immutable-cache',
-      '--ignore-scripts',
-      '--mode=skip-build',
-      '--json',
-    ],
+    `${YARN_BIN} install --immutable --immutable-cache --ignore-scripts --mode=skip-build --json`,
     {
       encoding: 'utf8',
-      shell: YARN_SHELL,
+      shell: true,
     },
   );
 

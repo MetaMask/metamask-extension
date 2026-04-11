@@ -19,30 +19,17 @@ import {
 const BASELINE_URL =
   'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/audit-baseline';
 
-const YARN_SHELL = process.platform === 'win32';
-
 /**
  * Run `yarn npm audit` in pretty (non-JSON) mode and return the colored
  * terminal output exactly as yarn renders it.
  */
 function captureNativeAudit(): string {
-  const result = spawnSync(
-    'yarn',
-    [
-      'npm',
-      'audit',
-      '--recursive',
-      '--environment',
-      'production',
-      '--severity',
-      'moderate',
-    ],
-    {
-      encoding: 'utf8',
-      shell: YARN_SHELL,
-      env: { ...process.env, FORCE_COLOR: '1' },
-    },
-  );
+  const cmd = 'yarn npm audit --recursive --environment production --severity moderate';
+  const result = spawnSync(cmd, {
+    encoding: 'utf8',
+    shell: true,
+    env: { ...process.env, FORCE_COLOR: '1' },
+  });
   return `${result.stdout ?? ''}${result.stderr ?? ''}`;
 }
 
@@ -96,9 +83,9 @@ async function main() {
   // (only needed when we have a baseline to diff against)
   // -----------------------------------------------------------------------
   console.log('Running yarn audit…\n');
-  spawnSync('yarn', ['tsx', '.github/scripts/yarn-audit-and-triage.mts'], {
+  spawnSync('yarn tsx .github/scripts/yarn-audit-and-triage.mts', {
     stdio: ['inherit', 'pipe', 'inherit'],
-    shell: YARN_SHELL,
+    shell: true,
     env: {
       ...process.env,
       CHECK_DEPRECATIONS: 'false',
