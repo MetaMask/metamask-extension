@@ -56,13 +56,21 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   REVEAL_SRP_LIST_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import { updateDataDeletionTaskStatus } from '../../../store/actions';
+import { PasskeyCeremonyExtensionAdapter } from '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import {
+  completePasskeyRegistration,
+  generatePasskeyAuthenticationOptions,
+  generatePasskeyRegistrationOptions,
+  removePasskeyWithPasskeyVerification,
+  updateDataDeletionTaskStatus,
+} from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import MetametricsToggle from './metametrics-toggle';
@@ -118,6 +126,8 @@ export default class SecurityTab extends PureComponent {
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
     hasActiveShieldSubscription: PropTypes.bool,
+    isPasskeyRegistered: PropTypes.bool,
+    forceUpdateMetamaskState: PropTypes.func.isRequired,
   };
 
   state = {
@@ -127,6 +137,7 @@ export default class SecurityTab extends PureComponent {
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
     hasEmailMarketingConsentError: false,
+    passkeyToggleBusy: false,
   };
 
   settingsRefCounter = 0;
@@ -202,6 +213,68 @@ export default class SecurityTab extends PureComponent {
   }
 
   hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
+
+  handleBiometricsPasskeyToggle = async (currentValue) => {
+    if (this.state.passkeyToggleBusy) {
+      return;
+    }
+    const { trackEvent } = this.context;
+    const { isPasskeyRegistered, navigate, forceUpdateMetamaskState } =
+      this.props;
+    const wantsOn = !currentValue;
+
+    if (wantsOn) {
+      this.setState({ passkeyToggleBusy: true });
+      try {
+        const options = await generatePasskeyRegistrationOptions();
+        const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
+        const registrationResponse =
+          await passkeyAdapter.startRegistration(options);
+        await completePasskeyRegistration(registrationResponse);
+        await forceUpdateMetamaskState();
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: { passkey_unlock_registered: true },
+        });
+      } catch (error) {
+        log.debug(
+          'Passkey registration from settings failed or cancelled',
+          error,
+        );
+      } finally {
+        this.setState({ passkeyToggleBusy: false });
+      }
+      return;
+    }
+
+    if (!isPasskeyRegistered) {
+      return;
+    }
+
+    this.setState({ passkeyToggleBusy: true });
+    try {
+      const authOptions = await generatePasskeyAuthenticationOptions();
+      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
+      const authenticationResponse =
+        await passkeyAdapter.startAuthentication(authOptions);
+      await removePasskeyWithPasskeyVerification(authenticationResponse);
+      await forceUpdateMetamaskState();
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: { passkey_unlock_registered: false },
+      });
+    } catch (error) {
+      log.debug(
+        'Passkey verification for disable failed; offering password fallback',
+        error,
+      );
+      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE);
+    } finally {
+      this.setState({ passkeyToggleBusy: false });
+    }
+  };
 
   renderSeedWords() {
     const { t } = this.context;
@@ -1290,7 +1363,9 @@ export default class SecurityTab extends PureComponent {
 
   renderBiometricsToggle() {
     const { t } = this.context;
-    const { useExternalServices } = this.props;
+    const { isPasskeyRegistered, hasActiveShieldSubscription } = this.props;
+    const { passkeyToggleBusy } = this.state;
+    const registered = Boolean(isPasskeyRegistered);
 
     return (
       <Box
@@ -1300,7 +1375,7 @@ export default class SecurityTab extends PureComponent {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
-        data-testid="advanced-setting-show-testnet-conversion"
+        data-testid="security-biometrics-passkey-row"
       >
         <div className="settings-page__content-item">
           <Box
@@ -1312,11 +1387,16 @@ export default class SecurityTab extends PureComponent {
             <Text variant={TextVariant.headingSm}>
               {t('unlockWithBiometricsToggle')}
             </Text>
-            <ToggleButton
-              value={useExternalServices}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+              <ToggleButton
+                value={registered}
+                onToggle={this.handleBiometricsPasskeyToggle}
+                offLabel={t('off')}
+                onLabel={t('on')}
+                disabled={hasActiveShieldSubscription || passkeyToggleBusy}
+                dataTestId="security-biometrics-passkey-toggle"
+              />
+            </Box>
           </Box>
           <Text marginBottom={2} color={TextColor.textAlternative}>
             {t('biometricsToggleDescription')}

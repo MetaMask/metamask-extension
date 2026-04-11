@@ -2806,6 +2806,7 @@ export default class MetamaskController extends EventEmitter {
       submitEncryptionKey: this.submitEncryptionKey.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
 
+      // passkey management
       generatePasskeyRegistrationOptions:
         this.generatePasskeyRegistrationOptions.bind(this),
       generatePasskeyAuthenticationOptions:
@@ -2815,9 +2816,10 @@ export default class MetamaskController extends EventEmitter {
       isPasskeyEnrolled: this.passkeyController.isPasskeyEnrolled.bind(
         this.passkeyController,
       ),
-      removePasskey: this.passkeyController.removePasskey.bind(
-        this.passkeyController,
-      ),
+      removePasskeyWithPasskeyVerification:
+        this.removePasskeyWithPasskeyVerification.bind(this),
+      removePasskeyWithPasswordVerification:
+        this.removePasskeyWithPasswordVerification.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -4317,6 +4319,35 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     await this.submitEncryptionKey(encryptionKey);
+  }
+
+  /**
+   * Verifies passkey authentication and removes the passkey record (settings disable).
+   * Does not submit the encryption key to the keyring — vault stays unlocked.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasskeyVerification(authenticationResponse) {
+    const isEnrolled = this.passkeyController.isPasskeyEnrolled();
+    if (!isEnrolled) {
+      throw new Error('Passkey is not enrolled');
+    }
+    await this.passkeyController.unwrapVaultEncryptionKey(
+      authenticationResponse,
+    );
+    this.passkeyController.removePasskey();
+  }
+
+  /**
+   * Verifies the wallet password and removes the passkey record (settings disable fallback).
+   *
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+  async removePasskeyWithPasswordVerification(password) {
+    await this.verifyPassword(password);
+    this.passkeyController.removePasskey();
   }
 
   /**

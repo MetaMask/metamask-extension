@@ -965,6 +965,15 @@
   "biometricsToggleDescription": {
     "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
   },
+  "turnOffPasskeysTitle": {
+    "message": "Turn off passkeys"
+  },
+  "turnOffPasskeysDescription": {
+    "message": "Enter your wallet password to remove the passkey used to unlock MetaMask on this device."
+  },
+  "turnOffPasskeysConfirm": {
+    "message": "Turn off"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"

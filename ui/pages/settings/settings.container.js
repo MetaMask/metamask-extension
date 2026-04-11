@@ -31,6 +31,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
@@ -62,6 +63,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [SECURITY_TURN_OFF_PASSKEY_ROUTE]: 'turnOffPasskeysTitle',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: 'shieldClaimsListTitle',
   [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: 'shieldPastPlansTitle',
@@ -89,6 +91,9 @@ const mapStateToProps = (state, ownProps) => {
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
+  );
+  const isTurnOffPasskeyPage = Boolean(
+    pathname.match(SECURITY_TURN_OFF_PASSKEY_ROUTE),
   );
   const isTransactionShieldPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_ROUTE),
@@ -150,7 +155,11 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isRevealSrpListPage || isPasswordChangePage) {
+  } else if (
+    isRevealSrpListPage ||
+    isPasswordChangePage ||
+    isTurnOffPasskeyPage
+  ) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
@@ -193,6 +202,7 @@ const mapStateToProps = (state, ownProps) => {
     isRevealSrpListPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isTransactionShieldPage,
+    isTurnOffPasskeyPage,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,

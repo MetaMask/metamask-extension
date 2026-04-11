@@ -1198,8 +1198,30 @@ export function isPasskeyEnrolled(): Promise<boolean> {
   return submitRequestToBackground<boolean>('isPasskeyEnrolled', []);
 }
 
-export function removePasskey(): Promise<void> {
-  return submitRequestToBackground('removePasskey', []);
+/**
+ * Settings: after WebAuthn assertion, remove passkey unlock credential (no keyring submit).
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function removePasskeyWithPasskeyVerification(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
+    authenticationResponse,
+  ]);
+}
+
+/**
+ * Settings: verify wallet password, then remove passkey unlock credential.
+ *
+ * @param password - The user's wallet password.
+ */
+export function removePasskeyWithPasswordVerification(
+  password: string,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
+    password,
+  ]);
 }
 
 /**

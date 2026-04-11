@@ -39,6 +39,7 @@ jest.mock('../../../selectors', () => ({
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setSecurityAlertsEnabled: (val) => mockSetSecurityAlertsEnabled(val),
+  forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('../../../ducks/app/app.ts', () => {

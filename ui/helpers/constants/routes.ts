@@ -76,6 +76,8 @@ export const REVEAL_SRP_LIST_ROUTE =
   '/settings/security-and-privacy/reveal-srp-list';
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-privacy/turn-off-passkey';
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
@@ -344,6 +346,11 @@ export const ROUTES = [
   {
     path: SECURITY_PASSWORD_CHANGE_ROUTE,
     label: 'Change Password',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
     trackInAnalytics: true,
   },
   {

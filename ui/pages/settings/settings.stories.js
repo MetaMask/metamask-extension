@@ -22,6 +22,7 @@ export const SettingsPageComponent = () => (
     conversionDate={Date.now()}
     currentPath={CURRENT_PATH} // Default to general settings page
     isPasswordChangePage={false}
+    isTurnOffPasskeyPage={false}
     isPopup={false}
     isRevealSrpListPage={false}
     isSeedlessPasswordOutdated={false}

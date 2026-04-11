@@ -26,6 +26,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
@@ -73,6 +74,7 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
+import TurnOffPasskey from './security-tab/turn-off-passkey';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
@@ -104,6 +106,7 @@ class SettingsPage extends PureComponent {
     isRevealSrpListPage: PropTypes.bool,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isTransactionShieldPage: PropTypes.bool,
+    isTurnOffPasskeyPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
@@ -172,6 +175,7 @@ class SettingsPage extends PureComponent {
       mostRecentOverviewPage,
       addNewNetwork,
       isPasswordChangePage,
+      isTurnOffPasskeyPage,
       isRevealSrpListPage,
       isSeedlessPasswordOutdated,
       isTransactionShieldPage,
@@ -184,7 +188,10 @@ class SettingsPage extends PureComponent {
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSearchHidden =
-      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
+      isRevealSrpListPage ||
+      isPasswordChangePage ||
+      isTurnOffPasskeyPage ||
+      isTransactionShieldPage;
 
     return (
       <div
@@ -290,12 +297,14 @@ class SettingsPage extends PureComponent {
     const {
       isRevealSrpListPage,
       isPasswordChangePage,
+      isTurnOffPasskeyPage,
       isTransactionShieldPage,
     } = this.props;
 
     if (
       isRevealSrpListPage ||
       isPasswordChangePage ||
+      isTurnOffPasskeyPage ||
       isTransactionShieldPage
     ) {
       return null;
@@ -578,6 +587,13 @@ class SettingsPage extends PureComponent {
             SETTINGS_ROUTE,
           )}
           element={<ChangePassword />}
+        />
+        <Route
+          path={toRelativeRoutePath(
+            SECURITY_TURN_OFF_PASSKEY_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<TurnOffPasskey />}
         />
         <Route
           path="*"

@@ -3022,6 +3022,16 @@ export function getUsePhishDetect(state) {
 }
 
 /**
+ * True when a passkey is registered for unlock
+ *
+ * @param {*} state
+ * @returns {boolean}
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state

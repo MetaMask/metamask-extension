@@ -67,6 +67,7 @@
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
     "participateInMetaMetrics": false,
+    "passkeyRecord": null,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
     "pendingExtensionVersion": null,
