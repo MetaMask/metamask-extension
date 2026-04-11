@@ -233,13 +233,17 @@ class BridgeQuotePage {
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
 
-    this.dismissStatusPageIfPresent();
+    await this.dismissStatusPageIfPresent();
   };
 
   dismissStatusPageIfPresent = async () => {
+    // Ideally we just use the extensionSkipSmartTransactionStatusPage flag.
+    // But that alone does not determine whether the status page will be shown or not,
+    // we'd still have to replicate the logic in smart-transaction.ts.
+    // This will be superceded with the transaction toast feature flag
     const isStatusPageVisible = await this.driver.isElementPresentAndVisible(
       this.statusPageCloseButton,
-      2000,
+      4000,
     );
 
     if (isStatusPageVisible) {
