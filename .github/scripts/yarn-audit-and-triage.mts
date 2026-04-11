@@ -197,7 +197,21 @@ function advisoryKey(
 
 function runYarnAudit(): { prod: unknown[]; dev: unknown[] } {
   if (USE_CACHED_OUTPUT) {
-    const fixture: YarnAuditTreeNode = {
+    // Realistic fixture: prod and dev are disjoint sets.
+    const prodFixture: YarnAuditTreeNode = {
+      value: 'lodash',
+      children: {
+        ID: 1088354,
+        Issue: 'Prototype Pollution in lodash',
+        URL: 'https://github.com/advisories/GHSA-jf85-cpcp-j695',
+        Severity: 'high',
+        'Vulnerable Versions': '<4.17.21',
+        'Tree Versions': ['4.17.20'],
+        Dependents: ['some-prod-dep@npm:1.0.0'],
+      } as YarnAuditTreeLeaf,
+    };
+
+    const devFixture: YarnAuditTreeNode = {
       value: 'minimatch',
       children: {
         ID: 1113371,
@@ -207,16 +221,13 @@ function runYarnAudit(): { prod: unknown[]; dev: unknown[] } {
         Severity: 'high',
         'Vulnerable Versions': '<10.2.1',
         'Tree Versions': ['3.1.2', '10.1.1'],
-        Dependents: [
-          'eslint-plugin-n@virtual:...#npm:16.6.2',
-          'glob@npm:13.0.0',
-        ],
+        Dependents: ['eslint-plugin-n@virtual:...#npm:16.6.2'],
       } as YarnAuditTreeLeaf,
     };
 
     return {
-      prod: [fixture],
-      dev: [fixture],
+      prod: [prodFixture],
+      dev: [devFixture],
     };
   }
 
