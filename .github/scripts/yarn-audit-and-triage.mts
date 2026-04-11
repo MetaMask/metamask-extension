@@ -550,65 +550,58 @@ function main() {
   // Console output (machine readable)
   console.log(JSON.stringify(triage, null, 2));
 
-  // Step summary
-  const mode = noBaseline
-    ? 'no baseline'
-    : triage.isReleaseBranch
-      ? 'release branch'
-      : 'baseline available';
-  const summaryTitle = `yarn audit (${mode}): ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;
+  // Step summary — verdict first, then collapsible full details.
+  const verdictLines: string[] = [];
 
-  const summaryLines: string[] = [];
-  summaryLines.push(`<details>`);
-  summaryLines.push(`<summary>${summaryTitle}</summary>`);
-  summaryLines.push('');
-  summaryLines.push(`- Branch: \`${triage.branch}\``);
-  summaryLines.push(`- Release branch: \`${triage.isReleaseBranch}\``);
-  summaryLines.push(
+  const detailsLines: string[] = [];
+  detailsLines.push('<details>');
+  detailsLines.push('<summary>Full details</summary>');
+  detailsLines.push('');
+  detailsLines.push(`- Branch: \`${triage.branch}\``);
+  detailsLines.push(`- Release branch: \`${triage.isReleaseBranch}\``);
+  detailsLines.push(
     `- Advisories: **${advisories.length}** (prod: **${prodAdvisories.length}**, dev: **${devAdvisories.length}**)`,
   );
-  summaryLines.push(
+  detailsLines.push(
     `- Deprecations: **${deprecations.length}**${
       CHECK_DEPRECATIONS ? '' : ' (check disabled)'
     }`,
   );
-  summaryLines.push('');
+  detailsLines.push('');
 
   if (downgraded.length > 0) {
-    summaryLines.push('### Downgraded (ReDoS/DoS rule)');
-    summaryLines.push('');
+    detailsLines.push('### Downgraded (ReDoS/DoS rule)');
+    detailsLines.push('');
     for (const advisory of downgraded) {
-      summaryLines.push(`- ${formatAdvisoryLine(advisory)}`);
+      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
     }
-    summaryLines.push('');
+    detailsLines.push('');
   }
 
   if (trackOnlyDev.length > 0 || deprecations.length > 0) {
-    summaryLines.push('### Track (issue + Slack reminder)');
-    summaryLines.push('');
+    detailsLines.push('### Track (issue + Slack reminder)');
+    detailsLines.push('');
     for (const advisory of trackOnlyDev) {
-      summaryLines.push(`- ${formatAdvisoryLine(advisory)}`);
+      detailsLines.push(`- ${formatAdvisoryLine(advisory)}`);
     }
     for (const dep of deprecations) {
-      summaryLines.push(`- [deprecation] ${dep.message}`);
+      detailsLines.push(`- [deprecation] ${dep.message}`);
     }
-    summaryLines.push('');
+    detailsLines.push('');
   }
 
   if (triage.isReleaseBranch) {
-    summaryLines.push('### Release branch decision');
-    summaryLines.push('');
-    summaryLines.push(
+    detailsLines.push('### Release branch decision');
+    detailsLines.push('');
+    detailsLines.push(
       triage.decisions.blockReleaseCandidate
         ? '- **BLOCK RC**: Production dependency advisory present on a release branch.'
         : '- No production advisories on a release branch — RC not blocked.',
     );
-    summaryLines.push('');
+    detailsLines.push('');
   }
 
-  summaryLines.push('</details>');
-
-  writeStepSummary(summaryLines.join('\n'));
+  detailsLines.push('</details>');
 
   // Slack highlight: emit a single, copy-pastable line.
   if (SLACK_HIGHLIGHT && (trackOnlyDev.length > 0 || deprecations.length > 0)) {
@@ -743,8 +736,12 @@ function main() {
         'error',
         `yarn audit FAILED: ${blockingProdAdvisories.length} production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} at moderate+ severity (no baseline — could not run diff).`,
       );
-      writeStepSummary(
-        `\n\n### yarn audit: **FAILED**\n\nNo baseline artifact available — could not diff against main. Fell back to \`yarn audit --severity moderate --environment production\` criteria.\n\n**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.\n`,
+      verdictLines.push(
+        `### yarn audit: **FAILED**`,
+        '',
+        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        '',
+        `**${blockingProdAdvisories.length}** blocking production advisor${blockingProdAdvisories.length === 1 ? 'y' : 'ies'} found.`,
       );
       process.exitCode = 1;
     } else {
@@ -752,8 +749,12 @@ function main() {
         'notice',
         `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev), 0 blocking (no baseline — could not run diff).`,
       );
-      writeStepSummary(
-        `\n\n### yarn audit: **passed**\n\nNo baseline artifact available — could not diff against main. Fell back to \`yarn audit --severity moderate --environment production\` criteria.\n\n**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.\n`,
+      verdictLines.push(
+        `### yarn audit: **passed**`,
+        '',
+        'No baseline artifact available — could not diff against main. Fell back to `yarn audit --severity moderate --environment production` criteria.',
+        '',
+        `**0** blocking production advisories. ${devAdvisories.length} dev-only advisor${devAdvisories.length === 1 ? 'y' : 'ies'} ignored.`,
       );
     }
   } else if (triage.decisions.blockReleaseCandidate) {
@@ -763,22 +764,30 @@ function main() {
       'error',
       `yarn audit FAILED: ${prodAdvisories.length} production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} on release branch — RC blocked.`,
     );
-    writeStepSummary(
-      `\n\n### yarn audit: **FAILED**\n\nRelease branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.\n`,
+    verdictLines.push(
+      `### yarn audit: **FAILED**`,
+      '',
+      `Release branch with **${prodAdvisories.length}** production advisor${prodAdvisories.length === 1 ? 'y' : 'ies'} — release candidate blocked until resolved.`,
     );
     process.exitCode = 1;
   } else {
     // Normal path: baseline exists, not a release branch.
     // The audit-diff step will handle pass/fail for PRs.
     // On push-to-main, this step always passes (baseline is uploaded).
+    // No verdict heading here — the diff step writes the real pass/fail.
     githubAnnotate(
       'notice',
-      `yarn audit passed: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
-    );
-    writeStepSummary(
-      `\n\n### yarn audit: **passed**\n\nBaseline available — the audit diff step will check whether this PR introduces new advisories.\n`,
+      `yarn audit: ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} (${prodAdvisories.length} prod, ${devAdvisories.length} dev). Diff against main will check for new advisories.`,
     );
   }
+
+  writeStepSummary(
+    [
+      ...verdictLines,
+      ...(verdictLines.length > 0 ? [''] : []),
+      ...detailsLines,
+    ].join('\n'),
+  );
 }
 
 try {
