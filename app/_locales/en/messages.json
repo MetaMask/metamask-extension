@@ -965,6 +965,14 @@
   "biometricsToggleDescription": {
     "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
   },
+  "passkeySettingsToastTurnedOn": {
+    "message": "Biometrics turned on",
+    "description": "Toast after the user enables passkey unlock in Security settings; shown as “Biometrics” to users."
+  },
+  "passkeySettingsToastTurnedOff": {
+    "message": "Biometrics turned off",
+    "description": "Toast after the user disables passkey unlock; shown as “Biometrics” to users."
+  },
   "turnOffPasskeysTitle": {
     "message": "Turn off passkeys"
   },

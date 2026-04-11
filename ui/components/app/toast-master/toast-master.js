@@ -5,7 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  AvatarNetwork,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -15,8 +23,6 @@ import {
 import {
   BorderColor,
   BorderRadius,
-  IconColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -40,18 +46,13 @@ import {
   addPermittedAccount,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
-import {
-  AvatarNetwork,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  PasskeySettingsToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
@@ -94,6 +95,7 @@ import {
   selectShowSurveyToast,
   selectNewSrpAdded,
   selectPasswordChangeToast,
+  selectPasskeySettingsToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
@@ -110,6 +112,7 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
+  setShowPasskeySettingsToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
@@ -158,6 +161,7 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <PasswordChangeToast />
+        <PasskeySettingsToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -279,7 +283,11 @@ function SurveyToastMayDelete() {
       <Toast
         key="survey-toast"
         startAdornment={
-          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+          <Icon
+            name={IconName.Heart}
+            color={IconColor.ErrorDefault}
+            size={IconSize.Md}
+          />
         }
         text={t('surveyTitle')}
         actionText={t('surveyConversion')}
@@ -313,7 +321,11 @@ function PrivacyPolicyToast() {
       <Toast
         key="privacy-policy-toast"
         startAdornment={
-          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+          <Icon
+            name={IconName.Info}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
         }
         text={t('newPrivacyPolicyTitle')}
         actionText={t('newPrivacyPolicyActionButton')}
@@ -344,7 +356,11 @@ function NftEnablementToast() {
       <Toast
         key="enabled-nft-auto-detection"
         startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+          <Icon
+            name={IconName.CheckBold}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
         }
         text={t('nftAutoDetectionEnabled')}
         borderRadius={BorderRadius.LG}
@@ -449,7 +465,11 @@ function NewSrpAddedToast() {
         key="new-srp-added-toast"
         text={t('importWalletSuccess', [latestHdKeyringNumber])}
         startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+          <Icon
+            name={IconName.CheckBold}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
         }
         onClose={() => dispatch(setShowNewSrpAddedToast(false))}
         autoHideTime={autoHideDelay}
@@ -473,7 +493,11 @@ function InfuraSwitchToast() {
         dataTestId="infura-switch-toast"
         text={t('updatedToMetaMaskDefault')}
         startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+          <Icon
+            name={IconName.CheckBold}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
         }
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
@@ -482,6 +506,48 @@ function InfuraSwitchToast() {
     )
   );
 }
+
+const PasskeySettingsToast = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const passkeySettingsToast = useSelector(selectPasskeySettingsToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  return (
+    passkeySettingsToast !== null && (
+      <Toast
+        key="passkey-settings-toast"
+        dataTestId={
+          passkeySettingsToast === PasskeySettingsToastType.TurnedOn
+            ? 'passkey-settings-toast-on'
+            : 'passkey-settings-toast-off'
+        }
+        text={
+          passkeySettingsToast === PasskeySettingsToastType.TurnedOn
+            ? t('passkeySettingsToastTurnedOn')
+            : t('passkeySettingsToastTurnedOff')
+        }
+        startAdornment={
+          <Icon
+            name={IconName.CheckBold}
+            color={IconColor.SuccessDefault}
+            size={IconSize.Md}
+          />
+        }
+        borderRadius={BorderRadius.LG}
+        textClassName="text-base"
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowPasskeySettingsToast(null));
+        }}
+        onClose={() => {
+          dispatch(setShowPasskeySettingsToast(null));
+        }}
+      />
+    )
+  );
+};
 
 const PasswordChangeToast = () => {
   const t = useI18nContext();
@@ -511,7 +577,11 @@ const PasswordChangeToast = () => {
         startAdornment={
           showPasswordChangeToast ===
           PasswordChangeToastType.Success ? undefined : (
-            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
+            <Icon
+              name={IconName.Danger}
+              color={IconColor.IconDefault}
+              size={IconSize.Md}
+            />
           )
         }
         borderRadius={BorderRadius.LG}
@@ -541,7 +611,11 @@ function CopyAddressToast() {
         key="copy-address-toast"
         text={t('addressCopied')}
         startAdornment={
-          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
+          <Icon
+            name={IconName.CopySuccess}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
         }
         onClose={() => dispatch(setShowCopyAddressToast(false))}
         autoHideTime={autoHideToastDelay}
@@ -667,9 +741,10 @@ const ClaimSubmitToast = () => {
             }
             color={
               isSuccess || isDraftSaved || isDraftDeleted
-                ? IconColor.successDefault
-                : IconColor.errorDefault
+                ? IconColor.SuccessDefault
+                : IconColor.ErrorDefault
             }
+            size={IconSize.Md}
           />
         }
         autoHideTime={autoHideToastDelay}
@@ -763,7 +838,7 @@ function ShieldPausedToast() {
         startAdornment={
           <Icon
             name={IconName.CircleX}
-            color={IconColor.errorDefault}
+            color={IconColor.ErrorDefault}
             size={IconSize.Lg}
           />
         }
@@ -806,7 +881,7 @@ function ShieldEndingToast() {
         startAdornment={
           <Icon
             name={IconName.Clock}
-            color={IconColor.warningDefault}
+            color={IconColor.WarningDefault}
             size={IconSize.Lg}
           />
         }
@@ -881,7 +956,7 @@ function StorageErrorToast() {
         startAdornment={
           <Icon
             name={IconName.Danger}
-            color={IconColor.errorDefault}
+            color={IconColor.ErrorDefault}
             size={IconSize.Lg}
           />
         }

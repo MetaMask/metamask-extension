@@ -3,6 +3,7 @@ import { ReactFragment } from 'react';
 import {
   SET_SHOW_NEW_SRP_ADDED_TOAST,
   SET_SHOW_PASSWORD_CHANGE_TOAST,
+  SET_SHOW_PASSKEY_SETTINGS_TOAST,
   SET_SHOW_COPY_ADDRESS_TOAST,
   SET_SHOW_CLAIM_SUBMIT_TOAST,
   SET_SHOW_INFURA_SWITCH_TOAST,
@@ -12,6 +13,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  PasskeySettingsToastType,
 } from '../../../../shared/constants/app-state';
 
 /**
@@ -87,6 +89,15 @@ export function setShowPasswordChangeToast(
 ) {
   return {
     type: SET_SHOW_PASSWORD_CHANGE_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowPasskeySettingsToast(
+  value: PasskeySettingsToastType | null,
+) {
+  return {
+    type: SET_SHOW_PASSKEY_SETTINGS_TOAST,
     payload: value,
   };
 }

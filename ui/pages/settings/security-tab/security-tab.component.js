@@ -18,6 +18,7 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
+import { PasskeySettingsToastType } from '../../../../shared/constants/app-state';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -128,6 +129,7 @@ export default class SecurityTab extends PureComponent {
     hasActiveShieldSubscription: PropTypes.bool,
     isPasskeyRegistered: PropTypes.bool,
     forceUpdateMetamaskState: PropTypes.func.isRequired,
+    setShowPasskeySettingsToast: PropTypes.func.isRequired,
   };
 
   state = {
@@ -214,13 +216,17 @@ export default class SecurityTab extends PureComponent {
 
   hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
 
-  handleBiometricsPasskeyToggle = async (currentValue) => {
+  handlePasskeySettingsToggle = async (currentValue) => {
     if (this.state.passkeyToggleBusy) {
       return;
     }
     const { trackEvent } = this.context;
-    const { isPasskeyRegistered, navigate, forceUpdateMetamaskState } =
-      this.props;
+    const {
+      isPasskeyRegistered,
+      navigate,
+      forceUpdateMetamaskState,
+      setShowPasskeySettingsToast,
+    } = this.props;
     const wantsOn = !currentValue;
 
     if (wantsOn) {
@@ -232,6 +238,7 @@ export default class SecurityTab extends PureComponent {
           await passkeyAdapter.startRegistration(options);
         await completePasskeyRegistration(registrationResponse);
         await forceUpdateMetamaskState();
+        setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOn);
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
@@ -260,6 +267,7 @@ export default class SecurityTab extends PureComponent {
         await passkeyAdapter.startAuthentication(authOptions);
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState();
+      setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOff);
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
@@ -1361,7 +1369,7 @@ export default class SecurityTab extends PureComponent {
     );
   };
 
-  renderBiometricsToggle() {
+  renderPasskeySettingsToggle() {
     const { t } = this.context;
     const { isPasskeyRegistered, hasActiveShieldSubscription } = this.props;
     const { passkeyToggleBusy } = this.state;
@@ -1375,7 +1383,7 @@ export default class SecurityTab extends PureComponent {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
-        data-testid="security-biometrics-passkey-row"
+        data-testid="security-passkey-settings-row"
       >
         <div className="settings-page__content-item">
           <Box
@@ -1390,11 +1398,11 @@ export default class SecurityTab extends PureComponent {
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <ToggleButton
                 value={registered}
-                onToggle={this.handleBiometricsPasskeyToggle}
+                onToggle={this.handlePasskeySettingsToggle}
                 offLabel={t('off')}
                 onLabel={t('on')}
                 disabled={hasActiveShieldSubscription || passkeyToggleBusy}
-                dataTestId="security-biometrics-passkey-toggle"
+                dataTestId="security-passkey-settings-toggle"
               />
             </Box>
           </Box>
@@ -1426,7 +1434,7 @@ export default class SecurityTab extends PureComponent {
 
         {this.renderSecurityAlertsToggle()}
 
-        {this.renderBiometricsToggle()}
+        {this.renderPasskeySettingsToggle()}
 
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

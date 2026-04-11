@@ -39,6 +39,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
+import { setShowPasskeySettingsToast } from '../../../components/app/toast-master/utils';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -93,6 +94,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    setShowPasskeySettingsToast: (value) =>
+      dispatch(setShowPasskeySettingsToast(value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>

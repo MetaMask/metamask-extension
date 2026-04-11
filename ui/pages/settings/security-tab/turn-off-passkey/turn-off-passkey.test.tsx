@@ -4,9 +4,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import * as actionConstants from '../../../../store/actionConstants';
+import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
 import TurnOffPasskey from './turn-off-passkey';
 
 const mockUseNavigate = jest.fn();
+const mockDispatch = jest.fn();
 const mockRemovePasskeyWithPasswordVerification = jest
   .fn()
   .mockResolvedValue(undefined);
@@ -16,7 +19,7 @@ jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: () => jest.fn(),
+    useDispatch: () => mockDispatch,
   };
 });
 
@@ -37,6 +40,7 @@ describe('TurnOffPasskey', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockDispatch.mockClear();
     mockRemovePasskeyWithPasswordVerification.mockResolvedValue(undefined);
   });
 
@@ -56,6 +60,10 @@ describe('TurnOffPasskey', () => {
         'correct-password',
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: actionConstants.SET_SHOW_PASSKEY_SETTINGS_TOAST,
+        payload: PasskeySettingsToastType.TurnedOff,
+      });
       expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });

@@ -48,6 +48,12 @@ export enum PasswordChangeToastType {
   Errored = 'errored',
 }
 
+/** Toast after enabling or disabling passkey unlock in Security settings (user copy may say “Biometrics”). */
+export enum PasskeySettingsToastType {
+  TurnedOn = 'turned-on',
+  TurnedOff = 'turned-off',
+}
+
 export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',

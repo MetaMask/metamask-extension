@@ -266,7 +266,7 @@ exports[`Security Tab should match snapshot 1`] = `
     </div>
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-      data-testid="security-biometrics-passkey-row"
+      data-testid="security-passkey-settings-row"
     >
       <div
         class="settings-page__content-item"
@@ -307,7 +307,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="security-biometrics-passkey-toggle"
+                  data-testid="security-passkey-settings-toggle"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"

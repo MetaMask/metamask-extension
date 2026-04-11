@@ -18,6 +18,7 @@ import { MetaMaskReduxState } from '../../../store/store';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  PasskeySettingsToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
@@ -32,6 +33,7 @@ type State = {
       | 'showNftDetectionEnablementToast'
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
+      | 'showPasskeySettingsToast'
       | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
@@ -164,6 +166,16 @@ export function selectPasswordChangeToast(
   state: Pick<State, 'appState'>,
 ): PasswordChangeToastType | null {
   return state.appState.showPasswordChangeToast || null;
+}
+
+/**
+ * Toast after passkey unlock is turned on or off in Security settings (user-facing copy may say “Biometrics”).
+ * @param state
+ */
+export function selectPasskeySettingsToast(
+  state: Pick<State, 'appState'>,
+): PasskeySettingsToastType | null {
+  return state.appState.showPasskeySettingsToast ?? null;
 }
 
 /**

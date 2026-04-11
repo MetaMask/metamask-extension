@@ -18,6 +18,8 @@ import {
 } from '../../../../components/component-library';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
+import { setShowPasskeySettingsToast } from '../../../../components/app/toast-master/utils';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -39,6 +41,7 @@ export default function TurnOffPasskey() {
     try {
       await removePasskeyWithPasswordVerification(password);
       await forceUpdateMetamaskState(dispatch);
+      dispatch(setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOff));
       navigate(SECURITY_ROUTE);
     } catch {
       setIsIncorrectPasswordError(true);
