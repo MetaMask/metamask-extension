@@ -134,8 +134,9 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
-import { submitRequestToBackground } from '../../store/background-connection';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -559,6 +560,8 @@ export default function Routes() {
     useMultichainAccountsIntroModal(isUnlocked, location);
 
   const isPerpsAvailable = useAppSelector(getIsPerpsExperienceAvailable);
+  const selectedAccount = useAppSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address ?? null;
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
@@ -640,14 +643,18 @@ export default function Routes() {
   // perps RPC methods work immediately, matching mobile's startup behavior.
   // Without this, perpsInit is only called lazily when the user navigates
   // to the perps tab, causing CLIENT_NOT_INITIALIZED errors for any earlier call.
+  // Uses initForAddress (not raw perpsInit) so the stream manager tracks the
+  // active address and properly disconnects/reconnects on account switch.
   useEffect(() => {
-    if (isUnlocked && isPerpsAvailable) {
-      submitRequestToBackground('perpsInit').catch(() => {
-        // Initialization failure is non-fatal — the lazy init path
-        // and fetchWithRecovery will retry when the user reaches perps.
-      });
+    if (isUnlocked && isPerpsAvailable && selectedAddress) {
+      getPerpsStreamManager()
+        .initForAddress(selectedAddress)
+        .catch(() => {
+          // Initialization failure is non-fatal — the lazy init path
+          // and fetchWithRecovery will retry when the user reaches perps.
+        });
     }
-  }, [isUnlocked, isPerpsAvailable]);
+  }, [isUnlocked, isPerpsAvailable, selectedAddress]);
 
   const renderRoutes = () => {
     const routes = (
