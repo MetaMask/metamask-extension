@@ -288,10 +288,6 @@ type StateHooks = {
    */
   lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
   /**
-   * Shared MV3 startup work that UI and background both await.
-   */
-  runtimeInitialization?: Promise<void>;
-  /**
    * Reload the extension. This is used to trigger extension reload from a page context by E2E
    * tests.
    */

@@ -175,42 +175,34 @@ ${Object.entries(env)
     );
     assert.strictEqual(
       runtimeChunk.name({ name: 'home' }),
-      'runtime-ui',
-      'UI entrypoints should use the UI runtime chunk',
+      'runtime',
+      'chunkable entrypoints should share the runtime chunk',
     );
     assert.strictEqual(
       runtimeChunk.name({ name: 'offscreen' }),
-      'runtime-auxiliary-pages',
-      'auxiliary pages should use the auxiliary-page runtime chunk',
+      'runtime',
+      'auxiliary pages should share the runtime chunk',
     );
     assert.strictEqual(
       runtimeChunk.name({ name: '< random >' }),
-      false,
-      'unknown chunk names should remain self-contained',
+      'runtime',
+      'unknown named chunks should share the runtime chunk',
     );
     assert.strictEqual(
       runtimeChunk.name({}),
-      false,
-      'unnamed chunks should remain self-contained',
+      'runtime',
+      'unnamed chunks should share the runtime chunk',
     );
     const { splitChunks } = options.optimization;
     assert(splitChunks);
     const cacheGroups = splitChunks.cacheGroups ?? {};
 
     assert.deepStrictEqual(Object.keys(cacheGroups).toSorted(), [
-      'auxiliaryPagesJs',
-      'auxiliaryPagesVendor',
-      'backgroundJs',
-      'backgroundVendor',
-      'commonJs',
-      'commonVendor',
       'default',
       'defaultVendors',
-      'uiJs',
-      'uiVendor',
+      'js',
+      'vendor',
     ]);
-    assert.strictEqual(cacheGroups.default, false);
-    assert.strictEqual(cacheGroups.defaultVendors, false);
 
     const manifestPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',

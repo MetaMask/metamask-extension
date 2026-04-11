@@ -11,9 +11,6 @@ import {
   type WebpackPluginInstance,
   type MemoryCacheOptions,
   type FileCacheOptions,
-  type Chunk,
-  type ChunkGroup,
-  type Module,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -32,13 +29,6 @@ import {
   TREZOR_MODULE_RE,
   UI_DIR_RE,
 } from './utils/helpers';
-import {
-  WEBPACK_SURFACE_LAYERS,
-  getWebpackSurfaceFromChunkName,
-  getWebpackSurfaceLayer,
-  getWebpackRuntimeChunkName,
-  type WebpackSurface,
-} from './utils/surfaces';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getSwcLoader } from './utils/loaders/getSwcLoader';
@@ -136,36 +126,8 @@ const manifestPlugin = new ManifestPlugin({
   setBuildId: args.test,
 });
 
-const surfaceLayerPlugin: WebpackPluginInstance = {
-  apply: (compiler) => {
-    compiler.hooks.thisCompilation.tap('SurfaceLayerPlugin', (compilation) => {
-      compilation.hooks.addEntry.tap('SurfaceLayerPlugin', (entry, options) => {
-        if (
-          !('request' in entry) ||
-          typeof entry.request !== 'string' ||
-          entry.request.endsWith('.html')
-        ) {
-          return;
-        }
-
-        const { name } = options;
-        const layer = getWebpackSurfaceLayer(name);
-        if (!name || !layer) {
-          return;
-        }
-
-        const entryData = compilation.entries.get(name);
-        if (entryData) {
-          entryData.options.layer = layer;
-        }
-      });
-    });
-  },
-};
-
 const plugins: WebpackPluginInstance[] = [
   manifestPlugin,
-  surfaceLayerPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -305,170 +267,6 @@ const reactCompiler = getReactCompilerLoader({
   debug: args.reactCompilerDebug,
   threadLoaderEnabled: threadLoader !== null,
 });
-
-type CacheGroupContext = {
-  chunkGraph: {
-    getModuleRuntimes(module: Module): Iterable<unknown>;
-  };
-};
-
-type SharedSurface = Extract<WebpackSurface, 'background' | 'ui'>;
-
-function createSurfaceCacheGroup({
-  name,
-  test,
-  chunks,
-  minChunks = 1,
-  priority = 0,
-  layer,
-}: {
-  name: string;
-  test: RegExp | ((module: Module, context: CacheGroupContext) => boolean);
-  chunks: (chunk: Chunk) => boolean;
-  minChunks?: number;
-  priority?: number;
-  layer?: string;
-}) {
-  return {
-    name,
-    test,
-    chunks,
-    minChunks,
-    priority,
-    ...(layer ? { layer } : {}),
-    enforce: true,
-    reuseExistingChunk: true,
-  };
-}
-
-function getChunkGroupSurfaceNames(
-  chunkGroup: ChunkGroup,
-  seenChunkGroups = new Set<ChunkGroup>(),
-): Set<WebpackSurface> {
-  if (seenChunkGroups.has(chunkGroup)) {
-    return new Set<WebpackSurface>();
-  }
-
-  seenChunkGroups.add(chunkGroup);
-  const directSurface = getWebpackSurfaceFromChunkName(chunkGroup.name);
-
-  if (directSurface) {
-    return new Set<WebpackSurface>([directSurface]);
-  }
-
-  return new Set<WebpackSurface>(
-    chunkGroup
-      .getParents()
-      .flatMap((parent) => [
-        ...getChunkGroupSurfaceNames(parent, seenChunkGroups),
-      ]),
-  );
-}
-
-function getChunkSurfaceName(chunk: Chunk): WebpackSurface | null {
-  const directSurface = getWebpackSurfaceFromChunkName(chunk.name);
-  if (directSurface) {
-    return directSurface;
-  }
-
-  const chunkSurfaces = new Set<WebpackSurface>(
-    Array.from(chunk.groupsIterable).flatMap((chunkGroup) => [
-      ...getChunkGroupSurfaceNames(chunkGroup),
-    ]),
-  );
-
-  return chunkSurfaces.size === 1
-    ? (Array.from(chunkSurfaces)[0] ?? null)
-    : null;
-}
-
-function isChunkableSurfaceChunk(chunk: Chunk) {
-  return manifestPlugin.canBeChunked(chunk);
-}
-
-function isChunkInSurface(
-  chunk: Chunk,
-  surface: SharedSurface | 'auxiliaryPages',
-) {
-  return (
-    isChunkableSurfaceChunk(chunk) && getChunkSurfaceName(chunk) === surface
-  );
-}
-
-function isChunkInUiOrBackground(chunk: Chunk) {
-  const surface = getChunkSurfaceName(chunk);
-
-  return (
-    isChunkableSurfaceChunk(chunk) &&
-    (surface === 'background' || surface === 'ui')
-  );
-}
-
-const SOURCE_JS_RE = /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u;
-const VENDOR_JS_RE = /[\\/]node_modules[\\/].*?\.m?js$/u;
-
-function moduleMatchesPattern(module: Module, pattern: RegExp) {
-  return pattern.test(module.nameForCondition() ?? module.identifier());
-}
-
-function getRuntimeSurfaceName(runtimeName: string) {
-  if (runtimeName === 'runtime-ui') {
-    return 'ui';
-  }
-
-  if (runtimeName === 'runtime-auxiliary-pages') {
-    return 'auxiliaryPages';
-  }
-
-  return getWebpackSurfaceFromChunkName(runtimeName);
-}
-
-function getRuntimeNames(runtime: unknown): string[] {
-  if (typeof runtime === 'string') {
-    return [runtime];
-  }
-
-  if (
-    typeof runtime !== 'object' ||
-    runtime === null ||
-    !(Symbol.iterator in runtime)
-  ) {
-    return [];
-  }
-
-  return Array.from(runtime as Iterable<unknown>).filter(
-    (value): value is string => typeof value === 'string',
-  );
-}
-
-function moduleUsesSurface(
-  module: Module,
-  cacheGroupContext: CacheGroupContext,
-  surface: SharedSurface,
-): boolean {
-  for (const runtime of cacheGroupContext.chunkGraph.getModuleRuntimes(
-    module,
-  )) {
-    if (
-      getRuntimeNames(runtime).some(
-        (runtimeName) => getRuntimeSurfaceName(runtimeName) === surface,
-      )
-    ) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function createSharedSurfaceTest(
-  pattern: RegExp,
-): (module: Module, cacheGroupContext: CacheGroupContext) => boolean {
-  return (module: Module, cacheGroupContext: CacheGroupContext) =>
-    moduleMatchesPattern(module, pattern) &&
-    moduleUsesSurface(module, cacheGroupContext, 'background') &&
-    moduleUsesSurface(module, cacheGroupContext, 'ui');
-}
 
 const config = {
   // All entries are added dynamically by ManifestPlugin
@@ -732,80 +530,38 @@ const config = {
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
     ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
-    // UI pages and auxiliary pages each get their own runtime chunk. Manifest
-    // scripts stay self-contained because the browser loads them directly and
-    // the manifest cannot be rewritten to include extra runtime files.
+    // Make most chunks share a single runtime file, which contains the
+    // webpack "runtime". The exception is @lavamoat/snow and all scripts
+    // found in the extension manifest; these scripts must be self-contained
+    // and cannot share code with other scripts - as the browser extension
+    // platform is responsible for loading them and splitting these files
+    // would require updating the manifest to include the other chunks.
     runtimeChunk: {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (manifestPlugin.canBeChunked(chunk)
-          ? getWebpackRuntimeChunkName(chunk.name)
-          : false) as string,
+        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
       // https://github.com/mozilla/addons-linter/issues/4942
       maxSize: 1 << 22,
       minSize: 1,
-      // Split modules within each surface, and emit shared chunks only for
-      // modules that are used by both the UI and background surfaces.
-      // Auxiliary pages stay isolated so they cannot inflate "common".
+      // Optimize duplication and caching by splitting chunks by shared
+      // modules and cache group.
       cacheGroups: {
-        default: false,
-        defaultVendors: false,
-        commonVendor: createSurfaceCacheGroup({
-          name: 'common-vendor',
-          test: createSharedSurfaceTest(VENDOR_JS_RE),
-          chunks: isChunkInUiOrBackground,
-          minChunks: 2,
-          priority: 40,
-        }),
-        commonJs: createSurfaceCacheGroup({
-          name: 'common-js',
-          test: createSharedSurfaceTest(SOURCE_JS_RE),
-          chunks: isChunkInUiOrBackground,
-          minChunks: 2,
-          priority: 35,
-        }),
-        uiJs: createSurfaceCacheGroup({
-          name: 'ui-js',
-          test: SOURCE_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'ui'),
-          priority: 20,
-        }),
-        uiVendor: createSurfaceCacheGroup({
-          name: 'ui-vendor',
-          test: VENDOR_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'ui'),
-          priority: 25,
-        }),
-        backgroundJs: createSurfaceCacheGroup({
-          name: 'background-js',
-          test: SOURCE_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'background'),
-          priority: 20,
-        }),
-        backgroundVendor: createSurfaceCacheGroup({
-          name: 'background-vendor',
-          test: VENDOR_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'background'),
-          priority: 25,
-        }),
-        auxiliaryPagesJs: createSurfaceCacheGroup({
-          layer: WEBPACK_SURFACE_LAYERS.auxiliaryPages,
-          name: 'auxiliary-pages-js',
-          test: SOURCE_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'auxiliaryPages'),
-          priority: 10,
-        }),
-        auxiliaryPagesVendor: createSurfaceCacheGroup({
-          layer: WEBPACK_SURFACE_LAYERS.auxiliaryPages,
-          name: 'auxiliary-pages-vendor',
-          test: VENDOR_JS_RE,
-          chunks: (chunk) => isChunkInSurface(chunk, 'auxiliaryPages'),
-          priority: 15,
-        }),
+        js: {
+          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
+          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          name: 'js',
+          chunks: manifestPlugin.canBeChunked,
+        },
+        vendor: {
+          // js/mjs files in node_modules or subdirectories of node_modules
+          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
+          name: 'vendor',
+          chunks: manifestPlugin.canBeChunked,
+        },
       },
     },
   },
