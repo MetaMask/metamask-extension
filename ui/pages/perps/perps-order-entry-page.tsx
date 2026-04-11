@@ -430,6 +430,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderCalculations,
   ]);
 
+  const hasNoBalance = orderMode === 'new' && availableBalance <= 0;
+
   const isSubmitDisabled =
     !isEligible ||
     !selectedAddress ||
@@ -437,6 +439,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isLimitPriceInvalid ||
     isLimitPriceUnfavorable ||
     isNearLiquidation ||
+    hasNoBalance ||
     currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {

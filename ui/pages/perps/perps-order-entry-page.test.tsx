@@ -570,6 +570,42 @@ describe('PerpsOrderEntryPage', () => {
         screen.getByTestId('limit-price-liquidation-warning'),
       ).toBeInTheDocument();
     });
+
+    it('disables submit when available balance is zero in new order mode', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('does not disable submit for zero balance in close mode', () => {
+      mockSearchParams.set('mode', 'close');
+      mockSearchParams.set('direction', 'long');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+    });
   });
 
   describe('order submission', () => {
