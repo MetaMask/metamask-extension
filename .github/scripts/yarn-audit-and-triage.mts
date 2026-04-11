@@ -2,6 +2,7 @@ import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { appendFileSync, existsSync, writeFileSync } from 'fs';
 import { getGitHubToken } from './shared/github-token.mts';
+import { ghApi } from './shared/gh-api.mts';
 
 type YarnSeverity =
   | 'info'
@@ -312,17 +313,7 @@ function sha256Short(text: string): string {
   return createHash('sha256').update(text).digest('hex').slice(0, 10);
 }
 
-function githubHeaders(token: string): Record<string, string> {
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json',
-    'User-Agent': 'yarn-audit-and-triage',
-  };
-}
-
-async function searchIssueByTitle({
+function searchIssueByTitle({
   owner,
   repo,
   title,
@@ -332,27 +323,25 @@ async function searchIssueByTitle({
   repo: string;
   title: string;
   token: string;
-}): Promise<number | null> {
+}): number | null {
   const q = `repo:${owner}/${repo} type:issue in:title "${title}"`;
-  const url = `https://api.github.com/search/issues?q=${encodeURIComponent(q)}`;
-
-  const response = await fetch(url, {
-    headers: githubHeaders(token),
-  });
-
-  if (!response.ok) {
+  try {
+    const raw = ghApi(
+      `/search/issues?q=${encodeURIComponent(q)}`,
+      undefined,
+      token,
+    );
+    const json = JSON.parse(raw) as {
+      items?: Array<{ number?: number; title?: string }>;
+    };
+    const match = json.items?.find((item) => item.title === title);
+    return typeof match?.number === 'number' ? match.number : null;
+  } catch {
     return null;
   }
-
-  const json = (await response.json()) as {
-    items?: Array<{ number?: number; title?: string }>;
-  };
-
-  const match = json.items?.find((item) => item.title === title);
-  return typeof match?.number === 'number' ? match.number : null;
 }
 
-async function createIssueViaRest({
+function createIssueViaRest({
   owner,
   repo,
   title,
@@ -364,31 +353,19 @@ async function createIssueViaRest({
   title: string;
   body: string;
   token: string;
-}): Promise<number> {
-  const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/issues`,
+}): number {
+  const raw = ghApi(
+    `/repos/${owner}/${repo}/issues`,
     {
       method: 'POST',
-      headers: githubHeaders(token),
-      body: JSON.stringify({
-        title,
-        body,
-      }),
+      body: { title, body },
     },
+    token,
   );
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(
-      `Failed to create GitHub issue: ${response.status} ${text}`,
-    );
-  }
-
-  const json = (await response.json()) as { number?: number };
+  const json = JSON.parse(raw) as { number?: number };
   if (typeof json.number !== 'number') {
     throw new Error('Created issue response missing issue number.');
   }
-
   return json.number;
 }
 
@@ -482,7 +459,7 @@ function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
   };
 }
 
-async function main() {
+function main() {
   const audit = runYarnAudit();
 
   const prodParsed = extractAdvisories(audit.prod).map((advisory) => ({
@@ -566,7 +543,7 @@ async function main() {
   console.log(JSON.stringify(triage, null, 2));
 
   // Step summary
-  const summaryTitle = `All advisories on this branch: ${advisories.length} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;  
+  const summaryTitle = `All advisories on this branch: ${advisories.length} (${prodAdvisories.length} prod, ${devAdvisories.length} dev)${deprecations.length > 0 ? `, ${deprecations.length} deprecation${deprecations.length === 1 ? '' : 's'}` : ''}`;
 
   const summaryLines: string[] = [];
   summaryLines.push(`<details>`);
@@ -669,7 +646,7 @@ async function main() {
       );
 
       const title = `Dependency audit triage (${trackingKey})`;
-      const existingNumber = await searchIssueByTitle({
+      const existingNumber = searchIssueByTitle({
         owner: repo.owner,
         repo: repo.repo,
         title,
@@ -710,7 +687,7 @@ async function main() {
         bodyLines.push('- Include in daily Slack dependency triage message.');
 
         try {
-          const issueNumber = await createIssueViaRest({
+          const issueNumber = createIssueViaRest({
             owner: repo.owner,
             repo: repo.repo,
             title,
@@ -742,8 +719,7 @@ async function main() {
 }
 
 try {
-  // Top-level await required because we may create/search issues.
-  await main();
+  main();
 } catch (error) {
   console.error(error);
   process.exitCode = 1;

@@ -88,9 +88,10 @@ jobs:
             // branch run could upload a poisoned audit-baseline artifact that
             // whitelists arbitrary GHSA IDs, causing the diff to report zero
             // new advisories.
-            const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+            const { data } = await github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              workflow_id: 'main.yml',
               branch: 'main',
               event: 'push',
               status: 'completed',
@@ -98,7 +99,7 @@ jobs:
             });
             const run = data.workflow_runs[0];
             if (!run) {
-              core.setFailed('No successful push-to-main run found');
+              core.setFailed('No completed push-to-main run found for main.yml');
               return;
             }
             core.setOutput('run-id', String(run.id));
