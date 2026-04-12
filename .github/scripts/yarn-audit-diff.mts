@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { IncomingWebhook } from '@slack/webhook';
 import {
   AUDIT_BASELINE_FILE,
   AUDIT_CURRENT_FILE,
@@ -11,10 +12,11 @@ import {
 // ---------------------------------------------------------------------------
 // Pipeline contract
 // ---------------------------------------------------------------------------
-// This script is step 2 of the audit pipeline (PR only):
+// This script is step 2 of the audit pipeline:
 //   1. yarn-audit-and-triage.mts  → writes AUDIT_CURRENT_FILE & AUDIT_DETAILS_FILE
 //   2. yarn-audit-diff.mts (this) → reads both, compares current vs baseline
 //
+// Runs on both PRs (blocks merge) and push-to-main (sends Slack alert).
 // The workflow only invokes this script when a real baseline was downloaded
 // from a completed push-to-main run. The `finally` block appends the details
 // file (written by step 1) to the step summary after the diff verdict.
@@ -38,6 +40,70 @@ function readAdvisories(filePath: string): ParsedAdvisory[] | null {
 
 function sevLabel(a: ParsedAdvisory): string {
   return (a.effectiveSeverity ?? 'unknown').toUpperCase();
+}
+
+// ---------------------------------------------------------------------------
+// Slack notification (push-to-main only)
+// ---------------------------------------------------------------------------
+
+async function postSlackNotification(
+  advisories: ParsedAdvisory[],
+  treeText: string,
+): Promise<void> {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.log('SLACK_WEBHOOK_URL not set — skipping Slack notification.');
+    return;
+  }
+  if (process.env.GITHUB_EVENT_NAME !== 'push') {
+    return;
+  }
+
+  const repo = process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
+  const runId = process.env.GITHUB_RUN_ID ?? '';
+  const branch = process.env.BRANCH ?? 'main';
+  const runUrl = `https://github.com/${repo}/actions/runs/${runId}`;
+  const count = advisories.length;
+  const noun = count === 1 ? 'advisory' : 'advisories';
+
+  const webhook = new IncomingWebhook(webhookUrl);
+  await webhook.send({
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `:warning: *Audit: ${count} new ${noun}* — \`${repo}\` (\`${branch}\`)`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `\`\`\`\n${treeText}\n\`\`\``,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: advisories
+            .map((a) => `• <${a.url}|${a.moduleName}> — ${a.title}`)
+            .join('\n'),
+        },
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `<${runUrl}|View CI Run>`,
+          },
+        ],
+      },
+    ],
+  });
+  console.log('Slack notification sent.');
 }
 
 // ---------------------------------------------------------------------------
@@ -94,6 +160,8 @@ async function main() {
     );
   }
 
+  const treeText = newAdvisories.map(formatAdvisoryTree).join('\n\n');
+
   const diffSummaryLines = [
     '',
     `### yarn audit: **FAILED** — ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'}`,
@@ -101,13 +169,17 @@ async function main() {
     'Your dependency changes introduced new vulnerabilities. If a newer version of the package is available, upgrade to it.',
     '',
     '```',
-    newAdvisories.map(formatAdvisoryTree).join('\n\n'),
+    treeText,
     '```',
     '',
     'Run `yarn audit` locally to reproduce.',
     '',
   ];
   writeStepSummary(diffSummaryLines.join('\n'));
+
+  // On push-to-main, send a Slack notification so the team knows immediately.
+  await postSlackNotification(newAdvisories, treeText);
+
   process.exitCode = 1;
 }
 

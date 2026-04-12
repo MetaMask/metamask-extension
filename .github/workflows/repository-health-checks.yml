@@ -14,6 +14,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # TEST OVERRIDE: disable issue creation. Remove before merging to main.
       CREATE_TRACKING_ISSUE: 'false'
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -61,7 +62,7 @@ jobs:
       # will be surfaced by the next push-to-main run.
       - name: Find latest completed push-to-main run
         id: find-baseline-run
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
         continue-on-error: true
         uses: actions/github-script@v8
         with:
@@ -92,7 +93,7 @@ jobs:
 
       - name: Download audit baseline
         id: download-baseline
-        if: ${{ github.event_name == 'pull_request' && steps.find-baseline-run.outcome == 'success' }}
+        if: ${{ steps.find-baseline-run.outcome == 'success' }}
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
@@ -109,6 +110,14 @@ jobs:
         run: |
           mkdir -p .tmp
           yarn tsx .github/scripts/yarn-audit-and-triage.mts
+
+      # --- Diff (runs when a real baseline was downloaded) ---
+      # On push-to-main this detects advisories introduced since the last
+      # green build and sends a Slack notification. On PRs it fails the check.
+      - name: Compare vulnerabilities against main
+        if: ${{ steps.download-baseline.outcome == 'success' }}
+        run: |
+          yarn tsx .github/scripts/yarn-audit-diff.mts
 
       # On push-to-main, rename the audit output to audit-baseline.json so the
       # uploaded artifact name matches what PR runs download to .tmp.
@@ -131,12 +140,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/audit-baseline
           path: .tmp/audit-baseline.json
-
-      # --- Diff (PR only, runs only when a real baseline was downloaded) ---
-      - name: Compare vulnerabilities against main
-        if: ${{ github.event_name == 'pull_request' && steps.download-baseline.outcome == 'success' }}
-        run: |
-          yarn tsx .github/scripts/yarn-audit-diff.mts
 
       # - name: Detect yarn lock deduplications
       #   if: ${{ !cancelled() }}
