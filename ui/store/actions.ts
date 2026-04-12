@@ -2646,7 +2646,17 @@ export function lockMetamask(
     dispatch(showLoadingIndication(message));
 
     return backgroundSetLocked()
-      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(() => {
+        // Set before forceUpdate: forceUpdate awaits the background, so React can
+        // commit the unlock route (isUnlocked false) before this chain resumes; if
+        // SET_SKIP ran only after forceUpdate, UnlockPage could mount once with
+        // skipPasskeyAutoOnNextUnlock still false and auto-start WebAuthn.
+        dispatch({
+          type: actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
+          payload: true,
+        });
+        return forceUpdateMetamaskState(dispatch);
+      })
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
         return Promise.reject(error);

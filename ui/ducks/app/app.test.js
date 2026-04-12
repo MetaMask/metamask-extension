@@ -108,6 +108,25 @@ describe('App State', () => {
     expect(state.warning).toBeNull();
   });
 
+  it('sets skipPasskeyAutoOnNextUnlock from payload', () => {
+    const stateTrue = reduceApp(metamaskState, {
+      type: actions.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
+      payload: true,
+    });
+
+    expect(stateTrue.skipPasskeyAutoOnNextUnlock).toStrictEqual(true);
+
+    const stateFalse = reduceApp(
+      { ...metamaskState, skipPasskeyAutoOnNextUnlock: true },
+      {
+        type: actions.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
+        payload: false,
+      },
+    );
+
+    expect(stateFalse.skipPasskeyAutoOnNextUnlock).toStrictEqual(false);
+  });
+
   it('goes home', () => {
     const state = reduceApp(metamaskState, {
       type: actions.GO_HOME,

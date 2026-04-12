@@ -25,6 +25,10 @@ import {
   getIsPasskeyRegistered,
   getIsWalletResetInProgress,
 } from '../../ducks/metamask/metamask';
+import {
+  getSkipPasskeyAutoOnNextUnlock,
+  setSkipPasskeyAutoOnNextUnlock,
+} from '../../ducks/app/app';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
@@ -46,6 +50,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isPasskeyRegistered: getIsPasskeyRegistered(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
+    skipPasskeyAutoOnNextUnlock: getSkipPasskeyAutoOnNextUnlock(state),
   };
 };
 
@@ -61,6 +66,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     resetWallet: () => dispatch(resetWallet()),
     getIsSeedlessOnboardingUserAuthenticated: () =>
       dispatch(getIsSeedlessOnboardingUserAuthenticated()),
+    setSkipPasskeyAutoOnNextUnlock: (skip: boolean) =>
+      dispatch(setSkipPasskeyAutoOnNextUnlock(skip)),
   };
 };
 

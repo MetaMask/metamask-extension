@@ -11,6 +11,7 @@ import {
   generatePasskeyAuthenticationOptions,
   unlockWithPasskey,
 } from '../../store/actions';
+import * as actionConstants from '../../store/actionConstants';
 import UnlockPageImport from '.';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
@@ -148,7 +149,9 @@ describe('Unlock Page', () => {
 
     fireEvent.click(getByText(messages.forgotPassword.message));
 
-    const resetPasswordButton = await findByTestId('reset-password-modal-button');
+    const resetPasswordButton = await findByTestId(
+      'reset-password-modal-button',
+    );
 
     expect(resetPasswordButton).toBeInTheDocument();
 
@@ -309,6 +312,39 @@ describe('Unlock Page', () => {
     await waitFor(() => {
       expect(generatePasskeyAuthenticationOptions).toHaveBeenCalled();
       expect(unlockWithPasskey).toHaveBeenCalled();
+    });
+  });
+
+  it('does not start passkey unlock on mount when skipPasskeyAutoOnNextUnlock is set', async () => {
+    const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+    const store = configureMockStore([thunk])({
+      metamask: {
+        passkeyRecord: {
+          credentialId: 'cred',
+          derivationMethod: 'prf',
+          wrappedEncryptionKey: 'e30',
+          iv: 'e30',
+        },
+      },
+      appState: {
+        skipPasskeyAutoOnNextUnlock: true,
+      },
+    });
+
+    renderWithProvider(
+      <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
+      store,
+      '/unlock',
+    );
+
+    await waitFor(() => {
+      expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(unlockWithPasskey).not.toHaveBeenCalled();
+    });
+
+    expect(store.getActions()).toContainEqual({
+      type: actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
+      payload: false,
     });
   });
 });

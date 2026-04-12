@@ -1385,6 +1385,10 @@ describe('Actions', () => {
 
       await store.dispatch(actions.lockMetamask());
       expect(backgroundSetLocked.callCount).toStrictEqual(1);
+      expect(store.getActions()).toContainEqual({
+        type: actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
+        payload: true,
+      });
     });
 
     it('returns display warning error with value when setLocked in background callback errors', async () => {

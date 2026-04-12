@@ -89,6 +89,8 @@ type UnlockPageProps = {
   isPopup: boolean;
   isWalletResetInProgress: boolean;
   isPasskeyRegistered: boolean;
+  skipPasskeyAutoOnNextUnlock: boolean;
+  setSkipPasskeyAutoOnNextUnlock: (skip: boolean) => void;
 };
 
 type UnlockPageState = {
@@ -208,6 +210,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * Whether a passkey is registered
      */
     isPasskeyRegistered: PropTypes.bool,
+    /**
+     * When true, do not auto-start WebAuthn once (after UI-initiated lock).
+     */
+    skipPasskeyAutoOnNextUnlock: PropTypes.bool,
+    /**
+     * Sets skipPasskeyAutoOnNextUnlock (e.g. false after one-shot consumption).
+     */
+    setSkipPasskeyAutoOnNextUnlock: PropTypes.func,
   };
 
   private isUnlockViewMounted = true;
@@ -270,8 +280,29 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       !prevProps.isPasskeyRegistered &&
       this.props.isPasskeyRegistered
     ) {
-      Promise.resolve().then(() => this.handlePasskeyUnlock());
+      this.maybeAutoPasskeyUnlock();
     }
+  }
+
+  /**
+   * Starts WebAuthn automatically when a passkey is registered, except once
+   * after a UI-initiated lock (skipPasskeyAutoOnNextUnlock) in this session.
+   */
+  maybeAutoPasskeyUnlock() {
+    const {
+      isPasskeyRegistered,
+      skipPasskeyAutoOnNextUnlock,
+      setSkipPasskeyAutoOnNextUnlock,
+    } = this.props;
+
+    if (!isPasskeyRegistered) {
+      return;
+    }
+    if (skipPasskeyAutoOnNextUnlock) {
+      setSkipPasskeyAutoOnNextUnlock(false);
+      return;
+    }
+    Promise.resolve().then(() => this.handlePasskeyUnlock());
   }
 
   async componentDidMount() {
@@ -306,9 +337,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
 
-    // Auto WebAuthn when the unlock screen loads and a passkey is registered.
+    // Auto WebAuthn when the unlock screen loads and a passkey is registered,
+    // unless the user just locked from this UI (one shot; new popup clears Redux).
     if (passkeyRegistered) {
-      Promise.resolve().then(() => this.handlePasskeyUnlock());
+      this.maybeAutoPasskeyUnlock();
     }
   }
 

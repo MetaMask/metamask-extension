@@ -42,6 +42,8 @@ DefaultStory.args = {
   forceUpdateMetamaskState: () => ({
     participateInMetaMetrics: true,
   }),
+  skipPasskeyAutoOnNextUnlock: false,
+  setSkipPasskeyAutoOnNextUnlock: () => undefined,
 };
 
 DefaultStory.storyName = 'Default';
