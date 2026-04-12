@@ -174,9 +174,6 @@ describe('PerpsControllerInit', () => {
           fallbackHip3Enabled: true,
           fallbackHip3AllowlistMarkets: [],
           fallbackBlockedRegions: [],
-          providerCredentials: {
-            hyperliquid: undefined,
-          },
         },
         deferEligibilityCheck: true,
       });

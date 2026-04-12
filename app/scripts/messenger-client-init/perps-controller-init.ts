@@ -53,6 +53,7 @@ export const PerpsControllerInit: ControllerInitFunction<
   };
   const infrastructure = createPerpsInfrastructure({ trackEvent });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
+  const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
   const completedOnboarding =
     persistedState.OnboardingController?.completedOnboarding ?? false;
   const useExternalServices =
@@ -70,9 +71,13 @@ export const PerpsControllerInit: ControllerInitFunction<
       fallbackHip3Enabled: true,
       fallbackHip3AllowlistMarkets: [],
       fallbackBlockedRegions,
-      providerCredentials: {
-        hyperliquid: getHyperLiquidBuilderAddresses(),
-      },
+      ...(hyperLiquidBuilderAddresses
+        ? {
+            providerCredentials: {
+              hyperliquid: hyperLiquidBuilderAddresses,
+            },
+          }
+        : {}),
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
