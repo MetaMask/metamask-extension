@@ -1,6 +1,11 @@
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 
+/** Recursively strips `null` and `undefined` from all properties. */
+export type DeepNonNullable<TObj> = TObj extends object
+  ? { [K in keyof TObj]-?: DeepNonNullable<NonNullable<TObj[K]>> }
+  : NonNullable<TObj>;
+
 export type I18nFunction = (
   key: string,
   args?: (string | number | undefined | null)[],

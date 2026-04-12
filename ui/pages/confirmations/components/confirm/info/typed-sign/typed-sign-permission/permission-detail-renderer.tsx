@@ -27,6 +27,7 @@ import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row
 import { PERMISSION_SCHEMAS } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import type {
   AmountField,
+  DeepNonNullable,
   I18nFunction,
   I18nValue,
   PermissionRenderContext,
@@ -125,7 +126,7 @@ function renderAmountField(
   }
 
   // Native token amount — tokenInfo is guaranteed to be set for native schemas
-  const tokenInfo = ctx.tokenInfo as NonNullable<
+  const tokenInfo = ctx.tokenInfo as DeepNonNullable<
     PermissionRenderContext['tokenInfo']
   >;
   return (
@@ -134,7 +135,7 @@ function renderAmountField(
       label={t(element.labelKey)}
       value={element.getValue(ctx)}
       symbol={tokenInfo.symbol}
-      decimals={tokenInfo.decimals as number}
+      decimals={tokenInfo.decimals}
       imageUrl={tokenInfo.imageUrl}
       tooltip={element.tooltip}
     />
@@ -270,7 +271,7 @@ function renderTotalExposure(
   const streamParams = element.getStreamParams(ctx);
 
   if (schemaEntry.tokenVariant === 'native') {
-    const tokenInfo = ctx.tokenInfo as NonNullable<
+    const tokenInfo = ctx.tokenInfo as DeepNonNullable<
       PermissionRenderContext['tokenInfo']
     >;
     return (
@@ -283,7 +284,7 @@ function renderTotalExposure(
         startTime={streamParams.startTime}
         expiry={ctx.expiry}
         symbol={tokenInfo.symbol}
-        decimals={tokenInfo.decimals as number}
+        decimals={tokenInfo.decimals}
         imageUrl={tokenInfo.imageUrl}
       />
     );
