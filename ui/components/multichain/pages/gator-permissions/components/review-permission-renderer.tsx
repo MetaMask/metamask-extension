@@ -210,9 +210,9 @@ function renderElement(
 ): React.ReactNode {
   // Skip elements not intended for the current view
   if (
-    'views' in element &&
-    element.views &&
-    !element.views.includes(viewMode)
+    'includeInViews' in element &&
+    element.includeInViews &&
+    !element.includeInViews.includes(viewMode)
   ) {
     return null;
   }

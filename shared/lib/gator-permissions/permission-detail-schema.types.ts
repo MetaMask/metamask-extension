@@ -64,7 +64,7 @@ export type AmountField = {
   tooltip?: string;
   isVisible?: (ctx: PermissionRenderContext) => boolean;
   /** Which views this field appears in. Omit for all views. */
-  views?: FieldView[];
+  includeInViews?: FieldView[];
   /** Alternative label key for the review page. */
   reviewLabelKey?: string;
   /** Test ID for the review-page row. */
@@ -80,7 +80,7 @@ export type TextField = {
   getValue: (ctx: PermissionRenderContext) => I18nValue;
   tooltip?: string;
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
   reviewLabelKey?: string;
   reviewTestId?: string;
 };
@@ -92,7 +92,7 @@ export type DateField = {
   getTimestamp: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
   reviewLabelKey?: string;
   reviewTestId?: string;
 };
@@ -101,7 +101,7 @@ export type DateField = {
 export type ExpiryField = {
   type: 'expiry';
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
   reviewTestId?: string;
 };
 
@@ -118,13 +118,13 @@ export type TotalExposureField = {
   type: 'totalExposure';
   getStreamParams: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** A visual divider between rows. */
 export type DividerElement = {
   type: 'divider';
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 // ---------------------------------------------------------------------------
@@ -135,20 +135,20 @@ export type DividerElement = {
 export type JustificationField = {
   type: 'justification';
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** Displays the account row (account selector). */
 export type AccountField = {
   type: 'account';
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** Displays the request origin URL. */
 export type OriginField = {
   type: 'origin';
   tooltip?: string;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** Displays a recipient / delegate address. */
@@ -157,13 +157,13 @@ export type AddressField = {
   labelKey: string;
   getAddress: (ctx: PermissionRenderContext) => string | undefined;
   isVisible?: (ctx: PermissionRenderContext) => boolean;
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** Displays the network row. */
 export type NetworkField = {
   type: 'network';
-  views?: FieldView[];
+  includeInViews?: FieldView[];
 };
 
 /** Union of all renderable items within a section. */
