@@ -323,6 +323,16 @@ type StateHooks = {
    * Useful for clearing metrics between benchmark runs.
    */
   resetWebVitalsMetrics?: () => void;
+
+  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
+  // Typed as `unknown` because these are untyped debug-only entry points consumed
+  // by CDP automation scripts that perform their own runtime checks.
+  store?: unknown;
+  submitRequestToBackground?: (
+    method: string,
+    args?: unknown[],
+  ) => Promise<unknown>;
+  getPerpsStreamManager?: () => unknown;
 };
 
 export declare global {

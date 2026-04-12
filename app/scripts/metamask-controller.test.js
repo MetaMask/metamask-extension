@@ -73,6 +73,7 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -3272,6 +3273,9 @@ describe('MetaMaskController', () => {
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
+          expect.objectContaining({
+            initializePatchStore: expect.any(Function),
+          }),
         );
       });
 
@@ -3531,6 +3535,290 @@ describe('MetaMaskController', () => {
         expect(metamaskController.rawListeners('update')).toHaveLength(
           baseUpdateListenerCount,
         );
+      });
+    });
+
+    describe('patch store connection', () => {
+      function setupPatchStoreConnection({ startUISync = true } = {}) {
+        const mux = new ObjectMultiplex();
+        mux.createStream('controller');
+
+        const patchStream = mux.createStream('patch-store');
+        const messages = [];
+        patchStream.on('data', (data) => messages.push(data));
+
+        metamaskController.startUISync = startUISync;
+        metamaskController.setupTrustedCommunication(mux, {});
+
+        return { mux, patchStream, messages };
+      }
+
+      // Wrap `flushPromises` to reframe why we are using this function
+      async function flushBufferedWrites() {
+        await flushPromises();
+      }
+
+      it('does not send "sendUpdate" on update events before startSendingPatches is received', async () => {
+        const { messages } = setupPatchStoreConnection();
+
+        metamaskController.emit('update', metamaskController.getState());
+        await flushBufferedWrites();
+
+        expect(messages).not.toContainEqual(
+          expect.objectContaining({
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+          }),
+        );
+      });
+
+      it('sends "sendUpdate" with flushed patches when startSendingPatches is received', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            jsonrpc: '2.0',
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+            params: [expect.any(Array)],
+          }),
+        );
+      });
+
+      it('sends "sendUpdate" on update events after startSendingPatches is received', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+        await flushBufferedWrites();
+
+        metamaskController.emit('update', metamaskController.getState());
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            jsonrpc: '2.0',
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+            params: [expect.any(Array)],
+          }),
+        );
+      });
+
+      it('does not send "sendUpdate" on update events if the stream is closed', async () => {
+        const { mux, patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+        await flushBufferedWrites();
+        messages.length = 0;
+
+        mux.end();
+        metamaskController.emit('update', metamaskController.getState());
+        await flushBufferedWrites();
+
+        expect(messages).not.toContainEqual(
+          expect.objectContaining({
+            method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+          }),
+        );
+      });
+
+      it('responds to "getStatePatches" with a JSON-RPC result containing the flushed patches', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+          id: 42,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: 42,
+            jsonrpc: '2.0',
+            result: expect.any(Array),
+          }),
+        );
+      });
+
+      it('responds to "getStatePatches" with an empty array if the state changes before the startUISync event fires', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection({
+          startUISync: false,
+        });
+
+        // Cause the state of the controller to change somehow
+        metamaskController.preferencesController.setCurrentLocale('en');
+
+        patchStream.write({
+          jsonrpc: '2.0',
+          id: 42,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: 42,
+            jsonrpc: '2.0',
+            result: [],
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a non-JSON-RPC message', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: 1,
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a request with a non-numeric id', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          id: 'string-id',
+          jsonrpc: '2.0',
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: 'string-id',
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a message without an id or method', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({
+          jsonrpc: '2.0',
+        });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: null,
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with an invalidRequest error for a non-object request', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write('not-an-object');
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: null,
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.invalidRequest,
+            }),
+          }),
+        );
+      });
+
+      it('responds with a methodNotFound error for an unknown method in a request', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+
+        patchStream.write({ jsonrpc: '2.0', id: 1, method: 'unknownMethod' });
+        await flushBufferedWrites();
+
+        expect(messages).toContainEqual(
+          expect.objectContaining({
+            id: 1,
+            jsonrpc: '2.0',
+            error: expect.objectContaining({
+              code: errorCodes.rpc.methodNotFound,
+            }),
+          }),
+        );
+      });
+
+      it('logs an error and does not respond for an unknown method in a notification', async () => {
+        const { patchStream, messages } = setupPatchStoreConnection();
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        patchStream.write({ jsonrpc: '2.0', method: 'unknownMethod' });
+        await flushBufferedWrites();
+
+        expect(messages).not.toContainEqual(
+          expect.objectContaining({ method: 'unknownMethod' }),
+        );
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Unrecognized patch-store substream notification method: unknownMethod',
+        );
+      });
+
+      it('does not re-initialize existing patch stores when a patch store connection from another UI process is opened', async () => {
+        const {
+          patchStream: firstConnectionPatchStream,
+          messages: firstConnectionMessages,
+        } = setupPatchStoreConnection({ startUISync: false });
+        setupPatchStoreConnection({ startUISync: false });
+
+        // Emit startUISync, which fires both connections' once('startUISync')
+        // listeners.
+        metamaskController.emit('startUISync');
+        await flushBufferedWrites();
+
+        // Cause a state change after both patch stores are initialized.
+        metamaskController.preferencesController.setCurrentLocale('en');
+        await flushBufferedWrites();
+
+        // Connection 1's patch store was initialized exactly once, so the
+        // locale change patch appears exactly once (not twice).
+        firstConnectionPatchStream.write({
+          jsonrpc: '2.0',
+          id: 1,
+          method: PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches,
+        });
+        await flushBufferedWrites();
+        const firstConnectionResponse = firstConnectionMessages.find(
+          (message) => message.id === 1,
+        );
+        const currentLocalePatches = firstConnectionResponse?.result.filter(
+          (patch) => patch.path[0] === 'currentLocale',
+        );
+        expect(currentLocalePatches).toHaveLength(1);
       });
     });
 
@@ -5713,6 +6001,13 @@ describe('MetaMaskController', () => {
     });
 
     it('calls _importAccountsWithBalances when firstTimeFlowType is socialImport', async () => {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
       // prev=false
       await publishOnboardingState({
         completedOnboarding: false,
