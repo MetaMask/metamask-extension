@@ -8,13 +8,13 @@ import {
   TRON_WALLET_SNAP_ID,
 } from '../../../../../../shared/lib/accounts';
 import LoadingScreen from '../../../../../components/ui/loading-screen';
-import { getMemoizedUnapprovedTemplatedConfirmations } from '../../../../../selectors';
+import { getUnapprovedTemplatedConfirmations } from '../../../../../selectors';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
 
 export const Loader = () => {
   const navigate = useNavigate();
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
 
   useEffect(() => {

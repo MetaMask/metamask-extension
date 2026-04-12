@@ -6,8 +6,8 @@ import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
   getSnapMetadata,
-  getMemoizedUnapprovedConfirmations,
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedConfirmations,
+  getUnapprovedTemplatedConfirmations,
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -33,11 +33,9 @@ export const SnapHomeRenderer = ({ snapId }) => {
   );
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
-  const unapprovedConfirmations = useSelector(
-    getMemoizedUnapprovedConfirmations,
-  );
+  const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const navigate = useNavigate();
 
   const { data, error, loading } = useSnapHome({ snapId });

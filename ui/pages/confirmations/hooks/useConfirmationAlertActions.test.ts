@@ -51,6 +51,7 @@ describe('useConfirmationAlertActions', () => {
       },
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
     });
 
     // @ts-expect-error mocking platform
@@ -84,6 +85,7 @@ describe('useConfirmationAlertActions', () => {
       },
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
     });
 
     processAlertActionKey(AlertActionKey.ShowAdvancedGasFeeModal);

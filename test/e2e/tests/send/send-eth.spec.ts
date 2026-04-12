@@ -18,7 +18,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
@@ -55,7 +55,7 @@ describe('Send ETH', function () {
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
-          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
 
           await homePage.startSendFlow();
@@ -64,7 +64,7 @@ describe('Send ETH', function () {
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 
-          await sendTokenConfirmPage.clickOnConfirm();
+          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
           await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
@@ -143,7 +143,7 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await login(driver);
 
-          const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
           const homePage = new HomePage(driver);
 
@@ -155,7 +155,7 @@ describe('Send ETH', function () {
             amount: '1',
           });
 
-          await sendTokenConfirmationPage.clickOnConfirm();
+          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
           await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);

@@ -58,11 +58,11 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -107,7 +107,7 @@ import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 
 /**
- * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -965,7 +965,7 @@ export async function loadStateFromPersistence(backup) {
   // read from disk
   // first from preferred, async API:
   /**
-   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   * @type {import("../../shared/lib/stores/base-store").MetaMaskStorageStructure | undefined}
    */
   let preMigrationVersionedData;
   if (backup) {

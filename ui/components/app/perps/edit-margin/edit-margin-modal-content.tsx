@@ -26,8 +26,16 @@ import {
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
@@ -87,6 +95,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { track } = usePerpsEventTracking();
 
   const [marginAmount, setMarginAmount] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
@@ -269,6 +278,17 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         throw new Error(result.error || 'Failed to update margin');
       }
 
+      const riskType =
+        marginMode === 'add'
+          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+      track(MetaMetricsEventName.PerpsRiskManagement, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+      });
+
       const streamManager = getPerpsStreamManager();
       const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
         'perpsGetPositions',
@@ -290,6 +310,24 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
+
+      const riskType =
+        marginMode === 'add'
+          ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
+          : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
+      track(MetaMetricsEventName.PerpsRiskManagement, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        [PERPS_EVENT_PROPERTY.TYPE]: riskType,
+        [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+
       const normalizedErrorMessage = errorMessage.trim();
       const shouldUseFallbackDescription =
         normalizedErrorMessage.length === 0 ||
@@ -316,6 +354,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     onClose,
     onSavingChange,
     replacePerpsToastByKey,
+    track,
     t,
   ]);
 

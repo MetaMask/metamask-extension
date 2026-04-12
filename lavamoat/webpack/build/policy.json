@@ -225,31 +225,21 @@
         "nock>debug": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
+    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "@babel/core>@babel/types": true,
         "nock>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -265,6 +255,12 @@
         "TextEncoder": true,
         "__values": true,
         "process": true
+      }
+    },
+    "webpack-cli>@discoveryjs/json-ext": {
+      "globals": {
+        "ReadableStream": true,
+        "TextDecoder": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -303,7 +299,7 @@
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
-    "lavamoat>@lavamoat/aa": {
+    "@lavamoat/webpack>@lavamoat/aa": {
       "builtin": {
         "node:fs.lstatSync": true,
         "node:fs.readFileSync": true,
@@ -315,7 +311,7 @@
         "node:path.sep": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
+        "depcheck>resolve": true
       }
     },
     "@lavamoat/webpack": {
@@ -334,9 +330,9 @@
       },
       "packages": {
         "@lavamoat/webpack>@babel/parser": true,
-        "lavamoat>@lavamoat/aa": true,
+        "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
-        "lavamoat>lavamoat-core": true,
+        "@lavamoat/webpack>lavamoat-core": true,
         "webpack": true
       }
     },
@@ -560,6 +556,11 @@
         "webpack": true
       }
     },
+    "jest-preview>sirv>@polka/url": {
+      "builtin": {
+        "querystring.parse": true
+      }
+    },
     "@swc/core": {
       "builtin": {
         "assert": true,
@@ -717,6 +718,11 @@
     "webpack>acorn-import-phases": {
       "packages": {
         "jsdom>acorn": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn-walk": {
+      "globals": {
+        "define": true
       }
     },
     "jsdom>acorn": {
@@ -1071,15 +1077,6 @@
         "yargs>string-width": true,
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep": {
-      "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
-        "@babel/register>clone-deep>is-plain-object": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
       }
     },
     "chalk>ansi-styles>color-convert": {
@@ -1689,11 +1686,6 @@
         "nock>debug": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
-      "packages": {
-        "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
     "tsx>fsevents": {
       "globals": {
         "console.assert": true,
@@ -1969,11 +1961,6 @@
         "del>is-glob>is-extglob": true
       }
     },
-    "@babel/register>clone-deep>is-plain-object": {
-      "packages": {
-        "gulp>gulp-cli>isobject": true
-      }
-    },
     "terser-webpack-plugin>jest-worker": {
       "builtin": {
         "child_process": true,
@@ -2054,19 +2041,6 @@
         "console.warn": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
     "webpack-dev-server>launch-editor": {
       "builtin": {
         "child_process.execSync": true,
@@ -2089,7 +2063,7 @@
         "browserify>shell-quote": true
       }
     },
-    "lavamoat>lavamoat-core": {
+    "@lavamoat/webpack>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
@@ -2104,28 +2078,16 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
-        "lavamoat>lavamoat-core>merge-deep": true
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": true
       }
     },
-    "lavamoat>lavamoat-tofu": {
+    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
-      "globals": {
-        "process.env.TRAVIS": true,
-        "process.env.UNLAZY": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
-      "globals": {
-        "process.env.UNLAZY": true
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2185,13 +2147,6 @@
         "setTimeout": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep": {
-      "packages": {
-        "gulp-zip>plugin-error>arr-union": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true
-      }
-    },
     "@viem/anvil>execa>merge-stream": {
       "builtin": {
         "stream.PassThrough": true
@@ -2235,12 +2190,6 @@
       "globals": {
         "console.warn": true,
         "process.env.DEBUG_MIME": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
-      "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
-        "gulp-watch>anymatch>micromatch>object.omit>is-extendable": true
       }
     },
     "webpack-dev-server>bonjour-service>multicast-dns": {
@@ -2319,6 +2268,15 @@
     "webpack-dev-server>compression>on-headers": {
       "builtin": {
         "http.ServerResponse.prototype.appendHeader": true
+      }
+    },
+    "http-server>opener": {
+      "builtin": {
+        "child_process.execFile": true,
+        "os.release": true
+      },
+      "globals": {
+        "process.platform": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh>parent-module": {
@@ -2568,36 +2526,6 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
-      }
-    },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.realpathSync": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "depcheck>is-core-module": true,
-        "depcheck>resolve>path-parse": true
       }
     },
     "depcheck>resolve": {
@@ -2857,14 +2785,6 @@
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
-      "packages": {
-        "gulp-watch>anymatch>micromatch>object.omit>is-extendable": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true
-      }
-    },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
@@ -2895,6 +2815,22 @@
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
+      }
+    },
+    "webpack-bundle-analyzer>sirv": {
+      "builtin": {
+        "node:fs.createReadStream": true,
+        "node:fs.existsSync": true,
+        "node:fs.statSync": true,
+        "node:path.join": true,
+        "node:path.normalize": true,
+        "node:path.resolve": true,
+        "node:path.sep": true
+      },
+      "packages": {
+        "jest-preview>sirv>@polka/url": true,
+        "jest-preview>sirv>mrmime": true,
+        "jest-preview>sirv>totalist": true
       }
     },
     "webpack-dev-server>sockjs": {
@@ -3128,6 +3064,14 @@
     "chokidar>braces>fill-range>to-regex-range": {
       "packages": {
         "chokidar>braces>fill-range>to-regex-range>is-number": true
+      }
+    },
+    "jest-preview>sirv>totalist": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.join": true,
+        "path.resolve": true
       }
     },
     "tailwindcss>sucrase>ts-interface-checker": {
@@ -3479,6 +3423,44 @@
         "thread-loader": true,
         "webpack>watchpack": true,
         "webpack>webpack-sources": true
+      }
+    },
+    "webpack-bundle-analyzer": {
+      "builtin": {
+        "node:fs.createReadStream": true,
+        "node:fs.createWriteStream": true,
+        "node:fs.mkdirSync": true,
+        "node:fs.promises.mkdir": true,
+        "node:fs.promises.writeFile": true,
+        "node:fs.readFileSync": true,
+        "node:fs.writeFileSync": true,
+        "node:http.createServer": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.resolve": true,
+        "node:stream.Readable": true,
+        "node:stream/promises.pipeline": true,
+        "node:util.inspect": true,
+        "node:util.types.isRegExp": true,
+        "node:zlib": true
+      },
+      "globals": {
+        "Buffer.byteLength": true,
+        "__dirname": true,
+        "console": true,
+        "process.cwd": true,
+        "process.env.npm_package_name": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
+        "jsdom>acorn": true,
+        "webpack-bundle-analyzer>html-escaper": true,
+        "http-server>opener": true,
+        "postcss>picocolors": true,
+        "webpack-bundle-analyzer>sirv": true,
+        "ws": true
       }
     },
     "webpack-dev-server>webpack-dev-middleware": {

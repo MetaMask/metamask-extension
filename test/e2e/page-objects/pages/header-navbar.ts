@@ -39,6 +39,9 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
+  private readonly selectedNetworkItem = (networkName: string) =>
+    `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
+
   private readonly networkPicker = '.mm-picker-network';
 
   private readonly notificationCounterMenuIcon = {
@@ -240,6 +243,24 @@ class HeaderNavbar {
   async openDappNetworkMenu(): Promise<void> {
     console.log('Opening dapp network menu from control bar');
     await this.driver.clickElement(this.dappNetworkButton);
+  }
+
+  /**
+   * Opens the connection menu popover and verifies the network shown for the
+   * connected dapp matches the expected name.
+   *
+   * @param expectedNetwork - The network name expected to appear in the popover.
+   */
+  async checkConnectedSitePopoverNetwork(
+    expectedNetwork: string,
+  ): Promise<void> {
+    console.log(
+      `Verify the connected site popover network is: ${expectedNetwork}`,
+    );
+    await this.openDappNetworkMenu();
+    await this.driver.waitForSelector(
+      this.selectedNetworkItem(expectedNetwork),
+    );
   }
 
   /**
