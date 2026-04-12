@@ -17,6 +17,10 @@
 }
 
 .change-password {
+  // Fills settings content column so passkey verification can vertically center.
+  flex: 1 1 auto;
+  min-height: 0;
+
   &__spinner {
     width: 1.5rem;
     height: 1.5rem;

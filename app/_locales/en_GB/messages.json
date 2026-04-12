@@ -9114,6 +9114,10 @@
   "unlocking": {
     "message": "Unlocking..."
   },
+  "changePasswordVerifyingPasskey": {
+    "message": "Verifying passkey…",
+    "description": "Shown while the passkey is verified before the user can enter a new password on the change password screen."
+  },
   "passkeyUnlockFailed": {
     "message": "Passkey unlock failed. Try your password."
   },

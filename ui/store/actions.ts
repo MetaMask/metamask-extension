@@ -1225,6 +1225,30 @@ export function removePasskeyWithPasswordVerification(
 }
 
 /**
+ * Changes wallet password using a verified passkey assertion, then re-wraps the passkey
+ * record for the new vault encryption key (non–social-login, passkey already enrolled).
+ *
+ * @param newPassword - The new wallet password.
+ * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
+ */
+export function changePasswordWithPasskeyVerification(
+  newPassword: string,
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('changePasswordWithPasskeyVerification', [
+        newPassword,
+        authenticationResponse,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
  * @param password - The password.

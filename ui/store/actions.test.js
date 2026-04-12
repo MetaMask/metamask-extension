@@ -129,6 +129,7 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePassword = sinon.stub();
+    background.changePasswordWithPasskeyVerification = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -251,6 +252,44 @@ describe('Actions', () => {
 
       expect(
         background.changePassword.calledOnceWith(newPassword, oldPassword),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#changePasswordWithPasskeyVerification', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('submits passkey authentication response and new password to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+        ),
       ).toStrictEqual(true);
     });
   });

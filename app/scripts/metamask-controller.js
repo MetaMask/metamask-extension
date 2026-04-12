@@ -2820,6 +2820,8 @@ export default class MetamaskController extends EventEmitter {
         this.removePasskeyWithPasskeyVerification.bind(this),
       removePasskeyWithPasswordVerification:
         this.removePasskeyWithPasswordVerification.bind(this),
+      changePasswordWithPasskeyVerification:
+        this.changePasswordWithPasskeyVerification.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -4351,6 +4353,63 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Changes the wallet password using a verified passkey assertion, then re-wraps the
+   * passkey record for the new vault encryption key. Non–social-login only.
+   *
+   * @param {string} newPassword
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
+   * @returns {Promise<void>}
+   */
+  async changePasswordWithPasskeyVerification(
+    newPassword,
+    authenticationResponse,
+  ) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    if (isSocialLoginFlow) {
+      throw new Error(
+        'Passkey-based password change is not supported for this account type',
+      );
+    }
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new Error('Passkey is not enrolled');
+    }
+
+    const releaseLock = await this.seedlessOperationMutex.acquire();
+    try {
+      const encryptionKeyBeforePasswordChange =
+        await this.keyringController.exportEncryptionKey();
+      await this.keyringController.changePassword(newPassword);
+
+      try {
+        const encryptionKeyAfterPasswordChange =
+          await this.keyringController.exportEncryptionKey();
+        const encryptionSaltAfterPasswordChange =
+          this.keyringController.state.encryptionSalt;
+
+        if (!encryptionSaltAfterPasswordChange) {
+          throw new Error('Missing encryption salt after password change');
+        }
+
+        await this.passkeyController.changeVaultEncryptionKey({
+          authenticationResponse,
+          oldEncryptionKey: encryptionKeyBeforePasswordChange,
+          newEncryptionKey: encryptionKeyAfterPasswordChange,
+          newEncryptionSalt: encryptionSaltAfterPasswordChange,
+        });
+      } catch (err) {
+        log.error('Passkey re-wrap failed after password change', err);
+        this.passkeyController.removePasskey();
+        throw err;
+      }
+    } catch (error) {
+      log.error('error while changing password with passkey', error);
+      throw error;
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
    * Syncs the keyring encryption key with the seedless onboarding controller.
    *
    * @returns {Promise<void>}
@@ -4568,6 +4627,11 @@ export default class MetamaskController extends EventEmitter {
           );
           throw err;
         }
+      }
+
+      // delete passkey since users turn off passkey after changing password
+      if (!isSocialLoginFlow && this.passkeyController.isPasskeyEnrolled()) {
+        this.passkeyController.removePasskey();
       }
     } catch (error) {
       log.error('error while changing password', error);

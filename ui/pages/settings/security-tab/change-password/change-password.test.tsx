@@ -18,6 +18,56 @@ const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
   return Promise.resolve();
 });
 
+const mockGeneratePasskeyAuthenticationOptions = jest.fn().mockResolvedValue({
+  challenge: 'AQIDBAUGBwgJCgsMDQ4PEA',
+  rpId: 'localhost',
+  allowCredentials: [],
+  timeout: 60000,
+  userVerification: 'preferred',
+});
+
+const mockChangePasswordWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+const mockRemovePasskeyWithPasswordVerification = jest
+  .fn()
+  .mockResolvedValue(undefined);
+
+const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+
+const mockPasskeyAuthSuccessResponse = {
+  id: 'AAEC',
+  rawId: 'AAEC',
+  type: 'public-key',
+  response: {
+    clientDataJSON: 'AAEC',
+    authenticatorData: 'AAEC',
+    signature: 'AAEC',
+  },
+};
+
+const mockPasskeyStartAuthentication = jest
+  .fn()
+  .mockResolvedValue(mockPasskeyAuthSuccessResponse);
+
+jest.mock(
+  '../../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
+  () => ({
+    PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
+      startAuthentication: (...args: unknown[]) =>
+        mockPasskeyStartAuthentication(...args),
+      startRegistration: jest.fn().mockResolvedValue({
+        id: 'AAEC',
+        rawId: 'AAEC',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'AAEC',
+          attestationObject: 'AAEC',
+        },
+      }),
+    })),
+  }),
+);
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -39,11 +89,20 @@ jest.mock('../../../../store/actions', () => ({
   verifyPassword: (_pwd: string) => {
     return mockVerifyPassword(_pwd);
   },
+  generatePasskeyAuthenticationOptions: () =>
+    mockGeneratePasskeyAuthenticationOptions(),
+  changePasswordWithPasskeyVerification: (newPwd: string, auth: unknown) => {
+    return mockChangePasswordWithPasskey(newPwd, auth);
+  },
+  removePasskeyWithPasswordVerification: (pwd: string) =>
+    mockRemovePasskeyWithPasswordVerification(pwd),
+  forceUpdateMetamaskState: () => mockForceUpdateMetamaskState(),
 }));
 
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
+  getIsPasskeyRegistered: jest.fn().mockReturnValue(false),
 }));
 
 describe('ChangePassword', () => {
@@ -54,6 +113,7 @@ describe('ChangePassword', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
+    (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
   });
 
   async function advanceToChangePasswordStep(
@@ -254,6 +314,247 @@ describe('ChangePassword', () => {
         );
         expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
       });
+    });
+  });
+
+  describe('when passkey is already registered (non-social)', () => {
+    beforeEach(() => {
+      (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(true);
+      mockPasskeyStartAuthentication.mockReset();
+      mockPasskeyStartAuthentication.mockResolvedValue(
+        mockPasskeyAuthSuccessResponse,
+      );
+    });
+
+    it('shows verify current password step when passkey authentication fails', async () => {
+      mockPasskeyStartAuthentication.mockRejectedValueOnce(
+        new Error('NotAllowedError'),
+      );
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      expect(mockGeneratePasskeyAuthenticationOptions).toHaveBeenCalled();
+      expect(queryByTestId('change-password-input')).not.toBeInTheDocument();
+    });
+
+    it('does not show duplicate current password field after verify following passkey failure', async () => {
+      mockPasskeyStartAuthentication.mockRejectedValueOnce(
+        new Error('NotAllowedError'),
+      );
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          getByTestId('verify-current-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: mockPassword },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      expect(
+        queryByTestId('change-password-current-wallet-password-input'),
+      ).not.toBeInTheDocument();
+
+      const biometricsInput = getByTestId(
+        'change-password-enable-biometrics',
+      ).querySelector('input[type="checkbox"]');
+      expect(biometricsInput).toBeTruthy();
+      expect(biometricsInput).toBeChecked();
+    });
+
+    it('skips verify current password and shows change password after passkey verification', async () => {
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      expect(
+        queryByTestId('verify-current-password-input'),
+      ).not.toBeInTheDocument();
+
+      expect(queryByTestId('change-password-input')).not.toBeInTheDocument();
+      expect(queryByTestId('change-password-terms')).not.toBeInTheDocument();
+      expect(queryByTestId('change-password-button')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('change-password-enable-biometrics'),
+      ).not.toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(
+          getByTestId('change-password-passkey-verifying'),
+        ).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(mockGeneratePasskeyAuthenticationOptions).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+    });
+
+    it('saves via passkey verification without entering current password', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+
+      const saveButton = getByTestId('change-password-button');
+      await waitFor(() => {
+        expect(saveButton).toBeEnabled();
+      });
+
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockChangePasswordWithPasskey).toHaveBeenCalledWith(
+          mockNewPassword,
+          expect.objectContaining({
+            type: 'public-key',
+            response: expect.any(Object),
+          }),
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+
+      expect(mockChangePassword).not.toHaveBeenCalled();
+    });
+
+    it('does not return to verify current password when biometrics is turned off', async () => {
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      mockGeneratePasskeyAuthenticationOptions.mockClear();
+
+      fireEvent.click(getByTestId('change-password-enable-biometrics'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-current-wallet-password-input'),
+        ).not.toBeInTheDocument();
+      });
+
+      expect(mockGeneratePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(
+        queryByTestId('verify-current-password-input'),
+      ).not.toBeInTheDocument();
+      expect(getByTestId('change-password-input')).toBeInTheDocument();
+    });
+
+    it('does not auto-prompt passkey when biometrics is toggled off then on', async () => {
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      mockGeneratePasskeyAuthenticationOptions.mockClear();
+
+      fireEvent.click(getByTestId('change-password-enable-biometrics'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-current-wallet-password-input'),
+        ).not.toBeInTheDocument();
+      });
+
+      mockGeneratePasskeyAuthenticationOptions.mockClear();
+
+      fireEvent.click(getByTestId('change-password-enable-biometrics'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-current-wallet-password-input'),
+        ).not.toBeInTheDocument();
+      });
+
+      expect(mockGeneratePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(
+        queryByTestId('verify-current-password-input'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('changes password with passkey and removes passkey when biometrics is off after toggle', async () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('change-password-input')).toBeInTheDocument();
+      });
+
+      fireEvent.click(getByTestId('change-password-enable-biometrics'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-current-wallet-password-input'),
+        ).not.toBeInTheDocument();
+      });
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(mockChangePasswordWithPasskey).toHaveBeenCalledWith(
+          mockNewPassword,
+          expect.objectContaining({
+            type: 'public-key',
+            response: expect.any(Object),
+          }),
+        );
+        expect(mockRemovePasskeyWithPasswordVerification).toHaveBeenCalledWith(
+          mockNewPassword,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+
+      expect(mockChangePassword).not.toHaveBeenCalled();
     });
   });
 });
