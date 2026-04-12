@@ -1285,6 +1285,9 @@
     "ui/pages/confirmations/hooks/send/useSendNfts.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/pages/confirmations/hooks/signatures/useSignatureRequest.test.ts": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapActions.test.ts": {
       "Reselect: Identity function warnings": 3
     },
@@ -1318,6 +1321,9 @@
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmountAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/transactions/useTransactionMetadataRequest.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1382,17 +1388,11 @@
     "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/useSignatureRequest.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
     "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/hooks/useSyncConfirmPath.test.ts": {
       "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/hooks/useTransactionMetadataRequest.test.ts": {
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/useTypesSignSimulationEnabledInfo.test.ts": {
       "Reselect: Identity function warnings": 3

@@ -5,8 +5,11 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
-import { getUnapprovedTransaction } from '../../../selectors';
-import { useConfirmationId } from './useConfirmationId';
+import {
+  TransactionState,
+  selectUnapprovedTransactionById,
+} from '../../../../selectors/transactionController';
+import { useConfirmationId } from '../useConfirmationId';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -27,13 +30,9 @@ export function useTransactionMetadataRequestOptional():
   | undefined {
   const confirmationId = useConfirmationId();
 
-  const transactionMetadata = useSelector((state) =>
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
-  ) as TransactionMeta | undefined;
-
-  return transactionMetadata;
+  return useSelector((state) =>
+    selectUnapprovedTransactionById(state as TransactionState, confirmationId),
+  );
 }
 
 export function useTransactionMetadataRequest(): TransactionMeta {
