@@ -270,10 +270,9 @@ Different build types have different e2e tests sets. In order to run them look i
 
 Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
 
-- `[builds-from-run: <run-id>]` in the last commit message - If you didn't change any code that will change the builds, you can use this to speed up CI by about 10 minutes
-  - You probably want to use either the last completed run on branch `main` https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain, or the last run on your feature branch. The run-id is at the end of the URL like https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx
-  - For security, you will be prevented from merging the PR in this test state.
-  - If this is popular (a lot of people using it in commit messages, praising it on Slack), we may be able to harden this state, trigger it more automatically, make the UX easier, and allow merges.
+- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~12 minutes for the browserify builds, and ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
+  - `[force-builds]` in the last commit message, or a `force-builds` label on the PR — Forces fresh builds even when CI would otherwise reuse prior artifacts. Useful when you need to verify that builds work after changing only non-code files (CI configs, docs, etc.), or if the automatic system is making a mistake.
+  - `[skip-builds]` in the last commit message, or a `skip-builds` label on the PR — Reuses builds from the most recent prior run **without** verifying the source hash. This is the fastest option for iterating on tests or non-build changes, but it **blocks merging** — you must remove the tag/label and push again before the PR can enter the merge queue.
 - `[skip-e2e]` in the last commit message - Skips the E2E test suite
 - `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
 - `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.

@@ -213,6 +213,8 @@ export type AutoCloseSectionProps = {
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
   limitPrice?: string;
+  /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
+  leverage: number;
 };
 
 /**

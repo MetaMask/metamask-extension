@@ -1,14 +1,28 @@
+import { Interface } from '@ethersproject/abi';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
-  useMerklClaimStatus,
+  AGLAMERKL_ADDRESS_LINEA,
+  DISTRIBUTOR_CLAIM_ABI,
+  MERKL_CLAIM_CHAIN_ID,
   MERKL_DISTRIBUTOR_ADDRESS,
-} from './useMerklClaimStatus';
+  MUSD_TOKEN_ADDRESS,
+} from '../../components/app/musd/constants';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { useMerklClaimStatus } from './useMerklClaimStatus';
+
+const MOCK_USER = '0x1234567890abcdef1234567890abcdef12345678';
 
 const mockResolveClaimAmount = jest.fn();
-jest.mock('./transaction-amount-utils', () => ({
-  resolveClaimAmount: (...args: unknown[]) => mockResolveClaimAmount(...args),
-}));
+jest.mock('./transaction-amount-utils', () => {
+  const actual = jest.requireActual<
+    typeof import('./transaction-amount-utils')
+  >('./transaction-amount-utils');
+  return {
+    ...actual,
+    resolveClaimAmount: (...args: unknown[]) => mockResolveClaimAmount(...args),
+  };
+});
 
 jest.mock('../../contexts/metametrics', () => {
   const React = jest.requireActual('react');
@@ -33,25 +47,41 @@ jest.mock('react-redux', () => ({
 const { useSelector } = jest.requireMock('react-redux');
 
 const mockNetworkConfig: Record<string, { name: string }> = {
-  '0x1': { name: 'Ethereum Mainnet' },
+  [MERKL_CLAIM_CHAIN_ID]: { name: 'Linea' },
 };
+
+function encodeClaimData(tokenAddress: string, amount = '5000000'): string {
+  const iface = new Interface(DISTRIBUTOR_CLAIM_ABI);
+  return iface.encodeFunctionData('claim', [
+    [MOCK_USER],
+    [tokenAddress],
+    [amount],
+    [['0x0000000000000000000000000000000000000000000000000000000000000001']],
+  ]);
+}
 
 const createMerklClaimTx = (
   id: string,
   status: string,
   overrides: Record<string, unknown> = {},
-) => ({
-  id,
-  status,
-  txParams: {
-    to: MERKL_DISTRIBUTOR_ADDRESS,
-  },
-  ...overrides,
-});
+) => {
+  const data = encodeClaimData(MUSD_TOKEN_ADDRESS);
+  return {
+    id,
+    status,
+    chainId: MERKL_CLAIM_CHAIN_ID,
+    txParams: {
+      to: MERKL_DISTRIBUTOR_ADDRESS,
+      data,
+    },
+    ...overrides,
+  };
+};
 
 const createNonMerklTx = (id: string, status: string) => ({
   id,
   status,
+  chainId: MERKL_CLAIM_CHAIN_ID,
   txParams: {
     to: '0x0000000000000000000000000000000000000001',
   },
@@ -91,6 +121,55 @@ describe('useMerklClaimStatus', () => {
 
   it('returns null toastState for non-Merkl transactions', () => {
     setupSelectorMock([createNonMerklTx('tx-1', TransactionStatus.submitted)]);
+
+    const { result } = renderHook(() => useMerklClaimStatus());
+
+    expect(result.current.toastState).toBeNull();
+  });
+
+  it('returns null when to is distributor but calldata is not claim', () => {
+    setupSelectorMock([
+      {
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        chainId: MERKL_CLAIM_CHAIN_ID,
+        txParams: {
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: '0xdeadbeef',
+        },
+      },
+    ]);
+
+    const { result } = renderHook(() => useMerklClaimStatus());
+
+    expect(result.current.toastState).toBeNull();
+  });
+
+  it('returns null when chain is not Linea', () => {
+    setupSelectorMock([
+      createMerklClaimTx('tx-1', TransactionStatus.submitted, {
+        chainId: CHAIN_IDS.MAINNET,
+      }),
+    ]);
+
+    const { result } = renderHook(() => useMerklClaimStatus());
+
+    expect(result.current.toastState).toBeNull();
+  });
+
+  it('returns null when reward token is not mUSD', () => {
+    const data = encodeClaimData(AGLAMERKL_ADDRESS_LINEA);
+    setupSelectorMock([
+      {
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        chainId: MERKL_CLAIM_CHAIN_ID,
+        txParams: {
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data,
+        },
+      },
+    ]);
 
     const { result } = renderHook(() => useMerklClaimStatus());
 
@@ -310,12 +389,15 @@ describe('useMerklClaimStatus', () => {
   });
 
   it('is case-insensitive for distributor address matching', () => {
+    const data = encodeClaimData(MUSD_TOKEN_ADDRESS);
     setupSelectorMock([
       {
         id: 'tx-1',
         status: TransactionStatus.submitted,
+        chainId: MERKL_CLAIM_CHAIN_ID,
         txParams: {
           to: MERKL_DISTRIBUTOR_ADDRESS.toLowerCase(),
+          data,
         },
       },
     ]);
@@ -330,13 +412,7 @@ describe('useMerklClaimStatus', () => {
       mockResolveClaimAmount.mockResolvedValue('5000000');
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-            data: '0xabcdef',
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.submitted),
       ]);
 
       const { rerender } = renderHook(() => useMerklClaimStatus());
@@ -344,18 +420,11 @@ describe('useMerklClaimStatus', () => {
       mockTrackEvent.mockClear();
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.confirmed, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-            data: '0xabcdef',
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.confirmed),
       ]);
 
       rerender();
 
-      // Wait for the async resolveClaimAmount to settle
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
@@ -371,19 +440,14 @@ describe('useMerklClaimStatus', () => {
         confirmedCall?.[0] as Record<string, Record<string, string>>
       )?.properties;
       expect(confirmedProps?.amount_claimed_decimal).toBe('5000000');
+      expect(confirmedProps?.network_chain_id).toBe(MERKL_CLAIM_CHAIN_ID);
     });
 
-    it('proceeds without amount when resolveClaimAmount throws', async () => {
-      mockResolveClaimAmount.mockRejectedValue(new Error('RPC failure'));
+    it('includes zero mUSD raw amount when resolve returns 0', async () => {
+      mockResolveClaimAmount.mockResolvedValue('0');
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-            data: '0xbaddata',
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.submitted),
       ]);
 
       const { rerender } = renderHook(() => useMerklClaimStatus());
@@ -391,13 +455,40 @@ describe('useMerklClaimStatus', () => {
       mockTrackEvent.mockClear();
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.confirmed, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-            data: '0xbaddata',
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.confirmed),
+      ]);
+
+      rerender();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      const confirmedCall = mockTrackEvent.mock.calls.find(
+        (call: unknown[]) =>
+          (call[0] as Record<string, Record<string, string>>)?.properties
+            ?.transaction_status === 'confirmed',
+      );
+
+      const confirmedProps = (
+        confirmedCall?.[0] as Record<string, Record<string, string>>
+      )?.properties;
+      expect(confirmedProps?.amount_claimed_decimal).toBe('0');
+    });
+
+    it('proceeds without amount when resolveClaimAmount throws', async () => {
+      mockResolveClaimAmount.mockRejectedValue(new Error('RPC failure'));
+
+      setupSelectorMock([
+        createMerklClaimTx('tx-1', TransactionStatus.submitted),
+      ]);
+
+      const { rerender } = renderHook(() => useMerklClaimStatus());
+
+      mockTrackEvent.mockClear();
+
+      setupSelectorMock([
+        createMerklClaimTx('tx-1', TransactionStatus.confirmed),
       ]);
 
       rerender();
@@ -423,13 +514,7 @@ describe('useMerklClaimStatus', () => {
       mockResolveClaimAmount.mockResolvedValue('5000000');
 
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-            data: '0xabcdef',
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.submitted),
       ]);
 
       renderHook(() => useMerklClaimStatus());
@@ -450,17 +535,13 @@ describe('useMerklClaimStatus', () => {
         approvedCall?.[0] as Record<string, Record<string, string>>
       )?.properties;
       expect(approvedProps?.amount_claimed_decimal).toBe('5000000');
+      expect(approvedProps?.network_chain_id).toBe(MERKL_CLAIM_CHAIN_ID);
       expect(mockResolveClaimAmount).toHaveBeenCalled();
     });
 
     it('fires the approved analytics event when tx is first seen as submitted', async () => {
       setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.submitted, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-          },
-        }),
+        createMerklClaimTx('tx-1', TransactionStatus.submitted),
       ]);
 
       renderHook(() => useMerklClaimStatus());
@@ -476,20 +557,15 @@ describe('useMerklClaimStatus', () => {
             transaction_status: 'approved',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             transaction_id: 'tx-1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_chain_id: MERKL_CLAIM_CHAIN_ID,
           }),
         }),
       );
     });
 
     it('fires the approved analytics event when tx is first seen as signed', async () => {
-      setupSelectorMock([
-        createMerklClaimTx('tx-1', TransactionStatus.signed, {
-          chainId: '0x1',
-          txParams: {
-            to: MERKL_DISTRIBUTOR_ADDRESS,
-          },
-        }),
-      ]);
+      setupSelectorMock([createMerklClaimTx('tx-1', TransactionStatus.signed)]);
 
       renderHook(() => useMerklClaimStatus());
 
@@ -507,6 +583,25 @@ describe('useMerklClaimStatus', () => {
           }),
         }),
       );
+    });
+
+    it('does not fire analytics for distributor + Linea without claim calldata', async () => {
+      setupSelectorMock([
+        {
+          id: 'tx-1',
+          status: TransactionStatus.submitted,
+          chainId: MERKL_CLAIM_CHAIN_ID,
+          txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+        },
+      ]);
+
+      renderHook(() => useMerklClaimStatus());
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalled();
     });
   });
 });

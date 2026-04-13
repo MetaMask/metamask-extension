@@ -361,7 +361,7 @@ describe('useMusdConversion', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
           pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-          search: 'loader=customAmount&returnTo=%2Fasset%2F0x1%2F0xtest',
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
         }),
       );
     });
