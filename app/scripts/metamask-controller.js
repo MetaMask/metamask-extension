@@ -6443,11 +6443,19 @@ export default class MetamaskController extends EventEmitter {
             ...(iconUrl ? { iconUrl } : {}),
           };
 
+          const result = await this.tokensController.watchAsset({
+            asset,
+            type,
+            networkClientId,
+          });
+
           await this.assetsController.addCustomAsset(
             accountId,
             assetId,
             pendingMetadata,
           );
+
+          return result;
         }
         return this.tokensController.watchAsset({
           asset,

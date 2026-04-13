@@ -761,7 +761,7 @@ describe('MetaMaskController', () => {
           expect(
             unifyMetamaskController.assetsController.addCustomAsset,
           ).toHaveBeenCalledWith('test-internal-account-id', expectedAssetId, {
-            address: watchAssetTokenAddress,
+            address: expectedAssetId,
             symbol: 'TST',
             name: 'Test Token',
             decimals: 4,
