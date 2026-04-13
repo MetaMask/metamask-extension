@@ -8,6 +8,8 @@ import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-perm
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
@@ -929,9 +931,18 @@ function SidePanelMigrationToast() {
         startAdornment={
           <Icon name={IconName.Info} color={IconColor.iconDefault} />
         }
-        text={t('sidePanelMigrationToast')}
-        actionText={t('switchToPopup')}
-        onActionClick={handleSwitchBackToPopup}
+        text={t('sidePanelMigrationToast', [
+          <TextButton
+            key="side-panel-migration-switch-back"
+            size={TextButtonSize.BodyMd}
+            onClick={handleSwitchBackToPopup}
+            className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+          >
+            <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
+              {t('switchToPopup')}
+            </span>
+          </TextButton>,
+        ])}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={() => dismissSidePanelMigrationToast()}
