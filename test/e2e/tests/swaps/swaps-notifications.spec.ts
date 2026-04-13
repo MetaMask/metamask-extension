@@ -92,7 +92,7 @@ describe('Swaps - notifications', function () {
     );
   });
 
-  it.only('shows insufficient funds state', async function () {
+  it('shows insufficient funds state', async function () {
     await withFixtures(
       getInsufficientFundsFixtures(
         DEFAULT_BRIDGE_FEATURE_FLAGS,

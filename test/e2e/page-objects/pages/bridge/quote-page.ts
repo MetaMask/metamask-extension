@@ -121,7 +121,6 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenFrom,
         );
-        await this.driver.delay(90000)
         await this.driver.clickElement({
           text: quote.tokenFrom,
           css: this.tokenButton,
