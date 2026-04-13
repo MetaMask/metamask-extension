@@ -745,7 +745,7 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
-    it('converts ROE percent values for close subtitle fallback', async () => {
+    it('uses ROE ratio for close subtitle fallback', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
         positions: [
@@ -753,7 +753,7 @@ describe('PerpsOrderEntryPage', () => {
             ...mockPositions[0],
             marginUsed: '0',
             unrealizedPnl: 'not-a-number',
-            returnOnEquity: '0.8',
+            returnOnEquity: '0.008',
           },
         ],
         isInitialLoading: false,

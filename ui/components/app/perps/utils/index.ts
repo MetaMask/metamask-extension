@@ -28,3 +28,10 @@ export {
   PRICE_RANGES_UNIVERSAL,
   type PerpsPriceRange,
 } from './formatPerpsPrice';
+
+export {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from './tpslValidation';

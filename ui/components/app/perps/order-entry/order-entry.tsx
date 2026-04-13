@@ -306,6 +306,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            leverage={
+              mode === 'modify' && existingPosition?.leverage
+                ? existingPosition.leverage
+                : formState.leverage
+            }
             entryPrice={
               mode === 'modify' && existingPosition?.entryPrice
                 ? (() => {
@@ -316,6 +321,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                   })()
                 : undefined
             }
+            orderType={formState.type}
+            limitPrice={formState.limitPrice}
           />
         )}
 

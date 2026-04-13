@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.26.0]
+
+### Added
+
+- Added warnings for outdated Chrome, Edge, Firefox, and Opera to update before support ends, and announced that official Firefox support on Windows 7–8.1 and macOS 10.12–10.14 will end in the next release (#41063)
+- Added transaction toast notification (#40886)
+- Added settings v2 to replace legacy settings (#41194)
+- Added banners localization (#41387)
+- Defaulted perpetuals leverage to 3x for new users and added per-market leverage memory so the order form starts at the last-used leverage (#41394)
+- Added missing support links into the perps tab (#41286)
+- Added warnings when setting a perps limit price above/below current price or near the liquidation price (#41230)
+- Added Perps withdrawal flow (#41214)
+- Added legacy transaction support to the new cancel/speedup (#40925)
+- Added Enter key navigation, migrated to design-system-react and a unit test suite for the password form (#41296)
+- Added real-time dapp scanning warning with acknowledgment checkbox on the SRP reveal page for malicious websites (#40209)
+- Added dapp connection control bar (#40617)
+- Added asset verified badge in swaps asset picker (#41169)
+- Added export data button (#41427)
+- Added ability to close all positions and cancel all open orders (#41287)
+
+### Changed
+
+- Removed useBlockie (#40544)
+- Updated survey banner (#41403)
+- Removed deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest` (#41313)
+- Adjusted dapp connection control bar styling (#41390)
+- Filtered out native token transfers (#41164)
+
+### Fixed
+
+- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
+- Fixed design and estimate calculation for add/remove margin flows (#41285)
+- Fixed Bitcoin PSBT build errors to include the underlying cause for better diagnostics (#41422)
+- Fixed an issue where choosing Try again on some error screens could show the browser’s default page inside the MetaMask window instead of restarting the extension (#41364)
+- Fixed a crash that could occur for users with corrupted wallet state after a password reset or Snap keyring usage (#41405)
+- Localized `Looking for your <device>` message (#41417)
+- Fixed Review Permissions screen incorrectly showing non-EVM networks instead of the requested testnet during chain switch (#41236)
+- Fixed tooltip icon in claimable bonus row for Firefox compatibility (#41404)
+- Fixed asset list and select quotes list behavior (#41155)
+- Fixed bridge page inputs not resetting after submitting a transaction (#41222)
+- Fixed close position modal design and partial-close behavior (#41279)
+- Fixed position size display to show USD value instead of token units (#41380)
+- Fixed TP/SL form reset bug (#41283)
+
 ## [13.25.0]
 
 ### Added
@@ -2017,7 +2061,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...HEAD
+[13.26.0]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...v13.26.0
 [13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
 [13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
 [13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0

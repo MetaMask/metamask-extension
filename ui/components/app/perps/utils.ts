@@ -417,6 +417,23 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
 
+/**
+ * Format a RoE% value for display in TP/SL inputs.
+ * Always returns the absolute value: integers with no decimal ("25"),
+ * non-integers with 2 decimal places ("25.50").
+ *
+ * @param value - The numeric percentage value to format
+ * @returns The formatted percentage string
+ * @example
+ * formatRoePercent(10) => '10'
+ * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(0) => '0'
+ */
+export const formatRoePercent = (value: number): string => {
+  const rounded = Math.round(Math.abs(value) * 100) / 100;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
+};
+
 const volumeMultipliers: Record<string, number> = {
   K: 1e3,
   M: 1e6,
@@ -491,12 +508,12 @@ export const hasVolume = (market: PerpsMarketData): boolean => {
  * cannot be determined.
  *
  * Primary: unrealizedPnl / marginUsed.
- * Fallback: returnOnEquity (percent) converted to a ratio.
+ * Fallback: returnOnEquity, which is already a ratio (e.g. 0.1579 for 15.79%).
  *
  * @param position - Position values used to compute the PnL ratio.
  * @param position.unrealizedPnl - Unrealized profit and loss as a string.
  * @param position.marginUsed - Margin used as a string.
- * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @param position.returnOnEquity - Return on equity as a decimal ratio string (e.g. "0.1579").
  * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
  */
 export const getPositionPnlRatio = (position: {
@@ -517,8 +534,8 @@ export const getPositionPnlRatio = (position: {
 
   const returnOnEquity = parseFloat(position.returnOnEquity);
   if (!Number.isNaN(returnOnEquity)) {
-    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
-    return returnOnEquity / 100;
+    // position.returnOnEquity is a decimal ratio (e.g. 0.1579); pass directly to formatter.
+    return returnOnEquity;
   }
 
   return undefined;
