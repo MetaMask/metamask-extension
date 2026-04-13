@@ -16,7 +16,10 @@ import {
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import {
   bridgeSlice,
@@ -35,7 +38,11 @@ import {
   getLastSelectedChainId,
   getToToken,
 } from './selectors';
-import { getDefaultToToken, getMaybeHexChainId } from './utils';
+import {
+  getDefaultToToken,
+  getMaybeHexChainId,
+  isSupportedBridgeChain,
+} from './utils';
 
 const {
   setFromToken: setFromTokenAction,
@@ -157,9 +164,27 @@ export const setFromToken = (token: TokenPayload) => {
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
     const isNonEvm = isNonEvmChainId(chainId);
+    const maybeHexChainId = getMaybeHexChainId(chainId);
+
+    // Deep links and other external callers can inject tokens from arbitrary chains;
+    // this check prevents invalid state from propagating to selectors and components that
+    // assume fromToken is always on a supported, enabled chain.
+    if (!isSupportedBridgeChain(chainId)) {
+      return;
+    }
+
+    if (maybeHexChainId) {
+      const networkConfigs =
+        getMultichainNetworkConfigurationsByChainId(getState());
+
+      // Check that the EVM-network is already in the user's configs,
+      // if not, return early without affecting from-token.
+      if (!networkConfigs[maybeHexChainId]) {
+        return;
+      }
+    }
 
     const currentChainId = getMultichainProviderConfig(getState()).chainId;
-    const maybeHexChainId = getMaybeHexChainId(chainId);
     const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );

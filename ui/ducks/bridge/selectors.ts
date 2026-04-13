@@ -396,12 +396,8 @@ export const getFromAccount = createSelector(
     getSelectedInternalAccount,
   ],
   (fromChainId, state, selectedInternalAccount) =>
-    // Guard against undefined fromChainId: getFromChain returns undefined when
-    // the deeplinked network is not in the user's enabled networks, which can
-    // cause getSanitizedChainId to crash with "Cannot read properties of undefined".
-    (fromChainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId)
-      : null) ?? selectedInternalAccount,
+    getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
+    selectedInternalAccount,
 );
 
 export const getToAccounts = createSelector(
@@ -993,7 +989,7 @@ const getIsGasIncludedSwapSupported = createSelector(
       isSendBundleSupportedForChain,
   ],
   (fromChainId, isSendBundleSupportedForChain) => {
-    if (!fromChainId || isNonEvmChainId(fromChainId)) {
+    if (isNonEvmChainId(fromChainId)) {
       return false;
     }
     return isSendBundleSupportedForChain;

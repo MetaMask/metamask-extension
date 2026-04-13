@@ -51,12 +51,15 @@ describe('Ducks - Bridge', () => {
   });
 
   describe('setFromToken', () => {
-    it('calls the "bridge/setFromToken" action', () => {
+    beforeEach(() => {
       setBackgroundConnection({
         setActiveNetwork: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         getStatePatches: jest.fn(),
       } as never);
+    });
+
+    it('dispatches the action for a supported non-EVM chain (Solana)', () => {
       const state = store.getState().bridge;
       const actionPayload = {
         symbol: 'SYMBOL',
@@ -84,6 +87,49 @@ describe('Ducks - Bridge', () => {
           "tokenFiatAmount": undefined,
         }
       `);
+    });
+
+    it('dispatches the action for a supported EVM chain that is in the user network configs', () => {
+      // The default mock store includes Mainnet — this should succeed.
+      const actionPayload = {
+        symbol: 'ETH',
+        chainId: 'eip155:1',
+        assetId: 'eip155:1/slip44:60',
+        decimals: 18,
+        name: 'Ethereum',
+      };
+      store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(true);
+    });
+
+    it('does not dispatch the action for an unsupported chain', () => {
+      // eip155:99999 is not in ALL_ALLOWED_BRIDGE_CHAIN_IDS
+      const actionPayload = {
+        symbol: 'UNKNOWN',
+        chainId: 'eip155:99999',
+        assetId: 'eip155:99999/slip44:60',
+        decimals: 18,
+        name: 'Unknown',
+      };
+      store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
+    });
+
+    it('does not dispatch the action for a supported EVM chain that is not yet in the user network configs', () => {
+      // Arbitrum is a supported bridge chain but the default mock store only has
+      // Mainnet, Linea, and Optimism — so this token must be silently dropped.
+      const actionPayload = {
+        symbol: 'ETH',
+        chainId: 'eip155:42161',
+        assetId: 'eip155:42161/slip44:60',
+        decimals: 18,
+        name: 'Ethereum',
+      };
+      store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
     });
   });
 
