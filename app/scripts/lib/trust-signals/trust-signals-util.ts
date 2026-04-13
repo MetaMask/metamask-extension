@@ -20,33 +20,6 @@ export function isEthSendTransaction(req: JsonRpcRequest): boolean {
   return req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
 }
 
-export function isWalletSendCalls(req: JsonRpcRequest): boolean {
-  return req.method === MESSAGE_TYPE.WALLET_SEND_CALLS;
-}
-
-export function hasValidSendCallsParams(
-  req: JsonRpcRequest,
-): req is JsonRpcRequest & {
-  params: [{ calls: { to: string; [key: string]: unknown }[] }];
-} {
-  if (!('params' in req) || !req.params) {
-    return false;
-  }
-
-  if (!Array.isArray(req.params) || req.params.length === 0) {
-    return false;
-  }
-
-  const firstParam = req.params[0];
-
-  return (
-    typeof firstParam === 'object' &&
-    firstParam !== null &&
-    'calls' in firstParam &&
-    Array.isArray(firstParam.calls)
-  );
-}
-
 export function isEip7715AdvancedPermissionsRequest(
   req: JsonRpcRequest,
 ): boolean {
