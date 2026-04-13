@@ -45,10 +45,7 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
-import {
-  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
