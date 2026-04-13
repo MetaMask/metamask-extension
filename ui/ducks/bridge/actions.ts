@@ -189,7 +189,7 @@ export const setFromToken = (token: TokenPayload) => {
           (rpc) => rpc.chainId === maybeHexChainId,
         );
         if (featuredRpc) {
-          dispatch(addNetwork(featuredRpc));
+          await dispatch(addNetwork(featuredRpc));
         } else {
           // Supported bridge chain absent from both user configs and FEATURED_RPCS —
           // this is a configuration bug that must be fixed in FEATURED_RPCS.
