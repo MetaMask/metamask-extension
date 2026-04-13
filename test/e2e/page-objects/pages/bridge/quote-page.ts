@@ -117,7 +117,11 @@ class BridgeQuotePage {
         await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
       }
       if (quote.tokenFrom) {
-        await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
+        await this.driver.pasteIntoField(
+          this.assetPrickerSearchInput,
+          quote.tokenFrom,
+        );
+        await this.driver.delay(90000)
         await this.driver.clickElement({
           text: quote.tokenFrom,
           css: this.tokenButton,

@@ -29,7 +29,6 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
         await bridgeTransaction({
           driver,
           quote: {
@@ -72,7 +71,6 @@ describe('Bridge tests', function (this: Suite) {
           dismissStatusPage: true,
         });
 
-        await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
@@ -147,7 +145,6 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
