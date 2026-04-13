@@ -3816,31 +3816,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns void
    */
   async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:resetWallet',
+      restoreOnly,
+    );
   }
 
   // Moved to VaultManagement module — callers reach it via messenger.call('VaultManagement:exportAccount').
@@ -3885,41 +3865,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} keyringId - The keyring id of the backup seed phrase.
    */
   async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
-    let createSeedPhraseBackupSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-
-      const seedPhrase =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-      await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
-        password,
-        seedPhrase,
-        keyringId,
-      );
-      createSeedPhraseBackupSuccess = true;
-
-      await this.syncKeyringEncryptionKey();
-    } catch (error) {
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          TraceName.OnboardingCreateKeyAndBackupSrpError,
-          error,
-        ),
-      );
-
-      log.error('[createSeedPhraseBackup] error', error);
-      throw error;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        data: { success: createSeedPhraseBackupSuccess },
-      });
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:createSeedPhraseBackup',
+      password,
+      encodedSeedPhrase,
+      keyringId,
+    );
   }
 
   /**
@@ -3929,26 +3881,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Buffer[]>} The seed phrase.
    */
   async fetchAllSecretData(password) {
-    let fetchAllSeedPhrasesSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSecretData(password);
-      fetchAllSeedPhrasesSuccess = true;
-
-      return allSeedPhrases;
-    } catch (error) {
-      log.error('error while fetching all seed phrases', error);
-      throw error;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        data: { success: fetchAllSeedPhrasesSuccess },
-      });
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:fetchAllSecretData',
+      password,
+    );
   }
 
   // syncPasswordAndUnlockWallet — TODO: extract to vault-management module.
@@ -3966,11 +3903,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async syncKeyringEncryptionKey() {
-    // store the keyring encryption key in the seedless onboarding controller
-    const keyringEncryptionKey =
-      await this.keyringController.exportEncryptionKey();
-    await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-      keyringEncryptionKey,
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:syncKeyringEncryptionKey',
     );
   }
 
@@ -3981,30 +3916,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-      const { completedOnboarding } = this.onboardingController.state;
-
-      if (!isSocialLoginFlow || !completedOnboarding) {
-        // this is only available for seedless onboarding flow and completed onboarding
-        return false;
-      }
-
-      const isPasswordOutdated =
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache,
-        });
-      return isPasswordOutdated;
-    } catch (error) {
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          'Failed to check if seedless password is outdated',
-          error,
-        ),
-      );
-      throw error;
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:checkIsSeedlessPasswordOutdated',
+      skipCache,
+    );
   }
 
   /**
@@ -4013,69 +3929,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async syncSeedPhrases() {
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-
-      if (!isSocialLoginFlow) {
-        throw new Error(
-          'Syncing seed phrases is only available for social login flow',
-        );
-      }
-
-      // 1. fetch all seed phrases
-      const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
-      if (!rootSecret) {
-        throw new Error('No root SRP found');
-      }
-
-      for (const secret of otherSecrets) {
-        // import SRP secret
-        // Get the SRP hash, and find the hash in the local state
-        const srpHash =
-          this.seedlessOnboardingController.getSecretDataBackupState(
-            secret.data,
-            secret.type,
-          );
-
-        if (!srpHash) {
-          // import private key secret
-          if (secret.type === SecretType.PrivateKey) {
-            await this.importAccountWithStrategy(
-              'privateKey',
-              [bytesToHex(secret.data)],
-              {
-                shouldCreateSocialBackup: false,
-                shouldSelectAccount: false,
-              },
-            );
-            continue;
-          }
-
-          // If SRP is not in the local state, import it to the vault
-          // convert the seed phrase to a mnemonic (string)
-          const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-            secret.data,
-          );
-          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-          // import the new mnemonic to the current vault
-          await this.importMnemonicToVault(mnemonicToRestore, {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-            shouldImportSolanaAccount: true,
-          });
-        }
-      }
-    } catch (error) {
-      log.error('error while syncing seed phrases', error);
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError('Error while syncing seed phrases', error),
-      );
-
-      throw error;
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call('VaultManagement:syncSeedPhrases');
   }
 
   /**
@@ -4089,48 +3944,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} syncWithSocial - whether to skip syncing with social login
    */
   async addNewSeedPhraseBackup(mnemonic, keyringId, syncWithSocial = true) {
-    const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
-
-    const seedPhraseAsUint8Array =
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      let addNewSeedPhraseBackupSuccess = false;
-      try {
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-        await this.seedlessOnboardingController.addNewSecretData(
-          seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
-          {
-            keyringId,
-          },
-        );
-        addNewSeedPhraseBackupSuccess = true;
-      } catch (err) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(TraceName.OnboardingAddSrpError, err),
-        );
-
-        throw err;
-      } finally {
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          data: { success: addNewSeedPhraseBackupSuccess },
-        });
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: seedPhraseAsUint8Array,
-        type: SecretType.Mnemonic,
-      });
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:addNewSeedPhraseBackup',
+      mnemonic,
+      keyringId,
+      syncWithSocial,
+    );
   }
 
   /**
@@ -4142,50 +3962,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} oldPassword - The old password.
    */
   async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    try {
-      await this.keyringController.changePassword(newPassword);
-
-      if (isSocialLoginFlow) {
-        try {
-          await this.seedlessOnboardingController.changePassword(
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.keyringController.changePassword(oldPassword);
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            revertedKeyringEncKey,
-          );
-
-          this.controllerMessenger?.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
-      }
-    } catch (error) {
-      log.error('error while changing password', error);
-      throw error;
-    } finally {
-      releaseLock();
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:changePassword',
+      newPassword,
+      oldPassword,
+    );
   }
 
   //=============================================================================
@@ -4200,38 +3982,12 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Array} accounts - The discovered accounts to count by provider.
    */
-  getDiscoveryCountByProvider(accounts) {
-    // count includes Bitcoin to maintain return type for the ImportSRP component
-    const counts = {
-      Bitcoin: 0,
-      Solana: 0,
-      Tron: 0,
-    };
-
-    const solanaAccountTypes = Object.values(SolAccountType);
-    const bitcoinAccountTypes = Object.values(BtcAccountType);
-
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
-    const tronAccountTypes = Object.values(TrxAccountType);
-    ///: END:ONLY_INCLUDE_IF
-
-    for (const account of accounts) {
-      // Newly supported account types should be added here
-      // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
-      if (solanaAccountTypes.includes(account.type)) {
-        counts.Solana += 1;
-      }
-      if (bitcoinAccountTypes.includes(account.type)) {
-        counts.Bitcoin += 1;
-      }
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      if (tronAccountTypes.includes(account.type)) {
-        counts.Tron += 1;
-      }
-      ///: END:ONLY_INCLUDE_IF
-    }
-
-    return counts;
+  async getDiscoveryCountByProvider(accounts) {
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:getDiscoveryCountByProvider',
+      accounts,
+    );
   }
 
   /**
@@ -4241,43 +3997,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // If no keyring id is provided, we assume one keyring was added to the vault
-      const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0]?.metadata.id;
-
-      if (!keyringIdToDiscover) {
-        throw new Error('No keyring id to discover accounts for');
-      }
-
-      // Ensure the snap keyring is initialized
-      await this.getSnapKeyring();
-
-      const wallet = this.multichainAccountService.getMultichainAccountWallet({
-        entropySource: keyringIdToDiscover,
-      });
-
-      const result = await wallet.discoverAccounts();
-
-      const counts = this.getDiscoveryCountByProvider(result);
-
-      return counts;
-    } catch (error) {
-      log.warn(`Failed to add accounts with balance. ${error}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
-    }
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:discoverAndCreateAccounts',
+      id,
+    );
   }
 
   /**
@@ -4298,94 +4022,12 @@ export default class MetamaskController extends EventEmitter {
       shouldImportSolanaAccount: true,
     },
   ) {
-    const {
-      shouldCreateSocialBackup,
-      shouldSelectAccount,
-      shouldImportSolanaAccount,
-    } = options;
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const { entropySource: id } =
-        await this.multichainAccountService.createMultichainAccountWallet({
-          type: 'import',
-          mnemonic: this._convertMnemonicToWordlistIndices(
-            Buffer.from(mnemonic, 'utf8'),
-          ),
-        });
-
-      const [newAccountAddress] = await this.keyringController.withKeyring(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-
-      if (this.onboardingController.getIsSocialLoginFlow()) {
-        try {
-          // if social backup is requested, add the seed phrase backup
-          await this.addNewSeedPhraseBackup(
-            mnemonic,
-            id,
-            shouldCreateSocialBackup,
-          );
-        } catch (err) {
-          await this.multichainAccountService.removeMultichainAccountWallet(
-            id,
-            newAccountAddress,
-          );
-          throw err;
-        }
-      }
-
-      if (shouldSelectAccount) {
-        const account =
-          this.accountsController.getAccountByAddress(newAccountAddress);
-        this.accountsController.setSelectedAccount(account.id);
-      }
-
-      const syncAndDiscoverAccounts = async () => {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          // We want to trigger a full sync of the account tree after importing a new SRP
-          // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-          await this.accountTreeController.syncWithUserStorage();
-        }
-
-        let discoveredAccounts;
-
-        if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
-          shouldImportSolanaAccount
-        ) {
-          // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
-          // We just create the accounts at the end of the onboarding flow (including EVM).
-          discoveredAccounts = await this.discoverAndCreateAccounts(id);
-        } else {
-          discoveredAccounts = await this._addAccountsWithBalance(
-            id,
-            shouldImportSolanaAccount,
-          );
-        }
-
-        const newHdEntropyIndex = this.getHDEntropyIndex();
-
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-          properties: {
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: newHdEntropyIndex,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
-          },
-        });
-      };
-
-      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-      // eslint-disable-next-line no-void
-      void syncAndDiscoverAccounts();
-    } finally {
-      releaseLock();
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:importMnemonicToVault',
+      mnemonic,
+      options,
+    );
   }
 
   /**
@@ -4397,65 +4039,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(secretDatas) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    if (!isSocialLoginFlow) {
-      // import the restored seed phrase (mnemonics) to the vault
-      // this is only available for social login flow
-      return; // or throw error here?
-    }
-
-    // These mnemonics are restored from the Social Backup, so we don't need to do it again
-    const shouldCreateSocialBackup = false;
-    // This is used to select the new account in the wallet.
-    // During the restore seed phrases, we just do the import, but don't change the selected account.
-    // Just let the user select the account manually after the restore.
-    const shouldSetSelectedAccount = false;
-
-    // This method is called during the social login rehydration.
-    // At that point, we won't import the Solana account yet, since the wallet onboarding is not completed yet.
-    // Solana accounts will be imported after the wallet onboarding is completed.
-    const shouldImportSolanaAccount = false;
-
-    for (const secret of secretDatas) {
-      // import SRP secret
-      // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(
-          secret.data,
-          secret.type,
-        );
-      if (srpHash) {
-        // If SRP is in the local state, skip it
-        continue;
-      }
-
-      if (secret.type === SecretType.PrivateKey) {
-        await this.importAccountWithStrategy(
-          'privateKey',
-          [bytesToHex(secret.data)],
-          {
-            shouldCreateSocialBackup,
-            shouldSelectAccount: shouldSetSelectedAccount,
-          },
-        );
-        continue;
-      }
-
-      // If SRP is not in the local state, import it to the vault
-      // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-        secret.data,
-      );
-      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-      // import the new mnemonic to the vault
-      await this.importMnemonicToVault(mnemonicToRestore, {
-        shouldCreateSocialBackup,
-        shouldSelectAccount: shouldSetSelectedAccount,
-        shouldImportSolanaAccount,
-      });
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:restoreSeedPhrasesToVault',
+      secretDatas,
+    );
   }
 
   /**
@@ -4465,46 +4053,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
-    try {
-      // get the first seed phrase from the array, this is the oldest seed phrase
-      // and we will use it to create the initial vault
-      const [firstSecretData, ...remainingSecretData] =
-        await this.fetchAllSecretData(password);
-
-      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-        firstSecretData.data,
-      );
-      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-      const encodedSeedPhrase = Array.from(
-        Buffer.from(mnemonic, 'utf8').values(),
-      );
-      // restore the vault using the root seed phrase
-      await this.controllerMessenger.call(
-        'VaultManagement:createNewVaultAndRestore',
-        password,
-        encodedSeedPhrase,
-      );
-
-      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-      if (remainingSecretData.length > 0) {
-        await this.restoreSeedPhrasesToVault(remainingSecretData);
-      }
-
-      return mnemonic;
-    } catch (error) {
-      if (error instanceof RecoveryError) {
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          'Failed to restore social backup and get seed phrase',
-          error,
-        ),
-      );
-
-      throw error;
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:restoreSocialBackupAndGetSeedPhrase',
+      password,
+    );
   }
 
   // createNewVaultAndRestore — moved to vault-management module.
@@ -4527,197 +4080,22 @@ export default class MetamaskController extends EventEmitter {
    * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
    */
   async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // Scan accounts until we find an empty one
-      const chainId = this.#getGlobalChainId();
-
-      const keyringSelector = keyringId
-        ? { id: keyringId }
-        : { type: KeyringTypes.hd };
-
-      const { accounts, entropySource } =
-        await this.keyringController.withKeyring(
-          keyringSelector,
-          async ({ keyring, metadata }) => {
-            const keyringAccounts = await keyring.getAccounts();
-            return {
-              accounts: keyringAccounts,
-              entropySource: metadata.id,
-            };
-          },
-        );
-      let address = accounts[accounts.length - 1];
-
-      trace({
-        name: TraceName.EvmDiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-      try {
-        for (let count = accounts.length; ; count++) {
-          const balance = await this.getBalance(address, this.provider);
-
-          if (balance === '0x0') {
-            // This account has no balance, so check for tokens
-            await this.tokenDetectionController.detectTokens({
-              chainIds: [chainId],
-              selectedAddress: address,
-            });
-
-            const tokens =
-              this.tokensController.state.allTokens?.[chainId]?.[address];
-            const detectedTokens =
-              this.tokensController.state.allDetectedTokens?.[chainId]?.[
-                address
-              ];
-
-            if (
-              (tokens?.length ?? 0) === 0 &&
-              (detectedTokens?.length ?? 0) === 0
-            ) {
-              // This account has no balance or tokens
-              if (count !== 1) {
-                await this.controllerMessenger.call(
-                  'AccountManagement:removeAccount',
-                  address,
-                );
-              }
-              break;
-            }
-          }
-
-          // This account has assets, so check the next one
-          address = await this.keyringController.withKeyring(
-            keyringSelector,
-            async ({ keyring }) => {
-              const [newAddress] = await keyring.addAccounts(1);
-              return newAddress;
-            },
-          );
-        }
-      } finally {
-        endTrace({
-          name: TraceName.EvmDiscoverAccounts,
-          op: TraceOperation.AccountDiscover,
-        });
-      }
-
-      const discoveredAccounts = {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      const btcClient = await this._getMultichainWalletSnapClient(
-        BITCOIN_WALLET_SNAP_ID,
-      );
-      const btcScope = BtcScope.Mainnet;
-      const btcAccounts = await btcClient.discoverAccounts(
-        entropySource,
-        btcScope,
-      );
-
-      discoveredAccounts.Bitcoin = btcAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (btcAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, btcClient, {
-          scope: btcScope,
-          synchronize: false,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      if (shouldImportSolanaAccount) {
-        const solanaClient = await this._getMultichainWalletSnapClient(
-          SOLANA_WALLET_SNAP_ID,
-        );
-        const solScope = SolScope.Mainnet;
-        const solanaAccounts = await solanaClient.discoverAccounts(
-          entropySource,
-          solScope,
-        );
-
-        discoveredAccounts.Solana = solanaAccounts.length;
-
-        // If none accounts got discovered, we still create the first (default) one.
-        if (solanaAccounts.length === 0) {
-          await this._addSnapAccount(entropySource, solanaClient, {
-            scope: solScope,
-          });
-        }
-      }
-
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      const tronClient =
-        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
-      const tronScope = TrxScope.Mainnet;
-      const tronAccounts = await tronClient.discoverAccounts(
-        entropySource,
-        tronScope,
-      );
-
-      discoveredAccounts.Tron = tronAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (tronAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, tronClient, {
-          scope: tronScope,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      return discoveredAccounts;
-    } catch (e) {
-      log.warn(`Failed to add accounts with balance. Error: ${e}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-    }
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:addAccountsWithBalance',
+      keyringId,
+      shouldImportSolanaAccount,
+    );
   }
 
   /**
    * Imports accounts with balances to the keyring.
    */
   async _importAccountsWithBalances() {
-    const shouldImportSolanaAccount = true;
-    const { keyrings } = this.keyringController.state;
-
-    // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { metadata } of keyrings) {
-      // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyring(
-        { id: metadata.id },
-        async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
-        },
-      );
-      if (isHdKeyring) {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(metadata.id);
-        } else {
-          await this._addAccountsWithBalance(
-            metadata.id,
-            shouldImportSolanaAccount,
-          );
-        }
-      }
-    }
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:importAccountsWithBalances',
+    );
   }
 
   /**
@@ -4794,26 +4172,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const accounts =
-      this.accountTrackerController.state.accountsByChainId[
-        this.#getGlobalChainId()
-      ];
-    const cached = accounts?.[toChecksumHexAddress(address)];
-
-    if (cached && cached.balance) {
-      return cached.balance;
-    }
-
-    try {
-      const balance = await provider.request({
-        method: 'eth_getBalance',
-        params: [address, 'latest'],
-      });
-      return balance || '0x0';
-    } catch (error) {
-      log.error(error);
-      throw error;
-    }
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:getBalance',
+      address,
+      provider,
+    );
   }
 
   /**
@@ -4848,66 +4212,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
-    await this.offscreenPromise;
-
-    if (encryptionKey) {
-      await this.keyringController.submitEncryptionKey(encryptionKey);
-    } else {
-      await this.keyringController.submitPassword(password);
-      if (isSocialLoginFlow) {
-        // unlock the seedless onboarding vault
-        await this.seedlessOnboardingController.submitPassword(password);
-      }
-    }
-
-    try {
-      await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
-    await this.accountsController.updateAccounts();
-
-    // Init multichain accounts after creating internal accounts.
-    await this.multichainAccountService.init();
-
-    // Force account-tree refresh after all accounts have been updated.
-    this.accountTreeController.init();
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await this.getSnapKeyring(),
-      this.accountTreeController.getSelectedAccountGroup(),
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:submitPasswordOrEncryptionKey',
+      { password, encryptionKey },
     );
-
-    if (this.isMultichainAccountsFeatureState2Enabled()) {
-      const resyncAndAlignAccounts = async () => {
-        // READ THIS CAREFULLY:
-        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
-        // automatically "fix" this corrupted state, we run this method which will re-sync
-        // MetaMask accounts and Snap accounts upon login.
-        // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
-        await this.multichainAccountService.resyncAccounts();
-
-        // This allows to create missing accounts if new account providers have been added.
-        await this.multichainAccountService.alignWallets();
-      };
-
-      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile.
-      // NOTE: We run this asynchronously on purpose, see FIXME^.
-      // eslint-disable-next-line no-void
-      void resyncAndAlignAccounts();
-    }
   }
 
   async _loginUser(password) {
@@ -4930,34 +4239,15 @@ export default class MetamaskController extends EventEmitter {
    * Submits a user's encryption key to log the user in via login token
    */
   async submitEncryptionKeyFromSessionStorage() {
-    try {
-      const { loginToken, loginSalt } =
-        await this.extension.storage.session.get(['loginToken', 'loginSalt']);
-      if (loginToken && loginSalt) {
-        const { vault } = this.keyringController.state;
-
-        const jsonVault = JSON.parse(vault);
-
-        if (jsonVault.salt !== loginSalt) {
-          console.warn(
-            'submitEncryptionKey: Stored salt and vault salt do not match',
-          );
-          await this.clearLoginArtifacts();
-          return;
-        }
-
-        await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
-      }
-    } catch (e) {
-      // If somehow this login token doesn't work properly,
-      // remove it and the user will get shown back to the unlock screen
-      await this.clearLoginArtifacts();
-      throw e;
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:submitEncryptionKeyFromSessionStorage',
+    );
   }
 
   async clearLoginArtifacts() {
-    await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
+    // Moved to vault-management module.
+    return this.controllerMessenger.call('VaultManagement:clearLoginArtifacts');
   }
 
   // verifyPassword — moved to vault-management module.
@@ -4973,29 +4263,21 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Gets the mnemonic of the user's primary keyring.
    */
-  getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
+  async getPrimaryKeyringMnemonic() {
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:getPrimaryKeyringMnemonic',
     );
-    if (!keyring.mnemonic) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.mnemonic;
   }
 
   /**
    * Gets the mnemonic seed of the user's primary keyring.
    */
-  getPrimaryKeyringMnemonicSeed() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
+  async getPrimaryKeyringMnemonicSeed() {
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:getPrimaryKeyringMnemonicSeed',
     );
-    if (!keyring.seed) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.seed;
   }
 
   //
@@ -5333,8 +4615,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Hex[]} The sorted evm accounts addresses.
    */
   sortEvmAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:sortEvmAccountsByLastSelected',
+      addresses,
+    );
   }
 
   /**
@@ -5345,19 +4630,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortMultichainAccountsByLastSelected(addresses) {
-    const getLastSelected = (address) => {
-      const account = this.accountsController.getAccountByAddress(address);
-      if (!account) {
-        return undefined;
-      }
-      const context = this.accountTreeController.getAccountContext(account.id);
-      // Get EOA account as it's the only account having lastSelected set
-      return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
-        .lastSelected;
-    };
-
-    return addresses.sort(
-      (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:sortMultichainAccountsByLastSelected',
+      addresses,
     );
   }
 
@@ -5370,44 +4646,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
+    // Moved to account-management module.
+    return this.controllerMessenger.call(
+      'AccountManagement:sortAddressesWithInternalAccounts',
+      addresses,
+      internalAccounts,
+    );
   }
 
   /**
@@ -5711,30 +4955,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} syncWithSocial - whether to skip syncing with social login
    */
   async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
-    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      try {
-        await this.seedlessOnboardingController.addNewSecretData(
-          bufferedPrivateKey,
-          SecretType.PrivateKey,
-          { keyringId },
-        );
-      } catch (error) {
-        log.error('Error adding new private key backup', error);
-        throw error;
-      } finally {
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: bufferedPrivateKey,
-        type: SecretType.PrivateKey,
-      });
-    }
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:addNewPrivateKeyBackup',
+      privateKey,
+      keyringId,
+      syncWithSocial,
+    );
   }
 
   /**
@@ -5987,15 +5214,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {number | undefined} The index of the HD keyring containing the selected account.
    */
   getHDEntropyIndex() {
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
-    );
-    const index = hdKeyrings.findIndex((keyring) =>
-      keyring.accounts.includes(selectedAccount.address),
-    );
-
-    return index === -1 ? undefined : index;
+    // Moved to vault-management module.
+    return this.controllerMessenger.call('VaultManagement:getHDEntropyIndex');
   }
 
   //=============================================================================
@@ -6006,14 +5226,20 @@ export default class MetamaskController extends EventEmitter {
    * Allows a user to begin the seed phrase recovery process.
    */
   markPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(true);
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:markPasswordForgotten',
+    );
   }
 
   /**
    * Allows a user to end the seed phrase recovery process.
    */
   unMarkPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(false);
+    // Moved to vault-management module.
+    return this.controllerMessenger.call(
+      'VaultManagement:unMarkPasswordForgotten',
+    );
   }
 
   //=============================================================================
@@ -8102,13 +7328,12 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getCode(address, networkClientId) {
-    const { provider } =
-      this.networkController.getNetworkClientById(networkClientId);
-
-    return await provider.request({
-      method: 'eth_getCode',
-      params: [address],
-    });
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:getCode',
+      address,
+      networkClientId,
+    );
   }
 
   async _onAccountChange(newAddress) {
@@ -8222,259 +7447,34 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - Metadata for the transaction.
    */
   async _onFinishedTransaction(transactionMeta) {
-    if (
-      ![TransactionStatus.confirmed, TransactionStatus.failed].includes(
-        transactionMeta.status,
-      )
-    ) {
-      return;
-    }
-    const startTime = performance.now();
-
-    const traceContext = trace({
-      name: TraceName.OnFinishedTransaction,
-      startTime: performance.timeOrigin,
-    });
-
-    trace({
-      name: TraceName.OnFinishedTransaction,
-      startTime: performance.timeOrigin,
-      parentContext: traceContext,
-      data: {
-        transactionMeta,
-      },
-    });
-
-    await this._createTransactionNotifcation(transactionMeta);
-    await this._updateNFTOwnership(transactionMeta);
-    this._trackTransactionFailure(transactionMeta);
-    await this.tokenBalancesController.updateBalances({
-      chainIds: [transactionMeta.chainId],
-    });
-    endTrace({
-      name: TraceName.OnFinishedTransaction,
-      timestamp: performance.timeOrigin + startTime,
-    });
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:onFinishedTransaction',
+      transactionMeta,
+    );
   }
 
   async _createTransactionNotifcation(transactionMeta) {
-    const { chainId } = transactionMeta;
-    let rpcPrefs = {};
-
-    if (chainId) {
-      const networkConfiguration =
-        this.networkController.state.networkConfigurationsByChainId?.[chainId];
-
-      const blockExplorerUrl =
-        networkConfiguration?.blockExplorerUrls?.[
-          networkConfiguration?.defaultBlockExplorerUrlIndex
-        ];
-
-      rpcPrefs = { blockExplorerUrl };
-    }
-
-    try {
-      await this.platform.showTransactionNotification(
-        transactionMeta,
-        rpcPrefs,
-      );
-    } catch (error) {
-      log.error('Failed to create transaction notification', error);
-    }
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createTransactionNotification',
+      transactionMeta,
+    );
   }
 
   async _updateNFTOwnership(transactionMeta) {
-    // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
-    // in which case we will want to check and update ownership status of the transferred NFT.
-
-    const { type, txParams, chainId, txReceipt } = transactionMeta;
-    const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
-
-    const { allNfts } = this.nftController.state;
-    const txReceiptLogs = txReceipt?.logs;
-
-    const isContractInteractionTx =
-      type === TransactionType.contractInteraction && txReceiptLogs;
-    const isTransferFromTx =
-      (type === TransactionType.tokenMethodTransferFrom ||
-        type === TransactionType.tokenMethodSafeTransferFrom) &&
-      txParams !== undefined;
-
-    if (!isContractInteractionTx && !isTransferFromTx) {
-      return;
-    }
-
-    const networkClientId =
-      this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
-        ?.rpcEndpoints[
-        this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
-          ?.defaultRpcEndpointIndex
-      ]?.networkClientId;
-
-    if (isTransferFromTx) {
-      const { data, to: contractAddress, from: userAddress } = txParams;
-      const transactionData = parseStandardTokenTransactionData(data);
-      // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-      // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-      // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-      const transactionDataTokenId =
-        getTokenIdParam(transactionData) ?? getTokenValueParam(transactionData);
-
-      // check if its a known NFT
-      const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
-        ({ address, tokenId }) =>
-          isEqualCaseInsensitive(address, contractAddress) &&
-          tokenId === transactionDataTokenId,
-      );
-
-      // if it is we check and update ownership status.
-      if (knownNft) {
-        this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-          knownNft,
-          false,
-          networkClientId,
-          // TODO add networkClientId once it is available in the transactionMeta
-          // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
-          // because the check would use the provider for the globally selected network, not the chainId passed here.
-          { userAddress },
-        );
-      }
-    } else {
-      // Else if contract interaction we will parse the logs
-
-      const allNftTransferLog = txReceiptLogs.map((txReceiptLog) => {
-        const isERC1155NftTransfer =
-          txReceiptLog.topics &&
-          txReceiptLog.topics[0] === TRANSFER_SINFLE_LOG_TOPIC_HASH;
-        const isERC721NftTransfer =
-          txReceiptLog.topics &&
-          txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-        let isTransferToSelectedAddress;
-
-        if (isERC1155NftTransfer) {
-          isTransferToSelectedAddress =
-            txReceiptLog.topics &&
-            txReceiptLog.topics[3] &&
-            txReceiptLog.topics[3].match(selectedAddress?.slice(2));
-        }
-
-        if (isERC721NftTransfer) {
-          isTransferToSelectedAddress =
-            txReceiptLog.topics &&
-            txReceiptLog.topics[2] &&
-            txReceiptLog.topics[2].match(selectedAddress?.slice(2));
-        }
-
-        return {
-          isERC1155NftTransfer,
-          isERC721NftTransfer,
-          isTransferToSelectedAddress,
-          ...txReceiptLog,
-        };
-      });
-      if (allNftTransferLog.length !== 0) {
-        const allNftParsedLog = [];
-        allNftTransferLog.forEach((singleLog) => {
-          if (
-            singleLog.isTransferToSelectedAddress &&
-            (singleLog.isERC1155NftTransfer || singleLog.isERC721NftTransfer)
-          ) {
-            let iface;
-            if (singleLog.isERC1155NftTransfer) {
-              iface = new Interface(abiERC1155);
-            } else {
-              iface = new Interface(abiERC721);
-            }
-            try {
-              const parsedLog = iface.parseLog({
-                data: singleLog.data,
-                topics: singleLog.topics,
-              });
-              allNftParsedLog.push({
-                contract: singleLog.address,
-                ...parsedLog,
-              });
-            } catch (err) {
-              // ignore
-            }
-          }
-        });
-        // Filter known nfts and new Nfts
-        const knownNFTs = [];
-        const newNFTs = [];
-        allNftParsedLog.forEach((single) => {
-          const tokenIdFromLog = getTokenIdParam(single);
-          const existingNft = allNfts?.[selectedAddress]?.[chainId]?.find(
-            ({ address, tokenId }) => {
-              return (
-                isEqualCaseInsensitive(address, single.contract) &&
-                tokenId === tokenIdFromLog
-              );
-            },
-          );
-          if (existingNft) {
-            knownNFTs.push(existingNft);
-          } else {
-            newNFTs.push({
-              tokenId: tokenIdFromLog,
-              ...single,
-            });
-          }
-        });
-        // For known nfts only refresh ownership
-        const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
-          return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-            singleNft,
-            false,
-            networkClientId,
-            // TODO add networkClientId once it is available in the transactionMeta
-            // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
-            // because the check would use the provider for the globally selected network, not the chainId passed here.
-            { selectedAddress },
-          );
-        });
-        await Promise.allSettled(refreshOwnershipNFts);
-        // For new nfts, add them to state
-        const addNftPromises = newNFTs.map(async (singleNft) => {
-          return this.nftController.addNft(
-            singleNft.contract,
-            singleNft.tokenId,
-            networkClientId,
-          );
-        });
-        await Promise.allSettled(addNftPromises);
-      }
-    }
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:updateNFTOwnership',
+      transactionMeta,
+    );
   }
 
   _trackTransactionFailure(transactionMeta) {
-    const { txReceipt } = transactionMeta;
-    const { allTokens } = this.tokensController.state;
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const tokens =
-      allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
-
-    if (!txReceipt || txReceipt.status !== '0x0') {
-      return;
-    }
-
-    const { accounts } = this.accountTrackerController.state;
-
-    this.metaMetricsController.trackEvent(
-      {
-        event: 'Tx Status Update: On-Chain Failure',
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          action: 'Transactions',
-          errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: tokens.length,
-          numberOfAccounts: Object.keys(accounts).length,
-        },
-      },
-      {
-        matomoEvent: true,
-      },
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:trackTransactionFailure',
+      transactionMeta,
     );
   }
 
@@ -8679,31 +7679,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{transactionHash: string, delegatedTo: string}>}
    */
   async upgradeAccount(address, upgradeContractAddress, chainId) {
-    // Get the network client for the specified chain
-    const networkClientId = this.networkController.findNetworkClientIdByChainId(
-      toHex(chainId),
-    );
-
-    return createEIP7702UpgradeTransaction(
-      {
-        address,
-        upgradeContractAddress,
-        networkClientId,
-      },
-      async (transactionParams, options) => {
-        const transactionMeta = await addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: {
-              ...options,
-              origin: 'metamask',
-              requireApproval: true,
-            },
-            waitForSubmit: true,
-          }),
-        );
-        return transactionMeta;
-      },
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:upgradeAccount',
+      address,
+      upgradeContractAddress,
+      chainId,
     );
   }
 
@@ -8716,26 +7697,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
    */
   async isEip7702Supported(request) {
-    const { address, chainId } = request;
-    const normalizedAccount = address;
-
-    const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
-      address: normalizedAccount,
-      chainIds: [chainId],
-    });
-
-    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
-      atomicBatchSupport,
-      chainId,
+    // Moved to transaction-lifecycle module.
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:isEip7702Supported',
+      request,
     );
-
-    const { isSupported, upgradeContractAddress } = checkEip7702Support(
-      atomicBatchChainSupport,
-    );
-
-    return {
-      isSupported,
-      upgradeContractAddress,
-    };
   }
 }
