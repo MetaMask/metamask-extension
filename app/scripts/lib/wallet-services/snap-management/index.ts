@@ -10,10 +10,64 @@
  *   - getSnapPreferences  (Engine.ts L1016: same fields subset)
  */
 
-import type { RootMessenger } from '../../messenger';
+/**
+ * Subset of the Messenger interface required by snap-management.
+ * Structural — satisfied by extension RootMessenger, mobile EngineMessenger,
+ * or any test double providing these call overloads.
+ *
+ * Promotion path: replace with RestrictedMessenger from @metamask/base-controller
+ * when extracting to a published package.
+ */
+type SnapManagementMessenger = {
+  call(
+    action: 'SnapController:getKeyringForType',
+    keyringType: string,
+  ): Promise<unknown>;
+  call(action: 'PreferencesController:getState'): {
+    currentLocale: string;
+    currentCurrency: string;
+    useTokenDetection: boolean;
+    [key: string]: unknown;
+  };
+  call(
+    action: 'SnapController:handleRequest',
+    args: {
+      snapId: string;
+      origin: string;
+      handler: string;
+      request: { method: string; params?: unknown };
+    },
+  ): Promise<unknown>;
+  call(
+    action: 'SnapController:getSnapState',
+    snapId: string,
+    encrypted: boolean,
+  ): Promise<unknown>;
+  call(
+    action: 'SnapController:updateSnapState',
+    snapId: string,
+    newState: Record<string, unknown>,
+    encrypted: boolean,
+  ): Promise<void>;
+  call(
+    action: 'TokensController:watchAsset',
+    args: { asset: unknown; type: string; networkClientId?: string },
+  ): Promise<void>;
+  call(
+    action: 'NftController:watchNft',
+    asset: unknown,
+    type: string,
+    origin: string,
+    networkClientId?: string,
+  ): Promise<void>;
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type SnapManagementDependencies = {
-  messenger: RootMessenger;
+  messenger: SnapManagementMessenger;
 };
 
 /**
@@ -89,11 +143,7 @@ export async function getSnapState(
   snapId: string,
   encrypted: boolean,
 ): Promise<unknown> {
-  return (deps.messenger as never).call(
-    'SnapController:getSnapState',
-    snapId,
-    encrypted,
-  );
+  return deps.messenger.call('SnapController:getSnapState', snapId, encrypted);
 }
 
 /**
@@ -109,7 +159,7 @@ export async function updateSnapState(
   newState: Record<string, unknown>,
   encrypted: boolean,
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'SnapController:updateSnapState',
     snapId,
     newState,
@@ -139,7 +189,7 @@ export async function handleWatchAssetRequest(
   const { asset, type, origin, networkClientId } = args;
   switch (type) {
     case 'ERC20':
-      await (deps.messenger as never).call('TokensController:watchAsset', {
+      await deps.messenger.call('TokensController:watchAsset', {
         asset,
         type,
         networkClientId,
@@ -147,7 +197,7 @@ export async function handleWatchAssetRequest(
       break;
     case 'ERC721':
     case 'ERC1155':
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'NftController:watchNft',
         asset,
         type,
@@ -180,19 +230,16 @@ export const SNAP_MANAGEMENT_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(messenger: SnapManagementMessenger): void {
   const deps: SnapManagementDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add SnapManagementActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
-    SNAP_MANAGEMENT_ACTIONS.getSnapKeyring,
-    () => getSnapKeyring(deps),
+  messenger.registerActionHandler(SNAP_MANAGEMENT_ACTIONS.getSnapKeyring, () =>
+    getSnapKeyring(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.getSnapPreferences,
     () => getSnapPreferences(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.handleSnapRequest,
     (args: {
       snapId: string;
@@ -201,17 +248,17 @@ export function registerActions(messenger: RootMessenger): void {
       request: { method: string; params?: unknown };
     }) => handleSnapRequest(deps, args),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.getSnapState,
     (snapId: string, encrypted: boolean) =>
       getSnapState(deps, snapId, encrypted),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.updateSnapState,
     (snapId: string, newState: Record<string, unknown>, encrypted: boolean) =>
       updateSnapState(deps, snapId, newState, encrypted),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.handleWatchAssetRequest,
     (args: {
       asset: unknown;

@@ -12,10 +12,91 @@
  *   - removeAccount       (Engine.ts L1061: same remove-permissions + keyring pattern)
  */
 
-import type { RootMessenger } from '../../messenger';
+/**
+ * Subset of the Messenger interface required by account-management.
+ * Structural — satisfied by extension RootMessenger, mobile EngineMessenger,
+ * or any test double providing these call overloads.
+ */
+type AccountManagementMessenger = {
+  call(action: 'AccountsController:setSelectedAccount', id: string): void;
+  call(
+    action: 'AccountsController:getAccountByAddress',
+    address: string,
+  ): { id: string } | undefined;
+  call(
+    action: 'AccountsController:setAccountName',
+    id: string,
+    label: string,
+  ): void;
+  call(
+    action: 'PermissionController:removeAllAccountPermissions',
+    address: string,
+  ): void;
+  call(
+    action: 'KeyringController:removeAccount',
+    address: string,
+  ): Promise<void>;
+  call(action: 'KeyringController:getAccounts'): Promise<string[]>;
+  call(
+    action: 'KeyringController:withKeyring',
+    selector: { id: string } | { type: string },
+    callback: (ctx: {
+      keyring: {
+        type: string;
+        getAccounts: () => Promise<string[]>;
+        addAccounts: (n: number) => Promise<string[]>;
+        removeAccount: (address: string) => Promise<void>;
+      };
+      metadata: { id: string };
+    }) => Promise<unknown>,
+  ): Promise<unknown>;
+  call(
+    action: 'KeyringController:importAccountWithStrategy',
+    strategy: string,
+    args: unknown[],
+  ): Promise<string>;
+  call(
+    action: 'PreferencesController:setSelectedAddress',
+    address: string,
+  ): void;
+  call(action: 'AccountsController:getSelectedAccount'): {
+    address: string;
+    [key: string]: unknown;
+  };
+  call(
+    action: 'TransactionController:wipeTransactions',
+    opts: { address: string },
+  ): void;
+  call(
+    action: 'SmartTransactionsController:wipeSmartTransactions',
+    opts: { address: string; ignoreNetwork: boolean },
+  ): void;
+  call(action: 'NetworkController:resetConnection'): void;
+  call(
+    action: 'AccountTreeController:setSelectedAccountGroup',
+    accountGroupId: string,
+  ): void;
+  call(
+    action: 'AccountTreeController:setAccountGroupName',
+    accountGroupId: string,
+    accountGroupName: string,
+  ): void;
+  call(action: 'AccountsController:listAccounts'): {
+    address: string;
+    metadata: { lastSelected?: number };
+  }[];
+  call(
+    action: 'AccountManagement:removeAccount',
+    address: string,
+  ): Promise<void>;
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type AccountManagementDependencies = {
-  messenger: RootMessenger;
+  messenger: AccountManagementMessenger;
 };
 
 /**
@@ -105,11 +186,11 @@ export async function addNewAccount(
   accountCount?: number,
   keyringId?: string,
 ): Promise<string> {
-  const oldAccounts: string[] = await (deps.messenger as never).call(
+  const oldAccounts: string[] = await deps.messenger.call(
     'KeyringController:getAccounts',
   );
 
-  const addedAccountAddress: string = await (deps.messenger as never).call(
+  const addedAccountAddress: string = await deps.messenger.call(
     'KeyringController:withKeyring',
     keyringId ? { id: keyringId } : { type: 'HD Key Tree' },
     async ({
@@ -148,7 +229,7 @@ export async function addNewAccount(
   );
 
   if (!oldAccounts.includes(addedAccountAddress)) {
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'PreferencesController:setSelectedAddress',
       addedAccountAddress,
     );
@@ -180,14 +261,14 @@ export async function importAccountWithStrategy(
 ): Promise<string> {
   const { shouldSelectAccount } = options;
 
-  const importedAccountAddress: string = await (deps.messenger as never).call(
+  const importedAccountAddress: string = await deps.messenger.call(
     'KeyringController:importAccountWithStrategy',
     strategy,
     args,
   );
 
   if (shouldSelectAccount) {
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'PreferencesController:setSelectedAddress',
       importedAccountAddress,
     );
@@ -216,14 +297,14 @@ export async function resetAccount(
   );
   const { address } = selectedAccount as { address: string };
 
-  (deps.messenger as never).call('TransactionController:wipeTransactions', {
+  deps.messenger.call('TransactionController:wipeTransactions', {
     address,
   });
-  (deps.messenger as never).call(
-    'SmartTransactionsController:wipeSmartTransactions',
-    { address, ignoreNetwork: false },
-  );
-  (deps.messenger as never).call('NetworkController:resetConnection');
+  deps.messenger.call('SmartTransactionsController:wipeSmartTransactions', {
+    address,
+    ignoreNetwork: false,
+  });
+  deps.messenger.call('NetworkController:resetConnection');
 
   return address;
 }
@@ -240,7 +321,7 @@ export function setSelectedMultichainAccount(
   deps: AccountManagementDependencies,
   accountGroupId: string,
 ): void {
-  (deps.messenger as never).call(
+  deps.messenger.call(
     'AccountTreeController:setSelectedAccountGroup',
     accountGroupId,
   );
@@ -258,7 +339,7 @@ export function setAccountGroupName(
   accountGroupId: string,
   accountGroupName: string,
 ): void {
-  (deps.messenger as never).call(
+  deps.messenger.call(
     'AccountTreeController:setAccountGroupName',
     accountGroupId,
     accountGroupName,
@@ -492,7 +573,7 @@ export async function addAccountsWithBalance(
               address,
             );
             // Remove account — delegates to the already-registered action.
-            await (deps.messenger as never).call(
+            await deps.messenger.call(
               'AccountManagement:removeAccount',
               address,
             );
@@ -680,7 +761,7 @@ export function sortEvmAccountsByLastSelected(
   const internalAccounts: {
     address: string;
     metadata: { lastSelected?: number };
-  }[] = (deps.messenger as never).call('AccountsController:listAccounts');
+  }[] = deps.messenger.call('AccountsController:listAccounts');
   return sortAddressesWithInternalAccounts(deps, addresses, internalAccounts);
 }
 
@@ -786,28 +867,26 @@ export const ACCOUNT_MANAGEMENT_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(messenger: AccountManagementMessenger): void {
   const deps: AccountManagementDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add AccountManagementActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.setSelectedAccount,
     (id: string) => setSelectedAccount(deps, id),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.setAccountLabel,
     (address: string, label: string) => setAccountLabel(deps, address, label),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.removeAccount,
     (address: string) => removeAccount(deps, address),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.addNewAccount,
     (accountCount?: number, keyringId?: string) =>
       addNewAccount(deps, accountCount, keyringId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.importAccountWithStrategy,
     (
       strategy: string,
@@ -818,21 +897,20 @@ export function registerActions(messenger: RootMessenger): void {
       },
     ) => importAccountWithStrategy(deps, strategy, args, options),
   );
-  (messenger as never).registerActionHandler(
-    ACCOUNT_MANAGEMENT_ACTIONS.resetAccount,
-    () => resetAccount(deps),
+  messenger.registerActionHandler(ACCOUNT_MANAGEMENT_ACTIONS.resetAccount, () =>
+    resetAccount(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.setSelectedMultichainAccount,
     (accountGroupId: string) =>
       setSelectedMultichainAccount(deps, accountGroupId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.setAccountGroupName,
     (accountGroupId: string, accountGroupName: string) =>
       setAccountGroupName(deps, accountGroupId, accountGroupName),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.getDiscoveryCountByProvider,
     (
       accounts: { type: string }[],
@@ -843,38 +921,38 @@ export function registerActions(messenger: RootMessenger): void {
       },
     ) => getDiscoveryCountByProvider(deps, accounts, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.discoverAndCreateAccounts,
     (opts: Parameters<typeof discoverAndCreateAccounts>[1]) =>
       discoverAndCreateAccounts(deps, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.addAccountsWithBalance,
     (opts: Parameters<typeof addAccountsWithBalance>[1]) =>
       addAccountsWithBalance(deps, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.importAccountsWithBalances,
     (opts: Parameters<typeof importAccountsWithBalances>[1]) =>
       importAccountsWithBalances(deps, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.getBalance,
     (address: string, opts: Parameters<typeof getBalance>[2]) =>
       getBalance(deps, address, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.sortEvmAccountsByLastSelected,
     (addresses: string[]) => sortEvmAccountsByLastSelected(deps, addresses),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.sortMultichainAccountsByLastSelected,
     (
       addresses: string[],
       opts: { getLastSelected: (address: string) => number | undefined },
     ) => sortMultichainAccountsByLastSelected(deps, addresses, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     ACCOUNT_MANAGEMENT_ACTIONS.sortAddressesWithInternalAccounts,
     (
       addresses: string[],

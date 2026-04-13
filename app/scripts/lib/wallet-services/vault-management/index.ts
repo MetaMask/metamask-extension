@@ -24,10 +24,242 @@
 import log from 'loglevel';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { add0x, hexToBytes, bytesToHex } from '@metamask/utils';
-import type { RootMessenger } from '../../messenger';
+
+/**
+ * Subset of the Messenger interface required by vault-management.
+ * Structural type — satisfied by the extension's RootMessenger, mobile's
+ * EngineMessenger, or any test double that provides these call overloads.
+ *
+ * Promotion path: when extracting to @metamask/vault-management, replace
+ * this with RestrictedMessenger<'VaultManagement', AllowedActions, never, ...>
+ * imported from @metamask/base-controller.
+ */
+type VaultManagementMessenger = {
+  // AppStateController
+  call(action: 'AppStateController:getIsWalletResetInProgress'): boolean;
+  call(
+    action: 'AppStateController:setIsWalletResetInProgress',
+    value: boolean,
+  ): void;
+
+  // PermissionController
+  call(action: 'PermissionController:clearState'): void;
+
+  // SnapController
+  call(action: 'SnapController:clearState'): Promise<void>;
+
+  // AccountTreeController
+  call(action: 'AccountTreeController:clearState'): void;
+  call(action: 'AccountTreeController:reinit'): void;
+  call(action: 'AccountTreeController:init'): void;
+  call(action: 'AccountTreeController:syncWithUserStorage'): Promise<void>;
+
+  // AccountOrderController
+  call(
+    action: 'AccountOrderController:updateHiddenAccountsList',
+    hiddenAccounts: unknown[],
+  ): void;
+
+  // TransactionController
+  call(action: 'TransactionController:clearUnapprovedTransactions'): void;
+
+  // MultichainAccountService
+  call(
+    action: 'MultichainAccountService:createWallet',
+    params: {
+      type: 'create' | 'restore';
+      password: string;
+      mnemonic?: Uint8Array;
+    },
+  ): Promise<void>;
+  call(action: 'MultichainAccountService:init'): Promise<void>;
+  call(
+    action: 'MultichainAccountService:createMultichainAccountWallet',
+    params: { type: 'import'; mnemonic: Uint8Array },
+  ): Promise<{ entropySource: string }>;
+  call(
+    action: 'MultichainAccountService:removeMultichainAccountWallet',
+    id: string,
+    address: string,
+  ): Promise<void>;
+  call(
+    action: 'MultichainAccountService:discoverAndCreateAccounts',
+    id: string,
+  ): Promise<void>;
+  call(
+    action: 'MultichainAccountService:addAccountsWithBalance',
+    id: string,
+    shouldImportSolanaAccount: boolean,
+  ): Promise<void>;
+
+  // AccountsController
+  call(action: 'AccountsController:updateAccounts'): Promise<void>;
+  call(
+    action: 'AccountsController:getAccountByAddress',
+    address: string,
+  ): { id: string; address: string };
+  call(
+    action: 'AccountsController:setSelectedAccount',
+    accountId: string,
+  ): void;
+  call(action: 'AccountsController:getSelectedAccount'): {
+    address: string;
+  };
+  call(
+    action: 'AccountsController:importAccountWithStrategy',
+    strategy: string,
+    args: unknown[],
+    options: {
+      shouldCreateSocialBackup: boolean;
+      shouldSelectAccount: boolean;
+    },
+  ): Promise<void>;
+
+  // OnboardingController
+  call(action: 'OnboardingController:getState'): {
+    completedOnboarding: boolean;
+  };
+  call(action: 'OnboardingController:getIsSocialLoginFlow'): boolean;
+  call(action: 'OnboardingController:resetOnboarding'): void;
+
+  // TokenDetectionController
+  call(action: 'TokenDetectionController:enable'): void;
+
+  // KeyringController
+  call(
+    action: 'KeyringController:submitPassword',
+    password: string,
+  ): Promise<void>;
+  call(
+    action: 'KeyringController:verifyPassword',
+    password: string,
+  ): Promise<void>;
+  call(action: 'KeyringController:setLocked'): Promise<void>;
+  call(
+    action: 'KeyringController:exportAccount',
+    password: string,
+    address: string,
+  ): Promise<string>;
+  call(
+    action: 'KeyringController:exportSeedPhrase',
+    password: string,
+    keyringId?: string,
+  ): Promise<Uint8Array>;
+  call(
+    action: 'KeyringController:changePassword',
+    newPassword: string,
+  ): Promise<void>;
+  call(action: 'KeyringController:exportEncryptionKey'): Promise<unknown>;
+  call(
+    action: 'KeyringController:submitEncryptionKey',
+    encryptionKey: string,
+  ): Promise<void>;
+  call(
+    action: 'KeyringController:getKeyringsByType',
+    type: string,
+  ): Array<{
+    mnemonic?: Uint8Array;
+    seed?: Uint8Array;
+    accounts: string[];
+    type: string;
+  }>;
+  call(action: 'KeyringController:getState'): {
+    keyrings: Array<{ type: string; accounts: string[] }>;
+  };
+  call(
+    action: 'KeyringController:withKeyring',
+    selector: { id: string },
+    operation: (context: {
+      keyring: { getAccounts(): Promise<string[]> };
+    }) => Promise<string[]>,
+  ): Promise<string[]>;
+
+  // SeedlessOnboardingController
+  call(
+    action: 'SeedlessOnboardingController:submitPassword',
+    password: string,
+  ): Promise<void>;
+  call(action: 'SeedlessOnboardingController:setLocked'): Promise<void>;
+  call(action: 'SeedlessOnboardingController:clearState'): void;
+  call(
+    action: 'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+    password: string,
+    seedPhrase: Uint8Array,
+    keyringId: string,
+  ): Promise<void>;
+  call(
+    action: 'SeedlessOnboardingController:fetchAllSecretData',
+    password?: string,
+  ): Promise<Array<{ data: Uint8Array; type: string }>>;
+  call(
+    action: 'SeedlessOnboardingController:storeKeyringEncryptionKey',
+    key: unknown,
+  ): Promise<void>;
+  call(
+    action: 'SeedlessOnboardingController:checkIsPasswordOutdated',
+    options: { skipCache: boolean },
+  ): Promise<boolean | undefined>;
+  call(
+    action: 'SeedlessOnboardingController:getSecretDataBackupState',
+    data: Uint8Array,
+    type: string,
+  ): unknown;
+  call(
+    action: 'SeedlessOnboardingController:addNewSecretData',
+    data: Uint8Array,
+    type: string,
+    options: { keyringId: string },
+  ): Promise<void>;
+  call(
+    action: 'SeedlessOnboardingController:updateBackupMetadataState',
+    options: { keyringId: string; data: Uint8Array; type: string },
+  ): void;
+  call(
+    action: 'SeedlessOnboardingController:changePassword',
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<void>;
+
+  // AuthenticationController
+  call(action: 'AuthenticationController:getState'): { isSignedIn: boolean };
+  call(action: 'AuthenticationController:performSignOut'): void;
+
+  // SubscriptionController
+  call(action: 'SubscriptionController:stopAllPolling'): void;
+  call(action: 'SubscriptionController:clearState'): void;
+
+  // ShieldController
+  call(action: 'ShieldController:clearState'): void;
+
+  // ClaimsController
+  call(action: 'ClaimsController:clearState'): void;
+
+  // AddressBookController
+  call(action: 'AddressBookController:clear'): void;
+
+  // PreferencesController
+  call(action: 'PreferencesController:resetState'): void;
+  call(
+    action: 'PreferencesController:setPasswordForgotten',
+    value: boolean,
+  ): void;
+
+  // VaultManagement self-calls (via messenger)
+  call(
+    action: 'VaultManagement:createNewVaultAndRestore',
+    password: string,
+    encodedSeedPhrase: number[],
+  ): Promise<void>;
+
+  // registerActionHandler — used in registerActions
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type VaultDependencies = {
-  messenger: RootMessenger;
+  messenger: VaultManagementMessenger;
 };
 
 /**
@@ -180,23 +412,21 @@ export async function setLocked(
   deps: VaultDependencies,
   options: { skipSeedlessOperationLock?: boolean } = {},
 ): Promise<void> {
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
   if (isSocialLoginFlow && !options.skipSeedlessOperationLock) {
-    await (deps.messenger as never).call(
-      'SeedlessOnboardingController:setLocked',
-    );
+    await deps.messenger.call('SeedlessOnboardingController:setLocked');
   }
 
-  await (deps.messenger as never).call('KeyringController:setLocked');
+  await deps.messenger.call('KeyringController:setLocked');
 
-  const { isSignedIn } = (deps.messenger as never).call(
+  const { isSignedIn } = deps.messenger.call(
     'AuthenticationController:getState',
   );
   if (isSignedIn) {
-    (deps.messenger as never).call('AuthenticationController:performSignOut');
+    deps.messenger.call('AuthenticationController:performSignOut');
   }
 }
 
@@ -214,11 +444,8 @@ export async function exportAccount(
   address: string,
   password: string,
 ): Promise<string> {
-  await (deps.messenger as never).call(
-    'KeyringController:verifyPassword',
-    password,
-  );
-  return (deps.messenger as never).call(
+  await deps.messenger.call('KeyringController:verifyPassword', password);
+  return deps.messenger.call(
     'KeyringController:exportAccount',
     password,
     address,
@@ -238,7 +465,7 @@ export async function getSeedPhrase(
   password: string,
   keyringId?: string,
 ): Promise<number[]> {
-  const mnemonic: Uint8Array = await (deps.messenger as never).call(
+  const mnemonic: Uint8Array = await deps.messenger.call(
     'KeyringController:exportSeedPhrase',
     password,
     keyringId,
@@ -318,32 +545,29 @@ export async function resetWallet(
   restoreOnly = false,
 ): Promise<void> {
   // sign out from Authentication service and clear the Session Data
-  (deps.messenger as never).call('AuthenticationController:performSignOut');
+  deps.messenger.call('AuthenticationController:performSignOut');
 
   // clear SeedlessOnboardingController state
-  (deps.messenger as never).call('SeedlessOnboardingController:clearState');
+  deps.messenger.call('SeedlessOnboardingController:clearState');
 
   // stop subscription polling
-  (deps.messenger as never).call('SubscriptionController:stopAllPolling');
+  deps.messenger.call('SubscriptionController:stopAllPolling');
 
   // clear States
-  (deps.messenger as never).call('SubscriptionController:clearState');
-  (deps.messenger as never).call('ShieldController:clearState');
-  (deps.messenger as never).call('ClaimsController:clearState');
+  deps.messenger.call('SubscriptionController:clearState');
+  deps.messenger.call('ShieldController:clearState');
+  deps.messenger.call('ClaimsController:clearState');
 
   // clear contacts (address book)
-  (deps.messenger as never).call('AddressBookController:clear');
+  deps.messenger.call('AddressBookController:clear');
 
   // reset preferences to defaults
-  (deps.messenger as never).call('PreferencesController:resetState');
+  deps.messenger.call('PreferencesController:resetState');
 
   if (!restoreOnly) {
     // reset onboarding state
-    (deps.messenger as never).call('OnboardingController:resetOnboarding');
-    (deps.messenger as never).call(
-      'AppStateController:setIsWalletResetInProgress',
-      true,
-    );
+    deps.messenger.call('OnboardingController:resetOnboarding');
+    deps.messenger.call('AppStateController:setIsWalletResetInProgress', true);
   }
 }
 
@@ -368,7 +592,7 @@ export async function createSeedPhraseBackup(
   const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
   const seedPhrase = convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
     password,
     seedPhrase,
@@ -390,7 +614,7 @@ export async function fetchAllSecretData(
   deps: VaultDependencies,
   password: string,
 ): Promise<Buffer[]> {
-  const allSeedPhrases = await (deps.messenger as never).call(
+  const allSeedPhrases = await deps.messenger.call(
     'SeedlessOnboardingController:fetchAllSecretData',
     password,
   );
@@ -409,10 +633,10 @@ export async function fetchAllSecretData(
 export async function syncKeyringEncryptionKey(
   deps: VaultDependencies,
 ): Promise<void> {
-  const keyringEncryptionKey = await (deps.messenger as never).call(
+  const keyringEncryptionKey = await deps.messenger.call(
     'KeyringController:exportEncryptionKey',
   );
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'SeedlessOnboardingController:storeKeyringEncryptionKey',
     keyringEncryptionKey,
   );
@@ -435,10 +659,10 @@ export async function checkIsSeedlessPasswordOutdated(
   deps: VaultDependencies,
   skipCache = false,
 ): Promise<boolean | undefined> {
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
-  const { completedOnboarding } = (deps.messenger as never).call(
+  const { completedOnboarding } = deps.messenger.call(
     'OnboardingController:getState',
   );
 
@@ -447,7 +671,7 @@ export async function checkIsSeedlessPasswordOutdated(
     return false;
   }
 
-  const isPasswordOutdated = await (deps.messenger as never).call(
+  const isPasswordOutdated = await deps.messenger.call(
     'SeedlessOnboardingController:checkIsPasswordOutdated',
     { skipCache },
   );
@@ -470,7 +694,7 @@ export async function checkIsSeedlessPasswordOutdated(
  *   - VaultManagement:importMnemonicToVault (self-call)
  */
 export async function syncSeedPhrases(deps: VaultDependencies): Promise<void> {
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
@@ -483,7 +707,7 @@ export async function syncSeedPhrases(deps: VaultDependencies): Promise<void> {
   // 1. fetch all seed phrases
   // NOTE: fetchAllSecretData here is a direct call (no password arg in the
   // sync path — the cached session credential is used by the controller).
-  const [rootSecret, ...otherSecrets] = await (deps.messenger as never).call(
+  const [rootSecret, ...otherSecrets] = await deps.messenger.call(
     'SeedlessOnboardingController:fetchAllSecretData',
   );
   if (!rootSecret) {
@@ -491,7 +715,7 @@ export async function syncSeedPhrases(deps: VaultDependencies): Promise<void> {
   }
 
   for (const secret of otherSecrets) {
-    const srpHash = (deps.messenger as never).call(
+    const srpHash = deps.messenger.call(
       'SeedlessOnboardingController:getSecretDataBackupState',
       secret.data,
       secret.type,
@@ -499,7 +723,7 @@ export async function syncSeedPhrases(deps: VaultDependencies): Promise<void> {
 
     if (!srpHash) {
       if (secret.type === 'privateKey') {
-        await (deps.messenger as never).call(
+        await deps.messenger.call(
           'AccountsController:importAccountWithStrategy',
           'privateKey',
           [bytesToHex(secret.data)],
@@ -549,7 +773,7 @@ export async function addNewSeedPhraseBackup(
 
   if (syncWithSocial) {
     // TODO: SeedlessOnboardingController should manage its own concurrency
-    await (deps.messenger as never).call(
+    await deps.messenger.call(
       'SeedlessOnboardingController:addNewSecretData',
       seedPhraseAsUint8Array,
       'mnemonic', // SecretType.Mnemonic
@@ -557,7 +781,7 @@ export async function addNewSeedPhraseBackup(
     );
   } else {
     // Do not sync the seed phrase to the server, only update the local state
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'SeedlessOnboardingController:updateBackupMetadataState',
       {
         keyringId,
@@ -594,27 +818,24 @@ export async function changePassword(
   oldPassword: string,
 ): Promise<void> {
   // TODO: SeedlessOnboardingController should manage its own concurrency
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
-  await (deps.messenger as never).call(
-    'KeyringController:changePassword',
-    newPassword,
-  );
+  await deps.messenger.call('KeyringController:changePassword', newPassword);
 
   if (isSocialLoginFlow) {
     try {
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'SeedlessOnboardingController:changePassword',
         newPassword,
         oldPassword,
       );
       // store the new keyring encryption key in the seedless onboarding controller
-      const keyringEncKey = await (deps.messenger as never).call(
+      const keyringEncKey = await deps.messenger.call(
         'KeyringController:exportEncryptionKey',
       );
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'SeedlessOnboardingController:storeKeyringEncryptionKey',
         keyringEncKey,
       );
@@ -622,14 +843,14 @@ export async function changePassword(
       log.error('error while changing seedless-onboarding password', err);
       log.error('reverting keyring password change');
       // revert the keyring password change by changing the password back to the old password
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'KeyringController:changePassword',
         oldPassword,
       );
-      const revertedKeyringEncKey = await (deps.messenger as never).call(
+      const revertedKeyringEncKey = await deps.messenger.call(
         'KeyringController:exportEncryptionKey',
       );
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'SeedlessOnboardingController:storeKeyringEncryptionKey',
         revertedKeyringEncKey,
       );
@@ -676,7 +897,7 @@ export async function importMnemonicToVault(
   } = options;
 
   // TODO: createVaultMutex should be managed by MultichainAccountService
-  const { entropySource: id } = await (deps.messenger as never).call(
+  const { entropySource: id } = await deps.messenger.call(
     'MultichainAccountService:createMultichainAccountWallet',
     {
       type: 'import',
@@ -684,14 +905,14 @@ export async function importMnemonicToVault(
     },
   );
 
-  const [newAccountAddress] = await (deps.messenger as never).call(
+  const [newAccountAddress] = await deps.messenger.call(
     'KeyringController:withKeyring',
     { id },
     async ({ keyring }: { keyring: { getAccounts(): Promise<string[]> } }) =>
       keyring.getAccounts(),
   );
 
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
@@ -704,7 +925,7 @@ export async function importMnemonicToVault(
         shouldCreateSocialBackup,
       );
     } catch (err) {
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'MultichainAccountService:removeMultichainAccountWallet',
         id,
         newAccountAddress,
@@ -723,17 +944,15 @@ export async function importMnemonicToVault(
 
   const syncAndDiscoverAccounts = async () => {
     // We want to trigger a full sync of the account tree after importing a new SRP
-    await (deps.messenger as never).call(
-      'AccountTreeController:syncWithUserStorage',
-    );
+    await deps.messenger.call('AccountTreeController:syncWithUserStorage');
 
     if (shouldImportSolanaAccount) {
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'MultichainAccountService:discoverAndCreateAccounts',
         id,
       );
     } else {
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'MultichainAccountService:addAccountsWithBalance',
         id,
         shouldImportSolanaAccount,
@@ -769,7 +988,7 @@ export async function restoreSeedPhrasesToVault(
     version: number;
   }>,
 ): Promise<void> {
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
@@ -785,7 +1004,7 @@ export async function restoreSeedPhrasesToVault(
   const shouldImportSolanaAccount = false;
 
   for (const secret of secretDatas) {
-    const srpHash = (deps.messenger as never).call(
+    const srpHash = deps.messenger.call(
       'SeedlessOnboardingController:getSecretDataBackupState',
       secret.data,
       secret.type,
@@ -796,7 +1015,7 @@ export async function restoreSeedPhrasesToVault(
     }
 
     if (secret.type === 'privateKey') {
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'AccountsController:importAccountWithStrategy',
         'privateKey',
         [bytesToHex(secret.data)],
@@ -890,25 +1109,22 @@ export async function submitPasswordOrEncryptionKey(
   params: { password?: string; encryptionKey?: string },
 ): Promise<void> {
   const { password, encryptionKey } = params;
-  const isSocialLoginFlow = (deps.messenger as never).call(
+  const isSocialLoginFlow = deps.messenger.call(
     'OnboardingController:getIsSocialLoginFlow',
   );
 
   // TODO: await offscreenPromise — MC-level concern, not yet a messenger action
 
   if (encryptionKey) {
-    await (deps.messenger as never).call(
+    await deps.messenger.call(
       'KeyringController:submitEncryptionKey',
       encryptionKey,
     );
   } else {
-    await (deps.messenger as never).call(
-      'KeyringController:submitPassword',
-      password,
-    );
+    await deps.messenger.call('KeyringController:submitPassword', password);
     if (isSocialLoginFlow) {
       // unlock the seedless onboarding vault
-      await (deps.messenger as never).call(
+      await deps.messenger.call(
         'SeedlessOnboardingController:submitPassword',
         password,
       );
@@ -920,10 +1136,10 @@ export async function submitPasswordOrEncryptionKey(
   await deps.messenger.call('AccountsController:updateAccounts');
 
   // Init multichain accounts after creating internal accounts.
-  await (deps.messenger as never).call('MultichainAccountService:init');
+  await deps.messenger.call('MultichainAccountService:init');
 
   // Force account-tree refresh after all accounts have been updated.
-  (deps.messenger as never).call('AccountTreeController:init');
+  deps.messenger.call('AccountTreeController:init');
 
   // TODO: forwardSelectedAccountGroupToSnapKeyring — not yet a messenger action
 
@@ -965,7 +1181,7 @@ export async function submitEncryptionKeyFromSessionStorage(
   //     await clearLoginArtifacts(deps)
   //     return
   //   }
-  //   await (deps.messenger as never).call('KeyringController:submitEncryptionKey', loginToken, loginSalt)
+  //   await deps.messenger.call('KeyringController:submitEncryptionKey', loginToken, loginSalt)
   // }
   throw new Error(
     'submitEncryptionKeyFromSessionStorage: requires SessionService messenger action (not yet implemented)',
@@ -1002,7 +1218,7 @@ export async function clearLoginArtifacts(
  *   - KeyringController:getKeyringsByType
  */
 export function getPrimaryKeyringMnemonic(deps: VaultDependencies): Uint8Array {
-  const [keyring] = (deps.messenger as never).call(
+  const [keyring] = deps.messenger.call(
     'KeyringController:getKeyringsByType',
     'HD Key Tree',
   );
@@ -1023,7 +1239,7 @@ export function getPrimaryKeyringMnemonic(deps: VaultDependencies): Uint8Array {
 export function getPrimaryKeyringMnemonicSeed(
   deps: VaultDependencies,
 ): Uint8Array {
-  const [keyring] = (deps.messenger as never).call(
+  const [keyring] = deps.messenger.call(
     'KeyringController:getKeyringsByType',
     'HD Key Tree',
   );
@@ -1059,7 +1275,7 @@ export async function addNewPrivateKeyBackup(
 
   if (syncWithSocial) {
     // TODO: SeedlessOnboardingController should manage its own concurrency
-    await (deps.messenger as never).call(
+    await deps.messenger.call(
       'SeedlessOnboardingController:addNewSecretData',
       bufferedPrivateKey,
       'privateKey', // SecretType.PrivateKey
@@ -1067,7 +1283,7 @@ export async function addNewPrivateKeyBackup(
     );
   } else {
     // Do not sync the private key to the server, only update the local state
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'SeedlessOnboardingController:updateBackupMetadataState',
       {
         keyringId,
@@ -1091,9 +1307,7 @@ export function getHDEntropyIndex(deps: VaultDependencies): number | undefined {
   const selectedAccount = deps.messenger.call(
     'AccountsController:getSelectedAccount',
   );
-  const { keyrings } = (deps.messenger as never).call(
-    'KeyringController:getState',
-  );
+  const { keyrings } = deps.messenger.call('KeyringController:getState');
   const hdKeyrings = keyrings.filter(
     (keyring: { type: string }) => keyring.type === 'HD Key Tree',
   );
@@ -1113,10 +1327,7 @@ export function getHDEntropyIndex(deps: VaultDependencies): number | undefined {
  *   - PreferencesController:setPasswordForgotten
  */
 export function markPasswordForgotten(deps: VaultDependencies): void {
-  (deps.messenger as never).call(
-    'PreferencesController:setPasswordForgotten',
-    true,
-  );
+  deps.messenger.call('PreferencesController:setPasswordForgotten', true);
 }
 
 /**
@@ -1128,10 +1339,7 @@ export function markPasswordForgotten(deps: VaultDependencies): void {
  *   - PreferencesController:setPasswordForgotten
  */
 export function unMarkPasswordForgotten(deps: VaultDependencies): void {
-  (deps.messenger as never).call(
-    'PreferencesController:setPasswordForgotten',
-    false,
-  );
+  deps.messenger.call('PreferencesController:setPasswordForgotten', false);
 }
 
 // ---------------------------------------------------------------------------
@@ -1180,78 +1388,76 @@ export const VAULT_MANAGEMENT_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(messenger: VaultManagementMessenger): void {
   const deps: VaultDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add VaultManagementActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.createNewVaultAndKeychain,
     (password: string) => createNewVaultAndKeychain(deps, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.createNewVaultAndRestore,
     (password: string, encodedSeedPhrase: Uint8Array) =>
       createNewVaultAndRestore(deps, password, encodedSeedPhrase),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.submitPassword,
     (password: string) => submitPassword(deps, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.verifyPassword,
     (password: string) => verifyPassword(deps, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.setLocked,
     (options?: { skipSeedlessOperationLock?: boolean }) =>
       setLocked(deps, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.exportAccount,
     (address: string, password: string) =>
       exportAccount(deps, address, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.getSeedPhrase,
     (password: string, keyringId?: string) =>
       getSeedPhrase(deps, password, keyringId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.resetWallet,
     (restoreOnly?: boolean) => resetWallet(deps, restoreOnly),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.createSeedPhraseBackup,
     (password: string, encodedSeedPhrase: number[], keyringId: string) =>
       createSeedPhraseBackup(deps, password, encodedSeedPhrase, keyringId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.fetchAllSecretData,
     (password: string) => fetchAllSecretData(deps, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.syncKeyringEncryptionKey,
     () => syncKeyringEncryptionKey(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.checkIsSeedlessPasswordOutdated,
     (skipCache?: boolean) => checkIsSeedlessPasswordOutdated(deps, skipCache),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.syncSeedPhrases,
     () => syncSeedPhrases(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.addNewSeedPhraseBackup,
     (mnemonic: string, keyringId: string, syncWithSocial?: boolean) =>
       addNewSeedPhraseBackup(deps, mnemonic, keyringId, syncWithSocial),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.changePassword,
     (newPassword: string, oldPassword: string) =>
       changePassword(deps, newPassword, oldPassword),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.importMnemonicToVault,
     (
       mnemonic: string,
@@ -1262,7 +1468,7 @@ export function registerActions(messenger: RootMessenger): void {
       },
     ) => importMnemonicToVault(deps, mnemonic, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.restoreSeedPhrasesToVault,
     (
       secretDatas: Array<{
@@ -1273,45 +1479,45 @@ export function registerActions(messenger: RootMessenger): void {
       }>,
     ) => restoreSeedPhrasesToVault(deps, secretDatas),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.restoreSocialBackupAndGetSeedPhrase,
     (password: string) => restoreSocialBackupAndGetSeedPhrase(deps, password),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.submitPasswordOrEncryptionKey,
     (params: { password?: string; encryptionKey?: string }) =>
       submitPasswordOrEncryptionKey(deps, params),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.submitEncryptionKeyFromSessionStorage,
     () => submitEncryptionKeyFromSessionStorage(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.clearLoginArtifacts,
     () => clearLoginArtifacts(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.getPrimaryKeyringMnemonic,
     () => getPrimaryKeyringMnemonic(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.getPrimaryKeyringMnemonicSeed,
     () => getPrimaryKeyringMnemonicSeed(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.addNewPrivateKeyBackup,
     (privateKey: string, keyringId: string, syncWithSocial?: boolean) =>
       addNewPrivateKeyBackup(deps, privateKey, keyringId, syncWithSocial),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.getHDEntropyIndex,
     () => getHDEntropyIndex(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.markPasswordForgotten,
     () => markPasswordForgotten(deps),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.unMarkPasswordForgotten,
     () => unMarkPasswordForgotten(deps),
   );

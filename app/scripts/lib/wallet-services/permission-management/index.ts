@@ -9,10 +9,86 @@
  * ApprovalController call pattern.
  */
 
-import type { RootMessenger } from '../../messenger';
+/**
+ * Subset of the Messenger interface required by permission-management.
+ * Structural — satisfied by extension RootMessenger, mobile EngineMessenger,
+ * or any test double providing these call overloads.
+ *
+ * Promotion path: replace with RestrictedMessenger from @metamask/base-controller
+ * when extracting to a published package.
+ */
+type PermissionManagementMessenger = {
+  call(
+    action: 'PermissionController:revokePermissions',
+    subjects: Record<string, string[]>,
+  ): void;
+  call(
+    action: 'ApprovalController:accept',
+    id: string,
+    value: unknown,
+    options?: { waitForResult?: boolean },
+  ): Promise<void>;
+  call(
+    action: 'ApprovalController:reject',
+    id: string,
+    error: { code: number; message: string; data?: unknown },
+  ): void;
+  call(
+    action: 'PermissionController:updateCaveat',
+    origin: string,
+    target: string,
+    caveatType: string,
+    caveatValue: unknown,
+  ): void;
+  call(
+    action: 'PermissionController:updatePermissionsByCaveat',
+    caveatType: string,
+    mutator: (existingScopes: unknown) => unknown,
+  ): void;
+  call(
+    action: 'Caip25CaveatMutators:removeScope',
+    existingScopes: unknown,
+    scopeString: string,
+  ): unknown;
+  call(
+    action: 'PermissionController:removeAllAccountPermissions',
+    targetAccount: string,
+  ): void;
+  call(
+    action: 'ApprovalController:addAndShowApprovalRequest',
+    request: {
+      id: string;
+      origin: string;
+      requestData: {
+        metadata: { id: string; origin: string };
+        permissions: Record<string, unknown>;
+        [key: string]: unknown;
+      };
+      type: string;
+    },
+  ): Promise<unknown>;
+  call(
+    action: 'PermissionController:requestPermissionsIncremental',
+    subject: { origin: string },
+    chainId: string,
+  ): Promise<void>;
+  call(
+    action: 'NetworkOrderController:updateNetworksList',
+    chainIds: string[],
+  ): void;
+  call(
+    action: 'NetworkEnablementController:enableNetwork',
+    chainId: string,
+  ): void;
+  call(action: 'NetworkController:lookupNetwork'): Promise<void>;
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type PermissionManagementDependencies = {
-  messenger: RootMessenger;
+  messenger: PermissionManagementMessenger;
 };
 
 /**
@@ -89,7 +165,7 @@ export function updateCaveat(
   caveatType: string,
   caveatValue: unknown,
 ): void {
-  (deps.messenger as never).call(
+  deps.messenger.call(
     'PermissionController:updateCaveat',
     origin,
     target,
@@ -110,15 +186,15 @@ export function removeAllScopePermissions(
   deps: PermissionManagementDependencies,
   scopeString: string,
 ): void {
-  (deps.messenger as never).call(
+  deps.messenger.call(
     'PermissionController:updatePermissionsByCaveat',
     'caip25',
     (existingScopes: unknown) =>
-      (
-        deps.messenger as unknown as {
-          call: (action: string, ...args: unknown[]) => unknown;
-        }
-      ).call('Caip25CaveatMutators:removeScope', existingScopes, scopeString),
+      deps.messenger.call(
+        'Caip25CaveatMutators:removeScope',
+        existingScopes,
+        scopeString,
+      ),
   );
 }
 
@@ -136,7 +212,7 @@ export function removeAllAccountPermissions(
   deps: PermissionManagementDependencies,
   targetAccount: string,
 ): void {
-  (deps.messenger as never).call(
+  deps.messenger.call(
     'PermissionController:removeAllAccountPermissions',
     targetAccount,
   );
@@ -156,19 +232,16 @@ export async function requestPermissionApproval(
   permissions: Record<string, unknown>,
   options: Record<string, unknown> = {},
 ): Promise<unknown> {
-  return (deps.messenger as never).call(
-    'ApprovalController:addAndShowApprovalRequest',
-    {
-      id: crypto.randomUUID(),
-      origin,
-      requestData: {
-        metadata: { id: crypto.randomUUID(), origin },
-        permissions,
-        ...options,
-      },
-      type: 'wallet_requestPermissions',
+  return deps.messenger.call('ApprovalController:addAndShowApprovalRequest', {
+    id: crypto.randomUUID(),
+    origin,
+    requestData: {
+      metadata: { id: crypto.randomUUID(), origin },
+      permissions,
+      ...options,
     },
-  );
+    type: 'wallet_requestPermissions',
+  });
 }
 
 /**
@@ -184,7 +257,7 @@ export async function requestApprovalPermittedChainsPermission(
   origin: string,
   chainId: string,
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'PermissionController:requestPermissionsIncremental',
     { origin },
     chainId,
@@ -203,10 +276,7 @@ export function updateNetworksList(
   deps: PermissionManagementDependencies,
   chainIds: string[],
 ): void {
-  (deps.messenger as never).call(
-    'NetworkOrderController:updateNetworksList',
-    chainIds,
-  );
+  deps.messenger.call('NetworkOrderController:updateNetworksList', chainIds);
 }
 
 /**
@@ -223,11 +293,8 @@ export async function setEnabledNetworks(
   deps: PermissionManagementDependencies,
   chainId: string,
 ): Promise<void> {
-  (deps.messenger as never).call(
-    'NetworkEnablementController:enableNetwork',
-    chainId,
-  );
-  await (deps.messenger as never).call('NetworkController:lookupNetwork');
+  deps.messenger.call('NetworkEnablementController:enableNetwork', chainId);
+  await deps.messenger.call('NetworkController:lookupNetwork');
 }
 
 // ---------------------------------------------------------------------------
@@ -256,26 +323,26 @@ export const PERMISSION_MANAGEMENT_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(
+  messenger: PermissionManagementMessenger,
+): void {
   const deps: PermissionManagementDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add PermissionManagementActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.removePermissionsFor,
     (subjects: Record<string, string[]>) =>
       removePermissionsFor(deps, subjects),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.resolvePendingApproval,
     (id: string, value: unknown, options?: { waitForResult?: boolean }) =>
       resolvePendingApproval(deps, id, value, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.rejectPendingApproval,
     (id: string, error: { code: number; message: string; data?: unknown }) =>
       rejectPendingApproval(deps, id, error),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.updateCaveat,
     (
       origin: string,
@@ -284,15 +351,15 @@ export function registerActions(messenger: RootMessenger): void {
       caveatValue: unknown,
     ) => updateCaveat(deps, origin, target, caveatType, caveatValue),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.removeAllScopePermissions,
     (scopeString: string) => removeAllScopePermissions(deps, scopeString),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.removeAllAccountPermissions,
     (targetAccount: string) => removeAllAccountPermissions(deps, targetAccount),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.requestPermissionApproval,
     (
       origin: string,
@@ -300,16 +367,16 @@ export function registerActions(messenger: RootMessenger): void {
       options?: Record<string, unknown>,
     ) => requestPermissionApproval(deps, origin, permissions, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.requestApprovalPermittedChainsPermission,
     (origin: string, chainId: string) =>
       requestApprovalPermittedChainsPermission(deps, origin, chainId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.updateNetworksList,
     (chainIds: string[]) => updateNetworksList(deps, chainIds),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     PERMISSION_MANAGEMENT_ACTIONS.setEnabledNetworks,
     (chainId: string) => setEnabledNetworks(deps, chainId),
   );

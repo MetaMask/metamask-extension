@@ -6,10 +6,108 @@
  * All controller access via messenger — no chrome.* / browser.* imports.
  */
 
-import type { RootMessenger } from '../../messenger';
+/**
+ * Subset of the Messenger interface required by transaction-lifecycle.
+ * Structural — satisfied by extension RootMessenger, mobile EngineMessenger,
+ * or any test double providing these call overloads.
+ */
+type TransactionLifecycleMessenger = {
+  call(
+    action: 'NftController:checkAndUpdateAllNftsOwnershipStatus',
+    address: string,
+  ): Promise<void>;
+  call(
+    action: 'SmartTransactionsController:submitSignedTransactions',
+    txId: string,
+  ): Promise<void>;
+  call(
+    action: 'TransactionController:approveTransaction',
+    txId: string,
+  ): Promise<void>;
+  call(
+    action: 'TransactionController:stopTransaction',
+    originalTxId: string,
+    customGasSettings: Record<string, unknown>,
+    options: Record<string, unknown>,
+  ): Promise<void>;
+  call(
+    action: 'TransactionController:speedUpTransaction',
+    originalTxId: string,
+    customGasSettings: Record<string, unknown>,
+    options: Record<string, unknown>,
+  ): Promise<void>;
+  call(
+    action: 'TransactionController:approveTransactionsWithSameNonce',
+    txIds: string[],
+  ): Promise<void>;
+  call(
+    action: 'NetworkController:estimateGas',
+    params: unknown,
+  ): Promise<string>;
+  call(
+    action: 'SmartTransactionsController:getTransactions',
+    opts: { addressFrom: string; status: string },
+  ): unknown[];
+  call(
+    action: 'TransactionController:updateEditableParams',
+    txId: string,
+    params: Record<string, unknown>,
+  ): Promise<void>;
+  call(
+    action: 'NetworkController:getNetworkClientById',
+    networkClientId: string,
+  ): {
+    provider: {
+      request: (req: { method: string; params: unknown[] }) => Promise<string>;
+    };
+  };
+  call(action: 'AccountsController:getSelectedAccount'): {
+    address: string;
+    [key: string]: unknown;
+  };
+  call(
+    action: 'NftController:checkAndUpdateSingleNftOwnershipStatus',
+    nft: { address: string; tokenId: string },
+    flag: boolean,
+    networkClientId: string | undefined,
+    opts: { userAddress?: string; selectedAddress?: string },
+  ): void;
+  call(
+    action: 'NftController:addNft',
+    contract: string,
+    tokenId: string | undefined,
+    networkClientId: string | undefined,
+  ): Promise<void>;
+  call(
+    action: 'MetaMetricsController:trackEvent',
+    event: {
+      event: string;
+      category: string;
+      properties: Record<string, unknown>;
+      matomoEvent: boolean;
+    },
+  ): void;
+  call(
+    action: 'Platform:showTransactionNotification',
+    transactionMeta: unknown,
+    rpcPrefs: { blockExplorerUrl?: string },
+  ): Promise<void>;
+  call(
+    action: 'TransactionController:addTransaction',
+    request: unknown,
+  ): Promise<unknown>;
+  call(
+    action: 'TransactionController:isAtomicBatchSupported',
+    opts: { address: string; chainIds: string[] },
+  ): Promise<unknown>;
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type TransactionLifecycleDependencies = {
-  messenger: RootMessenger;
+  messenger: TransactionLifecycleMessenger;
 };
 
 /**
@@ -77,7 +175,7 @@ export async function createCancelTransaction(
   customGasSettings: Record<string, unknown>,
   options: Record<string, unknown>,
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'TransactionController:stopTransaction',
     originalTxId,
     customGasSettings,
@@ -99,7 +197,7 @@ export async function createSpeedUpTransaction(
   customGasSettings: Record<string, unknown>,
   options: Record<string, unknown>,
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'TransactionController:speedUpTransaction',
     originalTxId,
     customGasSettings,
@@ -119,7 +217,7 @@ export async function approveTransactionsWithSameNonce(
   deps: TransactionLifecycleDependencies,
   txIds: string[],
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'TransactionController:approveTransactionsWithSameNonce',
     txIds,
   );
@@ -137,10 +235,7 @@ export async function estimateGas(
   deps: TransactionLifecycleDependencies,
   params: unknown,
 ): Promise<string> {
-  return (deps.messenger as never).call(
-    'NetworkController:estimateGas',
-    params,
-  );
+  return deps.messenger.call('NetworkController:estimateGas', params);
 }
 
 /**
@@ -155,13 +250,10 @@ export function getExternalPendingTransactions(
   deps: TransactionLifecycleDependencies,
   address: string,
 ): unknown[] {
-  return (deps.messenger as never).call(
-    'SmartTransactionsController:getTransactions',
-    {
-      addressFrom: address,
-      status: 'pending',
-    },
-  );
+  return deps.messenger.call('SmartTransactionsController:getTransactions', {
+    addressFrom: address,
+    status: 'pending',
+  });
 }
 
 /**
@@ -178,7 +270,7 @@ export async function updateEditableParams(
   txId: string,
   params: Record<string, unknown>,
 ): Promise<void> {
-  await (deps.messenger as never).call(
+  await deps.messenger.call(
     'TransactionController:updateEditableParams',
     txId,
     params,
@@ -199,14 +291,10 @@ export async function getCode(
   address: string,
   networkClientId: string,
 ): Promise<string> {
-  const { provider } = (deps.messenger as never).call(
+  const { provider } = deps.messenger.call(
     'NetworkController:getNetworkClientById',
     networkClientId,
-  ) as {
-    provider: {
-      request: (req: { method: string; params: unknown[] }) => Promise<string>;
-    };
-  };
+  );
 
   return provider.request({
     method: 'eth_getCode',
@@ -311,7 +399,7 @@ export async function createTransactionNotification(
   }
 
   try {
-    await (deps.messenger as never).call(
+    await deps.messenger.call(
       'Platform:showTransactionNotification',
       transactionMeta,
       rpcPrefs,
@@ -421,7 +509,7 @@ export async function updateNFTOwnership(
     );
 
     if (knownNft) {
-      (deps.messenger as never).call(
+      deps.messenger.call(
         'NftController:checkAndUpdateSingleNftOwnershipStatus',
         knownNft,
         false,
@@ -520,7 +608,7 @@ export async function updateNFTOwnership(
   });
 
   const refreshOwnershipPromises = knownNFTs.map(async (singleNft) =>
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'NftController:checkAndUpdateSingleNftOwnershipStatus',
       singleNft,
       false,
@@ -531,7 +619,7 @@ export async function updateNFTOwnership(
   await Promise.allSettled(refreshOwnershipPromises);
 
   const addNftPromises = newNFTs.map(async (singleNft) =>
-    (deps.messenger as never).call(
+    deps.messenger.call(
       'NftController:addNft',
       singleNft.contract,
       singleNft.tokenId,
@@ -582,7 +670,7 @@ export function trackTransactionFailure(
 
   const { accounts } = opts.getAccountTrackerState();
 
-  (deps.messenger as never).call('MetaMetricsController:trackEvent', {
+  deps.messenger.call('MetaMetricsController:trackEvent', {
     event: 'Tx Status Update: On-Chain Failure',
     category: opts.metaMetricsEventCategoryBackground,
     properties: {
@@ -635,7 +723,7 @@ export async function upgradeAccount(
   return opts.createEIP7702UpgradeTransaction(
     { address, upgradeContractAddress, networkClientId },
     async (transactionParams, options) => {
-      const transactionMeta = await (deps.messenger as never).call(
+      const transactionMeta = await deps.messenger.call(
         'TransactionController:addTransaction',
         opts.getAddTransactionRequest({
           transactionParams,
@@ -677,7 +765,7 @@ export async function isEip7702Supported(
 ): Promise<{ isSupported: boolean; upgradeContractAddress: string | null }> {
   const { address, chainId } = request;
 
-  const atomicBatchSupport = await (deps.messenger as never).call(
+  const atomicBatchSupport = await deps.messenger.call(
     'TransactionController:isAtomicBatchSupported',
     { address, chainIds: [chainId] },
   );
@@ -724,21 +812,21 @@ export const TRANSACTION_LIFECYCLE_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(
+  messenger: TransactionLifecycleMessenger,
+): void {
   const deps: TransactionLifecycleDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add TransactionLifecycleActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.updateNftOwnershipOnPostTransactionBatch,
     (txMetas: { txParams: { from: string } }[]) =>
       updateNftOwnershipOnPostTransactionBatch(deps, txMetas),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.routeTransactionToSmartTransactionIfEnabled,
     (txId: string, opts: { useSmartTransaction: boolean }) =>
       routeTransactionToSmartTransactionIfEnabled(deps, txId, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.createCancelTransaction,
     (
       originalTxId: string,
@@ -747,7 +835,7 @@ export function registerActions(messenger: RootMessenger): void {
     ) =>
       createCancelTransaction(deps, originalTxId, customGasSettings, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.createSpeedUpTransaction,
     (
       originalTxId: string,
@@ -756,57 +844,57 @@ export function registerActions(messenger: RootMessenger): void {
     ) =>
       createSpeedUpTransaction(deps, originalTxId, customGasSettings, options),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.approveTransactionsWithSameNonce,
     (txIds: string[]) => approveTransactionsWithSameNonce(deps, txIds),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.estimateGas,
     (params: unknown) => estimateGas(deps, params),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.getExternalPendingTransactions,
     (address: string) => getExternalPendingTransactions(deps, address),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.updateEditableParams,
     (txId: string, params: Record<string, unknown>) =>
       updateEditableParams(deps, txId, params),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.getCode,
     (address: string, networkClientId: string) =>
       getCode(deps, address, networkClientId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.onFinishedTransaction,
     (
       transactionMeta: Parameters<typeof onFinishedTransaction>[1],
       opts: Parameters<typeof onFinishedTransaction>[2],
     ) => onFinishedTransaction(deps, transactionMeta, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.createTransactionNotification,
     (
       transactionMeta: Parameters<typeof createTransactionNotification>[1],
       opts: Parameters<typeof createTransactionNotification>[2],
     ) => createTransactionNotification(deps, transactionMeta, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.updateNFTOwnership,
     (
       transactionMeta: Parameters<typeof updateNFTOwnership>[1],
       opts: Parameters<typeof updateNFTOwnership>[2],
     ) => updateNFTOwnership(deps, transactionMeta, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.trackTransactionFailure,
     (
       transactionMeta: Parameters<typeof trackTransactionFailure>[1],
       opts: Parameters<typeof trackTransactionFailure>[2],
     ) => trackTransactionFailure(deps, transactionMeta, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.upgradeAccount,
     (
       address: string,
@@ -815,7 +903,7 @@ export function registerActions(messenger: RootMessenger): void {
       opts: Parameters<typeof upgradeAccount>[4],
     ) => upgradeAccount(deps, address, upgradeContractAddress, chainId, opts),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TRANSACTION_LIFECYCLE_ACTIONS.isEip7702Supported,
     (
       request: { address: string; chainId: string },

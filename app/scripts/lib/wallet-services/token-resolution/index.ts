@@ -12,10 +12,43 @@
  *   getERC20TokenInfo, getTokenStandardAndDetails, getBalancesInSingleCall
  */
 
-import type { RootMessenger } from '../../messenger';
+/**
+ * Subset of the Messenger interface required by token-resolution.
+ * Structural — satisfied by extension RootMessenger, mobile EngineMessenger,
+ * or any test double providing these call overloads.
+ *
+ * Promotion path: replace with RestrictedMessenger from @metamask/base-controller
+ * when extracting to a published package.
+ */
+type TokenResolutionMessenger = {
+  call(
+    action: 'AssetsContractController:getTokenStandardAndDetails',
+    tokenAddress: string,
+    userAddress: string,
+    tokenId?: string,
+  ): Promise<{
+    standard: string;
+    symbol?: string;
+    decimals?: string;
+    balance?: string;
+  }>;
+  call(
+    action: 'AssetsContractController:getBalancesInSingleCall',
+    tokenAddresses: string[],
+    userAddress: string,
+  ): Promise<Record<string, string>>;
+  call(
+    action: 'AssetsContractController:getERC20TokenInfo',
+    tokenAddress: string,
+  ): Promise<{ symbol: string; decimals: number; name: string }>;
+  registerActionHandler(
+    name: string,
+    handler: (...args: unknown[]) => unknown,
+  ): void;
+};
 
 export type TokenResolutionDependencies = {
-  messenger: RootMessenger;
+  messenger: TokenResolutionMessenger;
 };
 
 /**
@@ -102,21 +135,19 @@ export const TOKEN_RESOLUTION_ACTIONS = {
  * After registration, callers invoke actions directly — MetamaskController
  * is not in the call chain.
  */
-export function registerActions(messenger: RootMessenger): void {
+export function registerActions(messenger: TokenResolutionMessenger): void {
   const deps: TokenResolutionDependencies = { messenger };
-  // Cast to never because RootMessenger type doesn't yet include these action names.
-  // TODO: Add TokenResolutionActions to RootMessenger allowed-actions type.
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TOKEN_RESOLUTION_ACTIONS.getTokenStandardAndDetails,
     (tokenAddress: string, userAddress: string, tokenId?: string) =>
       getTokenStandardAndDetails(deps, tokenAddress, userAddress, tokenId),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TOKEN_RESOLUTION_ACTIONS.getBalancesInSingleCall,
     (tokenAddresses: string[], userAddress: string) =>
       getBalancesInSingleCall(deps, tokenAddresses, userAddress),
   );
-  (messenger as never).registerActionHandler(
+  messenger.registerActionHandler(
     TOKEN_RESOLUTION_ACTIONS.getERC20TokenInfo,
     (tokenAddress: string) => getERC20TokenInfo(deps, tokenAddress),
   );
