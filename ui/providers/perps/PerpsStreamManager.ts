@@ -236,7 +236,10 @@ class PerpsStreamManager {
     try {
       return await submitRequestToBackground<Result>(method, args);
     } catch (err) {
-      const message = err instanceof Error ? err.message : JSON.stringify(err);
+      const message =
+        err instanceof Error
+          ? err.message
+          : (JSON.stringify(err) ?? String(err));
       if (
         message.includes('CLIENT_NOT_INITIALIZED') ||
         message.includes('CLIENT_REINITIALIZING')
