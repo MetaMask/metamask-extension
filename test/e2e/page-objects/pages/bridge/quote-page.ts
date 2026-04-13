@@ -32,10 +32,8 @@ class BridgeQuotePage {
   public destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
-  private destinationAmount = (amount: string) => ({
-    testId: 'to-amount',
-    text: amount,
-  });
+  private destinationAmount = (amount: string) =>
+    `[data-testid="to-amount"][value="${amount}"]`;
 
   private fetchingQuotesLabel = {
     tag: 'p',
