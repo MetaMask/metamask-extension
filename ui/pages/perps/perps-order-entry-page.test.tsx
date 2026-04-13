@@ -454,7 +454,7 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        'Add funds',
+        messages.addFunds.message,
       );
     });
 
