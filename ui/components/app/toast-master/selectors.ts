@@ -269,8 +269,7 @@ export function selectShowSidePanelMigrationToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return Boolean(
-    (state.metamask as Record<string, unknown>)
-      ?.showSidePanelMigrationToast,
+    (state.metamask as Record<string, unknown>)?.showSidePanelMigrationToast,
   );
 }
 
