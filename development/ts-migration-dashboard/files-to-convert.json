@@ -4,8 +4,6 @@
   "app/scripts/background.js",
   "app/scripts/contentscript.js",
   "app/scripts/controllers/permissions/index.js",
-  "app/scripts/controllers/permissions/specifications.js",
-  "app/scripts/controllers/permissions/specifications.test.js",
   "app/scripts/detect-multiple-instances.js",
   "app/scripts/detect-multiple-instances.test.js",
   "app/scripts/disable-console.js",

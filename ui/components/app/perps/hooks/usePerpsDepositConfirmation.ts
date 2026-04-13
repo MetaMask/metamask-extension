@@ -63,9 +63,9 @@ export function usePerpsDepositConfirmation(
           loader: ConfirmationLoader.CustomAmount,
         });
 
-        const returnTo = location.pathname + location.search;
-        if (returnTo && returnTo !== '/') {
-          params.set('returnTo', returnTo);
+        const goBackTo = location.pathname + location.search;
+        if (goBackTo && goBackTo !== '/') {
+          params.set('goBackTo', goBackTo);
         }
 
         navigate({
