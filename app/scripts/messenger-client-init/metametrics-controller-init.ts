@@ -1,7 +1,9 @@
-import MetaMetricsController from '../controllers/metametrics-controller';
+import {
+  MetaMetricsController,
+  MetaMetricsControllerMessenger,
+} from '../controllers/metametrics-controller';
 import { segment } from '../lib/segment';
 import { captureException } from '../../../shared/lib/sentry';
-import { MetaMetricsControllerMessenger } from './messengers';
 import { ControllerInitFunction } from './types';
 
 /**

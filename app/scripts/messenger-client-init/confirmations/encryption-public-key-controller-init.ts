@@ -1,9 +1,9 @@
-import EncryptionPublicKeyController from '../../controllers/encryption-public-key';
-import { ControllerInitFunction } from '../types';
 import {
+  EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerInitMessenger,
-} from '../messengers';
+} from '../../controllers/encryption-public-key';
+import { ControllerInitFunction } from '../types';
+import { EncryptionPublicKeyControllerInitMessenger } from '../messengers';
 
 /**
  * Initialize the encryption public key controller.
