@@ -5,6 +5,7 @@ import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
+import { getRegistryBooleanFlag } from '../../../feature-flags/feature-flag-registry';
 import TokenOverviewPage from '../token-overview-page';
 
 export type BridgeQuote = {
@@ -237,18 +238,15 @@ class BridgeQuotePage {
   };
 
   dismissStatusPageIfPresent = async () => {
-    // Ideally we just use the extensionSkipSmartTransactionStatusPage flag.
-    // But that alone does not determine whether the status page will be shown or not,
-    // we'd still have to replicate the logic in smart-transaction.ts.
-    // This will be superceded with the transaction toast feature flag
-    const isStatusPageVisible = await this.driver.isElementPresentAndVisible(
-      this.statusPageCloseButton,
-      4000,
+    const skipStatusPage = getRegistryBooleanFlag(
+      'extensionSkipTransactionStatusPage',
     );
 
-    if (isStatusPageVisible) {
-      await this.driver.clickElement(this.statusPageCloseButton);
+    if (skipStatusPage) {
+      return;
     }
+
+    await this.driver.clickElement(this.statusPageCloseButton);
   };
 
   confirmBridgeTransaction = async () => {
