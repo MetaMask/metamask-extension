@@ -20,7 +20,9 @@ import {
   hasValidTypedDataParams,
   isEthSignTypedData,
   isEthSendTransaction,
+  isWalletSendCalls,
   hasValidTransactionParams,
+  hasValidSendCallsParams,
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
@@ -54,6 +56,9 @@ export function createTrustSignalsMiddleware(
 
       if (isEthSendTransaction(req)) {
         handleEthSendTransaction(req, appStateController, networkController);
+        scanUrl(req, phishingController);
+      } else if (isWalletSendCalls(req)) {
+        handleWalletSendCalls(req, appStateController, networkController);
         scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
         handleEthSignTypedData(req, appStateController, networkController);
@@ -141,6 +146,52 @@ function handleEthSendTransaction(
         );
       });
     }
+  }
+}
+
+function handleWalletSendCalls(
+  req: TrustSignalsMiddlewareRequest,
+  appStateController: AppStateController,
+  networkController: NetworkController,
+) {
+  if (!hasValidSendCallsParams(req)) {
+    return;
+  }
+
+  const { calls } = req.params[0];
+
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
+    return;
+  }
+
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
+  if (!supportedEVMChain) {
+    console.error('Unsupported chainId:', rawChainId);
+    return;
+  }
+
+  for (const call of calls) {
+    if (!call.to) {
+      continue;
+    }
+
+    scanAddressAndAddToCache(
+      call.to,
+      appStateController.getAddressSecurityAlertResponse,
+      appStateController.addAddressSecurityAlertResponse,
+      supportedEVMChain,
+    ).catch((error) => {
+      console.error(
+        '[createTrustSignalsMiddleware] error scanning address for sendCalls:',
+        error,
+      );
+    });
   }
 }
 
