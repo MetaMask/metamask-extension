@@ -44,6 +44,24 @@ function makePosition(
   } as Position;
 }
 
+/**
+ * Advance the microtask queue by the given number of ticks.
+ *
+ * fetchWithRecovery wraps each submitRequestToBackground call in an async
+ * function, adding extra microtask hops vs a direct call.
+ * Use ticks=4 for the normal path (2 extra hops from the async wrapper),
+ * or ticks=10 for the CLIENT_NOT_INITIALIZED recovery (reinit + retry chain).
+ *
+ * @param ticks - Number of microtask ticks to flush (default 4).
+ */
+async function flushMicrotasks(ticks = 4): Promise<void> {
+  if (ticks <= 0) {
+    return;
+  }
+  await Promise.resolve();
+  await flushMicrotasks(ticks - 1);
+}
+
 describe('PerpsStreamManager', () => {
   let manager: PerpsStreamManager;
 
@@ -98,10 +116,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.markets.subscribe(onData);
 
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
+        await flushMicrotasks();
 
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -141,20 +156,14 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         const unsubscribe = manager.markets.subscribe(onData);
 
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
+        await flushMicrotasks();
 
         unsubscribe();
 
         const onDataAfterReconnect = jest.fn();
         manager.markets.subscribe(onDataAfterReconnect);
 
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
-        await Promise.resolve();
+        await flushMicrotasks();
 
         expect(onData).toHaveBeenCalledWith(cachedMarkets);
         expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
@@ -171,14 +180,12 @@ describe('PerpsStreamManager', () => {
 
   describe('fetchWithRecovery (auto-recovery from CLIENT_NOT_INITIALIZED)', () => {
     beforeEach(() => {
-      jest.useRealTimers();
       mockSubmitRequestToBackground.mockReset();
     });
 
     afterEach(() => {
       mockSubmitRequestToBackground.mockReset();
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
-      jest.useFakeTimers();
     });
 
     it('re-initializes and retries when positions fetch gets CLIENT_NOT_INITIALIZED', async () => {
@@ -200,8 +207,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.positions.subscribe(onData);
 
-      // Wait for async recovery to complete
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await flushMicrotasks(10);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith([{ symbol: 'ETH' }]);
@@ -226,7 +232,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.orders.subscribe(onData);
 
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await flushMicrotasks(10);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith([{ id: '1' }]);
@@ -248,7 +254,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.positions.subscribe(onData);
 
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await flushMicrotasks(10);
 
         expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
           'perpsInit',
@@ -278,7 +284,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.positions.subscribe(onData);
 
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await flushMicrotasks(10);
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
         expect(onData).toHaveBeenCalledWith([]);
@@ -306,7 +312,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.account.subscribe(onData);
 
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await flushMicrotasks(10);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith({ totalBalance: '100' });
