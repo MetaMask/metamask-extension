@@ -131,7 +131,6 @@ export const bridgeTransaction = async ({
  * @param params.chainId - The chain ID where the token lives (e.g. '0x1').
  * @param params.address - The token contract address.
  * @param params.assetPicker - Optional CSS selector for the asset picker button.
- *   Defaults to the source asset picker.
  */
 export const goToAssetPage = async ({
   driver,

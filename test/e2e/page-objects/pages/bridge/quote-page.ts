@@ -192,7 +192,6 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.assetInfoIcon(assetId));
   }
 
-
   checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
     await this.driver.waitForSelector({
       css: this.sourceAssetPickerButton,
