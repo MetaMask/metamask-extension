@@ -21,11 +21,21 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>([]);
 
   useEffect(() => {
+    let cancelled = false;
+
     submitRequestToBackground<MarketInfo[]>('perpsGetMarkets', [{}])
-      .then(setMarketInfos)
+      .then((infos) => {
+        if (!cancelled) {
+          setMarketInfos(infos);
+        }
+      })
       .catch(() => {
         // Silently fall back – callers use safe defaults when undefined
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());

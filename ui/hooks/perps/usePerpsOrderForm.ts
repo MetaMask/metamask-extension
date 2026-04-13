@@ -380,7 +380,9 @@ export function usePerpsOrderForm({
     const notional = positionSize * effectiveMarginPrice;
     // Margin = initial margin only (fees are a separate line item, not added to margin)
     const marginRequired = notional / formState.leverage;
-    const estimatedFees = amount * PERPS_MARKET_ORDER_FEE_RATE;
+    // Fees are charged on the actual execution notional, matching the close-mode path
+    // and the exchange's own calculation.
+    const estimatedFees = notional * PERPS_MARKET_ORDER_FEE_RATE;
     const liquidationPriceValue = calculateLiquidationPrice(
       effectivePrice,
       formState.leverage,
