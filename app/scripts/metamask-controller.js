@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
@@ -79,6 +79,10 @@ import {
   bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
+  hasProperty,
+  isObject,
+  isJsonRpcRequest,
+  isJsonRpcNotification,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -178,6 +182,7 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import {
   createEnsureOnboardingCompleteCallback,
   getTokenValueParam,
@@ -236,6 +241,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
+import { onStreamClosed } from '../../shared/lib/stream-utils';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -464,6 +470,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
+/**
+ * @typedef {import('@metamask/object-multiplex/dist/Substream').Substream} Substream
  */
 
 // Types of APIs
@@ -6685,7 +6695,12 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    const { initializePatchStore } = this.setupPatchStoreConnection(
+      mux.createStream('patch-store'),
+    );
+    this.setupControllerConnection(mux.createStream('controller'), {
+      initializePatchStore,
+    });
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6776,16 +6791,38 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for providing our API over a stream using JSON-RPC.
+   * Sets up the substream responsible for collecting and sending state patches
+   * to a UI process.
    *
-   * @param {*} outStream - The stream to provide our API over.
+   * Whenever the state of a controller changes, we need to update the Redux
+   * root store on the UI side. However, we want to control which part of Redux
+   * is updated to prevent excessive rerenders.
+   *
+   * To do this, we use `PatchStore`, which wraps `memStore`, captures state
+   * updates as a deduplicated set of JSON patch objects, and then releases them
+   * to the UI process only when requested.
+   *
+   * For the UI side of this, see `ui/store/patch-store-substream-connection.ts`.
+   *
+   * @param {Substream} outStream - The substream that patch store messages are
+   * sent through.
+   * @returns {{ initializePatchStore: () => void }} Callbacks to call. The only
+   * one is `initializePatchStore`.
    */
-  setupControllerConnection(outStream) {
+  setupPatchStoreConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
-    let uiReady = false;
+    let isUiReady = false;
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream) || !uiReady) {
+      if (!isStreamWritable(outStream)) {
+        log.debug('Stream is closed, ignoring.');
+        return;
+      }
+
+      if (!isUiReady) {
+        log.debug(
+          "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
+        );
         return;
       }
 
@@ -6793,11 +6830,94 @@ export default class MetamaskController extends EventEmitter {
 
       outStream.write({
         jsonrpc: '2.0',
-        method: 'sendUpdate',
+        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
         params: [patches],
       });
     };
 
+    const initializePatchStore = () => {
+      patchStore.init();
+    };
+
+    const handleStartSendingPatches = () => {
+      isUiReady = true;
+      handleUpdate();
+    };
+
+    const handleGetStatePatches = (request) => {
+      const patches = patchStore.flushPendingPatches();
+      outStream.write({
+        id: request.id,
+        jsonrpc: '2.0',
+        result: patches,
+      });
+    };
+
+    const handleIncomingMessage = (message) => {
+      if (!isStreamWritable(outStream)) {
+        log.debug('Stream is closed, ignoring incoming message.');
+        return;
+      }
+
+      if (
+        !(
+          (isJsonRpcRequest(message) && typeof message.id === 'number') ||
+          isJsonRpcNotification(message)
+        )
+      ) {
+        outStream.write({
+          id:
+            isObject(message) && hasProperty(message, 'id') ? message.id : null,
+          jsonrpc: '2.0',
+          error: rpcErrors.invalidRequest(),
+        });
+        return;
+      }
+
+      const { method } = message;
+
+      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
+        handleStartSendingPatches();
+      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
+        handleGetStatePatches(message);
+      } else if (message.id === undefined) {
+        console.error(
+          `Unrecognized patch-store substream notification method: ${method}`,
+        );
+      } else {
+        outStream.write({
+          id: message.id,
+          jsonrpc: '2.0',
+          error: rpcErrors.methodNotFound({
+            message: `${method} not found`,
+          }),
+        });
+      }
+    };
+
+    outStream.on('data', handleIncomingMessage);
+
+    this.on('update', handleUpdate);
+
+    onStreamClosed(outStream, () => {
+      outStream.removeListener('data', handleIncomingMessage);
+      this.removeListener('update', handleUpdate);
+      patchStore.destroy();
+    });
+
+    return { initializePatchStore };
+  }
+
+  /**
+   * A method for providing our API over a stream using JSON-RPC.
+   *
+   * @param {Substream} outStream - The stream to provide our API over.
+   * @param {object} args - Additional arguments.
+   * @param {() => void} args.initializePatchStore - Function to call after
+   * retrieving state but before emitting the `startUISync` event, in order to
+   * initialize the patch store.
+   */
+  setupControllerConnection(outStream, { initializePatchStore }) {
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
@@ -6828,11 +6948,6 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.controllerApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
-      startSendingPatches: () => {
-        uiReady = true;
-        handleUpdate();
-      },
-      getStatePatches: () => patchStore.flushPendingPatches(),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,
       ),
@@ -6842,8 +6957,6 @@ export default class MetamaskController extends EventEmitter {
       messengerCall: (method, params = []) =>
         this.controllerMessenger.call(method, ...params),
     };
-
-    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -6856,12 +6969,13 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-      // Start tracking patches immediately after retrieving initial state for this UI connection
-      // to ensure we don't miss any patches, or include extra patches.
-      const initialState = this.getState();
-      patchStore.init();
 
-      // send notification to client-side
+      const initialState = this.getState();
+      // Start tracking patches immediately after retrieving initial state for
+      // this UI connection (to include with the `startUISync` notification) to
+      // ensure we don't miss any patches or include extra patches.
+      initializePatchStore();
+
       outStream.write({
         jsonrpc: '2.0',
         method: START_UI_SYNC,
@@ -6875,42 +6989,15 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    const outstreamEndHandler = () => {
-      if (!outStream.mmFinished) {
-        this.activeControllerConnections -= 1;
-        this.emit(
-          'controllerConnectionChanged',
-          this.activeControllerConnections,
-        );
-        outStream.mmFinished = true;
-        this.removeListener('update', handleUpdate);
-        patchStore.destroy();
-        messengerSubscriptions.clear();
-        perpsStream?.destroy();
-      }
-    };
-
-    // The presence of both of the below handlers may be redundant.
-    // After upgrading metamask/object-multiples to v2.0.0, which included
-    // an upgrade of readable-streams from v2 to v3, we saw that the
-    // `outStream.on('end'` handler was almost never being called. This seems to
-    // related to how v3 handles errors vs how v2 handles errors; there
-    // are "premature close" errors in both cases, although in the case
-    // of v2 they don't prevent `outStream.on('end'` from being called.
-    // At the time that this comment was committed, it was known that we
-    // need to investigate and resolve the underlying error, however,
-    // for expediency, we are not addressing them at this time. Instead, we
-    // can observe that `readableStream.finished` preserves the same
-    // functionality as we had when we relied on readable-stream v2. Meanwhile,
-    // the `outStream.on('end')` handler was observed to have been called at least once.
-    // In an abundance of caution to prevent against unexpected future behavioral changes in
-    // streams implementations, we redundantly use multiple paths to attach the same event handler.
-    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
-
-    outStream.mmFinished = false;
-    finished(outStream, outstreamEndHandler);
-    outStream.once('close', outstreamEndHandler);
-    outStream.once('end', outstreamEndHandler);
+    onStreamClosed(outStream, () => {
+      this.activeControllerConnections -= 1;
+      this.emit(
+        'controllerConnectionChanged',
+        this.activeControllerConnections,
+      );
+      messengerSubscriptions.clear();
+      perpsStream?.destroy();
+    });
   }
 
   /**

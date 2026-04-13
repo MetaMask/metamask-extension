@@ -1224,12 +1224,15 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Popover
                     referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}
+                    isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
                     onPressEscKey={() => setIsMarginMenuOpen(false)}
                     position={PopoverPosition.Top}
+                    preventOverflow
+                    flip
                     offset={[0, 8]}
                     padding={0}
-                    className="min-w-[220px] rounded-lg"
+                    className="min-w-[220px] rounded-lg z-[1050]"
                     data-testid="perps-margin-menu"
                   >
                     <Box flexDirection={BoxFlexDirection.Column}>
@@ -1716,12 +1719,16 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Popover
                 referenceElement={modifyMenuRef.current}
                 isOpen={isModifyMenuOpen}
+                isPortal
                 onClickOutside={() => setIsModifyMenuOpen(false)}
                 onPressEscKey={() => setIsModifyMenuOpen(false)}
                 position={PopoverPosition.Top}
+                preventOverflow
+                flip
+                offset={[0, 8]}
                 padding={0}
                 matchWidth
-                className="rounded-lg"
+                className="rounded-lg z-[1050]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>

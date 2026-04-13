@@ -1,22 +1,24 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
-import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
+import { getBridgeFixtures } from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
-      {
-        ...getBridgeFixtures(
-          this.test?.fullTitle(),
-          { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
-          false,
-        ),
-      },
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: {
+          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          refreshRate: 30000,
+        },
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -91,11 +93,11 @@ describe('Swap tests', function (this: Suite) {
 
   it('submits trade before streaming is finished', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
