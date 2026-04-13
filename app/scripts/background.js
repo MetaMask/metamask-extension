@@ -2053,8 +2053,7 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
-  const installAttributionPromise = 
-        ();
+  const installAttributionPromise = getInstallAttribution();
 
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
