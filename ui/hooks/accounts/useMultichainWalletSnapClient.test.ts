@@ -6,12 +6,16 @@ import {
   SolAccountType,
   SolMethod,
   SolScope,
+  XlmAccountType,
+  XlmMethod,
+  XlmScope,
 } from '@metamask/keyring-api';
 import { renderHook } from '@testing-library/react-hooks';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
+  STELLAR_WALLET_SNAP_ID,
   type CreateAccountSnapOptions,
 } from '../../../shared/lib/accounts';
 import { createSnapAccount } from '../../store/actions';
@@ -56,6 +60,20 @@ describe('useMultichainWalletSnapClient', () => {
         methods: [SolMethod.SendAndConfirmTransaction],
         scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
         type: SolAccountType.DataAccount,
+      },
+    },
+    {
+      clientType: WalletClientType.Stellar,
+      network: MultichainNetworks.STELLAR,
+      snapId: STELLAR_WALLET_SNAP_ID,
+      mockAccount: {
+        address:
+          'GA5ZSEJYB37JRC5AVCIA5MOP4RHNMDQEQJKUY2C3D2U7HN3I4LJLQYGX',
+        id: '33c55e8d-2f68-5c6c-9613-13709f797fe2',
+        options: {},
+        methods: [XlmMethod.SignTransaction, XlmMethod.SignMessage],
+        scopes: [XlmScope.Pubnet, XlmScope.Testnet],
+        type: XlmAccountType.Account,
       },
     },
   ];

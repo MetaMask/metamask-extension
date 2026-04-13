@@ -47,6 +47,21 @@ export const getIsTronSupportEnabled = createSelector(
 );
 
 /**
+ * Get the state of the `stellarAccounts` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns The state of the `stellarAccounts` remote feature flag.
+ */
+export const getIsStellarSupportEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ stellarAccounts }) => {
+    let enabled = false;
+    enabled = isMultichainFeatureEnabled(stellarAccounts);
+    return enabled;
+  },
+);
+
+/**
  * Get the state of the `solanaTestnetsEnabled` remote feature flag.
  *
  * @param _state - The MetaMask state object

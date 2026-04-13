@@ -56,6 +56,10 @@ jest.mock('./feature-flags', () => ({
   getIsTronTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.tronTestnetsEnabled,
   ),
+  getIsStellarSupportEnabled: jest.fn((state) => {
+    const { stellarAccounts } = state.metamask.remoteFeatureFlags;
+    return stellarAccounts?.enabled;
+  }),
 }));
 
 jest.mock('../../../shared/lib/selectors/multichain', () => ({
@@ -156,6 +160,7 @@ const mockState: TestState = {
       bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
       tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
       tronTestnetsEnabled: false,
+      stellarAccounts: { enabled: false, minimumVersion: '13.6.0' },
     },
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,

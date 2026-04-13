@@ -28,6 +28,7 @@ import {
   getIsSolanaSupportEnabled,
   getIsBitcoinSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
 } from '../../../../selectors';
 
 type WalletDetailsAccountTypeSelectionProps = {
@@ -44,6 +45,7 @@ export const WalletDetailsAccountTypeSelection: React.FC<
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
   const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
+  const stellarSupportEnabled = useSelector(getIsStellarSupportEnabled);
 
   return (
     <>
@@ -118,6 +120,17 @@ export const WalletDetailsAccountTypeSelection: React.FC<
               data-testid="wallet-details-add-tron-account"
             >
               {t('addNewTronAccountLabel')}
+            </ButtonLink>
+          )}
+          {stellarSupportEnabled && (
+            <ButtonLink
+              size={ButtonLinkSize.Sm}
+              startIconName={IconName.Add}
+              startIconProps={{ size: IconSize.Md }}
+              onClick={() => onAccountTypeSelect(WalletClientType.Stellar)}
+              data-testid="wallet-details-add-stellar-account"
+            >
+              {t('addNewStellarAccountLabel')}
             </ButtonLink>
           )}
         </Box>

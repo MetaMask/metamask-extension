@@ -304,6 +304,9 @@
   "addNewTronAccountLabel": {
     "message": "Tron account"
   },
+  "addNewStellarAccountLabel": {
+    "message": "Stellar account"
+  },
   "addNft": {
     "message": "Add NFT"
   },
@@ -4416,6 +4419,9 @@
   },
   "networkNameTron": {
     "message": "Tron"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   },
   "networkOptions": {
     "message": "Network options"

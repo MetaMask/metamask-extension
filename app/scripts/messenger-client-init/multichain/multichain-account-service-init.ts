@@ -3,6 +3,7 @@ import {
   SOL_ACCOUNT_PROVIDER_NAME,
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
+  XLM_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -58,6 +59,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       },
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [XLM_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
