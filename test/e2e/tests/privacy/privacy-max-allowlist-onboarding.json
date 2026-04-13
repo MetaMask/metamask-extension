@@ -27,6 +27,7 @@
     "optimism-mainnet.infura.io",
     "polygon-mainnet.infura.io",
     "sei-mainnet.infura.io",
-    "sentry.io"
+    "sentry.io",
+    "tokens.api.cx.metamask.io"
   ]
 }
