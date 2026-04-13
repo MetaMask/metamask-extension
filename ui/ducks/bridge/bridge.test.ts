@@ -121,11 +121,11 @@ describe('Ducks - Bridge', () => {
       expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
     });
 
-    it('dispatches addNetwork and does not set fromToken for a supported EVM chain not yet in user configs', () => {
+    it('dispatches addNetwork then sets fromToken for a supported EVM chain not yet in user configs', async () => {
       // Arbitrum is a supported bridge chain but the default mock store only has
       // Mainnet, Linea, and Optimism. setFromToken should auto-enable it via
-      // addNetwork (it is a featured RPC) and return early without setting the token.
-      // The caller's effect will retry after the state update lands.
+      // addNetwork and then fall through to dispatch bridge/setFromToken in the
+      // same thunk invocation — no external retry needed.
       const arbitrum = FEATURED_RPCS.find(
         (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
       );
@@ -142,12 +142,12 @@ describe('Ducks - Bridge', () => {
         decimals: 18,
         name: 'Ethereum',
       };
-      store.dispatch(setFromToken(actionPayload as never) as never);
+      await store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
 
-      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
       expect(addNetworkSpy).toHaveBeenCalledTimes(1);
       expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(true);
     });
 
     it('captures a Sentry exception when chain is supported but absent from both user configs and FEATURED_RPCS', () => {

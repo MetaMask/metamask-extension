@@ -18,7 +18,6 @@ import {
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { getMemoizedMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -67,9 +66,6 @@ const fetchAssetMetadata = async (
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
-  const networkConfigsByChainId = useSelector(
-    getMemoizedMultichainNetworkConfigurationsByChainId,
-  );
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -158,13 +154,10 @@ export const usePrefillFromSearchQuery = () => {
       return;
     }
 
-    // setFromToken validates the chain and auto-enables the network when needed.
-    // If the EVM network is not yet in the user's configs, setFromToken dispatches
-    // addNetwork and returns early. networkConfigsByChainId is kept as a dep so
-    // this effect re-runs once the resulting state update arrives, at which point
-    // setFromToken finds the network and dispatches the token action.
+    // setFromToken auto-enables the network via addNetwork when needed, then
+    // falls through to complete the full token-setting flow in one thunk invocation.
     dispatch(setFromToken(fromTokenMetadata));
-  }, [assetMetadataByAssetId, parsedFromAssetId, networkConfigsByChainId]);
+  }, [assetMetadataByAssetId, parsedFromAssetId]);
 
   // Set toChainId and toToken
   useEffect(() => {

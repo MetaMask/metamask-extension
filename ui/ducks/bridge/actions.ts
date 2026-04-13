@@ -181,14 +181,14 @@ export const setFromToken = (token: TokenPayload) => {
       const networkConfigs =
         getMultichainNetworkConfigurationsByChainId(getState());
       if (!networkConfigs[maybeHexChainId]) {
-        // EVM chain is supported but not yet in the user's network configs.
-        // Auto-enable it via addNetwork if it is a well-known featured RPC.
-        // The caller's effect must re-run after the resulting state update to
-        // retry setFromToken — by then the network will be present.
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === maybeHexChainId,
         );
         if (featuredRpc) {
+          // EVM chain is supported but not yet in the user's network configs.
+          // Auto-enable it via addNetwork, then fall through so the rest of
+          // setFromToken runs immediately with the updated state; no external
+          // retry needed and no risk of spurious re-dispatches.
           await dispatch(addNetwork(featuredRpc));
         } else {
           // Supported bridge chain absent from both user configs and FEATURED_RPCS —
@@ -196,8 +196,8 @@ export const setFromToken = (token: TokenPayload) => {
           captureException(
             new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
           );
+          return;
         }
-        return;
       }
     }
 
