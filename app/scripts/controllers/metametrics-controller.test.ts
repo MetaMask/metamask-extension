@@ -40,7 +40,8 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import MetaMetricsController, {
+import {
+  MetaMetricsController,
   AllowedActions,
   AllowedEvents,
   MetaMetricsControllerOptions,
