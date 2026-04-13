@@ -851,10 +851,24 @@ export class PreferencesController extends BaseController<
     value: Preferences[typeof preference],
   ): Preferences {
     const currentPreferences = this.getPreferences();
-    const updatedPreferences = {
+    let updatedPreferences: Preferences = {
       ...currentPreferences,
       [preference]: value,
     };
+
+    // Full-screen and default side panel are mutually exclusive when enabled.
+    if (preference === 'showExtensionInFullSizeView' && value === true) {
+      updatedPreferences = {
+        ...updatedPreferences,
+        useSidePanelAsDefault: false,
+      };
+    }
+    if (preference === 'useSidePanelAsDefault' && value === true) {
+      updatedPreferences = {
+        ...updatedPreferences,
+        showExtensionInFullSizeView: false,
+      };
+    }
 
     this.update((state) => {
       state.preferences = updatedPreferences;
@@ -975,9 +989,7 @@ export class PreferencesController extends BaseController<
   }
 
   setUseSidePanelAsDefault(value: boolean): void {
-    this.update((state) => {
-      state.preferences.useSidePanelAsDefault = value;
-    });
+    this.setPreference('useSidePanelAsDefault', value);
   }
 
   setShowDefaultAddress(value: boolean): void {
