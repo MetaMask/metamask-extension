@@ -126,6 +126,12 @@ describe('Perps Utils', () => {
     it('returns empty string unchanged', () => {
       expect(formatChangePercent('')).toBe('');
     });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatChangePercent('—')).toBe('—');
+      expect(formatChangePercent('-')).toBe('-');
+      expect(formatChangePercent('N/A')).toBe('N/A');
+    });
   });
 
   describe('getChangeColor', () => {
