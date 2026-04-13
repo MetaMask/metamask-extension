@@ -106,7 +106,7 @@ export class BridgePage {
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
- * @param testParams.dismissStatusPage - Whether to dismiss the status page after submitting
+ * @param testParams.dismissStatusPage - Whether to dismiss the smart-tx status page after submitting
  */
 export const bridgeTransaction = async ({
   driver,

@@ -30,7 +30,6 @@ import {
   MESSAGE_TYPE,
   POPUP_FILE,
   POPUP_INIT_FILE,
-  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -1847,12 +1846,10 @@ export function setupController(
 
   function setClientOpenOptions(tab) {
     const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
-    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
 
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup });
-        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
       } else {
         browser.browserAction.setPopup({ popup });
       }

@@ -115,6 +115,7 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '3.011',
+          dismissStatusPage: false,
         });
 
         const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
