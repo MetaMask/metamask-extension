@@ -165,7 +165,7 @@ describe('ReversePositionModal', () => {
       const feeValue = screen.getByTestId('perps-reverse-fee-value');
       expect(feeValue).toBeInTheDocument();
       // Fee = 2 * 2.5 * 2900 * 0.0001 = $1.45
-      expect(feeValue.textContent).toMatch(/\$/u);
+      expect(feeValue.textContent).toBe('-$1.45');
     });
   });
 
