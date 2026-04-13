@@ -212,7 +212,7 @@ export const MultichainAccountDetailsPage = () => {
               <Box marginLeft={2}>
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
-                  color={IconColor.IconAlternative}
+                  iconProps={{ color: IconColor.IconAlternative }}
                   size={ButtonIconSize.Sm}
                   ariaLabel={t('accountName')}
                   data-testid="account-name-action"
@@ -228,7 +228,7 @@ export const MultichainAccountDetailsPage = () => {
               <Box marginLeft={2}>
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
-                  color={IconColor.IconAlternative}
+                  iconProps={{ color: IconColor.IconAlternative }}
                   size={ButtonIconSize.Sm}
                   ariaLabel={t('addresses')}
                   data-testid="network-addresses-link"
@@ -245,7 +245,7 @@ export const MultichainAccountDetailsPage = () => {
                 <Box marginLeft={2}>
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
-                    color={IconColor.IconAlternative}
+                    iconProps={{ color: IconColor.IconAlternative }}
                     size={ButtonIconSize.Sm}
                     ariaLabel={t('privateKeys')}
                     data-testid="private-keys-action"
@@ -263,7 +263,7 @@ export const MultichainAccountDetailsPage = () => {
                 <Box marginLeft={2}>
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
-                    color={IconColor.IconAlternative}
+                    iconProps={{ color: IconColor.IconAlternative }}
                     size={ButtonIconSize.Sm}
                     ariaLabel={t('smartAccountLabel')}
                     data-testid="smart-account-action"
@@ -282,7 +282,7 @@ export const MultichainAccountDetailsPage = () => {
               <Box marginLeft={2}>
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
-                  color={IconColor.IconAlternative}
+                  iconProps={{ color: IconColor.IconAlternative }}
                   size={ButtonIconSize.Sm}
                   ariaLabel={t('wallet')}
                   data-testid="wallet-details-link"
@@ -312,7 +312,7 @@ export const MultichainAccountDetailsPage = () => {
                 <Box marginLeft={2}>
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
-                    color={IconColor.IconAlternative}
+                    iconProps={{ color: IconColor.IconAlternative }}
                     size={ButtonIconSize.Md}
                     ariaLabel={t('removeAccount')}
                     data-testid="account-remove-action"
