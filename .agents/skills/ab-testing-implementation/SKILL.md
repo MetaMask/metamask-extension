@@ -34,6 +34,8 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
    - Use a threshold-array remote flag value for production defaults.
    - Keep reused variants or metadata centralized in a config module when
      multiple files need the same definitions.
+   - Keep analytics mappings background-safe in shared modules so background
+     MetaMetrics code can import them without depending on `ui/`.
    - Use the same experiment key format as mobile:
      `{teamName}{ticketId}Abtest{TestName}`.
 3. Implement the assignment logic correctly.
@@ -46,7 +48,9 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
 4. Implement analytics correctly.
    - Rely on `useABTest` for the automatic `Experiment Viewed` exposure
      event.
-   - Add `active_ab_tests` only to business events, and only when the
+   - Prefer allowlisted auto-enrichment on the shared MetaMetrics path.
+   - Add `active_ab_tests` manually only for business events that bypass the
+     shared MetaMetrics wrappers/controller path, and only when the
      assignment is active.
    - Never add new `ab_tests:` payloads. If a legacy touchpoint cannot be
      migrated in the same change, keep the line annotated with
@@ -70,6 +74,8 @@ const activeABTests = experiment.isActive
 ```
 
 6. Update tests and fixtures when behavior or flag plumbing changes.
+   - If you add or modify the shared analytics registry/enricher, add unit
+     coverage there and in the MetaMetrics controller path.
    - Register every new remote A/B test flag in
      `test/e2e/feature-flags/feature-flag-registry.ts` with the production
      default threshold-array JSON value.
@@ -96,6 +102,8 @@ node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-test
 - Confirm `Experiment Viewed` is not emitted manually when `useABTest` is in
   use.
 - Confirm business events use `active_ab_tests` rather than `ab_tests`.
+- Confirm new automatic enrichment mappings live in background-safe shared
+  modules rather than `ui/`-only config files.
 - Confirm E2E flag registration and local test overrides remain production-accurate.
 - Confirm the compliance checker result is included in the final response.
 
@@ -103,8 +111,10 @@ node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-test
 
 - `ui/hooks/useABTest.ts`
 - `ui/hooks/useABTest.test.ts`
+- `shared/lib/ab-testing/resolve-ab-test-assignment.ts`
+- `shared/lib/ab-testing/ab-test-analytics.ts`
 - `ui/selectors/remote-feature-flags.ts`
-- `shared/constants/metametrics.ts`
+- `app/scripts/controllers/metametrics-controller.ts`
 - `test/e2e/feature-flags/feature-flag-registry.ts`
 
 Use `docs/ab-testing.md` only when you need deeper background, additional
