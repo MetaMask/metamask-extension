@@ -78,6 +78,7 @@ export function usePerpsOrderFees({
     const currentRequestId = requestIdRef.current;
     let cancelled = false;
 
+    setFeeResult(undefined);
     setIsLoading(true);
     setHasError(false);
 

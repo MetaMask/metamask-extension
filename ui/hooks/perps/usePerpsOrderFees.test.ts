@@ -133,6 +133,10 @@ describe('usePerpsOrderFees', () => {
     expect(result.current.feeRate).toBe(0.001);
 
     rerender({ symbol: 'ETH' });
+    // Previous result is cleared immediately on refetch
+    expect(result.current.feeRate).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+
     await waitForNextUpdate();
     expect(result.current.feeRate).toBe(0.0008);
   });
