@@ -30,7 +30,7 @@
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
       "previousAppVersion": "",
-      "previousMigrationVersion": 203
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "browserEnvironment": { "browser": "string", "os": "string" },

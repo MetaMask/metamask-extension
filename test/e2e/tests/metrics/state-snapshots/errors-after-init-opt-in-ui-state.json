@@ -323,7 +323,7 @@
       "useSidePanelAsDefault": "boolean"
     },
     "previousAppVersion": "",
-    "previousMigrationVersion": 203,
+    "previousMigrationVersion": 0,
     "productTour": "accountIcon",
     "quoteFetchError": null,
     "quoteRequest": {
