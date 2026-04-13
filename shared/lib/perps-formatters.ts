@@ -85,6 +85,31 @@ export const PRICE_RANGES_UNIVERSAL: PerpsPriceRange[] = [
  * @param ranges - Optional range config override. Defaults to PRICE_RANGES_UNIVERSAL.
  * @returns Formatted price string (e.g. '$3,245.7', '$0.000123')
  */
+const formatterCache = new Map<string, Intl.NumberFormat>();
+
+function getFormatter(
+  locale: string,
+  minDec: number,
+  maxDec: number,
+  sigDigits: number,
+): Intl.NumberFormat {
+  const key = `${locale}:${minDec}:${maxDec}:${sigDigits}`;
+  let fmt = formatterCache.get(key);
+  if (!fmt) {
+    fmt = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: minDec,
+      maximumFractionDigits: maxDec,
+      minimumSignificantDigits: sigDigits,
+      maximumSignificantDigits: sigDigits,
+      roundingPriority: 'lessPrecision',
+    });
+    formatterCache.set(key, fmt);
+  }
+  return fmt;
+}
+
 export function formatPerpsPrice(
   value: number,
   locale = 'en-US',
@@ -97,22 +122,13 @@ export function formatPerpsPrice(
   const range = ranges.find((r) => r.condition(value));
 
   if (!range) {
-    // Fallback — should never be reached because the last range catches all values
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
+    return getFormatter(locale, 2, 2, 2).format(value);
   }
 
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: range.minimumDecimals,
-    maximumFractionDigits: range.maximumDecimals,
-    minimumSignificantDigits: range.significantDigits,
-    maximumSignificantDigits: range.significantDigits,
-    roundingPriority: 'lessPrecision',
-  }).format(value);
+  return getFormatter(
+    locale,
+    range.minimumDecimals,
+    range.maximumDecimals,
+    range.significantDigits,
+  ).format(value);
 }

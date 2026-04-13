@@ -379,8 +379,11 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(3);
       });
 
-      // margin should be $5.13, not $5.00 (which would result from currentPrice)
-      expect(result.current.calculations.marginRequired).toContain('5.1');
+      // positionSize = trunc(15 / 25.65, szDecimals=1) = 0.5
+      // notional = 0.5 * 25.65 = 12.825, margin = 12.825 / 3 = 4.275 → $4.28
+      // This differs from currentPrice-based margin ($5.00) because the oracle
+      // price is used, confirming markPrice is wired through.
+      expect(result.current.calculations.marginRequired).toContain('4.2');
     });
 
     it('falls back to currentPrice for margin when markPrice is not provided', () => {

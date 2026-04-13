@@ -77,58 +77,6 @@ export function calculatePositionSize(
     return raw;
   }
   const factor = Math.pow(10, szDecimals);
-  return Math.round(raw * factor) / factor;
+  return Math.trunc(raw * factor) / factor;
 }
 
-/**
- * Calculate margin required for a position
- *
- * @param usdAmount - Amount in USD
- * @param leverage - Leverage multiplier
- * @returns Margin required in USD
- */
-export function calculateMarginRequired(
-  usdAmount: number,
-  leverage: number,
-): number {
-  if (leverage === 0) {
-    return 0;
-  }
-  return usdAmount / leverage;
-}
-
-/**
- * Calculate maximum possible order amount
- *
- * @param availableBalance - Available balance in USD
- * @param leverage - Leverage multiplier
- * @returns Maximum order amount in USD
- */
-export function calculateMaxAmount(
-  availableBalance: number,
-  leverage: number,
-): number {
-  return availableBalance * leverage;
-}
-
-/**
- * Estimate liquidation price for a position
- * This is a simplified calculation for mock purposes
- *
- * @param entryPrice - Entry price
- * @param leverage - Leverage multiplier
- * @param isLong - Whether position is long
- * @returns Estimated liquidation price
- */
-export function estimateLiquidationPrice(
-  entryPrice: number,
-  leverage: number,
-  isLong: boolean,
-): number {
-  // Simplified: liquidation occurs at ~(1/leverage) move against position
-  const liquidationMove = entryPrice / leverage;
-  if (isLong) {
-    return entryPrice - liquidationMove * 0.9; // 90% of theoretical for safety margin
-  }
-  return entryPrice + liquidationMove * 0.9;
-}

@@ -34,19 +34,17 @@ function calculateLiquidationPrice(
     return 0;
   }
 
-  const maintenanceLeverage = 2 * maxLeverage;
-  const maintenanceMarginRatio = 1 / maintenanceLeverage;
+  const maintenanceMarginRate = 1 / (2 * maxLeverage);
   const side = direction === 'long' ? 1 : -1;
 
-  const initialMargin = 1 / leverage;
-  const maintenanceMargin = 1 / maintenanceLeverage;
+  const initialMarginRate = 1 / leverage;
 
-  if (initialMargin < maintenanceMargin) {
+  if (initialMarginRate < maintenanceMarginRate) {
     return 0;
   }
 
-  const marginAvailable = initialMargin - maintenanceMargin;
-  const denominator = 1 - maintenanceMarginRatio * side;
+  const marginAvailable = initialMarginRate - maintenanceMarginRate;
+  const denominator = 1 - maintenanceMarginRate * side;
 
   if (Math.abs(denominator) < 0.0001) {
     return entryPrice;
@@ -396,7 +394,7 @@ export function usePerpsOrderForm({
     // and the exchange's own calculation.
     const estimatedFees = notional * (feeRate ?? 0);
     const liquidationPriceValue = calculateLiquidationPrice(
-      effectivePrice,
+      effectiveMarginPrice,
       formState.leverage,
       formState.direction,
       maxLeverage,

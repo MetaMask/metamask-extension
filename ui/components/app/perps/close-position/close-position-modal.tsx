@@ -293,7 +293,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const { feeRate } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
-    amount: closeNotionalUsd > 0 ? String(closeNotionalUsd) : undefined,
   });
 
   const margin = useMemo(() => {
@@ -445,6 +444,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     t,
     formatNumber,
     currentPrice,
+    closeNotionalUsd,
+    estimatedFees,
     track,
     closePercent,
     onClose,
