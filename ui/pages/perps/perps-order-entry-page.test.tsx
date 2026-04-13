@@ -823,6 +823,7 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastCloseInProgress',
+        description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
       });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
@@ -878,7 +879,7 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
-    it('does not add a close subtitle when close PnL cannot be calculated', async () => {
+    it('falls back to close subtitle when close PnL cannot be calculated', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
         positions: [
@@ -900,9 +901,10 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: {
+        state: expect.objectContaining({
           perpsToastKey: 'perpsToastTradeSuccess',
-        },
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
       });
     });
 
@@ -1360,6 +1362,9 @@ describe('PerpsOrderEntryPage', () => {
         key: 'perpsToastPartialCloseFailed',
         description: 'Your position is still active',
       });
+      expect(screen.getByTestId('perps-order-submit-error')).toHaveTextContent(
+        "We couldn't load this page.",
+      );
     });
 
     it('shows update failure toast when updatePositionTPSL fails', async () => {

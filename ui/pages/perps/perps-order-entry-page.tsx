@@ -281,6 +281,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
   const [pendingOrderToastDescription, setPendingOrderToastDescription] =
     useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
 
@@ -711,6 +712,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
+    setSubmitError(null);
     setOrderFormState(formState);
   }, []);
 
@@ -748,10 +750,12 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     setIsSubmitting(true);
     setPendingOrderToastDescription(null);
+    setSubmitError(null);
 
     const tradeActionToastDescription = getTradeActionToastDescription();
     const closePartialToastDescription = getClosePartialToastDescription();
-    const closeSuccessToastDescription = getCloseSuccessToastDescription();
+    const closeSuccessToastDescription =
+      getCloseSuccessToastDescription() ?? tradeActionToastDescription;
     const closePercent = orderFormState.closePercent ?? FULL_CLOSE_PERCENT;
     const isPartialClose =
       orderMode === 'close' && closePercent < FULL_CLOSE_PERCENT;
@@ -765,7 +769,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         : PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS;
       inProgressToastDescription = isPartialClose
         ? closePartialToastDescription
-        : undefined;
+        : tradeActionToastDescription;
     }
     if (inProgressToastKey !== undefined) {
       replacePerpsToastByKey({
@@ -1016,6 +1020,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         t as (key: string) => string,
       );
       if (orderMode === 'close') {
+        if (isPartialClose) {
+          setSubmitError(translatedError ?? t('somethingWentWrong'));
+        }
         replacePerpsToastByKey(getCloseFailureToastConfig(translatedError));
       } else {
         const failedToastDescription =
@@ -1300,6 +1307,15 @@ const PerpsOrderEntryPage: React.FC = () => {
             estimatedFees={orderCalculations.estimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
           />
+        )}
+        {submitError && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            data-testid="perps-order-submit-error"
+          >
+            {submitError}
+          </Text>
         )}
         <Button
           variant={ButtonVariant.Primary}
