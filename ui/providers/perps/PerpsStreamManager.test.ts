@@ -1,4 +1,5 @@
 import type { Position } from '@metamask/perps-controller';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
@@ -42,24 +43,6 @@ function makePosition(
     stopLossPrice: undefined,
     ...overrides,
   } as Position;
-}
-
-/**
- * Advance the microtask queue by the given number of ticks.
- *
- * fetchWithRecovery wraps each submitRequestToBackground call in an async
- * function, adding extra microtask hops vs a direct call.
- * Use ticks=4 for the normal path (2 extra hops from the async wrapper),
- * or ticks=10 for the CLIENT_NOT_INITIALIZED recovery (reinit + retry chain).
- *
- * @param ticks - Number of microtask ticks to flush (default 4).
- */
-async function flushMicrotasks(ticks = 4): Promise<void> {
-  if (ticks <= 0) {
-    return;
-  }
-  await Promise.resolve();
-  await flushMicrotasks(ticks - 1);
 }
 
 describe('PerpsStreamManager', () => {
@@ -116,7 +99,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.markets.subscribe(onData);
 
-        await flushMicrotasks();
+        await flushPromises();
 
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -156,14 +139,14 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         const unsubscribe = manager.markets.subscribe(onData);
 
-        await flushMicrotasks();
+        await flushPromises();
 
         unsubscribe();
 
         const onDataAfterReconnect = jest.fn();
         manager.markets.subscribe(onDataAfterReconnect);
 
-        await flushMicrotasks();
+        await flushPromises();
 
         expect(onData).toHaveBeenCalledWith(cachedMarkets);
         expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
@@ -207,7 +190,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.positions.subscribe(onData);
 
-      await flushMicrotasks(10);
+      await flushPromises();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith([{ symbol: 'ETH' }]);
@@ -232,7 +215,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.orders.subscribe(onData);
 
-      await flushMicrotasks(10);
+      await flushPromises();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith([{ id: '1' }]);
@@ -254,7 +237,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.positions.subscribe(onData);
 
-        await flushMicrotasks(10);
+        await flushPromises();
 
         expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
           'perpsInit',
@@ -284,7 +267,7 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.positions.subscribe(onData);
 
-        await flushMicrotasks(10);
+        await flushPromises();
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
         expect(onData).toHaveBeenCalledWith([]);
@@ -312,7 +295,7 @@ describe('PerpsStreamManager', () => {
       const onData = jest.fn();
       manager.account.subscribe(onData);
 
-      await flushMicrotasks(10);
+      await flushPromises();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
       expect(onData).toHaveBeenCalledWith({ totalBalance: '100' });
