@@ -78,19 +78,9 @@
     "ClaimsController": "object",
     "CurrencyController": {
       "currencyRates": {
-        "BNB": {
-          "conversionDate": null,
-          "conversionRate": null,
-          "usdConversionRate": null
-        },
         "ETH": {
           "conversionDate": "object",
           "conversionRate": 1700,
-          "usdConversionRate": null
-        },
-        "POL": {
-          "conversionDate": null,
-          "conversionRate": null,
           "usdConversionRate": null
         }
       },
