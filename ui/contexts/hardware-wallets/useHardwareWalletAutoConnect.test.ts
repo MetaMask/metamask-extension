@@ -667,6 +667,9 @@ describe('useHardwareWalletAutoConnect', () => {
         expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
       });
 
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
       expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
         HardwareWalletType.Ledger,
       );
@@ -711,6 +714,9 @@ describe('useHardwareWalletAutoConnect', () => {
         expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
       });
 
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
       expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
         HardwareWalletType.Trezor,
       );
@@ -782,6 +788,9 @@ describe('useHardwareWalletAutoConnect', () => {
         expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
       });
 
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
       expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
         HardwareWalletType.Ledger,
       );
@@ -834,6 +843,9 @@ describe('useHardwareWalletAutoConnect', () => {
         expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
       });
 
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
       expect(mockConnectRef).toHaveBeenCalled();
     });
 

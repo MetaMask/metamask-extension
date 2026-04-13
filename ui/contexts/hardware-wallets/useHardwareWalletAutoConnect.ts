@@ -288,6 +288,7 @@ export const useHardwareWalletAutoConnect = ({
             try {
               await connect();
               if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
+                updateConnectionState(ConnectionState.connected());
                 setAutoConnected(effectAccountAddress ?? null);
               } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
                 updateConnectionState(ConnectionState.disconnected());
