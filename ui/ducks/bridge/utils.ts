@@ -265,15 +265,5 @@ export const getDefaultToToken = (
 export const isSupportedBridgeChain = (
   caipChainId: string | ChainId,
 ): boolean => {
-  if (ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId)) {
-    return true;
-  }
-
-  try {
-    return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
-      formatChainIdToHex(caipChainId),
-    );
-  } catch {
-    return false;
-  }
+  return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
 };
