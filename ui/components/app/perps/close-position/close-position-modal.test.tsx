@@ -545,12 +545,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
-      // basePosition: marginUsed=2375, unrealizedPnl=375, size=2.5
-      // At currentPrice=2900, feeRate=0.0001:
-      //   margin = 2375 (100% close)
-      //   fees   = 2.5 * 2900 * 0.0001 = 0.725 → round2 = 0.73
-      //   youWillReceive = round2(2375) - round2(0.725) = 2375 - 0.73 = 2374.27
-      // The OLD formula would have been 2375 + 375 - 0.725 = 2749.28 (double-counted PnL).
       renderWithProvider(
         <ClosePositionModal
           isOpen
