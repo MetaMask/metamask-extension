@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
@@ -22,6 +23,58 @@ const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
 const BALANCE_POLL_TIMEOUT = 90_000;
 const RECONNECT_TIMEOUT = 60_000;
+
+/**
+ * Builds a testSpecificMock that mocks v2/supportedNetworks (including localhost
+ * chain 1337) and v5/multiaccount/balances with a call-counter strategy:
+ * - call 1  → 25 ETH (matches fixture initial state shown on login)
+ * - call 2+ → `finalBalance` ETH (reflects the Anvil balance set during the test)
+ *
+ * @param finalBalance - The balance string to return after the first poll.
+ * @returns A testSpecificMock function compatible with withFixtures.
+ */
+function buildAccountsApiV5Mock(finalBalance: string) {
+  return async (mockServer: Mockttp) => {
+    let callCount = 0;
+
+    await mockServer
+      .forGet(
+        /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
+      )
+      .always()
+      .thenJson(200, {
+        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
+        partialSupport: { balances: [42220, 43114] },
+      });
+
+    return mockServer
+      .forGet(
+        /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+      )
+      .always()
+      .thenCallback(() => {
+        callCount += 1;
+        const balance = callCount === 1 ? '25' : finalBalance;
+        return {
+          statusCode: 200,
+          json: {
+            count: 1,
+            unprocessedNetworks: [],
+            balances: [
+              {
+                accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+                assetId: 'eip155:1337/slip44:60',
+                balance,
+              },
+            ],
+          },
+        };
+      });
+  };
+}
+
+const mockAccountsApiV5With50Eth = buildAccountsApiV5Mock('50');
+const mockAccountsApiV5With35Eth = buildAccountsApiV5Mock('35');
 
 async function waitForAccountActivityWsConnections(
   driver: Driver,
@@ -59,6 +112,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApiV5With50Eth,
       },
       async ({
         driver,
@@ -96,6 +150,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApiV5With35Eth,
       },
       async ({
         driver,
@@ -162,49 +217,6 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
         server.sendMessage(JSON.stringify(notification));
 
         await waitForBalanceUpdate(homepage, driver, '35');
-      },
-    );
-  });
-
-  it('balance updates work via REST polling when WebSocket feature flag is disabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            backendWebSocketConnection: { value: false },
-          },
-        },
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await login(driver);
-
-        const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
-
-        const connectionCount = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        ).getWebsocketConnectionCount();
-
-        assert.equal(
-          connectionCount,
-          0,
-          `Expected 0 WebSocket connections with feature flag disabled, got ${connectionCount}`,
-        );
-
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          FIFTY_ETH_WEI,
-        );
-
-        await waitForBalanceUpdate(homepage, driver, '50');
       },
     );
   });

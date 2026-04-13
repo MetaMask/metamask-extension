@@ -3,8 +3,10 @@ import type { AssetsControllerMessenger as AssetsControllerMessengerType } from 
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
+  AccountTreeControllerStateChangeEvent,
 } from '@metamask/account-tree-controller';
 import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
@@ -157,7 +159,8 @@ type AllowedActions =
   | RpcDataSourceActions
   | BackendWebsocketDataSourceActions
   | SnapDataSourceActions
-  | PhishingControllerBulkScanTokensAction;
+  | PhishingControllerBulkScanTokensAction
+  | AccountsControllerGetSelectedAccountAction;
 /**
  * All events allowed for the AssetsController messenger.
  * Includes core controller events and all data source events.
@@ -171,7 +174,8 @@ type AllowedEvents =
   | RpcDataSourceEvents
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
-  | PreferencesControllerStateChangeEvent;
+  | PreferencesControllerStateChangeEvent
+  | AccountTreeControllerStateChangeEvent;
 /**
  * Messenger type for AssetsController initialization.
  */
@@ -219,6 +223,7 @@ export function getAssetsControllerMessenger(
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
+      'AccountsController:getSelectedAccount',
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
@@ -231,6 +236,7 @@ export function getAssetsControllerMessenger(
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'PreferencesController:stateChange',
+      'AccountTreeController:stateChange',
     ],
   });
 

@@ -157,6 +157,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/assets-controller": {
+      "type": "non-breaking",
+      "previewVersion": "5.0.0-preview-61580fcee"
+    }
+  },
   "resolutions": {
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
