@@ -9,6 +9,11 @@ class EditConnectedAccountsModal {
     testId: 'add-multichain-account-button',
   };
 
+  private readonly addNewAccountButtonReadyState = {
+    testId: 'add-multichain-account-button',
+    text: 'Add account',
+  };
+
   private readonly disconnectButton = {
     testId: 'disconnect-accounts-button',
   };
@@ -59,9 +64,32 @@ class EditConnectedAccountsModal {
   }
 
   async addNewAccount(): Promise<void> {
-    console.log('Add  account');
+    console.log('Add new account');
+    const initialCheckboxes = await this.driver.findElements(
+      this.accountCheckbox,
+    );
+    const initialCheckboxCount = initialCheckboxes.length;
+
+    await this.driver.waitForSelector(this.addNewAccountButtonReadyState, {
+      timeout: 10000,
+    });
     await this.driver.clickElement(this.addNewAccountButton);
-    await this.driver.waitForSelector(this.newlyCreateAccount);
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkboxes = await this.driver.findElements(
+            this.accountCheckbox,
+          );
+          return checkboxes.length > initialCheckboxCount;
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: 10000 },
+    );
+    await this.driver.waitForSelector(this.newlyCreateAccount, {
+      timeout: 10000,
+    });
     await this.driver.clickElement(this.newlyCreateAccount);
     await this.clickOnConnect();
   }

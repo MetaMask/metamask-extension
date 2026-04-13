@@ -38,10 +38,19 @@ import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
-import { normalizeTpslPrices, deriveTpslType } from '../utils';
+import {
+  normalizeTpslPrices,
+  deriveTpslType,
+  formatRoePercent,
+} from '../utils';
 
+// HyperLiquid taker fee rate (0.045%) - applied when a TP/SL order executes.
+// Source: FEE_RATES.taker in @metamask/perps-controller/constants/hyperLiquidConfig
+const HYPERLIQUID_TAKER_FEE_RATE = 0.00045;
+
+// RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
-const SL_PRESETS = [10, 25, 50, 75];
+const SL_PRESETS = [5, 10, 25, 50];
 
 function getPnlDisplayColor(pnl: number): TextColor {
   if (pnl > 0) {
@@ -100,12 +109,26 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const isMountedRef = useRef(true);
 
+  // Raw percent strings for each field, preserved while the user is typing
+  const [rawTpPercent, setRawTpPercent] = useState('');
+  const [rawSlPercent, setRawSlPercent] = useState('');
+  const [isTpPercentFocused, setIsTpPercentFocused] = useState(false);
+  const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
+  // Exact preset percent values, kept until the user manually edits a field
+  const [tpPresetPercent, setTpPresetPercent] = useState<string | null>(null);
+  const [slPresetPercent, setSlPresetPercent] = useState<string | null>(null);
+
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
       return Number.parseFloat(position.entryPrice.replaceAll(',', ''));
     }
     return currentPrice;
   }, [position, currentPrice]);
+
+  const leverageForEdit = useMemo(
+    () => position?.leverage?.value ?? 1,
+    [position],
+  );
 
   const positionDirection = useMemo(() => {
     if (!position) {
@@ -123,15 +146,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [formatNumber],
   );
 
-  const formatEditPercent = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }),
-    [formatNumber],
-  );
-
+  /**
+   * Convert a target price to a RoE% for display.
+   * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   */
   const priceToPercentForEdit = useCallback(
     (price: string, isTP: boolean): string => {
       if (!price || !entryPriceForEdit) {
@@ -143,30 +161,35 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         return '';
       }
       const diff = priceNum - entryPriceForEdit;
-      const percentChange = (diff / entryPriceForEdit) * 100;
+      const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
       if (positionDirection === 'long') {
-        return formatEditPercent(isTP ? percentChange : -percentChange);
+        return formatRoePercent(isTP ? percentChange : -percentChange);
       }
-      return formatEditPercent(isTP ? -percentChange : percentChange);
+      return formatRoePercent(isTP ? -percentChange : percentChange);
     },
-    [entryPriceForEdit, positionDirection, formatEditPercent],
+    [entryPriceForEdit, leverageForEdit, positionDirection],
   );
 
+  /**
+   * Convert a RoE% to a target price.
+   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
+   */
   const percentToPriceForEdit = useCallback(
     (percent: number, isTP: boolean): string => {
       if (!entryPriceForEdit || percent === 0) {
         return '';
       }
+      const priceChangeRatio = percent / (leverageForEdit * 100);
       let multiplier: number;
       if (positionDirection === 'long') {
-        multiplier = isTP ? 1 + percent / 100 : 1 - percent / 100;
+        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
       } else {
-        multiplier = isTP ? 1 - percent / 100 : 1 + percent / 100;
+        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
       }
       const price = entryPriceForEdit * multiplier;
       return formatEditPrice(price);
     },
-    [entryPriceForEdit, positionDirection, formatEditPrice],
+    [entryPriceForEdit, leverageForEdit, positionDirection, formatEditPrice],
   );
 
   const editingTpPercent = useMemo(
@@ -193,7 +216,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
-    return signedSize * (exitPrice - entryPriceForEdit);
+    const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
+    const closingFee =
+      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    return grossPnl - closingFee;
   }, [editingTpPrice, signedSize, entryPriceForEdit]);
 
   const estimatedPnlAtSl = useMemo(() => {
@@ -205,7 +231,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
-    return signedSize * (exitPrice - entryPriceForEdit);
+    const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
+    const closingFee =
+      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    return grossPnl - closingFee;
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
   useEffect(() => {
@@ -218,6 +247,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (percent: number) => {
       const newPrice = percentToPriceForEdit(percent, true);
       setEditingTpPrice(newPrice);
+      // Preserve the exact preset value for display — avoids round-trip drift
+      // caused by the price being rounded to 2 decimal places
+      const presetStr = String(percent);
+      setRawTpPercent(presetStr);
+      setTpPresetPercent(presetStr);
     },
     [percentToPriceForEdit],
   );
@@ -226,6 +260,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (percent: number) => {
       const newPrice = percentToPriceForEdit(percent, false);
       setEditingSlPrice(newPrice);
+      const presetStr = String(percent);
+      setRawSlPercent(presetStr);
+      setSlPresetPercent(presetStr);
     },
     [percentToPriceForEdit],
   );
@@ -234,6 +271,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+        setRawTpPercent(value);
+        setTpPresetPercent(null);
         const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingTpPrice('');
@@ -246,10 +285,23 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [percentToPriceForEdit],
   );
 
+  const handleTpPercentFocus = useCallback(() => {
+    setRawTpPercent(tpPresetPercent ?? editingTpPercent);
+    setIsTpPercentFocused(true);
+  }, [tpPresetPercent, editingTpPercent]);
+
+  const handleTpPercentBlur = useCallback(() => {
+    setIsTpPercentFocused(false);
+    setRawTpPercent('');
+    setTpPresetPercent(null);
+  }, []);
+
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+        setRawSlPercent(value);
+        setSlPresetPercent(null);
         const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingSlPrice('');
@@ -261,6 +313,17 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     },
     [percentToPriceForEdit],
   );
+
+  const handleSlPercentFocus = useCallback(() => {
+    setRawSlPercent(slPresetPercent ?? editingSlPercent);
+    setIsSlPercentFocused(true);
+  }, [slPresetPercent, editingSlPercent]);
+
+  const handleSlPercentBlur = useCallback(() => {
+    setIsSlPercentFocused(false);
+    setRawSlPercent('');
+    setSlPresetPercent(null);
+  }, []);
 
   const handleTpPriceBlur = useCallback(() => {
     if (editingTpPrice) {
@@ -450,6 +513,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                 const { value } = e.target;
                 if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
                   setEditingTpPrice(value);
+                  setTpPresetPercent(null);
                 }
               }}
               onBlur={handleTpPriceBlur}
@@ -472,9 +536,15 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           <Box className="flex-1">
             <TextField
               size={TextFieldSize.Md}
-              value={editingTpPercent}
+              value={
+                isTpPercentFocused
+                  ? rawTpPercent
+                  : (tpPresetPercent ?? editingTpPercent)
+              }
               onChange={handleTpPercentInputChange}
-              placeholder="0.0"
+              onFocus={handleTpPercentFocus}
+              onBlur={handleTpPercentBlur}
+              placeholder="0"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
@@ -561,6 +631,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                 const { value } = e.target;
                 if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
                   setEditingSlPrice(value);
+                  setSlPresetPercent(null);
                 }
               }}
               onBlur={handleSlPriceBlur}
@@ -583,9 +654,15 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           <Box className="flex-1">
             <TextField
               size={TextFieldSize.Md}
-              value={editingSlPercent}
+              value={
+                isSlPercentFocused
+                  ? rawSlPercent
+                  : (slPresetPercent ?? editingSlPercent)
+              }
               onChange={handleSlPercentInputChange}
-              placeholder="0.0"
+              onFocus={handleSlPercentFocus}
+              onBlur={handleSlPercentBlur}
+              placeholder="0"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
