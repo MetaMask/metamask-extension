@@ -18,7 +18,7 @@ import {
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
