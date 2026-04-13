@@ -222,6 +222,10 @@ class BridgeQuotePage {
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+  };
+
+  submitQuoteAndDismiss = async () => {
+    await this.submitQuote();
 
     await this.dismissStatusPageIfPresent();
   };
