@@ -544,20 +544,6 @@ describe('ClosePositionModal', () => {
       });
     });
 
-    it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
-      renderWithProvider(
-        <ClosePositionModal
-          isOpen
-          onClose={jest.fn()}
-          position={basePosition}
-          currentPrice={2900}
-        />,
-        mockStore,
-      );
-
-      expect(screen.getByText('$2,374.27')).toBeInTheDocument();
-    });
-
     it('disables submit and shows warning when partial notional is under $10', async () => {
       const user = userEvent.setup();
       const smallPosition = {
@@ -593,6 +579,27 @@ describe('ClosePositionModal', () => {
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
       });
+    });
+  });
+
+  describe('receive amount calculation', () => {
+    it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
+      // basePosition: marginUsed=2375, unrealizedPnl=375, size=2.5
+      // At currentPrice=2900, feeRate=0.0001:
+      //   margin = 2375 (100% close)
+      //   fees   = 2.5 * 2900 * 0.0001 = 0.725 → round2 = 0.73
+      //   youWillReceive = round2(2375) - round2(0.725) = 2375.00 - 0.73 = 2374.27
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('$2,374.27')).toBeInTheDocument();
     });
   });
 });
