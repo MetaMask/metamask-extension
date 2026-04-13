@@ -35,7 +35,7 @@ describe('Bridge tests', function (this: Suite) {
         withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver, { expectedBalance: '0' });
+        await login(driver, { expectedBalance: '225,730.11' });
 
         const homePage = new HomePage(driver);
         const bridgePage = new BridgeQuotePage(driver);
