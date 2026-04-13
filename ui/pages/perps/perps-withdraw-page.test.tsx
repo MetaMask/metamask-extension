@@ -476,9 +476,6 @@ describe('PerpsWithdrawPage', () => {
     await settleInitialWithdrawRoutesFetch();
 
     expect(
-      screen.queryByText(messages.perpsGeoBlockedTooltip.message),
-    ).not.toBeInTheDocument();
-    expect(
       screen.getByTestId('perps-withdraw-percentage-buttons'),
     ).toBeInTheDocument();
     expect(

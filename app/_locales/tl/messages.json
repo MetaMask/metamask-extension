@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Bayad kada oras na ibinabayad ng mga trader para mapanatiling naaayon ang mga presyo sa market. Kung positibo ang rate, magbabayad ang mga nag-long sa mga nag-short. Kung negatibo, magbabayad ang mga nag-short sa mga nag-long."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Hindi available ang perpetual trading sa rehiyon mo"
-  },
   "perpsGiveFeedback": {
     "message": "Bigyan kami ng feedback"
   },

@@ -5602,9 +5602,6 @@
   "perpsGeoBlockedTitle": {
     "message": "Perps unavailable in your region"
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Perpetual trading is not available in your region"
-  },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
   },

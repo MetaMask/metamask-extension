@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Biaya per jam yang dibayarkan antar trader untuk mempertahankan harga agar sesuai dengan pasar. Jika nilainya positif, pemegang posisi long membayar pemegang posisi short. Jika negatif, pemegang posisi short membayar pemegang posisi long."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Perdagangan perpetual tidak tersedia di wilayah Anda"
-  },
   "perpsGiveFeedback": {
     "message": "Berikan masukan kepada kami"
   },

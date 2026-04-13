@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Eine zwischen Tradern entrichtete stündliche Gebühr, um die Preise marktgerecht zu halten. Ist der Kurs positiv, zahlen Longs die Short-Positionen. Bei negativem Kurs zahlen Shorts an Long-Positionen."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Das Trading mit unbefristeten Kontrakten ist in Ihrer Region nicht verfügbar"
-  },
   "perpsGiveFeedback": {
     "message": "Geben Sie uns Feedback"
   },
