@@ -1156,9 +1156,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
-                    {/* Controller/mobile ROE is percent (e.g. 15.79), formatter expects ratio. */}
+                    {/* Controller/mobile ROE is a ratio (e.g. 0.1579), same as what the formatter expects. */}
                     {formatPercentWithMinThreshold(
-                      Number.parseFloat(position.returnOnEquity) / 100,
+                      Number.parseFloat(position.returnOnEquity),
                     )}
                   </Text>
                 </Box>

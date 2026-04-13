@@ -508,12 +508,12 @@ export const hasVolume = (market: PerpsMarketData): boolean => {
  * cannot be determined.
  *
  * Primary: unrealizedPnl / marginUsed.
- * Fallback: returnOnEquity (percent) converted to a ratio.
+ * Fallback: returnOnEquity, which is already a ratio (e.g. 0.1579 for 15.79%).
  *
  * @param position - Position values used to compute the PnL ratio.
  * @param position.unrealizedPnl - Unrealized profit and loss as a string.
  * @param position.marginUsed - Margin used as a string.
- * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @param position.returnOnEquity - Return on equity as a decimal ratio string (e.g. "0.1579").
  * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
  */
 export const getPositionPnlRatio = (position: {
@@ -534,8 +534,8 @@ export const getPositionPnlRatio = (position: {
 
   const returnOnEquity = parseFloat(position.returnOnEquity);
   if (!Number.isNaN(returnOnEquity)) {
-    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
-    return returnOnEquity / 100;
+    // position.returnOnEquity is a decimal ratio (e.g. 0.1579); pass directly to formatter.
+    return returnOnEquity;
   }
 
   return undefined;
