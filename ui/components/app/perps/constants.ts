@@ -46,19 +46,6 @@ export const PERPS_CONSTANTS = {
 } as const;
 
 /**
- * Static fallback fee rate for market orders (0.145%).
- * Composed of:
- * - HyperLiquid protocol taker fee: 0.045% (FEE_RATES.taker)
- * - MetaMask builder fee:           0.100% (BUILDER_FEE_CONFIG.MaxFeeDecimal)
- *
- * Prefer using `usePerpsOrderFees` which calls `perpsCalculateFees` to get
- * user-specific rates (volume-tier discounts, referral/staking discounts,
- * HIP-3 multipliers, and MetaMask Rewards discounts). This constant is only
- * used as the default value while the async fee fetch is in progress or on error.
- */
-export const PERPS_MARKET_ORDER_FEE_RATE = 0.00145;
-
-/**
  * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
