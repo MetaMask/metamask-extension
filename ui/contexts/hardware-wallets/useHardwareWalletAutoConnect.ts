@@ -87,7 +87,7 @@ export const useHardwareWalletAutoConnect = ({
       // so we only mark auto-connected for the correct account
       const effectAccountAddress = accountAddress;
 
-      const runNativeConnect = async () => {
+      const handleNativeConnect = async () => {
         if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
           return;
         }
@@ -149,7 +149,7 @@ export const useHardwareWalletAutoConnect = ({
       };
 
       const handleNativeConnect = () => {
-        runNativeConnect().catch(() => {
+        handleNativeConnect().catch(() => {
           // Swallow errors; auto-connect best-effort only.
         });
       };
