@@ -81,6 +81,16 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+  }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     REVERSE_FAILED: 'perpsToastReverseFailed',
@@ -146,7 +156,7 @@ describe('ReversePositionModal', () => {
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
 
-    it('shows Cancel and Save buttons', () => {
+    it('shows Cancel and Confirm buttons', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
@@ -157,10 +167,11 @@ describe('ReversePositionModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('shows fees placeholder as em-dash', () => {
+    it('shows estimated flip fee', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('—')).toBeInTheDocument();
+      // 2 * 2.5 * 2900 * 0.0001 = $1.45
+      expect(screen.getByText('-$1.45')).toBeInTheDocument();
     });
   });
 

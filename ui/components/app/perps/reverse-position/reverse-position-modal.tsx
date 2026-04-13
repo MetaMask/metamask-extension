@@ -26,9 +26,11 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
+import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
@@ -72,7 +74,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  currentPrice: _currentPrice,
+  currentPrice,
 }) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
@@ -87,6 +89,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -97,6 +100,12 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
+
+  // Flip trades 2x position size (close + reopen), matching close-position-modal fee pattern.
+  const estimatedFees = useMemo(
+    () => 2 * sizeNum * currentPrice * PERPS_MARKET_ORDER_FEE_RATE,
+    [sizeNum, currentPrice],
+  );
 
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),
@@ -205,8 +214,12 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
               >
                 {t('perpsFees')}
               </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                —
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                data-testid="perps-reverse-fee-value"
+              >
+                -{formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
               </Text>
             </Box>
             {error && (
@@ -235,7 +248,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           }}
           submitButtonProps={{
             'data-testid': 'perps-reverse-position-modal-save',
-            children: isSubmitting ? t('perpsSubmitting') : t('save'),
+            children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
             disabled: isSubmitting,
           }}
         />
