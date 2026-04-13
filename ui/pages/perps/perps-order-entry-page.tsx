@@ -1091,9 +1091,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
-  const resolvedButtonText = isPrimaryTradeAction && isInsufficientFunds
-    ? t('insufficientFundsSend')
-    : submitButtonText;
+  const resolvedButtonText =
+    isPrimaryTradeAction && isInsufficientFunds
+      ? t('insufficientFundsSend')
+      : submitButtonText;
 
   return (
     <Box
