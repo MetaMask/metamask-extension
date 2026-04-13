@@ -62,8 +62,8 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constants';
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -261,6 +261,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     useState<string | null>(null);
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
+
+  // Dynamic fee rate for close-mode order submission tracking
+  const { feeRate: closeFeeRate } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType: 'market',
+  });
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -734,8 +740,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (orderMode === 'close' && position) {
         const closeNotionalUsd =
           Math.abs(parseFloat(position.size)) * currentPrice;
-        const closeEstimatedFees =
-          closeNotionalUsd * PERPS_MARKET_ORDER_FEE_RATE;
+        const closeEstimatedFees = closeNotionalUsd * (closeFeeRate ?? 0);
 
         const closeParams = {
           symbol: orderFormState.asset,

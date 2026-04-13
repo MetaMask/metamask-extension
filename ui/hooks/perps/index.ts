@@ -3,6 +3,7 @@ export { usePerpsEligibility } from './usePerpsEligibility';
 export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export { usePerpsMarketInfo } from './usePerpsMarketInfo';
+export { usePerpsOrderFees } from './usePerpsOrderFees';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,

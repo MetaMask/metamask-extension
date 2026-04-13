@@ -29,6 +29,10 @@ jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => undefined,
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

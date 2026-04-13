@@ -11,7 +11,6 @@ import type {
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
-import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constants';
 
 /**
  * Calculate the estimated liquidation price for an isolated-margin position.
@@ -104,6 +103,15 @@ export type UsePerpsOrderFormOptions = {
    * Falls back to currentPrice when not yet available.
    */
   markPrice?: number;
+  /**
+   * Combined fee rate (protocol + MetaMask builder) from usePerpsOrderFees.
+   * Includes user-specific volume-tier discounts, referral/staking discounts,
+   * HIP-3 multipliers, and MetaMask Rewards discounts.
+   *
+   * `undefined` while usePerpsOrderFees is loading or in an error state;
+   * fee estimates will show $0.00 until a real rate arrives (mobile parity).
+   */
+  feeRate?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -162,6 +170,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.maxLeverage - Maximum leverage for the asset (used in liquidation price formula)
  * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
+ * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -178,6 +187,7 @@ export function usePerpsOrderForm({
   maxLeverage = 50,
   szDecimals,
   markPrice,
+  feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -319,7 +329,7 @@ export function usePerpsOrderForm({
       const closeAmount = (positionSize * closePercent) / 100;
       const closeValueUsd = closeAmount * currentPrice;
 
-      const estimatedFees = closeValueUsd * PERPS_MARKET_ORDER_FEE_RATE;
+      const estimatedFees = closeValueUsd * (feeRate ?? 0);
 
       return {
         positionSize: formatTokenQuantity(closeAmount, asset),
@@ -382,7 +392,7 @@ export function usePerpsOrderForm({
     const marginRequired = notional / formState.leverage;
     // Fees are charged on the actual execution notional, matching the close-mode path
     // and the exchange's own calculation.
-    const estimatedFees = notional * PERPS_MARKET_ORDER_FEE_RATE;
+    const estimatedFees = notional * (feeRate ?? 0);
     const liquidationPriceValue = calculateLiquidationPrice(
       effectivePrice,
       formState.leverage,
@@ -415,6 +425,7 @@ export function usePerpsOrderForm({
     maxLeverage,
     szDecimals,
     markPrice,
+    feeRate,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
   ]);
