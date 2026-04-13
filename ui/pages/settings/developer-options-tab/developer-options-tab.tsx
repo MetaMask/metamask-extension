@@ -222,7 +222,7 @@ const DeveloperOptionsTab = () => {
   const perpsTestnetToggleRef = useRef<HTMLDivElement>(null);
 
   const handleTogglePerpsTestnet = useCallback(
-    async (_value: boolean): Promise<void> => {
+    async (): Promise<void> => {
       await perpsToggleTestnet();
     },
     [],
