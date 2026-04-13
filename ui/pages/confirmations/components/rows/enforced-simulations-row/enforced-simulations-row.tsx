@@ -50,7 +50,7 @@ export function EnforcedSimulationsRow() {
     applyTransactionContainersExisting(transactionId, [
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
-    ]);
+    ]).catch(console.error);
   }, [isEligible, hasAutoEnabled, transactionId, containerTypes]);
 
   if (!isEligible && !hasAutoEnabled) {

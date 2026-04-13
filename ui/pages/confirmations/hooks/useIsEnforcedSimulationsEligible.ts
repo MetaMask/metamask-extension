@@ -6,13 +6,15 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { useConfirmContext } from '../context/confirm';
 
+const EMPTY_RESPONSES: EnforcedSimulationsState['addressSecurityAlertResponses'] =
+  {};
+
 export function useIsEnforcedSimulationsEligible(): boolean {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const addressSecurityAlertResponses = useSelector(
-    (state: {
-      metamask: Pick<EnforcedSimulationsState, 'addressSecurityAlertResponses'>;
-    }) => state.metamask.addressSecurityAlertResponses ?? {},
+    (state: { metamask: EnforcedSimulationsState }) =>
+      state.metamask.addressSecurityAlertResponses ?? EMPTY_RESPONSES,
   );
 
   if (!currentConfirmation) {
