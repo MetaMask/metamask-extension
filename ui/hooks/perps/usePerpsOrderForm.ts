@@ -1,5 +1,6 @@
 import type { OrderType } from '@metamask/perps-controller';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   mockOrderFormDefaults,
@@ -12,6 +13,7 @@ import type {
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
 import { formatPerpsPrice } from '../../../shared/lib/perps-formatters';
+import { getIntlLocale } from '../../ducks/locale/locale';
 
 /**
  * Calculate the estimated liquidation price for an isolated-margin position.
@@ -188,6 +190,7 @@ export function usePerpsOrderForm({
   markPrice,
   feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
+  const locale = useSelector(getIntlLocale);
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
@@ -408,7 +411,7 @@ export function usePerpsOrderForm({
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice:
         liquidationPriceValue > 0
-          ? formatPerpsPrice(liquidationPriceValue)
+          ? formatPerpsPrice(liquidationPriceValue, locale)
           : null,
       liquidationPriceRaw: liquidationPriceValue,
       orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
@@ -429,6 +432,7 @@ export function usePerpsOrderForm({
     szDecimals,
     markPrice,
     feeRate,
+    locale,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
   ]);
