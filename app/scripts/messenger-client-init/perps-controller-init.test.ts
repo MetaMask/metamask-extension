@@ -388,6 +388,31 @@ describe('PerpsControllerInit', () => {
         builderAddressTestnet: '0xdef456',
       });
     });
+
+    it('trims whitespace from builder addresses', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = ' 0xabc123 ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = ' 0xdef456 ';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('omits whitespace-only builder addresses so package defaults still apply', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '   ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '\t';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
+    });
   });
 
   describe('api method delegation', () => {
