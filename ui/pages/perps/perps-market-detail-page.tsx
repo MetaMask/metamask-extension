@@ -92,6 +92,7 @@ import { ReversePositionModal } from '../../components/app/perps/reverse-positio
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -293,9 +294,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
+    usePerpsDepositConfirmation();
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
@@ -385,6 +388,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
+  const hasNoAvailableBalance =
+    !position && !isLoadingAccount && !hasPerpBalance;
 
   // Ref to track current position - avoids stale data in callbacks
   // This follows mobile's pattern (currentPositionRef) to ensure we always
@@ -641,7 +646,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible || !decodedSymbol) {
+      if (!isEligible || !decodedSymbol || isLoadingAccount) {
         return;
       }
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -656,8 +661,40 @@ const PerpsMarketDetailPage: React.FC = () => {
       });
       navigate(buildOrderEntryUrl(direction, 'new'));
     },
-    [isEligible, decodedSymbol, navigate, buildOrderEntryUrl, track],
+    [
+      isEligible,
+      decodedSymbol,
+      isLoadingAccount,
+      navigate,
+      buildOrderEntryUrl,
+      track,
+    ],
   );
+
+  const handleAddFunds = useCallback(() => {
+    if (!isEligible || !selectedAddress || isDepositLoading) {
+      return;
+    }
+
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
+    });
+
+    triggerDeposit();
+  }, [
+    decodedSymbol,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    track,
+    triggerDeposit,
+  ]);
 
   const handleClosePosition = useCallback(() => {
     if (!isEligible || !position) {
@@ -1793,7 +1830,21 @@ const PerpsMarketDetailPage: React.FC = () => {
         )}
 
         {/* Without Position: Show Long and Short buttons */}
-        {!position && (
+        {!position && hasNoAvailableBalance && (
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleAddFunds}
+            disabled={!isEligible || !selectedAddress || isDepositLoading}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            className="w-full"
+            data-testid="perps-add-funds-cta-button"
+          >
+            {t('addFunds')}
+          </Button>
+        )}
+
+        {!position && !hasNoAvailableBalance && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -1804,7 +1855,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              disabled={!isEligible}
+              disabled={!isEligible || isLoadingAccount}
               title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-long-cta-button"
@@ -1817,7 +1868,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              disabled={!isEligible}
+              disabled={!isEligible || isLoadingAccount}
               title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-short-cta-button"

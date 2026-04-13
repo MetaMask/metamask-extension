@@ -202,6 +202,13 @@ jest.mock('../../components/app/perps/perps-toast', () => {
 const mockUsePerpsMarketFills = jest
   .fn()
   .mockReturnValue({ fills: [], isInitialLoading: false });
+const mockTriggerDeposit = jest.fn().mockResolvedValue({
+  transactionId: 'perps-deposit-tx',
+});
+const mockLiveAccount = jest.fn(() => ({
+  account: mockAccountState,
+  isInitialLoading: false,
+}));
 
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -212,6 +219,15 @@ jest.mock('../../hooks/perps', () => ({
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
 }));
+jest.mock(
+  '../../components/app/perps/hooks/usePerpsDepositConfirmation',
+  () => ({
+    usePerpsDepositConfirmation: () => ({
+      trigger: mockTriggerDeposit,
+      isLoading: false,
+    }),
+  }),
+);
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -223,10 +239,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     orders: mockOrders,
     isInitialLoading: false,
   }),
-  usePerpsLiveAccount: () => ({
-    account: mockAccountState,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => ({
     markets: [...mockCryptoMarkets, ...mockHip3Markets],
     isInitialLoading: false,
@@ -322,6 +335,11 @@ describe('PerpsMarketDetailPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockReplacePerpsToastByKey.mockReset();
+    mockTriggerDeposit.mockClear();
+    mockLiveAccount.mockReturnValue({
+      account: mockAccountState,
+      isInitialLoading: false,
+    });
     mockUsePerpsMarketFills.mockReturnValue({
       fills: [],
       isInitialLoading: false,
@@ -1033,6 +1051,49 @@ describe('PerpsMarketDetailPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('shows an add funds CTA instead of Long/Short when balance is zero', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-trade-cta-buttons'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-add-funds-cta-button'),
+      ).toHaveTextContent(messages.addFunds.message);
+    });
+
+    it('starts deposit flow from add funds CTA when balance is zero', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-add-funds-cta-button'));
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
     it('navigates to order entry when Long button is clicked', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
       const store = mockStore(createMockState(true));
@@ -1074,6 +1135,20 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.queryByText(messages.perpsPosition.message),
       ).not.toBeInTheDocument();
+    });
+
+    it('keeps trade buttons disabled while account state is loading', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: mockAccountState,
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-long-cta-button')).toBeDisabled();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeDisabled();
     });
   });
 

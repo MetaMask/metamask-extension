@@ -113,6 +113,9 @@ jest.mock('../../store/background-connection', () => ({
 
 const mockReplacePerpsToastByKey = jest.fn();
 const mockHidePerpsToast = jest.fn();
+const mockTriggerDeposit = jest.fn().mockResolvedValue({
+  transactionId: 'perps-deposit-tx',
+});
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -131,6 +134,15 @@ jest.mock('../../providers/perps', () => {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   };
 });
+jest.mock(
+  '../../components/app/perps/hooks/usePerpsDepositConfirmation',
+  () => ({
+    usePerpsDepositConfirmation: () => ({
+      trigger: mockTriggerDeposit,
+      isLoading: false,
+    }),
+  }),
+);
 
 const mockLivePositions = jest.fn<
   { positions: Position[]; isInitialLoading: boolean },
@@ -257,6 +269,7 @@ describe('PerpsOrderEntryPage', () => {
     mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
+    mockTriggerDeposit.mockClear();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -440,7 +453,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('disables submit and prompts to add funds when new order balance is zero', () => {
+    it('shows an add funds CTA when new order balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -452,10 +465,31 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
+      const submitButton = screen.getByTestId('submit-order-button');
+
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(messages.addFunds.message);
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables submit while account state is still loading for a new order', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
-        messages.addFunds.message,
-      );
     });
 
     it('disables submit when selected account address is missing', async () => {
@@ -622,6 +656,29 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
         messages.insufficientFundsSend.message,
       );
+    });
+
+    it('disables submit when auto-close take profit is invalid', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
     });
   });
 
