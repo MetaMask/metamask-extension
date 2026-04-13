@@ -79,4 +79,3 @@ export function calculatePositionSize(
   const factor = Math.pow(10, szDecimals);
   return Math.trunc(raw * factor) / factor;
 }
-

@@ -11,6 +11,7 @@ import type {
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
+import { formatPerpsPrice } from '../../../shared/lib/perps-formatters';
 
 /**
  * Calculate the estimated liquidation price for an isolated-margin position.
@@ -378,7 +379,9 @@ export function usePerpsOrderForm({
         ? markPrice
         : undefined;
     const effectiveMarginPrice =
-      formState.type === 'limit' ? effectivePrice : (safeMarkPrice ?? effectivePrice);
+      formState.type === 'limit'
+        ? effectivePrice
+        : (safeMarkPrice ?? effectivePrice);
 
     const positionSize = calculatePositionSize(
       amount,
@@ -403,10 +406,10 @@ export function usePerpsOrderForm({
     return {
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(
-        liquidationPriceValue,
-        'USD',
-      ),
+      liquidationPrice:
+        liquidationPriceValue > 0
+          ? formatPerpsPrice(liquidationPriceValue)
+          : null,
       liquidationPriceRaw: liquidationPriceValue,
       orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
