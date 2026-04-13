@@ -321,10 +321,15 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
-  const youWillReceive = useMemo(
-    () => margin + unrealizedPnl - estimatedFees,
-    [margin, unrealizedPnl, estimatedFees],
-  );
+  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
+  // add unrealizedPnl separately (that would double-count).
+  // Round each component to 2 decimals so the displayed breakdown is additive:
+  //   displayed margin − displayed fees = displayed receive amount.
+  const youWillReceive = useMemo(() => {
+    const roundedMargin = Math.round(margin * 100) / 100;
+    const roundedFees = Math.round(estimatedFees * 100) / 100;
+    return roundedMargin - roundedFees;
+  }, [margin, estimatedFees]);
 
   const isSubmitDisabled =
     !isPriceValid ||
