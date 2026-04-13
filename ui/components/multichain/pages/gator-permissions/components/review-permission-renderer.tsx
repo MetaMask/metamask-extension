@@ -192,22 +192,36 @@ const ReviewNetworkRow: React.FC<{
 // Element renderer
 // ---------------------------------------------------------------------------
 
-function renderElement(
-  sectionTestId: string,
-  element: SchemaElement,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-  tokenSymbol: string,
-  tokenDecimals: number | undefined,
-  loading: boolean,
-  index: number,
-  viewMode: FieldView,
+type RenderElementOptions = {
+  sectionTestId: string;
+  element: SchemaElement;
+  ctx: PermissionRenderContext;
+  t: I18nFunction;
+  tokenSymbol: string;
+  tokenDecimals: number | undefined;
+  isLoading: boolean;
+  index: number;
+  viewMode: FieldView;
   extraProps: {
     permissionAccount?: string;
     networkName?: string;
-  },
-  rules?: GatorPermissionRule[] | null,
-): React.ReactNode {
+  };
+  rules?: GatorPermissionRule[] | null;
+};
+
+function renderElement({
+  sectionTestId,
+  element,
+  ctx,
+  t,
+  tokenSymbol,
+  tokenDecimals,
+  isLoading: loading,
+  index,
+  viewMode,
+  extraProps,
+  rules,
+}: RenderElementOptions): React.ReactNode {
   // Skip elements not intended for the current view
   if (
     'includeInViews' in element &&
@@ -351,36 +365,48 @@ function renderExpiryElement(
 // Section renderer
 // ---------------------------------------------------------------------------
 
-function renderSection(
-  section: SchemaSection,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-  tokenSymbol: string,
-  tokenDecimals: number | undefined,
-  loading: boolean,
-  viewMode: FieldView,
+type RenderSectionOptions = {
+  section: SchemaSection;
+  ctx: PermissionRenderContext;
+  t: I18nFunction;
+  tokenSymbol: string;
+  tokenDecimals: number | undefined;
+  isLoading: boolean;
+  viewMode: FieldView;
   extraProps: {
     permissionAccount?: string;
     networkName?: string;
-  },
-  rules?: GatorPermissionRule[] | null,
-): React.ReactNode {
+  };
+  rules?: GatorPermissionRule[] | null;
+};
+
+function renderSection({
+  section,
+  ctx,
+  t,
+  tokenSymbol,
+  tokenDecimals,
+  isLoading,
+  viewMode,
+  extraProps,
+  rules,
+}: RenderSectionOptions): React.ReactNode {
   return (
     <React.Fragment key={section.testId}>
       {section.elements.map((element, index) =>
-        renderElement(
-          section.testId,
+        renderElement({
+          sectionTestId: section.testId,
           element,
           ctx,
           t,
           tokenSymbol,
           tokenDecimals,
-          loading,
+          isLoading,
           index,
           viewMode,
           extraProps,
           rules,
-        ),
+        }),
       )}
     </React.Fragment>
   );
@@ -463,17 +489,17 @@ export const ReviewPermissionRenderer: React.FC<
   return (
     <>
       {schemaEntry.sections.map((section) =>
-        renderSection(
+        renderSection({
           section,
           ctx,
           t,
-          tokenInfo.symbol,
-          tokenInfo.decimals,
-          loading,
+          tokenSymbol: tokenInfo.symbol,
+          tokenDecimals: tokenInfo.decimals,
+          isLoading: loading,
           viewMode,
           extraProps,
           rules,
-        ),
+        }),
       )}
     </>
   );
