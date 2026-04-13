@@ -27,8 +27,14 @@ function genMusdConversion() {
   return { ...base, type: TransactionType.musdConversion, origin: 'metamask' };
 }
 
+function genPerpsDeposit() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return { ...base, type: TransactionType.perpsDeposit, origin: 'metamask' };
+}
+
 function render({
   isGaslessLoading = false,
+  confirmation = genMusdConversion(),
   alerts = [] as {
     key: string;
     severity: string;
@@ -37,6 +43,9 @@ function render({
   }[],
 }: {
   isGaslessLoading?: boolean;
+  confirmation?:
+    | ReturnType<typeof genMusdConversion>
+    | ReturnType<typeof genPerpsDeposit>;
   alerts?: {
     key: string;
     severity: string;
@@ -44,7 +53,6 @@ function render({
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const confirmation = genMusdConversion();
   const baseState = getMockConfirmStateForTransaction(
     confirmation,
   ) as DefaultRootState;
@@ -144,5 +152,11 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('shows Add funds label for perpsDeposit transaction type', () => {
+    const { getByTestId } = render({ confirmation: genPerpsDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent('Add funds');
   });
 });

@@ -50,6 +50,7 @@ export type CustomAmountInfoProps = {
   currency?: string;
   disablePay?: boolean;
   hasMax?: boolean;
+  hidePayTokenAmount?: boolean;
   preferredToken?: SetPayTokenRequest;
   overrideBottomContent?: ReactNode;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -61,6 +62,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     currency,
     disablePay,
     hasMax,
+    hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
     preferredToken,
@@ -117,6 +119,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           disablePay={disablePay}
           hasMax={hasMax && !isNativePayToken}
           hasTokens={hasTokens}
+          hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
@@ -150,6 +153,7 @@ type CenterContainerProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hasTokens: boolean;
+  hidePayTokenAmount?: boolean;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -163,6 +167,7 @@ function CenterContainer({
   disablePay,
   hasMax,
   hasTokens,
+  hidePayTokenAmount,
   onAmountChange,
   onPercentageClick,
   overrideCenterContent,
@@ -192,7 +197,7 @@ function CenterContainer({
           alignItems={AlignItems.center}
           gap={3}
         >
-          {disablePay !== true && (
+          {disablePay !== true && !hidePayTokenAmount && (
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}

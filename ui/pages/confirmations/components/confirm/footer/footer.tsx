@@ -51,7 +51,10 @@ import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
-const SINGLE_ACTION_FOOTER_TYPES = [TransactionType.musdConversion];
+const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.musdConversion,
+  TransactionType.perpsDeposit,
+];
 
 export type OnCancelHandler = ({
   location,

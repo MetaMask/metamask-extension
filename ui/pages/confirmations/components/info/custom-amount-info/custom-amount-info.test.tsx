@@ -90,6 +90,7 @@ const DEFAULT_ALERTS_HOOK_RETURN = {
 function render({
   hasMax = false,
   disablePay = false,
+  hidePayTokenAmount = false,
   availableTokens = [MOCK_AVAILABLE_TOKEN],
   customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
   payTokenHookReturn = DEFAULT_PAY_TOKEN_HOOK_RETURN,
@@ -101,6 +102,7 @@ function render({
 }: {
   hasMax?: boolean;
   disablePay?: boolean;
+  hidePayTokenAmount?: boolean;
   availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
   customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
   payTokenHookReturn?: typeof DEFAULT_PAY_TOKEN_HOOK_RETURN;
@@ -162,7 +164,11 @@ function render({
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
   return renderWithConfirmContextProvider(
-    <CustomAmountInfo hasMax={hasMax} disablePay={disablePay} />,
+    <CustomAmountInfo
+      hasMax={hasMax}
+      disablePay={disablePay}
+      hidePayTokenAmount={hidePayTokenAmount}
+    />,
     mockStore(state),
   );
 }
@@ -185,6 +191,15 @@ describe('CustomAmountInfo', () => {
   it('does not render pay token amount when disablePay is true', () => {
     const { queryByTestId } = render({ disablePay: true });
     expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
+  });
+
+  it('does not render pay token amount when hidePayTokenAmount is true', () => {
+    const { queryByTestId, getByTestId } = render({
+      hidePayTokenAmount: true,
+      disablePay: false,
+    });
+    expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
+    expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
   it('renders pay with row when tokens available and disablePay is false', () => {
