@@ -2,7 +2,7 @@ import { Messenger } from '@metamask/messenger';
 import { KeyringControllerPersistAllKeyringsAction } from '@metamask/keyring-controller';
 import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-controller';
 import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type SnapKeyringBuilderMessenger = ReturnType<

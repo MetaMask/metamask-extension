@@ -209,6 +209,8 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
+  leverage: number;
 };
 
 /**

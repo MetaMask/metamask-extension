@@ -60,16 +60,6 @@ describe('useTokensWithFiltering', () => {
           selectedAccount: 'account-1',
         },
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0x1': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {
           [CHAIN_IDS.MAINNET]: {
             timestamp: Date.now(),
@@ -108,16 +98,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0xa': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {
           [CHAIN_IDS.OPTIMISM]: {
             timestamp: Date.now() - 11 * MINUTE,
@@ -157,7 +137,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {},
         tokensChainsCache: {
           [CHAIN_IDS.MAINNET]: {
             timestamp: Date.now() - 11 * MINUTE,
@@ -208,16 +187,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0x1': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {},
         multichainNetworkConfigurationsByChainId:
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
