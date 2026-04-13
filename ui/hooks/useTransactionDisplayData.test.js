@@ -153,19 +153,6 @@ const getMockState = () => ({
         ],
       },
     },
-    allDetectedTokens: {
-      [CHAIN_IDS.MAINNET]: [
-        {
-          [ADDRESS_MOCK]: [
-            {
-              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-              symbol: 'ABC',
-              decimals: 18,
-            },
-          ],
-        },
-      ],
-    },
     tokensChainsCache: {
       '0x4': {
         data: {

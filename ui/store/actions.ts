@@ -213,6 +213,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -4590,8 +4591,7 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches =
-      await submitRequestToBackground<Patch[]>('getStatePatches');
+    pendingPatches = await getStatePatches();
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
@@ -6087,6 +6087,15 @@ export async function getLedgerPublicKey(
   hdPath: string,
 ): Promise<GetPublicKeyResponse> {
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
+}
+
+/**
+ * Fetch the features/capabilities of the connected Trezor device.
+ *
+ * @returns The Trezor device features response including model, capabilities, and session info
+ */
+export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
+  return await submitRequestToBackground('getTrezorFeatures');
 }
 
 /**

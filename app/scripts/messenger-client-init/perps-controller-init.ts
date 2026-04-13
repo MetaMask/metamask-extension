@@ -1,8 +1,10 @@
 import {
   PerpsController,
+  type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
+import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -26,7 +28,10 @@ export const PerpsControllerInit: ControllerInitFunction<
   PerpsController,
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const infrastructure = createPerpsInfrastructure();
+  const trackEvent = (payload: MetaMetricsEventPayload) => {
+    controllerMessenger.call('MetaMetricsController:trackEvent', payload);
+  };
+  const infrastructure = createPerpsInfrastructure({ trackEvent });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const completedOnboarding =
     persistedState.OnboardingController?.completedOnboarding ?? false;
@@ -34,7 +39,11 @@ export const PerpsControllerInit: ControllerInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const controller = new PerpsController({
-    messenger: controllerMessenger,
+    // TODO: Remove cast once @metamask/perps-controller adds
+    // MetaMetricsController:trackEvent to its allowed-actions union.
+    // The extension messenger is a superset of the package messenger type;
+    // the cast is safe until the package type catches up.
+    messenger: controllerMessenger as PackagePerpsControllerMessenger,
     state: persistedState.PerpsController,
     infrastructure,
     clientConfig: {

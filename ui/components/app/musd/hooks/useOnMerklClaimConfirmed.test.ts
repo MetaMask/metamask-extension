@@ -1,6 +1,12 @@
+import { Interface } from '@ethersproject/abi';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
+import {
+  DISTRIBUTOR_CLAIM_ABI,
+  MERKL_CLAIM_CHAIN_ID,
+  MERKL_DISTRIBUTOR_ADDRESS,
+  MUSD_TOKEN_ADDRESS,
+} from '../constants';
 import { useOnMerklClaimConfirmed } from './useOnMerklClaimConfirmed';
 
 jest.mock('react-redux', () => ({
@@ -9,17 +15,37 @@ jest.mock('react-redux', () => ({
 
 const { useSelector } = jest.requireMock('react-redux');
 
+const MOCK_USER = '0x1234567890abcdef1234567890abcdef12345678';
+
+function encodeMusdClaimData(amount = '5000000'): string {
+  const iface = new Interface(DISTRIBUTOR_CLAIM_ABI);
+  return iface.encodeFunctionData('claim', [
+    [MOCK_USER],
+    [MUSD_TOKEN_ADDRESS],
+    [amount],
+    [['0x0000000000000000000000000000000000000000000000000000000000000001']],
+  ]);
+}
+
 const createMockTransaction = (
   id: string,
   status: string,
   to: string = MERKL_DISTRIBUTOR_ADDRESS,
   time: number = Date.now(),
-) => ({
-  id,
-  status,
-  time,
-  txParams: { to },
-});
+) => {
+  const isDistributor =
+    to.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
+  return {
+    id,
+    status,
+    time,
+    chainId: MERKL_CLAIM_CHAIN_ID,
+    txParams: {
+      to,
+      ...(isDistributor ? { data: encodeMusdClaimData() } : {}),
+    },
+  };
+};
 
 describe('useOnMerklClaimConfirmed', () => {
   beforeEach(() => {
@@ -58,7 +84,11 @@ describe('useOnMerklClaimConfirmed', () => {
       {
         id: 'tx1',
         status: TransactionStatus.confirmed,
-        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+        chainId: MERKL_CLAIM_CHAIN_ID,
+        txParams: {
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          data: encodeMusdClaimData(),
+        },
       },
     ]);
 

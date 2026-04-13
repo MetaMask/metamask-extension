@@ -1131,10 +1131,6 @@
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
   },
-  "plusXMore": {
-    "message": "E mais $1",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
   "prev": {
     "message": "Anterior"
   },

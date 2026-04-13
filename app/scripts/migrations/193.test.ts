@@ -1,4 +1,4 @@
-import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { migrate, version } from './193';
 
 const VERSION = version;
