@@ -146,21 +146,26 @@ describe('ReversePositionModal', () => {
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
 
-    it('shows Cancel and Save buttons', () => {
+    it('shows Cancel and Confirm buttons', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
         screen.getByTestId('perps-reverse-position-modal-cancel'),
       ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-reverse-position-modal-save'),
-      ).toBeInTheDocument();
+      const confirmButton = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(confirmButton).toBeInTheDocument();
+      expect(confirmButton).toHaveTextContent(messages.confirm.message);
     });
 
-    it('shows fees placeholder as em-dash', () => {
+    it('shows estimated fees as a formatted currency value', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('—')).toBeInTheDocument();
+      const feeValue = screen.getByTestId('perps-reverse-fee-value');
+      expect(feeValue).toBeInTheDocument();
+      // Fee = 2 * 2.5 * 2900 * 0.0001 = $1.45
+      expect(feeValue.textContent).toMatch(/\$/u);
     });
   });
 
