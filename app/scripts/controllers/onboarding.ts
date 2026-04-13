@@ -8,6 +8,7 @@ import type { Messenger } from '@metamask/messenger';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import { OnboardingControllerMethodActions } from './onboarding-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'OnboardingController';
@@ -80,7 +81,9 @@ export type OnboardingControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link OnboardingController}.
  */
-export type OnboardingControllerActions = OnboardingControllerGetStateAction;
+export type OnboardingControllerActions =
+  | OnboardingControllerGetStateAction
+  | OnboardingControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link OnboardingController} changes.
@@ -115,11 +118,20 @@ export type OnboardingControllerMessenger = Messenger<
   OnboardingControllerControllerEvents | AllowedEvents
 >;
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setSeedPhraseBackedUp',
+  'completeOnboarding',
+  'setFirstTimeFlowType',
+  'registerOnboarding',
+  'getIsSocialLoginFlow',
+  'resetOnboarding',
+] as const;
+
 /**
  * Controller responsible for maintaining
  * state related to onboarding
  */
-export default class OnboardingController extends BaseController<
+export class OnboardingController extends BaseController<
   typeof controllerName,
   OnboardingControllerState,
   OnboardingControllerMessenger
@@ -150,6 +162,11 @@ export default class OnboardingController extends BaseController<
         ...defaultTransientState,
       },
     });
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -191,10 +208,7 @@ export default class OnboardingController extends BaseController<
    * @param location - The location of the site registering
    * @param tabId - The id of the tab registering
    */
-  registerOnboarding = async (
-    location: string,
-    tabId: string,
-  ): Promise<void> => {
+  async registerOnboarding(location: string, tabId: string): Promise<void> {
     if (this.state.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
@@ -216,7 +230,7 @@ export default class OnboardingController extends BaseController<
         };
       });
     }
-  };
+  }
 
   /**
    * Check if the user onboarding flow is Social login flow or not.

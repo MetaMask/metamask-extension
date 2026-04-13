@@ -517,6 +517,20 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeGreaterThanOrEqual(1);
     });
 
+    it('displays leverage value in position details', () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <PerpsMarketDetailPage />,
+        store,
+      );
+
+      expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
+      expect(
+        getByText(new RegExp(`${messages.perpsLong.message} 3x`, 'u')),
+      ).toBeInTheDocument();
+    });
+
     it('displays stats section', async () => {
       const store = mockStore(createMockState(true));
 
@@ -595,7 +609,9 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
-      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      const modifyMenu = screen.getByTestId('perps-modify-menu');
+      expect(modifyMenu).toBeInTheDocument();
+      expect(modifyMenu.parentElement).toBe(document.body);
       expect(
         screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
@@ -622,7 +638,9 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-margin-card'));
-      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      const marginMenu = screen.getByTestId('perps-margin-menu');
+      expect(marginMenu).toBeInTheDocument();
+      expect(marginMenu.parentElement).toBe(document.body);
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
@@ -717,6 +735,72 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('updates the selected candle period from the More menu', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+
+      expect(
+        screen.getByTestId('perps-candle-period-modal'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandleIntervals.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodMinutes.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodHours.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodDays.message),
+      ).toBeInTheDocument();
+
+      const morePeriodOption = screen.getByTestId(
+        'perps-candle-period-modal-30m',
+      );
+      expect(morePeriodOption).toBeInTheDocument();
+
+      fireEvent.click(morePeriodOption);
+
+      expect(screen.getByText('30min')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not mark 1min as selected after selecting 1M from the modal', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
+
+      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('closes the candle period modal when the close button is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByLabelText(messages.close.message));
+
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays Close Long button text for long position', async () => {
       const store = mockStore(createMockState(true));
 
@@ -790,11 +874,12 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, TP input is initialized to position's existing TP (3200.00)
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3,087.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3,087.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -806,41 +891,42 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, SL input is initialized to position's existing SL (2600.00)
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2,612.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2,612.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44,700.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44,700.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45,300.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45,300.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
