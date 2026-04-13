@@ -375,10 +375,12 @@ export function usePerpsOrderForm({
     // assess margin requirements — matching what mobile shows for pre-trade estimates.
     // Limit orders use the limit price (the expected fill price) for accuracy.
     // Falls back to effectivePrice when the oracle price is not yet available.
+    const safeMarkPrice =
+      markPrice !== undefined && Number.isFinite(markPrice) && markPrice > 0
+        ? markPrice
+        : undefined;
     const effectiveMarginPrice =
-      formState.type === 'limit'
-        ? effectivePrice
-        : (markPrice ?? effectivePrice);
+      formState.type === 'limit' ? effectivePrice : (safeMarkPrice ?? effectivePrice);
 
     const positionSize = calculatePositionSize(
       amount,

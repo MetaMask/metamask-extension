@@ -412,9 +412,13 @@ const PerpsOrderEntryPage: React.FC = () => {
   // This is the price the exchange uses for actual margin assessment and liquidation
   // triggers, so using it here makes the pre-trade margin estimate match mobile.
   // Falls back to currentPrice until the stream delivers its first update.
-  const oraclePrice = livePrice?.markPrice
-    ? parseFloat(livePrice.markPrice)
-    : currentPrice;
+  const oraclePrice = (() => {
+    if (!livePrice?.markPrice) {
+      return currentPrice;
+    }
+    const parsed = parseFloat(livePrice.markPrice);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
+  })();
 
   const availableBalance = account
     ? Number.parseFloat(account.availableBalance)
@@ -962,6 +966,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     hidePerpsToast,
     replacePerpsToastByKey,
     t,
+    closeFeeRate,
   ]);
 
   useEffect(() => {
