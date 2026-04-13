@@ -2930,10 +2930,11 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('adds a tabId, origin and networkClient to requests', async () => {
+      it('adds a tabId, frameId, origin and networkClient to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
+          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
@@ -2969,6 +2970,10 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'frameId',
+                  0,
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'networkClientId',
@@ -3014,6 +3019,9 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',
@@ -3138,10 +3146,11 @@ describe('MetaMaskController', () => {
         tearDownMockMiddlewareLog();
       });
 
-      it('adds a tabId and origin to requests', async () => {
+      it('adds a tabId, frameId and origin to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
+          frameId: 0,
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk && chunk.method) {
@@ -3179,6 +3188,10 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'frameId',
+                  0,
                 );
                 resolve();
               });
@@ -3223,6 +3236,9 @@ describe('MetaMaskController', () => {
               setTimeout(() => {
                 expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
                   'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'frameId',
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'origin',

@@ -7327,8 +7327,8 @@ export default class MetamaskController extends EventEmitter {
       engine.push(createTabIdMiddleware({ tabId }));
     }
 
-    // Append frameId to each request if available
-    if (frameId) {
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
       engine.push(createFrameIdMiddleware({ frameId }));
     }
 
@@ -7814,8 +7814,8 @@ export default class MetamaskController extends EventEmitter {
       engine.push(createTabIdMiddleware({ tabId }));
     }
 
-    // Append frameId to each request if available
-    if (frameId) {
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
       engine.push(createFrameIdMiddleware({ frameId }));
     }
 
