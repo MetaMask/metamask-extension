@@ -148,7 +148,9 @@
               "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
               "groupIndex": 0
             },
-            "scopes": ["eip155:0"],
+            "scopes": [
+              "eip155:0"
+            ],
             "type": "eip155:eoa"
           }
         },
@@ -317,26 +319,19 @@
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": ["0x1", "0xe708"],
+        "supportedNetworks": [
+          "0x1",
+          "0xe708"
+        ],
         "validSubmissionWindowDays": 21
       },
       "drafts": []
     },
     "CurrencyController": {
       "currencyRates": {
-        "BNB": {
-          "conversionDate": null,
-          "conversionRate": null,
-          "usdConversionRate": null
-        },
         "ETH": {
           "conversionDate": null,
           "conversionRate": 1700,
-          "usdConversionRate": null
-        },
-        "POL": {
-          "conversionDate": null,
-          "conversionRate": null,
           "usdConversionRate": null
         }
       },
@@ -451,9 +446,9 @@
     "MultichainAssetsRatesController": {
       "conversionRates": {
         "bip122:000000000019d6689c085ae165831e93/slip44:0": {
-          "conversionTime": 1775751818,
+          "conversionTime": 1776106420,
           "currency": "swift:0/iso4217:USD",
-          "expirationTime": 1775751878,
+          "expirationTime": 1776106480,
           "marketData": {
             "allTimeHigh": "126080",
             "allTimeLow": "67.81",
@@ -559,7 +554,10 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": ["btc", "sol"],
+      "cryptocurrencies": [
+        "btc",
+        "sol"
+      ],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -586,7 +584,9 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": ["https://etherscan.io"],
+          "blockExplorerUrls": [
+            "https://etherscan.io"
+          ],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -594,9 +594,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "mainnet",
               "type": "infura",
               "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
@@ -604,7 +602,9 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "blockExplorerUrls": [
+            "https://megaeth-testnet-v2.blockscout.com"
+          ],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -620,7 +620,9 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": ["https://basescan.org"],
+          "blockExplorerUrls": [
+            "https://basescan.org"
+          ],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -628,9 +630,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "base-mainnet",
               "type": "infura",
               "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
@@ -638,7 +638,9 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
+          "blockExplorerUrls": [
+            "https://testnet.monadexplorer.com"
+          ],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -654,7 +656,9 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": ["https://bscscan.com"],
+          "blockExplorerUrls": [
+            "https://bscscan.com"
+          ],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -685,7 +689,9 @@
           ]
         },
         "0x89": {
-          "blockExplorerUrls": ["https://polygonscan.com"],
+          "blockExplorerUrls": [
+            "https://polygonscan.com"
+          ],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -693,9 +699,7 @@
           "nativeCurrency": "POL",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "polygon-mainnet",
               "type": "infura",
               "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
@@ -703,7 +707,9 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://optimistic.etherscan.io"
+          ],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -711,9 +717,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "optimism-mainnet",
               "type": "infura",
               "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
@@ -721,7 +725,9 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": ["https://arbiscan.io"],
+          "blockExplorerUrls": [
+            "https://arbiscan.io"
+          ],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -729,9 +735,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "arbitrum-mainnet",
               "type": "infura",
               "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
@@ -739,7 +743,9 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://sepolia.etherscan.io"
+          ],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -755,7 +761,9 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+          "blockExplorerUrls": [
+            "https://sepolia.lineascan.build"
+          ],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -771,7 +779,9 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": ["https://lineascan.build"],
+          "blockExplorerUrls": [
+            "https://lineascan.build"
+          ],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -779,9 +789,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "linea-mainnet",
               "type": "infura",
               "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
@@ -918,7 +926,9 @@
       "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
+      "subscriptionAccountsSeen": [
+        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      ]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
@@ -1055,7 +1065,9 @@
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-            "scopes": ["eip155:0"]
+            "scopes": [
+              "eip155:0"
+            ]
           },
           {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
@@ -1158,16 +1170,7 @@
       "tokenBalances": {}
     },
     "TokenRatesController": {
-      "marketData": {
-        "0x1": {},
-        "0x2105": {},
-        "0x38": {},
-        "0x539": {},
-        "0x89": {},
-        "0xa": {},
-        "0xa4b1": {},
-        "0xe708": {}
-      }
+      "marketData": {}
     },
     "TokensController": {
       "allDetectedTokens": {},
