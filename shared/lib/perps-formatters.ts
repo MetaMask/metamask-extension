@@ -113,5 +113,6 @@ export function formatPerpsPrice(
     maximumFractionDigits: range.maximumDecimals,
     minimumSignificantDigits: range.significantDigits,
     maximumSignificantDigits: range.significantDigits,
+    roundingPriority: 'lessPrecision',
   }).format(value);
 }

@@ -37,8 +37,7 @@ describe('formatPerpsPrice', () => {
       expect(formatPerpsPrice(3_245.678_901_23)).toBe('$3,245.7');
     });
 
-    it('formats 1000.0 as $1,000.0 (5th sig fig shown as trailing decimal)', () => {
-      // 5 sig figs on 1000: 1, 0, 0, 0, 0 → the 5th digit requires the decimal
+    it('formats 1000.0 as $1,000.0 (5th sig fig needs the trailing decimal)', () => {
       expect(formatPerpsPrice(1_000.0)).toBe('$1,000.0');
     });
   });
@@ -48,8 +47,8 @@ describe('formatPerpsPrice', () => {
       expect(formatPerpsPrice(567.123_45)).toBe('$567.12');
     });
 
-    it('formats 100.1 as $100.10', () => {
-      expect(formatPerpsPrice(100.1)).toBe('$100.10');
+    it('formats 100.1 as $100.1', () => {
+      expect(formatPerpsPrice(100.1)).toBe('$100.1');
     });
   });
 
@@ -73,8 +72,8 @@ describe('formatPerpsPrice', () => {
       expect(formatPerpsPrice(1.234_567_89)).toBe('$1.2346');
     });
 
-    it('formats 0.01 as $0.010000', () => {
-      expect(formatPerpsPrice(0.01)).toBe('$0.010000');
+    it('formats 0.01 as $0.01', () => {
+      expect(formatPerpsPrice(0.01)).toBe('$0.01');
     });
 
     it('formats 9.9999 as $9.9999', () => {
@@ -87,8 +86,8 @@ describe('formatPerpsPrice', () => {
       expect(formatPerpsPrice(0.001_234)).toBe('$0.001234');
     });
 
-    it('formats 0.0001 as $0.0001000', () => {
-      expect(formatPerpsPrice(0.0001)).toBe('$0.0001000');
+    it('formats 0.0001 as $0.0001 (max 6 decimals enforced)', () => {
+      expect(formatPerpsPrice(0.0001)).toBe('$0.0001');
     });
   });
 
