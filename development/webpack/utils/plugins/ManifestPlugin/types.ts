@@ -68,6 +68,13 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
    * The build type of the build being created.
    */
   buildType: string;
+
+  /**
+   * Whether to set a build ID in the emitted manifest. The build ID is a hash
+   * of the build contents that can be used to identify the build and detect
+   * when it has changed.
+   */
+  setBuildId?: boolean;
 };
 
 export type ZipOptions = {

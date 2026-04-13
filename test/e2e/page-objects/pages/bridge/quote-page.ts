@@ -47,6 +47,12 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
+  private gasIncludedIndicator = '[data-testid="network-fees-included"]';
+
+  private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
+
+  private maxButton = { text: 'Max' };
+
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
   private networkFees = '[data-testid="network-fees"]';
@@ -57,6 +63,9 @@ class BridgeQuotePage {
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
   private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
+
+  private statusPageCloseButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
 
   private moreETHneededForGas =
     '[data-testid="bridge-insufficient-gas-for-quote"]';
@@ -221,8 +230,15 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
-  submitQuote = async () => {
+  submitQuote = async ({ dismissStatusPage = true } = {}) => {
     await this.driver.clickElement(this.submitButton);
+    if (dismissStatusPage) {
+      await this.dismissStatusPage();
+    }
+  };
+
+  dismissStatusPage = async () => {
+    await this.driver.clickElement(this.statusPageCloseButton);
   };
 
   confirmBridgeTransaction = async () => {
@@ -305,6 +321,36 @@ class BridgeQuotePage {
     console.log('Price matches expected format');
   }
 
+  async checkGasIncludedIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasIncludedIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees included" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees included indicator is displayed');
+  }
+
+  async checkGasSponsoredIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasSponsoredIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees sponsored" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees sponsored indicator is displayed');
+  }
+
+  async clickMaxButton(): Promise<void> {
+    await this.driver.waitForSelector(this.maxButton, { timeout: 30000 });
+    await this.driver.clickElement(this.maxButton);
+    console.log('Clicked Max button');
+  }
+
   checkDestAmount = async (amount: string) => {
     const destAmount = await this.driver.findElement(this.destinationAmount);
     assert.equal(await destAmount.getAttribute('value'), amount);
@@ -334,6 +380,26 @@ class BridgeQuotePage {
       const input = document.querySelector('${this.slippageCustomInput}');
       if (input) { input.blur(); }
     `);
+  }
+
+  async selectSrcToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.sourceAssetPickerButton);
+    await this.driver.clickElement(this.sourceAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
+  }
+
+  async selectDestToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.destinationAssetPickerButton);
+    await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
   }
 
   async selectNetwork(network: string): Promise<void> {

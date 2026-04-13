@@ -13,10 +13,14 @@ import {
   toHardwareWalletError,
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
+  extractTrezorCodeFromMessage,
+  extractMessageFromUnknownError,
+  hasUserRejectedMessage,
 } from './rpcErrorUtils';
 
 describe('rpcErrorUtils', () => {
   const mockWalletType = HardwareWalletType.Ledger;
+  const trezorWalletType = HardwareWalletType.Trezor;
 
   describe('isJsonRpcHardwareWalletError', () => {
     it('returns true for JsonRpcError with valid HardwareWalletError data', () => {
@@ -121,6 +125,17 @@ describe('rpcErrorUtils', () => {
       const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(ErrorCode.DeviceDisconnected);
+    });
+
+    it('extracts code from plain object with Trezor SDK string code', () => {
+      const error = {
+        code: 'Method_Cancel',
+        message: 'Canceled',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.UserCancelled);
     });
 
     it('returns null for object without code property', () => {
@@ -313,6 +328,88 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe('42');
     });
 
+    it('maps Trezor cancellation code to UserCancelled', () => {
+      const result = toHardwareWalletError(
+        new Error('TrezorError (code: Method_Cancel): Canceled'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+    });
+
+    it('maps Trezor rejection code to UserRejected', () => {
+      const result = toHardwareWalletError(
+        new Error(
+          'TrezorError (code: Method_PermissionsNotGranted): Permissions not granted',
+        ),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.UserRejected);
+    });
+
+    it('maps Trezor SDK error.code to the SDK ErrorCode', () => {
+      const result = toHardwareWalletError(
+        {
+          code: 'Method_Cancel',
+          message: 'Canceled',
+        },
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+    });
+
+    it('maps direct Trezor interrupted code to the SDK ErrorCode', () => {
+      const result = toHardwareWalletError(
+        {
+          code: 'Method_Interrupted',
+          message: 'Interrupted',
+        },
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.ConnectionClosed);
+    });
+
+    it('returns Unknown for unmapped Trezor codes extracted from message', () => {
+      const result = toHardwareWalletError(
+        new Error(
+          'TrezorError (code: Method_DataOverflowModelOne): Message too large',
+        ),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.Unknown);
+    });
+
+    it('returns Unknown for wrapped Trezor messages without explicit code format', () => {
+      const result = toHardwareWalletError(
+        new Error('Wrapped failure: Method_Interrupted while signing'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.Unknown);
+    });
+
+    it('maps Trezor device disconnect to DeviceDisconnected', () => {
+      const result = toHardwareWalletError(
+        new Error('Device disconnected'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.DeviceDisconnected);
+    });
+
+    it('maps Trezor missing transport to ConnectionTransportMissing', () => {
+      const result = toHardwareWalletError(
+        new Error('Transport is missing'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.ConnectionTransportMissing);
+    });
+
     it('reconstructs from top-level serialized HardwareWalletError shape', () => {
       const serializedError = {
         id: 'err_abc',
@@ -377,7 +474,7 @@ describe('rpcErrorUtils', () => {
       });
     });
 
-    it('reconstructs UserRejected from KeyringControllerError serialized cause', () => {
+    it('returns Unknown for KeyringControllerError serialized cause without explicit code', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -396,11 +493,123 @@ describe('rpcErrorUtils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.UserRejected);
-      expect(result.message).toBe('Ledger: User rejected action on device');
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe(
+        'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
+      );
       expect(result.metadata).toEqual({
         walletType: HardwareWalletType.Ledger,
       });
+    });
+
+    it('returns Unknown for serialized cause stack enum when code is missing', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'opaque serialized cause',
+            stack:
+              'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed');
+    });
+
+    it('returns Unknown for conflicting serialized stack and cause message without explicit code', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Wrapped failure: Method_Interrupted while signing',
+            stack:
+              'HardwareWalletError [ConnectionClosed:4001]: Trezor connection closed',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed');
+    });
+
+    it('returns Unknown for opaque serialized stack and message without explicit code format', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'Trezor sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Wrapped failure: Method_Interrupted while signing',
+            stack: 'opaque serialized stack',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('Trezor sign operation failed');
+    });
+
+    it('maps Trezor wrapped unknown cancellation from KeyringControllerError', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
+          cause: {
+            name: 'HardwareWalletError',
+            code: ErrorCode.Unknown,
+            message: 'Cancelled',
+            stack: 'HardwareWalletError [Unknown:99999]: Cancelled',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Cancelled');
+    });
+
+    it('maps Trezor wrapped cancellation without cause code from KeyringControllerError', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Cancelled',
+            stack: 'HardwareWalletError: Cancelled',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Cancelled');
     });
 
     it('reconstructs from serialized RPC cause and preserves stack/metadata', () => {
@@ -452,7 +661,47 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe('User cancelled on device');
     });
 
-    it('infers user action code from KeyringControllerError cause text', () => {
+    it('maps Trezor SDK cause.code from KeyringControllerError', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'Trezor sign operation failed',
+          cause: {
+            code: 'Method_Cancel',
+            message: 'Canceled',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Canceled');
+    });
+
+    it('returns Unknown for serialized Trezor cause message without explicit code format', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'Trezor sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Wrapped failure: Method_Interrupted while signing',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('Trezor sign operation failed');
+    });
+
+    it('returns Unknown for KeyringControllerError cause text without explicit code', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -468,11 +717,11 @@ describe('rpcErrorUtils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.UserCancelled);
-      expect(result.message).toBe('Ledger: User canceled action on device');
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed');
     });
 
-    it('infers user rejected code from KeyringControllerError cause text', () => {
+    it('returns Unknown for KeyringControllerError rejected cause text without explicit code', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -488,8 +737,8 @@ describe('rpcErrorUtils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.UserRejected);
-      expect(result.message).toBe('Ledger: User rejected action on device');
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed');
     });
 
     it('uses keyring error code when cause cannot be interpreted', () => {
@@ -511,6 +760,26 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.UserRejected);
       expect(result.message).toBe('User rejected in keyring');
+    });
+
+    it('does not infer hardware-wallet code from non-hardware cause text', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'SomeOtherError',
+            message: 'User rejected the request',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('sign operation failed');
     });
 
     it('falls back to Unknown when keyring text inference does not match', () => {
@@ -586,6 +855,15 @@ describe('rpcErrorUtils', () => {
             name: 'HardwareWalletError',
           },
         },
+      };
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for plain object with Trezor SDK string code', () => {
+      const error = {
+        code: 'Method_Cancel',
+        message: 'Canceled',
       };
 
       expect(isHardwareWalletError(error)).toBe(true);
@@ -707,6 +985,35 @@ describe('rpcErrorUtils', () => {
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
     });
 
+    it('treats plain Trezor code strings as hardware wallet rejections', () => {
+      const error = {
+        code: 'Method_Cancel',
+        message: 'Canceled',
+      };
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for KeyringControllerError wrapping unknown hardware wallet cancellation', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
+          cause: {
+            name: 'HardwareWalletError',
+            code: ErrorCode.Unknown,
+            message: 'Cancelled',
+            stack: 'HardwareWalletError [Unknown:99999]: Cancelled',
+          },
+        },
+      );
+
+      expect(isHardwareWalletError(error)).toBe(true);
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
     it('returns false for hardware wallet errors whose numeric code collides with EIP-1193 4001', () => {
       const error = {
         name: 'HardwareWalletError',
@@ -715,6 +1022,145 @@ describe('rpcErrorUtils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('extractTrezorCodeFromMessage', () => {
+    it('extracts code from "code: ErrorCode" format', () => {
+      expect(
+        extractTrezorCodeFromMessage(
+          'TrezorError: code: Failure_AppNotInstalled',
+        ),
+      ).toBe('Failure_AppNotInstalled');
+    });
+
+    it('extracts code from message with surrounding text', () => {
+      expect(
+        extractTrezorCodeFromMessage(
+          'Device error: code: Connection_ChannelDisconnected, please reconnect',
+        ),
+      ).toBe('Connection_ChannelDisconnected');
+    });
+
+    it('returns null when no code pattern is found', () => {
+      expect(
+        extractTrezorCodeFromMessage('some random error message'),
+      ).toBeNull();
+    });
+
+    it('returns null for empty string', () => {
+      expect(extractTrezorCodeFromMessage('')).toBeNull();
+    });
+
+    it('extracts multi-segment underscore code', () => {
+      expect(
+        extractTrezorCodeFromMessage(
+          'error code: Some_Long_Error_Code happened',
+        ),
+      ).toBe('Some_Long_Error_Code');
+    });
+
+    it('does not match code without underscore', () => {
+      expect(extractTrezorCodeFromMessage('code: InvalidCode')).toBeNull();
+    });
+  });
+
+  describe('extractMessageFromUnknownError', () => {
+    it('extracts message from Error instances', () => {
+      expect(extractMessageFromUnknownError(new Error('test error'))).toBe(
+        'test error',
+      );
+    });
+
+    it('extracts message from objects with message property', () => {
+      expect(
+        extractMessageFromUnknownError({ message: 'plain object error' }),
+      ).toBe('plain object error');
+    });
+
+    it('returns string representation for primitives', () => {
+      expect(extractMessageFromUnknownError(42)).toBe('42');
+      expect(extractMessageFromUnknownError(null)).toBe('null');
+      expect(extractMessageFromUnknownError(undefined)).toBe('undefined');
+    });
+
+    it('stringifies numeric message property', () => {
+      expect(extractMessageFromUnknownError({ message: 123 })).toBe('123');
+    });
+
+    it('serializes plain objects without string message as JSON', () => {
+      expect(extractMessageFromUnknownError({ code: 'Device_NotFound' })).toBe(
+        '{"code":"Device_NotFound"}',
+      );
+    });
+  });
+
+  describe('hasUserRejectedMessage', () => {
+    it('detects "popup closed" in message', () => {
+      expect(hasUserRejectedMessage(new Error('popup closed by user'))).toBe(
+        true,
+      );
+    });
+
+    it('detects "user rejected" in message', () => {
+      expect(
+        hasUserRejectedMessage(new Error('user rejected the request')),
+      ).toBe(true);
+    });
+
+    it('detects "cancelled" in message', () => {
+      expect(hasUserRejectedMessage(new Error('operation cancelled'))).toBe(
+        true,
+      );
+    });
+
+    it('detects "canceled" (US spelling) in message', () => {
+      expect(hasUserRejectedMessage(new Error('operation canceled'))).toBe(
+        true,
+      );
+    });
+
+    it('detects rejection text in stack trace', () => {
+      const error = new Error('something went wrong');
+      error.stack = 'Error: something went wrong\n    at popup closed handler';
+      expect(hasUserRejectedMessage(error)).toBe(true);
+    });
+
+    it('handles non-string stack values without default object stringification', () => {
+      expect(
+        hasUserRejectedMessage({
+          message: 'device disconnected',
+          stack: { reason: 'popup closed' },
+        }),
+      ).toBe(true);
+    });
+
+    it('honors custom stack stringification when provided', () => {
+      expect(
+        hasUserRejectedMessage({
+          message: 'device disconnected',
+          stack: {
+            toString: () => 'user rejected the request',
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false for unrelated errors', () => {
+      expect(hasUserRejectedMessage(new Error('device disconnected'))).toBe(
+        false,
+      );
+    });
+
+    it('handles plain objects', () => {
+      expect(hasUserRejectedMessage({ message: 'user rejected action' })).toBe(
+        true,
+      );
+    });
+
+    it('is case insensitive', () => {
+      expect(hasUserRejectedMessage(new Error('User Rejected'))).toBe(true);
+      expect(hasUserRejectedMessage(new Error('CANCELLED'))).toBe(true);
     });
   });
 });
