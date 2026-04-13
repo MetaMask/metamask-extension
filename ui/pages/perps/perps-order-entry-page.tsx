@@ -200,7 +200,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
 
@@ -406,6 +406,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const availableBalance = account
     ? Number.parseFloat(account.availableBalance)
     : 0;
+  const hasNoAvailableBalance =
+    orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -486,6 +488,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [orderFormState, orderMode, availableBalance]);
 
   const isSubmitDisabled =
+    hasNoAvailableBalance ||
     !isEligible ||
     !selectedAddress ||
     isOrderPending ||
@@ -1046,6 +1049,10 @@ const PerpsOrderEntryPage: React.FC = () => {
   const displayName = getDisplayName(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
+    if (hasNoAvailableBalance) {
+      return t('addFunds');
+    }
+
     switch (orderMode) {
       case 'modify':
         return t('perpsModifyPosition');
