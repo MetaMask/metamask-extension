@@ -29,12 +29,14 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -76,10 +78,11 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  currentPrice: _currentPrice,
+  currentPrice,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -111,6 +114,26 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
 
+  const {
+    feeRate,
+    isLoading: isFeeLoading,
+    hasError: hasFeeError,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
+  // A flip places one order of 2x position size (1x close + 1x open opposite).
+  // Fee is charged on the full 2x notional.
+  const estimatedFees = useMemo(
+    () =>
+      feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
+    [sizeNum, currentPrice, feeRate],
+  );
+
+  const shouldShowFeePlaceholder =
+    isFeeLoading || hasFeeError || estimatedFees === undefined;
+
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),
     [position],
@@ -121,6 +144,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       setIsGeoBlockModalOpen(true);
       return;
     }
+
     setIsSubmitting(true);
     setError(null);
 
@@ -235,8 +259,11 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-fee-value"
                 >
-                  —
+                  {shouldShowFeePlaceholder
+                    ? '--'
+                    : formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
                 </Text>
               </Box>
               {error && (
@@ -265,7 +292,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             }}
             submitButtonProps={{
               'data-testid': 'perps-reverse-position-modal-save',
-              children: isSubmitting ? t('perpsSubmitting') : t('save'),
+              children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
               disabled: isSubmitting,
             }}
           />
