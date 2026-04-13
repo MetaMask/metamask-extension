@@ -1,0 +1,100 @@
+diff --git a/dist/AccountTreeController.cjs b/dist/AccountTreeController.cjs
+index 8bed8e36e47ccc36445335b5d887372cbbdf9f32..f43ef752b3d533f9110b0bbe5fa1a87add2853af 100644
+--- a/dist/AccountTreeController.cjs
++++ b/dist/AccountTreeController.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _AccountTreeController_instances, _AccountTreeController_accountIdToContext, _AccountTreeController_groupIdToWalletId, _AccountTreeController_backupAndSyncService, _AccountTreeController_rules, _AccountTreeController_trace, _AccountTreeController_backupAndSyncConfig, _AccountTreeController_accountOrderCallbacks, _AccountTreeController_initialized, _AccountTreeController_getEntropyRule, _AccountTreeController_getSnapRule, _AccountTreeController_getKeyringRule, _AccountTreeController_applyAccountWalletMetadata, _AccountTreeController_getRuleForWallet, _AccountTreeController_getComputedAccountGroupName, _AccountTreeController_getDefaultAccountGroupName, _AccountTreeController_applyAccountGroupMetadata, _AccountTreeController_handleAccountsAdded, _AccountTreeController_handleAccountsRemoved, _AccountTreeController_pruneEmptyGroupAndWallet, _AccountTreeController_insert, _AccountTreeController_listAccounts, _AccountTreeController_assertAccountGroupExists, _AccountTreeController_assertAccountWalletExists, _AccountTreeController_assertAccountGroupNameIsUnique, _AccountTreeController_setSelectedAccountGroup, _AccountTreeController_getDefaultSelectedAccountGroup, _AccountTreeController_handleSelectedAccountChange, _AccountTreeController_handleMultichainAccountWalletStatusChange, _AccountTreeController_getAccountGroup, _AccountTreeController_getDefaultAccountFromAccountGroupId, _AccountTreeController_getDefaultAccountGroupId, _AccountTreeController_hasEvmAccount, _AccountTreeController_resolveNameConflict, _AccountTreeController_createBackupAndSyncContext;
++var _AccountTreeController_instances, _AccountTreeController_accountIdToContext, _AccountTreeController_groupIdToWalletId, _AccountTreeController_backupAndSyncService, _AccountTreeController_rules, _AccountTreeController_trace, _AccountTreeController_backupAndSyncConfig, _AccountTreeController_accountOrderCallbacks, _AccountTreeController_initialized, _AccountTreeController_initTreeContext, _AccountTreeController_getEntropyRule, _AccountTreeController_getSnapRule, _AccountTreeController_getKeyringRule, _AccountTreeController_applyAccountWalletMetadata, _AccountTreeController_getRuleForWallet, _AccountTreeController_getComputedAccountGroupName, _AccountTreeController_getDefaultAccountGroupName, _AccountTreeController_applyAccountGroupMetadata, _AccountTreeController_handleAccountsAdded, _AccountTreeController_handleAccountsRemoved, _AccountTreeController_pruneEmptyGroupAndWallet, _AccountTreeController_insert, _AccountTreeController_listAccounts, _AccountTreeController_assertAccountGroupExists, _AccountTreeController_assertAccountWalletExists, _AccountTreeController_assertAccountGroupNameIsUnique, _AccountTreeController_setSelectedAccountGroup, _AccountTreeController_getDefaultSelectedAccountGroup, _AccountTreeController_handleSelectedAccountChange, _AccountTreeController_handleMultichainAccountWalletStatusChange, _AccountTreeController_getAccountGroup, _AccountTreeController_getDefaultAccountFromAccountGroupId, _AccountTreeController_getDefaultAccountGroupId, _AccountTreeController_hasEvmAccount, _AccountTreeController_resolveNameConflict, _AccountTreeController_createBackupAndSyncContext;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AccountTreeController = exports.getDefaultAccountTreeControllerState = exports.controllerName = void 0;
+ const account_api_1 = require("@metamask/account-api");
+@@ -44,7 +44,7 @@ const MESSENGER_EXPOSED_METHODS = [
+ const accountTreeControllerMetadata = {
+     accountTree: {
+         includeInStateLogs: true,
+-        persist: false, // We do re-recompute this state everytime.
++        persist: true,
+         includeInDebugSnapshot: false,
+         usedInUi: true,
+     },
+@@ -158,6 +158,11 @@ class AccountTreeController extends base_controller_1.BaseController {
+         __classPrivateFieldSet(this, _AccountTreeController_accountOrderCallbacks, config?.accountOrderCallbacks, "f");
+         // Initialize the backup and sync service
+         __classPrivateFieldSet(this, _AccountTreeController_backupAndSyncService, new service_1.BackupAndSyncService(__classPrivateFieldGet(this, _AccountTreeController_instances, "m", _AccountTreeController_createBackupAndSyncContext).call(this)), "f");
++        // We build the initial tree (from the state), but this might get updated
++        // after `init` got called. Having it available now, allow our consumers to
++        // re-use the state that was already available before we restart/lock the
++        // wallet.
++        __classPrivateFieldGet(this, _AccountTreeController_instances, "m", _AccountTreeController_initTreeContext).call(this, this.state.accountTree);
+         this.messenger.subscribe('AccountsController:accountsAdded', (accounts) => {
+             __classPrivateFieldGet(this, _AccountTreeController_instances, "m", _AccountTreeController_handleAccountsAdded).call(this, accounts);
+         });
+@@ -379,7 +384,7 @@ class AccountTreeController extends base_controller_1.BaseController {
+         // Validate that the group exists in the current tree
+         __classPrivateFieldGet(this, _AccountTreeController_instances, "m", _AccountTreeController_assertAccountGroupExists).call(this, groupId);
+         const walletId = __classPrivateFieldGet(this, _AccountTreeController_groupIdToWalletId, "f").get(groupId);
+-        (0, utils_1.assert)(walletId, `Account group with ID "${groupId}" not found in tree`);
++        (0, utils_1.assert)(walletId, 'Account group not found in tree');
+         const wallet = this.state.accountTree.wallets[walletId];
+         let finalName = name;
+         // Handle name conflicts based on the autoHandleConflict flag
+@@ -552,7 +557,31 @@ class AccountTreeController extends base_controller_1.BaseController {
+     }
+ }
+ exports.AccountTreeController = AccountTreeController;
+-_AccountTreeController_accountIdToContext = new WeakMap(), _AccountTreeController_groupIdToWalletId = new WeakMap(), _AccountTreeController_backupAndSyncService = new WeakMap(), _AccountTreeController_rules = new WeakMap(), _AccountTreeController_trace = new WeakMap(), _AccountTreeController_backupAndSyncConfig = new WeakMap(), _AccountTreeController_accountOrderCallbacks = new WeakMap(), _AccountTreeController_initialized = new WeakMap(), _AccountTreeController_instances = new WeakSet(), _AccountTreeController_getEntropyRule = function _AccountTreeController_getEntropyRule() {
++_AccountTreeController_accountIdToContext = new WeakMap(), _AccountTreeController_groupIdToWalletId = new WeakMap(), _AccountTreeController_backupAndSyncService = new WeakMap(), _AccountTreeController_rules = new WeakMap(), _AccountTreeController_trace = new WeakMap(), _AccountTreeController_backupAndSyncConfig = new WeakMap(), _AccountTreeController_accountOrderCallbacks = new WeakMap(), _AccountTreeController_initialized = new WeakMap(), _AccountTreeController_instances = new WeakSet(), _AccountTreeController_initTreeContext = function _AccountTreeController_initTreeContext(tree) {
++    for (const [walletId, wallet] of Object.entries(tree.wallets)) {
++        for (const [groupId, group] of Object.entries(wallet.groups)) {
++            __classPrivateFieldGet(this, _AccountTreeController_groupIdToWalletId, "f").set(groupId, walletId);
++            // We still need to go through accounts for the sort order.
++            for (const accountId of group.accounts) {
++                // The `AccountsController` also persists its accounts, so we
++                // can fetch them too!
++                const account = this.messenger.call('AccountsController:getAccount', accountId);
++                // NOTE: The account should always be available, but if it is not, we
++                // still let it inside the tree with a max sort order to avoid blocking
++                // the entire tree construction.
++                let sortOrder = group_1.MAX_SORT_ORDER;
++                if (account) {
++                    sortOrder = group_1.ACCOUNT_TYPE_TO_SORT_ORDER[account.type];
++                }
++                __classPrivateFieldGet(this, _AccountTreeController_accountIdToContext, "f").set(accountId, {
++                    walletId,
++                    groupId,
++                    sortOrder,
++                });
++            }
++        }
++    }
++}, _AccountTreeController_getEntropyRule = function _AccountTreeController_getEntropyRule() {
+     return __classPrivateFieldGet(this, _AccountTreeController_rules, "f")[0];
+ }, _AccountTreeController_getSnapRule = function _AccountTreeController_getSnapRule() {
+     return __classPrivateFieldGet(this, _AccountTreeController_rules, "f")[1];
+@@ -913,12 +942,12 @@ _AccountTreeController_accountIdToContext = new WeakMap(), _AccountTreeControlle
+ }, _AccountTreeController_assertAccountGroupExists = function _AccountTreeController_assertAccountGroupExists(groupId) {
+     const exists = __classPrivateFieldGet(this, _AccountTreeController_groupIdToWalletId, "f").has(groupId);
+     if (!exists) {
+-        throw new Error(`Account group with ID "${groupId}" not found in tree`);
++        throw new Error('Account group not found in tree');
+     }
+ }, _AccountTreeController_assertAccountWalletExists = function _AccountTreeController_assertAccountWalletExists(walletId) {
+     const exists = Boolean(this.state.accountTree.wallets[walletId]);
+     if (!exists) {
+-        throw new Error(`Account wallet with ID "${walletId}" not found in tree`);
++        throw new Error('Account wallet not found in tree');
+     }
+ }, _AccountTreeController_assertAccountGroupNameIsUnique = function _AccountTreeController_assertAccountGroupNameIsUnique(groupId, name) {
+     if (!(0, group_1.isAccountGroupNameUnique)(this.state, groupId, name)) {
+@@ -933,7 +962,7 @@ _AccountTreeController_accountIdToContext = new WeakMap(), _AccountTreeControlle
+     // Find the first account in this group to select
+     const accountToSelect = __classPrivateFieldGet(this, _AccountTreeController_instances, "m", _AccountTreeController_getDefaultAccountFromAccountGroupId).call(this, groupId);
+     if (!accountToSelect) {
+-        throw new Error(`No accounts found in group: ${groupId}`);
++        throw new Error('No accounts found in group');
+     }
+     this.update((state) => {
+         // Update our selected account group first.
