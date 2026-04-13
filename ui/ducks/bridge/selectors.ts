@@ -106,6 +106,7 @@ import {
   isNonEvmChain,
   isTronChainId,
   getMaybeHexChainId,
+  isSupportedBridgeChain,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
 
@@ -311,7 +312,7 @@ export const getToChains = createDeepEqualSelector(
       ...allBridgeableNetworks,
       ...Object.fromEntries(
         FEATURED_RPCS.filter(({ chainId }) =>
-          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+          isSupportedBridgeChain(chainId),
         ).map((rpc) => {
           const caipChainId = formatChainIdToCaip(rpc.chainId);
           return [

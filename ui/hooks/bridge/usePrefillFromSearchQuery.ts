@@ -22,6 +22,8 @@ import { addNetwork } from '../../store/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { captureException } from '../../../shared/lib/sentry';
+import { BridgeMissingNetworkConfigError } from '../../ducks/bridge/errors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -185,6 +187,12 @@ export const usePrefillFromSearchQuery = () => {
         // We do not expect to reach that case, if we do then it means we have forgotten
         // to add the appropriate network config or the added network config is malformed,
         // leading to a potential Sev0/Sev1 incident.
+        captureException(
+          new BridgeMissingNetworkConfigError(
+            caipChainId,
+            formatChainIdToHex(caipChainId),
+          ),
+        );
         return;
       }
     } catch {

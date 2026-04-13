@@ -7,8 +7,11 @@ import {
 } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import * as networkConstants from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as actions from '../../store/actions';
+import * as sentry from '../../../shared/lib/sentry';
+import { BridgeMissingNetworkConfigError } from '../../ducks/bridge/errors';
 
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
@@ -526,6 +529,66 @@ describe('usePrefillFromSearchQuery', () => {
 
     // Must NOT have called setEnabledNetworks — that would change the active network
     expect(setEnabledNetworksSpy).not.toHaveBeenCalled();
+  });
+
+  it('captures a Sentry exception when the chain is supported but absent from both network configs and FEATURED_RPCS', async () => {
+    const captureExceptionSpy = jest
+      .spyOn(sentry, 'captureException')
+      .mockImplementation(jest.fn());
+    const addNetworkSpy = jest.spyOn(actions, 'addNetwork');
+
+    const featuredRpcsHandle = jest.replaceProperty(
+      networkConstants,
+      'FEATURED_RPCS',
+      [] as never,
+    );
+
+    try {
+      jest
+        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+        .mockResolvedValue({
+          'eip155:42161/slip44:60': {
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ethereum',
+            assetId: 'eip155:42161/slip44:60',
+          },
+        });
+
+      const mockStoreState = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              {
+                chainId: bridgeControllerUtils.formatChainIdToCaip(
+                  bridgeControllerUtils.ChainId.ARBITRUM,
+                ),
+              },
+            ],
+          },
+        },
+      });
+
+      const searchParams = new URLSearchParams({
+        from: 'eip155:42161/slip44:60',
+      });
+      const { waitForNextUpdate } = renderUseBridgeQueryParams(
+        mockStoreState,
+        `/?${searchParams.toString()}`,
+      );
+
+      await waitForNextUpdate();
+
+      // Should have reported the configuration bug to Sentry
+      expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
+      expect(captureExceptionSpy.mock.calls[0][0]).toBeInstanceOf(
+        BridgeMissingNetworkConfigError,
+      );
+      // Must NOT have tried to add the network — there is no RPC config to add
+      expect(addNetworkSpy).not.toHaveBeenCalled();
+    } finally {
+      featuredRpcsHandle.restore();
+    }
   });
 
   describe('malformed or unknown chain/token params', () => {

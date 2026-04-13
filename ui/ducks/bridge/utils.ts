@@ -12,6 +12,7 @@ import {
   isNonEvmChainId,
   formatChainIdToHex,
   formatAddressToCaipReference,
+  ChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
@@ -249,17 +250,30 @@ export const getDefaultToToken = (
  * Returns true when the chain is in the set of chains MetaMask supports for
  * bridge/swap, false for any malformed, unknown, or unsupported chain ID.
  *
- * formatChainIdToHex succeeds for EVM CAIP chains (eip155:*) and throws for
- * non-EVM ones, cleanly separating the two code paths.
+ * ALL_ALLOWED_BRIDGE_CHAIN_IDS contains chain IDs in three forms:
+ * - hex strings      ("0x1", "0xa4b1", …)       from ALLOWED_EVM_BRIDGE_CHAIN_IDS
+ * - CAIP strings     ("eip155:1", "solana:…", …) from ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP
+ * - numeric ChainId  (1, 1151111081099710, …)     from Object.values(ChainId)
  *
- * @param caipChainId - CAIP chain ID to validate (e.g. "eip155:1", "solana:mainnet").
+ * getNativeAssetForChainId returns tokens whose chainId is a numeric ChainId enum value
+ * (e.g. ChainId.SOLANA = 1151111081099710), so we must check direct inclusion first
+ * before attempting any hex conversion — otherwise the numeric value gets converted to an
+ * obscure hex string that is absent from the list and the check incorrectly returns false.
+ *
+ * @param caipChainId - Chain ID to validate in any supported form.
  */
-export const isSupportedBridgeChain = (caipChainId: CaipChainId): boolean => {
+export const isSupportedBridgeChain = (
+  caipChainId: string | ChainId,
+): boolean => {
+  if (ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId)) {
+    return true;
+  }
+
   try {
     return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
       formatChainIdToHex(caipChainId),
     );
   } catch {
-    return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
+    return false;
   }
 };
