@@ -8,6 +8,7 @@ import {
   Severity,
   Category,
   LEDGER_ERROR_MAPPINGS,
+  TREZOR_ERROR_MAPPINGS,
 } from '@metamask/hw-wallet-sdk';
 import {
   is,
@@ -206,6 +207,22 @@ function isPlainObjectWithErrorCode(
   error: unknown,
 ): error is PlainObjectWithErrorCode {
   return is(error, PlainObjectWithErrorCodeStruct);
+}
+
+/**
+ * Check if an error is a plain object carrying a Trezor SDK string code.
+ *
+ * @param error - The error to check
+ * @returns True if the error exposes a known Trezor SDK string code
+ */
+function isPlainObjectWithTrezorSdkErrorCode(
+  error: unknown,
+): error is PlainObjectWithErrorCode & { code: string } {
+  if (!isPlainObjectWithErrorCode(error) || typeof error.code !== 'string') {
+    return false;
+  }
+
+  return error.code in TREZOR_ERROR_MAPPINGS;
 }
 
 /**
@@ -416,6 +433,176 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
 }
 
 /**
+ * Extract a Trezor string error code from a message.
+ * Handles common formats from TrezorError.toString() and wrapped error messages.
+ * @param message
+ */
+
+export function extractTrezorCodeFromMessage(message: string): string | null {
+  const TREZOR_CODE_REGEX = /code:\s*([A-Za-z]+_\w+)/u;
+  const match = TREZOR_CODE_REGEX.exec(message);
+  return match?.[1] ?? null;
+}
+
+/**
+ * Extract an error message from an unknown value without depending on the
+ * later generic helper in this file.
+ *
+ * @param error - The error to inspect
+ * @returns The error message string
+ */
+export function extractMessageFromUnknownError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const errorLike = error as { message?: unknown };
+    const { message } = errorLike;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (
+      typeof message === 'number' ||
+      typeof message === 'boolean' ||
+      typeof message === 'bigint'
+    ) {
+      return String(message);
+    }
+
+    try {
+      return JSON.stringify(error, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      );
+    } catch {
+      return String(error);
+    }
+  }
+
+  return String(error);
+}
+
+/**
+ * Check whether an error's message/stack contains user-cancel text.
+ *
+ * @param error - The error to inspect
+ * @returns True if the error text indicates a user cancellation/rejection
+ */
+export function hasUserRejectedMessage(error: unknown): boolean {
+  const message = extractMessageFromUnknownError(error).toLowerCase();
+  const rawStack =
+    typeof error === 'object' && error !== null
+      ? (error as { stack?: unknown }).stack
+      : undefined;
+  let stack = '';
+
+  if (rawStack !== null && rawStack !== undefined) {
+    if (
+      typeof rawStack === 'number' ||
+      typeof rawStack === 'boolean' ||
+      typeof rawStack === 'bigint'
+    ) {
+      stack = String(rawStack);
+    } else if (typeof rawStack === 'string') {
+      stack = rawStack;
+    } else {
+      const stringifiedStack = rawStack.toString();
+      stack =
+        stringifiedStack === '[object Object]'
+          ? extractMessageFromUnknownError(rawStack)
+          : stringifiedStack;
+    }
+  }
+
+  stack = stack.toLowerCase();
+
+  return (
+    message.includes('popup closed') ||
+    message.includes('user rejected') ||
+    message.includes('cancelled') ||
+    message.includes('canceled') ||
+    stack.includes('popup closed') ||
+    stack.includes('user rejected') ||
+    stack.includes('cancelled') ||
+    stack.includes('canceled')
+  );
+}
+
+/**
+ * Extract a Trezor SDK error code from an unknown error.
+ *
+ * @param error - The error to inspect
+ * @returns The Trezor SDK error code if found, null otherwise
+ */
+function extractTrezorSdkErrorCode(error: unknown): string | null {
+  const errorCode = (error as { code?: unknown })?.code;
+
+  if (typeof errorCode === 'string' && errorCode in TREZOR_ERROR_MAPPINGS) {
+    return errorCode;
+  }
+
+  return extractTrezorCodeFromMessage(extractMessageFromUnknownError(error));
+}
+
+/**
+ * Map a structured Trezor string code to the local ErrorCode.
+ *
+ * @param code - The Trezor string code
+ * @returns The mapped ErrorCode, or null if the code is not recognized
+ */
+function mapTrezorStructuredCodeToErrorCode(code: string): ErrorCode | null {
+  if (code in TREZOR_ERROR_MAPPINGS) {
+    return TREZOR_ERROR_MAPPINGS[code].code;
+  }
+
+  return null;
+}
+
+/**
+ * Map Trezor error details to an ErrorCode using SDK codes first,
+ * including codes extracted from message text.
+ * @param error - The error to map
+ */
+function mapTrezorErrorToErrorCode(error: unknown): ErrorCode {
+  const extractedCode = extractTrezorSdkErrorCode(error);
+  const extractedMappedCode =
+    extractedCode === null
+      ? null
+      : mapTrezorStructuredCodeToErrorCode(extractedCode);
+  if (extractedMappedCode !== null) {
+    return extractedMappedCode;
+  }
+
+  const message = extractMessageFromUnknownError(error);
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes('popup closed')) {
+    return ErrorCode.UserCancelled;
+  }
+
+  if (normalizedMessage.includes('user rejected')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (
+    normalizedMessage.includes('cancelled') ||
+    normalizedMessage.includes('canceled')
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  if (normalizedMessage.includes('device disconnected')) {
+    return ErrorCode.DeviceDisconnected;
+  }
+
+  if (normalizedMessage.includes('transport is missing')) {
+    return ErrorCode.ConnectionTransportMissing;
+  }
+
+  return ErrorCode.Unknown;
+}
+
+/**
  * Map a code (string or number) to an ErrorCode
  *
  * @param code - The error code (string name or numeric value)
@@ -425,71 +612,6 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
   return typeof code === 'number'
     ? mapNumericCodeToErrorCode(code)
     : mapStringCodeToErrorCode(code);
-}
-
-/**
- * Infer user action error codes from free-form error text.
- * This is a fallback for cases where serialized causes lose their code field.
- *
- * @param text - The error text to inspect
- * @returns User rejection/cancellation code when detectable, null otherwise
- */
-function inferUserActionErrorCodeFromText(text: string): ErrorCode | null {
-  const normalizedText = text.toLowerCase();
-
-  if (normalizedText.includes('user rejected')) {
-    return ErrorCode.UserRejected;
-  }
-
-  if (
-    normalizedText.includes('user cancelled') ||
-    normalizedText.includes('user canceled')
-  ) {
-    return ErrorCode.UserCancelled;
-  }
-
-  return null;
-}
-
-/**
- * Infer a hardware wallet error code from a serialized HardwareWalletError-like cause.
- * Some transport paths preserve name/message/stack but drop explicit code.
- *
- * @param cause - The cause object to inspect
- * @returns The inferred ErrorCode if detected, null otherwise
- */
-function inferErrorCodeFromSerializedHardwareWalletCause(
-  cause: unknown,
-): ErrorCode | null {
-  const causeAsAny = cause as {
-    name?: unknown;
-    message?: unknown;
-    stack?: unknown;
-  };
-
-  if (causeAsAny?.name !== 'HardwareWalletError') {
-    return null;
-  }
-
-  const causeMessage =
-    typeof causeAsAny.message === 'string' ? causeAsAny.message : '';
-  const causeStack =
-    typeof causeAsAny.stack === 'string' ? causeAsAny.stack : '';
-
-  // Parse enum key in stack traces like:
-  // HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device
-  const stackEnumMatch = causeStack.match(/\[([A-Za-z]+):\d+\]/u);
-  if (stackEnumMatch?.[1]) {
-    const parsedCode = mapStringCodeToErrorCode(stackEnumMatch[1]);
-    if (parsedCode !== ErrorCode.Unknown) {
-      return parsedCode;
-    }
-  }
-
-  return (
-    inferUserActionErrorCodeFromText(causeMessage) ??
-    inferUserActionErrorCodeFromText(causeStack)
-  );
 }
 
 /**
@@ -514,6 +636,10 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
     return error.code;
   }
 
+  if (isPlainObjectWithTrezorSdkErrorCode(error)) {
+    return mapTrezorStructuredCodeToErrorCode(error.code);
+  }
+
   // Check if it's a plain object with a code property
   if (isPlainObjectWithErrorCode(error)) {
     return mapCodeToErrorCode(error.code);
@@ -530,6 +656,10 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
  * @returns True if the error matches known HW error shapes
  */
 export function isHardwareWalletError(error: unknown): boolean {
+  if (error instanceof KeyringControllerError) {
+    return isHardwareWalletError(error.cause);
+  }
+
   if (error instanceof HardwareWalletError) {
     return true;
   }
@@ -542,14 +672,21 @@ export function isHardwareWalletError(error: unknown): boolean {
     return true;
   }
 
+  if (isPlainObjectWithTrezorSdkErrorCode(error)) {
+    return true;
+  }
+
   const errorAsAny = error as {
     name?: string;
+    cause?: unknown;
     data?: { cause?: { name?: string } };
   };
 
   return (
     errorAsAny?.name === 'HardwareWalletError' ||
-    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError' ||
+    (errorAsAny?.name === 'KeyringControllerError' &&
+      isHardwareWalletError(errorAsAny?.cause))
   );
 }
 
@@ -564,6 +701,15 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   if (
     errorCode === ErrorCode.UserRejected ||
     errorCode === ErrorCode.UserCancelled
+  ) {
+    return true;
+  }
+
+  const errorCause = (error as { cause?: unknown })?.cause;
+  if (
+    (errorCode === ErrorCode.Unknown || errorCode === null) &&
+    (isHardwareWalletError(error) || isHardwareWalletError(errorCause)) &&
+    (hasUserRejectedMessage(error) || hasUserRejectedMessage(errorCause))
   ) {
     return true;
   }
@@ -617,6 +763,35 @@ export function toHardwareWalletError(
 
   if (error instanceof KeyringControllerError) {
     const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (
+      walletType === HardwareWalletType.Trezor &&
+      (causeCode === ErrorCode.Unknown || causeCode === null)
+    ) {
+      const inferredCauseCode = mapTrezorErrorToErrorCode(error.cause);
+      if (inferredCauseCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredCauseCode,
+          walletType,
+          getErrorMessage(error.cause),
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
+      }
+
+      const inferredKeyringCode = mapTrezorErrorToErrorCode(error);
+      if (inferredKeyringCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredKeyringCode,
+          walletType,
+          error.message,
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
+      }
+    }
+
     if (causeCode !== null) {
       return createHardwareWalletError(
         causeCode,
@@ -628,27 +803,10 @@ export function toHardwareWalletError(
       );
     }
 
-    const inferredCauseCode = inferErrorCodeFromSerializedHardwareWalletCause(
-      error.cause,
-    );
-    if (inferredCauseCode !== null) {
-      return createHardwareWalletError(
-        inferredCauseCode,
-        walletType,
-        getErrorMessage(error.cause),
-        {
-          cause: error?.cause instanceof Error ? error.cause : undefined,
-        },
-      );
-    }
-
     const keyringErrorCode = error?.code
       ? mapStringCodeToErrorCode(error.code)
       : null;
-    const errorCode =
-      keyringErrorCode ??
-      inferUserActionErrorCodeFromText(error.message) ??
-      ErrorCode.Unknown;
+    const errorCode = keyringErrorCode ?? ErrorCode.Unknown;
     return createHardwareWalletError(errorCode, walletType, error.message, {
       cause: error?.cause,
     });
@@ -709,6 +867,15 @@ export function toHardwareWalletError(
         cause: error instanceof Error ? error : undefined,
       });
     }
+  }
+
+  if (walletType === HardwareWalletType.Trezor) {
+    const errorMessage = getErrorMessage(error);
+    const errorCode = mapTrezorErrorToErrorCode(error);
+
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
   }
 
   // Fallback: use the error parser to create a HardwareWalletError

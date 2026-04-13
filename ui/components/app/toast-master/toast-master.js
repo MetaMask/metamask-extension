@@ -3,7 +3,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'clsx';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   AvatarNetwork,
@@ -53,7 +52,6 @@ import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
@@ -97,7 +95,6 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
@@ -114,7 +111,6 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
@@ -165,7 +161,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -490,51 +485,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const PasswordChangeToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPasswordChangeToast = useSelector(selectPasswordChangeToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showPasswordChangeToast !== null && (
-      <Toast
-        dataTestId={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? 'password-change-toast-success'
-            : 'password-change-toast-error'
-        }
-        className={classnames({
-          'toasts-container--password-change-toast--error':
-            showPasswordChangeToast === PasswordChangeToastType.Errored,
-        })}
-        key="password-change-toast"
-        text={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? t('securityChangePasswordToastSuccess')
-            : t('securityChangePasswordToastError')
-        }
-        startAdornment={
-          showPasswordChangeToast ===
-          PasswordChangeToastType.Success ? undefined : (
-            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
-          )
-        }
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function CopyAddressToast() {
   const t = useI18nContext();

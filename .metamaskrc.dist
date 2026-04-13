@@ -10,8 +10,8 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
-; Set to `true` to include PerpsController and perps features (matches experimental channel when true).
-; Set to `false` to match main/beta/flask builds that omit perps at compile time.
+; Set to `true` to include PerpsController and perps features.
+; main and experimental builds have this enabled by default; beta and flask do not.
 PERPS_ENABLED='true'
 
 ; Set to `true` to enable AssetsController unified state population.

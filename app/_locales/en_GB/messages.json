@@ -2979,9 +2979,6 @@
   "from": {
     "message": "From"
   },
-  "fromTokenLists": {
-    "message": "From token lists: $1"
-  },
   "function": {
     "message": "Function: $1"
   },
@@ -3174,11 +3171,16 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "Restart your device and try connecting again"
   },
+  "hardwareWalletErrorRecoveryConnection4": {
+    "message": "Your $1 device is unlocked",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Your Ledger is unlocked"
+    "message": "Your $1 device is unlocked",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
@@ -3365,12 +3367,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Ignore all"
-  },
-  "ignoreTokenWarning": {
-    "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3430,12 +3426,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
-  "importSelectedTokens": {
-    "message": "Import selected tokens?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
-  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -3454,10 +3444,6 @@
   "importWalletSuccess": {
     "message": "Wallet $1 imported",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Import $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Imported",
@@ -4179,6 +4165,10 @@
     "message": "Bonus details",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
   },
+  "musdConversionFeeTooltipDescription": {
+    "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
+    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
+  },
   "musdConversionTitle": {
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
@@ -4826,13 +4816,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "$1 new tokens found in this account",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 new token found in this account"
-  },
   "numberOfTokens": {
     "message": "Number of tokens"
   },
@@ -5476,11 +5459,29 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Failed to cancel one or more orders. Try again."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Failed to close one or more positions. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
   "perpsCancelOrder": {
     "message": "Cancel order"
+  },
+  "perpsCandleIntervals": {
+    "message": "Candle intervals"
+  },
+  "perpsCandlePeriodDays": {
+    "message": "Days"
+  },
+  "perpsCandlePeriodHours": {
+    "message": "Hours"
+  },
+  "perpsCandlePeriodMinutes": {
+    "message": "Minutes"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5506,6 +5507,9 @@
   "perpsConfirmCloseShort": {
     "message": "Close Short"
   },
+  "perpsConnectionTimeout": {
+    "message": "Connection timed out. Please try again."
+  },
   "perpsContactSupport": {
     "message": "Contact support"
   },
@@ -5517,6 +5521,12 @@
   },
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
+  },
+  "perpsDepositFailed": {
+    "message": "Deposit could not be completed. Try again."
+  },
+  "perpsDepositFundsTitle": {
+    "message": "Deposit funds to Perps"
   },
   "perpsDepositTitle": {
     "message": "Funded perps account"
@@ -5595,6 +5605,9 @@
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
+  "perpsInsufficientMargin": {
+    "message": "Insufficient margin to place this order."
+  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5659,6 +5672,9 @@
   "perpsMore": {
     "message": "More"
   },
+  "perpsNetworkError": {
+    "message": "A network error occurred. Please try again."
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
@@ -5691,8 +5707,14 @@
   "perpsOrderDate": {
     "message": "Date"
   },
+  "perpsOrderFailed": {
+    "message": "Order could not be placed. Try again."
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
+  },
+  "perpsOrderRejected": {
+    "message": "Your order was rejected. Try again."
   },
   "perpsOrderStatus": {
     "message": "Status"
@@ -5711,6 +5733,9 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsRateLimitExceeded": {
+    "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
     "message": "Recent Activity"
@@ -5758,11 +5783,17 @@
   "perpsSeeAll": {
     "message": "See All"
   },
+  "perpsServiceUnavailable": {
+    "message": "Service temporarily unavailable. Please try again later."
+  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
   },
   "perpsSortByFundingRate": {
     "message": "Funding rate"
@@ -6016,8 +6047,14 @@
   "perpsWithdrawFee": {
     "message": "Provider Fee"
   },
+  "perpsWithdrawFundsTitle": {
+    "message": "Withdraw"
+  },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
+  },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Enter a valid destination address."
   },
   "perpsWithdrawInvalidAmount": {
     "message": "Enter a valid amount."
@@ -6076,10 +6113,6 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
-  },
-  "plusXMore": {
-    "message": "+ $1 more",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog post."
@@ -8948,9 +8981,6 @@
   "tokenDetails": {
     "message": "Token details"
   },
-  "tokenFoundTitle": {
-    "message": "1 new token found"
-  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -8992,10 +9022,6 @@
   "tokensCount": {
     "message": "tokens",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 new tokens found",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Tokens in collection"

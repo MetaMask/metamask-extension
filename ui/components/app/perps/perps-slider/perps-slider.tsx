@@ -90,8 +90,13 @@ export type PerpsSliderProps = {
   step: number;
   /** Current value */
   value: number;
-  /** Change handler */
+  /** Change handler - fires continuously during drag */
   onChange: (
+    event: React.ChangeEvent<unknown>,
+    value: number | number[],
+  ) => void;
+  /** Committed change handler - fires only when drag ends or a discrete click occurs */
+  onChangeCommitted?: (
     event: React.ChangeEvent<unknown>,
     value: number | number[],
   ) => void;
@@ -121,6 +126,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   step,
   value,
   onChange,
+  onChangeCommitted,
   editText = 'Edit',
   infoText,
   onEdit,
@@ -183,6 +189,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         step={step}
         value={value}
         onChange={onChange}
+        onChangeCommitted={onChangeCommitted}
         disabled={disabled}
         data-testid={dataTestId}
       />

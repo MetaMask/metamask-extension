@@ -16,7 +16,6 @@ import {
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
@@ -152,18 +151,6 @@ export function selectShowConnectAccountGroupToast(
  */
 export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
-}
-
-/**
- * Retrieves user preference to see the "Password Change Error" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectPasswordChangeToast(
-  state: Pick<State, 'appState'>,
-): PasswordChangeToastType | null {
-  return state.appState.showPasswordChangeToast || null;
 }
 
 /**
