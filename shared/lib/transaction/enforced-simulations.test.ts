@@ -211,16 +211,52 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns false when chain is not supported', () => {
+      it('returns true when chain is not supported by trust signals', () => {
         expect(
           getIsEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, chainId: UNSUPPORTED_CHAIN_ID },
             buildState(ResultType.Benign),
           ),
-        ).toBe(false);
+        ).toBe(true);
       });
 
-      it('returns false when no to addresses exist', () => {
+      it('returns true when chainId is undefined', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            { ...BASE_TRANSACTION_META, chainId: undefined as never },
+            buildState(ResultType.Benign),
+          ),
+        ).toBe(true);
+      });
+
+      it('uses txParamsOriginal.to when container wrapping changed txParams.to', () => {
+        const trustedDelegationManager = '0xTrustedDelegationManager';
+        const trustedCacheKey = `ethereum:${trustedDelegationManager.toLowerCase()}`;
+
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              txParams: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: trustedDelegationManager,
+              },
+              txParamsOriginal: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: TO_ADDRESS,
+              },
+            },
+            {
+              addressSecurityAlertResponses: {
+                [CACHE_KEY]: buildCacheEntry(ResultType.Benign),
+                [trustedCacheKey]: buildCacheEntry(ResultType.Trusted),
+              },
+            },
+          ),
+        ).toBe(true);
+      });
+
+      it('returns false when no to addresses exist on supported chain', () => {
         expect(
           getIsEnforcedSimulationsEligible(
             {

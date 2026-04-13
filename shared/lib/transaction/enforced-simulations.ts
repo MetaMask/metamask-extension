@@ -7,6 +7,13 @@ import {
   ResultType,
 } from '../trust-signals';
 
+// TODO: Replace with createProjectLogger once debug package works in UI context.
+// The debug package relies on localStorage in the browser, but the extension
+// popup may not initialize it correctly. Background logs via debug work fine.
+const log = (...args: unknown[]) =>
+  // eslint-disable-next-line no-console
+  console.debug('[enforced-sim]', ...args);
+
 const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
 
 /**
@@ -28,10 +35,11 @@ export function getEnforcedSimulationsSlippage(): number {
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * When state is provided, also requires that the trust signal for the
- * recipient address is loaded and is not trusted. When state is omitted
- * (e.g. background hook without trust signal data), only the base
- * eligibility checks are applied.
+ * When state is provided and the chain supports trust signals, also
+ * requires that at least one recipient address is loaded and not trusted.
+ * If the chain is unsupported by trust signals, the transaction remains
+ * eligible since we cannot verify trust. When state is omitted (e.g.
+ * background hook), only the base eligibility checks are applied.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Optional trust signal state. When provided, the trust
@@ -42,57 +50,77 @@ export function getIsEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state?: EnforcedSimulationsState,
 ): boolean {
-  const { delegationAddress, origin, simulationData } = transactionMeta;
+  const { delegationAddress, origin, simulationData, type } = transactionMeta;
 
   if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
+    log('Not eligible: env flag disabled');
     return false;
   }
 
   if (!origin || origin === ORIGIN_METAMASK) {
+    log('Not eligible: origin', origin);
     return false;
   }
 
   if (!delegationAddress) {
+    log('Not eligible: no delegationAddress');
     return false;
   }
 
   if (!hasBalanceChanges(simulationData)) {
+    log('Not eligible: no balance changes', {
+      nativeBalanceChange: simulationData?.nativeBalanceChange,
+      tokenBalanceChanges: simulationData?.tokenBalanceChanges?.length,
+    });
     return false;
   }
 
   if (state) {
-    const { chainId, txParams, nestedTransactions } = transactionMeta;
+    const { chainId, txParams, txParamsOriginal, nestedTransactions } =
+      transactionMeta;
 
     const supportedChain = chainId
       ? mapChainIdToSupportedEVMChain(chainId)
       : undefined;
 
-    if (!supportedChain) {
-      return false;
-    }
+    log('Trust signal check', { chainId, supportedChain, type });
 
-    const toAddresses = getToAddresses(txParams?.to, nestedTransactions);
+    // If trust signals don't support this chain, remain eligible —
+    // we can't verify trust so the user should still get protection.
+    if (supportedChain) {
+      // Use the original `to` address before any container wrapping,
+      // since containers may redirect to a trusted delegation manager.
+      const originalTo = txParamsOriginal?.to ?? txParams?.to;
+      const toAddresses = getToAddresses(originalTo, nestedTransactions);
 
-    if (toAddresses.length === 0) {
-      return false;
-    }
+      log('To addresses', { originalTo, toAddresses });
 
-    const hasUntrustedAddress = toAddresses.some((address) => {
-      const cacheKey = createCacheKey(supportedChain, address);
-      const cached = state.addressSecurityAlertResponses[cacheKey];
-
-      if (!cached || cached.result_type === ResultType.Loading) {
+      if (toAddresses.length === 0) {
+        log('Not eligible: no to addresses');
         return false;
       }
 
-      return cached.result_type !== ResultType.Trusted;
-    });
+      const hasUntrustedAddress = toAddresses.some((address) => {
+        const cacheKey = createCacheKey(supportedChain, address);
+        const cached = state.addressSecurityAlertResponses[cacheKey];
 
-    if (!hasUntrustedAddress) {
-      return false;
+        log('Trust signal', { address, cacheKey, cached });
+
+        if (!cached || cached.result_type === ResultType.Loading) {
+          return false;
+        }
+
+        return cached.result_type !== ResultType.Trusted;
+      });
+
+      if (!hasUntrustedAddress) {
+        log('Not eligible: no untrusted address found');
+        return false;
+      }
     }
   }
 
+  log('Eligible');
   return true;
 }
 

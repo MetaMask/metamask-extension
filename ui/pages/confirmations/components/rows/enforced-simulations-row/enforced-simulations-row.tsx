@@ -36,12 +36,14 @@ export function EnforcedSimulationsRow() {
 
   const isEligible = useIsEnforcedSimulationsEligible();
 
-  const isEnabled = containerTypes?.includes(
+  const hasAutoEnabled = containerTypes !== undefined;
+
+  const hasEnforcedSimulations = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,
   );
 
   useEffect(() => {
-    if (!isEligible || isEnabled || !transactionId) {
+    if (!isEligible || hasAutoEnabled || !transactionId) {
       return;
     }
 
@@ -49,9 +51,9 @@ export function EnforcedSimulationsRow() {
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
     ]);
-  }, [isEligible, isEnabled, transactionId, containerTypes]);
+  }, [isEligible, hasAutoEnabled, transactionId, containerTypes]);
 
-  if (!isEligible) {
+  if (!isEligible && !hasAutoEnabled) {
     return null;
   }
 
@@ -72,7 +74,8 @@ export function EnforcedSimulationsRow() {
         <TitleRow />
 
         <EnforcedSimulationsCheckbox
-          isEnabled={Boolean(isEnabled)}
+          isEnabled={Boolean(hasEnforcedSimulations)}
+          isInitializing={!hasAutoEnabled}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
         />
@@ -85,10 +88,12 @@ export function EnforcedSimulationsRow() {
 
 function EnforcedSimulationsCheckbox({
   isEnabled,
+  isInitializing,
   containerTypes,
   transactionId,
 }: {
   isEnabled: boolean;
+  isInitializing: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
 }) {
@@ -134,7 +139,7 @@ function EnforcedSimulationsCheckbox({
     }
   }, [containerTypes, isEnabled, transactionId]);
 
-  if (isToggling) {
+  if (isInitializing || isToggling) {
     return (
       <Icon
         name={IconName.Loading}
