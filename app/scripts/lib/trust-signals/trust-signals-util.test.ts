@@ -2,10 +2,7 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/lib/selectors/networks';
-import {
-  SupportedEVMChain,
-  mapChainIdToSupportedEVMChain,
-} from '../../../../shared/lib/trust-signals';
+import { SupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import {
   isEthSendTransaction,
   hasValidTransactionParams,
@@ -14,13 +11,105 @@ import {
   getChainId,
   isConnected,
   connectScreenHasBeenPrompted,
+  isWalletSendCalls,
+  hasValidSendCallsParams,
 } from './trust-signals-util';
 
 jest.mock('../../../../shared/lib/selectors/networks');
 
+const createMockRequest = (
+  method: string,
+  params?: unknown[],
+): JsonRpcRequest => ({
+  method,
+  params,
+  id: 1,
+  jsonrpc: '2.0' as const,
+});
+
 describe('trust-signals-util', () => {
+  describe('isWalletSendCalls', () => {
+    it('returns true for MESSAGE_TYPE.WALLET_SEND_CALLS', () => {
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_SEND_CALLS);
+      expect(isWalletSendCalls(req)).toBe(true);
+    });
+
+    it('returns false for MESSAGE_TYPE.ETH_SEND_TRANSACTION', () => {
+      const req = createMockRequest(MESSAGE_TYPE.ETH_SEND_TRANSACTION);
+      expect(isWalletSendCalls(req)).toBe(false);
+    });
+
+    it('returns false for a random method like "eth_getBalance"', () => {
+      const req = createMockRequest('eth_getBalance');
+      expect(isWalletSendCalls(req)).toBe(false);
+    });
+  });
+
+  describe('hasValidSendCallsParams', () => {
+    it('returns false when request has no params property', () => {
+      const req = {
+        method: 'test',
+        id: 1,
+        jsonrpc: '2.0',
+      } as unknown as JsonRpcRequest;
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params is null', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const req = createMockRequest('test', null as any);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params is undefined', () => {
+      const req = createMockRequest('test', undefined);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params is not an array', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const req = createMockRequest('test', 'invalid' as any);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params is empty array', () => {
+      const req = createMockRequest('test', []);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when first param is null', () => {
+      const req = createMockRequest('test', [null]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when first param is a string', () => {
+      const req = createMockRequest('test', ['invalid']);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when first param has no "calls" property', () => {
+      const req = createMockRequest('test', [{}]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when first param has "calls" that is not an array', () => {
+      const req = createMockRequest('test', [{ calls: 'not-array' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns true when first param has valid "calls" array', () => {
+      const req = createMockRequest('test', [{ calls: [] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+
+    it('returns true with populated calls array', () => {
+      const req = createMockRequest('test', [{ calls: [{ to: '0x123' }] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+  });
+
   describe('isEthSendTransaction', () => {
-    it('should return true for eth_sendTransaction method', () => {
+    it('returns true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [],
@@ -30,7 +119,7 @@ describe('trust-signals-util', () => {
       expect(isEthSendTransaction(req)).toBe(true);
     });
 
-    it('should return false for other methods', () => {
+    it('returns false for other methods', () => {
       const req: JsonRpcRequest = {
         method: 'eth_getBalance',
         params: [],
@@ -42,7 +131,7 @@ describe('trust-signals-util', () => {
   });
 
   describe('hasValidTransactionParams', () => {
-    it('should return true for valid transaction params with "to" field', () => {
+    it('returns true for valid transaction params with "to" field', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [
@@ -59,7 +148,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(true);
     });
 
-    it('should return false when params is not present', () => {
+    it('returns false when params is not present', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         id: 1,
@@ -68,7 +157,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(false);
     });
 
-    it('should return false when params is not an array', () => {
+    it('returns false when params is not an array', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -78,7 +167,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(false);
     });
 
-    it('should return false when params array is empty', () => {
+    it('returns false when params array is empty', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [],
@@ -88,7 +177,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(false);
     });
 
-    it('should return false when first param is not an object', () => {
+    it('returns false when first param is not an object', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: ['not an object'],
@@ -98,7 +187,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(false);
     });
 
-    it('should return false when first param is null', () => {
+    it('returns false when first param is null', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [null],
@@ -108,7 +197,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTransactionParams(req)).toBe(false);
     });
 
-    it('should return false when "to" field is missing', () => {
+    it('returns false when "to" field is missing', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [
@@ -126,7 +215,7 @@ describe('trust-signals-util', () => {
   });
 
   describe('isEthSignTypedData', () => {
-    it('should return true for ETH_SIGN_TYPED_DATA', () => {
+    it(' return true for ETH_SIGN_TYPED_DATA', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
         params: [],
@@ -136,7 +225,7 @@ describe('trust-signals-util', () => {
       expect(isEthSignTypedData(req)).toBe(true);
     });
 
-    it('should return true for ETH_SIGN_TYPED_DATA_V1', () => {
+    it(' return true for ETH_SIGN_TYPED_DATA_V1', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
         params: [],
@@ -146,7 +235,7 @@ describe('trust-signals-util', () => {
       expect(isEthSignTypedData(req)).toBe(true);
     });
 
-    it('should return true for ETH_SIGN_TYPED_DATA_V3', () => {
+    it(' return true for ETH_SIGN_TYPED_DATA_V3', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
         params: [],
@@ -156,7 +245,7 @@ describe('trust-signals-util', () => {
       expect(isEthSignTypedData(req)).toBe(true);
     });
 
-    it('should return true for ETH_SIGN_TYPED_DATA_V4', () => {
+    it(' return true for ETH_SIGN_TYPED_DATA_V4', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: [],
@@ -166,7 +255,7 @@ describe('trust-signals-util', () => {
       expect(isEthSignTypedData(req)).toBe(true);
     });
 
-    it('should return false for other methods', () => {
+    it(' return false for other methods', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         params: [],
@@ -178,7 +267,7 @@ describe('trust-signals-util', () => {
   });
 
   describe('hasValidTypedDataParams', () => {
-    it('should return true for valid typed data params', () => {
+    it(' return true for valid typed data params', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: ['0xaddress', { domain: {}, message: {} }],
@@ -188,7 +277,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(true);
     });
 
-    it('should return true when second param is a string', () => {
+    it(' return true when second param is a string', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: ['0xaddress', '{"domain":{}}'],
@@ -198,7 +287,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(true);
     });
 
-    it('should return false when params is not present', () => {
+    it(' return false when params is not present', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         id: 1,
@@ -207,7 +296,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(false);
     });
 
-    it('should return false when params is not an array', () => {
+    it(' return false when params is not an array', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -217,7 +306,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(false);
     });
 
-    it('should return false when params has less than 2 elements', () => {
+    it(' return false when params has less than 2 elements', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: ['0xaddress'],
@@ -227,7 +316,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(false);
     });
 
-    it('should return false when second param is undefined', () => {
+    it(' return false when second param is undefined', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: ['0xaddress', undefined as any], // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -237,7 +326,7 @@ describe('trust-signals-util', () => {
       expect(hasValidTypedDataParams(req)).toBe(false);
     });
 
-    it('should return false when second param is null', () => {
+    it(' return false when second param is null', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         params: ['0xaddress', null],
@@ -257,7 +346,7 @@ describe('trust-signals-util', () => {
       jest.clearAllMocks();
     });
 
-    it('should return Ethereum for mainnet chain ID', () => {
+    it(' return Ethereum for mainnet chain ID', () => {
       const mockNetworkController = {
         state: { providerConfig: { chainId: CHAIN_IDS.MAINNET } },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -271,7 +360,7 @@ describe('trust-signals-util', () => {
       );
     });
 
-    it('should return Polygon for polygon chain ID', () => {
+    it(' return Polygon for polygon chain ID', () => {
       const mockNetworkController = {
         state: { providerConfig: { chainId: CHAIN_IDS.POLYGON } },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -283,7 +372,7 @@ describe('trust-signals-util', () => {
       expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Polygon);
     });
 
-    it('should return correct chain for various supported chains', () => {
+    it(' return correct chain for various supported chains', () => {
       const testCases = [
         { chainId: CHAIN_IDS.ARBITRUM, expected: SupportedEVMChain.Arbitrum },
         { chainId: CHAIN_IDS.AVALANCHE, expected: SupportedEVMChain.Avalanche },
@@ -309,7 +398,7 @@ describe('trust-signals-util', () => {
       });
     });
 
-    it('should handle lowercase chain IDs', () => {
+    it(' handle lowercase chain IDs', () => {
       const mockNetworkController = {
         state: { providerConfig: { chainId: '0X1' } },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -323,7 +412,7 @@ describe('trust-signals-util', () => {
       );
     });
 
-    it('should throw error when chain ID is not found', () => {
+    it(' throw error when chain ID is not found', () => {
       const mockNetworkController = {
         state: { providerConfig: {} },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -335,7 +424,7 @@ describe('trust-signals-util', () => {
       );
     });
 
-    it('should throw error when provider config is undefined', () => {
+    it(' throw error when provider config is undefined', () => {
       const mockNetworkController = {
         state: { providerConfig: {} },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -347,7 +436,7 @@ describe('trust-signals-util', () => {
       );
     });
 
-    it('should handle custom chain IDs', () => {
+    it(' handle custom chain IDs', () => {
       const customChainMappings = [
         { chainId: '0x76adf1', expected: SupportedEVMChain.Zora },
         { chainId: '0x27bc86aa', expected: SupportedEVMChain.Degen },
@@ -442,229 +531,6 @@ describe('trust-signals-util', () => {
         jsonrpc: '2.0',
       } as JsonRpcRequest;
       expect(connectScreenHasBeenPrompted(req)).toBe(false);
-    });
-  });
-
-  describe('mapChainIdToSupportedEVMChain', () => {
-    describe('supported chain mappings', () => {
-      const supportedChainTestCases = [
-        {
-          chainId: CHAIN_IDS.ARBITRUM,
-          expected: SupportedEVMChain.Arbitrum,
-          description: 'arbitrum',
-        },
-        {
-          chainId: CHAIN_IDS.AVALANCHE,
-          expected: SupportedEVMChain.Avalanche,
-          description: 'avalanche',
-        },
-        {
-          chainId: CHAIN_IDS.BASE,
-          expected: SupportedEVMChain.Base,
-          description: 'base',
-        },
-        {
-          chainId: CHAIN_IDS.BASE_SEPOLIA,
-          expected: SupportedEVMChain.BaseSepolia,
-          description: 'base sepolia',
-        },
-        {
-          chainId: CHAIN_IDS.BSC,
-          expected: SupportedEVMChain.Bsc,
-          description: 'bsc',
-        },
-        {
-          chainId: CHAIN_IDS.MAINNET,
-          expected: SupportedEVMChain.Ethereum,
-          description: 'mainnet',
-        },
-        {
-          chainId: CHAIN_IDS.OPTIMISM,
-          expected: SupportedEVMChain.Optimism,
-          description: 'optimism',
-        },
-        {
-          chainId: CHAIN_IDS.POLYGON,
-          expected: SupportedEVMChain.Polygon,
-          description: 'polygon',
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          expected: SupportedEVMChain.EthereumSepolia,
-          description: 'sepolia',
-        },
-        {
-          chainId: CHAIN_IDS.ZKSYNC_ERA,
-          expected: SupportedEVMChain.Zksync,
-          description: 'zksync era',
-        },
-        {
-          chainId: CHAIN_IDS.ZK_SYNC_ERA_TESTNET,
-          expected: SupportedEVMChain.ZksyncSepolia,
-          description: 'zksync era testnet',
-        },
-        {
-          chainId: '0x76adf1',
-          expected: SupportedEVMChain.Zora,
-          description: 'zora',
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-          expected: SupportedEVMChain.Linea,
-          description: 'linea',
-        },
-        {
-          chainId: CHAIN_IDS.BLAST,
-          expected: SupportedEVMChain.Blast,
-          description: 'blast',
-        },
-        {
-          chainId: CHAIN_IDS.SCROLL,
-          expected: SupportedEVMChain.Scroll,
-          description: 'scroll',
-        },
-        {
-          chainId: '0x27bc86aa',
-          expected: SupportedEVMChain.Degen,
-          description: 'degen',
-        },
-        {
-          chainId: CHAIN_IDS.AVALANCHE_TESTNET,
-          expected: SupportedEVMChain.AvalancheFuji,
-          description: 'avalanche testnet',
-        },
-        {
-          chainId: '0x343b',
-          expected: SupportedEVMChain.ImmutableZkevm,
-          description: 'immutable zkevm',
-        },
-        {
-          chainId: '0x34a1',
-          expected: SupportedEVMChain.ImmutableZkevmTestnet,
-          description: 'immutable zkevm testnet',
-        },
-        {
-          chainId: CHAIN_IDS.GNOSIS,
-          expected: SupportedEVMChain.Gnosis,
-          description: 'gnosis',
-        },
-        {
-          chainId: '0x1e0',
-          expected: SupportedEVMChain.Worldchain,
-          description: 'worldchain',
-        },
-        {
-          chainId: '0x79a',
-          expected: SupportedEVMChain.SoneiumMinato,
-          description: 'soneium minato',
-        },
-        {
-          chainId: '0x7e4',
-          expected: SupportedEVMChain.Ronin,
-          description: 'ronin',
-        },
-        {
-          chainId: CHAIN_IDS.APECHAIN_MAINNET,
-          expected: SupportedEVMChain.ApeChain,
-          description: 'apechain',
-        },
-        {
-          chainId: '0x849ea',
-          expected: SupportedEVMChain.ZeroNetwork,
-          description: 'zero network',
-        },
-        {
-          chainId: CHAIN_IDS.BERACHAIN,
-          expected: SupportedEVMChain.Berachain,
-          description: 'berachain',
-        },
-        {
-          chainId: '0x138c5',
-          expected: SupportedEVMChain.BerachainBartio,
-          description: 'berachain bartio',
-        },
-        {
-          chainId: CHAIN_IDS.INK,
-          expected: SupportedEVMChain.Ink,
-          description: 'ink',
-        },
-        {
-          chainId: CHAIN_IDS.INK_SEPOLIA,
-          expected: SupportedEVMChain.InkSepolia,
-          description: 'ink sepolia',
-        },
-        {
-          chainId: '0xab5',
-          expected: SupportedEVMChain.Abstract,
-          description: 'abstract',
-        },
-        {
-          chainId: '0x2b74',
-          expected: SupportedEVMChain.AbstractTestnet,
-          description: 'abstract testnet',
-        },
-        {
-          chainId: '0x74c',
-          expected: SupportedEVMChain.Soneium,
-          description: 'soneium',
-        },
-        {
-          chainId: CHAIN_IDS.UNICHAIN,
-          expected: SupportedEVMChain.Unichain,
-          description: 'unichain',
-        },
-        {
-          chainId: CHAIN_IDS.SEI,
-          expected: SupportedEVMChain.Sei,
-          description: 'sei',
-        },
-        {
-          chainId: CHAIN_IDS.FLOW,
-          expected: SupportedEVMChain.FlowEvm,
-          description: 'flow',
-        },
-      ];
-
-      supportedChainTestCases.forEach(({ chainId, expected, description }) => {
-        it(`should map ${description} chainId (${chainId}) to ${expected}`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBe(expected);
-        });
-      });
-    });
-
-    describe('case insensitive handling', () => {
-      const caseTestCases = [
-        {
-          chainId: '0X1',
-          expected: SupportedEVMChain.Ethereum,
-          description: 'uppercase mainnet',
-        },
-        {
-          chainId: '0xA86A',
-          expected: SupportedEVMChain.Avalanche,
-          description: 'uppercase avalanche',
-        },
-      ];
-
-      caseTestCases.forEach(({ chainId, expected, description }) => {
-        it(`should handle case insensitive chainId: ${description} (${chainId})`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBe(expected);
-        });
-      });
-    });
-
-    describe('unsupported chains', () => {
-      const unsupportedTestCases = [
-        { chainId: '0x999999', description: 'unknown hex chainId' },
-        { chainId: '0xabc123', description: 'invalid hex chainId' },
-        { chainId: '', description: 'empty string' },
-      ];
-
-      unsupportedTestCases.forEach(({ chainId, description }) => {
-        it(`should return undefined for ${description}: ${chainId}`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBeUndefined();
-        });
-      });
     });
   });
 });
