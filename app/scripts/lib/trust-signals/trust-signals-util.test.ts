@@ -22,13 +22,15 @@ jest.mock('../../../../shared/lib/selectors/networks');
 
 const createMockRequest = (
   method: string,
-  params?: unknown[],
-): JsonRpcRequest => ({
-  method,
-  params,
-  id: 1,
-  jsonrpc: '2.0' as const,
-});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any,
+): JsonRpcRequest =>
+  ({
+    method,
+    params,
+    id: 1,
+    jsonrpc: '2.0',
+  }) as JsonRpcRequest;
 
 describe('trust-signals-util', () => {
   describe('isWalletSendCalls', () => {
@@ -59,8 +61,7 @@ describe('trust-signals-util', () => {
     });
 
     it('returns false when params is null', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const req = createMockRequest('test', null as any);
+      const req = createMockRequest('test', null);
       expect(hasValidSendCallsParams(req)).toBe(false);
     });
 
@@ -70,8 +71,7 @@ describe('trust-signals-util', () => {
     });
 
     it('returns false when params is not an array', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const req = createMockRequest('test', 'invalid' as any);
+      const req = createMockRequest('test', 'invalid');
       expect(hasValidSendCallsParams(req)).toBe(false);
     });
 
