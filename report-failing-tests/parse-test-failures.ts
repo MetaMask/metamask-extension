@@ -202,6 +202,8 @@ function main() {
 
   const headers = [
     'File Path',
+    'Fixed',
+    'Assignee',
     'Run Name',
     'Total Tests',
     'Passed',
@@ -220,6 +222,8 @@ function main() {
     for (const ft of summary.failingTests) {
       rows.push([
         summary.filePath,
+        '',
+        '',
         summary.runName,
         String(summary.totalTests),
         String(summary.passed),
