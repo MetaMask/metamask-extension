@@ -79,6 +79,7 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
+  formatChangePercent,
 } from '../../components/app/perps/utils';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
@@ -510,8 +511,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [chartCurrentPrice, market, formatNumber]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange =
-    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
+  const displayChange = formatChangePercent(
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
+  );
 
   // Build price lines for chart overlay (current price + TP, Entry, SL)
   // Current price line is always shown; TP/Entry/SL only when position exists.

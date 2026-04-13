@@ -452,6 +452,30 @@ describe('PerpsMarketDetailPage', () => {
       });
     });
 
+    it('appends % to live percentChange24h when the stream omits it', async () => {
+      const store = mockStore(createMockState(true));
+      const { getByTestId } = await renderPage(store);
+
+      await waitFor(() => {
+        expect(mockPriceSubscribe).toHaveBeenCalled();
+      });
+
+      act(() => {
+        latestPriceSubscriber?.([
+          {
+            symbol: 'ETH',
+            percentChange24h: '+9.99',
+          },
+        ]);
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('perps-market-detail-change')).toHaveTextContent(
+          '+9.99%',
+        );
+      });
+    });
+
     it('displays candlestick chart', async () => {
       const store = mockStore(createMockState(true));
 
