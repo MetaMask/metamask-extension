@@ -1,10 +1,12 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { IncomingWebhook } from '@slack/webhook';
 import {
   AUDIT_BASELINE_FILE,
   AUDIT_CURRENT_FILE,
   AUDIT_DETAILS_FILE,
+  AUDIT_NATIVE_FILE,
   type ParsedAdvisory,
+  extractNativeBlocks,
   formatAdvisoryTree,
   writeStepSummary,
 } from './shared/audit-utils.mts';
@@ -73,7 +75,12 @@ async function postSlackNotification(
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `:warning: *Audit: ${count} new ${noun}* — \`${repo}\` (\`${branch}\`)`,
+          text:
+            `:warning: *Yarn Audit: ${count} new ${noun}*` +
+            ` just hit branch \`${branch}\`` +
+            ` on \`${repo}\`\n\n` +
+            'The new policy we just implemented will allow PRs to continue to merge, but' +
+            ` releases will be blocked until we resolve ${count === 1 ? 'this' : 'these'} ${noun}.`,
         },
       },
       {
@@ -88,7 +95,7 @@ async function postSlackNotification(
         text: {
           type: 'mrkdwn',
           text: advisories
-            .map((a) => `• <${a.url}|${a.moduleName}> — ${a.title}`)
+            .map((a) => `• ${a.url}\n   ◦ ${a.moduleName} — ${a.title}`)
             .join('\n'),
         },
       },
@@ -160,7 +167,22 @@ async function main() {
     );
   }
 
-  const treeText = newAdvisories.map(formatAdvisoryTree).join('\n\n');
+  // Prefer the real native tree output (written by triage step) so that
+  // Dependents, Tree Versions, etc. match `yarn npm audit` exactly.
+  let treeText: string;
+  if (existsSync(AUDIT_NATIVE_FILE)) {
+    const native = readFileSync(AUDIT_NATIVE_FILE, 'utf8');
+    const newIds = new Set(
+      newAdvisories.map((a) => a.id).filter((id): id is number => id !== null),
+    );
+    const blocks = extractNativeBlocks(native, newIds);
+    treeText =
+      blocks.length > 0
+        ? blocks.join('\n')
+        : newAdvisories.map(formatAdvisoryTree).join('\n\n');
+  } else {
+    treeText = newAdvisories.map(formatAdvisoryTree).join('\n\n');
+  }
 
   const diffSummaryLines = [
     '',

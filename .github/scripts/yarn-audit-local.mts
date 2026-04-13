@@ -13,6 +13,7 @@ import {
   AUDIT_BASELINE_FILE,
   AUDIT_CURRENT_FILE,
   BLOCKING_SEVERITIES,
+  extractNativeBlocks,
   type ParsedAdvisory,
 } from './shared/audit-utils.mts';
 
@@ -138,18 +139,10 @@ async function main() {
   // New advisories found — re-run native audit for colored output, then
   // print only the blocks that correspond to new advisory IDs.
   const nativeOutput = captureNativeAudit();
-  const newIds = new Set(newAdvisories.map((a) => a.id));
-
-  // Split native output into per-advisory blocks.  Each block starts with
-  // "├─" or "└─" at column 0 (possibly wrapped in ANSI codes).  Inner tree
-  // lines (Tree Versions, Dependents) are always indented, so a newline
-  // followed by a non-space box-drawing char at column 0 marks the boundary.
-  const blockBoundary = /\n(?=(?:\x1b\[[0-9;]*m)*[├└]─)/;
-  const blocks = nativeOutput.split(blockBoundary);
-  const matchingBlocks = blocks.filter((block) => {
-    const idMatch = block.replace(/\x1b\[[0-9;]*m/g, '').match(/ID:\s*(\d+)/);
-    return idMatch && newIds.has(Number(idMatch[1]));
-  });
+  const newIds = new Set(
+    newAdvisories.map((a) => a.id).filter((id): id is number => id !== null),
+  );
+  const matchingBlocks = extractNativeBlocks(nativeOutput, newIds);
 
   console.log(
     `yarn audit: FAILED — ${newAdvisories.length} new advisor${newAdvisories.length === 1 ? 'y' : 'ies'}\n`,

@@ -6,6 +6,7 @@ import { ghApi } from './shared/gh-api.mts';
 import {
   AUDIT_CURRENT_FILE,
   AUDIT_DETAILS_FILE,
+  AUDIT_NATIVE_FILE,
   BLOCKING_SEVERITIES,
   type YarnSeverity,
   type ParsedAdvisory,
@@ -695,6 +696,18 @@ function main() {
   writeFileSync(
     AUDIT_CURRENT_FILE,
     JSON.stringify(advisories, null, 2),
+    'utf8',
+  );
+
+  // Capture native (human-readable) audit output so the diff step can extract
+  // the real tree blocks instead of reconstructing them from JSON.
+  const nativeResult = spawnSync(
+    `${YARN_BIN} npm audit --recursive --all --severity moderate`,
+    { encoding: 'utf8', shell: true },
+  );
+  writeFileSync(
+    AUDIT_NATIVE_FILE,
+    `${nativeResult.stdout ?? ''}${nativeResult.stderr ?? ''}`,
     'utf8',
   );
 

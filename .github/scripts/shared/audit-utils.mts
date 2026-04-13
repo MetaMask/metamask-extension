@@ -8,6 +8,7 @@ import { appendFileSync, existsSync, writeFileSync } from 'fs';
 export const AUDIT_BASELINE_FILE = '.tmp/audit-baseline.json';
 export const AUDIT_CURRENT_FILE = '.tmp/audit-current.json';
 export const AUDIT_DETAILS_FILE = '.tmp/audit-details.md';
+export const AUDIT_NATIVE_FILE = '.tmp/audit-native.txt';
 
 // ---------------------------------------------------------------------------
 // Types shared between yarn-audit-and-triage.mts and yarn-audit-diff.mts
@@ -80,6 +81,26 @@ export const BLOCKING_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
 /** Display-friendly severity — reverses the internal medium→moderate normalization. */
 function displaySeverity(sev: YarnSeverity): string {
   return sev === 'medium' ? 'moderate' : sev;
+}
+
+/**
+ * Extract per-advisory blocks from native `yarn npm audit` output and return
+ * only the blocks whose numeric ID is in `ids`.  Each block starts with a
+ * box-drawing character (`├─` or `└─`) at column 0 (possibly wrapped in ANSI
+ * escape codes).  Inner tree lines (Tree Versions, Dependents) are always
+ * indented, so a newline followed by a non-indented box char marks a boundary.
+ */
+export function extractNativeBlocks(
+  nativeOutput: string,
+  ids: ReadonlySet<number>,
+): string[] {
+  const blockBoundary = /\n(?=(?:\x1b\[[0-9;]*m)*[├└]─)/;
+  const blocks = nativeOutput.split(blockBoundary);
+  return blocks.filter((block) => {
+    const plain = block.replace(/\x1b\[[0-9;]*m/g, '');
+    const idMatch = plain.match(/ID:\s*(\d+)/);
+    return idMatch !== null && ids.has(Number(idMatch[1]));
+  });
 }
 
 /** Format an advisory in the same tree style as `yarn npm audit` (plain text). */

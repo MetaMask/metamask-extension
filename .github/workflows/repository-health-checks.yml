@@ -133,7 +133,7 @@ jobs:
           path: .tmp/audit-baseline.json
 
       - name: Upload audit baseline to S3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'MetaMask/metamask-extension' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
