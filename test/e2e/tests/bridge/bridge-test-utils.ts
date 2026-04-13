@@ -1246,7 +1246,7 @@ export const getBridgeFixtures = ({
           'eip155:42161/slip44:60': { amount: '25' },
         },
       },
-      assetsPrice: getMockAssetsPrice(ethConversionRate),
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   if (withErc20) {
