@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   type CaipAssetType,
   CaipAssetTypeStruct,
@@ -18,7 +18,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { getMemoizedMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -68,8 +68,7 @@ export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
   const networkConfigsByChainId = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-    shallowEqual,
+    getMemoizedMultichainNetworkConfigurationsByChainId,
   );
 
   const abortController = useRef<AbortController>(new AbortController());
