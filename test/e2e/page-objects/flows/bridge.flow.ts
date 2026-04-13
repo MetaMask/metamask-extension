@@ -21,7 +21,7 @@ import TokenOverviewPage from '../pages/token-overview-page';
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
- * @param testParams.hasStatusPage - Whether to dismiss the status page after submitting
+ * @param testParams.skipStatusPage - Whether to skip the status page after submitting
  */
 export const bridgeTransaction = async ({
   driver,
@@ -32,7 +32,7 @@ export const bridgeTransaction = async ({
   expectedSwapTokens,
   expectedDestAmount,
   submitDelay,
-  hasStatusPage = true,
+  skipStatusPage,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -42,7 +42,7 @@ export const bridgeTransaction = async ({
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
   submitDelay?: number;
-  hasStatusPage?: boolean;
+  skipStatusPage?: boolean;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -59,10 +59,10 @@ export const bridgeTransaction = async ({
     await bridgePage.checkDestAmount(expectedDestAmount);
   }
 
-  if (hasStatusPage) {
-    await bridgePage.submitQuoteAndDismiss();
-  } else {
+  if (skipStatusPage) {
     await bridgePage.submitQuote();
+  } else {
+    await bridgePage.submitQuoteAndDismiss();
   }
 
   await homePage.goToActivityList();
