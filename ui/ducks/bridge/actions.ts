@@ -10,6 +10,7 @@ import {
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addNetwork,
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
   setEnabledAllPopularNetworks,
@@ -20,6 +21,8 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import {
   bridgeSlice,
@@ -43,6 +46,7 @@ import {
   getMaybeHexChainId,
   isSupportedBridgeChain,
 } from './utils';
+import { BridgeMissingNetworkConfigError } from './errors';
 
 const {
   setFromToken: setFromTokenAction,
@@ -176,10 +180,23 @@ export const setFromToken = (token: TokenPayload) => {
     if (maybeHexChainId) {
       const networkConfigs =
         getMultichainNetworkConfigurationsByChainId(getState());
-
-      // Check that the EVM-network is already in the user's configs,
-      // if not, return early without affecting from-token.
       if (!networkConfigs[maybeHexChainId]) {
+        // EVM chain is supported but not yet in the user's network configs.
+        // Auto-enable it via addNetwork if it is a well-known featured RPC.
+        // The caller's effect must re-run after the resulting state update to
+        // retry setFromToken — by then the network will be present.
+        const featuredRpc = FEATURED_RPCS.find(
+          (rpc) => rpc.chainId === maybeHexChainId,
+        );
+        if (featuredRpc) {
+          dispatch(addNetwork(featuredRpc));
+        } else {
+          // Supported bridge chain absent from both user configs and FEATURED_RPCS —
+          // this is a configuration bug that must be fixed in FEATURED_RPCS.
+          captureException(
+            new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+          );
+        }
         return;
       }
     }

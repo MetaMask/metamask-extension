@@ -5,25 +5,20 @@ import {
   CaipAssetTypeStruct,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
 } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import { addNetwork } from '../../store/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
-import { captureException } from '../../../shared/lib/sentry';
-import { BridgeMissingNetworkConfigError } from '../../ducks/bridge/errors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -164,44 +159,11 @@ export const usePrefillFromSearchQuery = () => {
       return;
     }
 
-    const caipChainId = parsedFromAssetId.chainId;
-
-    if (!isSupportedBridgeChain(caipChainId)) {
-      // Reject chains that are not supported by bridge/swap at all (malformed,
-      // unsupported, or completely unknown chain IDs from the deeplink).
-      return;
-    }
-
-    try {
-      // For EVM chain ids formatChainIdToHex succeeds and returns the hex equivalent.
-      const hexChainId = formatChainIdToHex(caipChainId);
-      if (!networkConfigsByChainId[hexChainId]) {
-        const featuredRpc = FEATURED_RPCS.find(
-          (rpc) => rpc.chainId === hexChainId,
-        );
-        if (featuredRpc) {
-          dispatch(addNetwork(featuredRpc));
-          return;
-        }
-        // Supported bridge chain but not featured and not in user's networks.
-        // We do not expect to reach that case, if we do then it means we have forgotten
-        // to add the appropriate network config or the added network config is malformed,
-        // leading to a potential Sev0/Sev1 incident.
-        captureException(
-          new BridgeMissingNetworkConfigError(
-            caipChainId,
-            formatChainIdToHex(caipChainId),
-          ),
-        );
-        return;
-      }
-    } catch {
-      // formatChainIdToHex throws for non-EVM chains such as Solana, Bitcoin, Tron, etc.
-      // but isSupportedBridgeChain already confirmed the chain is valid. Non-EVM chains
-      // always available so no need to enable them (note: the notion of enable networks
-      // do not exist for non-EVM chains, see getMultichainNetworkConfigurationsByChainId).
-    }
-
+    // setFromToken validates the chain and auto-enables the network when needed.
+    // If the EVM network is not yet in the user's configs, setFromToken dispatches
+    // addNetwork and returns early. networkConfigsByChainId is kept as a dep so
+    // this effect re-runs once the resulting state update arrives, at which point
+    // setFromToken finds the network and dispatches the token action.
     dispatch(setFromToken(fromTokenMetadata));
   }, [assetMetadataByAssetId, parsedFromAssetId, networkConfigsByChainId]);
 

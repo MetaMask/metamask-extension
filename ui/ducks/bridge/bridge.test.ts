@@ -6,13 +6,17 @@ import {
   BridgeUserAction,
   RequestStatus,
 } from '@metamask/bridge-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import * as cacheUtils from '../../pages/bridge/utils/cache';
+import * as storeActions from '../../store/actions';
+import * as sentry from '../../../shared/lib/sentry';
 import bridgeReducer, { initialState } from './bridge';
+import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -117,9 +121,20 @@ describe('Ducks - Bridge', () => {
       expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
     });
 
-    it('does not dispatch the action for a supported EVM chain that is not yet in the user network configs', () => {
+    it('dispatches addNetwork and does not set fromToken for a supported EVM chain not yet in user configs', () => {
       // Arbitrum is a supported bridge chain but the default mock store only has
-      // Mainnet, Linea, and Optimism — so this token must be silently dropped.
+      // Mainnet, Linea, and Optimism. setFromToken should auto-enable it via
+      // addNetwork (it is a featured RPC) and return early without setting the token.
+      // The caller's effect will retry after the state update lands.
+      const arbitrum = FEATURED_RPCS.find(
+        (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
+      );
+      expect(arbitrum).toBeDefined();
+
+      const addNetworkSpy = jest
+        .spyOn(storeActions, 'addNetwork')
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
       const actionPayload = {
         symbol: 'ETH',
         chainId: 'eip155:42161',
@@ -129,7 +144,44 @@ describe('Ducks - Bridge', () => {
       };
       store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
+
       expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
+      expect(addNetworkSpy).toHaveBeenCalledTimes(1);
+      expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
+    });
+
+    it('captures a Sentry exception when chain is supported but absent from both user configs and FEATURED_RPCS', () => {
+      const captureExceptionSpy = jest
+        .spyOn(sentry, 'captureException')
+        .mockImplementation(jest.fn());
+
+      const featuredRpcsHandle = jest.replaceProperty(
+        networkConstants,
+        'FEATURED_RPCS',
+        [] as never,
+      );
+
+      try {
+        const actionPayload = {
+          symbol: 'ETH',
+          chainId: 'eip155:42161',
+          assetId: 'eip155:42161/slip44:60',
+          decimals: 18,
+          name: 'Ethereum',
+        };
+        store.dispatch(setFromToken(actionPayload as never) as never);
+        const actions = store.getActions();
+
+        expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(
+          false,
+        );
+        expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
+        expect(captureExceptionSpy.mock.calls[0][0]).toBeInstanceOf(
+          BridgeMissingNetworkConfigError,
+        );
+      } finally {
+        featuredRpcsHandle.restore();
+      }
     });
   });
 

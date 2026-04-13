@@ -6,12 +6,8 @@ import {
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
-import * as networkConstants from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import * as actions from '../../store/actions';
-import * as sentry from '../../../shared/lib/sentry';
-import { BridgeMissingNetworkConfigError } from '../../ducks/bridge/errors';
 
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
@@ -462,133 +458,6 @@ describe('usePrefillFromSearchQuery', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it('auto-enables a featured network when the fromToken chain is not yet added', async () => {
-    // Regression test: deeplinks like
-    // https://link.metamask.io/swap?from=eip155:999/erc20:0xb883...&to=eip155:1/slip44:60
-    // can reference a chain the user hasn't added yet. When fromTokenMetadata is resolved,
-    // usePrefillFromSearchQuery should call addNetwork + setEnabledNetworks so that
-    // getFromChain returns a value and quotes can be fetched.
-    //
-    // We use Arbitrum (0xa4b1 / eip155:42161) as the test chain: it's in FEATURED_RPCS and
-    // ALLOWED_BRIDGE_CHAIN_IDS but is absent from the default createBridgeMockStore networks
-    // (which only includes mainnet, linea, and optimism).
-    const arbitrum = FEATURED_RPCS.find(
-      (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
-    );
-    expect(arbitrum).toBeDefined();
-
-    const addNetworkSpy = jest
-      .spyOn(actions, 'addNetwork')
-      // The thunk action creator — return a no-op thunk so dispatch doesn't fail
-      .mockReturnValue((() => Promise.resolve(undefined)) as never);
-    // setEnabledNetworks must NOT be called — it would change the user's active
-    // network selection in the dashboard.
-    const setEnabledNetworksSpy = jest.spyOn(actions, 'setEnabledNetworks');
-
-    jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds').mockResolvedValue({
-      'eip155:42161/slip44:60': {
-        symbol: 'ETH',
-        decimals: 18,
-        name: 'Ethereum',
-        assetId: 'eip155:42161/slip44:60',
-      },
-    });
-
-    // Default mock store does NOT include Arbitrum in networkConfigurations
-    const mockStoreState = createBridgeMockStore({
-      featureFlagOverrides: {
-        bridgeConfig: {
-          chainRanking: [
-            {
-              chainId: bridgeControllerUtils.formatChainIdToCaip(
-                bridgeControllerUtils.ChainId.ARBITRUM,
-              ),
-            },
-          ],
-        },
-      },
-    });
-
-    const searchParams = new URLSearchParams({
-      from: 'eip155:42161/slip44:60',
-    });
-
-    const { waitForNextUpdate } = renderUseBridgeQueryParams(
-      mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
-    );
-
-    await waitForNextUpdate();
-
-    // Should have called addNetwork with the Arbitrum featured RPC config
-    expect(addNetworkSpy).toHaveBeenCalledTimes(1);
-    expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
-
-    // Must NOT have called setEnabledNetworks — that would change the active network
-    expect(setEnabledNetworksSpy).not.toHaveBeenCalled();
-  });
-
-  it('captures a Sentry exception when the chain is supported but absent from both network configs and FEATURED_RPCS', async () => {
-    const captureExceptionSpy = jest
-      .spyOn(sentry, 'captureException')
-      .mockImplementation(jest.fn());
-    const addNetworkSpy = jest.spyOn(actions, 'addNetwork');
-
-    const featuredRpcsHandle = jest.replaceProperty(
-      networkConstants,
-      'FEATURED_RPCS',
-      [] as never,
-    );
-
-    try {
-      jest
-        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
-        .mockResolvedValue({
-          'eip155:42161/slip44:60': {
-            symbol: 'ETH',
-            decimals: 18,
-            name: 'Ethereum',
-            assetId: 'eip155:42161/slip44:60',
-          },
-        });
-
-      const mockStoreState = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [
-              {
-                chainId: bridgeControllerUtils.formatChainIdToCaip(
-                  bridgeControllerUtils.ChainId.ARBITRUM,
-                ),
-              },
-            ],
-          },
-        },
-      });
-
-      const searchParams = new URLSearchParams({
-        from: 'eip155:42161/slip44:60',
-      });
-      const { waitForNextUpdate } = renderUseBridgeQueryParams(
-        mockStoreState,
-        `/?${searchParams.toString()}`,
-      );
-
-      await waitForNextUpdate();
-
-      // Should have reported the configuration bug to Sentry
-      expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
-      expect(captureExceptionSpy.mock.calls[0][0]).toBeInstanceOf(
-        BridgeMissingNetworkConfigError,
-      );
-      // Must NOT have tried to add the network — there is no RPC config to add
-      expect(addNetworkSpy).not.toHaveBeenCalled();
-    } finally {
-      featuredRpcsHandle.restore();
-    }
   });
 
   describe('malformed or unknown chain/token params', () => {
