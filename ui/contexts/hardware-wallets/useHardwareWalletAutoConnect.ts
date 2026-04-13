@@ -87,7 +87,7 @@ export const useHardwareWalletAutoConnect = ({
       // so we only mark auto-connected for the correct account
       const effectAccountAddress = accountAddress;
 
-      const handleNativeConnect = async () => {
+      const runNativeConnect = async () => {
         if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
           return;
         }
@@ -149,7 +149,7 @@ export const useHardwareWalletAutoConnect = ({
       };
 
       const handleNativeConnect = () => {
-        handleNativeConnect().catch(() => {
+        runNativeConnect().catch(() => {
           // Swallow errors; auto-connect best-effort only.
         });
       };
@@ -280,7 +280,7 @@ export const useHardwareWalletAutoConnect = ({
             !isConnectingRef.current &&
             !hasAutoConnectedRef.current
           ) {
-            // Synchronous check-and-set to prevent race condition with handleNativeConnect
+            // Synchronous check-and-set to prevent race condition with runNativeConnect
             // This must happen atomically before any async work
             isConnectingRef.current = true;
 
