@@ -193,6 +193,12 @@ export const AssetsControllerInit: ControllerInitFunction<
       tokenDetectionEnabled: () => tokenDetectionEnabled,
       balanceInterval: 30_000,
       detectionInterval: 180_000,
+      isOnboarded: () => {
+        const { completedOnboarding } = initMessenger.call(
+          'OnboardingController:getState',
+        );
+        return completedOnboarding;
+      },
     },
     priceDataSourceConfig: {
       pollInterval: 180_000,
