@@ -267,6 +267,7 @@
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",
+    "TokenBalancesController": { "tokenBalances": "object" },
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},

@@ -7,6 +7,7 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
+      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
@@ -157,9 +158,7 @@
       },
       "nativeAssetIdentifiers": "object"
     },
-    "NetworkOrderController": {
-      "orderedNetworkList": "object"
-    },
+    "NetworkOrderController": { "orderedNetworkList": "object" },
     "NftController": {
       "allNftContracts": "object",
       "allNfts": "object",
