@@ -68,3 +68,37 @@ export async function routeTransactionToSmartTransactionIfEnabled(
     await deps.messenger.call('TransactionController:approveTransaction', txId);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for transaction-lifecycle messenger actions. */
+export const TRANSACTION_LIFECYCLE_ACTIONS = {
+  updateNftOwnershipOnPostTransactionBatch:
+    'TransactionLifecycle:updateNftOwnershipOnPostTransactionBatch',
+  routeTransactionToSmartTransactionIfEnabled:
+    'TransactionLifecycle:routeTransactionToSmartTransactionIfEnabled',
+} as const;
+
+/**
+ * Registers all transaction-lifecycle functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: TransactionLifecycleDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add TransactionLifecycleActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.updateNftOwnershipOnPostTransactionBatch,
+    (txMetas: { txParams: { from: string } }[]) =>
+      updateNftOwnershipOnPostTransactionBatch(deps, txMetas),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.routeTransactionToSmartTransactionIfEnabled,
+    (txId: string, opts: { useSmartTransaction: boolean }) =>
+      routeTransactionToSmartTransactionIfEnabled(deps, txId, opts),
+  );
+}

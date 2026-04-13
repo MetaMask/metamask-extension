@@ -55,3 +55,33 @@ export function getSnapPreferences(deps: SnapManagementDependencies): {
     useTokenDetection: state.useTokenDetection,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for snap-management messenger actions. */
+export const SNAP_MANAGEMENT_ACTIONS = {
+  getSnapKeyring: 'SnapManagement:getSnapKeyring',
+  getSnapPreferences: 'SnapManagement:getSnapPreferences',
+} as const;
+
+/**
+ * Registers all snap-management functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: SnapManagementDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add SnapManagementActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.getSnapKeyring,
+    () => getSnapKeyring(deps),
+  );
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.getSnapPreferences,
+    () => getSnapPreferences(deps),
+  );
+}

@@ -158,3 +158,44 @@ export async function verifyPassword(
 ): Promise<void> {
   await deps.messenger.call('KeyringController:verifyPassword', password);
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for vault-management messenger actions. */
+export const VAULT_MANAGEMENT_ACTIONS = {
+  createNewVaultAndKeychain: 'VaultManagement:createNewVaultAndKeychain',
+  createNewVaultAndRestore: 'VaultManagement:createNewVaultAndRestore',
+  submitPassword: 'VaultManagement:submitPassword',
+  verifyPassword: 'VaultManagement:verifyPassword',
+} as const;
+
+/**
+ * Registers all vault-management functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: VaultDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add VaultManagementActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.createNewVaultAndKeychain,
+    (password: string) => createNewVaultAndKeychain(deps, password),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.createNewVaultAndRestore,
+    (password: string, encodedSeedPhrase: Uint8Array) =>
+      createNewVaultAndRestore(deps, password, encodedSeedPhrase),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.submitPassword,
+    (password: string) => submitPassword(deps, password),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.verifyPassword,
+    (password: string) => verifyPassword(deps, password),
+  );
+}

@@ -84,3 +84,40 @@ export async function getERC20TokenInfo(
     tokenAddress,
   );
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for token-resolution messenger actions. */
+export const TOKEN_RESOLUTION_ACTIONS = {
+  getTokenStandardAndDetails: 'TokenResolution:getTokenStandardAndDetails',
+  getBalancesInSingleCall: 'TokenResolution:getBalancesInSingleCall',
+  getERC20TokenInfo: 'TokenResolution:getERC20TokenInfo',
+} as const;
+
+/**
+ * Registers all token-resolution functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: TokenResolutionDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add TokenResolutionActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    TOKEN_RESOLUTION_ACTIONS.getTokenStandardAndDetails,
+    (tokenAddress: string, userAddress: string, tokenId?: string) =>
+      getTokenStandardAndDetails(deps, tokenAddress, userAddress, tokenId),
+  );
+  (messenger as never).registerActionHandler(
+    TOKEN_RESOLUTION_ACTIONS.getBalancesInSingleCall,
+    (tokenAddresses: string[], userAddress: string) =>
+      getBalancesInSingleCall(deps, tokenAddresses, userAddress),
+  );
+  (messenger as never).registerActionHandler(
+    TOKEN_RESOLUTION_ACTIONS.getERC20TokenInfo,
+    (tokenAddress: string) => getERC20TokenInfo(deps, tokenAddress),
+  );
+}

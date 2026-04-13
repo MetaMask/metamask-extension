@@ -94,3 +94,38 @@ export async function removeAccount(
   await deps.messenger.call('KeyringController:removeAccount', address);
   return address;
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for account-management messenger actions. */
+export const ACCOUNT_MANAGEMENT_ACTIONS = {
+  setSelectedAccount: 'AccountManagement:setSelectedAccount',
+  setAccountLabel: 'AccountManagement:setAccountLabel',
+  removeAccount: 'AccountManagement:removeAccount',
+} as const;
+
+/**
+ * Registers all account-management functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: AccountManagementDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add AccountManagementActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    ACCOUNT_MANAGEMENT_ACTIONS.setSelectedAccount,
+    (id: string) => setSelectedAccount(deps, id),
+  );
+  (messenger as never).registerActionHandler(
+    ACCOUNT_MANAGEMENT_ACTIONS.setAccountLabel,
+    (address: string, label: string) => setAccountLabel(deps, address, label),
+  );
+  (messenger as never).registerActionHandler(
+    ACCOUNT_MANAGEMENT_ACTIONS.removeAccount,
+    (address: string) => removeAccount(deps, address),
+  );
+}

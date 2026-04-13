@@ -77,3 +77,43 @@ export function rejectPendingApproval(
 ): void {
   deps.messenger.call('ApprovalController:reject', id, error);
 }
+
+// ---------------------------------------------------------------------------
+// Action registration
+// ---------------------------------------------------------------------------
+
+/** Typed action name constants for permission-management messenger actions. */
+export const PERMISSION_MANAGEMENT_ACTIONS = {
+  removePermissionsFor: 'PermissionManagement:removePermissionsFor',
+  resolvePendingApproval: 'PermissionManagement:resolvePendingApproval',
+  rejectPendingApproval: 'PermissionManagement:rejectPendingApproval',
+} as const;
+
+/**
+ * Registers all permission-management functions as Messenger action handlers.
+ * Call this once at startup (from background.js or modular init).
+ * After registration, callers invoke actions directly — MetamaskController
+ * is not in the call chain.
+ */
+export function registerActions(messenger: RootMessenger): void {
+  const deps: PermissionManagementDependencies = { messenger };
+  // Cast to never because RootMessenger type doesn't yet include these action names.
+  // TODO: Add PermissionManagementActions to RootMessenger allowed-actions type.
+  (messenger as never).registerActionHandler(
+    PERMISSION_MANAGEMENT_ACTIONS.removePermissionsFor,
+    (subjects: Record<string, string[]>) => removePermissionsFor(deps, subjects),
+  );
+  (messenger as never).registerActionHandler(
+    PERMISSION_MANAGEMENT_ACTIONS.resolvePendingApproval,
+    (
+      id: string,
+      value: unknown,
+      options?: { waitForResult?: boolean },
+    ) => resolvePendingApproval(deps, id, value, options),
+  );
+  (messenger as never).registerActionHandler(
+    PERMISSION_MANAGEMENT_ACTIONS.rejectPendingApproval,
+    (id: string, error: { code: number; message: string; data?: unknown }) =>
+      rejectPendingApproval(deps, id, error),
+  );
+}
