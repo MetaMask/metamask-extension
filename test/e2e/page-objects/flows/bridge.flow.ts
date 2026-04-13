@@ -1,8 +1,13 @@
+import type { Hex } from '@metamask/utils';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { ASSET_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
-import ActivityListPage from '../pages/home/activity-list';
 import AccountListPage from '../pages/account-list-page';
+import ActivityListPage from '../pages/home/activity-list';
+import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
+import TokenOverviewPage from '../pages/token-overview-page';
 
 /**
  * Execute a bridge transaction and checks the activity list
@@ -114,4 +119,45 @@ export const bridgeTransaction = async ({
       expectedWalletBalance,
     );
   }
+};
+
+/**
+ * Searches for a token in the asset picker, clicks the info icon to navigate
+ * to the token's asset overview page, and waits for it to load.
+ *
+ * @param params - The parameters for navigating to the asset page.
+ * @param params.driver - The driver instance.
+ * @param params.token - The token symbol to search for (e.g. 'DAI').
+ * @param params.chainId - The chain ID where the token lives (e.g. '0x1').
+ * @param params.address - The token contract address.
+ * @param params.assetPicker - Optional CSS selector for the asset picker button.
+ *   Defaults to the source asset picker.
+ */
+export const goToAssetPage = async ({
+  driver,
+  token,
+  chainId,
+  address,
+  assetPicker,
+}: {
+  driver: Driver;
+  token: string;
+  chainId: Hex;
+  address: string;
+  assetPicker?: string;
+}) => {
+  const bridgePage = new BridgeQuotePage(driver);
+  const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
+  const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
+  const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+
+  await bridgePage.searchAndClickAssetInfo({
+    token,
+    assetId: expectedAssetId ?? '',
+    assetPicker: picker,
+  });
+
+  await driver.waitForUrlContaining({ url: expectedUrl });
+  const assetPage = new TokenOverviewPage(driver);
+  await assetPage.checkPageIsLoaded();
 };

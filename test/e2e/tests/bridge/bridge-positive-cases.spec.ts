@@ -1,6 +1,9 @@
 import { Suite } from 'mocha';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
-import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import {
+  bridgeTransaction,
+  goToAssetPage,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -195,11 +198,12 @@ describe('Bridge tests', function (this: Suite) {
         const bridgePage = new BridgeQuotePage(driver);
 
         console.log('Checking that source asset is selected');
-        await bridgePage.goToAssetPage(
-          'DAI',
-          '0x1',
-          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        );
+        await goToAssetPage({
+          driver,
+          token: 'DAI',
+          chainId: '0x1',
+          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        });
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
         await tokenOverviewPage.clickSwap();
@@ -230,12 +234,13 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
         console.log('Checking that dest asset is selected');
-        await bridgePage.goToAssetPage(
-          'USDC',
-          '0xe708',
-          '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          bridgePage.destinationAssetPickerButton,
-        );
+        await goToAssetPage({
+          driver,
+          token: 'USDC',
+          chainId: '0xe708',
+          address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+          assetPicker: bridgePage.destinationAssetPickerButton,
+        });
         await tokenOverviewPage.clickSwap();
         console.log('Clicked Swap button from dest asset page');
         await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
@@ -265,12 +270,13 @@ describe('Bridge tests', function (this: Suite) {
         console.log('Selected source asset mUSD');
 
         console.log('Checking that asset picker is visible');
-        await bridgePage.goToAssetPage(
-          'USDC',
-          '0xe708',
-          '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-          bridgePage.destinationAssetPickerButton,
-        );
+        await goToAssetPage({
+          driver,
+          token: 'USDC',
+          chainId: '0xe708',
+          address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+          assetPicker: bridgePage.destinationAssetPickerButton,
+        });
         await tokenOverviewPage.clickBack();
         console.log('Navigated back to Swap page from asset page');
 
@@ -307,12 +313,13 @@ describe('Bridge tests', function (this: Suite) {
         );
         console.log('Selected dest asset USDC');
 
-        await bridgePage.goToAssetPage(
-          'DAI',
-          '0x1',
-          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          bridgePage.destinationAssetPickerButton,
-        );
+        await goToAssetPage({
+          driver,
+          token: 'DAI',
+          chainId: '0x1',
+          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          assetPicker: bridgePage.destinationAssetPickerButton,
+        });
         await tokenOverviewPage.clickBack();
 
         await bridgePage.checkAssetPickerModalIsReopened();
