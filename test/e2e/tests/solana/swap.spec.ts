@@ -7,6 +7,8 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 import {
   mockSolanaBalanceQuote,
   mockGetMinimumBalanceForRentExemption,
@@ -36,26 +38,30 @@ import {
   mockBridgeSearchTokens,
   mockTokensV3Assets,
 } from './common-solana';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_WALLET_ADDRESS =
-  '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
 /**
  * Mock V2 supportedNetworks to include Solana so the AccountsApiDataSource
  * handles Solana balances via the V5 API instead of the Snap polling path.
+ * @param mockServer
  */
 async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
   return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-    )
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: [
-        1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337,
+        1,
+        137,
+        56,
+        59144,
+        8453,
+        10,
+        42161,
+        534352,
+        1337,
         SOLANA_CHAIN_ID,
       ],
       partialSupport: { balances: [42220, 43114] },
@@ -66,6 +72,7 @@ async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
  * Mock V5 multiaccount balances with SOL + USDC for the Solana wallet address
  * plus localhost ETH. The AccountsApiDataSource maps by address (not account
  * UUID), so this works regardless of which runtime account ID the Snap creates.
+ * @param mockServer
  */
 async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
   const balances = [
@@ -368,9 +375,7 @@ describe('Swap on Solana', function () {
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         // BUG: The activity text or amount may not fully reflect the swap details
         // under unified state (e.g. missing destination token name or incorrect fiat value).
-        await activityListPage.checkTransactionActivityByText(
-          'Swap SOL to',
-        );
+        await activityListPage.checkTransactionActivityByText('Swap SOL to');
       },
     );
   });
