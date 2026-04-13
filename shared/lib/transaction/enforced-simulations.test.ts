@@ -8,7 +8,7 @@ import { CachedScanAddressResponse, ResultType } from '../trust-signals';
 import {
   EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
-  getIsEnforcedSimulationsEligible,
+  isEnforcedSimulationsEligible,
 } from './enforced-simulations';
 
 const ETHEREUM_CHAIN_ID = '0x1';
@@ -88,22 +88,18 @@ describe('enforced-simulations', () => {
     });
 
     it('returns true when all conditions are met and no state provided', () => {
-      expect(getIsEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(
-        true,
-      );
+      expect(isEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(true);
     });
 
     it('returns false when env flag is not set', () => {
       delete process.env.ENABLE_ENFORCED_SIMULATIONS;
 
-      expect(getIsEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(
-        false,
-      );
+      expect(isEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(false);
     });
 
     it('returns false when origin is undefined', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           origin: undefined,
         }),
@@ -112,7 +108,7 @@ describe('enforced-simulations', () => {
 
     it('returns false when origin is MetaMask internal', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           origin: ORIGIN_METAMASK,
         }),
@@ -121,7 +117,7 @@ describe('enforced-simulations', () => {
 
     it('returns false when delegation address is missing', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           delegationAddress: undefined,
         }),
@@ -130,7 +126,7 @@ describe('enforced-simulations', () => {
 
     it('returns false when simulation data is undefined', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           simulationData: undefined,
         }),
@@ -139,7 +135,7 @@ describe('enforced-simulations', () => {
 
     it('returns false when simulation data has no balance changes', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           simulationData: { tokenBalanceChanges: [] },
         }),
@@ -148,7 +144,7 @@ describe('enforced-simulations', () => {
 
     it('returns true when simulation data has only token balance changes', () => {
       expect(
-        getIsEnforcedSimulationsEligible({
+        isEnforcedSimulationsEligible({
           ...BASE_TRANSACTION_META,
           simulationData: {
             tokenBalanceChanges: [
@@ -169,7 +165,7 @@ describe('enforced-simulations', () => {
     describe('with trust signal state', () => {
       it('returns true when address is not trusted', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Benign),
           ),
@@ -178,7 +174,7 @@ describe('enforced-simulations', () => {
 
       it('returns true when address is malicious', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Malicious),
           ),
@@ -187,7 +183,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when address is trusted', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Trusted),
           ),
@@ -196,7 +192,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when trust signal is still loading', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Loading),
           ),
@@ -205,7 +201,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when no cache entry exists', () => {
         expect(
-          getIsEnforcedSimulationsEligible(BASE_TRANSACTION_META, {
+          isEnforcedSimulationsEligible(BASE_TRANSACTION_META, {
             addressSecurityAlertResponses: {},
           }),
         ).toBe(false);
@@ -213,7 +209,7 @@ describe('enforced-simulations', () => {
 
       it('returns true when chain is not supported by trust signals', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, chainId: UNSUPPORTED_CHAIN_ID },
             buildState(ResultType.Benign),
           ),
@@ -222,7 +218,7 @@ describe('enforced-simulations', () => {
 
       it('returns true when chainId is undefined', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, chainId: undefined as never },
             buildState(ResultType.Benign),
           ),
@@ -234,7 +230,7 @@ describe('enforced-simulations', () => {
         const trustedCacheKey = `ethereum:${trustedDelegationManager.toLowerCase()}`;
 
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               txParams: {
@@ -258,7 +254,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when no to addresses exist on supported chain', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
@@ -273,7 +269,7 @@ describe('enforced-simulations', () => {
     describe('with nested transactions', () => {
       it('returns true when primary is trusted but a nested address is not', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               nestedTransactions: [{ to: NESTED_ADDRESS_A as `0x${string}` }],
@@ -288,7 +284,7 @@ describe('enforced-simulations', () => {
 
       it('returns true when no primary to but nested address is untrusted', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
@@ -303,7 +299,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when all addresses including nested are trusted', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               nestedTransactions: [
@@ -322,7 +318,7 @@ describe('enforced-simulations', () => {
 
       it('returns false when nested addresses are all loading', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
@@ -341,7 +337,7 @@ describe('enforced-simulations', () => {
 
       it('returns true with mix of trusted and untrusted nested addresses', () => {
         expect(
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               nestedTransactions: [

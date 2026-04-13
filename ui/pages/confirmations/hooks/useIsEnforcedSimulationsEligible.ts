@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import {
   EnforcedSimulationsState,
-  getIsEnforcedSimulationsEligible,
+  isEnforcedSimulationsEligible,
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { useConfirmContext } from '../context/confirm';
 
@@ -19,7 +19,7 @@ export function useIsEnforcedSimulationsEligible(): boolean {
     return false;
   }
 
-  return getIsEnforcedSimulationsEligible(currentConfirmation, {
+  return isEnforcedSimulationsEligible(currentConfirmation, {
     addressSecurityAlertResponses,
   });
 }

@@ -2,13 +2,13 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
-import { getIsEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
+import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { useIsEnforcedSimulationsEligible } from './useIsEnforcedSimulationsEligible';
 
 jest.mock('../../../../shared/lib/transaction/enforced-simulations');
 
 const getIsEnforcedSimulationsEligibleMock = jest.mocked(
-  getIsEnforcedSimulationsEligible,
+  isEnforcedSimulationsEligible,
 );
 
 function runHook({

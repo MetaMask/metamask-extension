@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   CachedScanAddressResponse,
@@ -6,13 +9,6 @@ import {
   mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../trust-signals';
-
-// TODO: Replace with createProjectLogger once debug package works in UI context.
-// The debug package relies on localStorage in the browser, but the extension
-// popup may not initialize it correctly. Background logs via debug work fine.
-const log = (...args: unknown[]) =>
-  // eslint-disable-next-line no-console
-  console.debug('[enforced-sim]', ...args);
 
 const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
 
@@ -46,82 +42,71 @@ export function getEnforcedSimulationsSlippage(): number {
  * signal for the recipient must be loaded and not trusted.
  * @returns Whether the transaction is eligible for enforced simulations.
  */
-export function getIsEnforcedSimulationsEligible(
+export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state?: EnforcedSimulationsState,
 ): boolean {
-  const { delegationAddress, origin, simulationData, type } = transactionMeta;
+  const { delegationAddress, origin, simulationData } = transactionMeta;
 
   if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
-    log('Not eligible: env flag disabled');
     return false;
   }
 
   if (!origin || origin === ORIGIN_METAMASK) {
-    log('Not eligible: origin', origin);
     return false;
   }
 
   if (!delegationAddress) {
-    log('Not eligible: no delegationAddress');
     return false;
   }
 
   if (!hasBalanceChanges(simulationData)) {
-    log('Not eligible: no balance changes', {
-      nativeBalanceChange: simulationData?.nativeBalanceChange,
-      tokenBalanceChanges: simulationData?.tokenBalanceChanges?.length,
-    });
     return false;
   }
 
-  if (state) {
-    const { chainId, txParams, txParamsOriginal, nestedTransactions } =
-      transactionMeta;
-
-    const supportedChain = chainId
-      ? mapChainIdToSupportedEVMChain(chainId)
-      : undefined;
-
-    log('Trust signal check', { chainId, supportedChain, type });
-
-    // If trust signals don't support this chain, remain eligible —
-    // we can't verify trust so the user should still get protection.
-    if (supportedChain) {
-      // Use the original `to` address before any container wrapping,
-      // since containers may redirect to a trusted delegation manager.
-      const originalTo = txParamsOriginal?.to ?? txParams?.to;
-      const toAddresses = getToAddresses(originalTo, nestedTransactions);
-
-      log('To addresses', { originalTo, toAddresses });
-
-      if (toAddresses.length === 0) {
-        log('Not eligible: no to addresses');
-        return false;
-      }
-
-      const hasUntrustedAddress = toAddresses.some((address) => {
-        const cacheKey = createCacheKey(supportedChain, address);
-        const cached = state.addressSecurityAlertResponses[cacheKey];
-
-        log('Trust signal', { address, cacheKey, cached });
-
-        if (!cached || cached.result_type === ResultType.Loading) {
-          return false;
-        }
-
-        return cached.result_type !== ResultType.Trusted;
-      });
-
-      if (!hasUntrustedAddress) {
-        log('Not eligible: no untrusted address found');
-        return false;
-      }
-    }
+  if (state && isTrusted(transactionMeta, state)) {
+    return false;
   }
 
-  log('Eligible');
   return true;
+}
+
+function isTrusted(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  const { chainId, txParams, txParamsOriginal, nestedTransactions } =
+    transactionMeta;
+
+  const supportedChain = chainId
+    ? mapChainIdToSupportedEVMChain(chainId)
+    : undefined;
+
+  // If trust signals don't support this chain, we can't verify trust —
+  // treat as not trusted so the user still gets protection.
+  if (!supportedChain) {
+    return false;
+  }
+
+  // Use the original `to` address before any container wrapping,
+  // since containers may redirect to a trusted delegation manager.
+  const originalTo = txParamsOriginal?.to ?? txParams?.to;
+  const toAddresses = getToAddresses(originalTo, nestedTransactions);
+
+  if (toAddresses.length === 0) {
+    return true;
+  }
+
+  return !toAddresses.some((address) => {
+    const cacheKey = createCacheKey(supportedChain, address);
+    const cached = state.addressSecurityAlertResponses[cacheKey];
+
+    if (!cached || cached.result_type === ResultType.Loading) {
+      return false;
+    }
+
+    return cached.result_type !== ResultType.Trusted;
+  });
 }
 
 function getToAddresses(
@@ -145,9 +130,7 @@ function getToAddresses(
   return addresses;
 }
 
-function hasBalanceChanges(
-  simulationData?: TransactionMeta['simulationData'],
-): boolean {
+function hasBalanceChanges(simulationData?: SimulationData | null): boolean {
   return (
     Boolean(simulationData?.nativeBalanceChange) ||
     Boolean(simulationData?.tokenBalanceChanges?.length)

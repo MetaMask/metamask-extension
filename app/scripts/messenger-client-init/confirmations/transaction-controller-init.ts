@@ -22,7 +22,7 @@ import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
-import { getIsEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
+import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -199,7 +199,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
         isEligible: (transactionMeta) =>
-          getIsEnforcedSimulationsEligible(
+          isEnforcedSimulationsEligible(
             transactionMeta,
             initMessenger.call('AppStateController:getState'),
           ),
@@ -268,14 +268,13 @@ export const TransactionControllerInit: ControllerInitFunction<
     getTransactionMetricsRequest,
   );
 
-  const api = getApi(controller, initMessenger);
+  const api = getApi(controller);
 
   return { controller, api, memStateKey: 'TxController' };
 };
 
 function getApi(
   controller: TransactionController,
-  initMessenger: TransactionControllerInitMessenger,
 ): ControllerInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
