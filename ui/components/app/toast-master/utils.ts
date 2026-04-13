@@ -129,3 +129,7 @@ export function setShieldEndingToastLastClickedOrClosed(time: number) {
 export function setPna25Acknowledged(acknowledged: boolean) {
   submitRequestToBackgroundAndCatch('setPna25Acknowledged', [acknowledged]);
 }
+
+export function dismissSidePanelMigrationToast() {
+  submitRequestToBackgroundAndCatch('dismissSidePanelMigrationToast');
+}

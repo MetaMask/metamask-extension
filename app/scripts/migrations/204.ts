@@ -36,5 +36,6 @@ export const migrate = (async (versionedData, changedControllers) => {
   }
 
   preferences.useSidePanelAsDefault = true;
+  PreferencesController.showSidePanelMigrationToast = true;
   changedControllers.add('PreferencesController');
 }) satisfies Migrate;

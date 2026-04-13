@@ -29,6 +29,7 @@ describe(`migration #${VERSION}`, () => {
         showExtensionInFullSizeView: false,
         useSidePanelAsDefault: true,
       },
+      showSidePanelMigrationToast: true,
     });
     expect(changedControllers).toStrictEqual(
       new Set(['PreferencesController']),
@@ -86,6 +87,7 @@ describe(`migration #${VERSION}`, () => {
         showExtensionInFullSizeView: false,
         useSidePanelAsDefault: true,
       },
+      showSidePanelMigrationToast: true,
     });
     expect(changedControllers).toStrictEqual(
       new Set(['PreferencesController']),

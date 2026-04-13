@@ -7723,6 +7723,9 @@
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
   },
+  "sidePanelMigrationToast": {
+    "message": "MetaMask now opens in the side panel by default. You can switch back anytime from the global menu."
+  },
   "sign": {
     "message": "Sign"
   },

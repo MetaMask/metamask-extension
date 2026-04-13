@@ -8827,6 +8827,9 @@
     "message": "Switch to MetaMask default RPC",
     "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
   },
+  "sidePanelMigrationToast": {
+    "message": "MetaMask now opens in the side panel by default. You can switch back anytime from the global menu."
+  },
   "switchToPopup": {
     "message": "Switch to popup"
   },

@@ -145,6 +145,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
+  showSidePanelMigrationToast: boolean;
   watchEthereumAccountEnabled: boolean;
 };
 
@@ -200,6 +201,7 @@ export const getDefaultPreferencesControllerState =
       useSidePanelAsDefault: true,
     },
     securityAlertsEnabled: true,
+    showSidePanelMigrationToast: false,
     snapRegistryList: {},
     snapsAddSnapAccountModalDismissed: false,
     theme: ThemeType.os,
@@ -329,6 +331,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   },
   securityAlertsEnabled: {
     includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  showSidePanelMigrationToast: {
+    includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
@@ -934,6 +942,12 @@ export class PreferencesController extends BaseController<
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
+    });
+  }
+
+  dismissSidePanelMigrationToast(): void {
+    this.update((state) => {
+      state.showSidePanelMigrationToast = false;
     });
   }
 
