@@ -1254,9 +1254,8 @@ export default class MetamaskController extends EventEmitter {
           keyringState.isUnlocked && this._isClientOpen;
       },
     );
-    this.controllerMessenger.subscribe(
-      'NetworkController:stateChange',
-      () => this._notifyChainChange(),
+    this.controllerMessenger.subscribe('NetworkController:stateChange', () =>
+      this._notifyChainChange(),
     );
 
     /**
@@ -1343,8 +1342,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
-      MetaMetricsDataDeletionController:
-        this.metaMetricsDataDeletionController,
+      MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       AlertController: this.alertController,
@@ -1720,9 +1718,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} args.request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
    */
+  // Moved to SnapManagement module — callers reach it via messenger.call('SnapManagement:handleSnapRequest').
   async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
+    return this.controllerMessenger.call(
+      'SnapManagement:handleSnapRequest',
       args,
     );
   }
@@ -2591,7 +2590,10 @@ export default class MetamaskController extends EventEmitter {
       getSeedPhrase: this.getSeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: (address) =>
-        this.controllerMessenger.call('AccountManagement:removeAccount', address),
+        this.controllerMessenger.call(
+          'AccountManagement:removeAccount',
+          address,
+        ),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
       getNextAvailableAccountName:
         accountsController.getNextAvailableAccountName.bind(accountsController),
@@ -2738,9 +2740,15 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: (password) =>
-        this.controllerMessenger.call('VaultManagement:submitPassword', password),
+        this.controllerMessenger.call(
+          'VaultManagement:submitPassword',
+          password,
+        ),
       verifyPassword: (password) =>
-        this.controllerMessenger.call('VaultManagement:verifyPassword', password),
+        this.controllerMessenger.call(
+          'VaultManagement:verifyPassword',
+          password,
+        ),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -3126,7 +3134,8 @@ export default class MetamaskController extends EventEmitter {
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
-      setLocked: this.setLocked.bind(this),
+      setLocked: (options) =>
+        this.controllerMessenger.call('VaultManagement:setLocked', options),
       createNewVaultAndKeychain: (password) =>
         this.controllerMessenger.call(
           'VaultManagement:createNewVaultAndKeychain',
@@ -3139,15 +3148,36 @@ export default class MetamaskController extends EventEmitter {
           encodedSeedPhrase,
         ),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      exportAccount: this.exportAccount.bind(this),
+      exportAccount: (address, password) =>
+        this.controllerMessenger.call(
+          'VaultManagement:exportAccount',
+          address,
+          password,
+        ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: this.createCancelTransaction.bind(this),
-      createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
-      estimateGas: this.estimateGas.bind(this),
+      createCancelTransaction: (originalTxId, customGasSettings, options) =>
+        this.controllerMessenger.call(
+          'TransactionLifecycle:createCancelTransaction',
+          originalTxId,
+          customGasSettings,
+          options,
+        ),
+      createSpeedUpTransaction: (originalTxId, customGasSettings, options) =>
+        this.controllerMessenger.call(
+          'TransactionLifecycle:createSpeedUpTransaction',
+          originalTxId,
+          customGasSettings,
+          options,
+        ),
+      estimateGas: (params) =>
+        this.controllerMessenger.call(
+          'TransactionLifecycle:estimateGas',
+          params,
+        ),
       estimateGasFee: txController.estimateGasFee.bind(txController),
       getNextNonce: this.getNextNonce.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
@@ -3254,7 +3284,8 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
-      handleSnapRequest: this.handleSnapRequest.bind(this), // TODO: route via SnapManagement:handleSnapRequest once snap-management stub implements it
+      handleSnapRequest: (args) =>
+        this.controllerMessenger.call('SnapManagement:handleSnapRequest', args),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',
@@ -3263,9 +3294,17 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
-      updateNetworksList: this.updateNetworksList.bind(this),
+      updateNetworksList: (chainIds) =>
+        this.controllerMessenger.call(
+          'PermissionManagement:updateNetworksList',
+          chainIds,
+        ),
       updateAccountsList: this.updateAccountsList.bind(this),
-      setEnabledNetworks: this.setEnabledNetworks.bind(this),
+      setEnabledNetworks: (chainId) =>
+        this.controllerMessenger.call(
+          'PermissionManagement:setEnabledNetworks',
+          chainId,
+        ),
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
@@ -3804,9 +3843,13 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // Moved to VaultManagement module — callers reach it via messenger.call('VaultManagement:exportAccount').
   async exportAccount(address, password) {
-    await this.keyringController.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
+    return this.controllerMessenger.call(
+      'VaultManagement:exportAccount',
+      address,
+      password,
+    );
   }
 
   // getTokenStandardAndDetails — moved to token-resolution module.
@@ -3814,7 +3857,12 @@ export default class MetamaskController extends EventEmitter {
 
   // getTokenStandardAndDetailsByChain — TODO: extract to token-resolution module.
   // Currently still needed by getApi(); keeping as thin delegator until extracted.
-  async getTokenStandardAndDetailsByChain(address, userAddress, tokenId, chainId) {
+  async getTokenStandardAndDetailsByChain(
+    address,
+    userAddress,
+    tokenId,
+    chainId,
+  ) {
     return this.controllerMessenger.call(
       'TokenResolution:getTokenStandardAndDetails',
       address,
@@ -5196,49 +5244,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} _keyringId - The keyring identifier.
    * @returns {Promise<string>} The address of the newly-created account.
    */
+  // Moved to AccountManagement module — callers reach it via messenger.call('AccountManagement:addNewAccount').
   async addNewAccount(accountCount, _keyringId) {
-    const oldAccounts = await this.keyringController.getAccounts();
-    const keyringSelector = _keyringId
-      ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
-
-    const addedAccountAddress = await this.keyringController.withKeyring(
-      keyringSelector,
-      async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
-          throw new Error('Cannot add account to non-HD keyring');
-        }
-        const accountsInKeyring = await keyring.getAccounts();
-
-        // Only add an account if the accountCount matches the accounts in the keyring.
-        if (accountCount && accountCount !== accountsInKeyring.length) {
-          if (accountCount > accountsInKeyring.length) {
-            throw new Error('Account out of sequence');
-          }
-
-          const existingAccount = accountsInKeyring[accountCount];
-
-          if (!existingAccount) {
-            throw new Error(`Can't find account at index ${accountCount}`);
-          }
-
-          return existingAccount;
-        }
-
-        const [newAddress] = await keyring.addAccounts(1);
-        if (oldAccounts.includes(newAddress)) {
-          await keyring.removeAccount(newAddress);
-          throw new Error(`Cannot add duplicate ${newAddress} account`);
-        }
-        return newAddress;
-      },
+    return this.controllerMessenger.call(
+      'AccountManagement:addNewAccount',
+      accountCount,
+      _keyringId,
     );
-
-    if (!oldAccounts.includes(addedAccountAddress)) {
-      this.preferencesController.setSelectedAddress(addedAccountAddress);
-    }
-
-    return addedAccountAddress;
   }
 
   /**
@@ -5253,9 +5265,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
+  // Moved to VaultManagement module — callers reach it via messenger.call('VaultManagement:getSeedPhrase').
   async getSeedPhrase(password, _keyringId) {
-    return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password, _keyringId),
+    return this.controllerMessenger.call(
+      'VaultManagement:getSeedPhrase',
+      password,
+      _keyringId,
     );
   }
 
@@ -5266,30 +5281,9 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {Promise<string>} The current selected address.
    */
+  // Moved to AccountManagement module — callers reach it via messenger.call('AccountManagement:resetAccount').
   async resetAccount() {
-    const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
-
-    const globalChainId = this.#getGlobalChainId();
-
-    this.txController.wipeTransactions({
-      address: selectedAddress,
-      chainId: globalChainId,
-    });
-
-    this.smartTransactionsController.wipeSmartTransactions({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.bridgeStatusController.wipeBridgeStatus({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.networkController.resetConnection();
-
-    return selectedAddress;
+    return this.controllerMessenger.call('AccountManagement:resetAccount');
   }
 
   /**
@@ -5649,14 +5643,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} scopeString - The scope to stop exposing
    * to third parties.
    */
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:removeAllScopePermissions').
   removeAllScopePermissions(scopeString) {
-    this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutators[Caip25CaveatType].removeScope(
-          existingScopes,
-          scopeString,
-        ),
+    this.controllerMessenger.call(
+      'PermissionManagement:removeAllScopePermissions',
+      scopeString,
     );
   }
 
@@ -5670,14 +5661,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} targetAccount - The address of the account to stop exposing
    * to third parties.
    */
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:removeAllAccountPermissions').
   removeAllAccountPermissions(targetAccount) {
-    this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutators[Caip25CaveatType].removeAccount(
-          existingScopes,
-          targetAccount,
-        ),
+    this.controllerMessenger.call(
+      'PermissionManagement:removeAllAccountPermissions',
+      targetAccount,
     );
   }
 
@@ -5695,6 +5683,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
    */
+  // Moved to AccountManagement module — callers reach it via messenger.call('AccountManagement:importAccountWithStrategy').
   async importAccountWithStrategy(
     strategy,
     args,
@@ -5703,43 +5692,12 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-
-    const importedAccountAddress =
-      await this.keyringController.importAccountWithStrategy(strategy, args);
-
-    if (this.onboardingController.getIsSocialLoginFlow()) {
-      // Use withKeyring to get keyring metadata for an address
-      const { id: keyringId, privateKey: privateKeyFromKeyring } =
-        await this.keyringController.withKeyring(
-          { address: importedAccountAddress },
-          async ({ keyring, metadata }) => {
-            const privateKey = await keyring.exportAccount(
-              importedAccountAddress,
-            );
-            return { id: metadata.id, privateKey };
-          },
-        );
-
-      try {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewPrivateKeyBackup(
-          privateKeyFromKeyring,
-          keyringId,
-          shouldCreateSocialBackup,
-        );
-      } catch (err) {
-        // handle seedless controller import error by reverting keyring controller mnemonic import
-        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-        await this.keyringController.removeAccount(importedAccountAddress);
-        throw err;
-      }
-    }
-
-    if (shouldSelectAccount) {
-      // set new account as selected
-      this.preferencesController.setSelectedAddress(importedAccountAddress);
-    }
+    return this.controllerMessenger.call(
+      'AccountManagement:importAccountWithStrategy',
+      strategy,
+      args,
+      options,
+    );
   }
 
   /**
@@ -5786,21 +5744,14 @@ export default class MetamaskController extends EventEmitter {
    * @param permissions - The permissions to request approval for.
    * @param [options] - Optional. Additional properties to define on the requestData object
    */
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:requestPermissionApproval').
   async requestPermissionApproval(origin, permissions, options = {}) {
-    const id = nanoid();
-    return this.approvalController.addAndShowApprovalRequest({
-      id,
+    return this.controllerMessenger.call(
+      'PermissionManagement:requestPermissionApproval',
       origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions,
-        ...options,
-      },
-      type: MethodNames.RequestPermissions,
-    });
+      permissions,
+      options,
+    );
   }
 
   /**
@@ -5809,29 +5760,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The origin to request approval for.
    * @param {Hex} chainId - The chainId to add incrementally.
    */
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:requestApprovalPermittedChainsPermission').
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    const caveatValueWithChains = setPermittedEthChainIds(
-      {
-        requiredScopes: {},
-        optionalScopes: {},
-        sessionProperties: {},
-        isMultichainOrigin: false,
-      },
-      [chainId],
-    );
-
-    await this.permissionController.requestPermissionsIncremental(
-      { origin },
-      {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithChains,
-            },
-          ],
-        },
-      },
+    return this.controllerMessenger.call(
+      'PermissionManagement:requestApprovalPermittedChainsPermission',
+      origin,
+      chainId,
     );
   }
 
@@ -5982,14 +5916,14 @@ export default class MetamaskController extends EventEmitter {
    * @param options
    * @returns {object} MetaMask state
    */
+  // Moved to TransactionLifecycle module — callers reach it via messenger.call('TransactionLifecycle:createCancelTransaction').
   async createCancelTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.stopTransaction(
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createCancelTransaction',
       originalTxId,
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   /**
@@ -6005,47 +5939,30 @@ export default class MetamaskController extends EventEmitter {
    * @param options
    * @returns {object} MetaMask state
    */
+  // Moved to TransactionLifecycle module — callers reach it via messenger.call('TransactionLifecycle:createSpeedUpTransaction').
   async createSpeedUpTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.speedUpTransaction(
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createSpeedUpTransaction',
       originalTxId,
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
+  // Moved to TransactionLifecycle module — callers reach it via messenger.call('TransactionLifecycle:estimateGas').
   async estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      this.provider
-        .request({
-          method: 'eth_estimateGas',
-          params: [estimateGasParams],
-        })
-        .then((result) => resolve(result.toString(16)))
-        .catch((err) => reject(err));
-    });
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:estimateGas',
+      estimateGasParams,
+    );
   }
 
+  // Moved to SnapManagement module — callers reach it via messenger.call('SnapManagement:handleWatchAssetRequest').
   handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
-    switch (type) {
-      case ERC20:
-        return this.tokensController.watchAsset({
-          asset,
-          type,
-          networkClientId,
-        });
-      case ERC721:
-      case ERC1155:
-        return this.nftController.watchNft(
-          asset,
-          type,
-          origin,
-          networkClientId,
-        );
-      default:
-        throw new Error(`Asset type ${type} not supported`);
-    }
+    return this.controllerMessenger.call(
+      'SnapManagement:handleWatchAssetRequest',
+      { asset, type, origin, networkClientId },
+    );
   };
 
   async updateSecurityAlertResponse(
@@ -6173,7 +6090,6 @@ export default class MetamaskController extends EventEmitter {
       sender,
       inputSubjectType,
     );
-
   }
 
   /**
@@ -7600,11 +7516,12 @@ export default class MetamaskController extends EventEmitter {
   // MISCELLANEOUS
   //=============================================================================
 
+  // Moved to TransactionLifecycle module — callers reach it via messenger.call('TransactionLifecycle:getExternalPendingTransactions').
   getExternalPendingTransactions(address) {
-    return this.smartTransactionsController.getTransactions({
-      addressFrom: address,
-      status: 'pending',
-    });
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:getExternalPendingTransactions',
+      address,
+    );
   }
 
   /**
@@ -8015,67 +7932,31 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} options - The options for setting the locked state.
    * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
+  // Moved to VaultManagement module — callers reach it via messenger.call('VaultManagement:setLocked').
   async setLocked(options = { skipSeedlessOperationLock: false }) {
-    const { skipSeedlessOperationLock } = options;
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.seedlessOperationMutex.acquire();
-    }
-
-    try {
-      if (isSocialLoginFlow) {
-        await this.seedlessOnboardingController.setLocked();
-      }
-      await this.keyringController.setLocked();
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.subscriptionController.stopAllPolling();
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.authenticationController.state;
-      if (isSignedIn) {
-        this.authenticationController.performSignOut();
-      }
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
-      }
-    }
+    return this.controllerMessenger.call('VaultManagement:setLocked', options);
   }
 
   // removePermissionsFor — moved to permission-management module.
   // Callers reach it via messenger.call('PermissionManagement:removePermissionsFor').
 
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:updateCaveat').
   updateCaveat = (origin, target, caveatType, caveatValue) => {
-    try {
-      this.controllerMessenger.call(
-        'PermissionController:updateCaveat',
-        origin,
-        target,
-        caveatType,
-        caveatValue,
-      );
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
+    this.controllerMessenger.call(
+      'PermissionManagement:updateCaveat',
+      origin,
+      target,
+      caveatType,
+      caveatValue,
+    );
   };
 
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:updateNetworksList').
   updateNetworksList = (chainIds) => {
-    try {
-      this.networkOrderController.updateNetworksList(chainIds);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
+    this.controllerMessenger.call(
+      'PermissionManagement:updateNetworksList',
+      chainIds,
+    );
   };
 
   /**
@@ -8094,15 +7975,12 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  // Moved to PermissionManagement module — callers reach it via messenger.call('PermissionManagement:setEnabledNetworks').
   setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
+    return this.controllerMessenger.call(
+      'PermissionManagement:setEnabledNetworks',
+      chainId,
+    );
   };
 
   setEnabledAllPopularNetworks = async () => {
@@ -8766,7 +8644,10 @@ export default class MetamaskController extends EventEmitter {
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
       removeAccount: (address) =>
-        this.controllerMessenger.call('AccountManagement:removeAccount', address),
+        this.controllerMessenger.call(
+          'AccountManagement:removeAccount',
+          address,
+        ),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
