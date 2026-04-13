@@ -107,7 +107,15 @@ async function waitForBalanceUpdate(
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
+  // The reconnect test can spend up to 60 s waiting for the WS to reconnect
+  // and another 90 s waiting for the balance update, so we need a timeout
+  // that comfortably covers the full flow.
+  before(function () {
+    this.timeout(180_000);
+  });
+
   it('balance updates continue via REST polling when WebSocket disconnects', async function () {
+    this.timeout(180_000);
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -146,6 +154,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
   });
 
   it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
+    this.timeout(180_000);
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
