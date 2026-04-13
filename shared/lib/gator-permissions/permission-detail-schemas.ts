@@ -178,7 +178,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           getValue: (ctx) => new BigNumber(getData<string>(ctx, 'maxAmount')),
           isVisible: (ctx) => {
             const max = getData<string | undefined>(ctx, 'maxAmount');
-            return max != null && max.toLowerCase() !== MAX_UINT256;
+            return max !== undefined && max.toLowerCase() !== MAX_UINT256;
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
           reviewTestId: 'review-gator-permission-max-allowance',
@@ -380,7 +380,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: (ctx) => {
             const max = getData<string | undefined>(ctx, 'maxAmount');
-            return max != null && max.toLowerCase() !== MAX_UINT256;
+            return max !== undefined && max.toLowerCase() !== MAX_UINT256;
           },
           reviewLabelKey: 'gatorPermissionsMaxAllowance',
           reviewTestId: 'review-gator-permission-max-allowance',
