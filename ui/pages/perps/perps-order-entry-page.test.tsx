@@ -570,6 +570,41 @@ describe('PerpsOrderEntryPage', () => {
         screen.getByTestId('limit-price-liquidation-warning'),
       ).toBeInTheDocument();
     });
+
+    it('disables submit and shows Insufficient funds when order exceeds available balance', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      // availableBalance is 10125, default leverage is 3, so max amount = 30375
+      // Enter 50000 which requires margin of 50000/3 ≈ 16666 > 10125
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '50000' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        messages.insufficientFundsSend.message,
+      );
+    });
+
+    it('does not disable submit when order is within available balance', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      // Enter 100 which requires margin of 100/3 ≈ 33 < 10125
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        messages.insufficientFundsSend.message,
+      );
+    });
   });
 
   describe('order submission', () => {

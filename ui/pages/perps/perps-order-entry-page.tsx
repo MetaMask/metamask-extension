@@ -472,6 +472,19 @@ const PerpsOrderEntryPage: React.FC = () => {
     return tpInvalid || slInvalid;
   }, [orderFormState, orderType, currentPrice]);
 
+  const isInsufficientFunds = useMemo(() => {
+    if (!orderFormState || orderMode === 'close') {
+      return false;
+    }
+    const amount =
+      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    if (amount <= 0 || orderFormState.leverage <= 0) {
+      return false;
+    }
+    const marginRequired = amount / orderFormState.leverage;
+    return marginRequired > availableBalance;
+  }, [orderFormState, orderMode, availableBalance]);
+
   const isSubmitDisabled =
     !isEligible ||
     !selectedAddress ||
@@ -480,6 +493,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isLimitPriceUnfavorable ||
     isNearLiquidation ||
     hasInvalidTPSL ||
+    isInsufficientFunds ||
     currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
@@ -1046,6 +1060,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
+  const resolvedButtonText = isInsufficientFunds
+    ? t('insufficientFundsSend')
+    : submitButtonText;
+
   return (
     <Box
       className="main-container asset__container"
@@ -1177,7 +1195,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           )}
           data-testid="submit-order-button"
         >
-          {isOrderPending ? t('perpsSubmitting') : submitButtonText}
+          {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
       </Box>
     </Box>
