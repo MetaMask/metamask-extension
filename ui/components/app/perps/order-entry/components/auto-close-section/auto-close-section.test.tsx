@@ -22,6 +22,7 @@ describe('AutoCloseSection', () => {
     onStopLossPriceChange: jest.fn(),
     direction: 'long' as const,
     currentPrice: 45000,
+    leverage: 10,
   };
 
   beforeEach(() => {
@@ -269,14 +270,16 @@ describe('AutoCloseSection', () => {
     });
   });
 
-  describe('percentage calculation', () => {
-    it('calculates percent for long TP position', () => {
+  describe('percentage calculation (RoE: priceChange% * leverage)', () => {
+    it('calculates RoE% for long TP position', () => {
+      // (49500 - 45000) / 45000 * 10 * 100 = 100%
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
           enabled={true}
           direction="long"
           currentPrice={45000}
+          leverage={10}
           takeProfitPrice="49500"
         />,
         mockStore,
@@ -284,17 +287,18 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('tp-percent-input');
       const percentInput = container.querySelector('input');
-      // (49500 - 45000) / 45000 * 100 = 10%
-      expect(percentInput).toHaveValue('10.0');
+      expect(percentInput).toHaveValue('100');
     });
 
-    it('calculates percent for long SL position', () => {
+    it('calculates RoE% for long SL position', () => {
+      // (45000 - 40500) / 45000 * 10 * 100 = 100%
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
           enabled={true}
           direction="long"
           currentPrice={45000}
+          leverage={10}
           stopLossPrice="40500"
         />,
         mockStore,
@@ -302,8 +306,7 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-percent-input');
       const percentInput = container.querySelector('input');
-      // (40500 - 45000) / 45000 * 100 = -10%, shown as positive 10%
-      expect(percentInput).toHaveValue('10.0');
+      expect(percentInput).toHaveValue('100');
     });
 
     it('shows empty percent when TP price is empty', () => {
@@ -320,10 +323,34 @@ describe('AutoCloseSection', () => {
       const percentInput = container.querySelector('input');
       expect(percentInput).toHaveValue('');
     });
+
+    it('shows non-integer RoE% with 2 decimal places', () => {
+      // (45225 - 45000) / 45000 * 10 * 100 = 50%  (exact)
+      // (45112.5 - 45000) / 45000 * 10 * 100 = 25% (exact)
+      // Test a non-integer: leverage=3, entry=45000, tp=45500
+      // (500/45000)*3*100 = 3.33
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={3}
+          takeProfitPrice="45500"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const percentInput = container.querySelector('input');
+      // (500/45000)*3*100 = 3.333... -> toFixed(2) = "3.33"
+      expect(percentInput).toHaveValue('3.33');
+    });
   });
 
   describe('bidirectional input', () => {
-    it('updates price when percent is entered for TP', () => {
+    it('updates price when RoE% is entered for TP (long)', () => {
+      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> 45000 * 1.01 = 45450
       const onTakeProfitPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -331,6 +358,7 @@ describe('AutoCloseSection', () => {
           enabled={true}
           direction="long"
           currentPrice={45000}
+          leverage={10}
           onTakeProfitPriceChange={onTakeProfitPriceChange}
         />,
         mockStore,
@@ -343,11 +371,11 @@ describe('AutoCloseSection', () => {
         target: { value: '10' },
       });
 
-      // For long +10%: 45000 * 1.10 = 49500
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49500');
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45450');
     });
 
-    it('updates price when percent is entered for SL', () => {
+    it('updates price when RoE% is entered for SL (long)', () => {
+      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> 45000 * 0.99 = 44550
       const onStopLossPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -355,6 +383,7 @@ describe('AutoCloseSection', () => {
           enabled={true}
           direction="long"
           currentPrice={45000}
+          leverage={10}
           onStopLossPriceChange={onStopLossPriceChange}
         />,
         mockStore,
@@ -367,8 +396,92 @@ describe('AutoCloseSection', () => {
         target: { value: '10' },
       });
 
-      // For long -10%: 45000 * 0.90 = 40500
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('40500');
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
+    });
+  });
+
+  describe('percent input focus/blur behavior (no decimal insertion)', () => {
+    it('shows raw user input while percent field is focused', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+      // Type "1" first
+      fireEvent.change(input, { target: { value: '1' } });
+      // The raw value "1" should be visible, NOT reformatted to "1.0" or similar
+      expect(input.value).toBe('1');
+
+      // Type "5" to form "15"
+      fireEvent.change(input, { target: { value: '15' } });
+      expect(input.value).toBe('15');
+    });
+
+    it('does not insert a decimal point when typing whole numbers', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '15' } });
+
+      // Should display "15", not "1.5" or "1.05"
+      expect(input.value).toBe('15');
+
+      // Should have called price change with the correct RoE-derived price
+      // 15% RoE at 10x: 45000 * (1 + 15/1000) = 45000 * 1.015 = 45675
+      expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith('45675');
+    });
+
+    it('reverts to derived formatted value when percent field is blurred', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={10}
+          takeProfitPrice="45450"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      // While focused: raw value
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '10' } });
+      expect(input.value).toBe('10');
+
+      // After blur: derived formatted value shown
+      fireEvent.blur(input);
+      // (45450 - 45000) / 45000 * 10 * 100 = 10 -> formats to "10"
+      expect(input.value).toBe('10');
     });
   });
 
