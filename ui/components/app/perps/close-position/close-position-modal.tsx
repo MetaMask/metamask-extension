@@ -536,6 +536,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                     textAlign={TextAlign.Right}
+                    data-testid="perps-close-summary-margin-value"
                   >
                     {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
                   </Text>
@@ -582,6 +583,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-fees-value"
                 >
                   -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
                 </Text>
@@ -602,6 +604,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-receive-value"
                 >
                   {formatCurrencyWithMinThreshold(
                     Math.max(youWillReceive, 0),
