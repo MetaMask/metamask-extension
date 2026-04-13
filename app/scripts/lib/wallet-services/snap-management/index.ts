@@ -1,16 +1,13 @@
 /**
  * snap-management
  *
- * Snap keyring access and snap-related preference queries.
+ * Snap keyring access, snap request routing, state management, and
+ * snap-related preference queries.
  * All controller access via messenger — no chrome.* / browser.* imports.
  *
  * Mobile convergence:
  *   - getSnapKeyring  (Engine.ts L1041: same SnapController.getKeyringForType pattern)
- *   - getPreferences  (Engine.ts L1016: same fields subset)
- *
- * Remaining methods not yet extracted (4 of 6):
- *   handleSnapRequest, handleWatchAssetRequest,
- *   getSnapState, updateSnapState
+ *   - getSnapPreferences  (Engine.ts L1016: same fields subset)
  */
 
 import type { RootMessenger } from '../../messenger';
@@ -31,7 +28,10 @@ export type SnapManagementDependencies = {
 export async function getSnapKeyring(
   deps: SnapManagementDependencies,
 ): Promise<unknown> {
-  return deps.messenger.call('SnapController:getKeyringForType', 'Snap Account');
+  return deps.messenger.call(
+    'SnapController:getKeyringForType',
+    'Snap Account',
+  );
 }
 
 /**
@@ -56,6 +56,110 @@ export function getSnapPreferences(deps: SnapManagementDependencies): {
   };
 }
 
+/**
+ * Routes a JSON-RPC request to a snap for execution.
+ * Direct passthrough to SnapController:handleRequest.
+ *
+ * Extracted from MetamaskController.handleSnapRequest.
+ *
+ * TODO: Requires messenger action: SnapController:handleRequest
+ */
+export async function handleSnapRequest(
+  deps: SnapManagementDependencies,
+  args: {
+    snapId: string;
+    origin: string;
+    handler: string;
+    request: { method: string; params?: unknown };
+  },
+): Promise<unknown> {
+  return deps.messenger.call('SnapController:handleRequest', args);
+}
+
+/**
+ * Returns isolated state for a snap.
+ * Used by snaps to persist data across sessions.
+ *
+ * Extracted from MetamaskController getApi() inline at L7003–7005.
+ *
+ * TODO: Requires messenger action: SnapController:getSnapState
+ */
+export async function getSnapState(
+  deps: SnapManagementDependencies,
+  snapId: string,
+  encrypted: boolean,
+): Promise<unknown> {
+  return (deps.messenger as never).call(
+    'SnapController:getSnapState',
+    snapId,
+    encrypted,
+  );
+}
+
+/**
+ * Persists isolated state for a snap.
+ *
+ * Extracted from MetamaskController getApi() inline at L7008–7010.
+ *
+ * TODO: Requires messenger action: SnapController:updateSnapState
+ */
+export async function updateSnapState(
+  deps: SnapManagementDependencies,
+  snapId: string,
+  newState: Record<string, unknown>,
+  encrypted: boolean,
+): Promise<void> {
+  await (deps.messenger as never).call(
+    'SnapController:updateSnapState',
+    snapId,
+    newState,
+    encrypted,
+  );
+}
+
+/**
+ * Routes a watch-asset request to the appropriate token controller based on type.
+ * ERC-20 → TokensController; ERC-721/ERC-1155 → NftController.
+ *
+ * Extracted from MetamaskController.handleWatchAssetRequest.
+ *
+ * TODO: Requires messenger actions:
+ *   - TokensController:watchAsset
+ *   - NftController:watchNft
+ */
+export async function handleWatchAssetRequest(
+  deps: SnapManagementDependencies,
+  args: {
+    asset: unknown;
+    type: string;
+    origin: string;
+    networkClientId?: string;
+  },
+): Promise<void> {
+  const { asset, type, origin, networkClientId } = args;
+  switch (type) {
+    case 'ERC20':
+      await (deps.messenger as never).call('TokensController:watchAsset', {
+        asset,
+        type,
+        networkClientId,
+      });
+      break;
+    case 'ERC721':
+    case 'ERC1155':
+      await (deps.messenger as never).call(
+        'NftController:watchNft',
+        asset,
+        type,
+        origin,
+        networkClientId,
+      );
+      break;
+    default:
+      throw new Error(`Asset type ${type} not supported`);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Action registration
 // ---------------------------------------------------------------------------
@@ -64,6 +168,10 @@ export function getSnapPreferences(deps: SnapManagementDependencies): {
 export const SNAP_MANAGEMENT_ACTIONS = {
   getSnapKeyring: 'SnapManagement:getSnapKeyring',
   getSnapPreferences: 'SnapManagement:getSnapPreferences',
+  handleSnapRequest: 'SnapManagement:handleSnapRequest',
+  getSnapState: 'SnapManagement:getSnapState',
+  updateSnapState: 'SnapManagement:updateSnapState',
+  handleWatchAssetRequest: 'SnapManagement:handleWatchAssetRequest',
 } as const;
 
 /**
@@ -83,5 +191,33 @@ export function registerActions(messenger: RootMessenger): void {
   (messenger as never).registerActionHandler(
     SNAP_MANAGEMENT_ACTIONS.getSnapPreferences,
     () => getSnapPreferences(deps),
+  );
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.handleSnapRequest,
+    (args: {
+      snapId: string;
+      origin: string;
+      handler: string;
+      request: { method: string; params?: unknown };
+    }) => handleSnapRequest(deps, args),
+  );
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.getSnapState,
+    (snapId: string, encrypted: boolean) =>
+      getSnapState(deps, snapId, encrypted),
+  );
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.updateSnapState,
+    (snapId: string, newState: Record<string, unknown>, encrypted: boolean) =>
+      updateSnapState(deps, snapId, newState, encrypted),
+  );
+  (messenger as never).registerActionHandler(
+    SNAP_MANAGEMENT_ACTIONS.handleWatchAssetRequest,
+    (args: {
+      asset: unknown;
+      type: string;
+      origin: string;
+      networkClientId?: string;
+    }) => handleWatchAssetRequest(deps, args),
   );
 }

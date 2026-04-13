@@ -1,17 +1,9 @@
 /**
  * transaction-lifecycle
  *
- * Lifecycle hooks around TransactionController: post-submit NFT ownership
- * updates, STX routing, and transaction metrics. All controller access via
- * messenger — no chrome.* / browser.* imports.
- *
- * Remaining methods (13 total in MC, stubs shown):
- *   getTransactions, cancelTransaction, stopTransaction,
- *   updateTransactionSendFlowHistory, updateAndApproveTransaction,
- *   approveTransactionsWithSameNonce, createCancelTransaction,
- *   createSpeedUpTransaction, estimateGas, getBufferedGasLimit,
- *   updateEditableParams, handlePostTransactionBalanceUpdate,
- *   updateNftOwnershipOnPostTransactionBatch
+ * Lifecycle hooks around TransactionController: cancel/speed-up, STX routing,
+ * NFT ownership updates, gas estimation, and transaction metrics.
+ * All controller access via messenger — no chrome.* / browser.* imports.
  */
 
 import type { RootMessenger } from '../../messenger';
@@ -69,6 +61,130 @@ export async function routeTransactionToSmartTransactionIfEnabled(
   }
 }
 
+/**
+ * Creates a cancel transaction — submits a replacement with the same nonce
+ * at a higher gas price to replace the original.
+ *
+ * Returns the state snapshot so the UI can update immediately.
+ *
+ * Extracted from MetamaskController.createCancelTransaction.
+ *
+ * TODO: Requires messenger action: TransactionController:stopTransaction
+ */
+export async function createCancelTransaction(
+  deps: TransactionLifecycleDependencies,
+  originalTxId: string,
+  customGasSettings: Record<string, unknown>,
+  options: Record<string, unknown>,
+): Promise<void> {
+  await (deps.messenger as never).call(
+    'TransactionController:stopTransaction',
+    originalTxId,
+    customGasSettings,
+    options,
+  );
+}
+
+/**
+ * Creates a speed-up transaction — submits a replacement with the same nonce
+ * at a higher gas price to accelerate the original.
+ *
+ * Extracted from MetamaskController.createSpeedUpTransaction.
+ *
+ * TODO: Requires messenger action: TransactionController:speedUpTransaction
+ */
+export async function createSpeedUpTransaction(
+  deps: TransactionLifecycleDependencies,
+  originalTxId: string,
+  customGasSettings: Record<string, unknown>,
+  options: Record<string, unknown>,
+): Promise<void> {
+  await (deps.messenger as never).call(
+    'TransactionController:speedUpTransaction',
+    originalTxId,
+    customGasSettings,
+    options,
+  );
+}
+
+/**
+ * Approves all pending transactions that share the same nonce as the given
+ * transaction. Used to handle nonce conflicts during batch submission.
+ *
+ * Extracted from MetamaskController getApi() approveTransactionsWithSameNonce.
+ *
+ * TODO: Requires messenger action: TransactionController:approveTransactionsWithSameNonce
+ */
+export async function approveTransactionsWithSameNonce(
+  deps: TransactionLifecycleDependencies,
+  txIds: string[],
+): Promise<void> {
+  await (deps.messenger as never).call(
+    'TransactionController:approveTransactionsWithSameNonce',
+    txIds,
+  );
+}
+
+/**
+ * Estimates gas for a transaction using the current network provider.
+ *
+ * Extracted from MetamaskController.estimateGas.
+ *
+ * TODO: Requires a NetworkController provider access action or
+ *   TransactionController:estimateGas to be exposed as a messenger action.
+ */
+export async function estimateGas(
+  deps: TransactionLifecycleDependencies,
+  params: unknown,
+): Promise<string> {
+  return (deps.messenger as never).call(
+    'NetworkController:estimateGas',
+    params,
+  );
+}
+
+/**
+ * Returns pending smart transactions for a given address.
+ * Used to show external (STX) pending transactions in the UI.
+ *
+ * Extracted from MetamaskController.getExternalPendingTransactions.
+ *
+ * TODO: Requires messenger action: SmartTransactionsController:getTransactions
+ */
+export function getExternalPendingTransactions(
+  deps: TransactionLifecycleDependencies,
+  address: string,
+): unknown[] {
+  return (deps.messenger as never).call(
+    'SmartTransactionsController:getTransactions',
+    {
+      addressFrom: address,
+      status: 'pending',
+    },
+  );
+}
+
+/**
+ * Editable transaction params update — updates gas, recipient, data, or value
+ * on a pending transaction before approval.
+ *
+ * Extracted from MetamaskController getApi() applyTransactionContainersExisting
+ * (delegated to txController.updateEditableParams).
+ *
+ * TODO: Requires messenger action: TransactionController:updateEditableParams
+ */
+export async function updateEditableParams(
+  deps: TransactionLifecycleDependencies,
+  txId: string,
+  params: Record<string, unknown>,
+): Promise<void> {
+  await (deps.messenger as never).call(
+    'TransactionController:updateEditableParams',
+    txId,
+    params,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Action registration
 // ---------------------------------------------------------------------------
@@ -79,6 +195,14 @@ export const TRANSACTION_LIFECYCLE_ACTIONS = {
     'TransactionLifecycle:updateNftOwnershipOnPostTransactionBatch',
   routeTransactionToSmartTransactionIfEnabled:
     'TransactionLifecycle:routeTransactionToSmartTransactionIfEnabled',
+  createCancelTransaction: 'TransactionLifecycle:createCancelTransaction',
+  createSpeedUpTransaction: 'TransactionLifecycle:createSpeedUpTransaction',
+  approveTransactionsWithSameNonce:
+    'TransactionLifecycle:approveTransactionsWithSameNonce',
+  estimateGas: 'TransactionLifecycle:estimateGas',
+  getExternalPendingTransactions:
+    'TransactionLifecycle:getExternalPendingTransactions',
+  updateEditableParams: 'TransactionLifecycle:updateEditableParams',
 } as const;
 
 /**
@@ -100,5 +224,40 @@ export function registerActions(messenger: RootMessenger): void {
     TRANSACTION_LIFECYCLE_ACTIONS.routeTransactionToSmartTransactionIfEnabled,
     (txId: string, opts: { useSmartTransaction: boolean }) =>
       routeTransactionToSmartTransactionIfEnabled(deps, txId, opts),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.createCancelTransaction,
+    (
+      originalTxId: string,
+      customGasSettings: Record<string, unknown>,
+      options: Record<string, unknown>,
+    ) =>
+      createCancelTransaction(deps, originalTxId, customGasSettings, options),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.createSpeedUpTransaction,
+    (
+      originalTxId: string,
+      customGasSettings: Record<string, unknown>,
+      options: Record<string, unknown>,
+    ) =>
+      createSpeedUpTransaction(deps, originalTxId, customGasSettings, options),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.approveTransactionsWithSameNonce,
+    (txIds: string[]) => approveTransactionsWithSameNonce(deps, txIds),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.estimateGas,
+    (params: unknown) => estimateGas(deps, params),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.getExternalPendingTransactions,
+    (address: string) => getExternalPendingTransactions(deps, address),
+  );
+  (messenger as never).registerActionHandler(
+    TRANSACTION_LIFECYCLE_ACTIONS.updateEditableParams,
+    (txId: string, params: Record<string, unknown>) =>
+      updateEditableParams(deps, txId, params),
   );
 }

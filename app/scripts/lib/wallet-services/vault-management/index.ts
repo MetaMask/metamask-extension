@@ -1,26 +1,26 @@
 /**
  * vault-management
  *
- * Vault creation, keyring unlock, password verification, and seed phrase
- * management. All controller access goes through the messenger — no direct
- * controller references, no chrome.* / browser.* imports.
+ * Vault creation, keyring unlock/lock, password verification, seed phrase
+ * management, and account export.
+ * All controller access via messenger — no chrome.* / browser.* imports.
  *
  * Mobile convergence: Engine.ts contains equivalent vault/keyring methods.
  * Once messenger actions are registered on both clients, this module can
  * be promoted to a shared @metamask/* package.
  *
- * Remaining methods not yet extracted (31 total in MC, 4 shown here):
- *   addNewAccount, addNewAccountForKeyring, addExistingHDAccount,
- *   createNewVaultAndKeychain (wallet reset variant), importAccountWithStrategy,
+ * Remaining methods not yet extracted (27 total in MC):
  *   addNewKeyring, removeEmptyKeyrings, persistAllKeyrings,
- *   setLocked, forgetDevice, checkHardwareStatus, unlockHardwareWalletAccount,
- *   addNewHDKeyring, addNewAccountFromSeed, exportAccount, exportSeedPhrase,
- *   clearAccountDetails, getAccounts, getSeedPhrase, getPrimaryKeyringMnemonic,
- *   checkAndUpdateAccountsPresence, syncQRKeyring, cancelQRHardwareSignRequest,
- *   cancelQRHardwareCryptoCurrencyUnitSigning, cancelQRHardwareInput,
- *   submitQRHardwareCryptoHDKey, submitQRHardwarePublicKey,
- *   resetQRKeyringState, generateMnemonic, addNewPrivateKeyBackup,
- *   createSocialBackup, getEntropySources
+ *   forgetDevice, checkHardwareStatus, unlockHardwareWalletAccount,
+ *   addNewHDKeyring, addNewAccountFromSeed,
+ *   clearAccountDetails, getAccounts, getPrimaryKeyringMnemonic,
+ *   checkAndUpdateAccountsPresence, syncQRKeyring,
+ *   cancelQRHardwareSignRequest, cancelQRHardwareCryptoCurrencyUnitSigning,
+ *   cancelQRHardwareInput, submitQRHardwareCryptoHDKey,
+ *   submitQRHardwarePublicKey, resetQRKeyringState, generateMnemonic,
+ *   addNewPrivateKeyBackup, createSocialBackup, getEntropySources,
+ *   createSeedPhraseBackup, fetchAllSecretData, syncPasswordAndUnlockWallet,
+ *   syncKeyringEncryptionKey
  */
 
 import type { RootMessenger } from '../../messenger';
@@ -159,6 +159,93 @@ export async function verifyPassword(
   await deps.messenger.call('KeyringController:verifyPassword', password);
 }
 
+/**
+ * Locks the wallet, clears session state, and optionally signs out from
+ * the authentication service.
+ *
+ * Extracted from MetamaskController.setLocked (L8018).
+ *
+ * NOTE: The seedlessOperationMutex is intentionally omitted here — it is
+ * an MC-level coordination primitive. The messenger-based version relies on
+ * SeedlessOnboardingController:setLocked to manage its own concurrency.
+ *
+ * TODO: Requires messenger actions:
+ *   - OnboardingController:getIsSocialLoginFlow
+ *   - SeedlessOnboardingController:setLocked
+ *   - KeyringController:setLocked
+ *   - AuthenticationController:performSignOut
+ */
+export async function setLocked(
+  deps: VaultDependencies,
+  options: { skipSeedlessOperationLock?: boolean } = {},
+): Promise<void> {
+  const isSocialLoginFlow = (deps.messenger as never).call(
+    'OnboardingController:getIsSocialLoginFlow',
+  );
+
+  if (isSocialLoginFlow && !options.skipSeedlessOperationLock) {
+    await (deps.messenger as never).call(
+      'SeedlessOnboardingController:setLocked',
+    );
+  }
+
+  await (deps.messenger as never).call('KeyringController:setLocked');
+
+  const { isSignedIn } = (deps.messenger as never).call(
+    'AuthenticationController:getState',
+  );
+  if (isSignedIn) {
+    (deps.messenger as never).call('AuthenticationController:performSignOut');
+  }
+}
+
+/**
+ * Exports an account's private key after verifying the password.
+ *
+ * Extracted from MetamaskController.exportAccount (L3807).
+ *
+ * TODO: Requires messenger actions:
+ *   - KeyringController:verifyPassword
+ *   - KeyringController:exportAccount
+ */
+export async function exportAccount(
+  deps: VaultDependencies,
+  address: string,
+  password: string,
+): Promise<string> {
+  await (deps.messenger as never).call(
+    'KeyringController:verifyPassword',
+    password,
+  );
+  return (deps.messenger as never).call(
+    'KeyringController:exportAccount',
+    password,
+    address,
+  );
+}
+
+/**
+ * Returns the seed phrase for a keyring, encoded as UTF-8 codepoints.
+ * Verifies password against the vault before exposing the mnemonic.
+ *
+ * Extracted from MetamaskController.getSeedPhrase (L5256).
+ *
+ * TODO: Requires messenger action: KeyringController:exportSeedPhrase
+ */
+export async function getSeedPhrase(
+  deps: VaultDependencies,
+  password: string,
+  keyringId?: string,
+): Promise<number[]> {
+  const mnemonic: Uint8Array = await (deps.messenger as never).call(
+    'KeyringController:exportSeedPhrase',
+    password,
+    keyringId,
+  );
+  // Convert mnemonic wordlist indices to Unicode codepoints for display.
+  return Array.from(mnemonic);
+}
+
 // ---------------------------------------------------------------------------
 // Action registration
 // ---------------------------------------------------------------------------
@@ -169,6 +256,9 @@ export const VAULT_MANAGEMENT_ACTIONS = {
   createNewVaultAndRestore: 'VaultManagement:createNewVaultAndRestore',
   submitPassword: 'VaultManagement:submitPassword',
   verifyPassword: 'VaultManagement:verifyPassword',
+  setLocked: 'VaultManagement:setLocked',
+  exportAccount: 'VaultManagement:exportAccount',
+  getSeedPhrase: 'VaultManagement:getSeedPhrase',
 } as const;
 
 /**
@@ -197,5 +287,20 @@ export function registerActions(messenger: RootMessenger): void {
   (messenger as never).registerActionHandler(
     VAULT_MANAGEMENT_ACTIONS.verifyPassword,
     (password: string) => verifyPassword(deps, password),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.setLocked,
+    (options?: { skipSeedlessOperationLock?: boolean }) =>
+      setLocked(deps, options),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.exportAccount,
+    (address: string, password: string) =>
+      exportAccount(deps, address, password),
+  );
+  (messenger as never).registerActionHandler(
+    VAULT_MANAGEMENT_ACTIONS.getSeedPhrase,
+    (password: string, keyringId?: string) =>
+      getSeedPhrase(deps, password, keyringId),
   );
 }
