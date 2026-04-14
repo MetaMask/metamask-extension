@@ -268,7 +268,8 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
-    "@metamask/perps-controller": "^3.0.0"
+    "@metamask/perps-controller": "^3.0.0",
+    "@metamask/assets-controller@npm:^3.2.1": "patch:@metamask/assets-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-assets-controller-npm-5.0.0-f4cc650e5e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -302,7 +303,7 @@
     "@metamask/address-book-controller": "^7.1.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A3.3.0#~/.yarn/patches/@metamask-assets-controller-npm-3.3.0-aa75c5002e.patch",
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-assets-controller-npm-5.0.0-f4cc650e5e.patch",
     "@metamask/assets-controllers": "^103.1.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.10.1",
