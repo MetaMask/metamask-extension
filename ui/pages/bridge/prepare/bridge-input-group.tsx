@@ -144,7 +144,7 @@ export const BridgeInputGroup = ({
       return 25;
     }
     return 20;
-  }, [amountFieldProps]);
+  }, [amountFieldProps?.value]);
 
   useEffect(() => {
     if (!isAmountReadOnly && inputRef.current) {
