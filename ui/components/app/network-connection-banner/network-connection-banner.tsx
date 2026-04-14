@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { BannerBase } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  BannerBase,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -12,7 +12,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderRadius,
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -288,7 +287,7 @@ export const NetworkConnectionBanner = () => {
 
     return (
       <BannerBase
-        className="network-connection-banner"
+        className="network-connection-banner rounded-md"
         backgroundColor={backgroundColor}
         startAccessory={
           <Icon
@@ -300,7 +299,6 @@ export const NetworkConnectionBanner = () => {
             data-testid="icon"
           />
         }
-        borderRadius={BorderRadius.MD}
       >
         {primaryMessage}
         {secondaryMessage}

@@ -17,6 +17,9 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
 import { BannerBaseComponent, BannerBaseProps } from './banner-base.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release. Please use `BannerBase` from `@metamask/design-system-react` instead. See the migration guide: https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#bannerbase-component
+ */
 export const BannerBase: BannerBaseComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
