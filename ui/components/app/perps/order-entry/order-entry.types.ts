@@ -50,6 +50,8 @@ export type OrderFormState = {
   asset: string;
   /** Order direction - long or short */
   direction: OrderDirection;
+  /** Percentage of the existing position to close in close mode */
+  closePercent: number;
   /** USD amount to trade (string for input handling) */
   amount: string;
   /** Leverage multiplier (1-50x typically) */
