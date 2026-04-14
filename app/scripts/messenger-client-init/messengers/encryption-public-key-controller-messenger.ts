@@ -5,7 +5,7 @@ import {
 } from '@metamask/messenger';
 import { KeyringControllerGetEncryptionPublicKeyAction } from '@metamask/keyring-controller';
 import { EncryptionPublicKeyControllerMessenger } from '../../controllers/encryption-public-key';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**

@@ -68,6 +68,7 @@
     "429 Too Many Requests",
     "502 Bad Gateway",
     "503 Service Unavailable",
+    "API rate limit exceeded",
     "Anvil exited: Error: Address already in use",
     "Authentication failed for",
     "Could not resolve host",
@@ -80,6 +81,7 @@
     "ETIMEDOUT",
     "Exceeded timeout of \\d+ ms for a test",
     "fatal: unable to access",
+    "git.* failed with exit code 128",
     "heap out of memory",
     "JavaScript heap out of memory",
     "net::ERR_",
@@ -93,5 +95,19 @@
     "VulkanError.cpp",
     "write EPIPE",
     "Yarn is terminating due to an unexpected empty event loop"
+  ],
+
+  // Patterns that indicate deterministic failures — errors that will never
+  // self-heal on retry (code errors, policy mismatches, snapshot drift).
+  // Checked against annotations + log tail when no transient pattern matched
+  // and the structural annotation check did not fire.
+  "deterministicErrorPatterns": [
+    "BASELINE VIOLATIONS DETECTED",
+    "Code style issues found",
+    "NEW FILES \\(not in baseline\\)",
+    "Test Suites:.*failed",
+    "Working tree dirty",
+    "snapshots? failed",
+    "✖ \\d+ problems? \\("
   ]
 }

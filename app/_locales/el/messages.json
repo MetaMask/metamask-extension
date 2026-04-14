@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
   },
-  "yourTransactionConfirmed": {
-    "message": "Η συναλλαγή έχει ήδη επιβεβαιωθεί"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Δεν μπορέσαμε να ακυρώσουμε τη συναλλαγή σας πριν επιβεβαιωθεί από το blockchain."
-  },
   "yourWalletIsReady": {
     "message": "Το πορτοφόλι σας είναι έτοιμο!"
   },

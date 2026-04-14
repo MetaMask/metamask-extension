@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
   },
-  "yourTransactionConfirmed": {
-    "message": "İşlem zaten onaylandı"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Blok zinciri üzerinde onaylanmadan işleminizi iptal edemedik."
-  },
   "yourWalletIsReady": {
     "message": "Cüzdanınız hazır!"
   },

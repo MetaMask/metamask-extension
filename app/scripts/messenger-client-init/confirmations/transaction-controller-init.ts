@@ -22,6 +22,7 @@ import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
+import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -188,9 +189,6 @@ export const TransactionControllerInit: ControllerInitFunction<
           },
         };
       },
-      afterSimulate: new EnforceSimulationHook({
-        messenger: initMessenger,
-      }).getAfterSimulateHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -200,6 +198,11 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
+        isEligible: (transactionMeta) =>
+          isEnforcedSimulationsEligible(
+            transactionMeta,
+            initMessenger.call('AppStateController:getState'),
+          ),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(

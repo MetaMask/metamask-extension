@@ -131,7 +131,7 @@ describe('Transaction Controller Init', () => {
         featureFlags: {
           extensionReturnTxHashAsap: false,
           extensionReturnTxHashAsapBatch: false,
-          extensionSkipSmartTransactionStatusPage: false,
+          extensionSkipTransactionStatusPage: false,
           mobileActive: false,
           extensionActive: false,
         },
@@ -542,7 +542,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -635,7 +635,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -696,7 +696,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -751,7 +751,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -802,7 +802,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -844,7 +844,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -897,7 +897,7 @@ describe('Transaction Controller Init', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
+            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
