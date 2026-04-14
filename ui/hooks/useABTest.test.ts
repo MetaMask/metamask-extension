@@ -6,9 +6,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../contexts/metametrics';
 import type { ABTestExposureMetadata } from './useABTest';
 import { clearABTestExposureTrackingForTest, useABTest } from './useABTest';
-import { MetaMetricsContext } from '../contexts/metametrics';
 
 jest.mock('../contexts/metametrics', () => {
   const ReactActual = jest.requireActual('react');
