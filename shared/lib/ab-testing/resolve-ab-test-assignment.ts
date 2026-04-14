@@ -31,7 +31,7 @@ export function resolveABTestAssignment(
   const isActive = Boolean(variantName && validVariants.includes(variantName));
 
   return {
-    variantName: isActive ? variantName : DEFAULT_VARIANT,
+    variantName: isActive && variantName ? variantName : DEFAULT_VARIANT,
     isActive,
   };
 }

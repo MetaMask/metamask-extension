@@ -18,6 +18,13 @@ export type ABTestAnalyticsMapping = {
 
 export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [];
 
+/**
+ * Test-only helper for resetting the shared mapping registry between cases.
+ */
+export function clearABTestAnalyticsMappings(): void {
+  AB_TEST_ANALYTICS_MAPPINGS.length = 0;
+}
+
 const hasEventName = (
   mapping: ABTestAnalyticsMapping,
   eventName: string,

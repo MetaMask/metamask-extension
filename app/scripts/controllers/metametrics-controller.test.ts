@@ -37,7 +37,10 @@ import {
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { AB_TEST_ANALYTICS_MAPPINGS } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import {
+  AB_TEST_ANALYTICS_MAPPINGS,
+  clearABTestAnalyticsMappings,
+} from '../../../shared/lib/ab-testing/ab-test-analytics';
 import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -180,7 +183,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 
 describe('MetaMetricsController', function () {
   beforeEach(() => {
-    AB_TEST_ANALYTICS_MAPPINGS.splice(0, AB_TEST_ANALYTICS_MAPPINGS.length);
+    clearABTestAnalyticsMappings();
   });
 
   describe('constructor', function () {
