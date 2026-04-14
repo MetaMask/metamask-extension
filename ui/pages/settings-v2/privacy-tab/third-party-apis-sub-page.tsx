@@ -49,6 +49,13 @@ const ShowENSDomainsToggleItem = createToggleItem({
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
   containerDataTestId: 'ipfs-gateway-resolution-container',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_address_bar_ens_resolution: newValue,
+    }),
+  },
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
@@ -58,6 +65,13 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
   selector: (state: MetaMaskReduxState) => state.metamask.use4ByteResolution,
   action: setUse4ByteResolution,
   dataTestId: 'make-smart-contracts-easier-toggle',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      use_4byte_resolution: newValue,
+    }),
+  },
 });
 
 const ProposedNicknamesToggleItem = createToggleItem({
