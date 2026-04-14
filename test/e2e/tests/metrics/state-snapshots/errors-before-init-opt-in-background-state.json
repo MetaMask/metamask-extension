@@ -226,6 +226,7 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
+      "showSidePanelMigrationToast": "boolean",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "os",

@@ -1,5 +1,5 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { type NotificationServicesControllerMessenger } from '../messengers/notifications';
 import packageJson from '../../../../package.json';
 
@@ -8,7 +8,7 @@ const APP_VERSION = packageJson.version;
 const getNormalisedLocale = (locale: string): string =>
   locale.replace('_', '-');
 
-export const NotificationServicesControllerInit: ControllerInitFunction<
+export const NotificationServicesControllerInit: MessengerClientInitFunction<
   NotificationServicesController,
   NotificationServicesControllerMessenger
 > = ({ controllerMessenger, persistedState, getController }) => {

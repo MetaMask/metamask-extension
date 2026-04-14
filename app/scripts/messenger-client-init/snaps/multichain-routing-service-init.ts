@@ -3,7 +3,7 @@ import {
   MultichainRoutingService,
   MultichainRoutingServiceMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { KeyringType } from '../../../../shared/constants/keyring';
 
 /**
@@ -14,7 +14,7 @@ import { KeyringType } from '../../../../shared/constants/keyring';
  * @param request.getController
  * @returns The initialized service.
  */
-export const MultichainRoutingServiceInit: ControllerInitFunction<
+export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   MultichainRoutingService,
   MultichainRoutingServiceMessenger
 > = ({ controllerMessenger, getController }) => {

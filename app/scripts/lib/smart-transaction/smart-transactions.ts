@@ -39,7 +39,7 @@ import {
 } from '../../../../shared/lib/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
-import { ControllerFlatState } from '../../messenger-client-init/controller-list';
+import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
 import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 
@@ -590,12 +590,12 @@ export const submitBatchSmartTransactionHook = (
   return smartTransactionHook.submitBatch();
 };
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
 export function getSmartTransactionCommonParams(
-  flatState: ControllerFlatState,
+  flatState: MessengerClientFlatState,
   chainId?: Hex,
 ) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.

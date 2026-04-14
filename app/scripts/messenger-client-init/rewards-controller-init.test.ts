@@ -12,7 +12,7 @@ import {
 import { buildControllerInitRequestMock } from './test/utils';
 import { RewardsControllerInit } from './rewards-controller-init';
 import type { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
-import type { ControllerInitRequest } from './types';
+import type { MessengerClientInitRequest } from './types';
 
 jest.mock('../controllers/rewards/rewards-controller');
 jest.mock('../../../shared/lib/manifestFlags');
@@ -24,7 +24,7 @@ function buildInitRequestMock(
   remoteFeatureFlags?: Record<string, unknown>,
   useExternalServices = true,
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     RewardsControllerMessenger,
     RewardsControllerInitMessenger
   >
