@@ -26,6 +26,7 @@ import {
   DEFAULT_SWAP_AMOUNT,
   Token,
   SwapRouteResult,
+  SwapValidationResult,
 } from './network-swap-config';
 import {
   importTokensFromTokenlist,
@@ -192,7 +193,16 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 toSymbol,
                 fromAmount: '',
                 toAmount: '',
+                validations: [],
                 status: 'failed',
+              };
+
+              const recordValidation = (
+                name: string,
+                status: SwapValidationResult['status'],
+                details?: string,
+              ) => {
+                routeResult.validations?.push({ name, status, details });
               };
 
               // Resolve destination address.
@@ -247,7 +257,9 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
 
                 // -- Wait for quote and assert fee text --
                 await waitForSwapQuoteReady(driver);
+                recordValidation('Quote ready', 'passed');
                 await assertCtaFeeText(driver);
+                recordValidation('CTA fee text', 'passed');
 
                 // -- Capture amounts before submission --
                 const { fromAmount, toAmount } =
@@ -268,8 +280,18 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   driver,
                   `-${fromAmount} ${fromSymbol}`,
                 );
+                recordValidation(
+                  'Activity primary amount',
+                  'passed',
+                  `-${fromAmount} ${fromSymbol}`,
+                );
                 await assertActivitySecondaryCurrency(
                   driver,
+                  `-${toAmount} "$"`,
+                );
+                recordValidation(
+                  'Activity secondary value',
+                  'passed',
                   `-${toAmount} "$"`,
                 );
 
@@ -282,11 +304,35 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
 
                 // -- Assert detail page --
                 await assertSwapDetailConfirmed(driver);
-                await assertSwappedTokenPair(driver, fromSymbol, toSymbol);
-                await assertTransactionTimestamp(driver);
+                recordValidation('Detail status confirmed', 'passed');
+
+                const swappedRowResult = await assertSwappedTokenPair(
+                  driver,
+                  fromSymbol,
+                  toSymbol,
+                );
+                recordValidation(
+                  'Detail swapped row',
+                  swappedRowResult.isValid ? 'passed' : 'warning',
+                  swappedRowResult.message,
+                );
+
+                const timestampResult =
+                  await assertTransactionTimestamp(driver);
+                recordValidation(
+                  'Detail time stamp row',
+                  timestampResult.isValid ? 'passed' : 'warning',
+                  timestampResult.message,
+                );
+
                 await assertDetailRow(
                   driver,
                   'You sent',
+                  `${fromAmount} ${fromSymbol}`,
+                );
+                recordValidation(
+                  'Detail You sent row',
+                  'passed',
                   `${fromAmount} ${fromSymbol}`,
                 );
                 await assertDetailRow(
@@ -294,9 +340,19 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   'You received',
                   `${toAmount} ${toSymbol}`,
                 );
-                await assertTotalGasFeeRow(
+                recordValidation(
+                  'Detail You received row',
+                  'passed',
+                  `${toAmount} ${toSymbol}`,
+                );
+                const totalGasFeeResult = await assertTotalGasFeeRow(
                   driver,
                   networkConfig.gasFeeSponsoredByProtocol ?? false,
+                );
+                recordValidation(
+                  'Detail Total gas fee row',
+                  totalGasFeeResult.isValid ? 'passed' : 'warning',
+                  totalGasFeeResult.message,
                 );
 
                 // -- Navigate back to home for next route --
@@ -307,6 +363,11 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
               } catch (error) {
                 routeResult.status = 'failed';
                 routeResult.error = String(error);
+                recordValidation(
+                  'Route execution error',
+                  'failed',
+                  String(error),
+                );
                 console.error(`[TEST] ❌ Route failed: ${routeLabel}`);
                 console.error(error);
 

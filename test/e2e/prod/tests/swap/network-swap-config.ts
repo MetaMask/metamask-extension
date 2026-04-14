@@ -99,8 +99,22 @@ export interface SwapRouteResult {
   fromAmount: string;
   /** Destination amount captured from the swap UI before submission */
   toAmount: string;
+  /** Per-check validation results captured while executing this route */
+  validations?: SwapValidationResult[];
   status: 'passed' | 'failed';
   error?: string;
+}
+
+/**
+ * Result of an individual validation check within a swap route.
+ */
+export interface SwapValidationResult {
+  /** Human-readable validation name */
+  name: string;
+  /** Whether the validation passed, failed, or only warned */
+  status: 'passed' | 'failed' | 'warning';
+  /** Optional diagnostic details (actual value, warning text, etc.) */
+  details?: string;
 }
 
 /**

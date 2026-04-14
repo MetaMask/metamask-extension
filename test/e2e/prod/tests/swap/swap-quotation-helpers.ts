@@ -490,7 +490,7 @@ export async function captureQuotationValues(
     ];
     for (const slippageXPath of slippageXpaths) {
       try {
-        const slippageEl = await driver.findElement(slippageXPath);
+        const slippageEl = await driver.findElement({ xpath: slippageXPath });
         const slippageText = (await slippageEl.getText()) || '';
         const slippageMatch = slippageText.match(/\d+(?:\.\d+)?%/u);
         snapshot.slippageValue = slippageMatch?.[0] || slippageText;
@@ -515,7 +515,7 @@ export async function captureQuotationValues(
     ];
     for (const priceImpactXPath of priceImpactXpaths) {
       try {
-        const priceEl = await driver.findElement(priceImpactXPath);
+        const priceEl = await driver.findElement({ xpath: priceImpactXPath });
         const priceText = (await priceEl.getText()) || '';
         const priceMatch = priceText.match(/\d+(?:\.\d+)?%/u);
         snapshot.priceImpact = priceMatch?.[0] || priceText;

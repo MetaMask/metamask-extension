@@ -281,7 +281,7 @@ export function useMusdConversion(): UseMusdConversionResult {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
             loader: ConfirmationLoader.CustomAmount,
-            returnTo: location.pathname + location.search,
+            goBackTo: location.pathname + location.search,
           }).toString(),
         });
 

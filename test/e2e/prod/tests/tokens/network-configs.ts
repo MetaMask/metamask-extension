@@ -47,6 +47,17 @@ export type NetworkConfig = {
   tokenlistUrl: string;
 
   /**
+   * Optional: Manually specified tokens to import instead of fetching tokenlistUrl
+   */
+  manualTokens?: {
+    symbol: string;
+    address: string;
+    name?: string;
+    decimals?: number;
+    logoURI?: string;
+  }[];
+
+  /**
    * Optional: Block explorer URL
    */
   blockExplorerUrl?: string;
@@ -309,18 +320,86 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   rpcName: 'Injective RPC',
   //   tokenlistUrl:
   //     'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/tokens/evm/mainnet.json',
+  //   manualTokens: [
+  //     {
+  //       symbol: 'USDT',
+  //       address: '0x88f7F2b685F9692caf8c478f5BADF09eE9B1Cc13',
+  //     },
+  //     {
+  //       symbol: 'wETH',
+  //       address: '0x83A15000b753AC0EeE06D2Cb41a69e76D0D5c7F7',
+  //     },
+  //     {
+  //       symbol: 'USDC',
+  //       address: '0x2a25fbD67b3aE485e461fe55d9DbeF302B7D3989',
+  //     },
+  //     {
+  //       symbol: 'ATOM',
+  //       address: '0x67F24D38c67E047ad0e7824AFdAeE1CA53Ade7E8',
+  //     },
+  //     {
+  //       symbol: 'TIA',
+  //       address: '0x55Fc9143D584FD327306Bf09e9267703E1Bc489e',
+  //     },
+  //     {
+  //       symbol: 'stINJ',
+  //       address: '0x5965AeAe85F895403020FB92b845Edc51757f940',
+  //     },
+  //   ],
   //   blockExplorerUrl: 'https://blockscout.injective.network',
   // },
-  // {
-  //   networkId: 'Rootstock',
-  //   networkName: 'Rootstock Mainnet',
-  //   chainId: 30,
-  //   symbol: 'RBTC',
-  //   rpcUrl: 'https://mycrypto.rsk.co',
-  //   rpcName: 'Rootstock RPC',
-  //   tokenlistUrl: 'https://tokens.rootstock.io/tokenlist.json',
-  //   blockExplorerUrl: 'https://explorer.rsk.co',
-  // },
+  {
+    networkId: 'Rootstock',
+    networkName: 'Rootstock Mainnet',
+    chainId: 30,
+    symbol: 'RBTC',
+    rpcUrl: 'https://public-node.rsk.co',
+    rpcName: 'Rootstock RPC',
+    tokenlistUrl: 'https://tokens.rootstock.io/tokenlist.json',
+    manualTokens: [
+      {
+        symbol: 'RIF',
+        address: '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5',
+      },
+      {
+        symbol: 'USDRIF',
+        address: '0x3A15461d8aE0F0Fb5Fa2629e9DA7D66A794a6e37',
+      },
+      {
+        symbol: 'WRBTC',
+        address: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
+      },
+      {
+        symbol: 'DOC',
+        address: '0xE700691Da7B9851F2F35f8b8182C69C53ccad9DB',
+      },
+      {
+        symbol: 'USDT0',
+        address: '0x779dED0C9e1022225F8e0630b35A9B54Be713736',
+      },
+      {
+        symbol: 'USDT',
+        address: '0xAF368c91793cb22739386DFCBbB2f1A9E4bcBEBf',
+      },
+      {
+        symbol: 'stRIF',
+        address: '0x5db91e24bd32059584bbdb831a901f1199f3d459',
+      },
+      {
+        symbol: 'RIFP',
+        address: '0xF4d27C56595eD59B66cC7f03CFF5193E4Bd74a61',
+      },
+      {
+        symbol: 'BITP',
+        address: '0x440cd83C160de5C96DDb20246815EA44C7Abbca8',
+      },
+      {
+        symbol: 'USDC.e',
+        address: '0x74C9F2B00581F1b11Aa7Ff05aa9f608B7389de67',
+      },
+    ],
+    blockExplorerUrl: 'https://explorer.rsk.co',
+  },
   // {
   //   networkId: 'Genesys',
   //   networkName: 'Genesys Mainnet',
@@ -420,6 +499,48 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   rpcName: 'Plasma Network RPC',
   //   tokenlistUrl:
   //     'https://raw.githubusercontent.com/PlasmaLaboratories/plasma-tokenlist/main/plasma.tokenlist.json',
+  //   manualTokens: [
+  //     {
+  //       symbol: 'XPL',
+  //       address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  //     },
+  //     {
+  //       symbol: 'USDT0',
+  //       address: '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+  //     },
+  //     {
+  //       symbol: 'XAUT',
+  //       address: '0x1B64B9025EEbb9A6239575dF9Ea4b9Ac46D4d193',
+  //     },
+  //     {
+  //       symbol: 'WETH',
+  //       address: '0x9895D81bB462A195b4922ED7De0e3ACD007c32CB',
+  //     },
+  //     {
+  //       symbol: 'weETH',
+  //       address: '0xA3D68b74bF0528fdD07263c60d6488749044914b',
+  //     },
+  //     {
+  //       symbol: 'USDe',
+  //       address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+  //     },
+  //     {
+  //       symbol: 'sUSDe',
+  //       address: '0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2',
+  //     },
+  //     {
+  //       symbol: 'ENA',
+  //       address: '0x58538e6A46E07434d7E7375Bc268D3cb839C0133',
+  //     },
+  //     {
+  //       symbol: 'USDai',
+  //       address: '0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF',
+  //     },
+  //     {
+  //       symbol: 'sUSDai',
+  //       address: '0x0B2b2B2076d95dda7817e785989fE353fe955ef9',
+  //     },
+  //   ],
   //   blockExplorerUrl: 'https://plasmascan.to',
   // },
   // {
@@ -452,17 +573,17 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   tokenlistUrl: 'https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json',
   //   blockExplorerUrl: 'https://www.oklink.com/xlayer',
   // },
-  {
-    networkId: 'Chiliz',
-    networkName: 'Chiliz Chain',
-    chainId: 88888,
-    symbol: 'CHZ',
-    rpcUrl: 'https://rpc.ankr.com/chiliz',
-    rpcName: 'Chiliz RPC',
-    tokenlistUrl:
-      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
-    blockExplorerUrl: 'https://scan.chiliz.com',
-  },
+  // {
+  //   networkId: 'Chiliz',
+  //   networkName: 'Chiliz Chain',
+  //   chainId: 88888,
+  //   symbol: 'CHZ',
+  //   rpcUrl: 'https://chiliz.publicnode.com',
+  //   rpcName: 'Chiliz RPC',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
+  //   blockExplorerUrl: 'https://scan.chiliz.com',
+  // },
   // {
   //   networkId: 'Tempo Mainnet',
   //   networkName: 'Tempo Mainnet',
@@ -507,16 +628,16 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
   //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
   // },
-  {
-    networkId: 'Ink',
-    networkName: 'Ink',
-    chainId: 57073,
-    symbol: 'ETH', // adjust if the native symbol differs
-    rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
-    rpcName: 'Ink RPC',
-    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-    blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
-  },
+  // {
+  //   networkId: 'Ink',
+  //   networkName: 'Ink',
+  //   chainId: 57073,
+  //   symbol: 'ETH', // adjust if the native symbol differs
+  //   rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+  //   rpcName: 'Ink RPC',
+  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+  //   blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
+  // },
 ];
 
 /**

@@ -37,6 +37,23 @@ import {
   generateConsolidatedReport,
 } from './token-import-helpers';
 
+function getManualTokensForNetwork(networkConfig: NetworkConfig): Token[] {
+  const { manualTokens } = networkConfig;
+
+  if (!manualTokens || manualTokens.length === 0) {
+    return [];
+  }
+
+  return manualTokens.map((token) => ({
+    chainId: networkConfig.chainId,
+    address: token.address,
+    symbol: token.symbol,
+    name: token.name ?? token.symbol,
+    decimals: token.decimals ?? 18,
+    logoURI: token.logoURI,
+  }));
+}
+
 /**
  * Run token import test for a specific network
  * Returns the test results for consolidated reporting
@@ -97,8 +114,22 @@ async function runTokenImportTest(
       await addRpcUrlModal.fillAddRpcNameInput(networkConfig.rpcName);
       await addRpcUrlModal.saveAddRpcUrl();
 
-      // Save the network
-      await addEditNetworkModal.saveEditedNetwork();
+      // Wait for RPC validation to settle and Save to be actionable.
+      await addEditNetworkModal.checkPageIsLoaded();
+      await driver.findClickableElement(
+        { text: 'Save', tag: 'button' },
+        { timeout: PROD_DELAYS.RPC_RESPONSE * 2 },
+      );
+
+      // Save the network and wait for the modal to fully close.
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.assertElementNotPresent(
+        { text: 'Add a custom network', tag: 'h4' },
+        {
+          waitAtLeastGuard: 300,
+          timeout: PROD_DELAYS.RPC_RESPONSE * 2,
+        },
+      );
 
       // Verify network was added
       const homepage = new HomePage(driver);
@@ -131,21 +162,32 @@ async function runTokenImportTest(
 
       // Fetch all tokens from the tokenlist
       let tokens: Token[] = [];
+      let tokenSource = networkConfig.tokenlistUrl;
       try {
-        tokens = await fetchTokenList(
-          networkConfig.tokenlistUrl,
-          networkConfig.chainId,
-        );
-        console.log(
-          `[PROD TEST] Successfully fetched ${tokens.length} tokens from ${networkConfig.networkName} tokenlist`,
-        );
+        const manualTokens = getManualTokensForNetwork(networkConfig);
+
+        if (manualTokens.length > 0) {
+          tokens = manualTokens;
+          tokenSource = `manual-token-array://${networkConfig.networkId}`;
+          console.log(
+            `[PROD TEST] Using ${tokens.length} manually configured tokens for ${networkConfig.networkName}`,
+          );
+        } else {
+          tokens = await fetchTokenList(
+            networkConfig.tokenlistUrl,
+            networkConfig.chainId,
+          );
+          console.log(
+            `[PROD TEST] Successfully fetched ${tokens.length} tokens from ${networkConfig.networkName} tokenlist`,
+          );
+        }
       } catch (error) {
         console.error(
-          `[PROD TEST] Failed to fetch ${networkConfig.networkName} tokenlist:`,
+          `[PROD TEST] Failed to resolve tokens for ${networkConfig.networkName}:`,
           error,
         );
         throw new Error(
-          `Could not fetch ${networkConfig.networkName} tokenlist`,
+          `Could not resolve token list for ${networkConfig.networkName}`,
         );
       }
 
@@ -786,7 +828,7 @@ async function runTokenImportTest(
       testResult = {
         networkName: networkConfig.networkName,
         chainId: networkConfig.chainId,
-        tokenlistUrl: networkConfig.tokenlistUrl,
+        tokenlistUrl: tokenSource,
         blockExplorerUrl: networkConfig.blockExplorerUrl || 'N/A',
         totalTokens: tokens.length,
         results: importResults,

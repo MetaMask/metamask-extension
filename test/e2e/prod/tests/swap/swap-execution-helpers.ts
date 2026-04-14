@@ -23,6 +23,7 @@ import {
   NetworkSwapConfig,
   SwapRouteResult,
   SwapExecutionReport,
+  SwapValidationResult,
 } from './network-swap-config';
 import { navigateBack } from './swap-quotation-helpers';
 
@@ -353,7 +354,7 @@ export async function assertDetailRow(
     `[EXEC] Asserting detail row "${rowLabel}" contains "${expectedText}"`,
   );
   const xpath = `//*[@data-testid="transaction-detail-row"]/p[text()='${rowLabel}']/../div`;
-  const rowEl = await driver.findElement(xpath);
+  const rowEl = await driver.findElement({ xpath });
   const rowText = await rowEl.getText();
   if (!rowText.includes(expectedText)) {
     throw new Error(
@@ -376,7 +377,7 @@ export async function assertDetailRow(
 export async function assertTotalGasFeeRow(
   driver: Driver,
   isGasSponsored: boolean,
-): Promise<void> {
+): Promise<{ isValid: boolean; message: string }> {
   if (isGasSponsored) {
     console.log(
       '[EXEC] Checking "Total gas fee" row for "Paid by MetaMask" (sponsored network)...',
@@ -384,12 +385,13 @@ export async function assertTotalGasFeeRow(
     const xpath =
       '//*[@data-testid="transaction-detail-row"]/p[text()=\'Total gas fee\']/../div/p[contains(@class,"text-success-default")]';
     try {
-      await driver.waitForSelector(xpath, { timeout: 10000 });
+      await driver.waitForSelector({ xpath }, { timeout: 10000 });
       console.log('[EXEC] ✅ Gas fee "Paid by MetaMask" confirmed');
+      return { isValid: true, message: 'Paid by MetaMask badge is visible' };
     } catch (_e) {
-      console.warn(
-        '[EXEC] ⚠️  ALERT: "Paid by MetaMask" not found on Total gas fee row — sponsorship may have been removed',
-      );
+      const message = 'Paid by MetaMask badge not found on Total gas fee row';
+      console.warn(`[EXEC] ⚠️  ALERT: ${message}`);
+      return { isValid: false, message };
     }
   } else {
     console.log(
@@ -398,19 +400,20 @@ export async function assertTotalGasFeeRow(
     const xpath =
       '//*[@data-testid="transaction-detail-row"]/p[text()=\'Total gas fee\']/../div';
     try {
-      const rowEl = await driver.findElement(xpath);
+      const rowEl = await driver.findElement({ xpath });
       const feeText = await rowEl.getText();
       if (feeText && feeText.trim().length > 0) {
         console.log(`[EXEC] ✅ Total gas fee: "${feeText.trim()}"`);
-      } else {
-        console.warn(
-          '[EXEC] ⚠️  ALERT: "Total gas fee" row is present but shows no value',
-        );
+        return { isValid: true, message: `Total gas fee: ${feeText.trim()}` };
       }
+
+      const message = 'Total gas fee row is present but empty';
+      console.warn(`[EXEC] ⚠️  ALERT: ${message}`);
+      return { isValid: false, message };
     } catch (_e) {
-      console.warn(
-        '[EXEC] ⚠️  ALERT: "Total gas fee" row not found on detail page',
-      );
+      const message = 'Total gas fee row not found on detail page';
+      console.warn(`[EXEC] ⚠️  ALERT: ${message}`);
+      return { isValid: false, message };
     }
   }
 }
@@ -426,22 +429,24 @@ export async function assertSwappedTokenPair(
   driver: Driver,
   fromSymbol: string,
   toSymbol: string,
-): Promise<void> {
+): Promise<{ isValid: boolean; message: string }> {
   const expectedPair = `${fromSymbol} - ${toSymbol}`;
   console.log(`[EXEC] Asserting "Swapped" row contains "${expectedPair}"...`);
   try {
     const xpath = `//*[@data-testid="transaction-detail-row"]/p[text()='Swapped']/../div`;
-    const rowEl = await driver.findElement(xpath);
+    const rowEl = await driver.findElement({ xpath });
     const rowText = await rowEl.getText();
     if (!rowText.includes(fromSymbol) || !rowText.includes(toSymbol)) {
       throw new Error(`Expected "${expectedPair}" but got "${rowText}"`);
     }
     console.log(`[EXEC] ✅ Swapped row OK: "${rowText}"`);
+    return { isValid: true, message: rowText };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
     console.warn(
       `[EXEC] ⚠️  ALERT: "Swapped" row validation failed: ${errorMsg}`,
     );
+    return { isValid: false, message: errorMsg };
   }
 }
 
@@ -452,21 +457,23 @@ export async function assertSwappedTokenPair(
  */
 export async function assertTransactionTimestamp(
   driver: Driver,
-): Promise<void> {
+): Promise<{ isValid: boolean; message: string }> {
   console.log('[EXEC] Asserting "Time stamp" row exists...');
   try {
     const xpath = `//*[@data-testid="transaction-detail-row"]/p[text()='Time stamp']/../div`;
-    const rowEl = await driver.findElement(xpath);
+    const rowEl = await driver.findElement({ xpath });
     const rowText = await rowEl.getText();
     if (!rowText || rowText.trim().length === 0) {
       throw new Error('Time stamp row is empty');
     }
     console.log(`[EXEC] ✅ Time stamp row OK: "${rowText}"`);
+    return { isValid: true, message: rowText };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
     console.warn(
       `[EXEC] ⚠️  ALERT: "Time stamp" row validation failed: ${errorMsg}`,
     );
+    return { isValid: false, message: errorMsg };
   }
 }
 
@@ -507,9 +514,10 @@ export async function handleInsufficientFundsIfPresent(
   // Allow the UI to settle after the swap pair was configured
   await driver.delay(PROD_DELAYS.API_RESPONSE);
   try {
-    await driver.waitForSelector('//button[text()="Insufficient funds"]', {
-      timeout: 5000,
-    });
+    await driver.waitForSelector(
+      { xpath: '//button[text()="Insufficient funds"]' },
+      { timeout: 5000 },
+    );
   } catch (_e) {
     // Button not present — nothing to do
     return undefined;
@@ -638,6 +646,18 @@ export function generateSwapExecutionReport(
   const passed = results.filter((r) => r.status === 'passed').length;
   const failed = results.filter((r) => r.status === 'failed').length;
   const timestamp = new Date().toISOString();
+  const allValidations: SwapValidationResult[] = results.flatMap(
+    (r) => r.validations ?? [],
+  );
+  const passedValidations = allValidations.filter(
+    (v) => v.status === 'passed',
+  ).length;
+  const warningValidations = allValidations.filter(
+    (v) => v.status === 'warning',
+  ).length;
+  const failedValidations = allValidations.filter(
+    (v) => v.status === 'failed',
+  ).length;
 
   const report: SwapExecutionReport = {
     networkName: networkConfig.networkName,
@@ -661,20 +681,64 @@ export function generateSwapExecutionReport(
   md += `| ✅ Passed | ${report.passedRoutes} |\n`;
   md += `| ❌ Failed | ${report.failedRoutes} |\n\n`;
 
+  md += `## Validation Coverage\n\n`;
+  md += `| Metric | Value |\n`;
+  md += `|--------|-------|\n`;
+  md += `| Total Validations | ${allValidations.length} |\n`;
+  md += `| ✅ Passed Validations | ${passedValidations} |\n`;
+  md += `| ⚠️ Warning Validations | ${warningValidations} |\n`;
+  md += `| ❌ Failed Validations | ${failedValidations} |\n\n`;
+
+  md += `### What Was Validated\n\n`;
+  md += `- Swap quote became ready before submission\n`;
+  md += `- CTA fee text was present and parsed\n`;
+  md += `- Activity row primary amount matched expected source token\n`;
+  md += `- Activity row secondary value text matched expected format\n`;
+  md += `- Detail status was confirmed\n`;
+  md += `- Detail You sent row matched captured source amount\n`;
+  md += `- Detail You received row matched captured destination amount\n`;
+  md += `- Detail Swapped row contained token pair (soft validation)\n`;
+  md += `- Detail Time stamp row existed and non-empty (soft validation)\n`;
+  md += `- Detail Total gas fee row matched network sponsorship rules\n\n`;
+
   md += `---\n\n`;
   md += `## Route Results\n\n`;
-  md += `| # | Route | From Amount | To Amount | Status | Notes |\n`;
-  md += `|---|-------|-------------|-----------|--------|-------|\n`;
+  md += `| # | Route | From Amount | To Amount | Status | Validations | Notes |\n`;
+  md += `|---|-------|-------------|-----------|--------|-------------|-------|\n`;
 
   results.forEach((r, i) => {
     const statusIcon = r.status === 'passed' ? '✅' : '❌';
+    const validationSummary = `${(r.validations ?? []).filter((v) => v.status === 'passed').length}✅ ${(r.validations ?? []).filter((v) => v.status === 'warning').length}⚠️ ${(r.validations ?? []).filter((v) => v.status === 'failed').length}❌`;
     const notes = r.error
       ? r.error.replace(/\|/gu, '\\|').substring(0, 80)
       : '';
-    md += `| ${i + 1} | ${r.route} | ${r.fromAmount} | ${r.toAmount} | ${statusIcon} | ${notes} |\n`;
+    md += `| ${i + 1} | ${r.route} | ${r.fromAmount} | ${r.toAmount} | ${statusIcon} | ${validationSummary} | ${notes} |\n`;
   });
 
   md += `\n`;
+
+  md += `## Route Validation Details\n\n`;
+  results.forEach((routeResult, index) => {
+    md += `### ${index + 1}. ${routeResult.route}\n\n`;
+    if (!routeResult.validations || routeResult.validations.length === 0) {
+      md += `No validation records captured for this route.\n\n`;
+      return;
+    }
+
+    md += `| Validation | Status | Details |\n`;
+    md += `|------------|--------|---------|\n`;
+    routeResult.validations.forEach((validation) => {
+      let statusIcon = '❌ Failed';
+      if (validation.status === 'passed') {
+        statusIcon = '✅ Passed';
+      } else if (validation.status === 'warning') {
+        statusIcon = '⚠️ Warning';
+      }
+      const details = (validation.details ?? '').replace(/\|/gu, '\\|');
+      md += `| ${validation.name} | ${statusIcon} | ${details} |\n`;
+    });
+    md += `\n`;
+  });
 
   fs.writeFileSync(reportPath, md, 'utf-8');
   console.log(`[EXEC] Swap execution report written to: ${reportPath}`);

@@ -10,7 +10,7 @@ import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-net
 import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
-import SendTokenConfirmPage from '../../../page-objects/pages/send/send-token-confirmation-page';
+import SendTokenConfirmPage from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { Driver } from '../../../webdriver/driver';
 import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
@@ -429,7 +429,7 @@ async function runNetworkSendTest(
     const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
     await sendTokenConfirmPage.checkPageIsLoaded();
     console.log(`[PROD TEST] Confirming transaction on ${networkName}...`);
-    await sendTokenConfirmPage.clickOnConfirm();
+    await sendTokenConfirmPage.clickConfirmButton();
 
     // Wait for submission
     await driver.delay(PROD_DELAYS.RPC_RESPONSE);
@@ -587,7 +587,7 @@ async function runNetworkSendTest(
     console.log(
       `[PROD TEST] Confirming second send transaction on ${networkName}...`,
     );
-    await sendTokenConfirmPage.clickOnConfirm();
+    await sendTokenConfirmPage.clickConfirmButton();
 
     // Wait for submission
     await driver.delay(PROD_DELAYS.RPC_RESPONSE);
