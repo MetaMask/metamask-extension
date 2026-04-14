@@ -323,9 +323,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
+  // Pre-round margin and fees to cents so the same values flow into both
+  // the display rows and the "You'll receive" arithmetic, avoiding any
+  // divergence between Math.round and Intl.NumberFormat rounding modes.
+  const roundedMargin = useMemo(() => Math.round(margin * 100) / 100, [margin]);
+
+  const roundedFees = useMemo(
+    () => Math.round(estimatedFees * 100) / 100,
+    [estimatedFees],
+  );
+
+  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
+  // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
-    () => margin + unrealizedPnl - estimatedFees,
-    [margin, unrealizedPnl, estimatedFees],
+    () => roundedMargin - roundedFees,
+    [roundedMargin, roundedFees],
   );
 
   const isSubmitDisabled =
@@ -528,8 +540,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                     textAlign={TextAlign.Right}
+                    data-testid="perps-close-summary-margin-value"
                   >
-                    {formatCurrencyWithMinThreshold(margin, 'USD')}
+                    {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
                   </Text>
                   <Text
                     variant={TextVariant.BodyXs}
@@ -574,8 +587,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-fees-value"
                 >
-                  -{formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
+                  -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
                 </Text>
               </Box>
 
@@ -594,6 +608,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-receive-value"
                 >
                   {formatCurrencyWithMinThreshold(
                     Math.max(youWillReceive, 0),
