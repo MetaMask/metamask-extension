@@ -26,7 +26,7 @@ import {
 } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName, shortenString } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
@@ -225,7 +225,14 @@ const AccountList = ({
                         <span>{account.index + 1}</span>
                       </Text>
                       <Text asChild variant={TextVariant.BodyMd}>
-                        <span>{shortenAddress(account.address)}</span>
+                        <span>
+                          {shortenString(account.address, {
+                            truncatedStartChars: 4,
+                            truncatedEndChars: 4,
+                            truncatedCharLimit: 4,
+                            skipCharacterInEnd: false,
+                          })}
+                        </span>
                       </Text>
                     </Box>
                   }
