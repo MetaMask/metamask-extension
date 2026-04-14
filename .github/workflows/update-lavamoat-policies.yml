@@ -164,22 +164,22 @@ jobs:
       - name: Post comment (policies updated)
         if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
         run: |
-          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
+          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body-file -
 
       - name: Post comment (no CI run found)
         if: ${{ env.NO_CI_RUN == 'true' }}
         run: |
-          gh pr comment "${PR_NUMBER}" --body "No CI run found for this commit. Please wait for CI to start and retry \`@metamaskbot update-policies\`."
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No CI run found for this commit. Please wait for CI to start and retry \`@metamaskbot update-policies\`."
 
       - name: Post comment (validation still running)
         if: ${{ env.VALIDATION_PENDING == 'true' }}
         run: |
-          gh pr comment "${PR_NUMBER}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
 
       - name: Post comment (no policy changes)
         if: ${{ needs.prepare.result == 'success' && env.RUN_ID && !env.VALIDATION_PENDING && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
         run: |
-          gh pr comment "${PR_NUMBER}" --body "No policy changes"
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No policy changes"
 
       - name: Post comment if the update failed
         if: ${{ failure() || needs.prepare.result == 'failure' }}
