@@ -113,6 +113,8 @@ jest.mock('@metamask/perps-controller', () => ({
     getWatchlistMarkets: jest.fn(),
     toggleWatchlistMarket: jest.fn(),
     isWatchlistMarket: jest.fn(),
+    reconnect: jest.fn().mockResolvedValue(undefined),
+    getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
   })),
 }));
 
