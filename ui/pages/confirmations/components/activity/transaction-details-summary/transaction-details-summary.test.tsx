@@ -7,7 +7,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import {
+  enLocale as messages,
+  tEn,
+} from '../../../../../../test/lib/i18n-helpers';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
@@ -124,6 +127,74 @@ describe('TransactionDetailsSummary', () => {
     });
 
     expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0xabc123', '0x89');
+  });
+
+  it('renders bridge send title for perpsRelayDeposit instead of generic transaction', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: '0xabc123',
+      chainId: CHAIN_ID,
+      symbol: 'USDC',
+      decimals: 6,
+      balance: '1',
+      balanceFiat: '$1.00',
+      balanceRaw: '1000000',
+      tokenFiatAmount: 1,
+    });
+
+    const { getByText, queryByText } = renderWithProvider(
+      <TransactionDetailsProvider
+        transactionMeta={
+          createMockTransactionMeta(TransactionType.perpsRelayDeposit, {
+            metamaskPay: {
+              tokenAddress: '0xabc123',
+              chainId: CHAIN_ID,
+            },
+          }) as never
+        }
+      >
+        <TransactionDetailsSummary />
+      </TransactionDetailsProvider>,
+      mockStore(createMockState()),
+    );
+
+    expect(
+      getByText(tEn('bridgeSend', ['USDC', 'Ethereum'])),
+    ).toBeInTheDocument();
+    expect(queryByText(messages.transaction.message)).not.toBeInTheDocument();
+  });
+
+  it('renders bridge send title for predictRelayDeposit instead of generic transaction', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: '0xabc123',
+      chainId: CHAIN_ID,
+      symbol: 'USDC',
+      decimals: 6,
+      balance: '1',
+      balanceFiat: '$1.00',
+      balanceRaw: '1000000',
+      tokenFiatAmount: 1,
+    });
+
+    const { getByText, queryByText } = renderWithProvider(
+      <TransactionDetailsProvider
+        transactionMeta={
+          createMockTransactionMeta(TransactionType.predictRelayDeposit, {
+            metamaskPay: {
+              tokenAddress: '0xabc123',
+              chainId: CHAIN_ID,
+            },
+          }) as never
+        }
+      >
+        <TransactionDetailsSummary />
+      </TransactionDetailsProvider>,
+      mockStore(createMockState()),
+    );
+
+    expect(
+      getByText(tEn('bridgeSend', ['USDC', 'Ethereum'])),
+    ).toBeInTheDocument();
+    expect(queryByText(messages.transaction.message)).not.toBeInTheDocument();
   });
 
   it('renders approve title with token symbol for tokenMethodApprove', () => {
