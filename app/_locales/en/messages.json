@@ -5540,6 +5540,24 @@
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
+  "perpsDepositToastErrorDescription": {
+    "message": "Your funds were not added to Perps. Try again."
+  },
+  "perpsDepositToastErrorTitle": {
+    "message": "Perps deposit failed"
+  },
+  "perpsDepositToastPendingDescription": {
+    "message": "Your funds will be available to trade shortly."
+  },
+  "perpsDepositToastPendingTitle": {
+    "message": "Adding funds to Perps"
+  },
+  "perpsDepositToastSuccessDescription": {
+    "message": "Your funds are ready to trade."
+  },
+  "perpsDepositToastSuccessTitle": {
+    "message": "Funds added to Perps"
+  },
   "perpsDeposits": {
     "message": "Deposits"
   },

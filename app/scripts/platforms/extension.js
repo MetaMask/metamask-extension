@@ -2,7 +2,10 @@ import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -121,7 +124,18 @@ export default class ExtensionPlatform {
   }
 
   async showTransactionNotification(txMeta, rpcPrefs) {
-    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
+    const {
+      status,
+      type,
+      txReceipt: { status: receiptStatus } = {},
+    } = txMeta;
+
+    if (
+      type === TransactionType.perpsDeposit ||
+      type === TransactionType.perpsDepositAndOrder
+    ) {
+      return;
+    }
 
     if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
