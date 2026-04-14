@@ -180,6 +180,7 @@
 
     flex-direction: row;
     display: flex;
+    align-items: center;
     padding-left: 10px;
     padding-right: 10px;
     border-bottom: 1px solid var(--color-border-muted);
@@ -195,9 +196,20 @@
     width: 24px;
   }
 
+  &__item__main {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+  }
+
   &__item__checkbox {
     display: flex;
     flex: 1;
+    min-width: 0;
 
     input {
       margin-top: 13px;
@@ -207,6 +219,10 @@
   &__item__label {
     display: flex;
     flex: 1;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    min-width: 0;
     padding-left: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -214,13 +230,16 @@
 
   &__item__balance {
     display: flex;
-    flex: 1;
-    justify-content: center;
+    flex-shrink: 0;
+    justify-content: flex-end;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: right;
   }
 
   &__item__link {
     display: flex;
-    margin-top: 13px;
+    align-items: center;
   }
 
   &__item__link img {
