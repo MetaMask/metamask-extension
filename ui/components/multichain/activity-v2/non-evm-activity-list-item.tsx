@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
 import {
   useMultichainTransactionDisplay,
-  KEYRING_TRANSACTION_STATUS_KEY,
 } from '../../../hooks/useMultichainTransactionDisplay';
+import { NON_EVM_TRANSACTION_STATUS_KEY } from '../../../helpers/utils/nonEvmTransactionStatus';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
@@ -29,7 +29,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const matchedBridgeHistoryItem = bridgeHistoryItems[transaction.id];
   const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction);
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
+  const statusKey = NON_EVM_TRANSACTION_STATUS_KEY[transaction.status];
 
   if (
     matchedBridgeHistoryItem &&

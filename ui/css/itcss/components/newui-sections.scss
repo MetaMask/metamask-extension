@@ -4,6 +4,10 @@
   NewUI Container Elements
  */
 
+:root {
+  --toast-display: block;
+}
+
 .app {
   display: flex;
   flex-direction: column;

@@ -18,6 +18,7 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
+import { useRootCssVariable } from '../../../hooks/useRootCssVariable';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -61,6 +62,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const SendInner = () => {
+  useRootCssVariable('--toast-display', 'none');
   useSendQueryParams();
   const { currentPage } = useSendContext();
 

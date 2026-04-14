@@ -1,15 +1,77 @@
 import { createSelector } from 'reselect';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
+import { getBridgeTransactionToastId } from '../helpers/utils/getTransactionToastId';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
+import { getPendingApprovals } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { selectCurrentAccountIds } from './multichain-transactions';
+import { selectNonEvmChainIds } from './multichain/networks';
 import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
+import { isBridgeComplete } from '../../shared/lib/bridge-status/utils';
+
+type ToastEligibilityCriteria = {
+  bridgeApprovalIds: Set<string>;
+  crossChainBridgeIds: Set<string>;
+  requiredTransactionIds: Set<string>;
+  requiredTransactionHashes: Set<string>;
+};
+
+export type EvmToastEligibilityCriteria = ToastEligibilityCriteria;
+
+export type NonEvmToastEligibilityCriteria = {
+  currentAccountIds: Set<string>;
+  enabledNonEvmChainIds: Set<string>;
+  crossChainBridgeIds: Set<string>;
+};
+
+type EvmToastTransaction = {
+  id?: string;
+  type?: string;
+  hash?: string;
+};
+
+type NonEvmToastTransaction = {
+  id?: string;
+  type?: string;
+  account?: string;
+  chain?: string;
+};
+
+export type BridgeSmartStatusToastState = {
+  approvalId: string;
+  status?: string;
+  toastId: string;
+  txId?: string;
+  isPending: boolean;
+  isSuccess: boolean;
+  isFailed: boolean;
+};
+
+export type BridgeHistoryToastState = {
+  toastId: string;
+  txId?: string;
+  status?: string;
+  isSuccess: boolean;
+  isFailed: boolean;
+};
+
+type SmartStatusRequestState = {
+  txId?: string;
+  smartTransaction?: {
+    status?: string;
+  };
+};
 
 const selectTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.transactions ?? EMPTY_ARRAY;
@@ -19,6 +81,52 @@ const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
 
 const selectTxHistory = (state: MetaMaskReduxState) =>
   state.metamask?.txHistory ?? EMPTY_OBJECT;
+
+function findBridgeHistoryItemForTxId(
+  txHistory: Record<string, BridgeHistoryItem>,
+  txId?: string,
+) {
+  if (!txId) {
+    return undefined;
+  }
+
+  if (txHistory[txId]) {
+    return txHistory[txId];
+  }
+
+  return Object.values(txHistory).find(
+    (item) =>
+      item.originalTransactionId === txId ||
+      item.txMetaId === txId ||
+      item.approvalTxId === txId,
+  );
+}
+
+function getBridgeSmartStatusToastState(
+  approvalId: string,
+  bridgeHistoryItem: BridgeHistoryItem | undefined,
+  requestState: SmartStatusRequestState | undefined,
+): BridgeSmartStatusToastState {
+  const txId =
+    bridgeHistoryItem?.originalTransactionId ??
+    bridgeHistoryItem?.txMetaId ??
+    requestState?.txId;
+  const status = requestState?.smartTransaction?.status;
+
+  return {
+    approvalId,
+    status,
+    txId,
+    toastId: getBridgeTransactionToastId({ approvalId, txId }),
+    isPending: !status || status === SmartTransactionStatuses.PENDING,
+    isSuccess: status === SmartTransactionStatuses.SUCCESS,
+    isFailed:
+      Boolean(status?.startsWith(SmartTransactionStatuses.CANCELLED)) ||
+      (Boolean(status) &&
+        status !== SmartTransactionStatuses.PENDING &&
+        status !== SmartTransactionStatuses.SUCCESS),
+  };
+}
 
 export const selectTransactionIds = createSelector(
   selectTransactions,
@@ -49,6 +157,74 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
     }
     return ids;
   },
+);
+
+export function isEvmTransactionEligibleForToast(
+  transaction: EvmToastTransaction,
+  {
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  }: ToastEligibilityCriteria,
+) {
+  const type = transaction?.type;
+  if (typeof type !== 'string') {
+    return false;
+  }
+
+  return (
+    Boolean(type) &&
+    !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
+    !bridgeApprovalIds.has(transaction.id?.toLowerCase?.() ?? '') &&
+    !crossChainBridgeIds.has(transaction.id ?? '') &&
+    !requiredTransactionIds.has(transaction.id ?? '') &&
+    !(
+      transaction.hash &&
+      requiredTransactionHashes.has(transaction.hash.toLowerCase())
+    )
+  );
+}
+
+export function isNonEvmTransactionEligibleForToast(
+  transaction: NonEvmToastTransaction,
+  {
+    currentAccountIds,
+    enabledNonEvmChainIds,
+    crossChainBridgeIds,
+  }: NonEvmToastEligibilityCriteria,
+) {
+  const type = transaction?.type;
+  if (
+    typeof type !== 'string' ||
+    !transaction?.id ||
+    !transaction?.account ||
+    !transaction?.chain
+  ) {
+    return false;
+  }
+
+  return (
+    !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type) &&
+    currentAccountIds.has(transaction.account) &&
+    enabledNonEvmChainIds.has(transaction.chain) &&
+    !crossChainBridgeIds.has(transaction.id)
+  );
+}
+
+export const selectNonEvmToastEligibilityCriteria = createSelector(
+  selectCurrentAccountIds,
+  selectNonEvmChainIds,
+  selectCrossChainBridgeSourceTxIds,
+  (
+    currentAccountIds,
+    enabledNonEvmChainIds,
+    crossChainBridgeIds,
+  ): NonEvmToastEligibilityCriteria => ({
+    currentAccountIds: new Set(currentAccountIds),
+    enabledNonEvmChainIds: new Set(enabledNonEvmChainIds),
+    crossChainBridgeIds,
+  }),
 );
 
 /**
@@ -82,24 +258,32 @@ export const selectEvmTransactionsForToast = createSelector(
       }
 
       seen.add(transaction.id);
-
-      const type = transaction?.type;
-      if (typeof type !== 'string') {
-        return false;
-      }
-      return (
-        Boolean(type) &&
-        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
-        !bridgeApprovalIds.has(transaction.id?.toLowerCase()) &&
-        !crossChainBridgeIds.has(transaction.id) &&
-        !requiredTransactionIds.has(transaction.id) &&
-        !(
-          transaction.hash &&
-          requiredTransactionHashes.has(transaction.hash.toLowerCase())
-        )
-      );
+      return isEvmTransactionEligibleForToast(transaction, {
+        bridgeApprovalIds,
+        crossChainBridgeIds,
+        requiredTransactionIds,
+        requiredTransactionHashes,
+      });
     });
   },
+);
+
+export const selectEvmToastEligibilityCriteria = createSelector(
+  selectBridgeApprovalTxIds,
+  selectCrossChainBridgeSourceTxIds,
+  selectRequiredTransactionIds,
+  selectRequiredTransactionHashes,
+  (
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  ): EvmToastEligibilityCriteria => ({
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  }),
 );
 
 /**
@@ -131,4 +315,83 @@ export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
         );
       });
   },
+);
+
+export const selectBridgeSmartStatusToastStates = createSelector(
+  getPendingApprovals,
+  selectTxHistory,
+  (pendingApprovals, txHistory): BridgeSmartStatusToastState[] =>
+    pendingApprovals.flatMap((approval) => {
+      if (
+        approval.type !==
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
+      }
+
+      const requestState = approval.requestState as
+        | SmartStatusRequestState
+        | undefined;
+      const bridgeHistoryItem = findBridgeHistoryItemForTxId(
+        txHistory,
+        requestState?.txId,
+      );
+
+      if (!bridgeHistoryItem?.quote) {
+        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
+      }
+
+      if (
+        !isCrossChain(
+          bridgeHistoryItem.quote.srcChainId,
+          bridgeHistoryItem.quote.destChainId,
+        )
+      ) {
+        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
+      }
+
+      return [
+        getBridgeSmartStatusToastState(
+          approval.id,
+          bridgeHistoryItem,
+          requestState,
+        ),
+      ];
+    }),
+);
+
+export const selectBridgeHistoryToastStates = createSelector(
+  selectTxHistory,
+  (txHistory): BridgeHistoryToastState[] =>
+    Object.values(txHistory).flatMap((bridgeHistoryItem) => {
+      if (
+        !bridgeHistoryItem.quote ||
+        !isCrossChain(
+          bridgeHistoryItem.quote.srcChainId,
+          bridgeHistoryItem.quote.destChainId,
+        )
+      ) {
+        return EMPTY_ARRAY as BridgeHistoryToastState[];
+      }
+
+      const txId =
+        bridgeHistoryItem.originalTransactionId ?? bridgeHistoryItem.txMetaId;
+
+      if (!txId) {
+        return EMPTY_ARRAY as BridgeHistoryToastState[];
+      }
+
+      return [
+        {
+          toastId: getBridgeTransactionToastId({
+            approvalId: bridgeHistoryItem.approvalTxId ?? txId,
+            txId,
+          }),
+          txId,
+          status: bridgeHistoryItem.status?.status,
+          isSuccess: isBridgeComplete(bridgeHistoryItem),
+          isFailed: bridgeHistoryItem.status?.status === StatusTypes.FAILED,
+        },
+      ];
+    }),
 );

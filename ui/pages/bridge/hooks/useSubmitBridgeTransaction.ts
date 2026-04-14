@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -29,7 +31,11 @@ import {
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getBridgeTransactionToastId } from '../../../helpers/utils/getTransactionToastId';
+import { useTransactionDisplay } from '../../../helpers/utils/transaction-display';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
+import { ToastContent as ToastContentBase } from '../../../components/ui/toast/toast';
+import { trackBridgeToast } from '../../../app/toast-listener/bridgeToastState';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -81,6 +87,7 @@ export default function useSubmitBridgeTransaction() {
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { title: pendingToastTitle } = useTransactionDisplay('pending');
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -124,15 +131,20 @@ export default function useSubmitBridgeTransaction() {
     }
 
     try {
+      let submissionResult:
+        | Awaited<ReturnType<ReturnType<typeof submitBridgeIntent>>>
+        | Awaited<ReturnType<ReturnType<typeof submitBridgeTx>>>
+        | undefined;
+
       if (intentData) {
-        await dispatch(
+        submissionResult = await dispatch(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
           }),
         );
       } else {
-        await dispatch(
+        submissionResult = await dispatch(
           submitBridgeTx(
             fromAccount.address,
             quoteResponse,
@@ -146,6 +158,32 @@ export default function useSubmitBridgeTransaction() {
               fromTokenBalanceInUsd,
             ),
           ),
+        );
+      }
+
+      // Non-EVM-origin bridges do not always create a smart-status approval, so submit starts pending.
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        ) &&
+        isNonEvmChainId(quoteResponse.quote.srcChainId) &&
+        submissionResult?.id
+      ) {
+        const toastId = getBridgeTransactionToastId({
+          approvalId: submissionResult.id,
+          txId: submissionResult.id,
+        });
+
+        // Bridge history resolves this toast later, so submit only registers and shows the pending state.
+        trackBridgeToast(toastId);
+        toast.loading(
+          React.createElement(ToastContentBase, {
+            title: pendingToastTitle,
+          }),
+          {
+            id: toastId,
+          },
         );
       }
     } catch (e) {
