@@ -114,6 +114,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             value={leverage}
             onChange={handleSliderChange}
             onChangeCommitted={handleSliderChangeCommitted}
+            markInterval={5}
           />
         </Box>
         <Box className="shrink-0 w-20">

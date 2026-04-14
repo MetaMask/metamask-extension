@@ -81,6 +81,17 @@ const sliderStyles = {
     },
   },
   active: {},
+  mark: {
+    width: 2,
+    height: 2,
+    borderRadius: '50%',
+    backgroundColor: 'var(--color-text-default)',
+    marginTop: 2,
+  },
+  markActive: {
+    backgroundColor: 'var(--color-text-default)',
+    opacity: 1,
+  },
 };
 
 const StyledMaterialSlider = withStyles(sliderStyles)(MaterialSlider);
@@ -122,6 +133,8 @@ export type PerpsSliderProps = {
   'data-testid'?: string;
   /** When true, the slider is non-interactive */
   disabled?: boolean;
+  /** Show tick marks at every Nth step (e.g. 5 = tick every 5 steps) */
+  markInterval?: number;
 };
 
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
@@ -140,9 +153,21 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   valueText,
   'data-testid': dataTestId,
   disabled = false,
+  markInterval,
 }) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
+
+  const marks = React.useMemo(() => {
+    if (!markInterval) {
+      return undefined;
+    }
+    const result: { value: number }[] = [];
+    for (let i = min; i <= max; i += markInterval * step) {
+      result.push({ value: i });
+    }
+    return result;
+  }, [markInterval, min, max, step]);
 
   return (
     <Box className="w-full inline-block">
@@ -201,6 +226,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         onChange={onChange}
         onChangeCommitted={onChangeCommitted}
         disabled={disabled}
+        marks={marks}
         data-testid={dataTestId}
       />
 
