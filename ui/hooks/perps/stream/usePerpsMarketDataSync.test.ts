@@ -35,6 +35,9 @@ const makeMockMarket = (symbol: string): PerpsMarketData =>
 /**
  * Build a Redux state shape that the inline selector can read.
  * The controller stores under `${provider}:${testnet ? 'testnet' : 'mainnet'}`.
+ *
+ * @param markets - Market data to embed in the state, or null for an empty cache
+ * @returns A minimal Redux state object
  */
 function buildReduxState(markets: PerpsMarketData[] | null) {
   return {

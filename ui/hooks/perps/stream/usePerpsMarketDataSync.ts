@@ -10,6 +10,13 @@ import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManag
  * (e.g. `hyperliquid:mainnet`).  The existing `selectPerpsCachedMarketData`
  * selector uses the bare provider name, so it never finds the data. This
  * inline selector builds the correct composite key.
+ *
+ * @param state - The Redux state slice
+ * @param state.metamask - The MetaMask state
+ * @param state.metamask.activeProvider - Active perps provider id (e.g. `hyperliquid`)
+ * @param state.metamask.isTestnet - Whether the provider is using testnet
+ * @param state.metamask.cachedMarketDataByProvider - Market data keyed by `provider:network`
+ * @returns The cached market data array, or null if not found
  */
 function selectCachedMarketDataWithCorrectKey(state: {
   metamask?: {
