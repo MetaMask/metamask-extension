@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -26,6 +27,7 @@ import {
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -40,6 +42,7 @@ import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
+import { formatPerpsPrice } from '../utils/formatPerpsPrice';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -93,6 +96,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
+  const locale = useSelector(getIntlLocale);
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
@@ -148,11 +152,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            $
-            {formatNumber(anchorLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatPerpsPrice(anchorLiquidationPrice, locale)}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
@@ -162,11 +162,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
           >
-            $
-            {formatNumber(estimatedLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatPerpsPrice(estimatedLiquidationPrice ?? 0, locale)}
           </Text>
         </Box>
       );
@@ -177,18 +173,17 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
       >
-        $
-        {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatPerpsPrice(
+          estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
+          locale,
+        )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
     showLiquidationComparison,
-    formatNumber,
+    locale,
   ]);
 
   const formatAmount = useCallback(

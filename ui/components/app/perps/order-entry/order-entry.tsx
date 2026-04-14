@@ -11,6 +11,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import {
   BackgroundColor,
   BorderRadius,
@@ -56,6 +58,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.markPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -75,8 +78,18 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  markPrice,
 }) => {
   const t = useI18nContext();
+
+  // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
+  const marketInfo = usePerpsMarketInfo(asset);
+
+  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
+  const { feeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: orderType ?? 'market',
+  });
 
   // Use custom hook for form state management
   const {
@@ -104,6 +117,10 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onSubmit,
     orderType,
     initialLeverage,
+    maxLeverage,
+    szDecimals: marketInfo?.szDecimals,
+    markPrice,
+    feeRate,
   });
 
   const isLong = formState.direction === 'long';

@@ -98,6 +98,30 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Normalizes a 24h percentage change string to always include the '%' suffix.
+ * The live price stream may omit '%' while market data always includes it.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - already contains '%'
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' (e.g., "+2.84" or "+2.84%")
+ * @returns The normalized percentage string with '%' appended if missing
+ * @example
+ * formatChangePercent('+2.84')  => '+2.84%'
+ * formatChangePercent('+2.84%') => '+2.84%'
+ * formatChangePercent('')       => ''
+ * formatChangePercent('—')      => '—'
+ */
+export const formatChangePercent = (value: string): string => {
+  if (!value || value.includes('%') || !/\d/u.test(value)) {
+    return value;
+  }
+  return `${value}%`;
+};
+
+/**
  * Get the appropriate text color for a percentage change value
  * Non-negative values (≥ 0) → green, negative → red
  *
