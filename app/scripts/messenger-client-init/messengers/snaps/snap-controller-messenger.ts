@@ -44,7 +44,7 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      'SnapRegistryController:stateChange',
+      'SnapRegistryController:registryUpdated',
     ],
     actions: [
       'PermissionController:getEndowments',
