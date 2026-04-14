@@ -759,6 +759,11 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-previews/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -1127,17 +1132,12 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/design-system-shared": true,
+        "@metamask-previews/design-system-shared": true,
         "@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
         "@metamask/design-system-react>tailwind-merge": true
-      }
-    },
-    "@metamask/design-system-shared": {
-      "packages": {
-        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {
