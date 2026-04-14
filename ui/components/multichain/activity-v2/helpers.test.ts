@@ -231,17 +231,16 @@ describe('matchesLocalTransaction', () => {
     ).toBe(false);
   });
 
-  it('matches a batched swap when a nested transaction targets the token contract', () => {
+  it('matches a batched send when a nested transaction targets the token contract', () => {
     const group = makeLocalGroup({
       time: 1000,
-      type: TransactionType.swap,
+      type: TransactionType.tokenMethodTransfer,
       txParams: {
         to: '0xUSER',
         nonce: '0x0',
       } as TransactionMeta['txParams'],
       nestedTransactions: [
-        { to: '0xTokenContract' as `0x${string}`, data: '0x095ea7b3' as `0x${string}`, type: TransactionType.swapApproval },
-        { to: '0xSwapRouter' as `0x${string}`, data: '0x5f575529' as `0x${string}`, type: TransactionType.swap },
+        { to: '0xTokenContract' as `0x${string}`, data: '0xa9059cbb' as `0x${string}` },
       ],
     });
     expect(
@@ -252,17 +251,16 @@ describe('matchesLocalTransaction', () => {
     ).toBe(true);
   });
 
-  it('does not match a batched swap when no nested transaction targets the token', () => {
+  it('does not match a batched send when no nested transaction targets the token', () => {
     const group = makeLocalGroup({
       time: 1000,
-      type: TransactionType.swap,
+      type: TransactionType.tokenMethodTransfer,
       txParams: {
         to: '0xUSER',
         nonce: '0x0',
       } as TransactionMeta['txParams'],
       nestedTransactions: [
-        { to: '0xOtherToken' as `0x${string}`, data: '0x095ea7b3' as `0x${string}`, type: TransactionType.swapApproval },
-        { to: '0xSwapRouter' as `0x${string}`, data: '0x5f575529' as `0x${string}`, type: TransactionType.swap },
+        { to: '0xOtherToken' as `0x${string}`, data: '0xa9059cbb' as `0x${string}` },
       ],
     });
     expect(
@@ -276,7 +274,7 @@ describe('matchesLocalTransaction', () => {
   it('returns false for token scope when txParams.to differs and there are no nested transactions', () => {
     const group = makeLocalGroup({
       time: 1000,
-      type: TransactionType.swap,
+      type: TransactionType.tokenMethodTransfer,
       txParams: {
         to: '0xUSER',
         nonce: '0x0',
