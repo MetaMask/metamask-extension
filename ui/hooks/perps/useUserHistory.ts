@@ -54,10 +54,9 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const history = await getPerpsStreamManager().fetchWithRecovery<UserHistoryItem[]>(
-        'perpsGetUserHistory',
-        [{ startTime, endTime, accountId }],
-      );
+      const history = await getPerpsStreamManager().fetchWithRecovery<
+        UserHistoryItem[]
+      >('perpsGetUserHistory', [{ startTime, endTime, accountId }]);
 
       setUserHistory(history);
       return history;
