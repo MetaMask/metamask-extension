@@ -64,6 +64,11 @@ type OptimisticTPSLOverride = {
   expiresAt: number;
 };
 
+// Delay before falling back to REST for account state.
+// Gives the WebSocket time to deliver fresh data on reload, avoiding a flash
+// of stale persisted values while still preventing an indefinite skeleton.
+const ACCOUNT_REST_FALLBACK_MS = 4000;
+
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
 const OPTIMISTIC_OVERRIDE_TTL_MS = 30000;
@@ -155,16 +160,34 @@ class PerpsStreamManager {
 
     this.account = new PerpsDataChannel<AccountState | null>({
       connectFn: (push) => {
-        submitRequestToBackground<AccountState>('perpsGetAccountState', [])
-          .then((data) => {
-            push(data ?? null);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch account', err);
-            push(null);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        // Delay the REST fetch to give the WebSocket time to deliver fresh data.
+        // On reload, the persisted controller state is stale; the WebSocket
+        // pushes accurate data within ~1-2 s. If no live push arrives within
+        // ACCOUNT_REST_FALLBACK_MS, fall back to the REST response so the UI
+        // doesn't show a skeleton indefinitely.
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.account.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<AccountState>('perpsGetAccountState', [])
+            .then((data) => {
+              if (!cancelled && !this.account.hasCachedData()) {
+                push(data ?? null);
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[PerpsStreamManager] Failed to fetch account',
+                err,
+              );
+            });
+        }, ACCOUNT_REST_FALLBACK_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: null,
       name: 'account',

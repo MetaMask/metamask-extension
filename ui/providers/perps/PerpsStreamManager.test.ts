@@ -791,6 +791,53 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('account channel delayed REST fallback', () => {
+    it('does not fetch account state immediately on subscribe', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+
+    it('fetches account state via REST after fallback delay when no WS data arrives', async () => {
+      const mockAccount = { totalBalance: '100' };
+      mockSubmitRequestToBackground.mockResolvedValueOnce(mockAccount);
+
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      jest.advanceTimersByTime(4000);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        [],
+      );
+      expect(cb).toHaveBeenCalledWith(mockAccount);
+    });
+
+    it('skips REST fallback if WebSocket pushes account data before the delay', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      const wsAccount = { totalBalance: '200' };
+      manager.handleBackgroundUpdate({ channel: 'account', data: wsAccount });
+
+      expect(cb).toHaveBeenCalledWith(wsAccount);
+
+      jest.advanceTimersByTime(4000);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+  });
+
   describe('getCurrentAddress', () => {
     it('returns null before initialization', () => {
       expect(manager.getCurrentAddress()).toBeNull();
