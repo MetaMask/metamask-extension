@@ -1876,7 +1876,7 @@
         "clearTimeout": true,
         "fetch": true,
         "performance.now": true,
-        "process": true,
+        "process.env.NODE_ENV": true,
         "setInterval": true,
         "setTimeout": true
       },

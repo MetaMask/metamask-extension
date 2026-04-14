@@ -99,7 +99,3 @@ Structure:
   }
 }
 ```
-
-## Related Documentation
-
-- [Manual Testing Guide](./CONSOLE-BASELINE-TEST.md) - Step-by-step verification instructions
