@@ -20,10 +20,6 @@ export const bundleParts = [
   'contentScripts',
 ] as const;
 
-export const bundleSizeBundlers = ['browserify', 'webpack'] as const;
-
-export type BundleSizeBundler = (typeof bundleSizeBundlers)[number];
-
 export type BundlePart = (typeof bundleParts)[number];
 
 export type FileStat = {
@@ -41,19 +37,16 @@ export type BundleStatsCollection = Record<BundlePart, FileStat[]>;
 
 export type BundleSizeArtifact = {
   schemaVersion: typeof BUNDLE_SIZE_SCHEMA_VERSION;
-  bundler: BundleSizeBundler;
 } & Record<BundlePart, BundleStats>;
 
 export type BundleSizeSummary = {
-  schemaVersion: typeof BUNDLE_SIZE_SCHEMA_VERSION;
-  bundler: BundleSizeBundler;
   timestamp: number;
-} & Record<BundlePart, number>;
+} & Record<Exclude<BundlePart, 'auxiliaryPages' | 'contentScripts'>, number> &
+  Partial<
+    Record<Extract<BundlePart, 'auxiliaryPages' | 'contentScripts'>, number>
+  >;
 
-export type StoredBundleSizeData = Record<
-  string,
-  Partial<Record<BundleSizeBundler, BundleSizeSummary>>
->;
+export type StoredBundleSizeData = Record<string, BundleSizeSummary>;
 
 export type WebpackEntrypointFiles = {
   initialFiles: FileStat[];
@@ -97,12 +90,10 @@ function createBundleStats(
 }
 
 export function createBundleSizeArtifact(
-  bundler: BundleSizeBundler,
   fileLists: BundleStatsCollection,
 ): BundleSizeArtifact {
   return {
     schemaVersion: BUNDLE_SIZE_SCHEMA_VERSION,
-    bundler,
     ...mapBundleParts((part) => createBundleStats(part, fileLists[part])),
   };
 }
@@ -111,8 +102,6 @@ export function createBundleSizeSummary(
   artifact: BundleSizeArtifact,
 ): BundleSizeSummary {
   return {
-    schemaVersion: artifact.schemaVersion,
-    bundler: artifact.bundler,
     ...mapBundleParts((part) => artifact[part].size),
     timestamp: Date.now(),
   };
@@ -138,15 +127,6 @@ export function createWebpackBundleStats(
         .map(([name, assets]) => [name, sortWebpackEntrypointFiles(assets)]),
     ),
   };
-}
-
-export function isBundleSizeBundler(
-  value: unknown,
-): value is BundleSizeBundler {
-  return (
-    typeof value === 'string' &&
-    bundleSizeBundlers.includes(value as BundleSizeBundler)
-  );
 }
 
 function isFileStat(value: unknown): value is FileStat {
@@ -180,9 +160,13 @@ export function isBundleSizeSummary(
 ): value is BundleSizeSummary {
   return (
     isRecord(value) &&
-    value.schemaVersion === BUNDLE_SIZE_SCHEMA_VERSION &&
-    isBundleSizeBundler(value.bundler) &&
     typeof value.timestamp === 'number' &&
-    bundleParts.every((part) => typeof value[part] === 'number')
+    typeof value.background === 'number' &&
+    typeof value.ui === 'number' &&
+    typeof value.common === 'number' &&
+    (value.auxiliaryPages === undefined ||
+      typeof value.auxiliaryPages === 'number') &&
+    (value.contentScripts === undefined ||
+      typeof value.contentScripts === 'number')
   );
 }

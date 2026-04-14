@@ -9,12 +9,12 @@ import {
 import {
   BUNDLE_SIZE_SUMMARY_FILE,
   WEBPACK_BUNDLE_ANALYZER_REPORT,
-  type BundleSizeBundler,
 } from '../lib/bundle-size';
 
 type ArtifactLink = { url: string; label: string };
 
 type FlatArtifactLinkMap = {
+  bundleSizeStats: ArtifactLink;
   bundleSizeData: ArtifactLink;
   bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
@@ -23,17 +23,10 @@ type FlatArtifactLinkMap = {
   allArtifacts: ArtifactLink;
 };
 
-type BundleSizeArtifactLinkMap = Record<BundleSizeBundler, ArtifactLink>;
-
-type ArtifactLinkMap = FlatArtifactLinkMap & {
-  bundleSizeStats: BundleSizeArtifactLinkMap;
-};
-
 type FlatArtifactLinkKey = keyof FlatArtifactLinkMap;
 
-export type ArtifactLinks = ArtifactLinkMap & {
+export type ArtifactLinks = FlatArtifactLinkMap & {
   link: (key: FlatArtifactLinkKey) => string;
-  linkBundleSizeStats: (bundler: BundleSizeBundler) => string;
 };
 
 /**
@@ -51,18 +44,11 @@ export function getArtifactLinks(
   repository: string,
   runId: string,
 ): ArtifactLinks {
-  const bundleSizeStats: BundleSizeArtifactLinkMap = {
-    browserify: {
-      url: `${hostUrl}/bundle-size/browserify/${BUNDLE_SIZE_SUMMARY_FILE}`,
-      label: 'Browserify Bundle Size Stats',
-    },
-    webpack: {
-      url: `${hostUrl}/bundle-size/webpack/${BUNDLE_SIZE_SUMMARY_FILE}`,
-      label: 'Webpack Bundle Size Stats',
-    },
-  };
-
   const flatArtifactLinks: FlatArtifactLinkMap = {
+    bundleSizeStats: {
+      url: `${hostUrl}/bundle-size/${BUNDLE_SIZE_SUMMARY_FILE}`,
+      label: 'Bundle Size Stats',
+    },
     bundleSizeData: {
       url: 'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json',
       label: 'Bundle Size Data',
@@ -91,10 +77,8 @@ export function getArtifactLinks(
 
   const link = (key: FlatArtifactLinkKey) =>
     `<a href="${flatArtifactLinks[key].url}">${flatArtifactLinks[key].label}</a>`;
-  const linkBundleSizeStats = (bundler: BundleSizeBundler) =>
-    `<a href="${bundleSizeStats[bundler].url}">${bundleSizeStats[bundler].label}</a>`;
 
-  return { ...flatArtifactLinks, bundleSizeStats, link, linkBundleSizeStats };
+  return { ...flatArtifactLinks, link };
 }
 
 export type BuildType =
@@ -243,7 +227,7 @@ export function buildArtifactsBody({
   contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
 
   contentRows.push(
-    `bundle size: ${artifacts.linkBundleSizeStats('browserify')}, ${artifacts.linkBundleSizeStats('webpack')}`,
+    `bundle size: ${artifacts.link('bundleSizeStats')}`,
     `bundle analyzer: ${artifacts.link('bundleAnalyzer')}`,
     `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,

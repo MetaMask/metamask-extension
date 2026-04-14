@@ -10,7 +10,6 @@ import {
   createBundleSizeSummary,
   isWebpackBundleStats,
   type BundleSizeArtifact,
-  type BundleSizeBundler,
   type FileStat,
   type WebpackEntrypointFiles,
   type WebpackBundleStats,
@@ -42,9 +41,6 @@ const extraContentScriptFiles = [
 
 const htmlScriptSrcRegex =
   /<script\b[^>]*\bsrc=(['"])(?<src>[^'"#?]+(?:\.(?:mjs|cjs|js)))\1[^>]*>/giu;
-
-const browserifyRelativeScriptPathRegex =
-  /(['"`])(?<src>(?:\.\.?\/)[^'"`]+?\.js)\1/gu;
 
 export { createBundleSizeSummary };
 
@@ -211,36 +207,6 @@ async function getHtmlSurfaceAssetNames(
   return assetNames;
 }
 
-async function getBrowserifyBackgroundAssetNames(
-  distDirectory: string,
-  serviceWorkerPath: string,
-): Promise<Set<string>> {
-  const serviceWorkerContents = await fs.readFile(
-    path.join(distDirectory, serviceWorkerPath),
-    'utf8',
-  );
-  const assetNames = new Set<string>([serviceWorkerPath]);
-
-  for (const match of serviceWorkerContents.matchAll(
-    browserifyRelativeScriptPathRegex,
-  )) {
-    const scriptSource = match.groups?.src;
-    if (scriptSource) {
-      for (const fileName of scriptSource.split(',')) {
-        assetNames.add(
-          resolveDistAssetPath(
-            distDirectory,
-            serviceWorkerPath,
-            fileName.trim(),
-          ),
-        );
-      }
-    }
-  }
-
-  return assetNames;
-}
-
 function getManifestContentScriptAssetNames(
   manifest: DistManifest,
   distFileSizeMap: ReadonlyMap<string, number>,
@@ -310,14 +276,12 @@ function createFileStatsFromAssetNames(
 }
 
 function partitionSurfaceAssets({
-  bundler,
   backgroundAssets,
   uiAssets,
   auxiliaryPageAssets,
   contentScriptAssets,
   assetSizeMap,
 }: {
-  bundler: BundleSizeBundler;
   backgroundAssets: Set<string>;
   uiAssets: Set<string>;
   auxiliaryPageAssets: Set<string>;
@@ -347,7 +311,7 @@ function partitionSurfaceAssets({
     uiOnlyAssets,
   );
 
-  return createBundleSizeArtifact(bundler, {
+  return createBundleSizeArtifact({
     background: createFileStatsFromAssetNames(
       backgroundOnlyAssets,
       assetSizeMap,
@@ -365,33 +329,7 @@ function partitionSurfaceAssets({
   });
 }
 
-export async function collectBrowserifyBundleSizeArtifact(
-  distDirectory: string,
-): Promise<BundleSizeArtifact> {
-  const manifest = await readDistManifest(distDirectory);
-  const assetSizeMap = await getDistFileSizeMap(distDirectory);
-  const serviceWorkerPath = getServiceWorkerPath(manifest);
-  const [uiAssets, auxiliaryPageAssets, backgroundAssets] = await Promise.all([
-    getHtmlSurfaceAssetNames(distDirectory, uiHtmlFiles),
-    getHtmlSurfaceAssetNames(distDirectory, auxiliaryPageHtmlFiles),
-    getBrowserifyBackgroundAssetNames(distDirectory, serviceWorkerPath),
-  ]);
-  const contentScriptAssets = getManifestContentScriptAssetNames(
-    manifest,
-    assetSizeMap,
-  );
-
-  return partitionSurfaceAssets({
-    bundler: 'browserify',
-    backgroundAssets,
-    uiAssets,
-    auxiliaryPageAssets,
-    contentScriptAssets,
-    assetSizeMap,
-  });
-}
-
-export function collectWebpackBundleSizeArtifactFromStats(
+export function collectBundleSizeArtifactFromStats(
   stats: WebpackBundleStats,
   {
     manifest,
@@ -429,7 +367,6 @@ export function collectWebpackBundleSizeArtifactFromStats(
   );
 
   return partitionSurfaceAssets({
-    bundler: 'webpack',
     backgroundAssets,
     uiAssets,
     auxiliaryPageAssets,
@@ -438,7 +375,7 @@ export function collectWebpackBundleSizeArtifactFromStats(
   });
 }
 
-export async function collectWebpackBundleSizeArtifact(
+export async function collectBundleSizeArtifact(
   distDirectory: string,
 ): Promise<BundleSizeArtifact> {
   const [assetSizeMap, manifest, uiInitialAssets, auxiliaryPageInitialAssets] =
@@ -459,7 +396,7 @@ export async function collectWebpackBundleSizeArtifact(
     throw new Error(`Invalid webpack bundle stats file at "${statsPath}"`);
   }
 
-  return collectWebpackBundleSizeArtifactFromStats(stats, {
+  return collectBundleSizeArtifactFromStats(stats, {
     manifest,
     assetSizeMap,
     uiInitialAssets,
@@ -502,12 +439,6 @@ async function main(): Promise<void> {
   const argv = yargs(hideBin(process.argv))
     .usage('$0 [options]', 'Capture bundle size stats', (_yargs) =>
       _yargs
-        .option('bundler', {
-          choices: ['browserify', 'webpack'],
-          description: 'The bundler used to produce the dist directory',
-          demandOption: true,
-          type: 'string',
-        })
         .option('distDir', {
           alias: 'dist-dir',
           description: 'Path to the built platform dist directory',
@@ -524,14 +455,9 @@ async function main(): Promise<void> {
     )
     .strict()
     .parseSync();
-  const bundler = argv.bundler as BundleSizeBundler;
   const distDirectory = argv.distDir as string;
   const out = argv.out as string | undefined;
-
-  const artifact =
-    bundler === 'browserify'
-      ? await collectBrowserifyBundleSizeArtifact(distDirectory)
-      : await collectWebpackBundleSizeArtifact(distDirectory);
+  const artifact = await collectBundleSizeArtifact(distDirectory);
 
   if (out) {
     await writeBundleSizeArtifact(artifact, out);

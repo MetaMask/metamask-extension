@@ -51,11 +51,7 @@ function configureMocks(): void {
 
   artifacts.getArtifactLinks.mockReturnValue({
     link: () => '<a href="#">link</a>',
-    linkBundleSizeStats: () => '<a href="#">bundle size</a>',
-    bundleSizeStats: {
-      browserify: { url: 'https://ci/browserify-bundle.json', label: 'bundle' },
-      webpack: { url: 'https://ci/webpack-bundle.json', label: 'bundle' },
-    },
+    bundleSizeStats: { url: 'https://ci/bundle.json', label: 'bundle' },
     bundleSizeData: { url: 'https://ci/data.json', label: 'data' },
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
     storybook: { url: 'https://ci/storybook', label: 'Storybook' },

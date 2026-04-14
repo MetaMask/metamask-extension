@@ -4,8 +4,7 @@ import { tmpdir } from 'os';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import {
-  collectBrowserifyBundleSizeArtifact,
-  collectWebpackBundleSizeArtifact,
+  collectBundleSizeArtifact,
   createBundleSizeSummary,
 } from './bundle-size';
 
@@ -45,133 +44,6 @@ const serviceWorkerKey = 'service_worker';
 const contentScriptsKey = 'content_scripts';
 
 describe('bundle-size collector', () => {
-  it('classifies browserify assets from emitted HTML and the MV3 service-worker bootstrap', async () => {
-    await withTempDirectory(async (distDirectory) => {
-      const appInitContents = [
-        'loadFile("../scripts/sentry-install.js");',
-        'loadFile("../scripts/runtime-lavamoat.js");',
-        'loadFile("../scripts/lockdown-more.js");',
-        'loadFile("../scripts/policy-load.js");',
-        'const rawFileList = "../common-1.js,../background-1.js";',
-      ].join('\n');
-
-      await Promise.all([
-        writeFile(
-          distDirectory,
-          'manifest.json',
-          JSON.stringify({
-            [manifestVersionKey]: 3,
-            background: { [serviceWorkerKey]: 'scripts/app-init.js' },
-            [contentScriptsKey]: [{ js: ['scripts/contentscript.js'] }],
-          }),
-        ),
-        writeFile(
-          distDirectory,
-          'home.html',
-          [
-            '<script src="./scripts/sentry-install.js"></script>',
-            '<script src="./scripts/runtime-lavamoat.js"></script>',
-            '<script src="./scripts/lockdown-more.js"></script>',
-            '<script src="./scripts/policy-load.js"></script>',
-            '<script src="./common-1.js"></script>',
-            '<script src="./ui-1.js"></script>',
-          ].join('\n'),
-        ),
-        writeFile(
-          distDirectory,
-          'offscreen.html',
-          [
-            '<script src="./common-1.js"></script>',
-            '<script src="./offscreen-0.js"></script>',
-          ].join('\n'),
-        ),
-        writeFile(
-          distDirectory,
-          'trezor-usb-permissions.html',
-          '<script src="./vendor/trezor/usb-permissions.js"></script>',
-        ),
-        writeFile(distDirectory, 'scripts/app-init.js', appInitContents),
-        writeSizedFile(distDirectory, 'background-1.js', 100),
-        writeSizedFile(distDirectory, 'common-1.js', 50),
-        writeSizedFile(distDirectory, 'ui-1.js', 200),
-        writeSizedFile(distDirectory, 'offscreen-0.js', 70),
-        writeSizedFile(distDirectory, 'vendor/trezor/usb-permissions.js', 80),
-        writeSizedFile(distDirectory, 'scripts/runtime-lavamoat.js', 10),
-        writeSizedFile(distDirectory, 'scripts/lockdown-more.js', 20),
-        writeSizedFile(distDirectory, 'scripts/sentry-install.js', 30),
-        writeSizedFile(distDirectory, 'scripts/policy-load.js', 40),
-        writeSizedFile(distDirectory, 'scripts/contentscript.js', 5),
-        writeSizedFile(distDirectory, 'scripts/inpage.js', 6),
-        writeSizedFile(distDirectory, 'vendor/trezor/content-script.js', 7),
-        writeSizedFile(distDirectory, 'content-script-0.js', 999),
-      ]);
-
-      const artifact = await collectBrowserifyBundleSizeArtifact(distDirectory);
-      const summary = createBundleSizeSummary(artifact);
-
-      assert.strictEqual(artifact.schemaVersion, 4);
-      assert.strictEqual(artifact.bundler, 'browserify');
-      assert.deepStrictEqual(
-        artifact.background.fileList.map((file) => file.name),
-        ['background-1.js', 'scripts/app-init.js'],
-      );
-      assert.deepStrictEqual(
-        artifact.ui.fileList.map((file) => file.name),
-        ['ui-1.js'],
-      );
-      assert.deepStrictEqual(
-        artifact.common.fileList.map((file) => file.name),
-        [
-          'common-1.js',
-          'scripts/lockdown-more.js',
-          'scripts/policy-load.js',
-          'scripts/runtime-lavamoat.js',
-          'scripts/sentry-install.js',
-        ],
-      );
-      assert.deepStrictEqual(
-        artifact.auxiliaryPages.fileList.map((file) => file.name),
-        ['offscreen-0.js', 'vendor/trezor/usb-permissions.js'],
-      );
-      assert.deepStrictEqual(
-        artifact.contentScripts.fileList.map((file) => file.name),
-        [
-          'scripts/contentscript.js',
-          'scripts/inpage.js',
-          'vendor/trezor/content-script.js',
-        ],
-      );
-      assert.strictEqual(
-        artifact.background.size,
-        100 + Buffer.byteLength(appInitContents),
-      );
-      assert.strictEqual(artifact.ui.size, 200);
-      assert.strictEqual(artifact.common.size, 150);
-      assert.strictEqual(artifact.auxiliaryPages.size, 150);
-      assert.strictEqual(artifact.contentScripts.size, 18);
-      assert.deepStrictEqual(
-        {
-          schemaVersion: summary.schemaVersion,
-          bundler: summary.bundler,
-          background: summary.background,
-          ui: summary.ui,
-          common: summary.common,
-          auxiliaryPages: summary.auxiliaryPages,
-          contentScripts: summary.contentScripts,
-        },
-        {
-          schemaVersion: 4,
-          bundler: 'browserify',
-          background: 100 + Buffer.byteLength(appInitContents),
-          ui: 200,
-          common: 150,
-          auxiliaryPages: 150,
-          contentScripts: 18,
-        },
-      );
-    });
-  });
-
   it('classifies webpack assets from emitted stats and service-worker async files', async () => {
     await withTempDirectory(async (rootDirectory) => {
       const distDirectory = path.join(rootDirectory, 'dist', 'chrome');
@@ -296,10 +168,10 @@ describe('bundle-size collector', () => {
         ),
       ]);
 
-      const artifact = await collectWebpackBundleSizeArtifact(distDirectory);
+      const artifact = await collectBundleSizeArtifact(distDirectory);
+      const summary = createBundleSizeSummary(artifact);
 
       assert.strictEqual(artifact.schemaVersion, 4);
-      assert.strictEqual(artifact.bundler, 'webpack');
       assert.deepStrictEqual(
         artifact.common.fileList.map((file) => file.name),
         ['shared-ui-background.js'],
@@ -333,6 +205,22 @@ describe('bundle-size collector', () => {
       assert.strictEqual(artifact.background.size, 330);
       assert.strictEqual(artifact.auxiliaryPages.size, 540);
       assert.strictEqual(artifact.contentScripts.size, 60);
+      assert.deepStrictEqual(
+        {
+          background: summary.background,
+          ui: summary.ui,
+          common: summary.common,
+          auxiliaryPages: summary.auxiliaryPages,
+          contentScripts: summary.contentScripts,
+        },
+        {
+          background: 330,
+          ui: 450,
+          common: 130,
+          auxiliaryPages: 540,
+          contentScripts: 60,
+        },
+      );
     });
   });
 });

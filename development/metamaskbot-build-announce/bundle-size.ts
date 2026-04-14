@@ -3,7 +3,6 @@ import {
   isBundleSizeSummary,
   mapBundleParts,
   type BundlePart,
-  type BundleSizeBundler,
   type BundleSizeSummary,
   type StoredBundleSizeData,
 } from '../lib/bundle-size';
@@ -15,11 +14,6 @@ const bundlePartLabels: Record<BundlePart, string> = {
   common: 'common',
   auxiliaryPages: 'auxiliary pages',
   contentScripts: 'content scripts',
-};
-
-const bundlerLabels: Record<BundleSizeBundler, string> = {
-  browserify: 'Browserify',
-  webpack: 'Webpack',
 };
 
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
@@ -81,20 +75,12 @@ async function fetchJson(url: string, label: string): Promise<unknown> {
 function getBundlePartSizes(
   summary: BundleSizeSummary,
 ): Record<BundlePart, number> {
-  return mapBundleParts((part) => summary[part]);
-}
-
-function getCurrentSummary(
-  value: unknown,
-  bundler: BundleSizeBundler,
-): BundleSizeSummary | null {
-  return isBundleSizeSummary(value) && value.bundler === bundler ? value : null;
+  return mapBundleParts((part) => summary[part] ?? 0);
 }
 
 function getBaselineSummary(
   value: unknown,
   mergeBaseCommitHash: string,
-  bundler: BundleSizeBundler,
 ): BundleSizeSummary | null {
   if (!isRecord(value)) {
     return null;
@@ -106,9 +92,7 @@ function getBaselineSummary(
     return null;
   }
 
-  const summary = mergeBaseStats[bundler];
-
-  return getCurrentSummary(summary, bundler);
+  return isBundleSizeSummary(mergeBaseStats) ? mergeBaseStats : null;
 }
 
 function getHumanReadableDiffSize(bytes: number): string {
@@ -160,10 +144,11 @@ function buildUnavailableBundleSizeContent(): string {
 async function fetchOptionalBundleSizeSummary(
   url: string,
   label: string,
-  bundler: BundleSizeBundler,
 ): Promise<BundleSizeSummary | null> {
   try {
-    return getCurrentSummary(await fetchJson(url, label), bundler);
+    const value = await fetchJson(url, label);
+
+    return isBundleSizeSummary(value) ? value : null;
   } catch (error) {
     console.log(`Skipping ${label}: ${String(error)}`);
     return null;
@@ -187,32 +172,27 @@ async function fetchOptionalStoredBundleSizeData(
   }
 }
 
-function buildBundlerBundleSizeDiffSection({
-  bundler,
+function buildBundleSizeSection({
   currentSummary,
   storedBundleSizeData,
   mergeBaseCommitHash,
 }: {
-  bundler: BundleSizeBundler;
   currentSummary: BundleSizeSummary | null;
   storedBundleSizeData: StoredBundleSizeData | null;
   mergeBaseCommitHash: string;
 }): string {
-  const label = bundlerLabels[bundler];
-
   if (!currentSummary) {
-    return `<details><summary>${label} bundle size diffs</summary>${buildUnavailableBundleSizeContent()}</details>\n\n`;
+    return `<details><summary>Webpack bundle size diffs</summary>${buildUnavailableBundleSizeContent()}</details>\n\n`;
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
   const baselineSummary = getBaselineSummary(
     storedBundleSizeData,
     mergeBaseCommitHash,
-    bundler,
   );
 
   if (!baselineSummary) {
-    return `<details><summary>${label} bundle size diffs</summary>${buildUnavailableComparisonContent(
+    return `<details><summary>Webpack bundle size diffs</summary>${buildUnavailableComparisonContent(
       currentSizes,
     )}</details>\n\n`;
   }
@@ -250,7 +230,7 @@ function buildBundlerBundleSizeDiffSection({
     sizeDiffWarning = '🚀 Bundle size reduced!';
   }
 
-  const sizeDiffTitle = `${label} bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`;
+  const sizeDiffTitle = `Webpack bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`;
 
   return `<details><summary>${sizeDiffTitle}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 }
@@ -266,33 +246,17 @@ export async function buildBundleSizeDiffSection(
   artifacts: ArtifactLinks,
   mergeBaseCommitHash: string,
 ): Promise<string> {
-  const [browserifySummary, webpackSummary, storedBundleSizeData] =
-    await Promise.all([
-      fetchOptionalBundleSizeSummary(
-        artifacts.bundleSizeStats.browserify.url,
-        'browserifyBundleSizeStats',
-        'browserify',
-      ),
-      fetchOptionalBundleSizeSummary(
-        artifacts.bundleSizeStats.webpack.url,
-        'webpackBundleSizeStats',
-        'webpack',
-      ),
-      fetchOptionalStoredBundleSizeData(artifacts.bundleSizeData.url),
-    ]);
+  const [currentSummary, storedBundleSizeData] = await Promise.all([
+    fetchOptionalBundleSizeSummary(
+      artifacts.bundleSizeStats.url,
+      'bundleSizeStats',
+    ),
+    fetchOptionalStoredBundleSizeData(artifacts.bundleSizeData.url),
+  ]);
 
-  return (
-    buildBundlerBundleSizeDiffSection({
-      bundler: 'browserify',
-      currentSummary: browserifySummary,
-      storedBundleSizeData,
-      mergeBaseCommitHash,
-    }) +
-    buildBundlerBundleSizeDiffSection({
-      bundler: 'webpack',
-      currentSummary: webpackSummary,
-      storedBundleSizeData,
-      mergeBaseCommitHash,
-    })
-  );
+  return buildBundleSizeSection({
+    currentSummary,
+    storedBundleSizeData,
+    mergeBaseCommitHash,
+  });
 }
