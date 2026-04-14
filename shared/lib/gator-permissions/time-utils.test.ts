@@ -12,6 +12,7 @@ import {
   convertAmountPerSecondToAmountPerPeriod,
   convertMillisecondsToSeconds,
   convertTimestampToReadableDate,
+  extractExpiryTimestampFromRules,
   extractExpiryToReadableDate,
   getPeriodFrequencyValueTranslationKey,
   GatorPermissionRule,
@@ -160,6 +161,46 @@ describe('time-utils', () => {
       expect(() => convertTimestampToReadableDate(timestamp)).toThrow(
         'Invalid date format',
       );
+    });
+  });
+
+  describe('extractExpiryTimestampFromRules', () => {
+    it('returns timestamp when an expiry rule is present', () => {
+      const ts = 1744588800;
+      const rules: GatorPermissionRule[] = [
+        { type: 'expiry', data: { timestamp: ts } },
+      ];
+      expect(extractExpiryTimestampFromRules(rules)).toBe(ts);
+    });
+
+    it('returns null when rules is null or undefined', () => {
+      expect(extractExpiryTimestampFromRules(null)).toBeNull();
+      expect(extractExpiryTimestampFromRules(undefined)).toBeNull();
+    });
+
+    it('returns null for empty rules', () => {
+      expect(extractExpiryTimestampFromRules([])).toBeNull();
+    });
+
+    it('returns null when no expiry rule exists', () => {
+      const rules: GatorPermissionRule[] = [
+        { type: 'other-rule', data: { someData: 'value' } },
+      ];
+      expect(extractExpiryTimestampFromRules(rules)).toBeNull();
+    });
+
+    it('returns null when expiry timestamp is 0', () => {
+      const rules: GatorPermissionRule[] = [
+        { type: 'expiry', data: { timestamp: 0 } },
+      ];
+      expect(extractExpiryTimestampFromRules(rules)).toBeNull();
+    });
+
+    it('returns null when expiry timestamp is not a number', () => {
+      const rules: GatorPermissionRule[] = [
+        { type: 'expiry', data: { timestamp: '1744588800' } },
+      ];
+      expect(extractExpiryTimestampFromRules(rules)).toBeNull();
     });
   });
 

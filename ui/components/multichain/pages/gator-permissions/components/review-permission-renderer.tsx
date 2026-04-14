@@ -52,19 +52,22 @@ function formatHexAmount(
   hexValue: Hex,
   decimals: number | undefined,
   symbol: string,
+  isRatePerSecond = false,
 ): string {
   const formatted = formatDecimalShiftedValue(hexValue, decimals);
-  const suffix = typeof decimals === 'number' ? '' : ' (raw units)';
-  return `${formatted} ${symbol}${suffix}`;
+  const rateSuffix = isRatePerSecond ? '/sec' : '';
+  const rawSuffix = typeof decimals === 'number' ? '' : ' (raw units)';
+  return `${formatted} ${symbol}${rateSuffix}${rawSuffix}`;
 }
 
 function formatRawAmount(
   rawValue: import('bignumber.js').BigNumber,
   decimals: number | undefined,
   symbol: string,
+  isRatePerSecond = false,
 ): string {
   const hexValue = `0x${rawValue.toString(16)}` as Hex;
-  return formatHexAmount(hexValue, decimals, symbol);
+  return formatHexAmount(hexValue, decimals, symbol, isRatePerSecond);
 }
 
 function schemaElementDomKey(
@@ -316,11 +319,12 @@ function renderAmountElement(
   loading: boolean,
 ): React.ReactNode {
   const rawValue = element.getValue(ctx);
-  let displayValue = formatRawAmount(rawValue, tokenDecimals, tokenSymbol);
-
-  if (element.isRatePerSecond) {
-    displayValue = `${displayValue}/sec`;
-  }
+  const displayValue = formatRawAmount(
+    rawValue,
+    tokenDecimals,
+    tokenSymbol,
+    Boolean(element.isRatePerSecond),
+  );
 
   return (
     <GatorPermissionDetailRow

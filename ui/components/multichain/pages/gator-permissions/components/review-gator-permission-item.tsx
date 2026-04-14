@@ -18,6 +18,7 @@ import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controll
 import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { extractExpiryTimestampFromRules } from '../../../../../../shared/lib/gator-permissions';
 import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
@@ -116,7 +117,7 @@ export const ReviewGatorPermissionItem = ({
       permissionType,
       permissionData,
       chainId,
-      expiry: null as number | null,
+      expiry: extractExpiryTimestampFromRules(permissionResponse.rules),
       rules: permissionResponse.rules,
       tokenInfo: tokenMetadata,
       tokenLoading: loading,

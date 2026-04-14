@@ -56,6 +56,33 @@ describe('ReviewPermissionRenderer', () => {
     ).toBeInTheDocument();
   });
 
+  it('places /sec before (raw units) when token decimals are unknown', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x6f05b59d3b20000',
+          maxAmount: '0x22b1c8c1227a0000',
+          amountPerSecond: '0x6f05b59d3b20000',
+          startTime: 1736271776,
+        }}
+        chainId="0x1"
+        expiry={null}
+        tokenInfo={{ symbol: 'ETH', decimals: undefined }}
+        tokenLoading={false}
+      />,
+      store,
+    );
+
+    const streamRate = screen.getByTestId(
+      'review-gator-permission-stream-rate',
+    );
+    expect(streamRate).toHaveTextContent(
+      '500000000000000000 ETH/sec (raw units)',
+    );
+    expect(streamRate.textContent).not.toContain('(raw units)/sec');
+  });
+
   it('returns null for unknown permission type', () => {
     const { container } = renderWithProvider(
       <ReviewPermissionRenderer

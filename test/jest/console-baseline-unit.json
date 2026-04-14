@@ -978,9 +978,6 @@
       "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 3
     },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
-      "Reselect: Identity function warnings": 4
-    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 13,
       "Reselect: Identity function warnings": 4,
