@@ -5,6 +5,7 @@ import {
   formatOrderType,
   formatStatus,
   getStatusColor,
+  formatChangePercent,
   getChangeColor,
   getDisplaySymbol,
   getAssetIconUrl,
@@ -106,6 +107,30 @@ describe('Perps Utils', () => {
       expect(getStatusColor('open')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('queued')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('triggered')).toBe(TextColor.TextAlternative);
+    });
+  });
+
+  describe('formatChangePercent', () => {
+    it('returns the value unchanged when it already includes %', () => {
+      expect(formatChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('appends % when the value does not include it', () => {
+      expect(formatChangePercent('+2.84')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23')).toBe('-1.23%');
+      expect(formatChangePercent('0.00')).toBe('0.00%');
+    });
+
+    it('returns empty string unchanged', () => {
+      expect(formatChangePercent('')).toBe('');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatChangePercent('—')).toBe('—');
+      expect(formatChangePercent('-')).toBe('-');
+      expect(formatChangePercent('N/A')).toBe('N/A');
     });
   });
 

@@ -25,6 +25,14 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
   }),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -164,10 +172,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Margin = size / leverage = $1,000 / 3 = $333.33
+      // Margin = notional / leverage = $1,000 / 3 = $333.33 (fees are a separate line item)
       expect(screen.getByText('$333.33')).toBeInTheDocument();
-      // Fees = 0.05% of position size = $1,000 * 0.0005 = $0.50
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+      // Fees = HyperLiquid taker (0.045%) + MetaMask builder (0.1%) = 0.145% of $1,000 = $1.45
+      expect(screen.getByText('$1.45')).toBeInTheDocument();
     });
   });
 

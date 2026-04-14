@@ -1,8 +1,8 @@
 import { ControllerInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
-import MetaMetricsController from '../../controllers/metametrics-controller';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
+import { MetaMetricsController } from '../../controllers/metametrics-controller';
 
 export const OAuthServiceInit: ControllerInitFunction<
   OAuthService,

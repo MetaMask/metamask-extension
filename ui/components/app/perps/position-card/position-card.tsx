@@ -37,7 +37,8 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   onClick,
 }) => {
   const navigate = useNavigate();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
+    useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
@@ -45,6 +46,10 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   const displayName = getDisplayName(position.symbol);
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
+  const roeNum = Number.parseFloat(position.returnOnEquity);
+  const formattedRoe = Number.isNaN(roeNum)
+    ? null
+    : formatPercentWithMinThreshold(roeNum);
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -113,12 +118,29 @@ export const PositionCard: React.FC<PositionCardProps> = ({
             'USD',
           )}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Baseline}
+          gap={1}
         >
-          {formattedPnl}
-        </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+          >
+            {formattedPnl}
+          </Text>
+          {formattedRoe !== null && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={
+                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
+              }
+              data-testid={`position-card-roe-${position.symbol}`}
+            >
+              ({formattedRoe})
+            </Text>
+          )}
+        </Box>
       </Box>
     </ButtonBase>
   );

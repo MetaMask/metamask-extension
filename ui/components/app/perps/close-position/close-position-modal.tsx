@@ -42,10 +42,8 @@ import {
   getPositionPnlRatio,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
-import {
-  PERPS_MARKET_ORDER_FEE_RATE,
-  PERPS_MIN_MARKET_ORDER_USD,
-} from '../constants';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -294,6 +292,16 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [positionSize, closePercent],
   );
 
+  const closeNotionalUsd = useMemo(
+    () => closeSize * currentPrice,
+    [closeSize, currentPrice],
+  );
+
+  const { feeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
     return (totalMargin * closePercent) / 100;
@@ -305,14 +313,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, [position.unrealizedPnl, closePercent]);
 
   const estimatedFees = useMemo(
-    () => closeSize * currentPrice * PERPS_MARKET_ORDER_FEE_RATE,
-    [closeSize, currentPrice],
-  );
-
-  /** HyperLiquid requires ≥ $10 notional for partial closes; full close omits size and skips this. */
-  const closeNotionalUsd = useMemo(
-    () => closeSize * currentPrice,
-    [closeSize, currentPrice],
+    () => closeNotionalUsd * (feeRate ?? 0),
+    [closeNotionalUsd, feeRate],
   );
 
   const isPriceValid = useMemo(
@@ -454,6 +456,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     t,
     formatNumber,
     currentPrice,
+    closeNotionalUsd,
+    estimatedFees,
     track,
     closePercent,
     onClose,

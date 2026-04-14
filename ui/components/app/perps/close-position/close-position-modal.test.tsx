@@ -85,6 +85,10 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
