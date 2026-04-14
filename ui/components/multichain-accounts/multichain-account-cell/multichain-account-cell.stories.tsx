@@ -8,10 +8,10 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  Checkbox,
   Icon,
   IconName,
 } from '@metamask/design-system-react';
+import { Checkbox } from '../../component-library';
 
 // End accessory
 const MoreOptionsAccessory = () => (
@@ -26,23 +26,16 @@ const MoreOptionsAccessory = () => (
   </Box>
 );
 
-const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => {
-  const checkboxId = React.useId();
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Center}
-      marginRight={2}
-    >
-      <Checkbox
-        id={checkboxId}
-        isSelected={checked}
-        onChange={() => undefined}
-      />
-    </Box>
-  );
-};
+const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
+  <Box
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
+    marginRight={2}
+  >
+    <Checkbox isChecked={checked} />
+  </Box>
+);
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountCell',

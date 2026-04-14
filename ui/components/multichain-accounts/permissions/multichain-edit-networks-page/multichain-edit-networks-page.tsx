@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import {
   Box,
@@ -16,7 +10,6 @@ import {
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   FontWeight,
   Icon,
   IconColor,
@@ -26,6 +19,7 @@ import {
   TextColor,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
+import { Checkbox } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
@@ -41,8 +35,6 @@ import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 import { NetworkListItem } from '../../../multichain/network-list-item';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-
-const SELECT_ALL_CHECKBOX_ID = 'multichain-edit-networks-select-all';
 
 type MultichainEditNetworksPageProps = {
   nonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
@@ -107,13 +99,6 @@ export const MultichainEditNetworksPage: React.FC<
   const defaultChainIdsSet = new Set(defaultSelectedChainIds);
   const selectedChainIdsSet = new Set(selectedChainIds);
 
-  useLayoutEffect(() => {
-    const el = document.getElementById(SELECT_ALL_CHECKBOX_ID);
-    if (el instanceof HTMLInputElement) {
-      el.indeterminate = isIndeterminate;
-    }
-  }, [isIndeterminate]);
-
   return (
     <Page
       data-testid="modal-page"
@@ -143,17 +128,11 @@ export const MultichainEditNetworksPage: React.FC<
       >
         <Box padding={4}>
           <Checkbox
-            id={SELECT_ALL_CHECKBOX_ID}
             label={t('selectAll')}
-            isSelected={checked}
-            className="gap-4"
-            onChange={() => {
-              if (allAreSelected) {
-                deselectAll();
-              } else {
-                selectAll();
-              }
-            }}
+            isChecked={checked}
+            gap={4}
+            onClick={() => (allAreSelected ? deselectAll() : selectAll())}
+            isIndeterminate={isIndeterminate}
           />
         </Box>
         {nonTestNetworks.map((network) => (
@@ -166,12 +145,7 @@ export const MultichainEditNetworksPage: React.FC<
             }}
             startAccessory={
               <Checkbox
-                id={`multichain-edit-networks-chain-${network.caipChainId.replaceAll(
-                  ':',
-                  '-',
-                )}`}
-                isSelected={selectedChainIds.includes(network.caipChainId)}
-                onChange={() => handleNetworkClick(network.caipChainId)}
+                isChecked={selectedChainIds.includes(network.caipChainId)}
               />
             }
           />
@@ -191,12 +165,7 @@ export const MultichainEditNetworksPage: React.FC<
             }}
             startAccessory={
               <Checkbox
-                id={`multichain-edit-networks-testnet-${network.caipChainId.replaceAll(
-                  ':',
-                  '-',
-                )}`}
-                isSelected={selectedChainIds.includes(network.caipChainId)}
-                onChange={() => handleNetworkClick(network.caipChainId)}
+                isChecked={selectedChainIds.includes(network.caipChainId)}
               />
             }
             showEndAccessory={false}
