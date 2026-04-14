@@ -13,6 +13,8 @@ import type { I18nValue } from './permission-detail-schema.types';
 /**
  * Returns an i18n key (and optional args) for a period duration in seconds.
  * Each renderer translates the returned value via its own i18n function.
+ * For non-standard periods, `confirmFieldPeriodDurationSeconds` must include a `$1`
+ * placeholder for the numeric second count (see locale messages).
  * @param periodSeconds
  */
 export function formatPermissionPeriodDuration(

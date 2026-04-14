@@ -1513,8 +1513,8 @@
     "message": "Monatlich"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "Sekunden",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 Sekunden",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Wöchentlich"
