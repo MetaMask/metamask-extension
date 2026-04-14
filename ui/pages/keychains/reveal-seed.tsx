@@ -109,7 +109,8 @@ function RevealSeedPage() {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
-          hostname: scanResult.hostname ?? 'unknown',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          dapp_host_name: scanResult.hostname ?? 'unknown',
         },
       });
     }

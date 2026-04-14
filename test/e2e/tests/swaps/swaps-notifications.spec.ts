@@ -20,11 +20,11 @@ const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
   'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
 
 const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures(
+  const fixtures = getBridgeFixtures({
     title,
-    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    false,
-  );
+    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+    withErc20: false,
+  });
 
   return {
     ...fixtures,
@@ -149,10 +149,10 @@ describe('Swaps - notifications', function () {
 
   it('shows low slippage warning in transaction settings', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
