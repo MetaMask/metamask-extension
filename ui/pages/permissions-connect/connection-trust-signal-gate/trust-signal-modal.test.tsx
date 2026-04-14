@@ -69,10 +69,10 @@ describe('TrustSignalModal', () => {
   });
 
   it('does not render cancel button when onCancel is not provided', () => {
-    const { queryByTestId } = render(
-      <TrustSignalModal {...defaultProps} />,
-    );
+    const { queryByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
-    expect(queryByTestId('trust-signal-block-modal-cancel')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('trust-signal-block-modal-cancel'),
+    ).not.toBeInTheDocument();
   });
 });
