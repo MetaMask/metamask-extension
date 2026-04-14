@@ -157,6 +157,12 @@ describe('Perps Utils', () => {
       expect(getChangeColor('+0%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('-0%')).toBe(TextColor.SuccessDefault);
     });
+
+    it('returns TextAlternative for non-numeric fallback values', () => {
+      expect(getChangeColor('N/A')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('—')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('')).toBe(TextColor.TextAlternative);
+    });
   });
 
   describe('formatSignedChangePercent', () => {

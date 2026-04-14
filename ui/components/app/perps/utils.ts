@@ -159,7 +159,8 @@ export const formatSignedChangePercent = (value: string): string => {
 
 /**
  * Get the appropriate text color for a percentage change value
- * Non-negative values (≥ 0) → green, negative → red
+ * Non-negative values (≥ 0) → green, negative → red,
+ * non-numeric / fallback values → alternative text color
  *
  * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
  * @returns The appropriate text color
@@ -168,9 +169,13 @@ export const formatSignedChangePercent = (value: string): string => {
  * getChangeColor('2.84%') => TextColor.SuccessDefault
  * getChangeColor('0.00%') => TextColor.SuccessDefault
  * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ * getChangeColor('N/A') => TextColor.TextAlternative
  */
 export const getChangeColor = (percentString: string): TextColor => {
-  const value = parseFloat(percentString.replace('%', ''));
+  const value = Number.parseFloat(percentString.replace('%', ''));
+  if (Number.isNaN(value)) {
+    return TextColor.TextAlternative;
+  }
   if (value < 0) {
     return TextColor.ErrorDefault;
   }

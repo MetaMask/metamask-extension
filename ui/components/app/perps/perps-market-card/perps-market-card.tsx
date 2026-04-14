@@ -43,10 +43,7 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
   const displaySymbol = getDisplayName(symbol);
   const displayName = name ? getDisplayName(name) : displaySymbol;
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
-  const changeColor =
-    displayChange24hPercent && /\d/u.test(displayChange24hPercent)
-      ? getChangeColor(displayChange24hPercent)
-      : TextColor.TextAlternative;
+  const changeColor = getChangeColor(displayChange24hPercent);
 
   return (
     <ButtonBase
@@ -82,7 +79,11 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {price}
         </Text>
-        <Text variant={TextVariant.BodySm} color={changeColor}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={changeColor}
+          data-testid="perps-market-card-change"
+        >
           {displayChange24hPercent}
         </Text>
       </Box>
