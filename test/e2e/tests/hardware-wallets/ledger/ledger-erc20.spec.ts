@@ -56,7 +56,10 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        await homePage.checkExpectedTokenBalanceIsDisplayedWithTimeout(
+          '10',
+          symbol,
+        );
       },
     );
   });

@@ -478,6 +478,27 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   * @param timeout - How long to wait for the balance to appear in ms. Defaults to 30000.
+   */
+  async checkExpectedTokenBalanceIsDisplayedWithTimeout(
+    expectedTokenBalance: string,
+    symbol: string,
+    timeout: number = 30000,
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      {
+        css: '[data-testid="multichain-token-list-item-value"]',
+        text: `${expectedTokenBalance} ${symbol}`,
+      },
+      { timeout },
+    );
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */

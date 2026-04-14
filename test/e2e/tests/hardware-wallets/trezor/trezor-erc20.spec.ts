@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
-import { withFixtures } from '../../../helpers';
+import { largeDelayMs, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
@@ -56,7 +56,10 @@ describe('Trezor Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        await homePage.checkExpectedTokenBalanceIsDisplayedWithTimeout(
+          '10',
+          symbol,
+        );
       },
     );
   });

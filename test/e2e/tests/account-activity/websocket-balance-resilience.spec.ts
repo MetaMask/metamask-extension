@@ -111,7 +111,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
   // and another 90 s waiting for the balance update, so we need a timeout
   // that comfortably covers the full flow.
   before(function () {
-    this.timeout(180_000);
+    this.timeout(80_000);
   });
 
   it('balance updates continue via REST polling when WebSocket disconnects', async function () {
