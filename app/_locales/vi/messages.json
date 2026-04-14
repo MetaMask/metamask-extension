@@ -69,6 +69,9 @@
   "about": {
     "message": "Giới thiệu"
   },
+  "aboutMetaMask": {
+    "message": "Giới thiệu về MetaMask"
+  },
   "accept": {
     "message": "Chấp nhận"
   },
@@ -339,8 +342,17 @@
   "addWallet": {
     "message": "Thêm ví"
   },
+  "addedProtectionDescription": {
+    "message": "Bạn đang tương tác với một địa chỉ không xác định. Điều này giúp ngăn chặn các giao dịch độc hại."
+  },
   "addedProtectionOptionalBadge": {
     "message": "Không bắt buộc"
+  },
+  "addedProtectionTitle": {
+    "message": "Tăng cường bảo vệ"
+  },
+  "addedProtectionTooltip": {
+    "message": "Nếu giao dịch cuối cùng không trùng khớp với bản xem trước này, giao dịch sẽ không được thực hiện. Bạn chỉ phải trả phí mạng."
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
@@ -1077,6 +1089,9 @@
   "bridgeGasFeesSplit": {
     "message": "Bất kỳ khoản phí mạng nào được báo trên màn hình trước đó đều bao gồm cả hai giao dịch và sẽ được chia nhỏ."
   },
+  "bridgeGetNewQuote": {
+    "message": "Nhận báo giá mới"
+  },
   "bridgeLowestCost": {
     "message": "Chi phí thấp nhất"
   },
@@ -1132,6 +1147,9 @@
   "bridgePriceImpact": {
     "message": "Tác động giá"
   },
+  "bridgePriceImpactFiatAlert": {
+    "message": "Bạn sẽ mất $1 trong giao dịch này"
+  },
   "bridgePriceImpactHigh": {
     "message": "Tác động giá cao"
   },
@@ -1155,6 +1173,33 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Cảnh báo tác động giá"
+  },
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
+    "message": "Không có báo giá. Hãy thử một số lượng nhỏ hơn."
+  },
+  "bridgeQuoteStreamCompleteAmountTooLow": {
+    "message": "Không có báo giá. Hãy thử một số lượng lớn hơn."
+  },
+  "bridgeQuoteStreamCompleteRetry": {
+    "message": "Hiện không thể lấy báo giá. Hãy thử lại."
+  },
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
+    "message": "Giao dịch hoán đổi này không khả dụng ở khu vực của bạn."
+  },
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
+    "message": "Thị trường cho tài sản này hiện không khả dụng. Hãy thử lại sau."
+  },
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
+    "message": "Hiện chưa hỗ trợ hoán đổi giữa token này và tài sản thế giới thực. Hãy thử dùng token khác."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
+    "message": "Trượt giá quá cao. Hãy thử giảm cài đặt trượt giá."
+  },
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
+    "message": "Trượt giá quá thấp. Hãy thử tăng cài đặt trượt giá."
+  },
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
+    "message": "Token này không được hỗ trợ. Hãy thử dùng token khác."
   },
   "bridgeQuotesSortedByCost": {
     "message": "Các báo giá được sắp xếp theo tổng chi phí ước tính, bao gồm tỷ giá và phí mạng."
@@ -1405,7 +1450,7 @@
     "message": "Xóa dữ liệu thẻ hoạt động"
   },
   "clearActivityDescription": {
-    "message": "Thao tác này sẽ đặt lại số nonce của tài khoản và xóa dữ liệu khỏi thẻ hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
+    "message": "Đặt lại số nonce của tài khoản và xóa dữ liệu trong tab hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại sẽ bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
   },
   "clearFilters": {
     "message": "Xóa bộ lọc"
@@ -1436,6 +1481,10 @@
   "comboNoOptions": {
     "message": "Không tìm thấy tùy chọn nào",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "communityContributedLanguagesSectionTitle": {
+    "message": "Được cộng đồng đóng góp",
+    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "Đã hoàn tất"
@@ -2023,6 +2072,12 @@
   "dappConnections": {
     "message": "Kết nối Dapp"
   },
+  "dappScanMaliciousTitle": {
+    "message": "Phát hiện trang web độc hại"
+  },
+  "dappScanMaliciousWarning": {
+    "message": "Trang web này được đánh dấu là có khả năng nguy hiểm. Nếu bạn tiết lộ Cụm từ khôi phục bí mật, bạn có thể gặp rủi ro về tiền bạc."
+  },
   "dappSuggested": {
     "message": "Trang web đề xuất"
   },
@@ -2083,6 +2138,9 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "Tùy chọn mua bằng thẻ ghi nợ hoặc thẻ tín dụng"
+  },
+  "debug": {
+    "message": "Gỡ lỗi"
   },
   "decimal": {
     "message": "Số thập phân của token"
@@ -2180,6 +2238,12 @@
   "deepLink_theOnboardingPage": {
     "message": "trang giới thiệu"
   },
+  "deepLink_thePerpsMarketDetailPage": {
+    "message": "trang thị trường hợp đồng vĩnh cửu"
+  },
+  "deepLink_thePerpsMarketListPage": {
+    "message": "trang danh sách thị trường hợp đồng vĩnh cửu"
+  },
   "deepLink_thePerpsPage": {
     "message": "trang hợp đồng vĩnh cửu"
   },
@@ -2235,6 +2299,9 @@
   },
   "delete": {
     "message": "Xóa"
+  },
+  "deleteActivityAndNonceData": {
+    "message": "Xóa dữ liệu hoạt động và số nonce"
   },
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
@@ -2316,6 +2383,9 @@
   },
   "developerOptions": {
     "message": "Tùy chọn Nhà lập trình"
+  },
+  "developerTools": {
+    "message": "Công cụ dành cho nhà lập trình"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đáp ứng mức tăng tối thiểu 10% từ phí gas ban đầu.",
@@ -3101,6 +3171,10 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "Khởi động lại thiết bị và thử kết nối lại"
   },
+  "hardwareWalletErrorRecoveryConnection4": {
+    "message": "Thiết bị $1 của bạn đã được mở khóa",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Tiếp tục để đảm bảo:"
   },
@@ -3141,6 +3215,10 @@
   "hardwareWalletLegacyDescription": {
     "message": "(cũ)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLookingForDevice": {
+    "message": "Đang tìm $1 của bạn...",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Nhớ cắm thiết bị $1 và chọn ứng dụng Ethereum."
@@ -3966,6 +4044,9 @@
     "message": "+ $1 tài khoản nữa",
     "description": "$1 is the number of accounts"
   },
+  "moreCapital": {
+    "message": "Thêm"
+  },
   "moreNetworks": {
     "message": "+ $1 mạng nữa",
     "description": "$1 is the number of networks"
@@ -4033,12 +4114,32 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBonusExplanation": {
+    "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm lên đến $1% mà bạn có thể nhận hằng ngày. $2",
+    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
+  },
+  "musdBonusPoweredByRelay": {
+    "message": "Cung cấp bởi Relay",
+    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
+  },
+  "musdBoostDescription": {
+    "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm $1%.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
   "musdBoostTitle": {
     "message": "Nhận $1% trên số lượng đồng ổn định của bạn",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBuyMusd": {
     "message": "Mua mUSD"
+  },
+  "musdClaimSendingTo": {
+    "message": "Đang gửi đến",
+    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
+  },
+  "musdClaimSendingToWallet": {
+    "message": "Đang gửi đến $1",
+    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
@@ -4052,9 +4153,21 @@
     "message": "Phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $1",
     "description": "$1 is the 'Terms apply' link"
   },
+  "musdClaimableBonusTooltipAria": {
+    "message": "Chi tiết phần thưởng có thể nhận",
+    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
+  },
   "musdConversionActivityTitle": {
     "message": "Chuyển đổi $1 sang mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionBonusTooltipAria": {
+    "message": "Chi tiết phần thưởng",
+    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
+  },
+  "musdConversionFeeTooltipDescription": {
+    "message": "Phí chuyển đổi mUSD bao gồm phí mạng và có thể bao gồm phí từ nhà cung cấp. Không áp dụng phí MetaMask khi bạn chuyển đổi sang mUSD.",
+    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
   },
   "musdConversionTitle": {
     "message": "Đã chuyển đổi sang mUSD",
@@ -4067,6 +4180,12 @@
     "message": "Đang chuyển đổi $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
+  "musdConversionToastSuccess": {
+    "message": "Chuyển đổi mUSD thành công"
+  },
+  "musdConversionToastSuccessDescription": {
+    "message": "Bạn sẽ có thể nhận thưởng trong vòng một ngày."
+  },
   "musdConvert": {
     "message": "Chuyển đổi"
   },
@@ -4074,11 +4193,15 @@
     "message": "Chuyển đổi và nhận $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
+  "musdEarnBonusPercentage": {
+    "message": "Nhận thưởng $1%",
+    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
+  },
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
   "musdEducationHeadline": {
-    "message": "NHẬN $1% TRÊN SỐ LƯỢNG ĐỒNG ỔN ĐỊNH",
+    "message": "NHẬN $1% TRÊN\nSỐ LƯỢNG ĐỒNG ỔN ĐỊNH",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -4090,6 +4213,10 @@
   },
   "musdGetMusd": {
     "message": "Nhận mUSD"
+  },
+  "musdMetaMaskUsd": {
+    "message": "MetaMask USD",
+    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdTermsApply": {
     "message": "Áp dụng điều khoản."
@@ -4456,11 +4583,18 @@
   "nickname": {
     "message": "Biệt danh"
   },
+  "no": {
+    "message": "Không"
+  },
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
   "noConnectionDescription": {
     "message": "MetaMask chưa được kết nối với trang web này. Để bắt đầu, hãy chọn nút Kết nối của trang web."
+  },
+  "noDefaultAddress": {
+    "message": "Không có địa chỉ $1",
+    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
@@ -4844,6 +4978,9 @@
   },
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
+  },
+  "openMultichainAccountAddressMenu": {
+    "message": "Mở menu địa chỉ tài khoản đa chuỗi"
   },
   "openSettings": {
     "message": "Mở cài đặt"
@@ -5306,15 +5443,45 @@
     "message": "khả dụng",
     "description": "is the available balance amount"
   },
+  "perpsAvailableBalance": {
+    "message": "Số dư Hợp đồng vĩnh cửu khả dụng: "
+  },
+  "perpsAvailableToAdd": {
+    "message": "Có thể cộng"
+  },
   "perpsAvailableToClose": {
     "message": "Có sẵn để đóng"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Có thể trừ"
   },
   "perpsAvailableToTrade": {
     "message": "Có sẵn để giao dịch",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Không thể hủy một hoặc nhiều lệnh. Hãy thử lại."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Không thể đóng một hoặc nhiều vị thế. Hãy thử lại."
+  },
   "perpsCancelAllOrders": {
     "message": "Hủy tất cả"
+  },
+  "perpsCancelOrder": {
+    "message": "Hủy lệnh"
+  },
+  "perpsCandleIntervals": {
+    "message": "Khoảng nến"
+  },
+  "perpsCandlePeriodDays": {
+    "message": "Ngày"
+  },
+  "perpsCandlePeriodHours": {
+    "message": "Giờ"
+  },
+  "perpsCandlePeriodMinutes": {
+    "message": "Phút"
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
@@ -5324,6 +5491,9 @@
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Đóng một phần phải có giá trị tối thiểu là $1 USD. Hãy tăng số lượng đóng hoặc đặt thanh trượt thành 100%."
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
@@ -5337,6 +5507,9 @@
   "perpsConfirmCloseShort": {
     "message": "Đóng vị thế bán khống"
   },
+  "perpsConnectionTimeout": {
+    "message": "Hết thời gian kết nối. Vui lòng thử lại."
+  },
   "perpsContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
   },
@@ -5348,6 +5521,12 @@
   },
   "perpsDepositActivityTitle": {
     "message": "Hợp đồng vĩnh cửu đã được nạp tiền"
+  },
+  "perpsDepositFailed": {
+    "message": "Không thể hoàn tất giao dịch gửi tiền. Hãy thử lại."
+  },
+  "perpsDepositFundsTitle": {
+    "message": "Gửi tiền vào Hợp đồng vĩnh cửu"
   },
   "perpsDepositTitle": {
     "message": "Đã nạp tiền tài khoản vĩnh cửu"
@@ -5362,7 +5541,7 @@
     "message": "Hướng"
   },
   "perpsDisclaimer": {
-    "message": "Giao dịch hợp đồng vĩnh cửu có rủi ro cao. Bạn có thể mất nhiều hơn số tiền đầu tư ban đầu. Đây không phải là lời khuyên tài chính."
+    "message": "Hợp đồng vĩnh cửu tiềm ẩn rất nhiều rủi ro và bạn có thể đột ngột mất toàn bộ khoản đầu tư của mình mà không có cảnh báo trước. Bạn tự chịu hoàn toàn cho rủi ro khi giao dịch. Được cung cấp bởi Hyperliquid. Biểu đồ giá được cung cấp bởi TradingView."
   },
   "perpsEmptyDescription": {
     "message": "Giao dịch hợp đồng vĩnh cửu với đòn bẩy. Mở vị thế đầu tiên để bắt đầu."
@@ -5372,6 +5551,14 @@
   },
   "perpsEstSize": {
     "message": "Kích thước ước tính"
+  },
+  "perpsEstimatedPnlAtStopLoss": {
+    "message": "Lãi/Lỗ ước tính tại mức cắt lỗ",
+    "description": "Label for estimated profit or loss when stop loss is hit"
+  },
+  "perpsEstimatedPnlAtTakeProfit": {
+    "message": "Lãi/Lỗ ước tính tại mức chốt lời",
+    "description": "Label for estimated profit or loss when take profit is hit"
   },
   "perpsExploreMarkets": {
     "message": "Khám phá thị trường"
@@ -5418,6 +5605,9 @@
   "perpsIncludesPnl": {
     "message": "bao gồm Lãi/Lỗ $1"
   },
+  "perpsInsufficientMargin": {
+    "message": "Không đủ ký quỹ để đặt lệnh này."
+  },
   "perpsLearnBasics": {
     "message": "Tìm hiểu những kiến thức cơ bản về hợp đồng vĩnh cửu"
   },
@@ -5432,6 +5622,15 @@
   },
   "perpsLimitPrice": {
     "message": "Giá giới hạn"
+  },
+  "perpsLimitPriceAboveCurrentPrice": {
+    "message": "Giá giới hạn cao hơn giá hiện tại"
+  },
+  "perpsLimitPriceBelowCurrentPrice": {
+    "message": "Giá giới hạn thấp hơn giá hiện tại"
+  },
+  "perpsLimitPriceNearLiquidation": {
+    "message": "Giá hiện tại gần với giá thanh lý ước tính"
   },
   "perpsLiquidationDistance": {
     "message": "Khoảng cách đến thanh lý"
@@ -5473,6 +5672,9 @@
   "perpsMore": {
     "message": "Thêm"
   },
+  "perpsNetworkError": {
+    "message": "Đã xảy ra lỗi mạng. Vui lòng thử lại."
+  },
   "perpsNoMarketsFound": {
     "message": "Không tìm thấy thị trường nào"
   },
@@ -5502,6 +5704,24 @@
   "perpsOraclePriceTooltip": {
     "message": "Giá trung vị từ các nguồn bên ngoài do người xác thực báo cáo, được dùng để tính tỷ lệ tài trợ"
   },
+  "perpsOrderDate": {
+    "message": "Ngày"
+  },
+  "perpsOrderFailed": {
+    "message": "Không thể đặt lệnh. Hãy thử lại."
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Kích thước ban đầu"
+  },
+  "perpsOrderRejected": {
+    "message": "Lệnh của bạn đã bị từ chối. Hãy thử lại."
+  },
+  "perpsOrderStatus": {
+    "message": "Trạng thái"
+  },
+  "perpsOrderValue": {
+    "message": "Giá trị lệnh"
+  },
   "perpsOrders": {
     "message": "Lệnh"
   },
@@ -5514,6 +5734,9 @@
   "perpsPositions": {
     "message": "Vị thế"
   },
+  "perpsRateLimitExceeded": {
+    "message": "Quá nhiều yêu cầu. Vui lòng chờ và thử lại."
+  },
   "perpsRecentActivity": {
     "message": "Hoạt động gần đây"
   },
@@ -5525,6 +5748,12 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Giảm kích thước vị thế bán khống của bạn"
+  },
+  "perpsReduceOnly": {
+    "message": "Chỉ giảm"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Xóa khỏi mục yêu thích"
   },
   "perpsRemoveMargin": {
     "message": "Rút tiền ký quỹ"
@@ -5554,11 +5783,41 @@
   "perpsSeeAll": {
     "message": "Xem tất cả"
   },
+  "perpsServiceUnavailable": {
+    "message": "Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau."
+  },
   "perpsShort": {
     "message": "Bán khống"
   },
   "perpsSize": {
     "message": "Kích thước"
+  },
+  "perpsSlippageExceeded": {
+    "message": "Trượt giá vượt quá mức cho phép. Hãy điều chỉnh mức chấp nhận trượt giá và thử lại."
+  },
+  "perpsSortByFundingRate": {
+    "message": "Tỷ lệ tài trợ"
+  },
+  "perpsSortByHighToLow": {
+    "message": "Cao đến thấp"
+  },
+  "perpsSortByLowToHigh": {
+    "message": "Thấp đến cao"
+  },
+  "perpsSortByOpenInterest": {
+    "message": "Lãi suất mở"
+  },
+  "perpsSortByPriceChange": {
+    "message": "Biến động giá"
+  },
+  "perpsSortBySection": {
+    "message": "Sắp xếp theo"
+  },
+  "perpsSortByTitle": {
+    "message": "Sắp xếp"
+  },
+  "perpsSortByVolume": {
+    "message": "Khối lượng"
   },
   "perpsStartNewTrade": {
     "message": "Bắt đầu giao dịch mới"
@@ -5601,6 +5860,114 @@
   "perpsTakeProfit": {
     "message": "Chốt lời",
     "description": "Label for take profit price input"
+  },
+  "perpsToastCancelOrderFailed": {
+    "message": "Hủy lệnh thất bại",
+    "description": "Error toast text shown when cancelling a perps limit order fails"
+  },
+  "perpsToastCancelOrderSuccess": {
+    "message": "Lệnh đã bị hủy",
+    "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseFailed": {
+    "message": "Đóng vị thế thất bại",
+    "description": "Error toast text shown when closing a perps position fails"
+  },
+  "perpsToastCloseInProgress": {
+    "message": "Đang đóng vị thế",
+    "description": "In-progress toast text shown while closing a perps position"
+  },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Lãi/Lỗ của bạn là $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastMarginAddSuccess": {
+    "message": "Đã nạp $1 ký quỹ vào vị thế $2",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginAdjustmentFailed": {
+    "message": "Điều chỉnh ký quỹ thất bại",
+    "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Không thể điều chỉnh ký quỹ. Vui lòng thử lại.",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
+  "perpsToastMarginRemoveSuccess": {
+    "message": "Đã rút $1 ký quỹ khỏi vị thế $2",
+    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
+  },
+  "perpsToastOrderFailed": {
+    "message": "Đặt lệnh không thành công",
+    "description": "Error toast text shown when placing a perps order fails"
+  },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Tiền của bạn đã được hoàn trả",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
+  },
+  "perpsToastOrderFilled": {
+    "message": "Đã khớp lệnh",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Đã đặt lệnh",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderPlacementSubtitle": {
+    "message": "$1 $2 $3",
+    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
+  },
+  "perpsToastOrderSubmitted": {
+    "message": "Đã gửi lệnh",
+    "description": "In-progress toast text shown while a perps order is being submitted"
+  },
+  "perpsToastPartialCloseFailed": {
+    "message": "Đóng một phần vị thế thất bại",
+    "description": "Error toast text shown when a perps position is partially closed and fails"
+  },
+  "perpsToastPartialCloseInProgress": {
+    "message": "Đang đóng một phần vị thế",
+    "description": "In-progress toast text shown while a perps position is being partially closed"
+  },
+  "perpsToastPartialCloseSuccess": {
+    "message": "Đã đóng một phần vị thế",
+    "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPositionStillActive": {
+    "message": "Vị thế của bạn vẫn đang hoạt động",
+    "description": "Subtitle shown in perps close failure toasts when the position remains open"
+  },
+  "perpsToastReverseFailed": {
+    "message": "Không thể đảo ngược vị thế",
+    "description": "Error toast text shown when reversing a perps position fails"
+  },
+  "perpsToastReverseInProgress": {
+    "message": "Đang đảo ngược vị thế",
+    "description": "In-progress toast text shown while reversing a perps position"
+  },
+  "perpsToastReverseSuccess": {
+    "message": "Đã đảo ngược vị thế",
+    "description": "Success toast text shown when a perps position is reversed"
+  },
+  "perpsToastSubmitInProgress": {
+    "message": "Đang gửi giao dịch của bạn",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeSuccess": {
+    "message": "Đã đóng vị thế",
+    "description": "Success toast text shown when a perps position is closed"
+  },
+  "perpsToastUpdateFailed": {
+    "message": "Cập nhật mức Chốt lời/Cắt lỗ thất bại",
+    "description": "Error toast text shown when updating TP/SL settings fails"
+  },
+  "perpsToastUpdateInProgress": {
+    "message": "Đang cập nhật Chốt lời/Cắt lỗ...",
+    "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "Đã cập nhật Chốt lời/Cắt lỗ thành công",
+    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
     "message": "Tổng số dư"
@@ -5670,6 +6037,57 @@
   },
   "perpsWithdraw": {
     "message": "Rút tiền"
+  },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Thời gian ước tính"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Không thể hoàn tất giao dịch rút tiền. Hãy thử lại."
+  },
+  "perpsWithdrawFee": {
+    "message": "Phí nhà cung cấp"
+  },
+  "perpsWithdrawFundsTitle": {
+    "message": "Rút tiền"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Số tiền vượt quá số dư khả dụng của Hợp đồng vĩnh cửu."
+  },
+  "perpsWithdrawInvalidAddress": {
+    "message": "Nhập địa chỉ đích hợp lệ."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Nhập số tiền hợp lệ."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Rút tối thiểu: $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 phút",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawNoAccount": {
+    "message": "Chưa chọn tài khoản. Hãy chọn một tài khoản và thử lại."
+  },
+  "perpsWithdrawReceive": {
+    "message": "Nhận"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Không thể tải hạn mức rút tiền. Hãy thử lại sau."
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Rút tiền thất bại"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "Chúng tôi đang xử lý $1. Tiền thường sẽ đến trong vòng vài phút.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Yêu cầu rút tiền đã được gửi"
+  },
+  "perpsYouReceive": {
+    "message": "Bạn nhận được"
   },
   "perpsYouWillReceive": {
     "message": "Bạn sẽ nhận được"
@@ -6655,8 +7073,15 @@
   "settings": {
     "message": "Cài đặt"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Không thể tìm thấy cài đặt? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Yêu cầu tại đây"
   },
   "shieldClaim": {
     "message": "Gửi yêu cầu bồi thường"
@@ -8123,6 +8548,10 @@
   "supportMultiRpcInformation": {
     "message": "Chúng tôi hiện hỗ trợ nhiều RPC cho một mạng duy nhất. RPC gần đây nhất của bạn đã được chọn làm RPC mặc định để giải quyết thông tin xung đột."
   },
+  "supportedLanguagesSectionTitle": {
+    "message": "Ngôn ngữ được hỗ trợ",
+    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
+  },
   "surveyConversion": {
     "message": "Tham gia khảo sát của chúng tôi"
   },
@@ -8604,6 +9033,9 @@
   "transaction": {
     "message": "giao dịch"
   },
+  "transactionConfirmed": {
+    "message": "Giao dịch đã được xác nhận"
+  },
   "transactionDataFunction": {
     "message": "Chức năng"
   },
@@ -8615,6 +9047,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Đang cố gắng gọi một hàm trên địa chỉ không có hợp đồng."
+  },
+  "transactionFailed": {
+    "message": "Giao dịch thất bại"
   },
   "transactionFee": {
     "message": "Phí giao dịch"
@@ -8656,12 +9091,18 @@
   "transactionShield": {
     "message": "Lá chắn Giao dịch"
   },
+  "transactionSubmitted": {
+    "message": "Đã gửi giao dịch"
+  },
   "transactionTotalGasFee": {
     "message": "Tổng phí gas",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Giao dịch"
+  },
+  "transactionsAndAssets": {
+    "message": "Giao dịch và tài sản"
   },
   "transfer": {
     "message": "Chuyển"
