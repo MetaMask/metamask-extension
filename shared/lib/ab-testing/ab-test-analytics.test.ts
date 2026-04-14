@@ -227,5 +227,26 @@ describe('ab-test-analytics', () => {
         otherFlag: true,
       });
     });
+
+    it('replaces array-valued flags instead of merging array items', () => {
+      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
+        remoteFeatureFlags: {
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: [
+            { percentage: 100, value: 'control' },
+          ],
+        },
+      });
+
+      expect(
+        getRemoteFeatureFlagsWithManifestOverrides({
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: [
+            { percentage: 50, value: 'control' },
+            { percentage: 50, value: 'treatment' },
+          ],
+        }),
+      ).toStrictEqual({
+        [TEST_QUICK_AMOUNTS_FLAG_KEY]: [{ percentage: 100, value: 'control' }],
+      });
+    });
   });
 });

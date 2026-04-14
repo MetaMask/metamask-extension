@@ -1,5 +1,4 @@
 import type { Json } from '@metamask/utils';
-import merge from 'lodash/merge';
 
 import type { MetaMetricsEventPayload } from '../../constants/metametrics';
 import { getManifestFlags } from '../manifestFlags';
@@ -60,11 +59,10 @@ const getExistingActiveABTests = (value: unknown): ActiveABTestAssignment[] => {
 export function getRemoteFeatureFlagsWithManifestOverrides(
   remoteFeatureFlags: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> {
-  return merge(
-    {},
-    remoteFeatureFlags ?? {},
-    getManifestFlags().remoteFeatureFlags,
-  );
+  return {
+    ...(remoteFeatureFlags ?? {}),
+    ...getManifestFlags().remoteFeatureFlags,
+  };
 }
 
 export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
