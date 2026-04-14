@@ -4914,9 +4914,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
