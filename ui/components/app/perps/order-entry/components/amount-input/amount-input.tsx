@@ -263,7 +263,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           <Icon
             name={IconName.AddCircle}
             size={IconSize.Sm}
-            color={IconColor.IconMuted}
+            color={IconColor.IconAlternative}
             aria-label="Add Funds"
             onClick={onAddFunds}
             className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
