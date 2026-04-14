@@ -8,6 +8,7 @@ export const collapsibleSection: UIComponentFactory<
 > = ({ element, contentBackgroundColor, ...params }) => {
   const { children, props } = box({
     element,
+    contentBackgroundColor,
     ...params,
   } as unknown as UIComponentParams<BoxElement>);
 
