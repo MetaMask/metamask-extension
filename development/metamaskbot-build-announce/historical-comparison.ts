@@ -1,3 +1,4 @@
+/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
 /**
  * Historical data fetch and aggregation for performance benchmarks.
  *
@@ -153,7 +154,9 @@ function buildMetricBaselines(
     }
     result[metric] = {
       mean: meanVal,
-      ...(values.stdDev?.length ? { stdDev: calculateMean(values.stdDev) } : {}),
+      ...(values.stdDev?.length
+        ? { stdDev: calculateMean(values.stdDev) }
+        : {}),
       p75: values.p75.length > 0 ? calculateMean(values.p75) : meanVal,
       p95: values.p95.length > 0 ? calculateMean(values.p95) : meanVal,
     };
