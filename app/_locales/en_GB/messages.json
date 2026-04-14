@@ -1374,8 +1374,17 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelSpeedupAlreadyConfirmedDescription": {
+    "message": "We were unable to update your transaction because it was already confirmed on the blockchain."
+  },
+  "cancelSpeedupFailedDescription": {
+    "message": "Something went wrong while updating your transaction."
+  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionFailed": {
+    "message": "Cancel transaction failed"
   },
   "cancelTransactionTitle": {
     "message": "Cancel transaction"
@@ -8199,6 +8208,9 @@
   "speedUpTransactionDescription": {
     "message": "This network fee will replace the original."
   },
+  "speedUpTransactionFailed": {
+    "message": "Speed up transaction failed"
+  },
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
@@ -9596,12 +9608,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transaction already confirmed"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
