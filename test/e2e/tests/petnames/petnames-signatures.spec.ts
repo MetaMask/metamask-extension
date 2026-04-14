@@ -97,6 +97,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSnapsPrivacyWarningAlreadyShown()
           .withNoNames()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
