@@ -861,7 +861,7 @@ export type Position = {
   };
   liquidationPrice: string | null; // Liquidation price (null if no risk)
   maxLeverage: number; // Maximum allowed leverage for this asset
-  returnOnEquity: string; // ROE percentage
+  returnOnEquity: string; // ROE as decimal ratio (e.g. 0.1579 for 15.79%)
   cumulativeFunding: {
     // Funding payments history
     allTime: string; // Total funding since account opening

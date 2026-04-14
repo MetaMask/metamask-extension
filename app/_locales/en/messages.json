@@ -1374,8 +1374,17 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelSpeedupAlreadyConfirmedDescription": {
+    "message": "We were unable to update your transaction because it was already confirmed on the blockchain."
+  },
+  "cancelSpeedupFailedDescription": {
+    "message": "Something went wrong while updating your transaction."
+  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionFailed": {
+    "message": "Cancel transaction failed"
   },
   "cancelTransactionTitle": {
     "message": "Cancel transaction"
@@ -5853,6 +5862,10 @@
     "message": "Stop Loss",
     "description": "Label for stop loss price input"
   },
+  "perpsStopLossInvalidPrice": {
+    "message": "Stop loss must be $1 $2 price",
+    "description": "Validation error when stop loss price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
   "perpsSubmitting": {
     "message": "Submitting...",
     "description": "Loading text shown while an order is being submitted"
@@ -5860,6 +5873,10 @@
   "perpsTakeProfit": {
     "message": "Take Profit",
     "description": "Label for take profit price input"
+  },
+  "perpsTakeProfitInvalidPrice": {
+    "message": "Take profit must be $1 $2 price",
+    "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
   },
   "perpsToastCancelOrderFailed": {
     "message": "Failed to cancel order",
@@ -7756,6 +7773,10 @@
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
   },
+  "sidePanelMigrationToast": {
+    "message": "MetaMask now opens in the side panel by default. $1 (or switch any time from the menu).",
+    "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
+  },
   "sign": {
     "message": "Sign"
   },
@@ -8190,6 +8211,9 @@
   },
   "speedUpTransactionDescription": {
     "message": "This network fee will replace the original."
+  },
+  "speedUpTransactionFailed": {
+    "message": "Speed up transaction failed"
   },
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
@@ -8846,6 +8870,9 @@
   },
   "switchBack": {
     "message": "Switch back"
+  },
+  "switchBackToPopup": {
+    "message": "Switch back to popup"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
@@ -9588,12 +9615,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transaction already confirmed"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"

@@ -6905,12 +6905,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
   },
-  "yourTransactionConfirmed": {
-    "message": "Idirbheart deimhnithe cheana féin"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Ní raibh muid in ann d’idirbheart a chealú sular deimhníodh é ar an blocshlabhra."
-  },
   "yourWalletIsReady": {
     "message": "Tá do sparán réidh!"
   },

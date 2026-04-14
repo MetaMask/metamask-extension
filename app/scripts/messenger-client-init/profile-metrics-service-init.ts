@@ -3,7 +3,7 @@ import {
   ProfileMetricsServiceMessenger,
 } from '@metamask/profile-metrics-controller';
 import { loadAuthenticationConfig } from '../../../shared/lib/authentication';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the profile metrics service.
@@ -12,7 +12,7 @@ import { ControllerInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the service.
  * @returns The initialized controller.
  */
-export const ProfileMetricsServiceInit: ControllerInitFunction<
+export const ProfileMetricsServiceInit: MessengerClientInitFunction<
   ProfileMetricsService,
   ProfileMetricsServiceMessenger
 > = ({ controllerMessenger }) => {

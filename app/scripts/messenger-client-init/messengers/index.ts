@@ -396,7 +396,7 @@ export {
 export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
-export const CONTROLLER_MESSENGERS = {
+export const MESSENGER_FACTORIES = {
   AccountOrderController: {
     getMessenger: getAccountOrderControllerMessenger,
     getInitMessenger: noop,

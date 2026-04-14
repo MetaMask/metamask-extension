@@ -2,7 +2,7 @@ import {
   SeedlessOnboardingController,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getSeedlessOnboardingControllerInitMessenger,
   getSeedlessOnboardingControllerMessenger,
@@ -17,7 +17,7 @@ import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controll
 jest.mock('@metamask/seedless-onboarding-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SeedlessOnboardingControllerMessenger,
     SeedlessOnboardingControllerInitMessenger
   >

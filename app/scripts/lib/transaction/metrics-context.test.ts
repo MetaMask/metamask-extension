@@ -73,4 +73,43 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.transactionTypeForMetrics).toBe('simpleSend');
     expect(context.contractMethodName).toBeUndefined();
   });
+
+  it('returns musdConversion as transaction type for mUSD conversion transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.musdConversion,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('musdConversion');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns musdClaim as transaction type for mUSD claim transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.musdClaim,
+        txParams: { data: '0x12345678' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('musdClaim');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns perpsDeposit as transaction type for perps deposit transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.perpsDeposit,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('perpsDeposit');
+    expect(context.isContractInteraction).toBe(false);
+  });
 });
