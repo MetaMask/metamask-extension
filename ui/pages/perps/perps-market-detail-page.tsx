@@ -908,7 +908,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             color={IconColor.IconAlternative}
           />
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsChartLoadError') ?? 'Failed to load chart data'}
+            {'Failed to load chart data'}
           </Text>
         </Box>
       );

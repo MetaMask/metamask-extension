@@ -504,7 +504,15 @@ describe('PerpsStreamBridge', () => {
   });
 
   describe('perpsActivatePriceStream / perpsDeactivatePriceStream', () => {
-    it('subscribes to prices and emits on prices channel', async () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('subscribes to prices after debounce and emits on prices channel', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -518,6 +526,12 @@ describe('PerpsStreamBridge', () => {
       )({
         symbols: ['ETH', 'BTC'],
       });
+
+      // Not subscribed yet — debounce is pending
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+
+      // Advance past the 150ms debounce
+      jest.advanceTimersByTime(150);
 
       expect(controller.subscribeToPrices).toHaveBeenCalledWith({
         symbols: ['ETH', 'BTC'],
@@ -547,6 +561,8 @@ describe('PerpsStreamBridge', () => {
         includeMarketData: true,
       });
 
+      jest.advanceTimersByTime(150);
+
       expect(controller.subscribeToPrices).toHaveBeenCalledWith({
         symbols: ['ETH'],
         includeMarketData: true,
@@ -554,10 +570,53 @@ describe('PerpsStreamBridge', () => {
       });
     });
 
-    it('deactivatePriceStream tears down price subscription', async () => {
+    it('collapses rapid activate calls — only the last one subscribes', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivatePriceStream as (p: {
+        symbols: string[];
+      }) => Promise<string>;
+
+      await activate({ symbols: ['BTC'] });
+      await activate({ symbols: ['ETH'] });
+      await activate({ symbols: ['SOL'] });
+
+      jest.advanceTimersByTime(150);
+
+      expect(controller.subscribeToPrices).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToPrices).toHaveBeenCalledWith(
+        expect.objectContaining({ symbols: ['SOL'] }),
+      );
+    });
+
+    it('deactivatePriceStream cancels pending activation and tears down existing subscription', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToPrices.mockReturnValue(unsub);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      // Activate, let debounce fire → subscription established
+      await (
+        api.perpsActivatePriceStream as (p: {
+          symbols: string[];
+        }) => Promise<string>
+      )({ symbols: ['ETH'] });
+      jest.advanceTimersByTime(150);
+      expect(controller.subscribeToPrices).toHaveBeenCalledTimes(1);
+
+      // Deactivate → should tear down
+      (api.perpsDeactivatePriceStream as () => void)();
+      expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('deactivatePriceStream cancels a still-pending activation without subscribing', async () => {
+      const controller = createMockController();
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
       });
@@ -567,12 +626,14 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivatePriceStream as (p: {
           symbols: string[];
         }) => Promise<string>
-      )({
-        symbols: ['ETH'],
-      });
-      (api.perpsDeactivatePriceStream as () => void)();
+      )({ symbols: ['ETH'] });
 
-      expect(unsub).toHaveBeenCalledTimes(1);
+      // Deactivate before the debounce fires
+      (api.perpsDeactivatePriceStream as () => void)();
+      jest.advanceTimersByTime(150);
+
+      // Timer was cancelled — no subscription should have been made
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
     });
 
     it('deactivatePriceStream is a no-op when no stream active', () => {
@@ -585,7 +646,15 @@ describe('PerpsStreamBridge', () => {
   });
 
   describe('perpsActivateOrderBookStream / perpsDeactivateOrderBookStream', () => {
-    it('subscribes to order book and emits on orderBook channel', async () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('subscribes to order book after debounce and emits on orderBook channel', async () => {
       const controller = createMockController();
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -600,6 +669,11 @@ describe('PerpsStreamBridge', () => {
         symbol: 'ETH',
       });
 
+      // Not subscribed yet — debounce is pending
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(150);
+
       expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
         symbol: 'ETH',
         callback: expect.any(Function),
@@ -610,7 +684,28 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('orderBook', { bids: [], asks: [] });
     });
 
-    it('deactivateOrderBookStream tears down order book subscription', async () => {
+    it('collapses rapid activate calls — only the last one subscribes', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateOrderBookStream as (p: {
+        symbol: string;
+      }) => Promise<string>;
+
+      await activate({ symbol: 'BTC' });
+      await activate({ symbol: 'ETH' });
+
+      jest.advanceTimersByTime(150);
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith(
+        expect.objectContaining({ symbol: 'ETH' }),
+      );
+    });
+
+    it('deactivateOrderBookStream tears down order book subscription after debounce fires', async () => {
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToOrderBook.mockReturnValue(unsub);
@@ -623,12 +718,31 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateOrderBookStream as (p: {
           symbol: string;
         }) => Promise<string>
-      )({
-        symbol: 'ETH',
-      });
-      (api.perpsDeactivateOrderBookStream as () => void)();
+      )({ symbol: 'ETH' });
+      jest.advanceTimersByTime(150);
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(1);
 
+      (api.perpsDeactivateOrderBookStream as () => void)();
       expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('deactivateOrderBookStream cancels a still-pending activation', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<string>
+      )({ symbol: 'ETH' });
+
+      (api.perpsDeactivateOrderBookStream as () => void)();
+      jest.advanceTimersByTime(150);
+
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
     });
   });
 
@@ -839,6 +953,37 @@ describe('PerpsStreamBridge', () => {
         bridge.destroy();
         bridge.destroy();
       }).not.toThrow();
+    });
+
+    it('cancels pending debounced price/orderBook activations on destroy', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      try {
+        await (
+          api.perpsActivatePriceStream as (p: {
+            symbols: string[];
+          }) => Promise<string>
+        )({ symbols: ['ETH'] });
+        await (
+          api.perpsActivateOrderBookStream as (p: {
+            symbol: string;
+          }) => Promise<string>
+        )({ symbol: 'BTC' });
+
+        bridge.destroy();
+        jest.advanceTimersByTime(150);
+
+        // No subscriptions after destroy — timers were cancelled
+        expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+        expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 });

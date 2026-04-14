@@ -53,6 +53,7 @@ describe('usePerpsConnectionHealth', () => {
   let currentTime: number;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockReset();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
@@ -81,6 +82,7 @@ describe('usePerpsConnectionHealth', () => {
   afterEach(() => {
     nowSpy.mockRestore();
     getPerpsStreamManager().reset();
+    jest.useRealTimers();
   });
 
   it('does not run when stream manager is not initialized', async () => {
@@ -132,6 +134,7 @@ describe('usePerpsConnectionHealth', () => {
 
     await act(async () => {
       fireVisibilityChange('visible');
+      await jest.advanceTimersByTimeAsync(300);
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -139,6 +142,9 @@ describe('usePerpsConnectionHealth', () => {
     );
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsReconnect',
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetMarketDataWithPrices',
     );
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetPositions',
@@ -149,9 +155,6 @@ describe('usePerpsConnectionHealth', () => {
     );
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetAccountState',
-    );
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsGetMarketDataWithPrices',
     );
   });
 
@@ -298,6 +301,7 @@ describe('usePerpsConnectionHealth', () => {
     );
     await act(async () => {
       rerender();
+      await jest.advanceTimersByTimeAsync(300);
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -325,6 +329,7 @@ describe('usePerpsConnectionHealth', () => {
     );
     await act(async () => {
       rerender();
+      await jest.advanceTimersByTimeAsync(300);
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -373,6 +378,7 @@ describe('usePerpsConnectionHealth', () => {
 
     await act(async () => {
       fireVisibilityChange('visible');
+      await jest.advanceTimersByTimeAsync(300);
     });
 
     // Should not throw — error is caught and logged
@@ -510,12 +516,13 @@ describe('usePerpsConnectionHealth', () => {
 
     await act(async () => {
       fireVisibilityChange('visible');
+      await jest.advanceTimersByTimeAsync(300);
     });
 
+    expect(pushMarketsSpy).toHaveBeenCalledWith(mockMarkets);
     expect(pushPositionsSpy).toHaveBeenCalledWith(mockPositions);
     expect(pushOrdersSpy).toHaveBeenCalledWith(mockOrders);
     expect(pushAccountSpy).toHaveBeenCalledWith(mockAccount);
-    expect(pushMarketsSpy).toHaveBeenCalledWith(mockMarkets);
 
     pushPositionsSpy.mockRestore();
     pushOrdersSpy.mockRestore();

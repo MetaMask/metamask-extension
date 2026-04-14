@@ -64,15 +64,11 @@ type OptimisticTPSLOverride = {
   expiresAt: number;
 };
 
-// Delay before falling back to REST for account state.
-// Gives the WebSocket time to deliver fresh data on reload, avoiding a flash
-// of stale persisted values while still preventing an indefinite skeleton.
-const ACCOUNT_REST_FALLBACK_MS = 4000;
-
-// Retry delays for market data fetches (ms).
-// Covers the window where HIP-3 config may not yet be delivered from
-// LaunchDarkly when the initial fetch runs.
-const MARKET_RETRY_DELAYS_MS = [5_000, 15_000] as const;
+// Grace period before falling back to REST.
+// Gives the WebSocket time to deliver fresh data on reload, avoiding
+// redundant REST calls that contribute to 429 rate-limit errors.
+// If no WS data arrives within this window, the REST fallback fires.
+const WS_GRACE_PERIOD_MS = 3000;
 
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
@@ -128,19 +124,32 @@ class PerpsStreamManager {
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Position[]>('perpsGetPositions', [])
-          .then((data) => {
-            push(data ?? EMPTY_POSITIONS);
-          })
-          .catch((err) => {
-            console.error(
-              '[PerpsStreamManager] Failed to fetch positions',
-              err,
-            );
-            push(EMPTY_POSITIONS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.positions.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<Position[]>('perpsGetPositions', [])
+            .then((data) => {
+              if (!cancelled && !this.positions.hasCachedData()) {
+                push(data ?? EMPTY_POSITIONS);
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[PerpsStreamManager] Failed to fetch positions',
+                err,
+              );
+              if (!cancelled && !this.positions.hasCachedData()) {
+                push(EMPTY_POSITIONS);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: EMPTY_POSITIONS,
       name: 'positions',
@@ -148,16 +157,29 @@ class PerpsStreamManager {
 
     this.orders = new PerpsDataChannel<Order[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
-          .then((data) => {
-            push(data ?? EMPTY_ORDERS);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch orders', err);
-            push(EMPTY_ORDERS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.orders.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
+            .then((data) => {
+              if (!cancelled && !this.orders.hasCachedData()) {
+                push(data ?? EMPTY_ORDERS);
+              }
+            })
+            .catch((err) => {
+              console.error('[PerpsStreamManager] Failed to fetch orders', err);
+              if (!cancelled && !this.orders.hasCachedData()) {
+                push(EMPTY_ORDERS);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: EMPTY_ORDERS,
       name: 'orders',
@@ -165,11 +187,6 @@ class PerpsStreamManager {
 
     this.account = new PerpsDataChannel<AccountState | null>({
       connectFn: (push) => {
-        // Delay the REST fetch to give the WebSocket time to deliver fresh data.
-        // On reload, the persisted controller state is stale; the WebSocket
-        // pushes accurate data within ~1-2 s. If no live push arrives within
-        // ACCOUNT_REST_FALLBACK_MS, fall back to the REST response so the UI
-        // doesn't show a skeleton indefinitely.
         let cancelled = false;
         const timer = setTimeout(() => {
           if (cancelled || this.account.hasCachedData()) {
@@ -187,7 +204,7 @@ class PerpsStreamManager {
                 err,
               );
             });
-        }, ACCOUNT_REST_FALLBACK_MS);
+        }, WS_GRACE_PERIOD_MS);
 
         return () => {
           cancelled = true;
@@ -201,10 +218,8 @@ class PerpsStreamManager {
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
       connectFn: (push) => {
         let cancelled = false;
-        const retryTimers: ReturnType<typeof setTimeout>[] = [];
-
-        const fetchMarkets = (isRetry: boolean) => {
-          if (cancelled) {
+        const timer = setTimeout(() => {
+          if (cancelled || this.markets.hasCachedData()) {
             return;
           }
           submitRequestToBackground<PerpsMarketData[]>(
@@ -212,20 +227,8 @@ class PerpsStreamManager {
             [],
           )
             .then((data) => {
-              if (cancelled) {
-                return;
-              }
-              const incoming = data ?? EMPTY_MARKETS;
-
-              if (isRetry) {
-                // On retry, only push if the new data has more markets
-                // (i.e., HIP-3 markets appeared after config arrived).
-                const cached = this.markets.getCachedData();
-                if (incoming.length > cached.length) {
-                  push(incoming);
-                }
-              } else {
-                push(incoming);
+              if (!cancelled && !this.markets.hasCachedData()) {
+                push(data ?? EMPTY_MARKETS);
               }
             })
             .catch((err) => {
@@ -236,25 +239,15 @@ class PerpsStreamManager {
                 '[PerpsStreamManager] Failed to fetch markets',
                 err,
               );
-              if (!isRetry && !this.markets.hasCachedData()) {
+              if (!this.markets.hasCachedData()) {
                 push(EMPTY_MARKETS);
               }
             });
-        };
-
-        // Initial fetch
-        fetchMarkets(false);
-
-        // Schedule retries to pick up HIP-3 markets once the LD config
-        // arrives.  Retries stop once all timers fire or the channel
-        // disconnects.
-        for (const delay of MARKET_RETRY_DELAYS_MS) {
-          retryTimers.push(setTimeout(() => fetchMarkets(true), delay));
-        }
+        }, WS_GRACE_PERIOD_MS);
 
         return () => {
           cancelled = true;
-          retryTimers.forEach(clearTimeout);
+          clearTimeout(timer);
         };
       },
       initialValue: EMPTY_MARKETS,

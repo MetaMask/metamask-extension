@@ -135,11 +135,7 @@ export const PerpsView: React.FC = () => {
         setBatchActionError(t('somethingWentWrong'));
         return;
       }
-      const fresh = await submitRequestToBackground<Position[]>(
-        'perpsGetPositions',
-        [],
-      );
-      applyPositionsSnapshot(fresh ?? []);
+      applyPositionsSnapshot([]);
     } catch {
       setBatchActionError(t('somethingWentWrong'));
     } finally {
@@ -165,11 +161,7 @@ export const PerpsView: React.FC = () => {
           return;
         }
       }
-      const fresh = await submitRequestToBackground<Order[]>(
-        'perpsGetOpenOrders',
-        [],
-      );
-      applyOrdersSnapshot(fresh ?? []);
+      applyOrdersSnapshot([]);
     } catch {
       setBatchActionError(t('somethingWentWrong'));
     } finally {

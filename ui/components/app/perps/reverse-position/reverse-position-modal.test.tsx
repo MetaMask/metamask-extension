@@ -249,19 +249,22 @@ describe('ReversePositionModal', () => {
       });
     });
 
-    it('refreshes positions via stream manager after success', async () => {
-      const pushPositionsWithOverrides = jest.fn();
-      mockGetPerpsStreamManager.mockReturnValue({
-        pushPositionsWithOverrides,
-      });
-
+    it('does not refetch positions via REST after success (relies on WS)', async () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(pushPositionsWithOverrides).toHaveBeenCalledWith(mockPositions);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsFlipPosition',
+          expect.anything(),
+        );
       });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetPositions',
+        expect.anything(),
+      );
     });
 
     it('calls flip with short position when reversing a short', async () => {

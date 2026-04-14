@@ -115,6 +115,12 @@ describe('CandleStreamChannel', () => {
 
       unsubBtc();
 
+      // Deactivation is deferred — not fired yet
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+      // Advance past the 200ms grace period
+      jest.advanceTimersByTime(200);
+
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
@@ -180,7 +186,7 @@ describe('CandleStreamChannel', () => {
   });
 
   describe('unsubscribe', () => {
-    it('re-activates streaming when last subscriber unsubscribes and re-subscribes', () => {
+    it('deactivates after grace period when last subscriber leaves', () => {
       const unsubscribe = channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
@@ -191,19 +197,79 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubscribe();
+      // Not fired yet within grace period
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(200);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
       );
+    });
 
-      // Re-subscribe — should activate streaming again (1 call)
+    it('cancels deactivation when a new subscriber arrives within grace period', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+
+      // Re-subscribe before the grace period fires — should cancel deactivation
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      jest.advanceTimersByTime(200);
+
+      // No deactivation, no re-activation — stream was preserved
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+    });
+
+    it('re-activates streaming when last subscriber unsubscribes after grace period then re-subscribes', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+      jest.advanceTimersByTime(200);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
+      );
+      mockSubmitRequestToBackground.mockClear();
+
+      // Re-subscribe after grace period — should activate streaming again
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
     });
 
     it('does not re-activate when other subscribers remain', () => {

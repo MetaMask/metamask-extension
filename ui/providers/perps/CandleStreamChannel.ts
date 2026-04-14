@@ -30,6 +30,15 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
+/**
+ * Grace period before a candle stream is torn down after the last subscriber
+ * leaves.  If a new subscriber for the same symbol+interval arrives within
+ * this window (e.g. navigating back to the same chart), the pending
+ * deactivation is cancelled and the live subscription is preserved, avoiding
+ * a redundant unsubscribe + resubscribe POST to the Hyperliquid API.
+ */
+const DISCONNECT_GRACE_MS = 200;
+
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
@@ -46,6 +55,8 @@ type ChannelEntry = {
   isConnected: boolean;
   /** The duration used for the initial subscription */
   duration: TimeDuration | undefined;
+  /** Timer to defer disconnect so rapid re-navigation can cancel teardown */
+  disconnectTimer: ReturnType<typeof setTimeout> | null;
 };
 
 /**
@@ -122,8 +133,16 @@ export class CandleStreamChannel {
         unsubscribeFromSource: null,
         isConnected: false,
         duration,
+        disconnectTimer: null,
       };
       this.channels.set(key, entry);
+    }
+
+    // Cancel any pending teardown for this key so re-navigation reuses the
+    // existing background subscription instead of forcing a new one.
+    if (entry.disconnectTimer !== null) {
+      clearTimeout(entry.disconnectTimer);
+      entry.disconnectTimer = null;
     }
 
     // Register subscriber
@@ -161,9 +180,15 @@ export class CandleStreamChannel {
 
       currentEntry.subscribers.delete(subscriberId);
 
-      // Disconnect if no more subscribers (keep cache)
+      // Defer disconnect to allow rapid re-navigation to cancel teardown.
       if (currentEntry.subscribers.size === 0) {
-        this.disconnect(key, currentEntry);
+        currentEntry.disconnectTimer = setTimeout(() => {
+          currentEntry.disconnectTimer = null;
+          // Re-check: a new subscriber may have arrived during the grace period.
+          if (currentEntry.subscribers.size === 0) {
+            this.disconnect(key, currentEntry);
+          }
+        }, DISCONNECT_GRACE_MS);
       }
     };
   }
@@ -319,6 +344,12 @@ export class CandleStreamChannel {
           clearTimeout(sub.pendingTimer);
           sub.pendingTimer = null;
         }
+      }
+
+      // Cancel any pending deferred disconnect
+      if (entry.disconnectTimer !== null) {
+        clearTimeout(entry.disconnectTimer);
+        entry.disconnectTimer = null;
       }
 
       this.disconnect(key, entry);

@@ -82,7 +82,8 @@ describe('PerpsStreamManager', () => {
       jest.useFakeTimers();
     });
 
-    it('notifies subscribers with empty markets when initial fetch fails without cache', async () => {
+    it('notifies subscribers with empty markets when REST fallback fails without cache', async () => {
+      jest.useFakeTimers();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
@@ -98,8 +99,8 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.markets.subscribe(onData);
 
-        await Promise.resolve();
-        await Promise.resolve();
+        // Advance past WS grace period to trigger REST fallback
+        await jest.advanceTimersByTimeAsync(3_000);
 
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -108,13 +109,40 @@ describe('PerpsStreamManager', () => {
         );
       } finally {
         consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
       }
     });
 
-    it('preserves cached markets when a refresh fails', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
+    it('skips REST fallback when WS delivers data within grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // WS pushes data before grace period expires
+        const wsMarkets = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
+        manager.markets.pushData(wsMarkets);
+        expect(onData).toHaveBeenCalledWith(wsMarkets);
+
+        mockSubmitRequestToBackground.mockClear();
+
+        // Advance past grace period — REST should NOT fire
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('preserves cached markets when reconnecting after data was already received', async () => {
+      jest.useFakeTimers();
 
       try {
         const cachedMarkets = [
@@ -124,14 +152,9 @@ describe('PerpsStreamManager', () => {
           },
         ] as never[];
 
-        let marketFetchCount = 0;
         mockSubmitRequestToBackground.mockImplementation((method: string) => {
           if (method === 'perpsGetMarketDataWithPrices') {
-            marketFetchCount += 1;
-            if (marketFetchCount === 1) {
-              return Promise.resolve(cachedMarkets);
-            }
-            return Promise.reject(new Error('network'));
+            return Promise.resolve(cachedMarkets);
           }
           return Promise.resolve(undefined);
         });
@@ -139,133 +162,23 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         const unsubscribe = manager.markets.subscribe(onData);
 
-        await Promise.resolve();
-        await Promise.resolve();
+        // Advance past grace period for initial fetch
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(onData).toHaveBeenCalledWith(cachedMarkets);
 
         unsubscribe();
+        mockSubmitRequestToBackground.mockClear();
 
         const onDataAfterReconnect = jest.fn();
         manager.markets.subscribe(onDataAfterReconnect);
 
-        await Promise.resolve();
-        await Promise.resolve();
+        // Advance past grace period — REST should be skipped because cache exists
+        await jest.advanceTimersByTimeAsync(3_000);
 
-        expect(onData).toHaveBeenCalledWith(cachedMarkets);
+        // Subscriber should receive cached data immediately
         expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
-        expect(onDataAfterReconnect).not.toHaveBeenCalledWith([]);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[PerpsStreamManager] Failed to fetch markets',
-          expect.any(Error),
-        );
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
-    });
-
-    it('retries and pushes when HIP-3 markets appear after initial fetch', async () => {
-      jest.useFakeTimers();
-
-      try {
-        const cryptoOnly = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
-        const withHip3 = [
-          { symbol: 'BTC', name: 'Bitcoin' },
-          { symbol: 'xyz:TSLA', name: 'Tesla' },
-        ] as never[];
-
-        let fetchCount = 0;
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetMarketDataWithPrices') {
-            fetchCount += 1;
-            return Promise.resolve(fetchCount === 1 ? cryptoOnly : withHip3);
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const onData = jest.fn();
-        manager.markets.subscribe(onData);
-
-        // Flush initial fetch
-        await jest.advanceTimersByTimeAsync(0);
-
-        expect(onData).toHaveBeenCalledWith(cryptoOnly);
-        onData.mockClear();
-
-        // Advance to the first retry (5s)
-        await jest.advanceTimersByTimeAsync(5_000);
-
-        // The retry should push because withHip3 has more markets than cryptoOnly
-        expect(onData).toHaveBeenCalledWith(withHip3);
-      } finally {
-        jest.useRealTimers();
-      }
-    });
-
-    it('retry does not push when new data has fewer markets than cached', async () => {
-      jest.useFakeTimers();
-
-      try {
-        const allMarkets = [
-          { symbol: 'BTC', name: 'Bitcoin' },
-          { symbol: 'xyz:TSLA', name: 'Tesla' },
-        ] as never[];
-        const fewerMarkets = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
-
-        let fetchCount = 0;
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetMarketDataWithPrices') {
-            fetchCount += 1;
-            return Promise.resolve(
-              fetchCount === 1 ? allMarkets : fewerMarkets,
-            );
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const onData = jest.fn();
-        manager.markets.subscribe(onData);
-
-        // Flush initial fetch
-        await jest.advanceTimersByTimeAsync(0);
-
-        expect(onData).toHaveBeenCalledWith(allMarkets);
-        onData.mockClear();
-
-        // Advance to the first retry
-        await jest.advanceTimersByTimeAsync(5_000);
-
-        // Retry should NOT push because fewerMarkets has fewer markets
-        expect(onData).not.toHaveBeenCalled();
-      } finally {
-        jest.useRealTimers();
-      }
-    });
-
-    it('cleans up retry timers when channel disconnects', async () => {
-      jest.useFakeTimers();
-
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetMarketDataWithPrices') {
-            return Promise.resolve([{ symbol: 'BTC' }]);
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const unsub = manager.markets.subscribe(jest.fn());
-
-        // Flush initial fetch
-        await jest.advanceTimersByTimeAsync(0);
-
-        // Disconnect by unsubscribing (no prewarm active)
-        unsub();
-
-        // Clear the mock to verify no further calls are made
-        mockSubmitRequestToBackground.mockClear();
-
-        // Advance past all retry windows
-        await jest.advanceTimersByTimeAsync(20_000);
-
-        // No retry calls should have been made after disconnect
+        // No additional REST call because cache is warm
         expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
           'perpsGetMarketDataWithPrices',
           expect.anything(),
@@ -274,6 +187,7 @@ describe('PerpsStreamManager', () => {
         jest.useRealTimers();
       }
     });
+
   });
 
   describe('init', () => {

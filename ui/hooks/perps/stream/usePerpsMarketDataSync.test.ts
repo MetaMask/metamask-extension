@@ -24,13 +24,25 @@ Object.defineProperty(globalThis, 'crypto', {
 
 const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>;
 
-const makeMockMarket = (symbol: string): PerpsMarketData =>
+const makeMockMarket = (
+  symbol: string,
+  overrides?: Partial<PerpsMarketData>,
+): PerpsMarketData =>
   ({
     symbol,
     name: symbol,
-    price: `$100`,
+    price: '$100',
     volume: '$1B',
+    isHip3: symbol.includes(':'),
+    ...overrides,
   }) as unknown as PerpsMarketData;
+
+/**
+ * Create a HIP-3 market that could not fetch a price (shows fallback).
+ * @param symbol
+ */
+const makeDegradedHip3Market = (symbol: string): PerpsMarketData =>
+  makeMockMarket(symbol, { isHip3: true, price: '$---' });
 
 /**
  * Build a Redux state shape that the inline selector can read.
@@ -211,6 +223,76 @@ describe('usePerpsMarketDataSync', () => {
     renderHook(() => usePerpsMarketDataSync());
 
     expect(pushSpy).toHaveBeenCalledWith(markets);
+    pushSpy.mockRestore();
+  });
+
+  it('does not push when incoming has fewer priced HIP-3 markets than current cache', () => {
+    const sm = getPerpsStreamManager();
+    sm.init('0xtest');
+
+    // Good data: cache already has HIP-3 markets with real prices
+    sm.markets.pushData([
+      makeMockMarket('BTC'),
+      makeMockMarket('xyz:CL'),
+      makeMockMarket('xyz:BRENTOIL'),
+    ]);
+
+    const pushSpy = jest.spyOn(sm.markets, 'pushData');
+
+    // Degraded preloader data: same market count but HIP-3 prices are $---
+    setupSelectorWithMarkets([
+      makeMockMarket('BTC'),
+      makeDegradedHip3Market('xyz:CL'),
+      makeDegradedHip3Market('xyz:BRENTOIL'),
+    ]);
+
+    renderHook(() => usePerpsMarketDataSync());
+
+    expect(pushSpy).not.toHaveBeenCalled();
+    pushSpy.mockRestore();
+  });
+
+  it('pushes when incoming has the same number of priced HIP-3 markets as the current cache', () => {
+    const sm = getPerpsStreamManager();
+    sm.init('0xtest');
+
+    sm.markets.pushData([makeMockMarket('BTC'), makeMockMarket('xyz:CL')]);
+
+    const pushSpy = jest.spyOn(sm.markets, 'pushData');
+
+    // Same count, same quality — allow update (e.g., price refresh)
+    const updatedMarkets = [
+      makeMockMarket('BTC', { price: '$102' }),
+      makeMockMarket('xyz:CL', { isHip3: true, price: '$75' }),
+    ];
+    setupSelectorWithMarkets(updatedMarkets);
+
+    renderHook(() => usePerpsMarketDataSync());
+
+    expect(pushSpy).toHaveBeenCalledWith(updatedMarkets);
+    pushSpy.mockRestore();
+  });
+
+  it('pushes when incoming has more priced HIP-3 markets than current cache', () => {
+    const sm = getPerpsStreamManager();
+    sm.init('0xtest');
+
+    // Cache only has one HIP-3 with a price
+    sm.markets.pushData([makeMockMarket('BTC'), makeMockMarket('xyz:CL')]);
+
+    const pushSpy = jest.spyOn(sm.markets, 'pushData');
+
+    // Incoming has more markets and more priced HIP-3
+    const enrichedMarkets = [
+      makeMockMarket('BTC'),
+      makeMockMarket('xyz:CL'),
+      makeMockMarket('xyz:BRENTOIL'),
+    ];
+    setupSelectorWithMarkets(enrichedMarkets);
+
+    renderHook(() => usePerpsMarketDataSync());
+
+    expect(pushSpy).toHaveBeenCalledWith(enrichedMarkets);
     pushSpy.mockRestore();
   });
 });

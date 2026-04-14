@@ -80,16 +80,26 @@ export function usePerpsConnectionHealth(): void {
         console.warn('[Perps] Connection health reconnect failed:', err);
       }
 
-      const [positionsResult, ordersResult, accountResult, marketsResult] =
+      // Stagger REST hydration to reduce burst pressure on the Hyperliquid
+      // rate limiter.  Market data first (highest priority for UI), then
+      // user-specific data 200ms later.
+      const marketsResult = await submitRequestToBackground<PerpsMarketData[]>(
+        'perpsGetMarketDataWithPrices',
+      ).catch(() => null);
+
+      if (marketsResult) {
+        streamManager.markets.pushData(marketsResult);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      const [positionsResult, ordersResult, accountResult] =
         await Promise.allSettled([
           submitRequestToBackground<Position[]>('perpsGetPositions', [
             { skipCache: true },
           ]),
           submitRequestToBackground<Order[]>('perpsGetOpenOrders'),
           submitRequestToBackground<AccountState>('perpsGetAccountState'),
-          submitRequestToBackground<PerpsMarketData[]>(
-            'perpsGetMarketDataWithPrices',
-          ),
         ]);
 
       if (positionsResult.status === 'fulfilled' && positionsResult.value) {
@@ -100,9 +110,6 @@ export function usePerpsConnectionHealth(): void {
       }
       if (accountResult.status === 'fulfilled') {
         streamManager.account.pushData(accountResult.value ?? null);
-      }
-      if (marketsResult.status === 'fulfilled' && marketsResult.value) {
-        streamManager.markets.pushData(marketsResult.value);
       }
     } catch (err) {
       console.warn('[Perps] Connection health check failed:', err);

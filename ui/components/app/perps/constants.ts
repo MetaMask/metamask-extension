@@ -34,6 +34,12 @@ export const isValidPerpsWithdrawAmount = (amount: string): boolean =>
 export const PERPS_CONSTANTS = {
   // Fallback display values
   FALLBACK_PRICE_DISPLAY: '--',
+  /**
+   * Placeholder emitted by the controller when market price data has not yet
+   * been fetched (e.g. HIP-3 DEX allMids not yet available).  Distinct from
+   * FALLBACK_PRICE_DISPLAY so UI can show a skeleton instead of the raw string.
+   */
+  PENDING_PRICE_DISPLAY: '$---' as const,
   FALLBACK_DATA_DISPLAY: '--',
   ZERO_AMOUNT_DISPLAY: '$0',
   ZERO_AMOUNT_DETAILED_DISPLAY: '$0.00',

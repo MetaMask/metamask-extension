@@ -14,6 +14,8 @@ import {
   getDisplaySymbol,
   getChangeColor,
 } from '../../../../../components/app/perps/utils';
+import { PERPS_CONSTANTS } from '../../../../../components/app/perps/constants';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
 import type { SortField } from '../../../utils/sortMarkets';
@@ -93,6 +95,8 @@ export const MarketRow: React.FC<MarketRowProps> = ({
     return getChangeColor(change);
   }, [market.change24hPercent]);
 
+  const isPriceLoading = market.price === PERPS_CONSTANTS.PENDING_PRICE_DISPLAY;
+
   const handleClick = useCallback(() => {
     if (onPress) {
       onPress(market);
@@ -149,12 +153,20 @@ export const MarketRow: React.FC<MarketRowProps> = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {market.price}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={changeColor}>
-          {market.change24hPercent}
-        </Text>
+        {isPriceLoading ? (
+          <Skeleton className="h-4 w-20" />
+        ) : (
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {market.price}
+          </Text>
+        )}
+        {isPriceLoading ? (
+          <Skeleton className="h-3 w-12" />
+        ) : (
+          <Text variant={TextVariant.BodySm} color={changeColor}>
+            {market.change24hPercent}
+          </Text>
+        )}
       </Box>
     </Box>
   );

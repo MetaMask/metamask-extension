@@ -2,6 +2,24 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
+import { PERPS_CONSTANTS } from '../../../components/app/perps/constants';
+
+/**
+ * Count HIP-3 markets that have a real (non-fallback) price.
+ *
+ * Used to detect degraded preloader data where the controller fetched HIP-3
+ * market metadata but could not retrieve allMids prices (e.g., REST endpoint
+ * returned empty for the HIP-3 DEX). Prevents overwriting a warm cache that
+ * has good prices with a cold preload that has `$---` for every HIP-3 market.
+ *
+ * @param markets - Market data array to inspect.
+ * @returns Count of HIP-3 markets whose price is not the fallback placeholder.
+ */
+function countPricedHip3Markets(markets: PerpsMarketData[]): number {
+  return markets.filter(
+    (m) => m.isHip3 && m.price !== PERPS_CONSTANTS.PENDING_PRICE_DISPLAY,
+  ).length;
+}
 
 /**
  * Read the background-preloaded market data from Redux.
@@ -79,6 +97,17 @@ export function usePerpsMarketDataSync(): void {
     // REST response that already has better data.
     const currentMarkets = streamManager.markets.getCachedData();
     if (currentMarkets.length > cachedMarkets.length) {
+      return;
+    }
+
+    // Guard against degraded preloader data where HIP-3 DEX allMids could not
+    // be fetched (e.g., no WS snapshot and REST returned empty), causing every
+    // HIP-3 market to show '$---'.  If the current cache has more HIP-3
+    // markets with valid prices than the incoming data, skip the push to avoid
+    // overwriting good data.
+    const currentPricedHip3 = countPricedHip3Markets(currentMarkets);
+    const incomingPricedHip3 = countPricedHip3Markets(cachedMarkets);
+    if (currentPricedHip3 > incomingPricedHip3) {
       return;
     }
 
