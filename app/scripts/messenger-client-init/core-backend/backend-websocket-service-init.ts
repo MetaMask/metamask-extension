@@ -1,5 +1,5 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
@@ -22,7 +22,7 @@ import { trace } from '../../../../shared/lib/trace';
  * @param request.initMessenger - The messenger for accessing other controllers.
  * @returns The initialized service.
  */
-export const BackendWebSocketServiceInit: ControllerInitFunction<
+export const BackendWebSocketServiceInit: MessengerClientInitFunction<
   BackendWebSocketService,
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger

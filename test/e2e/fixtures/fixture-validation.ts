@@ -80,6 +80,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
+  // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
+  // Dist builds still persist `useSidePanelAsDefault: true` while fixtures use `false`.
+  'data.PreferencesController.preferences.useSidePanelAsDefault',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids

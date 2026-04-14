@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
   },
-  "yourTransactionConfirmed": {
-    "message": "トランザクションはすでに確定済みです"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "ブロックチェーン上で確定しているため、トランザクションをキャンセルできませんでした。"
-  },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"
   },

@@ -5,7 +5,7 @@ import {
   MockAnyNamespace,
   MOCK_ANY_NAMESPACE,
 } from '@metamask/messenger';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   BackendWebSocketServiceMessenger,
@@ -18,7 +18,7 @@ import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 jest.mock('@metamask/core-backend');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     BackendWebSocketServiceMessenger,
     BackendWebSocketServiceInitMessenger
   >

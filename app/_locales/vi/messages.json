@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
   },
-  "yourTransactionConfirmed": {
-    "message": "Giao dịch đã được xác nhận"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Chúng tôi không thể hủy giao dịch của bạn trước khi nó được xác nhận trên chuỗi khối."
-  },
   "yourWalletIsReady": {
     "message": "Ví của bạn đã sẵn sàng!"
   },

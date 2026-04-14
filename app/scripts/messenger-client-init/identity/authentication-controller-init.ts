@@ -3,7 +3,7 @@ import {
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
@@ -19,7 +19,7 @@ import { loadAuthenticationConfig } from '../../../../shared/lib/authentication'
  * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
-export const AuthenticationControllerInit: ControllerInitFunction<
+export const AuthenticationControllerInit: MessengerClientInitFunction<
   AuthenticationController,
   AuthenticationControllerMessenger,
   AuthenticationControllerInitMessenger

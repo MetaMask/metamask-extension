@@ -14,7 +14,7 @@ import {
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
-import type { ControllerInitRequest } from './types';
+import type { MessengerClientInitRequest } from './types';
 
 jest.mock('@metamask/perps-controller', () => ({
   getDefaultPerpsControllerState: jest.fn().mockReturnValue({
@@ -121,7 +121,7 @@ jest.mock('../controllers/perps/infrastructure', () => ({
 }));
 
 type InitRequest = jest.Mocked<
-  ControllerInitRequest<PerpsControllerMessenger, undefined>
+  MessengerClientInitRequest<PerpsControllerMessenger, undefined>
 >;
 
 function getInitRequestMock(): InitRequest {
