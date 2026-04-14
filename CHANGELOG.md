@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.27.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.27.0 (#41665)
+- Bump new assets controller to v5.0.0 (#41575)
+- chore: Bulk register actions in `AppMetadataController` (#41553)
+- chore: Bulk register actions in `AlertController` (#41552)
+- chore: Bulk register actions in `AccountOrderController` (#41551)
+- chore: Bulk register actions in`RewardController` and `RewardsDataService` (#41550)
+- chore: Bulk register actions in `MetametricsDataDeletionController` (#41548)
+- Bump institutional snap to 1.5.0 (#39652)
+- chore: Bulk register actions in `InstitutionalSnapController` (#41439)
+
 ### Added
 
 - Added improved gas-included metrics for send and transfer flows (#41581)
