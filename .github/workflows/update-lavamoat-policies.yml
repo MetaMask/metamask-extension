@@ -64,7 +64,7 @@ jobs:
           echo "Found run ${RUN_ID}, checking validation job status..."
 
           PENDING=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.status != "completed") | .id')
+            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.status != "completed") | .id')
 
           if [ -n "$PENDING" ]; then
             echo "LavaMoat validation still running"
