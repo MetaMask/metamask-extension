@@ -273,15 +273,21 @@ function renderElement({
     case 'expiry':
       return renderExpiryElement(rowKey, element, ctx, t, rules);
 
-    case 'justification':
-      return element.getValue(ctx) ? (
+    case 'justification': {
+      const justificationValue = element.getValue(ctx);
+      const justificationText =
+        typeof justificationValue === 'string'
+          ? justificationValue
+          : translateValue(t, justificationValue);
+      return (
         <GatorPermissionDetailRow
           key={rowKey}
           label={t(element.labelKey)}
-          value={element.getValue(ctx) as string}
+          value={justificationText}
           testId={element.testId}
         />
-      ) : null;
+      );
+    }
 
     case 'account':
       return extraProps.permissionAccount ? (

@@ -46,8 +46,9 @@ const justificationSection: SchemaSection = {
       type: 'justification',
       labelKey: 'gatorPermissionsJustification',
       testId: 'review-gator-permission-justification',
-      getValue: (ctx) => ctx.permission.justification,
-      isVisible: (ctx) => Boolean(ctx.permission.justification),
+      getValue: (ctx) =>
+        ctx.permission.justification ?? { key: 'gatorNoJustificationProvided' },
+      isVisible: alwaysVisible,
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {

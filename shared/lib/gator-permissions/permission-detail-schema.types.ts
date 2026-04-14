@@ -139,7 +139,7 @@ export type JustificationField = {
   type: 'justification';
   labelKey: string;
   testId: string;
-  getValue: (ctx: PermissionRenderContext) => string | undefined;
+  getValue: (ctx: PermissionRenderContext) => string | I18nValue;
   isVisible: (ctx: PermissionRenderContext) => boolean;
   includeInViews: FieldView[];
 };

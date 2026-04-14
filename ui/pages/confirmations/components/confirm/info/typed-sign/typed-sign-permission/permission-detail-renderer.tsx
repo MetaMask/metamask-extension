@@ -202,15 +202,18 @@ function renderElement(
     }
 
     case 'justification': {
+      const justificationValue = element.getValue(ctx);
+      const justificationText =
+        typeof justificationValue === 'string'
+          ? justificationValue
+          : translateValue(t, justificationValue);
       return (
         <ConfirmInfoRow
           key={index}
-          label="Justification"
+          label={t(element.labelKey)}
           tooltip={t('confirmFieldTooltipJustification')}
         >
-          <Text variant={TextVariant.BodyMd}>
-            {ctx.permission.justification}
-          </Text>
+          <Text variant={TextVariant.BodyMd}>{justificationText}</Text>
         </ConfirmInfoRow>
       );
     }
