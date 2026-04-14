@@ -290,7 +290,9 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withAssetsController(REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
+          .withAssetsController(
+            REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER,
+          )
           .build(),
         localNodeOptions: [
           {

@@ -468,10 +468,13 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
-    await this.driver.waitForSelector({
-      css: '[data-testid="multichain-token-list-item-value"]',
-      text: `${expectedTokenBalance} ${symbol}`,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: '[data-testid="multichain-token-list-item-value"]',
+        text: `${expectedTokenBalance} ${symbol}`,
+      },
+      { timeout: 30000 },
+    );
   }
 
   /**

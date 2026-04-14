@@ -18,17 +18,7 @@ export function mockAccountsApiV2SupportedNetworks(mockServer: Mockttp) {
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-      ],
+      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
       partialSupport: { balances: [42220, 43114] },
     });
 }
@@ -66,7 +56,9 @@ export function mockAccountsApiV5MultiaccountBalances(mockServer: Mockttp) {
   ];
 
   return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u)
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
     .always()
     .thenCallback(() => ({
       statusCode: 200,
