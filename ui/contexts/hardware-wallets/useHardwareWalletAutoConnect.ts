@@ -87,47 +87,38 @@ export const useHardwareWalletAutoConnect = ({
       // so we only mark auto-connected for the correct account
       const effectAccountAddress = accountAddress;
 
-      const runNativeConnect = async () => {
-        if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
-          return;
-        }
+      const handleNativeConnect = async () => {
+        try {
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
+            return;
+          }
 
-        const currentPermissionState =
-          await checkHardwareWalletPermission(walletType);
+          const currentPermissionState =
+            await checkHardwareWalletPermission(walletType);
 
-        // Check abort after async operation
-        if (abortSignal.aborted) {
-          return;
-        }
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
+            return;
+          }
 
-        if (isEnsuringDeviceReadyRef.current) {
-          return;
-        }
+          setHardwareConnectionPermissionState(currentPermissionState);
+          if (
+            currentPermissionState !== HardwareConnectionPermissionState.Granted
+          ) {
+            return;
+          }
 
-        setHardwareConnectionPermissionState(currentPermissionState);
+          if (adapterRef.current?.isConnected()) {
+            updateConnectionState(ConnectionState.connected());
+            return;
+          }
 
-        if (
-          currentPermissionState !== HardwareConnectionPermissionState.Granted
-        ) {
-          return;
-        }
+          if (isConnectingRef.current || !connectRef.current) {
+            return;
+          }
 
-        if (adapterRef.current?.isConnected()) {
-          updateConnectionState(ConnectionState.connected());
-          return;
-        }
-
-        // Synchronous check-and-set to prevent race condition
-        // This must happen atomically before any async work
-        if (isConnectingRef.current) {
-          return;
-        }
-        isConnectingRef.current = true;
-
-        const connect = connectRef.current;
-        if (connect) {
+          isConnectingRef.current = true;
           try {
-            await connect();
+            await connectRef.current();
             if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
               updateConnectionState(ConnectionState.connected());
               setAutoConnected(effectAccountAddress);
@@ -139,19 +130,11 @@ export const useHardwareWalletAutoConnect = ({
               updateConnectionState(ConnectionState.disconnected());
             }
           } finally {
-            // Reset connecting state when done (success or failure)
             isConnectingRef.current = false;
           }
-        } else {
-          // No connect function available, reset the flag
-          isConnectingRef.current = false;
-        }
-      };
-
-      const handleNativeConnect = () => {
-        runNativeConnect().catch(() => {
+        } catch {
           // Swallow errors; auto-connect best-effort only.
-        });
+        }
       };
 
       const runNativeDisconnect = async () => {
