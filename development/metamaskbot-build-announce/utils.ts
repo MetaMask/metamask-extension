@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
 /**
  * Cross-cutting utilities for the PR announcement comment builder.
  */
@@ -6,7 +5,8 @@
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
-} from '../../shared/constants/benchmarks.ts';
+} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
+// eslint-disable-next-line import-x/extensions
 import type { HistoricalBaselineReference } from './historical-comparison.ts';
 
 export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =

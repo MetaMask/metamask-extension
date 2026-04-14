@@ -1,16 +1,18 @@
-/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
 /**
  * Historical data fetch and aggregation for performance benchmarks.
  *
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
+// eslint-disable-next-line import-x/extensions
 import { calculateMean } from '../../test/e2e/benchmarks/utils/statistics.ts';
+// eslint-disable-next-line import-x/extensions
 import { STAT_KEY } from '../../shared/constants/benchmarks.ts';
 import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
-} from '../../shared/constants/benchmarks.ts';
+} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
+// eslint-disable-next-line import-x/extensions
 import { EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL } from './utils.ts';
 
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;

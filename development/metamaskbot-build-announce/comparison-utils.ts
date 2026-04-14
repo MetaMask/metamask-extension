@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
 /**
  * Benchmark comparison module.
  *
@@ -20,13 +19,14 @@ import type {
   ThresholdViolation,
   RelativeThresholds,
   ComparisonKey,
-} from '../../shared/constants/benchmarks.ts';
+} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
 import {
   PERCENTILE_KEY,
   STAT_KEY,
   THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
-} from '../../shared/constants/benchmarks.ts';
+} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
+// eslint-disable-next-line import-x/extensions
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics.ts';
 
 export const COMPARISON_SEVERITY = {

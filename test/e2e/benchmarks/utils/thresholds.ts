@@ -1,4 +1,4 @@
-/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
+// eslint-disable-next-line import-x/extensions
 import { type ThresholdConfig } from '../../../../shared/constants/benchmarks.ts';
 
 /**

@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions -- .ts extensions required for Node native TS (ESM) */
 /**
  * Statistical utilities for performance benchmarks
  *
@@ -9,6 +8,7 @@
  * - Sanity checks for metric validation
  */
 
+// eslint-disable-next-line import-x/extensions
 import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks.ts';
 import type {
   BenchmarkResults,
@@ -22,7 +22,7 @@ import type {
   WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRating,
-} from '../../../../shared/constants/benchmarks.ts';
+} from '../../../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
