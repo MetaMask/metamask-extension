@@ -17,10 +17,10 @@ export type InitMessengerClientsResult = {
   /** All API methods exposed by the messenger clients. */
   messengerClientApi: Record<string, MessengerClient>;
 
-  /** All messenger clients that provided a memory state key. */
+  /** All controllers that provided a memory state key. */
   controllerMemState: Record<string, MessengerClient>;
 
-  /** All messenger clients that provided a persisted state key. */
+  /** All controllers that provided a persisted state key. */
   controllerPersistedState: Record<string, MessengerClient>;
 
   /** All initialized messenger clients keyed by name. */
