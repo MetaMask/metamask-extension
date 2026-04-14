@@ -637,10 +637,15 @@ function PermissionsConnect() {
     (metadata as Record<string, string>)?.origin,
   );
 
+  const cancelFromTrustSignalGate = useCallback(
+    () => cancelPermissionsRequest(permissionsRequestId || ''),
+    [cancelPermissionsRequest, permissionsRequestId],
+  );
+
   return (
     <ConnectionTrustSignalGate
       origin={origin}
-      onCancel={() => cancelPermissionsRequest(permissionsRequestId || '')}
+      onCancel={cancelFromTrustSignalGate}
     >
       <div className="permissions-connect">
         {!hideTopBar &&
