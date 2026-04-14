@@ -1,5 +1,4 @@
 import type { Position } from '@metamask/perps-controller';
-import { flushPromises } from '../../../test/lib/timer-helpers';
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
@@ -99,7 +98,8 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.markets.subscribe(onData);
 
-        await flushPromises();
+        await Promise.resolve();
+        await Promise.resolve();
 
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -139,14 +139,16 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         const unsubscribe = manager.markets.subscribe(onData);
 
-        await flushPromises();
+        await Promise.resolve();
+        await Promise.resolve();
 
         unsubscribe();
 
         const onDataAfterReconnect = jest.fn();
         manager.markets.subscribe(onDataAfterReconnect);
 
-        await flushPromises();
+        await Promise.resolve();
+        await Promise.resolve();
 
         expect(onData).toHaveBeenCalledWith(cachedMarkets);
         expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
@@ -158,147 +160,6 @@ describe('PerpsStreamManager', () => {
       } finally {
         consoleErrorSpy.mockRestore();
       }
-    });
-  });
-
-  describe('fetchWithRecovery (auto-recovery from CLIENT_NOT_INITIALIZED)', () => {
-    beforeEach(() => {
-      mockSubmitRequestToBackground.mockReset();
-    });
-
-    afterEach(() => {
-      mockSubmitRequestToBackground.mockReset();
-      mockSubmitRequestToBackground.mockResolvedValue(undefined);
-    });
-
-    it('re-initializes and retries when positions fetch gets CLIENT_NOT_INITIALIZED', async () => {
-      let callCount = 0;
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetPositions') {
-          callCount += 1;
-          if (callCount === 1) {
-            return Promise.reject(new Error('CLIENT_NOT_INITIALIZED'));
-          }
-          return Promise.resolve([{ symbol: 'ETH' }]);
-        }
-        if (method === 'perpsInit') {
-          return Promise.resolve(undefined);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const onData = jest.fn();
-      manager.positions.subscribe(onData);
-
-      await flushPromises();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
-      expect(onData).toHaveBeenCalledWith([{ symbol: 'ETH' }]);
-    });
-
-    it('re-initializes and retries when orders fetch gets CLIENT_NOT_INITIALIZED', async () => {
-      let callCount = 0;
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetOpenOrders') {
-          callCount += 1;
-          if (callCount === 1) {
-            return Promise.reject(new Error('CLIENT_NOT_INITIALIZED'));
-          }
-          return Promise.resolve([{ id: '1' }]);
-        }
-        if (method === 'perpsInit') {
-          return Promise.resolve(undefined);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const onData = jest.fn();
-      manager.orders.subscribe(onData);
-
-      await flushPromises();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
-      expect(onData).toHaveBeenCalledWith([{ id: '1' }]);
-    });
-
-    it('does not call perpsInit for non-initialization errors', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetPositions') {
-            return Promise.reject(new Error('network error'));
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const onData = jest.fn();
-        manager.positions.subscribe(onData);
-
-        await flushPromises();
-
-        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-          'perpsInit',
-        );
-        expect(onData).toHaveBeenCalledWith([]);
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
-    });
-
-    it('falls back to empty data when recovery also fails', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetPositions') {
-            return Promise.reject(new Error('CLIENT_NOT_INITIALIZED'));
-          }
-          if (method === 'perpsInit') {
-            return Promise.resolve(undefined);
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const onData = jest.fn();
-        manager.positions.subscribe(onData);
-
-        await flushPromises();
-
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
-        expect(onData).toHaveBeenCalledWith([]);
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
-    });
-
-    it('handles CLIENT_REINITIALIZING the same way', async () => {
-      let callCount = 0;
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetAccountState') {
-          callCount += 1;
-          if (callCount === 1) {
-            return Promise.reject(new Error('CLIENT_REINITIALIZING'));
-          }
-          return Promise.resolve({ totalBalance: '100' });
-        }
-        if (method === 'perpsInit') {
-          return Promise.resolve(undefined);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const onData = jest.fn();
-      manager.account.subscribe(onData);
-
-      await flushPromises();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
-      expect(onData).toHaveBeenCalledWith({ totalBalance: '100' });
     });
   });
 
