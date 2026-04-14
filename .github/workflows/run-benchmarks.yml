@@ -322,7 +322,7 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: npx tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
