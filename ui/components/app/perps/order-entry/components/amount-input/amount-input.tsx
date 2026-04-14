@@ -258,7 +258,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           gap={2}
         >
           <Text variant={TextVariant.BodySm}>
-            {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
+            {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </Text>
           <Icon
             name={IconName.AddCircle}
