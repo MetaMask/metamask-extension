@@ -57,7 +57,22 @@ const justificationSection: SchemaSection = {
       testId: 'review-gator-permission-account-name',
       getValue: () => undefined,
       isVisible: alwaysVisible,
-      includeInViews: ['confirmation', 'reviewSummary'],
+      includeInViews: ['confirmation'],
+    },
+  ],
+};
+
+/** Account row for review list summary — last so Amount/Frequency precede it. */
+const reviewSummaryAccountSection: SchemaSection = {
+  testId: 'review_summary-account-section',
+  elements: [
+    {
+      type: 'account',
+      labelKey: 'account',
+      testId: 'review-gator-permission-account-name',
+      getValue: () => undefined,
+      isVisible: alwaysVisible,
+      includeInViews: ['reviewSummary'],
     },
   ],
 };
@@ -159,6 +174,7 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
         },
       ],
     },
+    reviewSummaryAccountSection,
   ],
 };
 
@@ -283,6 +299,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         },
       ],
     },
+    reviewSummaryAccountSection,
   ],
 };
 
@@ -360,6 +377,7 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
         },
       ],
     },
+    reviewSummaryAccountSection,
   ],
 };
 
@@ -491,6 +509,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         },
       ],
     },
+    reviewSummaryAccountSection,
   ],
 };
 
@@ -521,6 +540,7 @@ const erc20TokenRevocationSchema: PermissionSchemaEntry = {
         },
       ],
     },
+    reviewSummaryAccountSection,
   ],
 };
 
