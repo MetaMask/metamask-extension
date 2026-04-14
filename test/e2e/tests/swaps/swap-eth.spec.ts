@@ -28,6 +28,7 @@ describe('Swap Eth for another Token', function () {
           },
           // The expected amount in destination token can vary as upstream quote data changes.
           expectedDestAmount: '',
+          skipStatusPage: true,
         });
       },
     );

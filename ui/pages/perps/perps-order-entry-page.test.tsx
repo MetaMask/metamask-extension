@@ -84,6 +84,14 @@ jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
+jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 const mockStreamManagerBase = {
   positions: {
     getCachedData: () => [],
@@ -113,6 +121,9 @@ jest.mock('../../store/background-connection', () => ({
 
 const mockReplacePerpsToastByKey = jest.fn();
 const mockHidePerpsToast = jest.fn();
+const mockTriggerDeposit = jest.fn().mockResolvedValue({
+  transactionId: 'perps-deposit-tx',
+});
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -131,6 +142,15 @@ jest.mock('../../providers/perps', () => {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   };
 });
+jest.mock(
+  '../../components/app/perps/hooks/usePerpsDepositConfirmation',
+  () => ({
+    usePerpsDepositConfirmation: () => ({
+      trigger: mockTriggerDeposit,
+      isLoading: false,
+    }),
+  }),
+);
 
 const mockLivePositions = jest.fn<
   { positions: Position[]; isInitialLoading: boolean },
@@ -257,6 +277,7 @@ describe('PerpsOrderEntryPage', () => {
     mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
+    mockTriggerDeposit.mockClear();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -440,6 +461,45 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
+    it('shows an add funds CTA when new order balance is zero', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(messages.addFunds.message);
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables submit while account state is still loading for a new order', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
     it('disables submit when selected account address is missing', async () => {
       const state = createMockState();
       state.metamask.internalAccounts = {
@@ -569,6 +629,64 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         screen.getByTestId('limit-price-liquidation-warning'),
       ).toBeInTheDocument();
+    });
+
+    it('disables submit and shows Insufficient funds when order exceeds available balance', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      // availableBalance is 10125, default leverage is 3, so max amount = 30375
+      // Enter 50000 which requires margin of 50000/3 ≈ 16666 > 10125
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '50000' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        messages.insufficientFundsSend.message,
+      );
+    });
+
+    it('does not disable submit when order is within available balance', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      // Enter 100 which requires margin of 100/3 ≈ 33 < 10125
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        messages.insufficientFundsSend.message,
+      );
+    });
+
+    it('disables submit when auto-close take profit is invalid', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
     });
   });
 
@@ -741,7 +859,7 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
-    it('converts ROE percent values for close subtitle fallback', async () => {
+    it('uses ROE ratio for close subtitle fallback', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
         positions: [
@@ -749,7 +867,7 @@ describe('PerpsOrderEntryPage', () => {
             ...mockPositions[0],
             marginUsed: '0',
             unrealizedPnl: 'not-a-number',
-            returnOnEquity: '0.8',
+            returnOnEquity: '0.008',
           },
         ],
         isInitialLoading: false,

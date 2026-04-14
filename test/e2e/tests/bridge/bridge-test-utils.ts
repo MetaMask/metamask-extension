@@ -5,6 +5,7 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
+import { getRegistryEntry } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -89,7 +90,6 @@ export class BridgePage {
     });
   };
 }
-
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://app.metamask.io/bridge`)
@@ -474,6 +474,10 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
+  const extensionSkipTransactionStatusPage =
+    additionalFlags.extensionSkipTransactionStatusPage ??
+    getRegistryEntry('extensionSkipTransactionStatusPage')?.productionDefault;
+
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -484,6 +488,7 @@ async function mockFeatureFlags(
           {
             bridgeConfig: featureFlags,
             extensionUxPna25: true,
+            extensionSkipTransactionStatusPage,
             ...additionalFlags,
           },
         ],
