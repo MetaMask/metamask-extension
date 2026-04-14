@@ -25,6 +25,7 @@ jobs:
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
       VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ steps.find-ci-run.outputs.NO_CI_RUN }}
+      VALIDATION_FAILED: ${{ steps.find-ci-run.outputs.VALIDATION_FAILED }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -72,8 +73,16 @@ jobs:
             exit 0
           fi
 
-          echo "LavaMoat validation completed"
+          FAILED=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion == "failure") | .id')
+
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
+          if [ -n "$FAILED" ]; then
+            echo "LavaMoat validation completed with failures — policy diffs expected"
+            echo "VALIDATION_FAILED=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "LavaMoat validation completed — all policies up to date"
+          fi
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -88,21 +97,21 @@ jobs:
       RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
       VALIDATION_PENDING: ${{ needs.prepare.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ needs.prepare.outputs.NO_CI_RUN }}
+      VALIDATION_FAILED: ${{ needs.prepare.outputs.VALIDATION_FAILED }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
-        if: ${{ env.RUN_ID }}
+        if: ${{ env.VALIDATION_FAILED == 'true' }}
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Checkout pull request
-        if: ${{ env.RUN_ID }}
+        if: ${{ env.VALIDATION_FAILED == 'true' }}
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Download policy diffs from CI
-        if: ${{ env.RUN_ID }}
-        continue-on-error: true
+        if: ${{ env.VALIDATION_FAILED == 'true' }}
         uses: actions/download-artifact@v7
         with:
           path: lavamoat-policy-diffs
@@ -177,7 +186,7 @@ jobs:
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
 
       - name: Post comment (no policy changes)
-        if: ${{ needs.prepare.result == 'success' && env.RUN_ID && !env.VALIDATION_PENDING && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
+        if: ${{ needs.prepare.result == 'success' && env.RUN_ID && env.VALIDATION_FAILED != 'true' && !env.VALIDATION_PENDING }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No policy changes"
 
