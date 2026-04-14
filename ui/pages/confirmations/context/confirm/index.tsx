@@ -19,6 +19,7 @@ import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
+  /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
@@ -109,6 +110,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
     );
   }
   return context as {
+    /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
     currentConfirmation: CurrentConfirmation;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;

@@ -1285,6 +1285,9 @@
     "ui/pages/confirmations/hooks/send/useSendNfts.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/pages/confirmations/hooks/signatures/useSignatureRequest.test.ts": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapActions.test.ts": {
       "Reselect: Identity function warnings": 3
     },
@@ -1319,8 +1322,17 @@
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmountAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/transactions/useTransactionMetadataRequest.test.ts": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useAddEthereumChainRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
+    },
+    "ui/pages/confirmations/hooks/useApprovalRequest.test.ts": {
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/hooks/useAutomaticGasFeeTokenSelect.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1335,6 +1347,9 @@
       "MetaMask: Background connection not initialized": 7,
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 6
+    },
+    "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/useConfirmationNetworkInfo.test.ts": {
       "Reselect: Identity function warnings": 3
