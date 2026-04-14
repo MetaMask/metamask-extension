@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useReducer } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Icon as DsIcon,
@@ -8,20 +8,13 @@ import {
 } from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositInProgress,
   selectPerpsLastDepositResult,
   selectPerpsLastDepositTransactionId,
 } from '../../../selectors/perps-controller';
 import { Toast } from '../../multichain/toast';
-
-const dismissedPendingTransactionIds = new Set<string>();
-const dismissedCompletionTimestamps = new Set<number>();
-
-export function resetPerpsDepositToastDismissalState() {
-  dismissedPendingTransactionIds.clear();
-  dismissedCompletionTimestamps.clear();
-}
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
@@ -30,74 +23,88 @@ export function PerpsDepositToast() {
   const lastDepositTransactionId = useSelector(
     selectPerpsLastDepositTransactionId,
   );
-  const [, forceRender] = useReducer((count) => count + 1, 0);
+  const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
+    useState<string | null>(null);
+  const [dismissedCompletionTimestamp, setDismissedCompletionTimestamp] =
+    useState<number | null>(null);
 
   const completionTimestamp =
     typeof lastDepositResult?.timestamp === 'number'
       ? lastDepositResult.timestamp
       : null;
 
-  const hasDismissedPendingToast = Boolean(
-    lastDepositTransactionId &&
-      dismissedPendingTransactionIds.has(lastDepositTransactionId),
-  );
-  const hasDismissedCompletionToast = Boolean(
-    completionTimestamp &&
-      dismissedCompletionTimestamps.has(completionTimestamp),
-  );
+  useEffect(() => {
+    if (!depositInProgress) {
+      setDismissedPendingTransactionId(null);
+    } else if (
+      lastDepositTransactionId &&
+      lastDepositTransactionId !== dismissedPendingTransactionId
+    ) {
+      setDismissedPendingTransactionId(null);
+    }
+  }, [
+    depositInProgress,
+    dismissedPendingTransactionId,
+    lastDepositTransactionId,
+  ]);
+
+  useEffect(() => {
+    if (
+      completionTimestamp &&
+      completionTimestamp !== dismissedCompletionTimestamp
+    ) {
+      setDismissedCompletionTimestamp(null);
+    }
+  }, [completionTimestamp, dismissedCompletionTimestamp]);
 
   const dismissPendingToast = useCallback(() => {
-    if (lastDepositTransactionId) {
-      dismissedPendingTransactionIds.add(lastDepositTransactionId);
-    }
-    forceRender();
+    setDismissedPendingTransactionId(lastDepositTransactionId ?? 'pending');
   }, [lastDepositTransactionId]);
 
   const dismissCompletionToast = useCallback(() => {
-    if (completionTimestamp) {
-      dismissedCompletionTimestamps.add(completionTimestamp);
-    }
-    forceRender();
+    setDismissedCompletionTimestamp(completionTimestamp);
+    submitRequestToBackground('perpsClearDepositResult', []).catch(() => {
+      // Non-blocking: toast is already dismissed locally
+    });
   }, [completionTimestamp]);
 
-  const completionToast = useMemo(() => {
-    if (!lastDepositResult || hasDismissedCompletionToast) {
-      return null;
-    }
+  const hasDismissedPendingToast =
+    (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
+  const hasDismissedCompletionToast =
+    completionTimestamp !== null &&
+    completionTimestamp === dismissedCompletionTimestamp;
 
+  if (lastDepositResult && !hasDismissedCompletionToast) {
     const isSuccess = lastDepositResult.success === true;
-
-    return {
-      text: isSuccess
-        ? t('perpsDepositToastSuccessTitle')
-        : t('perpsDepositToastErrorTitle'),
-      description: isSuccess
-        ? t('perpsDepositToastSuccessDescription')
-        : lastDepositResult.error || t('perpsDepositToastErrorDescription'),
-      startAdornment: isSuccess ? (
-        <DsIcon
-          name={DsIconName.Confirmation}
-          color={DsIconColor.SuccessDefault}
-          size={DsIconSize.Lg}
-        />
-      ) : (
-        <DsIcon
-          name={DsIconName.CircleX}
-          color={DsIconColor.ErrorDefault}
-          size={DsIconSize.Lg}
-        />
-      ),
-    };
-  }, [hasDismissedCompletionToast, lastDepositResult, t]);
-
-  if (completionToast) {
     return (
       <Toast
         key={`perps-deposit-toast-${completionTimestamp}`}
         dataTestId="perps-deposit-toast"
-        text={completionToast.text}
-        description={completionToast.description}
-        startAdornment={completionToast.startAdornment}
+        text={
+          isSuccess
+            ? t('perpsDepositToastSuccessTitle')
+            : t('perpsDepositToastErrorTitle')
+        }
+        description={
+          isSuccess
+            ? t('perpsDepositToastSuccessDescription')
+            : lastDepositResult.error || t('perpsDepositToastErrorDescription')
+        }
+        startAdornment={
+          isSuccess ? (
+            <DsIcon
+              name={DsIconName.Confirmation}
+              color={DsIconColor.SuccessDefault}
+              size={DsIconSize.Lg}
+            />
+          ) : (
+            <DsIcon
+              name={DsIconName.CircleX}
+              color={DsIconColor.ErrorDefault}
+              size={DsIconSize.Lg}
+            />
+          )
+        }
         onClose={dismissCompletionToast}
         autoHideTime={5 * SECOND}
         onAutoHideToast={dismissCompletionToast}
