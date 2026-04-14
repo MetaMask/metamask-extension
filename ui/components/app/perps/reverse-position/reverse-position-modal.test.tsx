@@ -190,8 +190,9 @@ describe('ReversePositionModal', () => {
     it('shows computed estimated fee', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      const feeElement = screen.getByTestId('perps-reverse-fee-value');
-      expect(feeElement).toHaveTextContent('$1.45');
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$1.45',
+      );
     });
 
     it('shows fee placeholder while fees are unavailable', () => {
@@ -390,7 +391,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText("We couldn't load this page."),
+          screen.getByText(\"We couldn't load this page.\"),
         ).toBeInTheDocument();
       });
 
@@ -422,7 +423,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText("We couldn't load this page."),
+          screen.getByText(\"We couldn't load this page.\"),
         ).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();

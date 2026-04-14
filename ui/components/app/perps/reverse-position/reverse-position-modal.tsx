@@ -46,13 +46,6 @@ export type ReversePositionModalProps = {
   currentPrice: number;
 };
 
-/**
- * Builds a position payload for `perpsFlipPosition`. The controller expects
- * `leverage.value`; normalize when the stream sent a primitive leverage.
- *
- * @param pos - UI position from props
- * @returns Position safe to pass to the background flip RPC
- */
 function toFlipPositionPayload(pos: Position): Position {
   if (typeof pos.leverage === 'object' && pos.leverage !== null) {
     return pos;
@@ -64,16 +57,6 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-/**
- * Modal to reverse a position (Long -> Short or Short -> Long).
- * Shows Direction, Est. size, Fees and Cancel/Save.
- * Save calls `perpsFlipPosition` (single venue order via PerpsController; not close+open).
- * @param options0
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.position
- * @param options0.currentPrice
- */
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
@@ -123,8 +106,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     orderType: 'market',
   });
 
-  // A flip places one order of 2x position size (1x close + 1x open opposite).
-  // Fee is charged on the full 2x notional.
   const estimatedFees = useMemo(
     () =>
       feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
