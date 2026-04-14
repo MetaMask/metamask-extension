@@ -10,8 +10,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
-import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
+import Tooltip from '../../../ui/tooltip';
 
 /**
  * Material UI styles for the slider - uses CSS variables for theming.
@@ -160,7 +164,13 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
               </Text>
             )}
             {tooltipText && typeof tooltipText === 'string' && (
-              <InfoTooltip position="top" contentText={tooltipText} />
+              <Tooltip position="top" html={tooltipText} interactive>
+                <Icon
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
+              </Tooltip>
             )}
             {valueText && (
               <Text
