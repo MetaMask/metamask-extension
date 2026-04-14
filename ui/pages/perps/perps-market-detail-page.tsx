@@ -681,7 +681,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
 
   const handleAddFunds = useCallback(() => {
-    if (!isEligible || !selectedAddress || isDepositLoading) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!selectedAddress || isDepositLoading) {
       return;
     }
 
@@ -1853,8 +1857,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
-            disabled={!isEligible || !selectedAddress || isDepositLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={!selectedAddress || isDepositLoading}
             className="w-full"
             data-testid="perps-add-funds-cta-button"
           >
