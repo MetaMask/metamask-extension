@@ -50,6 +50,7 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+import { isSwapsDefaultTokenSymbol } from '../../../../shared/lib/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
@@ -338,6 +339,11 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToPrepareSwap(navigate));
+          } else if (
+            isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
+            swapComplete
+          ) {
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           } else {
             navigate(DEFAULT_ROUTE);
           }

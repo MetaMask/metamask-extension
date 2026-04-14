@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { OrderEntry } from './order-entry';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
@@ -24,6 +23,14 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
     error: null,
     refetch: jest.fn(),
   }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 
 const mockStore = configureStore({
@@ -132,8 +139,8 @@ describe('OrderEntry', () => {
 
       const tokenContainer = screen.getByTestId('amount-input-token-field');
       const tokenInput = tokenContainer.querySelector('input');
-      // Default leverage is 3x, so position size = ($45250 * 3) / $45250 = 3 BTC
-      expect(tokenInput).toHaveValue('3');
+      // Amount is treated as position size (TAT-2684 fix), so token = size / price = $45250 / $45250 = 1 BTC
+      expect(tokenInput).toHaveValue('1');
     });
   });
 
@@ -165,10 +172,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Should show calculated margin ($1,000 entered)
-      expect(screen.getByText('$1,000.00')).toBeInTheDocument();
-      // Should show calculated fees (0.05% of 3000 position value at 3x leverage = $1.50)
-      expect(screen.getByText('$1.50')).toBeInTheDocument();
+      // Margin = notional / leverage = $1,000 / 3 = $333.33 (fees are a separate line item)
+      expect(screen.getByText('$333.33')).toBeInTheDocument();
+      // Fees = HyperLiquid taker (0.045%) + MetaMask builder (0.1%) = 0.145% of $1,000 = $1.45
+      expect(screen.getByText('$1.45')).toBeInTheDocument();
     });
   });
 

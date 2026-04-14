@@ -27,15 +27,20 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
 } from '../utils';
-import {
-  PERPS_MARKET_ORDER_FEE_RATE,
-  PERPS_MIN_MARKET_ORDER_USD,
-} from '../constants';
+import { handlePerpsError } from '../utils/translate-perps-error';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -198,15 +203,11 @@ const getCloseFailureToastConfig = ({
   const isOrderSizeMinError =
     error instanceof Error && error.message === 'ORDER_SIZE_MIN';
 
-  let errorMessage = 'An unknown error occurred';
-
-  if (isOrderSizeMinError) {
-    errorMessage = t('perpsClosePartialMinNotional', [
-      formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
-    ]);
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  }
+  const errorMessage = isOrderSizeMinError
+    ? t('perpsClosePartialMinNotional', [
+        formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+      ])
+    : handlePerpsError(error, t as (key: string) => string);
 
   if (isPartialClose) {
     return {
@@ -241,6 +242,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
+  const { track } = usePerpsEventTracking();
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -273,6 +285,16 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [positionSize, closePercent],
   );
 
+  const closeNotionalUsd = useMemo(
+    () => closeSize * currentPrice,
+    [closeSize, currentPrice],
+  );
+
+  const { feeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
     return (totalMargin * closePercent) / 100;
@@ -284,14 +306,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, [position.unrealizedPnl, closePercent]);
 
   const estimatedFees = useMemo(
-    () => closeSize * currentPrice * PERPS_MARKET_ORDER_FEE_RATE,
-    [closeSize, currentPrice],
-  );
-
-  /** HyperLiquid requires ≥ $10 notional for partial closes; full close omits size and skips this. */
-  const closeNotionalUsd = useMemo(
-    () => closeSize * currentPrice,
-    [closeSize, currentPrice],
+    () => closeNotionalUsd * (feeRate ?? 0),
+    [closeNotionalUsd, feeRate],
   );
 
   const isPriceValid = useMemo(
@@ -307,9 +323,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
+  // Pre-round margin and fees to cents so the same values flow into both
+  // the display rows and the "You'll receive" arithmetic, avoiding any
+  // divergence between Math.round and Intl.NumberFormat rounding modes.
+  const roundedMargin = useMemo(() => Math.round(margin * 100) / 100, [margin]);
+
+  const roundedFees = useMemo(
+    () => Math.round(estimatedFees * 100) / 100,
+    [estimatedFees],
+  );
+
+  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
+  // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
-    () => margin + unrealizedPnl - estimatedFees,
-    [margin, unrealizedPnl, estimatedFees],
+    () => roundedMargin - roundedFees,
+    [roundedMargin, roundedFees],
   );
 
   const isSubmitDisabled =
@@ -351,9 +379,37 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         }),
       ]);
       if (!result.success) {
-        throw new Error(result.error || 'Failed to close position');
+        const message = result.error || 'Failed to close position';
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+        });
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+        });
+        const { errorMessage, toast } = getCloseFailureToastConfig({
+          error: new Error(message),
+          isPartialClose,
+          t,
+          formatCurrencyWithMinThreshold,
+        });
+        setError(errorMessage);
+        replacePerpsToastByKey(toast);
+        return;
       }
-
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      });
       replacePerpsToastByKey(
         getCloseSuccessToastConfig({
           isPartialClose,
@@ -364,6 +420,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       );
       onClose();
     } catch (err) {
+      const errMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
+        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+      });
+
       const { errorMessage, toast } = getCloseFailureToastConfig({
         error: err,
         isPartialClose,
@@ -377,17 +448,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     }
   }, [
     isSubmitDisabled,
+    replacePerpsToastByKey,
+    isPartialClose,
     position,
     closeSize,
-    currentPrice,
     displayName,
-    formatNumber,
-    isPartialClose,
-    onClose,
     t,
-    formatCurrencyWithMinThreshold,
+    formatNumber,
+    currentPrice,
+    closeNotionalUsd,
+    estimatedFees,
+    track,
+    closePercent,
+    onClose,
     formatPercentWithMinThreshold,
-    replacePerpsToastByKey,
+    formatCurrencyWithMinThreshold,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
@@ -465,8 +540,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                     textAlign={TextAlign.Right}
+                    data-testid="perps-close-summary-margin-value"
                   >
-                    {formatCurrencyWithMinThreshold(margin, 'USD')}
+                    {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
                   </Text>
                   <Text
                     variant={TextVariant.BodyXs}
@@ -511,8 +587,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-fees-value"
                 >
-                  -{formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
+                  -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
                 </Text>
               </Box>
 
@@ -531,6 +608,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-close-summary-receive-value"
                 >
                   {formatCurrencyWithMinThreshold(
                     Math.max(youWillReceive, 0),

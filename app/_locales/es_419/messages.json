@@ -2909,9 +2909,6 @@
   "from": {
     "message": "De"
   },
-  "fromTokenLists": {
-    "message": "De las listas de tóken: $1"
-  },
   "function": {
     "message": "Función: $1"
   },
@@ -3108,7 +3105,8 @@
     "message": "Sigue asegurándote de que:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Tu Ledger esté desbloqueada"
+    "message": "Tu $1 esté desbloqueado",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "La aplicación Ethereum esté abierta"
@@ -3291,12 +3289,6 @@
   "id": {
     "message": "ID"
   },
-  "ignoreAll": {
-    "message": "Ignorar todo"
-  },
-  "ignoreTokenWarning": {
-    "message": "Si oculta tokens, estos no se mostrarán en su monedero. Sin embargo, aún puede agregarlos buscándolos."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3356,12 +3348,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
   },
-  "importSelectedTokens": {
-    "message": "¿Agregar los tokens seleccionados?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Únicamente los tokens seleccionados aparecerán en su monedero. Siempre podrá agregar tokens ocultos más tarde realizando una búsqueda de los mismos."
-  },
   "importTokenQuestion": {
     "message": "¿Importar token?"
   },
@@ -3380,10 +3366,6 @@
   "importWalletSuccess": {
     "message": "Billetera $1 importada",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "Importar $1",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "Importado",
@@ -4700,13 +4682,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Más información"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "Se encontraron tokens nuevos de $1 en esta cuenta",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "1 nuevo token encontrado en esta cuenta"
-  },
   "numberOfTokens": {
     "message": "Número de tokens"
   },
@@ -5585,30 +5560,6 @@
   "perpsSize": {
     "message": "Tamaño"
   },
-  "perpsSortFundingRateHighToLow": {
-    "message": "Tasa de financiación: de alta a baja"
-  },
-  "perpsSortFundingRateLowToHigh": {
-    "message": "Tasa de financiación: de baja a alta"
-  },
-  "perpsSortOpenInterestHighToLow": {
-    "message": "Interés abierto: de alto a bajo"
-  },
-  "perpsSortOpenInterestLowToHigh": {
-    "message": "Interés abierto: de bajo a alto"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Variación de precio: de máximo a mínimo"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Variación de precio: de mínimo a máximo"
-  },
-  "perpsSortVolumeHighToLow": {
-    "message": "Volumen: de alto a bajo"
-  },
-  "perpsSortVolumeLowToHigh": {
-    "message": "Volumen: de bajo a alto"
-  },
   "perpsStartNewTrade": {
     "message": "Iniciar una nueva operación"
   },
@@ -5744,10 +5695,6 @@
   },
   "pleaseConfirm": {
     "message": "Confirmar"
-  },
-  "plusXMore": {
-    "message": "+ $1 más",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "entrada de blog."
@@ -8600,9 +8547,6 @@
   "tokenDetails": {
     "message": "Detalles del token"
   },
-  "tokenFoundTitle": {
-    "message": "1 nuevo token encontrado"
-  },
   "tokenId": {
     "message": "ID del token"
   },
@@ -8644,10 +8588,6 @@
   "tokensCount": {
     "message": "tokens",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 nuevos tokens encontrados",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Tokens en la colección"
