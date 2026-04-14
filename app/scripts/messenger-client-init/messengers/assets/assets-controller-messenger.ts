@@ -21,6 +21,10 @@ import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
 } from '@metamask/core-backend';
+import type {
+  TransactionControllerTransactionConfirmedEvent,
+  TransactionControllerIncomingTransactionsReceivedEvent,
+} from '@metamask/transaction-controller';
 import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import type {
   GetPermissions,
@@ -91,7 +95,10 @@ type RpcDataSourceActions =
  *
  * @see RpcDataSource in @metamask/assets-controller
  */
-type RpcDataSourceEvents = NetworkControllerStateChangeEvent;
+type RpcDataSourceEvents =
+  | NetworkControllerStateChangeEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerIncomingTransactionsReceivedEvent;
 
 /**
  * Actions required by BackendWebsocketDataSource.
@@ -237,6 +244,8 @@ export function getAssetsControllerMessenger(
       'PermissionController:stateChange',
       'PreferencesController:stateChange',
       'AccountTreeController:stateChange',
+      'TransactionController:transactionConfirmed',
+      'TransactionController:incomingTransactionsReceived',
     ],
   });
 
@@ -273,7 +282,10 @@ type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
  * @returns The restricted initialization messenger.
  */
 export function getAssetsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, AllowedInitializationEvents>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const initMessenger = new Messenger<
     'AssetsControllerInit',
