@@ -383,9 +383,4 @@ async function main(): Promise<void> {
   process.exit(result.anyFailed ? 1 : 0);
 }
 
-if (require.main === module) {
-  main().catch((err) => {
-    console.error('Fatal error:', err);
-    process.exit(2);
-  });
-}
+export { main };
