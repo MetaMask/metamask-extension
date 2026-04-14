@@ -184,6 +184,7 @@ export const AppHeaderUnlockedContent = ({
           <BoxDeprecated
             marginTop={1}
             marginLeft={2}
+            style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
             <MultichainTriggeredAddressRowsList

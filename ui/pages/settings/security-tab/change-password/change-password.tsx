@@ -31,8 +31,7 @@ import {
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
-import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -41,6 +40,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../../hooks/useBoolean';
+import { SECOND } from '../../../../../shared/constants/time';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -48,6 +48,8 @@ const ChangePasswordSteps = {
   ChangePassword: 2,
   ChangePasswordLoading: 3,
 };
+
+const autoHideToastDelay = 5 * SECOND;
 
 type ChangePasswordProps = {
   redirectRoute?: string;
@@ -122,11 +124,17 @@ const ChangePassword = ({
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
+      toast.success(
+        <ToastContent title={t('securityChangePasswordToastSuccess')} />,
+        { duration: autoHideToastDelay },
+      );
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
-      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
+      toast.error(
+        <ToastContent title={t('securityChangePasswordToastError')} />,
+        { duration: autoHideToastDelay },
+      );
     }
   };
 

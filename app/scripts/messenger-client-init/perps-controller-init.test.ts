@@ -1,8 +1,16 @@
 import {
   PerpsController,
   type PerpsControllerState,
+  type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
-import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import {
+  createPerpsInfrastructure,
+  type InfrastructureDeps,
+} from '../controllers/perps/infrastructure';
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -39,13 +47,8 @@ jest.mock('@metamask/perps-controller', () => ({
     marketFilterPreferences: { optionId: 'volume', direction: 'desc' },
     hip3ConfigVersion: 0,
     selectedPaymentToken: null,
-    cachedMarketData: null,
-    cachedMarketDataTimestamp: 0,
-    cachedPositions: null,
-    cachedOrders: null,
-    cachedAccountState: null,
-    cachedUserDataTimestamp: 0,
-    cachedUserDataAddress: null,
+    cachedMarketDataByProvider: {},
+    cachedUserDataByProvider: {},
   }),
   PerpsController: jest.fn().mockImplementation(() => ({
     state: { initializationState: 'uninitialized' },
@@ -124,7 +127,9 @@ type InitRequest = jest.Mocked<
 function getInitRequestMock(): InitRequest {
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: {} as PerpsControllerMessenger,
+    controllerMessenger: {
+      call: jest.fn(),
+    } as unknown as PerpsControllerMessenger,
     initMessenger: undefined as never,
   };
 }
@@ -144,6 +149,8 @@ describe('PerpsControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     delete process.env.MM_PERPS_BLOCKED_REGIONS;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET;
   });
 
   describe('controller instantiation', () => {
@@ -253,9 +260,40 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.state).toBe(persistedState);
     });
 
-    it('calls createPerpsInfrastructure', () => {
+    it('calls createPerpsInfrastructure with trackEvent', () => {
       PerpsControllerInit(getInitRequestMock());
-      expect(createPerpsInfrastructure).toHaveBeenCalled();
+      expect(createPerpsInfrastructure).toHaveBeenCalledWith({
+        trackEvent: expect.any(Function),
+      });
+    });
+
+    it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
+      const call = jest.fn();
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          deps.trackEvent({
+            event: MetaMetricsEventName.PerpsScreenViewed,
+            category: MetaMetricsEventCategory.Perps,
+            properties: {},
+          });
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+
+      expect(call).toHaveBeenCalledWith(
+        'MetaMetricsController:trackEvent',
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          category: MetaMetricsEventCategory.Perps,
+        }),
+      );
     });
   });
 
@@ -300,6 +338,80 @@ describe('PerpsControllerInit', () => {
         'US',
         'GB',
       ]);
+    });
+  });
+
+  describe('getHyperLiquidBuilderAddresses', () => {
+    it('returns undefined when no env vars are set', () => {
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
+    });
+
+    it('passes mainnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+      });
+    });
+
+    it('passes testnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('passes both builder addresses when both env vars are set', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('trims whitespace from builder addresses', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = ' 0xabc123 ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = ' 0xdef456 ';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('omits whitespace-only builder addresses so package defaults still apply', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '   ';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '\t';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
     });
   });
 

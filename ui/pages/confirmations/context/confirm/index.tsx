@@ -10,17 +10,20 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
+import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNavigation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+  /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
+  goBackTo: string | undefined;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -33,6 +36,8 @@ export const ConfirmContextProvider: React.FC<{
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
 }> = ({ children, confirmationId, currentConfirmationOverride }) => {
+  const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
+  const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
@@ -65,13 +70,14 @@ export const ConfirmContextProvider: React.FC<{
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
-      navigate(DEFAULT_ROUTE, { replace: true });
+      navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
     }
   }, [
     currentConfirmationOverride,
     previousConfirmation,
     currentConfirmation,
     navigate,
+    goBackTo,
     isHardwareWalletErrorModalVisible,
   ]);
 
@@ -80,11 +86,13 @@ export const ConfirmContextProvider: React.FC<{
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
+      goBackTo,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
+      goBackTo,
     ],
   );
 
@@ -104,5 +112,6 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
     currentConfirmation: CurrentConfirmation;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+    goBackTo: string | undefined;
   };
 };

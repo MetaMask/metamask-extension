@@ -2,7 +2,7 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import MetaMetricsController from '../controllers/metametrics-controller';
+import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,

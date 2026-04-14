@@ -40,6 +40,7 @@ env:
 permissions:
   contents: write # required for releases
   id-token: write # required for s3 uploads
+  statuses: write # required for build-source-hash and ci-status-gate
 
 jobs:
   get-requirements:
@@ -274,6 +275,7 @@ jobs:
       is-high-risk-environment: false
       build-name: build-dist-webpack
       build-command: yarn webpack:lavamoat:build --zip
+      bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -386,7 +388,7 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements
@@ -442,6 +444,7 @@ jobs:
     needs:
       - get-requirements
       - build-dist-browserify
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -460,7 +463,7 @@ jobs:
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
 
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
@@ -475,6 +478,9 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          # We use env.RUN_ID here, not builds-from-run.
+          # This job would never actually run if `builds-from-run != github.run_id`,
+          # but if it did anyway, we want to upload *this run's* analysis output, not the build run's output.
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
@@ -524,7 +530,7 @@ jobs:
 
   build-storybook:
     name: Build storybook
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-storybook.yml
@@ -532,123 +538,12 @@ jobs:
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
-    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
-
-  build-source-map-explorer:
-    needs:
-      - get-requirements
-      - prep-deps
-      - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          name: build-dist-browserify
-          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
-
-      - run: ./development/source-map-explorer.sh
-
-      - name: Upload 'source-map-explorer' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/source-map-explorer
-          path: build-artifacts/source-map-explorer
-
-  build-lavamoat-viz:
-    needs:
-      - get-requirements
-      - prep-deps
-      - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      GOOGLE_PROD_CLIENT_ID: 00000000000
-      APPLE_PROD_CLIENT_ID: 00000000000
-      GOOGLE_BETA_CLIENT_ID: 00000000000
-      APPLE_BETA_CLIENT_ID: 00000000000
-      GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-      APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-      GOOGLE_FLASK_CLIENT_ID: 00000000000
-      APPLE_FLASK_CLIENT_ID: 00000000000
-    outputs:
-      lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Download changed-files artifact
-        if: ${{ env.BRANCH != 'main' }}
-        id: download-changed-files
-        continue-on-error: true
-        uses: actions/download-artifact@v7
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      # if the changed-files artifact does not exist, we get the diff
-      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
-        if: ${{ steps.download-changed-files.outcome == 'failure' }}
-
-      - name: See if lavamoat policy files have changed
-        id: lavamoat-policy-changed
-        run: |
-          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
-          if [ -f "changed-files/changed-files.json" ]; then
-            if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
-              echo "Lavamoat policy file changes detected."
-              echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "No Lavamoat policy file changes detected."
-              echo "lavamoat-policy-changed=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
-            echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Download artifact 'build-dist-browserify'
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
-        uses: actions/download-artifact@v7
-        with:
-          name: build-dist-browserify
-          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
-
-      - run: ./.github/scripts/create-lavamoat-viz.sh
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
-
-      - name: Upload 'build-viz' to S3
-        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/lavamoat-viz
-          path: build-artifacts/build-viz
 
   publish-prerelease:
     name: Publish prerelease
@@ -685,9 +580,7 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-source-map-explorer.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-lavamoat-viz.result)
+        contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result)
       }}
     needs:
       - get-requirements
@@ -715,12 +608,10 @@ jobs:
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
-      - build-source-map-explorer
-      - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
-      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      builds-from-sha: ${{ needs.get-requirements.outputs.builds-from-sha }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
@@ -729,10 +620,13 @@ jobs:
 
   trigger-regression-validation:
     name: Trigger Regression Validation
-    # Only run for release branches, not forks
+    # Only run for release branches, not forks.
+    # Build reuse is banned on release/* branches (in get-requirements.yml),
+    # so build-dist-browserify always runs here — no !cancelled() needed.
     if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
-      - build-dist-browserify
+      - get-requirements
+      - build-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: release-ci
@@ -740,13 +634,14 @@ jobs:
       - name: Trigger regression validation in external repo
         env:
           DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
           # Use BRANCH env var which correctly handles both push and pull_request events
           VERSION="${BRANCH#release/}"
 
           echo "Triggering regression validation..."
-          echo "Run ID: $RUN_ID"
+          echo "Run ID (builds): $BUILDS_FROM_RUN"
           echo "Branch: $BRANCH"
           echo "Version: $VERSION"
           echo "Commit SHA: $HEAD_COMMIT_HASH"
@@ -758,7 +653,7 @@ jobs:
             -d '{
               "event_type": "release_pr_updated",
               "client_payload": {
-                "run_id": "'"$RUN_ID"'",
+                "run_id": "'"$BUILDS_FROM_RUN"'",
                 "version": "'"$VERSION"'",
                 "branch": "'"$BRANCH"'",
                 "commit_sha": "'"$HEAD_COMMIT_HASH"'"
@@ -770,6 +665,7 @@ jobs:
   ci-status-gate:
     if: ${{ !cancelled() }}
     permissions:
+      pull-requests: read
       statuses: write
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
@@ -817,51 +713,9 @@ jobs:
       - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
-      - build-source-map-explorer
-      - build-lavamoat-viz
       - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      skip-builds: ${{ needs.get-requirements.outputs.skip-builds }}
     secrets: inherit
-
-  check-retry-ci:
-    name: Check for retry-ci label and retry
-    if: >-
-      ${{
-        !cancelled() &&
-        needs.ci-status-gate.result == 'failure' &&
-        github.event_name == 'pull_request' &&
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
-      }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs:
-      - ci-status-gate
-      - publish-prerelease
-    env:
-      GH_TOKEN: ${{ github.token }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      REPO: ${{ github.repository }}
-    permissions:
-      actions: write
-      pull-requests: write
-    steps:
-      - name: Check if this PR has a retry-ci label
-        run: |
-          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
-
-          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
-            echo "This PR has a retry-ci label, removing the label..."
-            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
-
-            echo "Retrying failed jobs..."
-
-            # We cannot use `gh run rerun` here, because this workflow is still running,
-            # so we must run main-retry.yml, which in turn runs `gh run rerun`
-            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
-          else
-            echo "This PR does not have a retry-ci label, not retrying."
-          fi

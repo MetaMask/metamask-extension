@@ -1,8 +1,8 @@
 import {
   NetworkOrderController,
+  NetworkOrderControllerMessenger,
   NetworkOrderControllerState,
 } from '../../controllers/network-order';
-import { NetworkOrderControllerMessenger } from '../messengers/assets';
 import { MessengerClientInitFunction } from '../types';
 
 const generateDefaultNetworkOrderControllerState =
