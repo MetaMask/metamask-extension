@@ -1,8 +1,5 @@
 import browser from 'webextension-polyfill';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { t } from '../../../shared/lib/translate';
 import ExtensionPlatform from './extension';
 
@@ -139,66 +136,6 @@ describe('extension platform', () => {
   });
 
   describe('showTransactionNotification', () => {
-    it('does not show notifications for perps deposit transactions', async () => {
-      const txMeta = {
-        status: TransactionStatus.confirmed,
-        type: TransactionType.perpsDeposit,
-        txParams: { nonce: '0x1' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showConfirmedSpy = jest.spyOn(
-        extensionPlatform,
-        '_showConfirmedTransaction',
-      );
-      const showFailedSpy = jest.spyOn(
-        extensionPlatform,
-        '_showFailedTransaction',
-      );
-
-      await extensionPlatform.showTransactionNotification(txMeta, {});
-
-      expect(showConfirmedSpy).not.toHaveBeenCalled();
-      expect(showFailedSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not show notifications for perps deposit and order transactions', async () => {
-      const txMeta = {
-        status: TransactionStatus.confirmed,
-        type: TransactionType.perpsDepositAndOrder,
-        txParams: { nonce: '0x1' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showConfirmedSpy = jest.spyOn(
-        extensionPlatform,
-        '_showConfirmedTransaction',
-      );
-      const showFailedSpy = jest.spyOn(
-        extensionPlatform,
-        '_showFailedTransaction',
-      );
-
-      await extensionPlatform.showTransactionNotification(txMeta, {});
-
-      expect(showConfirmedSpy).not.toHaveBeenCalled();
-      expect(showFailedSpy).not.toHaveBeenCalled();
-    });
-
-    it('shows confirmed notifications for non-perps transactions', async () => {
-      const txMeta = {
-        status: TransactionStatus.confirmed,
-        type: TransactionType.simpleSend,
-        txParams: { nonce: '0x1' },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showConfirmedSpy = jest
-        .spyOn(extensionPlatform, '_showConfirmedTransaction')
-        .mockResolvedValue();
-
-      await extensionPlatform.showTransactionNotification(txMeta, {});
-
-      expect(showConfirmedSpy).toHaveBeenCalledWith(txMeta, {});
-    });
-
     it('shows failed transaction with EthAppNftNotSupported error message', async () => {
       const txMeta = {
         status: TransactionStatus.failed,
