@@ -56,7 +56,7 @@ export function getRemoteFeatureFlagsWithManifestOverrides(
   remoteFeatureFlags: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> {
   return {
-    ...(remoteFeatureFlags ?? {}),
+    ...remoteFeatureFlags,
     ...getManifestFlags().remoteFeatureFlags,
   };
 }
@@ -106,7 +106,7 @@ export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
   return {
     ...event,
     properties: {
-      ...(event.properties ?? {}),
+      ...event.properties,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       active_ab_tests: mergedAssignments as Json,
     },
