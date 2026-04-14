@@ -286,7 +286,7 @@ export function useMusdConversion(): UseMusdConversionResult {
         });
 
         if (preferredToken?.address) {
-          updateTransactionPaymentToken({
+          await updateTransactionPaymentToken({
             transactionId: txId,
             tokenAddress: preferredToken.address as `0x${string}`,
             chainId,
