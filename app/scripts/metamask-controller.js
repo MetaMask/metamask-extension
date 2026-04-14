@@ -700,8 +700,8 @@ export default class MetamaskController extends EventEmitter {
 
     const {
       messengerClientApi,
-      messengerClientMemState,
-      messengerClientPersistedState,
+      controllerMemState,
+      controllerPersistedState,
       messengerClientsByName,
     } = this.#initMessengerClients({
       initFunctions: messengerClientInitFunctions,
@@ -709,8 +709,8 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.messengerClientApi = messengerClientApi;
-    this.messengerClientMemState = messengerClientMemState;
-    this.messengerClientPersistedState = messengerClientPersistedState;
+    this.controllerMemState = controllerMemState;
+    this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
@@ -1381,7 +1381,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
-      ...messengerClientPersistedState,
+      ...controllerPersistedState,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -1448,7 +1448,7 @@ export default class MetamaskController extends EventEmitter {
         ClaimsService: this.claimsService,
         ProfileMetricsController: this.profileMetricsController,
         ...resetOnRestartStore,
-        ...messengerClientMemState,
+        ...controllerMemState,
       },
       controllerMessenger: this.controllerMessenger,
     });

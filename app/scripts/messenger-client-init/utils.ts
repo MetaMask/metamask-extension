@@ -18,10 +18,10 @@ export type InitMessengerClientsResult = {
   messengerClientApi: Record<string, MessengerClient>;
 
   /** All messenger clients that provided a memory state key. */
-  messengerClientMemState: Record<string, MessengerClient>;
+  controllerMemState: Record<string, MessengerClient>;
 
   /** All messenger clients that provided a persisted state key. */
-  messengerClientPersistedState: Record<string, MessengerClient>;
+  controllerPersistedState: Record<string, MessengerClient>;
 
   /** All initialized messenger clients keyed by name. */
   messengerClientsByName: MessengerClientByName;
@@ -99,8 +99,8 @@ export function initMessengerClients({
 
   const partialMessengerClientsByName: Partial<MessengerClientByName> = {};
 
-  const messengerClientPersistedState: Record<string, MessengerClient> = {};
-  const messengerClientMemState: Record<string, MessengerClient> = {};
+  const controllerPersistedState: Record<string, MessengerClient> = {};
+  const controllerMemState: Record<string, MessengerClient> = {};
   let messengerClientApi = {};
 
   const getController = <Name extends MessengerClientName>(
@@ -167,11 +167,11 @@ export function initMessengerClients({
     };
 
     if (persistedStateKey) {
-      messengerClientPersistedState[persistedStateKey] = controller;
+      controllerPersistedState[persistedStateKey] = controller;
     }
 
     if (memStateKey) {
-      messengerClientMemState[memStateKey] = controller;
+      controllerMemState[memStateKey] = controller;
     }
 
     log('Initialized messenger client', messengerClientName, {
@@ -183,8 +183,8 @@ export function initMessengerClients({
 
   return {
     messengerClientApi,
-    messengerClientMemState,
-    messengerClientPersistedState,
+    controllerMemState,
+    controllerPersistedState,
     messengerClientsByName:
       partialMessengerClientsByName as MessengerClientByName,
   };

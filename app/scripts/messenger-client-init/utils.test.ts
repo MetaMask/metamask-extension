@@ -197,7 +197,7 @@ describe('Messenger Client Init Utils', () => {
         }),
       );
 
-      const { messengerClientPersistedState } = initMessengerClients({
+      const { controllerPersistedState } = initMessengerClients({
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -207,7 +207,7 @@ describe('Messenger Client Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(messengerClientPersistedState).toStrictEqual({
+      expect(controllerPersistedState).toStrictEqual({
         test1: { name: CONTROLLER_NAME_MOCK },
         test3: { name: 'TestController3' },
       });
@@ -237,7 +237,7 @@ describe('Messenger Client Init Utils', () => {
         }),
       );
 
-      const { messengerClientMemState } = initMessengerClients({
+      const { controllerMemState } = initMessengerClients({
         baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
@@ -247,7 +247,7 @@ describe('Messenger Client Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(messengerClientMemState).toStrictEqual({
+      expect(controllerMemState).toStrictEqual({
         test1: { name: CONTROLLER_NAME_MOCK },
         test3: { name: 'TestController3' },
       });
