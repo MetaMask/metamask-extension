@@ -36,7 +36,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('does not set showSidePanelMigrationToast when useSidePanelAsDefault is already true', async () => {
+  it('does nothing when useSidePanelAsDefault is already true', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
@@ -55,15 +55,10 @@ describe(`migration #${VERSION}`, () => {
     await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
-    expect(versionedData.data.PreferencesController).toStrictEqual({
-      preferences: {
-        showExtensionInFullSizeView: false,
-        useSidePanelAsDefault: true,
-      },
-    });
-    expect(changedControllers).toStrictEqual(
-      new Set(['PreferencesController']),
+    expect(versionedData.data.PreferencesController).toStrictEqual(
+      oldStorage.data.PreferencesController,
     );
+    expect(changedControllers.size).toBe(0);
   });
 
   it('does not set useSidePanelAsDefault when showExtensionInFullSizeView is true', async () => {
