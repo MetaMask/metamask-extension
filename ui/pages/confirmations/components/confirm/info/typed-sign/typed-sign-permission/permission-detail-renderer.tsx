@@ -25,11 +25,12 @@ import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
 import { PERMISSION_SCHEMAS } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
+import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
   DeepNonNullable,
   I18nFunction,
-  I18nValue,
   PermissionRenderContext,
   PermissionSchemaEntry,
   SchemaElement,
@@ -90,14 +91,6 @@ function useErc20DecimalsResolved(
   }
 
   return metadataResult.value;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function translateValue(t: I18nFunction, value: I18nValue): string {
-  return t(value.key, value.args);
 }
 
 // ---------------------------------------------------------------------------
@@ -172,7 +165,7 @@ function renderElement(
           tooltip={element.tooltip}
         >
           <Text variant={TextVariant.BodyMd}>
-            {translateValue(t, element.getValue(ctx))}
+            {translateI18nValue(t, element.getValue(ctx))}
           </Text>
         </ConfirmInfoRow>
       );
@@ -206,7 +199,7 @@ function renderElement(
       const justificationText =
         typeof justificationValue === 'string'
           ? justificationValue
-          : translateValue(t, justificationValue);
+          : translateI18nValue(t, justificationValue);
       return (
         <ConfirmInfoRow
           key={index}
@@ -257,7 +250,7 @@ function renderElement(
     }
 
     default:
-      return null;
+      return throwUnhandledPermissionSchemaElement(element);
   }
 }
 

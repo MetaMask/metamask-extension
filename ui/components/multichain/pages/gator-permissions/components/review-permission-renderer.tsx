@@ -14,12 +14,13 @@ import {
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
+import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
   ExpiryField,
   FieldView,
   I18nFunction,
-  I18nValue,
   PermissionRenderContext,
   SchemaElement,
   SchemaSection,
@@ -84,14 +85,6 @@ function schemaElementDomKey(
     return `${sectionTestId}-${element.type}-${element.labelKey}`;
   }
   return `${sectionTestId}-${element.type}-${index}`;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function translateValue(t: I18nFunction, value: I18nValue): string {
-  return t(value.key, value.args);
 }
 
 // ---------------------------------------------------------------------------
@@ -255,7 +248,7 @@ function renderElement({
         <GatorPermissionDetailRow
           key={rowKey}
           label={t(element.labelKey)}
-          value={translateValue(t, element.getValue(ctx))}
+          value={translateI18nValue(t, element.getValue(ctx))}
           testId={element.testId}
         />
       );
@@ -278,7 +271,7 @@ function renderElement({
       const justificationText =
         typeof justificationValue === 'string'
           ? justificationValue
-          : translateValue(t, justificationValue);
+          : translateI18nValue(t, justificationValue);
       return (
         <GatorPermissionDetailRow
           key={rowKey}
@@ -310,7 +303,7 @@ function renderElement({
       return null;
 
     default:
-      return null;
+      return throwUnhandledPermissionSchemaElement(element);
   }
 }
 
