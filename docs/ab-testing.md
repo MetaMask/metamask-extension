@@ -9,11 +9,6 @@ Use these two mechanisms together:
 1. Automatic exposure event: `Experiment Viewed`
 2. Business event context: `active_ab_tests`
 
-- Events sent through the shared MetaMetrics event path are auto-enriched when
-  their event name is allowlisted in the shared A/B analytics registry.
-- If an event bypasses that shared MetaMetrics path, attach `active_ab_tests`
-  manually at the callsite.
-
 `ab_tests` is legacy and should not be used for new extension instrumentation.
 
 ## References
@@ -173,9 +168,6 @@ controller injects:
 ```typescript
 active_ab_tests: [{ key: flagKey, value: variantName }];
 ```
-
-Existing `active_ab_tests` values are preserved, and duplicate keys are not
-re-added.
 
 ### Manual fallback for bypass paths
 
@@ -340,10 +332,6 @@ No, not when using `useABTest`.
 
 **Q: Should I send both `ab_tests` and `active_ab_tests`?**
 No. Use `active_ab_tests`.
-
-**Q: Do I manually add `active_ab_tests` to every event?**
-No. Allowlisted MetaMetrics `trackEvent` payloads are enriched automatically.
-Only bypass paths should add it manually.
 
 **Q: What if basic functionality or metrics are unavailable?**
 If the extension does not have a usable experiment assignment, `useABTest`
