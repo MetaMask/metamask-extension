@@ -3641,15 +3641,6 @@ export function createCancelTransaction(
       const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
       return id;
     } catch (err) {
-      if (err?.message?.includes('Previous transaction is already confirmed')) {
-        dispatch(
-          showModal({
-            name: 'TRANSACTION_ALREADY_CONFIRMED',
-            originalTransactionId: txId,
-          }),
-        );
-      }
-
       dispatch(displayWarning(err));
       throw err;
     }
@@ -3678,7 +3669,9 @@ export function createSpeedUpTransaction(
 
       await forceUpdateMetamaskState(dispatch);
 
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
+      const currentNetworkTxList = getCurrentNetworkTransactions({
+        metamask: newState,
+      });
       const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       return newTx;

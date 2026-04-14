@@ -10,7 +10,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { isPublicEndpointUrl } from '../util';
-import MetaMetricsController from '../../controllers/metametrics-controller';
+import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { shouldCreateRpcServiceEvents } from './utils';
 
 /**
