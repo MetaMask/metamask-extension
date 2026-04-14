@@ -630,6 +630,7 @@ class PerpsStreamManager {
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
+    this.reinitPromise = null;
   }
 }
 
