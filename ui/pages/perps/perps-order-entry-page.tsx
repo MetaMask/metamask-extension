@@ -995,7 +995,11 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const handlePrimaryAction = useCallback(async () => {
     if (hasNoAvailableBalance) {
-      if (!isEligible || !selectedAddress || isDepositLoading) {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!selectedAddress || isDepositLoading) {
         return;
       }
 
