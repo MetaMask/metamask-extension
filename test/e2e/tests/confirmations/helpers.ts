@@ -78,7 +78,6 @@ export function withSignatureFixtures(
           participateInMetaMetrics: true,
         })
         .build(),
-      localNodeOptions: {},
       testSpecificMock: mocks,
       title,
     },
