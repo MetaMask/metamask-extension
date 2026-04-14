@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
@@ -63,6 +64,7 @@ function getPnlDisplayColor(pnl: number): TextColor {
  * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
  * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
+ * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -78,9 +80,15 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   orderType,
   limitPrice,
   leverage,
+  asset,
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
+
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: 'market',
+  });
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
@@ -286,8 +294,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
-    return estimatedSize * (exitPrice - entryPrice);
-  }, [estimatedSize, takeProfitPrice, entryPrice]);
+    const grossPnl = estimatedSize * (exitPrice - entryPrice);
+    const closingFee =
+      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    return grossPnl - closingFee;
+  }, [estimatedSize, takeProfitPrice, entryPrice, closingFeeRate]);
 
   const estimatedPnlAtSl = useMemo(() => {
     if (!estimatedSize || !stopLossPrice || !entryPrice) {
@@ -297,8 +308,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
-    return estimatedSize * (exitPrice - entryPrice);
-  }, [estimatedSize, stopLossPrice, entryPrice]);
+    const grossPnl = estimatedSize * (exitPrice - entryPrice);
+    const closingFee =
+      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    return grossPnl - closingFee;
+  }, [estimatedSize, stopLossPrice, entryPrice, closingFeeRate]);
 
   const isLimitWithPrice = orderType === 'limit' && Boolean(limitPrice?.trim());
   const validationReferencePrice = useMemo(() => {

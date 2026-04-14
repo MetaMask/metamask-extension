@@ -6,6 +6,14 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
 
+jest.mock('../../../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -23,6 +31,7 @@ describe('AutoCloseSection', () => {
     direction: 'long' as const,
     currentPrice: 45000,
     leverage: 10,
+    asset: 'BTC',
   };
 
   beforeEach(() => {

@@ -32,6 +32,7 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
@@ -49,10 +50,6 @@ import {
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from '../utils/tpslValidation';
-
-// HyperLiquid taker fee rate (0.045%) - applied when a TP/SL order executes.
-// Source: FEE_RATES.taker in @metamask/perps-controller/constants/hyperLiquidConfig
-const HYPERLIQUID_TAKER_FEE_RATE = 0.00045;
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
@@ -105,6 +102,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
 
   const [editingTpPrice, setEditingTpPrice] = useState(
     () => position.takeProfitPrice ?? '',
@@ -219,10 +220,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee =
-      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    const closingFee = Math.abs(signedSize) * exitPrice * (closingFeeRate ?? 0);
     return grossPnl - closingFee;
-  }, [editingTpPrice, signedSize, entryPriceForEdit]);
+  }, [editingTpPrice, signedSize, entryPriceForEdit, closingFeeRate]);
 
   const estimatedPnlAtSl = useMemo(() => {
     const clean = editingSlPrice.replaceAll(',', '').trim();
@@ -234,10 +234,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee =
-      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    const closingFee = Math.abs(signedSize) * exitPrice * (closingFeeRate ?? 0);
     return grossPnl - closingFee;
-  }, [editingSlPrice, signedSize, entryPriceForEdit]);
+  }, [editingSlPrice, signedSize, entryPriceForEdit, closingFeeRate]);
 
   const isTpInvalid = useMemo(
     () =>

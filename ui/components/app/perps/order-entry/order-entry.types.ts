@@ -223,6 +223,8 @@ export type AutoCloseSectionProps = {
   limitPrice?: string;
   /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
   leverage: number;
+  /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
+  asset: string;
 };
 
 /**

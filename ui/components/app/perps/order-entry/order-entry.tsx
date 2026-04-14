@@ -189,14 +189,12 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     if (amount === 0 || currentPrice === 0) {
       return undefined;
     }
-    const positionValue = amount * formState.leverage;
-    const size = positionValue / currentPrice;
+    const size = amount / currentPrice;
     return formState.direction === 'long' ? size : -size;
   }, [
     mode,
     existingPosition,
     formState.amount,
-    formState.leverage,
     formState.direction,
     currentPrice,
   ]);
@@ -355,6 +353,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             estimatedSize={estimatedSize}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
+            asset={asset}
           />
         )}
 
