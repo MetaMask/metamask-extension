@@ -150,6 +150,9 @@ describe('usePerpsConnectionHealth', () => {
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetAccountState',
     );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetMarketDataWithPrices',
+    );
   });
 
   it('triggers reconnect when connection state is disconnected even if data is fresh', async () => {
@@ -474,10 +477,12 @@ describe('usePerpsConnectionHealth', () => {
     const pushPositionsSpy = jest.spyOn(sm, 'pushPositionsWithOverrides');
     const pushOrdersSpy = jest.spyOn(sm.orders, 'pushData');
     const pushAccountSpy = jest.spyOn(sm.account, 'pushData');
+    const pushMarketsSpy = jest.spyOn(sm.markets, 'pushData');
 
     const mockPositions = [{ symbol: 'BTC', size: '1' }];
     const mockOrders = [{ orderId: '1' }];
     const mockAccount = { equity: '100' };
+    const mockMarkets = [{ symbol: 'BTC', price: '$50,000' }];
 
     mockSubmitRequestToBackground.mockImplementation(async (method: string) => {
       if (method === 'perpsGetConnectionState') {
@@ -491,6 +496,9 @@ describe('usePerpsConnectionHealth', () => {
       }
       if (method === 'perpsGetAccountState') {
         return mockAccount;
+      }
+      if (method === 'perpsGetMarketDataWithPrices') {
+        return mockMarkets;
       }
       return undefined;
     });
@@ -507,9 +515,11 @@ describe('usePerpsConnectionHealth', () => {
     expect(pushPositionsSpy).toHaveBeenCalledWith(mockPositions);
     expect(pushOrdersSpy).toHaveBeenCalledWith(mockOrders);
     expect(pushAccountSpy).toHaveBeenCalledWith(mockAccount);
+    expect(pushMarketsSpy).toHaveBeenCalledWith(mockMarkets);
 
     pushPositionsSpy.mockRestore();
     pushOrdersSpy.mockRestore();
     pushAccountSpy.mockRestore();
+    pushMarketsSpy.mockRestore();
   });
 });

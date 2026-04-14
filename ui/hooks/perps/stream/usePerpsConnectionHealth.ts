@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import type { Position, Order, AccountState } from '@metamask/perps-controller';
+import type {
+  Position,
+  Order,
+  AccountState,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
@@ -75,13 +80,16 @@ export function usePerpsConnectionHealth(): void {
         console.warn('[Perps] Connection health reconnect failed:', err);
       }
 
-      const [positionsResult, ordersResult, accountResult] =
+      const [positionsResult, ordersResult, accountResult, marketsResult] =
         await Promise.allSettled([
           submitRequestToBackground<Position[]>('perpsGetPositions', [
             { skipCache: true },
           ]),
           submitRequestToBackground<Order[]>('perpsGetOpenOrders'),
           submitRequestToBackground<AccountState>('perpsGetAccountState'),
+          submitRequestToBackground<PerpsMarketData[]>(
+            'perpsGetMarketDataWithPrices',
+          ),
         ]);
 
       if (positionsResult.status === 'fulfilled' && positionsResult.value) {
@@ -92,6 +100,9 @@ export function usePerpsConnectionHealth(): void {
       }
       if (accountResult.status === 'fulfilled') {
         streamManager.account.pushData(accountResult.value ?? null);
+      }
+      if (marketsResult.status === 'fulfilled' && marketsResult.value) {
+        streamManager.markets.pushData(marketsResult.value);
       }
     } catch (err) {
       console.warn('[Perps] Connection health check failed:', err);

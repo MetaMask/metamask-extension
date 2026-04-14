@@ -26,6 +26,8 @@ export {
 } from './usePerpsStreamManager';
 export { usePerpsViewActive } from './usePerpsViewActive';
 export { usePerpsConnectionHealth } from './usePerpsConnectionHealth';
+export { usePerpsPrewarm } from './usePerpsPrewarm';
+export { usePerpsMarketDataSync } from './usePerpsMarketDataSync';
 
 // Generic channel hook (shared implementation for channel-based hooks)
 export { usePerpsChannel, type UsePerpsChannelReturn } from './usePerpsChannel';

@@ -174,7 +174,7 @@ describe('PerpsControllerInit', () => {
         infrastructure: expect.any(Object),
         clientConfig: {
           fallbackHip3Enabled: true,
-          fallbackHip3AllowlistMarkets: [],
+          fallbackHip3AllowlistMarkets: ['xyz:*'],
           fallbackBlockedRegions: [],
         },
         deferEligibilityCheck: true,

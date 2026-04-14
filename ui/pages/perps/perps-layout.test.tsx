@@ -85,16 +85,14 @@ describe('PerpsLayout', () => {
   it('signals perpsViewActive on mount and unmount', () => {
     const { unmount } = renderWithProvider(<PerpsLayout />, store);
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      1,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [true],
     );
 
     unmount();
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      2,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [false],
     );

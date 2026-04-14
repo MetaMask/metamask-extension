@@ -161,6 +161,119 @@ describe('PerpsStreamManager', () => {
         consoleErrorSpy.mockRestore();
       }
     });
+
+    it('retries and pushes when HIP-3 markets appear after initial fetch', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cryptoOnly = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
+        const withHip3 = [
+          { symbol: 'BTC', name: 'Bitcoin' },
+          { symbol: 'xyz:TSLA', name: 'Tesla' },
+        ] as never[];
+
+        let fetchCount = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            fetchCount += 1;
+            return Promise.resolve(fetchCount === 1 ? cryptoOnly : withHip3);
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // Flush initial fetch
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(onData).toHaveBeenCalledWith(cryptoOnly);
+        onData.mockClear();
+
+        // Advance to the first retry (5s)
+        await jest.advanceTimersByTimeAsync(5_000);
+
+        // The retry should push because withHip3 has more markets than cryptoOnly
+        expect(onData).toHaveBeenCalledWith(withHip3);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('retry does not push when new data has fewer markets than cached', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const allMarkets = [
+          { symbol: 'BTC', name: 'Bitcoin' },
+          { symbol: 'xyz:TSLA', name: 'Tesla' },
+        ] as never[];
+        const fewerMarkets = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
+
+        let fetchCount = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            fetchCount += 1;
+            return Promise.resolve(
+              fetchCount === 1 ? allMarkets : fewerMarkets,
+            );
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // Flush initial fetch
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(onData).toHaveBeenCalledWith(allMarkets);
+        onData.mockClear();
+
+        // Advance to the first retry
+        await jest.advanceTimersByTimeAsync(5_000);
+
+        // Retry should NOT push because fewerMarkets has fewer markets
+        expect(onData).not.toHaveBeenCalled();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('cleans up retry timers when channel disconnects', async () => {
+      jest.useFakeTimers();
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.resolve([{ symbol: 'BTC' }]);
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const unsub = manager.markets.subscribe(jest.fn());
+
+        // Flush initial fetch
+        await jest.advanceTimersByTimeAsync(0);
+
+        // Disconnect by unsubscribing (no prewarm active)
+        unsub();
+
+        // Clear the mock to verify no further calls are made
+        mockSubmitRequestToBackground.mockClear();
+
+        // Advance past all retry windows
+        await jest.advanceTimersByTimeAsync(20_000);
+
+        // No retry calls should have been made after disconnect
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe('init', () => {

@@ -69,6 +69,11 @@ type OptimisticTPSLOverride = {
 // of stale persisted values while still preventing an indefinite skeleton.
 const ACCOUNT_REST_FALLBACK_MS = 4000;
 
+// Retry delays for market data fetches (ms).
+// Covers the window where HIP-3 config may not yet be delivered from
+// LaunchDarkly when the initial fetch runs.
+const MARKET_RETRY_DELAYS_MS = [5_000, 15_000] as const;
+
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
 const OPTIMISTIC_OVERRIDE_TTL_MS = 30000;
@@ -195,28 +200,62 @@ class PerpsStreamManager {
 
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
       connectFn: (push) => {
-        submitRequestToBackground<PerpsMarketData[]>(
-          'perpsGetMarketDataWithPrices',
-          [],
-        )
-          .then((data) => {
-            push(data ?? EMPTY_MARKETS);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch markets', err);
-            const cachedMarkets = this.markets.getCachedData();
-            const hasCachedMarkets = this.markets.hasCachedData();
+        let cancelled = false;
+        const retryTimers: ReturnType<typeof setTimeout>[] = [];
 
-            // Preserve the last known good market list when refresh fails.
-            if (hasCachedMarkets) {
-              push(cachedMarkets);
-              return;
-            }
+        const fetchMarkets = (isRetry: boolean) => {
+          if (cancelled) {
+            return;
+          }
+          submitRequestToBackground<PerpsMarketData[]>(
+            'perpsGetMarketDataWithPrices',
+            [],
+          )
+            .then((data) => {
+              if (cancelled) {
+                return;
+              }
+              const incoming = data ?? EMPTY_MARKETS;
 
-            push(EMPTY_MARKETS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+              if (isRetry) {
+                // On retry, only push if the new data has more markets
+                // (i.e., HIP-3 markets appeared after config arrived).
+                const cached = this.markets.getCachedData();
+                if (incoming.length > cached.length) {
+                  push(incoming);
+                }
+              } else {
+                push(incoming);
+              }
+            })
+            .catch((err) => {
+              if (cancelled) {
+                return;
+              }
+              console.error(
+                '[PerpsStreamManager] Failed to fetch markets',
+                err,
+              );
+              if (!isRetry && !this.markets.hasCachedData()) {
+                push(EMPTY_MARKETS);
+              }
+            });
+        };
+
+        // Initial fetch
+        fetchMarkets(false);
+
+        // Schedule retries to pick up HIP-3 markets once the LD config
+        // arrives.  Retries stop once all timers fire or the channel
+        // disconnects.
+        for (const delay of MARKET_RETRY_DELAYS_MS) {
+          retryTimers.push(setTimeout(() => fetchMarkets(true), delay));
+        }
+
+        return () => {
+          cancelled = true;
+          retryTimers.forEach(clearTimeout);
+        };
       },
       initialValue: EMPTY_MARKETS,
       name: 'markets',

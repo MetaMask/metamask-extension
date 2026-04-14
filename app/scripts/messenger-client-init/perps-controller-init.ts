@@ -69,7 +69,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     infrastructure,
     clientConfig: {
       fallbackHip3Enabled: true,
-      fallbackHip3AllowlistMarkets: [],
+      fallbackHip3AllowlistMarkets: ['xyz:*'],
       fallbackBlockedRegions,
       ...(hyperLiquidBuilderAddresses
         ? {
