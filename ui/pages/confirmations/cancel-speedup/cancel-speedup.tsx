@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -47,6 +47,8 @@ import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxF
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
 import { useCancelSpeedupGasState } from '../hooks/useCancelSpeedupGasState';
 import { useCancelSpeedupInitialGas } from '../hooks/useCancelSpeedupInitialGas';
+import { CancelSpeedupErrorToast } from '../components/cancel-speedup-toast/cancel-speedup-error-toast';
+import { useCancelSpeedupActions } from '../hooks/useCancelSpeedupActions';
 
 type EditGasButtonProps = {
   onClick: () => void;
@@ -254,6 +256,7 @@ type CancelSpeedupModalProps = {
   isInitialGasReady: boolean;
   cancelTransaction: () => void;
   speedUpTransaction: () => void;
+  submitTransaction: (action: () => void, isCancel: boolean) => Promise<void>;
 };
 
 const GasFeesSectionSkeleton = () => (
@@ -273,17 +276,14 @@ const CancelSpeedupModal = ({
   isInitialGasReady,
   cancelTransaction,
   speedUpTransaction,
+  submitTransaction,
 }: CancelSpeedupModalProps) => {
   const t = useI18nContext();
   const isCancel = mode === EditGasModes.cancel;
 
   const handleSubmit = () => {
-    if (isCancel) {
-      cancelTransaction();
-    } else {
-      speedUpTransaction();
-    }
-    onClose();
+    const action = isCancel ? cancelTransaction : speedUpTransaction;
+    submitTransaction(action, isCancel);
   };
 
   return (
@@ -320,12 +320,14 @@ type CancelSpeedupContentProps = {
   transaction: TransactionMeta;
   editGasMode: EditGasModes;
   onClose: () => void;
+  submitTransaction: (action: () => void, isCancel: boolean) => Promise<void>;
 };
 
 const CancelSpeedupContent = ({
   transaction,
   editGasMode,
   onClose,
+  submitTransaction,
 }: CancelSpeedupContentProps) => {
   const { currentModal } =
     useTransactionModalContext() as TransactionModalContextType;
@@ -366,6 +368,7 @@ const CancelSpeedupContent = ({
           isInitialGasReady={isInitialGasReady}
           cancelTransaction={cancelTransaction}
           speedUpTransaction={speedUpTransaction}
+          submitTransaction={submitTransaction}
         />
       </>
     </GasFeeModalContextProvider>
@@ -384,7 +387,22 @@ export const CancelSpeedup = ({
   const { currentModal, closeModal } =
     useTransactionModalContext() as TransactionModalContextType;
 
+  const onClose = useCallback(() => {
+    closeModal(['cancelSpeedUpTransaction']);
+  }, [closeModal]);
+  const { error, clearError, submitTransaction } =
+    useCancelSpeedupActions(onClose);
+
   if (currentModal !== 'cancelSpeedUpTransaction') {
+    if (error) {
+      return (
+        <CancelSpeedupErrorToast
+          isCancel={error.isCancel}
+          errorMessage={error.message}
+          onClose={clearError}
+        />
+      );
+    }
     return null;
   }
 
@@ -392,7 +410,8 @@ export const CancelSpeedup = ({
     <CancelSpeedupContent
       transaction={transaction}
       editGasMode={editGasMode}
-      onClose={() => closeModal(['cancelSpeedUpTransaction'])}
+      onClose={onClose}
+      submitTransaction={submitTransaction}
     />
   );
 };

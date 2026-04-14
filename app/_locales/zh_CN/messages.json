@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
   },
-  "yourTransactionConfirmed": {
-    "message": "交易已确认"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "在区块链上确认之前，我们无法取消您的交易。"
-  },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"
   },
