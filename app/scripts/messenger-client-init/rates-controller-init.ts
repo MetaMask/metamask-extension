@@ -1,6 +1,6 @@
 import { RatesController } from '@metamask/assets-controllers';
 import { RatesControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the rates controller.
@@ -10,7 +10,7 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const RatesControllerInit: ControllerInitFunction<
+export const RatesControllerInit: MessengerClientInitFunction<
   RatesController,
   RatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

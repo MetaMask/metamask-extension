@@ -70,6 +70,8 @@ interface Job {
 interface Annotation {
   message?: string;
   title?: string;
+  path?: string;
+  start_line?: number;
 }
 
 type Category = 'alwaysRetryable' | 'retryableOnTransientError' | 'optional';
@@ -82,6 +84,7 @@ interface JobClassification {
   reason: string;
   errorSnippet?: string;
   unmatched?: boolean;
+  deterministic?: boolean;
 }
 
 interface CategoryConfig {
@@ -92,6 +95,7 @@ interface RetryConfig {
   jobClassification: Record<Category, CategoryConfig>;
   blockerPatterns: string[];
   transientErrorPatterns: string[];
+  deterministicErrorPatterns: string[];
   defaults: { unmatchedCategory: Category };
 }
 
@@ -246,6 +250,9 @@ const compiledPatterns = Object.fromEntries(
   ]),
 ) as Record<Category, RegExp[]>;
 const transientErrorRegexes = config.transientErrorPatterns.map(
+  (p) => new RegExp(p, 'i'),
+);
+const deterministicErrorRegexes = config.deterministicErrorPatterns.map(
   (p) => new RegExp(p, 'i'),
 );
 
@@ -420,7 +427,7 @@ function classifyJob(job: Job): JobClassification {
   }
 
   // No transient pattern matched. Capture the first annotation message or
-  // the last few log lines so the dashboard can surface what the actual
+  // a meaningful log line so the dashboard can surface what the actual
   // error was — useful for identifying new patterns to add.
   // Skip the generic "Process completed with exit code N" annotation —
   // it appears on every failed job and provides no diagnostic value.
@@ -429,11 +436,83 @@ function classifyJob(job: Job): JobClassification {
       a.message?.trim() &&
       !/^Process completed with exit code \d+/.test(a.message.trim()),
   );
-  const fallbackSnippet = firstAnnotation
-    ? firstAnnotation.message!.trim().slice(0, 200)
-    : logs
-      ? logs.trim().split('\n').slice(-3).join(' | ').slice(0, 200)
-      : undefined;
+  let fallbackSnippet: string | undefined;
+  if (firstAnnotation) {
+    fallbackSnippet = firstAnnotation.message!.trim().slice(0, 200);
+  } else if (logs) {
+    // Scan from the bottom for a line that looks like an actual error.
+    // The last few lines are often just the checkout/cleanup step —
+    // the real error is usually a few lines above.
+    const errorLineRe =
+      /\b(?:error|ERR!|FATAL|fatal|failed|FAILED|Error:|Cannot |Unable to )/i;
+    const lines = logs.trim().split('\n');
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].trim();
+      // Strip the GHA timestamp prefix (e.g. "2026-04-09T20:48:51.437Z ")
+      const stripped = line.replace(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s*/, '');
+      if (
+        stripped &&
+        errorLineRe.test(stripped) &&
+        !/Process completed with exit code \d+/.test(stripped) &&
+        !/^\[command\]/.test(stripped)
+      ) {
+        fallbackSnippet = stripped.slice(0, 200);
+        break;
+      }
+    }
+    // Last resort: use the last 3 lines if no error-like line was found
+    if (!fallbackSnippet) {
+      fallbackSnippet = lines.slice(-3).join(' | ').slice(0, 200);
+    }
+  }
+
+  // Check for deterministic (non-transient) failure signals.
+  //
+  // STRUCTURAL: If any annotation references a source file (has a real
+  // path + line number), this is a compiler/linter error — deterministic
+  // by nature. This catches ALL TypeScript, ESLint, and Stylelint errors
+  // without needing to enumerate every possible error message.
+  const sourceFileAnnotation = annotations.find(
+    (a) =>
+      a.path &&
+      a.path !== '.github' &&
+      a.start_line != null &&
+      a.start_line > 0 &&
+      a.message?.trim() &&
+      !/^Process completed with exit code \d+/.test(a.message.trim()),
+  );
+  if (sourceFileAnnotation) {
+    return {
+      jobName,
+      jobId,
+      category,
+      jobRetryable: false,
+      reason: `Deterministic: code error in ${sourceFileAnnotation.path}:${sourceFileAnnotation.start_line}`,
+      errorSnippet:
+        fallbackSnippet ?? sourceFileAnnotation.message!.trim().slice(0, 200),
+      unmatched,
+      deterministic: true,
+    };
+  }
+
+  // Log-only deterministic signals (no source-file annotation).
+  // Patterns live in retry-config.jsonc → deterministicErrorPatterns.
+  const combinedText = [annotationText, logs ?? ''].join('\n');
+  for (const re of deterministicErrorRegexes) {
+    const deterministicMatch = re.exec(combinedText);
+    if (deterministicMatch) {
+      return {
+        jobName,
+        jobId,
+        category,
+        jobRetryable: false,
+        reason: `Deterministic: ${deterministicMatch[0]}`,
+        errorSnippet: fallbackSnippet ?? deterministicMatch[0],
+        unmatched,
+        deterministic: true,
+      };
+    }
+  }
 
   return {
     jobName,
@@ -1059,6 +1138,7 @@ if (Sentry) {
       'ci.job.reason': job.reason,
       ...(job.errorSnippet ? { 'ci.job.errorSnippet': job.errorSnippet } : {}),
       ...(job.unmatched ? { 'ci.job.unmatched': true } : {}),
+      ...(job.deterministic ? { 'ci.job.deterministic': true } : {}),
     });
   }
 

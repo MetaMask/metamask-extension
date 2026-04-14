@@ -13,6 +13,8 @@ jest.mock('../../../../hooks/useFormatters', () => ({
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`,
+    formatPercentWithMinThreshold: (value: number) =>
+      `${(value * 100).toFixed(2)}%`,
   }),
 }));
 
@@ -36,7 +38,7 @@ const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
   },
   liquidationPrice: '2400.00',
   maxLeverage: 20,
-  returnOnEquity: '15.79',
+  returnOnEquity: '0.1579',
   cumulativeFunding: {
     allTime: '12.50',
     sinceOpen: '8.30',
@@ -150,5 +152,42 @@ describe('PositionCard', () => {
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('+$0.00')).toBeInTheDocument();
+  });
+
+  it('displays ROE percentage for a profitable position', () => {
+    const position = createMockPosition({
+      symbol: 'ETH',
+      returnOnEquity: '0.1579',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+      '(15.79%)',
+    );
+  });
+
+  it('displays ROE percentage for a losing position', () => {
+    const position = createMockPosition({
+      symbol: 'BTC',
+      unrealizedPnl: '-250.00',
+      returnOnEquity: '-0.1667',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(screen.getByTestId('position-card-roe-BTC')).toHaveTextContent(
+      '(-16.67%)',
+    );
+  });
+
+  it('does not render ROE when returnOnEquity is not a number', () => {
+    const position = createMockPosition({
+      symbol: 'ETH',
+      returnOnEquity: 'not-a-number',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(
+      screen.queryByTestId('position-card-roe-ETH'),
+    ).not.toBeInTheDocument();
   });
 });

@@ -2,32 +2,32 @@ import { createProjectLogger } from '@metamask/utils';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
-  ControllerByName,
-  ControllerInitFunction,
-  ControllerInitRequest,
-  ControllerName,
+  MessengerClientByName,
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+  MessengerClientName,
 } from './types';
-import { Controller } from './controller-list';
+import { MessengerClient } from './controller-list';
 import { CONTROLLER_MESSENGERS } from './messengers';
 
 const log = createProjectLogger('messenger-client-init');
 
 /** Result of initializing controllers. */
-export type InitControllersResult = {
+export type InitMessengerClientsResult = {
   /** All API methods exposed by the controllers. */
-  controllerApi: Record<string, Controller>;
+  controllerApi: Record<string, MessengerClient>;
 
   /** All controllers that provided a memory state key. */
-  controllerMemState: Record<string, Controller>;
+  controllerMemState: Record<string, MessengerClient>;
 
   /** All controllers that provided a persisted state key. */
-  controllerPersistedState: Record<string, Controller>;
+  controllerPersistedState: Record<string, MessengerClient>;
 
   /** All initialized controllers keyed by name. */
-  controllersByName: ControllerByName;
+  controllersByName: MessengerClientByName;
 };
 
-type BaseControllerInitRequest = ControllerInitRequest<
+type BaseControllerInitRequest = MessengerClientInitRequest<
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger | void
 >;
@@ -36,7 +36,7 @@ type ControllerMessengerCallback = (
   BaseControllerMessenger: BaseControllerMessenger,
 ) => BaseRestrictedControllerMessenger;
 
-export type ControllersToInitialize =
+export type MessengerClientsToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'ClientController'
@@ -61,15 +61,15 @@ export type ControllersToInitialize =
   | 'TransactionPayController'
   | 'UserStorageController';
 
-type InitFunction<Name extends ControllersToInitialize> =
-  ControllerInitFunction<
-    ControllerByName[Name],
+type InitFunction<Name extends MessengerClientsToInitialize> =
+  MessengerClientInitFunction<
+    MessengerClientByName[Name],
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
 
 export type InitFunctions = Partial<{
-  [name in ControllersToInitialize]: InitFunction<name>;
+  [name in MessengerClientsToInitialize]: InitFunction<name>;
 }>;
 
 /**
@@ -91,34 +91,37 @@ export function initControllers({
   initRequest,
 }: {
   baseControllerMessenger: BaseControllerMessenger;
-  existingControllers?: Controller[];
+  existingControllers?: MessengerClient[];
   initFunctions: InitFunctions;
   initRequest: Omit<
     BaseControllerInitRequest,
     'controllerMessenger' | 'getController' | 'initMessenger'
   >;
-}): InitControllersResult {
+}): InitMessengerClientsResult {
   log('Initializing controllers', Object.keys(initFunctions).length);
 
   const partialControllersByName = existingControllers.reduce<
-    Partial<ControllerByName>
+    Partial<MessengerClientByName>
   >((acc, controller) => {
     // @ts-expect-error: Union too complex.
     acc[controller.name] = controller;
     return acc;
   }, {});
 
-  const controllerPersistedState: Record<string, Controller> = {};
-  const controllerMemState: Record<string, Controller> = {};
+  const controllerPersistedState: Record<string, MessengerClient> = {};
+  const controllerMemState: Record<string, MessengerClient> = {};
   let controllerApi = {};
 
-  const getController = <Name extends ControllerName>(
+  const getController = <Name extends MessengerClientName>(
     name: Name,
-  ): ControllerByName[Name] =>
-    getControllerOrThrow(partialControllersByName as ControllerByName, name);
+  ): MessengerClientByName[Name] =>
+    getControllerOrThrow(
+      partialControllersByName as MessengerClientByName,
+      name,
+    );
 
   for (const [key, value] of Object.entries(initFunctions)) {
-    const controllerName = key as ControllersToInitialize;
+    const controllerName = key as MessengerClientsToInitialize;
     const initFunction = value as InitFunction<typeof controllerName>;
     const messengerCallbacks = CONTROLLER_MESSENGERS[controllerName];
 
@@ -189,14 +192,14 @@ export function initControllers({
     controllerApi,
     controllerMemState,
     controllerPersistedState,
-    controllersByName: partialControllersByName as ControllerByName,
+    controllersByName: partialControllersByName as MessengerClientByName,
   };
 }
 
-function getControllerOrThrow<Name extends ControllerName>(
-  controllersByName: ControllerByName,
+function getControllerOrThrow<Name extends MessengerClientName>(
+  controllersByName: MessengerClientByName,
   name: Name,
-): ControllerByName[Name] {
+): MessengerClientByName[Name] {
   const controller = controllersByName[name];
 
   if (!controller) {

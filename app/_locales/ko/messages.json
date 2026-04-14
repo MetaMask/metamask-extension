@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
   },
-  "yourTransactionConfirmed": {
-    "message": "트랜잭션이 이미 확인되었습니다"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "블록체인에서 거래가 확인되기 전에는 거래를 취소할 수 없습니다."
-  },
   "yourWalletIsReady": {
     "message": "지갑이 준비되었습니다"
   },

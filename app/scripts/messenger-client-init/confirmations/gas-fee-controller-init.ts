@@ -9,7 +9,7 @@ import {
   GasFeeControllerInitMessenger,
   GasFeeControllerMessenger,
 } from '../messengers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { getGlobalChainId } from '../init-utils';
 
 const GAS_API_URL = process.env.SWAPS_USE_DEV_APIS
@@ -25,7 +25,7 @@ const GAS_API_URL = process.env.SWAPS_USE_DEV_APIS
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const GasFeeControllerInit: ControllerInitFunction<
+export const GasFeeControllerInit: MessengerClientInitFunction<
   GasFeeController,
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger

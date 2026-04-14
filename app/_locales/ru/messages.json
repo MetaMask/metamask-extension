@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
   },
-  "yourTransactionConfirmed": {
-    "message": "Транзакция уже подтверждена"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Нам не удалось отменить вашу транзакцию до ее подтверждения в блокчейне."
-  },
   "yourWalletIsReady": {
     "message": "Ваш кошелек готов"
   },
