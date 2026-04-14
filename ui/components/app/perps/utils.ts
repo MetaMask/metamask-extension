@@ -1,13 +1,12 @@
 import { TextColor } from '@metamask/design-system-react';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import { parseVolume } from '../../../pages/perps/utils/sortMarkets';
 import type {
   Order,
   PerpsMarketData,
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { HYPERLIQUID_ASSET_ICONS_BASE_URL, PERPS_CONSTANTS } from './constants';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -96,6 +95,30 @@ export const getStatusColor = (status: Order['status']): TextColor => {
     default:
       return TextColor.TextAlternative;
   }
+};
+
+/**
+ * Normalizes a 24h percentage change string to always include the '%' suffix.
+ * The live price stream may omit '%' while market data always includes it.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - already contains '%'
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' (e.g., "+2.84" or "+2.84%")
+ * @returns The normalized percentage string with '%' appended if missing
+ * @example
+ * formatChangePercent('+2.84')  => '+2.84%'
+ * formatChangePercent('+2.84%') => '+2.84%'
+ * formatChangePercent('')       => ''
+ * formatChangePercent('—')      => '—'
+ */
+export const formatChangePercent = (value: string): string => {
+  if (!value || value.includes('%') || !/\d/u.test(value)) {
+    return value;
+  }
+  return `${value}%`;
 };
 
 /**
@@ -419,6 +442,76 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
 };
 
 /**
+ * Format a RoE% value for display in TP/SL inputs.
+ * Always returns the absolute value: integers with no decimal ("25"),
+ * non-integers with 2 decimal places ("25.50").
+ *
+ * @param value - The numeric percentage value to format
+ * @returns The formatted percentage string
+ * @example
+ * formatRoePercent(10) => '10'
+ * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(0) => '0'
+ */
+export const formatRoePercent = (value: number): string => {
+  const rounded = Math.round(Math.abs(value) * 100) / 100;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
+};
+
+const volumeMultipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * volumeMultipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
+/**
  * Check if a market has meaningful trading volume (non-zero).
  * Markets with zero, negative, or missing volume are considered inactive and
  * should be hidden from market lists.
@@ -439,12 +532,12 @@ export const hasVolume = (market: PerpsMarketData): boolean => {
  * cannot be determined.
  *
  * Primary: unrealizedPnl / marginUsed.
- * Fallback: returnOnEquity (percent) converted to a ratio.
+ * Fallback: returnOnEquity, which is already a ratio (e.g. 0.1579 for 15.79%).
  *
  * @param position - Position values used to compute the PnL ratio.
  * @param position.unrealizedPnl - Unrealized profit and loss as a string.
  * @param position.marginUsed - Margin used as a string.
- * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @param position.returnOnEquity - Return on equity as a decimal ratio string (e.g. "0.1579").
  * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
  */
 export const getPositionPnlRatio = (position: {
@@ -465,9 +558,41 @@ export const getPositionPnlRatio = (position: {
 
   const returnOnEquity = parseFloat(position.returnOnEquity);
   if (!Number.isNaN(returnOnEquity)) {
-    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
-    return returnOnEquity / 100;
+    // position.returnOnEquity is a decimal ratio (e.g. 0.1579); pass directly to formatter.
+    return returnOnEquity;
   }
 
   return undefined;
+};
+
+/**
+ * Derives the TP/SL risk management type string for analytics.
+ * Returns a value like 'create_tpsl', 'update_tp', 'create_sl', etc.
+ *
+ * @param options - Input values used to determine the type string.
+ * @param options.takeProfitPrice - The take profit price, if set.
+ * @param options.stopLossPrice - The stop loss price, if set.
+ * @param options.hasExistingTpsl - Whether the position already has a TP or SL set.
+ * @returns A type string such as 'create_tpsl', 'update_tp', or 'create_sl'.
+ */
+export const deriveTpslType = ({
+  takeProfitPrice,
+  stopLossPrice,
+  hasExistingTpsl,
+}: {
+  takeProfitPrice: string | null | undefined;
+  stopLossPrice: string | null | undefined;
+  hasExistingTpsl: boolean;
+}): string => {
+  const prefix = hasExistingTpsl ? 'update' : 'create';
+  if (takeProfitPrice && stopLossPrice) {
+    return `${prefix}_tpsl`;
+  }
+  if (takeProfitPrice) {
+    return `${prefix}_tp`;
+  }
+  if (stopLossPrice) {
+    return `${prefix}_sl`;
+  }
+  return `${prefix}_tpsl`;
 };

@@ -1,6 +1,8 @@
-import { AlertController } from '../controllers/alert-controller';
+import {
+  AlertController,
+  AlertControllerMessenger,
+} from '../controllers/alert-controller';
 import { ControllerInitFunction } from './types';
-import { AlertControllerMessenger } from './messengers';
 
 /**
  * Initialize the alert controller.

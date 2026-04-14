@@ -1,5 +1,5 @@
 import { StorageService } from '@metamask/storage-service';
-import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 import { ControllerInitFunction } from './types';
 import { StorageServiceMessenger } from './messengers';
 

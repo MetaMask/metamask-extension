@@ -1,5 +1,5 @@
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
-import type { RewardsDataServiceMessenger } from './messengers/reward-data-service-messenger';
+import { RewardsDataServiceMessenger } from '../controllers/rewards/rewards-data-service-types';
 import { ControllerInitFunction } from './types';
 
 /**
