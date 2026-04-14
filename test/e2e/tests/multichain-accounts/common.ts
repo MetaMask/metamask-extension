@@ -53,6 +53,7 @@ export async function withMultichainAccountsDesignEnabled(
     default:
       fixture = new FixtureBuilderV2()
         .withKeyringControllerMultiSRP()
+        .withSnapsPrivacyWarningAlreadyShown()
         .withShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
         .withCurrencyController({
