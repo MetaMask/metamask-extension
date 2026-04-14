@@ -223,7 +223,7 @@ export const getFromChains = createDeepEqualSelector(
     const allChains: Record<CaipChainId, BridgeNetwork> = {
       ...Object.fromEntries(
         FEATURED_RPCS.filter(({ chainId }) =>
-          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+          isSupportedBridgeChain(chainId),
         ).map((rpc) => {
           const caipChainId = formatChainIdToCaip(rpc.chainId);
           return [
