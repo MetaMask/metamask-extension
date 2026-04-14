@@ -545,6 +545,25 @@ describe('PerpsStreamManager', () => {
       );
       consoleSpy.mockRestore();
     });
+
+    it('updates lastStreamUpdateAt on every call', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+    });
+
+    it('updates lastStreamUpdateAt even for unknown channels', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({ channel: 'unknown', data: {} });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+      consoleSpy.mockRestore();
+    });
   });
 
   describe('setOptimisticTPSL / applyOptimisticOverrides', () => {
@@ -754,6 +773,24 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('getLastStreamUpdateAt', () => {
+    it('returns 0 before any updates', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('returns the timestamp of the most recent handleBackgroundUpdate', () => {
+      manager.handleBackgroundUpdate({ channel: 'orders', data: [] });
+      const t1 = manager.getLastStreamUpdateAt();
+      expect(t1).toBeGreaterThan(0);
+
+      jest.advanceTimersByTime(5000);
+
+      manager.handleBackgroundUpdate({ channel: 'account', data: null });
+      const t2 = manager.getLastStreamUpdateAt();
+      expect(t2).toBeGreaterThan(t1);
+    });
+  });
+
   describe('getCurrentAddress', () => {
     it('returns null before initialization', () => {
       expect(manager.getCurrentAddress()).toBeNull();
@@ -819,6 +856,15 @@ describe('PerpsStreamManager', () => {
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
     });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.clearAllCaches();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
   });
 
   describe('reset', () => {
@@ -834,6 +880,15 @@ describe('PerpsStreamManager', () => {
       expect(manager.positions.getCachedData()).toEqual([]);
       expect(manager.isInitialized()).toBe(false);
       expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.reset();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
     });
   });
 });

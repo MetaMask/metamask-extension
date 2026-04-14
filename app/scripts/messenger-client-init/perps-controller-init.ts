@@ -150,7 +150,9 @@ type PerpsActionName =
   | 'perpsIsFirstTimeUserOnCurrentNetwork'
   | 'perpsGetWatchlistMarkets'
   | 'perpsToggleWatchlistMarket'
-  | 'perpsIsWatchlistMarket';
+  | 'perpsIsWatchlistMarket'
+  | 'perpsReconnect'
+  | 'perpsGetConnectionState';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -159,7 +161,8 @@ type PerpsActionName =
 type PerpsCustomApiNames =
   | 'perpsDepositWithConfirmation'
   | 'perpsGetUserHistory'
-  | 'perpsGetUserNonFundingLedgerUpdates';
+  | 'perpsGetUserNonFundingLedgerUpdates'
+  | 'perpsGetConnectionState';
 
 type PerpsBackgroundApi = {
   [ActionName in Exclude<
@@ -184,6 +187,7 @@ type PerpsBackgroundApi = {
     endTime?: number;
     accountId?: string;
   }) => Promise<RawLedgerUpdate[]>;
+  perpsGetConnectionState: () => string;
 };
 
 function getApi(controller: PerpsController): PerpsBackgroundApi {
@@ -307,5 +311,9 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
     perpsToggleWatchlistMarket:
       controller.toggleWatchlistMarket.bind(controller),
     perpsIsWatchlistMarket: controller.isWatchlistMarket.bind(controller),
+
+    // -- Connection health --
+    perpsReconnect: controller.reconnect.bind(controller),
+    perpsGetConnectionState: () => controller.getWebSocketConnectionState(),
   };
 }

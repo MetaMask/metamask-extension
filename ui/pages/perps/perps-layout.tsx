@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
+import { usePerpsConnectionHealth } from '../../hooks/perps/stream/usePerpsConnectionHealth';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 
 /**
@@ -17,6 +18,7 @@ import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycl
  */
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
+  usePerpsConnectionHealth();
   usePerpsLifecycleBreadcrumbs();
 
   return (

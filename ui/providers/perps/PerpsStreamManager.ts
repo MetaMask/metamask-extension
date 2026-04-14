@@ -98,6 +98,10 @@ class PerpsStreamManager {
   // Tracks which address this manager is initialized for
   private initializedAddress: string | null = null;
 
+  // Timestamp of the most recent background stream update (any channel).
+  // Used by usePerpsConnectionHealth to detect zombie WebSocket connections.
+  private _lastStreamUpdateAt = 0;
+
   // Deduplicates concurrent initForAddress calls
   private pendingInit: { address: string; promise: Promise<void> } | null =
     null;
@@ -214,6 +218,14 @@ class PerpsStreamManager {
     });
 
     this.candles = new CandleStreamChannel();
+  }
+
+  /**
+   * Returns the timestamp of the last background stream update.
+   * Returns 0 if no update has been received yet.
+   */
+  getLastStreamUpdateAt(): number {
+    return this._lastStreamUpdateAt;
   }
 
   /**
@@ -449,6 +461,7 @@ class PerpsStreamManager {
     symbol?: string;
     interval?: CandlePeriod;
   }): void {
+    this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
     switch (channel) {
       case 'positions': {
@@ -569,6 +582,7 @@ class PerpsStreamManager {
     this.prices.clearCache();
     this.orderBook.clearCache();
     this.candles.clearAll();
+    this._lastStreamUpdateAt = 0;
   }
 
   /**
@@ -588,6 +602,7 @@ class PerpsStreamManager {
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
+    this._lastStreamUpdateAt = 0;
   }
 }
 
