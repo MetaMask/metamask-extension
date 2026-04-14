@@ -8,6 +8,7 @@ const MOCK_I18N: Record<string, string> = {
   trustSignalBlockTitle: messages.trustSignalBlockTitle.message,
   trustSignalBlockDescription: messages.trustSignalBlockDescription.message,
   trustSignalContinueAnyway: messages.trustSignalContinueAnyway.message,
+  cancel: messages.cancel.message,
 };
 
 jest.mock('../../../hooks/useI18nContext', () => ({
