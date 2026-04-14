@@ -1364,6 +1364,9 @@
       "MetaMask: Background connection not initialized": 30,
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/useIsEnforcedSimulationsEligible.test.ts": {
+      "Reselect: Identity function warnings": 3
+    },
     "ui/pages/confirmations/hooks/useLedgerConnection.test.ts": {
       "Reselect: Identity function warnings": 3
     },

@@ -585,4 +585,41 @@ describe('ClosePositionModal', () => {
       });
     });
   });
+
+  describe('receive amount calculation', () => {
+    it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
+      // Verify the formula: receive = round2(margin) - round2(fees), with no unrealizedPnl added.
+      // HyperLiquid's marginUsed already includes accumulated PnL, so adding unrealizedPnl
+      // would double-count it. We assert the relationship between the three displayed values
+      // rather than a hardcoded amount so the test stays valid as the fee rate changes.
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const parseUsd = (el: HTMLElement) =>
+        parseFloat(el.textContent?.replace(/[^0-9.]/gu, '') ?? '0');
+
+      const marginValue = parseUsd(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      );
+      const feesValue = parseUsd(
+        screen.getByTestId('perps-close-summary-fees-value'),
+      );
+      const receiveValue = parseUsd(
+        screen.getByTestId('perps-close-summary-receive-value'),
+      );
+
+      // displayed margin − displayed fees must equal displayed receive (additive breakdown)
+      expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
+      // sanity: margin must be positive and must NOT include an extra pnl on top
+      // (basePosition: marginUsed=2375, unrealizedPnl=375 — receive should be ~2375-fees, not ~2750-fees)
+      expect(marginValue).toBe(2375);
+    });
+  });
 });
