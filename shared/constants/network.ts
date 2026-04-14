@@ -629,6 +629,7 @@ export const LIGHT_LINK_IMAGE_URL = './images/lightlink.svg';
 export const GSYS_IMAGE_URL = './images/genesys.svg';
 export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
+export const MANTLE_NATIVE_TOKEN_IMAGE_URL = './images/mantle-native.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
 export const MOONRIVER_IMAGE_URL = './images/moonriver.svg';
 export const MOONBEAM_TOKEN_IMAGE_URL = './images/moonbeam-token.svg';
@@ -735,7 +736,6 @@ export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 export const STABLE_IMAGE_URL = './images/stable.svg';
 export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
-export const MANTLE_NATIVE_TOKEN_IMAGE_URL = './images/mantle-native.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
