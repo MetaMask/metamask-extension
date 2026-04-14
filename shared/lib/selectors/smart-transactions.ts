@@ -9,6 +9,7 @@ import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
+import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
 import {
   accountSupportsSmartTx,
   getPreferences,
@@ -233,4 +234,15 @@ export const getGaslessBridgeWith7702EnabledForChain = (
 ): boolean => {
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(state, chainId);
   return featureFlags?.gaslessBridgeWith7702Enabled ?? false;
+};
+
+export const getExtensionSkipTransactionStatusPage = (
+  state: SmartTransactionsState,
+) => {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.extensionSkipTransactionStatusPage,
+    false,
+  );
 };
