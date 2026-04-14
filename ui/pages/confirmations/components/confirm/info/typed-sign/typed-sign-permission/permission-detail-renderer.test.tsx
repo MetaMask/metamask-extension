@@ -40,7 +40,7 @@ describe('PermissionDetailRenderer', () => {
     };
 
     it('renders the periodic details section', () => {
-      const { getByTestId } = renderWithConfirmContextProvider(
+      const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
         <PermissionDetailRenderer
           permission={permission}
           expiry={123456789}
@@ -53,6 +53,9 @@ describe('PermissionDetailRenderer', () => {
       expect(
         getByTestId('native-token-periodic-details-section'),
       ).toBeInTheDocument();
+      expect(
+        queryByTestId('review_summary-account-section'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders without expiry', () => {

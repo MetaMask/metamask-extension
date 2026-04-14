@@ -259,11 +259,21 @@ function renderSection(
   schemaEntry: PermissionSchemaEntry,
   ownerId: string,
 ): React.ReactNode {
+  const children = section.elements.map((element, index) =>
+    renderElement(element, ctx, t, schemaEntry, ownerId, index),
+  );
+
+  const hasContent = children.some(
+    (child) => child !== null && child !== undefined && child !== false,
+  );
+
+  if (!hasContent) {
+    return null;
+  }
+
   return (
     <ConfirmInfoSection key={section.testId} data-testid={section.testId}>
-      {section.elements.map((element, index) =>
-        renderElement(element, ctx, t, schemaEntry, ownerId, index),
-      )}
+      {children}
     </ConfirmInfoSection>
   );
 }
