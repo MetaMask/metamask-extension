@@ -3,7 +3,7 @@ import type { OrderFill } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { usePerpsLiveFills } from './stream';
 
 type UsePerpsMarketFillsParams = {
@@ -48,7 +48,7 @@ export function usePerpsMarketFills({
 
   const fetchRestFills = useCallback(async () => {
     const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
-    const result = await submitRequestToBackground<OrderFill[]>(
+    const result = await getPerpsStreamManager().fetchWithRecovery<OrderFill[]>(
       'perpsGetOrderFills',
       [{ aggregateByTime: false, startTime }],
     );
