@@ -5,6 +5,7 @@
  * ERC20 tokens to the token's own contract address.
  */
 
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -13,6 +14,20 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { mockEmptyPrices } from '../tokens/utils/mocks';
+
+async function mocks(server: Mockttp) {
+  return [
+    await mockEmptyPrices(server),
+    await server
+      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: { balances: [] },
+      }),
+  ];
+}
 
 describe('Send ERC20 - Contract Warning', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -24,6 +39,7 @@ describe('Send ERC20 - Contract Warning', function () {
         fixtures: new FixtureBuilderV2().build(),
         smartContract,
         title: this.test?.fullTitle(),
+        testSpecificMock: mocks,
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress: string =
