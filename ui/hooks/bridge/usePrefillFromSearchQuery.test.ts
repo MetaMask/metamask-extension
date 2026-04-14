@@ -460,6 +460,127 @@ describe('usePrefillFromSearchQuery', () => {
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
   });
 
+  describe('malformed or unknown chain/token params', () => {
+    it('does not throw and skips metadata fetch when the from param is completely malformed', () => {
+      // CaipAssetTypeStruct.create('not-a-caip-id') throws → parseAsset returns null
+      // → the search-params effect condition (from || to || amount) is false
+      // → the block is skipped entirely: no resetSearchParams, no fetch, no state update.
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({ from: 'not-a-caip-id' });
+      const { store, result } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      // Effect block was skipped → no fetch and URL was NOT cleared
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(result.current.location.search).toContain('from=not-a-caip-id');
+      const { fromToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.chainId).not.toBe('not-a-caip-id');
+    });
+
+    it('does not throw and skips metadata fetch when the to param is completely malformed', () => {
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({ to: ':::invalid:::' });
+      const { store, result } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(result.current.location.search).toContain('to=');
+      const { toToken } = store?.getState().bridge ?? {};
+      expect(toToken?.chainId).toBeUndefined();
+    });
+
+    it('does not throw and leaves state unchanged when both from and to are malformed', () => {
+      const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
+      const mockStoreState = createBridgeMockStore({});
+
+      const searchParams = new URLSearchParams({
+        from: 'garbage-from',
+        to: 'garbage-to',
+      });
+      const { store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      const { fromToken, toToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.chainId).toBeUndefined();
+      expect(toToken?.chainId).toBeUndefined();
+    });
+
+    it('does not set fromToken when metadata is not found for the from token address', async () => {
+      // Valid CAIP format and supported chain, but the token address is unknown —
+      // fetchAssetMetadataForAssetIds returns an empty object, so fromTokenMetadata
+      // is undefined and the effect returns early before dispatching setFromToken.
+      jest
+        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+        .mockResolvedValue({});
+
+      const mockStoreState = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      });
+
+      const searchParams = new URLSearchParams({
+        from: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      });
+
+      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      await waitForNextUpdate();
+
+      const { fromToken } = store?.getState().bridge ?? {};
+      expect(fromToken?.assetId).not.toBe(
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      );
+    });
+
+    it('does not set toToken when metadata is not found for the to token address', async () => {
+      jest
+        .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+        .mockResolvedValue({});
+
+      const mockStoreState = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      });
+
+      const searchParams = new URLSearchParams({
+        to: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      });
+
+      const { waitForNextUpdate, store } = renderUseBridgeQueryParams(
+        mockStoreState,
+        // eslint-disable-next-line prefer-template
+        '/?' + searchParams.toString(),
+      );
+
+      await waitForNextUpdate();
+
+      const { toToken } = store?.getState().bridge ?? {};
+      expect(toToken?.assetId).not.toBe(
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+      );
+    });
+  });
+
   it('should unset amount', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest.spyOn(
       assetUtils,
