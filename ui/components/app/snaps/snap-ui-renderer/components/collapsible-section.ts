@@ -1,13 +1,11 @@
 import { BoxElement, CollapsibleSectionElement } from '@metamask/snaps-sdk/jsx';
+import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { UIComponentFactory, UIComponentParams } from './types';
 import { box } from './box';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 
-export const collapsibleSection: UIComponentFactory<CollapsibleSectionElement> = ({
-  element,
-  contentBackgroundColor,
-  ...params
-}) => {
+export const collapsibleSection: UIComponentFactory<
+  CollapsibleSectionElement
+> = ({ element, contentBackgroundColor, ...params }) => {
   const { children, props } = box({
     element,
     ...params,
@@ -23,23 +21,26 @@ export const collapsibleSection: UIComponentFactory<CollapsibleSectionElement> =
     element: 'Delineator',
     children,
     props: {
+      isExpanded: element.props.isExpanded,
+      isLoading: element.props.isLoading,
       wrapperBoxProps: {
         backgroundColor,
         style: {
           overflow: 'unset',
-        }
+        },
+        className: 'snap-ui-renderer__collapsible-section',
       },
       contentBoxProps: {
         ...props,
         gap: 2,
+        padding: element.props.isLoading ? 0 : undefined,
       },
-      className: 'snap-ui-renderer__collapsible-section',
     },
     propComponents: {
       headerComponent: {
         element: 'Text',
         children: element.props.label,
-      }
-    }
+      },
+    },
   };
 };
