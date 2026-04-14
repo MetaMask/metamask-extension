@@ -116,7 +116,7 @@ async function mockSwapUSDCtoSOL(
   return [
     await mockAccountsApiV2WithSolana(mockServer),
     await mockAccountsApiV5WithSolana(mockServer),
-    await mockGetTokenAccountsUSDCOnly(mockServer),
+    await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
@@ -146,8 +146,6 @@ async function mockSwapNoQuotes(
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
@@ -173,8 +171,6 @@ async function mockSwapSOLtoUSDCFailed(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
@@ -405,6 +401,21 @@ describe('Swap on Solana', function () {
                   conversionDate: 1770832998.066,
                   conversionRate: 1932.163232734,
                   usdConversionRate: 1932.163232734,
+                },
+              },
+            },
+            MultichainAssetsController: {
+              accountsAssets: {
+                [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+              },
+              assetsMetadata: {
+                [USDC_CAIP_ASSET]: {
+                  fungible: true,
+                  iconUrl:
+                    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+                  name: 'USD Coin',
+                  symbol: 'USDC',
+                  units: [{ decimals: 6, name: 'USD Coin', symbol: 'USDC' }],
                 },
               },
             },
