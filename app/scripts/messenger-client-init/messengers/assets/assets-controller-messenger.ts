@@ -24,6 +24,7 @@ import type {
 import type {
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerIncomingTransactionsReceivedEvent,
+  TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import type {
@@ -98,7 +99,8 @@ type RpcDataSourceActions =
 type RpcDataSourceEvents =
   | NetworkControllerStateChangeEvent
   | TransactionControllerTransactionConfirmedEvent
-  | TransactionControllerIncomingTransactionsReceivedEvent;
+  | TransactionControllerIncomingTransactionsReceivedEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent;
 
 /**
  * Actions required by BackendWebsocketDataSource.
@@ -246,6 +248,7 @@ export function getAssetsControllerMessenger(
       'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:incomingTransactionsReceived',
+      'TransactionController:unapprovedTransactionAdded',
     ],
   });
 
