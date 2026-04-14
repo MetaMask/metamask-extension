@@ -7,6 +7,10 @@ import {
   hasABTestAnalyticsMappingForEvent,
 } from './ab-test-analytics';
 
+const TEST_BADGE_FLAG_KEY = 'testTEST338AbtestAttentionBadge';
+const TEST_QUICK_AMOUNTS_FLAG_KEY = 'testTEST4135AbtestQuickAmounts';
+const TEST_LAYOUT_FLAG_KEY = 'testTEST4242AbtestBalanceLayout';
+
 const createEvent = (
   event: string,
   properties: Record<string, unknown> = {},
@@ -28,26 +32,24 @@ describe('ab-test-analytics', () => {
   describe('hasABTestAnalyticsMappingForEvent', () => {
     it('returns true when an event is allowlisted', () => {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
 
-      expect(
-        hasABTestAnalyticsMappingForEvent('Card Button Viewed'),
-      ).toBe(true);
+      expect(hasABTestAnalyticsMappingForEvent('Card Button Viewed')).toBe(
+        true,
+      );
     });
 
     it('returns false when an event is not allowlisted', () => {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
 
-      expect(
-        hasABTestAnalyticsMappingForEvent('Unrelated Event'),
-      ).toBe(false);
+      expect(hasABTestAnalyticsMappingForEvent('Unrelated Event')).toBe(false);
     });
   });
 
@@ -55,17 +57,17 @@ describe('ab-test-analytics', () => {
     beforeEach(() => {
       AB_TEST_ANALYTICS_MAPPINGS.push(
         {
-          flagKey: 'cardCARD338AbtestAttentionBadge',
+          flagKey: TEST_BADGE_FLAG_KEY,
           validVariants: ['control', 'withBadge'],
           eventNames: ['Card Button Viewed'],
         },
         {
-          flagKey: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+          flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
         {
-          flagKey: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+          flagKey: TEST_LAYOUT_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
@@ -74,13 +76,14 @@ describe('ab-test-analytics', () => {
 
     it('injects one active assignment for a matching allowlisted event', () => {
       const result = enrichWithABTests(createEvent('Card Button Viewed'), {
-        cardCARD338AbtestAttentionBadge: 'withBadge',
+        [TEST_BADGE_FLAG_KEY]: 'withBadge',
       });
 
       expect(result.properties).toStrictEqual({
-        ['active_ab_tests']: [
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        active_ab_tests: [
           {
-            key: 'cardCARD338AbtestAttentionBadge',
+            key: TEST_BADGE_FLAG_KEY,
             value: 'withBadge',
           },
         ],
@@ -91,18 +94,18 @@ describe('ab-test-analytics', () => {
       const result = enrichWithABTests(
         createEvent('Unified SwapBridge Page Viewed'),
         {
-          swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'treatment' },
-          swapsSWAPS4242AbtestTokenSelectorBalanceLayout: 'control',
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
+          [TEST_LAYOUT_FLAG_KEY]: 'control',
         },
       );
 
-      expect(result.properties?.['active_ab_tests']).toStrictEqual([
+      expect(result.properties?.active_ab_tests).toStrictEqual([
         {
-          key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+          key: TEST_QUICK_AMOUNTS_FLAG_KEY,
           value: 'treatment',
         },
         {
-          key: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+          key: TEST_LAYOUT_FLAG_KEY,
           value: 'control',
         },
       ]);
@@ -113,7 +116,7 @@ describe('ab-test-analytics', () => {
 
       expect(
         enrichWithABTests(event, {
-          cardCARD338AbtestAttentionBadge: 'withBadge',
+          [TEST_BADGE_FLAG_KEY]: 'withBadge',
         }),
       ).toStrictEqual(event);
     });
@@ -123,8 +126,8 @@ describe('ab-test-analytics', () => {
 
       expect(
         enrichWithABTests(event, {
-          swapsSWAPS4135AbtestNumpadQuickAmounts: 42,
-          swapsSWAPS4242AbtestTokenSelectorBalanceLayout: 'unknown',
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: 42,
+          [TEST_LAYOUT_FLAG_KEY]: 'unknown',
         }),
       ).toStrictEqual(event);
     });
@@ -132,29 +135,33 @@ describe('ab-test-analytics', () => {
     it('merges with existing active_ab_tests and preserves explicit payload values', () => {
       const result = enrichWithABTests(
         createEvent('Unified SwapBridge Page Viewed', {
-          ['active_ab_tests']: [
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          active_ab_tests: [
             {
-              key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+              key: TEST_QUICK_AMOUNTS_FLAG_KEY,
               value: 'manual-value',
             },
           ],
-          ['quote_count']: 3,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          quote_count: 3,
         }),
         {
-          swapsSWAPS4135AbtestNumpadQuickAmounts: 'treatment',
-          swapsSWAPS4242AbtestTokenSelectorBalanceLayout: 'treatment',
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: 'treatment',
+          [TEST_LAYOUT_FLAG_KEY]: 'treatment',
         },
       );
 
       expect(result.properties).toStrictEqual({
-        ['quote_count']: 3,
-        ['active_ab_tests']: [
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        quote_count: 3,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        active_ab_tests: [
           {
-            key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+            key: TEST_QUICK_AMOUNTS_FLAG_KEY,
             value: 'manual-value',
           },
           {
-            key: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+            key: TEST_LAYOUT_FLAG_KEY,
             value: 'treatment',
           },
         ],
@@ -166,7 +173,8 @@ describe('ab-test-analytics', () => {
         event: 'Card Button Viewed',
         category: 'Unit Test',
         properties: {
-          ['button_type']: 'card',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          button_type: 'card',
         },
         sensitiveProperties: {
           sensitive: 'value',
@@ -174,14 +182,16 @@ describe('ab-test-analytics', () => {
       };
 
       const result = enrichWithABTests(event, {
-        cardCARD338AbtestAttentionBadge: 'control',
+        [TEST_BADGE_FLAG_KEY]: 'control',
       });
 
       expect(result.properties).toStrictEqual({
-        ['button_type']: 'card',
-        ['active_ab_tests']: [
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        button_type: 'card',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        active_ab_tests: [
           {
-            key: 'cardCARD338AbtestAttentionBadge',
+            key: TEST_BADGE_FLAG_KEY,
             value: 'control',
           },
         ],
@@ -196,17 +206,17 @@ describe('ab-test-analytics', () => {
     it('prefers manifest overrides over controller state flags', () => {
       jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
         remoteFeatureFlags: {
-          swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'treatment' },
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
         },
       });
 
       expect(
         getRemoteFeatureFlagsWithManifestOverrides({
-          swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'control' },
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'control' },
           otherFlag: true,
         }),
       ).toStrictEqual({
-        swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'treatment' },
+        [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
         otherFlag: true,
       });
     });

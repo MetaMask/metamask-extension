@@ -1071,7 +1071,7 @@ export class MetaMetricsController extends BaseController<
 
       // change anonymous event names
       const anonymousEventName =
-      // @ts-expect-error This property may not exist. We check for it below.
+        // @ts-expect-error This property may not exist. We check for it below.
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
         ...payload,
@@ -1095,7 +1095,9 @@ export class MetaMetricsController extends BaseController<
       );
     }
 
-    events.push(this.#track(this.#buildEventPayload(identifiedPayload), options));
+    events.push(
+      this.#track(this.#buildEventPayload(identifiedPayload), options),
+    );
 
     await Promise.all(events);
   }

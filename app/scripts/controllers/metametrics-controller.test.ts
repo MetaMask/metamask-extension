@@ -54,6 +54,10 @@ import {
   PreferencesControllerState,
 } from './preferences-controller';
 
+const TEST_BADGE_FLAG_KEY = 'testTEST338AbtestAttentionBadge';
+const TEST_QUICK_AMOUNTS_FLAG_KEY = 'testTEST4135AbtestQuickAmounts';
+const TEST_LAYOUT_FLAG_KEY = 'testTEST4242AbtestBalanceLayout';
+
 const segmentMock = createSegmentMock(2);
 
 const VERSION = '0.0.1-test';
@@ -961,7 +965,7 @@ describe('MetaMetricsController', function () {
 
     it('injects one active assignment for a matching allowlisted event', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
@@ -969,7 +973,7 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           remoteFeatureFlags: {
-            cardCARD338AbtestAttentionBadge: 'withBadge',
+            [TEST_BADGE_FLAG_KEY]: 'withBadge',
           },
         },
         ({ controller }) => {
@@ -983,9 +987,10 @@ describe('MetaMetricsController', function () {
           expect(spy).toHaveBeenCalledWith(
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['active_ab_tests']: [
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
                   {
-                    key: 'cardCARD338AbtestAttentionBadge',
+                    key: TEST_BADGE_FLAG_KEY,
                     value: 'withBadge',
                   },
                 ],
@@ -1000,12 +1005,12 @@ describe('MetaMetricsController', function () {
     it('injects multiple assignments for a single allowlisted event', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push(
         {
-          flagKey: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+          flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
         {
-          flagKey: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+          flagKey: TEST_LAYOUT_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
@@ -1014,8 +1019,8 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           remoteFeatureFlags: {
-            swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'treatment' },
-            swapsSWAPS4242AbtestTokenSelectorBalanceLayout: 'control',
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
+            [TEST_LAYOUT_FLAG_KEY]: 'control',
           },
         },
         ({ controller }) => {
@@ -1029,13 +1034,14 @@ describe('MetaMetricsController', function () {
           expect(spy).toHaveBeenCalledWith(
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['active_ab_tests']: [
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
                   {
-                    key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                     value: 'treatment',
                   },
                   {
-                    key: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+                    key: TEST_LAYOUT_FLAG_KEY,
                     value: 'control',
                   },
                 ],
@@ -1050,12 +1056,12 @@ describe('MetaMetricsController', function () {
     it('merges with existing active_ab_tests and avoids duplicate keys', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push(
         {
-          flagKey: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+          flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
         {
-          flagKey: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+          flagKey: TEST_LAYOUT_FLAG_KEY,
           validVariants: ['control', 'treatment'],
           eventNames: ['Unified SwapBridge Page Viewed'],
         },
@@ -1064,8 +1070,8 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           remoteFeatureFlags: {
-            swapsSWAPS4135AbtestNumpadQuickAmounts: 'treatment',
-            swapsSWAPS4242AbtestTokenSelectorBalanceLayout: 'treatment',
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: 'treatment',
+            [TEST_LAYOUT_FLAG_KEY]: 'treatment',
           },
         },
         ({ controller }) => {
@@ -1075,27 +1081,31 @@ describe('MetaMetricsController', function () {
             event: 'Unified SwapBridge Page Viewed',
             category: 'Unit Test',
             properties: {
-              ['active_ab_tests']: [
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [
                 {
-                  key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+                  key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                   value: 'manual-value',
                 },
               ],
-              ['quote_count']: 3,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              quote_count: 3,
             },
           });
 
           expect(spy).toHaveBeenCalledWith(
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['quote_count']: 3,
-                ['active_ab_tests']: [
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                quote_count: 3,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
                   {
-                    key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                     value: 'manual-value',
                   },
                   {
-                    key: 'swapsSWAPS4242AbtestTokenSelectorBalanceLayout',
+                    key: TEST_LAYOUT_FLAG_KEY,
                     value: 'treatment',
                   },
                 ],
@@ -1109,7 +1119,7 @@ describe('MetaMetricsController', function () {
 
     it('does not inject assignments for unrelated or invalid flags', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
@@ -1117,7 +1127,7 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           remoteFeatureFlags: {
-            cardCARD338AbtestAttentionBadge: 'unknown',
+            [TEST_BADGE_FLAG_KEY]: 'unknown',
           },
         },
         ({ controller }) => {
@@ -1127,14 +1137,16 @@ describe('MetaMetricsController', function () {
             event: 'Card Button Viewed',
             category: 'Unit Test',
             properties: {
-              ['test_prop']: 'value',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_prop: 'value',
             },
           });
 
           expect(spy).toHaveBeenCalledWith(
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['test_prop']: 'value',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_prop: 'value',
               }),
             }),
             expect.anything(),
@@ -1148,7 +1160,7 @@ describe('MetaMetricsController', function () {
 
     it('does not fetch feature flags for unmapped events', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
@@ -1168,7 +1180,7 @@ describe('MetaMetricsController', function () {
 
     it('preserves sensitiveProperties and only enriches the identified event', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'cardCARD338AbtestAttentionBadge',
+        flagKey: TEST_BADGE_FLAG_KEY,
         validVariants: ['control', 'withBadge'],
         eventNames: ['Card Button Viewed'],
       });
@@ -1176,7 +1188,7 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           remoteFeatureFlags: {
-            cardCARD338AbtestAttentionBadge: 'control',
+            [TEST_BADGE_FLAG_KEY]: 'control',
           },
         },
         ({ controller }) => {
@@ -1186,7 +1198,8 @@ describe('MetaMetricsController', function () {
             event: 'Card Button Viewed',
             category: 'Unit Test',
             properties: {
-              ['button_type']: 'card',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              button_type: 'card',
             },
             sensitiveProperties: {
               sensitive: 'value',
@@ -1198,7 +1211,8 @@ describe('MetaMetricsController', function () {
             1,
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['button_type']: 'card',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                button_type: 'card',
                 sensitive: 'value',
               }),
             }),
@@ -1211,10 +1225,12 @@ describe('MetaMetricsController', function () {
             2,
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['button_type']: 'card',
-                ['active_ab_tests']: [
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                button_type: 'card',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
                   {
-                    key: 'cardCARD338AbtestAttentionBadge',
+                    key: TEST_BADGE_FLAG_KEY,
                     value: 'control',
                   },
                 ],
@@ -1228,20 +1244,20 @@ describe('MetaMetricsController', function () {
 
     it('prefers manifest overrides over controller state flags', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+        flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
         validVariants: ['control', 'treatment'],
         eventNames: ['Unified SwapBridge Page Viewed'],
       });
       jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
         remoteFeatureFlags: {
-          swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'treatment' },
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
         },
       });
 
       await withController(
         {
           remoteFeatureFlags: {
-            swapsSWAPS4135AbtestNumpadQuickAmounts: { name: 'control' },
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'control' },
           },
         },
         ({ controller }) => {
@@ -1255,9 +1271,10 @@ describe('MetaMetricsController', function () {
           expect(spy).toHaveBeenCalledWith(
             expect.objectContaining({
               properties: expect.objectContaining({
-                ['active_ab_tests']: [
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
                   {
-                    key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                     value: 'treatment',
                   },
                 ],

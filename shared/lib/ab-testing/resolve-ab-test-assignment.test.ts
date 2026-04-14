@@ -2,7 +2,7 @@ import { resolveABTestAssignment } from './resolve-ab-test-assignment';
 
 describe('resolveABTestAssignment', () => {
   const validVariants = ['control', 'treatment'] as const;
-  const flagKey = 'testFlag';
+  const flagKey = 'testTEST1000AbtestPrimaryCta';
 
   it('returns an active assignment for a valid string flag', () => {
     expect(
@@ -51,12 +51,12 @@ describe('resolveABTestAssignment', () => {
   });
 
   it('falls back to control when feature flags are nullish', () => {
-    expect(
-      resolveABTestAssignment(null, flagKey, validVariants),
-    ).toStrictEqual({
-      variantName: 'control',
-      isActive: false,
-    });
+    expect(resolveABTestAssignment(null, flagKey, validVariants)).toStrictEqual(
+      {
+        variantName: 'control',
+        isActive: false,
+      },
+    );
 
     expect(
       resolveABTestAssignment(undefined, flagKey, validVariants),

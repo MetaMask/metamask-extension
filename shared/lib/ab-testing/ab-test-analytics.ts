@@ -60,11 +60,11 @@ export function getRemoteFeatureFlagsWithManifestOverrides(
   );
 }
 
-export function enrichWithABTests<T extends MetaMetricsEventPayload>(
-  event: T,
+export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
+  event: TEvent,
   featureFlags: Record<string, unknown> | null | undefined,
   mappings: readonly ABTestAnalyticsMapping[] = AB_TEST_ANALYTICS_MAPPINGS,
-): T {
+): TEvent {
   const relevantMappings = mappings.filter((mapping) =>
     hasEventName(mapping, event.event),
   );
@@ -88,7 +88,7 @@ export function enrichWithABTests<T extends MetaMetricsEventPayload>(
   }
 
   const existingAssignments = getExistingActiveABTests(
-    event.properties?.['active_ab_tests'],
+    event.properties?.active_ab_tests,
   );
   const mergedAssignments = [...existingAssignments];
   const existingKeys = new Set(existingAssignments.map(({ key }) => key));
@@ -106,7 +106,8 @@ export function enrichWithABTests<T extends MetaMetricsEventPayload>(
     ...event,
     properties: {
       ...(event.properties ?? {}),
-      ['active_ab_tests']: mergedAssignments as Json,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      active_ab_tests: mergedAssignments as Json,
     },
   };
 }
