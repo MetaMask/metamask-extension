@@ -267,6 +267,14 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
 }));
 
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: () => ({
@@ -915,11 +923,11 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
       // ETH is long, entry=2850, leverage=3.
-      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3,087.50
+      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3087.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,087.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3087.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -932,11 +940,11 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
       // ETH is long, entry=2850, leverage=3.
-      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2,612.50
+      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2612.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,612.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2612.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
@@ -947,11 +955,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44,700.00
+      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44700.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('44,700.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44700.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
@@ -962,11 +970,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45,300.00
+      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45300.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('45,300.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45300.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
