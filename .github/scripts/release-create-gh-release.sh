@@ -157,7 +157,9 @@ for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
         echo "::error::Required browserify artifact not found: ${artifact}"
         exit 1
     fi
-    mapfile -t -O "${#browserify_artifacts[@]}" browserify_artifacts < <(compgen -G "${artifact}")
+    while IFS= read -r file; do
+        browserify_artifacts+=("${file}")
+    done < <(compgen -G "${artifact}")
 done
 
 # Collect and validate webpack artifacts
@@ -172,12 +174,11 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
         echo "::error::Required webpack artifact not found: ${artifact}"
         exit 1
     fi
-    mapfile -t files < <(compgen -G "${artifact}")
-    for file in "${files[@]}"; do
+    while IFS= read -r file; do
         renamed="${file%.zip}-webpack.zip"
         cp "${file}" "${renamed}"
         webpack_artifacts+=("${renamed}")
-    done
+    done < <(compgen -G "${artifact}")
 done
 
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
