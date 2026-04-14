@@ -442,11 +442,9 @@ export default function OnboardingWelcome() {
           await onSocialLoginImportClick(loginType);
         }
 
-        if (!isFireFox && process.env.EXTENSION_UX_PNA25) {
-          // Set pna25Acknowledged to true for social login users if feature flag is enabled
-          if (process.env.EXTENSION_UX_PNA25) {
-            dispatch(setPna25Acknowledged(true, true));
-          }
+        if (!isFireFox) {
+          // Set pna25Acknowledged to true for social login users (Chrome)
+          dispatch(setPna25Acknowledged(true, true));
         }
       } catch (error) {
         handleLoginError(error);

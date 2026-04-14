@@ -466,7 +466,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionUxPna25: true,
             extensionSkipTransactionStatusPage,
             ...additionalFlags,
           },
