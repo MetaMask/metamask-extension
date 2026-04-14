@@ -196,7 +196,14 @@ describe('createToggleItem', () => {
         configWithTrackingAndProperty,
       );
       const mockStore = createMockStore({ testToggleValue: false });
-      renderWithProvider(<TestToggleWithTrackingAndProperty />, mockStore);
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{ trackEvent: mockTrackEvent } as never}
+        >
+          <TestToggleWithTrackingAndProperty />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
 
       fireEvent.click(screen.getByTestId('test-toggle-with-tracking'));
 
