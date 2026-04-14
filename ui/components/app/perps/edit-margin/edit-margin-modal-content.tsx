@@ -186,15 +186,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     locale,
   ]);
 
-  const formatAmount = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
-
   const marginPercent = useMemo(() => {
     if (maxAmount <= 0) {
       return 0;
@@ -236,9 +227,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         setMarginAmount('');
         return;
       }
-      setMarginAmount(formatAmount(floored));
+      setMarginAmount(floored.toFixed(2));
     },
-    [maxAmount, formatAmount],
+    [maxAmount],
   );
 
   const handleSaveMargin = useCallback(async () => {
@@ -429,7 +420,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               disabled={maxAmount <= 0 || isSaving}
             />
           </Box>
-          <Box className="w-[5.5rem] shrink-0">
+          <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
               value={marginAmount}
@@ -438,9 +429,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
               disabled={isSaving}
-              inputProps={{ inputMode: 'decimal' }}
+              inputProps={{ inputMode: 'decimal', size: 10 }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
