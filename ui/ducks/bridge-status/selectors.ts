@@ -24,86 +24,34 @@ type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
   originalTransactionId?: string;
 };
 
-type BridgeHistoryMap = Record<string, BridgeHistoryItem>;
-
 const normalizeBridgeHistoryLookupKey = (value: unknown) =>
   typeof value === 'string' ? value.toLowerCase() : String(value);
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
 
-export const selectSelectedAccountGroupAddresses = createSelector(
-  [getSelectedAccountGroup, (state) => state],
-  (selectedAccountGroup, state): string[] => {
-    if (!selectedAccountGroup) {
-      return [];
-    }
-
-    return getInternalAccountsFromGroupById(state, selectedAccountGroup).map(
-      (internalAccount) => internalAccount.address,
-    );
-  },
-);
-
-export function filterBridgeHistoryByAccount(
-  bridgeHistory: BridgeHistoryMap | undefined,
-  selectedAddresses?: string[],
-): BridgeHistoryMap {
-  if (!bridgeHistory) {
-    return EMPTY_OBJECT as BridgeHistoryMap;
-  }
-
-  if (!selectedAddresses || selectedAddresses.length === 0) {
-    return bridgeHistory;
-  }
-
-  return Object.keys(bridgeHistory).reduce<BridgeHistoryMap>((acc, txMetaId) => {
-    const txHistoryItem = bridgeHistory[txMetaId];
-    if (selectedAddresses.includes(txHistoryItem.account)) {
-      acc[txMetaId] = txHistoryItem;
-    }
-    return acc;
-  }, {});
-}
-
-export function getBridgeHistoryForToastItems(
-  bridgeHistory: BridgeHistoryMap | undefined,
-  nonEvmTransactionIds: Set<string>,
-  evmTransactionIds: Set<string>,
-): BridgeHistoryMap {
-  if (!bridgeHistory) {
-    return EMPTY_OBJECT as BridgeHistoryMap;
-  }
-
-  return Object.entries(bridgeHistory).reduce<BridgeHistoryMap>(
-    (acc, [key, item]) => {
-      if (!item.quote) {
-        return acc;
-      }
-
-      // Same-chain swaps are handled by their respective transaction watchers
-      if (item.quote.srcChainId === item.quote.destChainId) {
-        return acc;
-      }
-
-      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
-        ? nonEvmTransactionIds.has(key)
-        : evmTransactionIds.has(key);
-
-      if (hasMatchingTx) {
-        acc[key] = item;
-      }
-
-      return acc;
-    },
-    {},
-  );
-}
-
 const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
-  (selectedAddresses, txHistory) =>
-    filterBridgeHistoryByAccount(txHistory, selectedAddresses),
+  (selectedAddresses, txHistory) => {
+    if (!txHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
+    if (!selectedAddresses || selectedAddresses.length === 0) {
+      return txHistory;
+    }
+
+    return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
+      (acc, txMetaId) => {
+        const txHistoryItem = txHistory[txMetaId];
+        if (selectedAddresses.includes(txHistoryItem.account)) {
+          acc[txMetaId] = txHistoryItem;
+        }
+        return acc;
+      },
+      {},
+    );
+  },
 );
 
 /**
@@ -135,11 +83,32 @@ export const selectBridgeHistoryForToast = createSelector(
     selectTransactionIds,
   ],
   (bridgeHistory, nonEvmTxs, evmTxIds) => {
-    return getBridgeHistoryForToastItems(
-      bridgeHistory,
-      new Set(nonEvmTxs.map((tx) => tx.id)),
-      evmTxIds,
-    );
+    if (!bridgeHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
+    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
+
+    return Object.entries(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItem>
+    >((acc, [key, item]) => {
+      if (!item.quote) {
+        return acc;
+      }
+      // Same-chain swaps are handled by their respective transaction watchers
+      if (item.quote.srcChainId === item.quote.destChainId) {
+        return acc;
+      }
+      // Only include items whose source transaction exists in transactions
+      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
+        ? nonEvmTxIds.has(key)
+        : evmTxIds.has(key);
+
+      if (hasMatchingTx) {
+        acc[key] = item;
+      }
+      return acc;
+    }, {});
   },
 );
 

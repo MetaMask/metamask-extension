@@ -3,9 +3,10 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
+import { Transaction } from '@metamask/keyring-api';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
-import { getBridgeTransactionToastId } from '../helpers/utils/toasts';
+import { getBridgeTransactionToastId } from '../app/toast-listener/helpers';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
@@ -20,19 +21,6 @@ import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
-
-export type NonEvmToastEligibilityCriteria = {
-  currentAccountIds: Set<string>;
-  enabledNonEvmChainIds: Set<string>;
-  crossChainBridgeIds: Set<string>;
-};
-
-type NonEvmToastTransaction = {
-  id?: string;
-  type?: string;
-  account?: string;
-  chain?: string;
-};
 
 export type BridgeSmartStatusToastState = {
   approvalId: string;
@@ -175,12 +163,12 @@ export function isEvmTransactionEligibleForToast(
 }
 
 export function isNonEvmTransactionEligibleForToast(
-  transaction: NonEvmToastTransaction,
+  transaction: Transaction,
   {
     currentAccountIds,
     enabledNonEvmChainIds,
     crossChainBridgeIds,
-  }: NonEvmToastEligibilityCriteria,
+  }: Record<string, Set<string>>,
 ) {
   const type = transaction?.type;
   if (
@@ -199,24 +187,6 @@ export function isNonEvmTransactionEligibleForToast(
     !crossChainBridgeIds.has(transaction.id)
   );
 }
-
-export const selectNonEvmToastEligibilityCriteria = createSelector(
-  selectCurrentAccountIds,
-  selectNonEvmChainIds,
-  selectCrossChainBridgeSourceTxIds,
-  (
-    currentAccountIds,
-    enabledNonEvmChainIds,
-    crossChainBridgeIds,
-  ): NonEvmToastEligibilityCriteria => ({
-    // Non-EVM toasts should only reflect the currently selected account group.
-    currentAccountIds: new Set(currentAccountIds),
-    // Only enabled non-EVM networks should produce toasts.
-    enabledNonEvmChainIds: new Set(enabledNonEvmChainIds),
-    // Cross-chain bridge rows are handled by the bridge toast path instead.
-    crossChainBridgeIds,
-  }),
-);
 
 /**
  * Returns EVM transactions eligible for toast notifications.
@@ -257,24 +227,6 @@ export const selectEvmTransactionsForToast = createSelector(
       });
     });
   },
-);
-
-export const selectEvmToastEligibility = createSelector(
-  selectBridgeApprovalTxIds,
-  selectCrossChainBridgeSourceTxIds,
-  selectRequiredTransactionIds,
-  selectRequiredTransactionHashes,
-  (
-    bridgeApprovalIds,
-    crossChainBridgeIds,
-    requiredTransactionIds,
-    requiredTransactionHashes,
-  ) => ({
-    bridgeApprovalIds,
-    crossChainBridgeIds,
-    requiredTransactionIds,
-    requiredTransactionHashes,
-  }),
 );
 
 /**
@@ -390,4 +342,38 @@ export const selectBridgeHistoryToastStates = createSelector(
         },
       ];
     }),
+);
+
+export const selectEvmToastEligibility = createSelector(
+  selectBridgeApprovalTxIds,
+  selectCrossChainBridgeSourceTxIds,
+  selectRequiredTransactionIds,
+  selectRequiredTransactionHashes,
+  (
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  ) => ({
+    // Exclude transactions already associated with bridge approvals
+    bridgeApprovalIds,
+    // Cross-chain bridge rows are handled by the bridge toast path instead
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  }),
+);
+
+export const selectNonEvmToastEligibility = createSelector(
+  selectCurrentAccountIds,
+  selectNonEvmChainIds,
+  selectCrossChainBridgeSourceTxIds,
+  (currentAccountIds, enabledNonEvmChainIds, crossChainBridgeIds) => ({
+    // Non-EVM toasts should only reflect the currently selected account group
+    currentAccountIds: new Set(currentAccountIds),
+    // Only enabled non-EVM networks should produce toasts
+    enabledNonEvmChainIds: new Set(enabledNonEvmChainIds),
+    // Cross-chain bridge rows are handled by the bridge toast path instead
+    crossChainBridgeIds,
+  }),
 );

@@ -6,15 +6,11 @@ import {
   selectEvmTransactionsForToast,
   selectEvmToastEligibility,
 } from '../../selectors/toast';
-import { getEvmTransactionToastId } from '../../helpers/utils/toasts';
 import { getStatusKey } from '../../helpers/utils/transactions.util';
 import { subscribeToMessengerEvent } from '../../store/background-connection';
-import {
-  showPendingToast,
-  showSuccessToast,
-  showFailedToast,
-  getTransactionFromEvent,
-} from './shared';
+import { getEvmTransactionToastId } from './helpers';
+import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
+import { extractTransactionFromEvent } from './helpers';
 
 const eventNames = [
   'TransactionController:transactionSubmitted',
@@ -43,7 +39,7 @@ export function useEvmTransactionToasts() {
     const unsubscribers: (() => Promise<void>)[] = [];
 
     const handleEvent = (eventName: EventName) => (args: unknown[]) => {
-      const tx = getTransactionFromEvent(args);
+      const tx = extractTransactionFromEvent(args);
       if (!tx?.id) {
         return;
       }
@@ -116,7 +112,9 @@ export function useEvmTransactionToasts() {
     };
   }, []);
 
-  // Edge case: success/fallback handling in case messenger misses a terminal event
+  // The following section is for handling edge cases
+
+  // Success/fallback handling in case messenger misses a terminal event
   const transactions = useSelector(selectEvmTransactionsForToast);
 
   // Reconcile pending toasts against Redux so success/failure still lands

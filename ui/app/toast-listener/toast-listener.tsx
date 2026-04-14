@@ -1,12 +1,10 @@
 import { useEvmTransactionToasts } from './useEvmTransactionToasts';
 import { useBridgeSmartStatusToasts } from './useBridgeSmartStatusToasts';
-import { useNonEvmTransactionMessengerToasts } from './useNonEvmTransactionMessengerToasts';
+import { useNonEvmTransactionToasts } from './useNonEvmTransactionToasts';
 
 export function ToastListener() {
   useEvmTransactionToasts();
-
-  useNonEvmTransactionMessengerToasts();
-
+  useNonEvmTransactionToasts();
   useBridgeSmartStatusToasts();
 
   return null;

@@ -31,11 +31,10 @@ import {
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getBridgeTransactionToastId } from '../../../helpers/utils/toasts';
+import { getBridgeTransactionToastId } from '../../../app/toast-listener/helpers';
 import { useTransactionDisplay } from '../../../helpers/utils/transaction-display';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { ToastContent as ToastContentBase } from '../../../components/ui/toast/toast';
-import { trackBridgeToast } from '../../../app/toast-listener/bridgeToastState';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -176,7 +175,7 @@ export default function useSubmitBridgeTransaction() {
         });
 
         // Bridge history resolves this toast later, so submit only registers and shows the pending state.
-        trackBridgeToast(toastId);
+        // trackBridgeToast(toastId);
         toast.loading(
           React.createElement(ToastContentBase, {
             title: pendingToastTitle,

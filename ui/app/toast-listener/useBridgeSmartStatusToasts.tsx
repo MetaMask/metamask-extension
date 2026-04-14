@@ -6,11 +6,11 @@ import {
   type BridgeHistoryToastState,
   type BridgeSmartStatusToastState,
 } from '../../selectors/toast';
-import {
-  isBridgeToastTracked,
-  trackBridgeToast,
-  untrackBridgeToast,
-} from './bridgeToastState';
+// import {
+//   isBridgeToastTracked,
+//   trackBridgeToast,
+//   untrackBridgeToast,
+// } from './bridgeToastState';
 import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
 
 export function useBridgeSmartStatusToasts() {
@@ -33,8 +33,8 @@ export function useBridgeSmartStatusToasts() {
       const previousStatus = previousStatusesRef.current[toastState.toastId];
 
       if (previousStatus === undefined && toastState.isPending) {
-        trackBridgeToast(toastState.toastId);
-        showPendingToast(toastState.toastId);
+        // trackBridgeToast(toastState.toastId);
+        // showPendingToast(toastState.toastId);
       }
     }
 
@@ -42,22 +42,22 @@ export function useBridgeSmartStatusToasts() {
   }, [bridgeSmartStatusToasts]);
 
   // Resolve in-flight bridge toasts from bridge history, which persists after the approval disappears.
-  useEffect(() => {
-    for (const toastState of bridgeHistoryToasts) {
-      if (!isBridgeToastTracked(toastState.toastId)) {
-        continue;
-      }
+  // useEffect(() => {
+  //   for (const toastState of bridgeHistoryToasts) {
+  //     // if (!isBridgeToastTracked(toastState.toastId)) {
+  //     //   continue;
+  //     // }
 
-      if (toastState.isSuccess) {
-        showSuccessToast(toastState.toastId);
-        untrackBridgeToast(toastState.toastId);
-        continue;
-      }
+  //     if (toastState.isSuccess) {
+  //       showSuccessToast(toastState.toastId);
+  //       // untrackBridgeToast(toastState.toastId);
+  //       continue;
+  //     }
 
-      if (toastState.isFailed) {
-        showFailedToast(toastState.toastId);
-        untrackBridgeToast(toastState.toastId);
-      }
-    }
-  }, [bridgeHistoryToasts]);
+  //     if (toastState.isFailed) {
+  //       showFailedToast(toastState.toastId);
+  //       // untrackBridgeToast(toastState.toastId);
+  //     }
+  //   }
+  // }, [bridgeHistoryToasts]);
 }

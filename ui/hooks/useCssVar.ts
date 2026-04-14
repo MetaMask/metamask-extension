@@ -5,13 +5,7 @@ type Props = {
   root?: HTMLElement;
 };
 
-type CssVarControls = {
-  set: (value: string) => void;
-  get: () => string;
-  remove: () => void;
-};
-
-export const useCssVar = ({ name, root }: Props): CssVarControls => {
+export const useCssVar = ({ name, root }: Props) => {
   const resolvedRoot = root ?? document.documentElement;
 
   return useMemo(

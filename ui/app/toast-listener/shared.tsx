@@ -7,22 +7,11 @@ import {
 } from '../../helpers/utils/transaction-display';
 import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
 
-type EventPayloadArg = TransactionMeta | { transactionMeta?: TransactionMeta };
+export type ToastStatus = 'pending' | 'success' | 'failed';
 
-export function getTransactionFromEvent(
-  args: unknown[],
-): TransactionMeta | null {
-  const firstArg = args?.[0] as EventPayloadArg | undefined;
-  if (!firstArg || typeof firstArg !== 'object') {
-    return null;
-  }
-
-  if ('transactionMeta' in firstArg) {
-    return firstArg.transactionMeta ?? null;
-  }
-
-  return firstArg as TransactionMeta;
-}
+export type EventPayloadArg =
+  | TransactionMeta
+  | { transactionMeta?: TransactionMeta };
 
 export const ToastContent = ({ status }: { status: TransactionStatus }) => {
   const { title } = useTransactionDisplay(status);
@@ -39,4 +28,14 @@ export function showSuccessToast(id: string) {
 
 export function showFailedToast(id: string) {
   toast.error(<ToastContent status="failed" />, { id });
+}
+
+export function showToast(id: string, status: ToastStatus) {
+  if (status === 'pending') {
+    showPendingToast(id);
+  } else if (status === 'success') {
+    showSuccessToast(id);
+  } else if (status === 'failed') {
+    showFailedToast(id);
+  }
 }
