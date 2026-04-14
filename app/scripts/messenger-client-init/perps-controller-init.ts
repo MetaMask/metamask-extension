@@ -186,68 +186,115 @@ type PerpsBackgroundApi = {
   }) => Promise<RawLedgerUpdate[]>;
 };
 
+/**
+ * Wrap a controller method so that CLIENT_NOT_INITIALIZED /
+ * CLIENT_REINITIALIZING errors trigger `controller.init()` and a retry.
+ *
+ * During account switches, `perpsDisconnect → perpsInit` runs async.
+ * Any provider-dependent call during that gap throws one of these errors.
+ * This wrapper catches them once, re-initializes, and retries — making
+ * every wrapped method self-healing without any UI-side awareness.
+ * @param controller
+ * @param fn
+ */
+function withAutoInit<TArgs extends unknown[], TResult>(
+  controller: PerpsController,
+  fn: (...args: TArgs) => TResult,
+): (...args: TArgs) => Promise<Awaited<TResult>> {
+  return async (...args: TArgs): Promise<Awaited<TResult>> => {
+    try {
+      return await fn(...args);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (
+        message.includes('CLIENT_NOT_INITIALIZED') ||
+        message.includes('CLIENT_REINITIALIZING')
+      ) {
+        await controller.init();
+        return await fn(...args);
+      }
+      throw err;
+    }
+  };
+}
+
 function getApi(controller: PerpsController): PerpsBackgroundApi {
+  const guard = <TArgs extends unknown[], TResult>(
+    fn: (...args: TArgs) => TResult,
+  ) => withAutoInit(controller, fn);
+
   return {
-    // -- Lifecycle --
+    // -- Lifecycle (no guard — IS the init itself) --
     perpsInit: controller.init.bind(controller),
     perpsDisconnect: controller.disconnect.bind(controller),
 
-    // -- Trading mutations --
-    perpsPlaceOrder: controller.placeOrder.bind(controller),
-    perpsClosePosition: controller.closePosition.bind(controller),
-    perpsClosePositions: controller.closePositions.bind(controller),
-    perpsEditOrder: controller.editOrder.bind(controller),
-    perpsCancelOrder: controller.cancelOrder.bind(controller),
-    perpsCancelOrders: controller.cancelOrders.bind(controller),
-    perpsUpdatePositionTPSL: controller.updatePositionTPSL.bind(controller),
-    perpsUpdateMargin: controller.updateMargin.bind(controller),
-    perpsFlipPosition: controller.flipPosition.bind(controller),
-    perpsWithdraw: controller.withdraw.bind(controller),
-    perpsValidateWithdrawal: controller.validateWithdrawal.bind(controller),
+    // -- Trading mutations (guarded) --
+    perpsPlaceOrder: guard(controller.placeOrder.bind(controller)),
+    perpsClosePosition: guard(controller.closePosition.bind(controller)),
+    perpsClosePositions: guard(controller.closePositions.bind(controller)),
+    perpsEditOrder: guard(controller.editOrder.bind(controller)),
+    perpsCancelOrder: guard(controller.cancelOrder.bind(controller)),
+    perpsCancelOrders: guard(controller.cancelOrders.bind(controller)),
+    perpsUpdatePositionTPSL: guard(
+      controller.updatePositionTPSL.bind(controller),
+    ),
+    perpsUpdateMargin: guard(controller.updateMargin.bind(controller)),
+    perpsFlipPosition: guard(controller.flipPosition.bind(controller)),
+    perpsWithdraw: guard(controller.withdraw.bind(controller)),
+    perpsValidateWithdrawal: guard(
+      controller.validateWithdrawal.bind(controller),
+    ),
     perpsGetWithdrawalRoutes: controller.getWithdrawalRoutes.bind(controller),
-    perpsUpdateWithdrawalStatus:
+    perpsUpdateWithdrawalStatus: guard(
       controller.updateWithdrawalStatus.bind(controller),
-    perpsUpdateWithdrawalProgress:
+    ),
+    perpsUpdateWithdrawalProgress: guard(
       controller.updateWithdrawalProgress.bind(controller),
+    ),
     perpsGetWithdrawalProgress:
       controller.getWithdrawalProgress.bind(controller),
-    perpsDepositWithConfirmation: async (
-      ...args: Parameters<typeof controller.depositWithConfirmation>
-    ) => {
-      await controller.depositWithConfirmation(...args);
-      // TODO: depositWithConfirmation should return the transaction ID
-      // directly — that requires a controller package change.
-      return controller.state.lastDepositTransactionId;
-    },
+    perpsDepositWithConfirmation: guard(
+      async (
+        ...args: Parameters<typeof controller.depositWithConfirmation>
+      ) => {
+        await controller.depositWithConfirmation(...args);
+        // TODO: depositWithConfirmation should return the transaction ID
+        // directly — that requires a controller package change.
+        return controller.state.lastDepositTransactionId;
+      },
+    ),
 
-    // -- Data fetches --
-    perpsGetPositions: controller.getPositions.bind(controller),
-    perpsGetMarkets: controller.getMarkets.bind(controller),
-    perpsGetMarketDataWithPrices:
+    // -- Data fetches (guarded) --
+    perpsGetPositions: guard(controller.getPositions.bind(controller)),
+    perpsGetMarkets: guard(controller.getMarkets.bind(controller)),
+    perpsGetMarketDataWithPrices: guard(
       controller.getMarketDataWithPrices.bind(controller),
-    perpsGetOrderFills: controller.getOrderFills.bind(controller),
-    perpsGetOrders: controller.getOrders.bind(controller),
-    perpsGetOpenOrders: controller.getOpenOrders.bind(controller),
-    perpsGetFunding: controller.getFunding.bind(controller),
-    perpsGetAccountState: controller.getAccountState.bind(controller),
-    perpsGetHistoricalPortfolio:
+    ),
+    perpsGetOrderFills: guard(controller.getOrderFills.bind(controller)),
+    perpsGetOrders: guard(controller.getOrders.bind(controller)),
+    perpsGetOpenOrders: guard(controller.getOpenOrders.bind(controller)),
+    perpsGetFunding: guard(controller.getFunding.bind(controller)),
+    perpsGetAccountState: guard(controller.getAccountState.bind(controller)),
+    perpsGetHistoricalPortfolio: guard(
       controller.getHistoricalPortfolio.bind(controller),
-    perpsFetchHistoricalCandles:
+    ),
+    perpsFetchHistoricalCandles: guard(
       controller.fetchHistoricalCandles.bind(controller),
-    perpsCalculateFees: controller.calculateFees.bind(controller),
-    perpsGetAvailableDexs: controller.getAvailableDexs.bind(controller),
+    ),
+    perpsCalculateFees: guard(controller.calculateFees.bind(controller)),
+    perpsGetAvailableDexs: guard(controller.getAvailableDexs.bind(controller)),
 
-    // -- Eligibility --
+    // -- Eligibility (no guard — state-only) --
     perpsRefreshEligibility: controller.refreshEligibility.bind(controller),
     perpsStartEligibilityMonitoring:
       controller.startEligibilityMonitoring.bind(controller),
     perpsStopEligibilityMonitoring:
       controller.stopEligibilityMonitoring.bind(controller),
 
-    // -- Toggle --
+    // -- Toggle (no guard — handled by bridge) --
     perpsToggleTestnet: controller.toggleTestnet.bind(controller),
 
-    // -- Preferences --
+    // -- Preferences (no guard — never call getActiveProvider) --
     perpsSaveTradeConfiguration:
       controller.saveTradeConfiguration.bind(controller),
     perpsGetTradeConfiguration:
@@ -278,25 +325,29 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
       controller.saveOrderBookGrouping.bind(controller),
     perpsGetOrderBookGrouping: controller.getOrderBookGrouping.bind(controller),
 
-    // -- Provider passthrough --
-    perpsGetUserHistory: async (params: {
-      startTime?: number;
-      endTime?: number;
-      accountId?: `${string}:${string}:${string}`;
-    }) => {
-      return controller.getActiveProvider().getUserHistory(params);
-    },
-    perpsGetUserNonFundingLedgerUpdates: async (params?: {
-      startTime?: number;
-      endTime?: number;
-      accountId?: string;
-    }) => {
-      return controller
-        .getActiveProvider()
-        .getUserNonFundingLedgerUpdates(params);
-    },
+    // -- Provider passthrough (guarded) --
+    perpsGetUserHistory: guard(
+      async (params: {
+        startTime?: number;
+        endTime?: number;
+        accountId?: `${string}:${string}:${string}`;
+      }) => {
+        return controller.getActiveProvider().getUserHistory(params);
+      },
+    ),
+    perpsGetUserNonFundingLedgerUpdates: guard(
+      async (params?: {
+        startTime?: number;
+        endTime?: number;
+        accountId?: string;
+      }) => {
+        return controller
+          .getActiveProvider()
+          .getUserNonFundingLedgerUpdates(params);
+      },
+    ),
 
-    // -- Misc --
+    // -- Misc (no guard — state-only) --
     perpsClearDepositResult: controller.clearDepositResult.bind(controller),
     perpsClearWithdrawResult: controller.clearWithdrawResult.bind(controller),
     perpsGetBlockExplorerUrl: controller.getBlockExplorerUrl.bind(controller),

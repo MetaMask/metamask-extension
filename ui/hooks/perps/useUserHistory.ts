@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
-import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 /**
  * Parameters for the useUserHistory hook
@@ -54,9 +54,10 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const history = await getPerpsStreamManager().fetchWithRecovery<
-        UserHistoryItem[]
-      >('perpsGetUserHistory', [{ startTime, endTime, accountId }]);
+      const history = await submitRequestToBackground<UserHistoryItem[]>(
+        'perpsGetUserHistory',
+        [{ startTime, endTime, accountId }],
+      );
 
       setUserHistory(history);
       return history;

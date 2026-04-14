@@ -229,7 +229,7 @@ class PerpsStreamManager {
    * @param args - Arguments to pass to the RPC method.
    * @returns The result from the background method.
    */
-  async fetchWithRecovery<Result>(
+  private async fetchWithRecovery<Result>(
     method: string,
     args: unknown[] = [],
   ): Promise<Result> {

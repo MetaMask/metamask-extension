@@ -12,7 +12,7 @@ import type {
   OrderFill,
   PerpsTransaction,
 } from '../../components/app/perps/types';
-import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
 
@@ -113,13 +113,12 @@ export function usePerpsTransactionHistory({
       setIsLoading(true);
       setError(null);
 
-      const manager = getPerpsStreamManager();
       const [fillsResult, ordersResult, funding] = await Promise.all([
-        manager.fetchWithRecovery<OrderFill[]>('perpsGetOrderFills', [
+        submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
           { accountId, aggregateByTime: false },
         ]),
-        manager.fetchWithRecovery<Order[]>('perpsGetOrders', [{ accountId }]),
-        manager.fetchWithRecovery<Funding[]>('perpsGetFunding', [
+        submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
+        submitRequestToBackground<Funding[]>('perpsGetFunding', [
           { accountId, startTime, endTime },
         ]),
       ]);
