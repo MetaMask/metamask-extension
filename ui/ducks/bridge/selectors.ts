@@ -337,6 +337,7 @@ export const getToChains = createDeepEqualSelector(
             caipChainId,
             {
               chainId: caipChainId,
+              name: rpc.name,
             },
           ];
         }),
