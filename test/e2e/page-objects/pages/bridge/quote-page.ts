@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
+import { getRegistryBooleanFlag } from '../../../feature-flags/feature-flag-registry';
 
 export type BridgeQuote = {
   amount: string;
@@ -219,14 +220,25 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
-  submitQuote = async ({ dismissStatusPage = true } = {}) => {
+  submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
-    if (dismissStatusPage) {
-      await this.dismissStatusPage();
-    }
   };
 
-  dismissStatusPage = async () => {
+  submitQuoteAndDismiss = async () => {
+    await this.submitQuote();
+
+    await this.dismissStatusPageIfPresent();
+  };
+
+  dismissStatusPageIfPresent = async () => {
+    const skipStatusPage = getRegistryBooleanFlag(
+      'extensionSkipTransactionStatusPage',
+    );
+
+    if (skipStatusPage) {
+      return;
+    }
+
     await this.driver.clickElement(this.statusPageCloseButton);
   };
 

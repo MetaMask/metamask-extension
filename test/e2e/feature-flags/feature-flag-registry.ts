@@ -17,6 +17,7 @@
  */
 
 import type { Json } from '@metamask/utils';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 
 // ============================================================================
 // Types
@@ -2065,6 +2066,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionSkipTransactionStatusPage: {
+    name: 'extensionSkipTransactionStatusPage',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     name: 'extensionUpdatePromptMinimumVersion',
     type: FeatureFlagType.Remote,
@@ -2496,6 +2508,25 @@ export function getRegistryEntry(
   name: string,
 ): FeatureFlagRegistryEntry | undefined {
   return FEATURE_FLAG_REGISTRY[name];
+}
+
+/**
+ * Resolves a registry entry to a boolean value.
+ *
+ * Supports plain booleans, version-gated objects, and rollout wrappers via
+ * shared `getBooleanFeatureFlag` semantics.
+ *
+ * @param name - The flag identifier
+ * @param defaultValue - Value to return when flag is missing or invalid
+ * @returns The resolved boolean value
+ */
+export function getRegistryBooleanFlag(
+  name: string,
+  defaultValue = false,
+): boolean {
+  const entry = getRegistryEntry(name);
+
+  return getBooleanFeatureFlag(entry?.productionDefault, defaultValue);
 }
 
 /**
