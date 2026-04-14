@@ -8876,7 +8876,7 @@
     "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
   },
   "switchToPopup": {
-    "message": "Switch back to popup"
+    "message": "Switch to popup"
   },
   "switchToSidePanel": {
     "message": "Switch to side panel"

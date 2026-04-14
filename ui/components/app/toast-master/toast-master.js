@@ -889,7 +889,7 @@ function SidePanelMigrationToast() {
             className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
           >
             <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
-              {t('switchToPopup')}
+              {t('switchBackToPopup')}
             </span>
           </TextButton>,
         ])}
