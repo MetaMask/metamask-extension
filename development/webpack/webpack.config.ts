@@ -315,13 +315,6 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // Allow ESM-style `.js` specifiers in TS source while still resolving the
-    // underlying `.ts` source files during bundling.
-    extensionAlias: {
-      '.js': ['.js', '.ts', '.tsx'],
-      '.mjs': ['.mjs', '.mts'],
-      '.cjs': ['.cjs', '.cts'],
-    },
     // TODO: Remove this workaround after upgrading to React 18
     // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
     // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
