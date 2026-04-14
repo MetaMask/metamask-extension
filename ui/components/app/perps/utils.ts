@@ -122,6 +122,42 @@ export const formatChangePercent = (value: string): string => {
 };
 
 /**
+ * Normalizes a 24h percentage change string for UI display.
+ * Positive numeric values are always shown with an explicit '+' prefix,
+ * matching mobile behavior. Negative values and zero keep their natural sign.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' or '+' (e.g., "2.84", "+2.84%", "-1.23%")
+ * @returns The normalized percentage string for display
+ * @example
+ * formatSignedChangePercent('2.84') => '+2.84%'
+ * formatSignedChangePercent('2.84%') => '+2.84%'
+ * formatSignedChangePercent('+2.84%') => '+2.84%'
+ * formatSignedChangePercent('-1.23%') => '-1.23%'
+ * formatSignedChangePercent('0.00%') => '0.00%'
+ */
+export const formatSignedChangePercent = (value: string): string => {
+  const formattedValue = formatChangePercent(value);
+
+  if (!formattedValue || !/\d/u.test(formattedValue)) {
+    return formattedValue;
+  }
+
+  if (
+    formattedValue.startsWith('+') ||
+    formattedValue.startsWith('-') ||
+    Number.parseFloat(formattedValue.replace('%', '')) <= 0
+  ) {
+    return formattedValue;
+  }
+
+  return `+${formattedValue}`;
+};
+
+/**
  * Get the appropriate text color for a percentage change value
  * Non-negative values (≥ 0) → green, negative → red
  *
