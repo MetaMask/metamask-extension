@@ -62,8 +62,8 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { PERPS_MARKET_ORDER_FEE_RATE } from '../../components/app/perps/constants';
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -77,11 +77,16 @@ import {
   getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
+  formatChangePercent,
 } from '../../components/app/perps/utils';
 import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
   isNearLiquidationPrice as checkNearLiquidationPrice,
 } from '../../components/app/perps/order-entry/limit-price-warnings';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+} from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
@@ -190,12 +195,13 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
-  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
+    usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
 
@@ -257,6 +263,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     useState<string | null>(null);
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
+
+  // Dynamic fee rate for close-mode order submission tracking
+  const { feeRate: closeFeeRate } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType: 'market',
+  });
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -398,9 +410,24 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
+  // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
+  // This is the price the exchange uses for actual margin assessment and liquidation
+  // triggers, so using it here makes the pre-trade margin estimate match mobile.
+  // Falls back to currentPrice until the stream delivers its first update.
+  const oraclePrice = (() => {
+    if (!livePrice?.markPrice) {
+      return currentPrice;
+    }
+    const parsed = parseFloat(livePrice.markPrice);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
+  })();
+
   const availableBalance = account
     ? Number.parseFloat(account.availableBalance)
     : 0;
+  const hasNoAvailableBalance =
+    orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
+  const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -430,14 +457,69 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderCalculations,
   ]);
 
+  const hasInvalidTPSL = useMemo(() => {
+    if (!orderFormState?.autoCloseEnabled) {
+      return false;
+    }
+
+    const isLimitWithPrice =
+      orderType === 'limit' && Boolean(orderFormState.limitPrice?.trim());
+    const referencePrice = isLimitWithPrice
+      ? Number.parseFloat(orderFormState.limitPrice.replaceAll(/[$,]/gu, ''))
+      : currentPrice;
+
+    if (!referencePrice || referencePrice <= 0) {
+      return false;
+    }
+
+    const tp = orderFormState.takeProfitPrice;
+    const sl = orderFormState.stopLossPrice;
+    const dir = orderFormState.direction;
+
+    const tpInvalid = Boolean(
+      tp?.trim() &&
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
+    );
+    const slInvalid = Boolean(
+      sl?.trim() &&
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
+    );
+
+    return tpInvalid || slInvalid;
+  }, [orderFormState, orderType, currentPrice]);
+
+  const isInsufficientFunds = useMemo(() => {
+    if (!orderFormState || orderMode === 'close') {
+      return false;
+    }
+    const amount =
+      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    if (amount <= 0 || orderFormState.leverage <= 0) {
+      return false;
+    }
+    const marginRequired = amount / orderFormState.leverage;
+    return marginRequired > availableBalance;
+  }, [orderFormState, orderMode, availableBalance]);
+
   const isSubmitDisabled =
     !isEligible ||
     !selectedAddress ||
+    isDepositLoading ||
     isOrderPending ||
-    isLimitPriceInvalid ||
-    isLimitPriceUnfavorable ||
-    isNearLiquidation ||
-    currentPrice <= 0;
+    (orderMode === 'new' && isLoadingAccount) ||
+    (isPrimaryTradeAction &&
+      (isLimitPriceInvalid ||
+        isLimitPriceUnfavorable ||
+        isNearLiquidation ||
+        hasInvalidTPSL ||
+        isInsufficientFunds ||
+        currentPrice <= 0));
 
   const maxLeverage = useMemo(() => {
     if (!market) {
@@ -480,8 +562,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return market?.price ?? '$0.00';
   }, [chartCurrentPrice, market?.price, formatNumber]);
 
-  const displayChange =
-    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
+  // 24h change prefers live stream updates when available, with market-data fallback.
+  const displayChange = formatChangePercent(
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
+  );
 
   const handleBackClick = useCallback(
     (perpsToastKey?: PerpsToastKey, perpsToastDescription?: string) => {
@@ -684,8 +768,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (orderMode === 'close' && position) {
         const closeNotionalUsd =
           Math.abs(parseFloat(position.size)) * currentPrice;
-        const closeEstimatedFees =
-          closeNotionalUsd * PERPS_MARKET_ORDER_FEE_RATE;
+        const closeEstimatedFees = closeNotionalUsd * (closeFeeRate ?? 0);
 
         const closeParams = {
           symbol: orderFormState.asset,
@@ -907,6 +990,27 @@ const PerpsOrderEntryPage: React.FC = () => {
     hidePerpsToast,
     replacePerpsToastByKey,
     t,
+    closeFeeRate,
+  ]);
+
+  const handlePrimaryAction = useCallback(async () => {
+    if (hasNoAvailableBalance) {
+      if (!isEligible || !selectedAddress || isDepositLoading) {
+        return;
+      }
+
+      await triggerDeposit();
+      return;
+    }
+
+    await handleOrderSubmit();
+  }, [
+    handleOrderSubmit,
+    hasNoAvailableBalance,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    triggerDeposit,
   ]);
 
   useEffect(() => {
@@ -987,6 +1091,10 @@ const PerpsOrderEntryPage: React.FC = () => {
   const displayName = getDisplayName(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
+    if (hasNoAvailableBalance) {
+      return t('addFunds');
+    }
+
     switch (orderMode) {
       case 'modify':
         return t('perpsModifyPosition');
@@ -1000,6 +1108,11 @@ const PerpsOrderEntryPage: React.FC = () => {
           : t('perpsOpenShort', [displayName]);
     }
   })();
+
+  const resolvedButtonText =
+    isPrimaryTradeAction && isInsufficientFunds
+      ? t('insufficientFundsSend')
+      : submitButtonText;
 
   return (
     <Box
@@ -1086,6 +1199,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}
+          markPrice={oraclePrice}
           maxLeverage={maxLeverage}
           availableBalance={availableBalance}
           initialDirection={orderDirection}
@@ -1123,7 +1237,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={handleOrderSubmit}
+          onClick={handlePrimaryAction}
           disabled={isSubmitDisabled}
           title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
           className={twMerge(
@@ -1132,7 +1246,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           )}
           data-testid="submit-order-button"
         >
-          {isOrderPending ? t('perpsSubmitting') : submitButtonText}
+          {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
       </Box>
     </Box>

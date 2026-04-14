@@ -1243,8 +1243,11 @@ export default class MetamaskController extends EventEmitter {
       },
       processGetSupportedExecutionPermissions: async (req, context) => {
         const enabledTypes = getEnabledAdvancedPermissions();
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
 
-        const result = await forwardRequestToSnap(
+        const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
@@ -1254,13 +1257,34 @@ export default class MetamaskController extends EventEmitter {
           context,
         );
 
-        // Filter the result to only include permission types that are enabled
-        if (!result || typeof result !== 'object') {
-          return result;
+        if (
+          !permissionsSupportedByKernel ||
+          typeof permissionsSupportedByKernel !== 'object'
+        ) {
+          return {};
         }
 
+        const enabledPermissionEntries = Object.entries(
+          permissionsSupportedByKernel,
+        ).filter(([permissionKey]) => enabledTypes.includes(permissionKey));
+
+        const supportedPermissionsWithResolvedChainIdsEntries =
+          enabledPermissionEntries.map(([permissionKey, specification]) => {
+            return [
+              permissionKey,
+              {
+                ...specification,
+                chainIds: specification.chainIds
+                  ?.map((chainId) => chainId.toLowerCase())
+                  .filter((chainId) => supportedChains.includes(chainId)) || [
+                  ...supportedChains,
+                ],
+              },
+            ];
+          });
+
         return Object.fromEntries(
-          Object.entries(result).filter(([key]) => enabledTypes.includes(key)),
+          supportedPermissionsWithResolvedChainIdsEntries,
         );
       },
       processGetGrantedExecutionPermissions: async (req, context) => {
