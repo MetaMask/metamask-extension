@@ -1,7 +1,7 @@
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import type { ConnectivityControllerMessenger } from '@metamask/connectivity-controller';
 
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
 
 /**
@@ -19,7 +19,7 @@ import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
  * @param request.controllerMessenger - The messenger for the controller.
  * @returns The controller init result.
  */
-export const ConnectivityControllerInit: ControllerInitFunction<
+export const ConnectivityControllerInit: MessengerClientInitFunction<
   ConnectivityController,
   ConnectivityControllerMessenger
 > = (request) => {

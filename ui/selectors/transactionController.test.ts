@@ -2,6 +2,7 @@ import type {
   TransactionControllerState,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { EMPTY_ARRAY } from './shared';
 import {
   selectTransactions,
@@ -9,6 +10,8 @@ import {
   selectRequiredTransactionIds,
   selectRequiredTransactions,
   selectRequiredTransactionHashes,
+  selectTransactionById,
+  selectUnapprovedTransactionById,
 } from './transactionController';
 
 type TransactionState = {
@@ -28,12 +31,13 @@ function createMockState(transactions: TransactionMeta[]): TransactionState {
 }
 
 describe('transactionController selectors', () => {
-  // Reset reselect memoization between tests
   beforeEach(() => {
     selectOrderedTransactions.clearCache();
     selectRequiredTransactionIds.clearCache();
     selectRequiredTransactions.clearCache();
     selectRequiredTransactionHashes.clearCache();
+    selectTransactionById.clearCache();
+    selectUnapprovedTransactionById.clearCache();
   });
 
   describe('selectTransactions', () => {
@@ -219,6 +223,89 @@ describe('transactionController selectors', () => {
       const result = selectRequiredTransactionHashes(state);
 
       expect(result).toStrictEqual(new Set());
+    });
+  });
+
+  describe('selectTransactionById', () => {
+    it('returns transaction matching the given ID', () => {
+      const tx = makeTx({ id: 'tx-1', time: 1 });
+      const state = createMockState([tx]);
+
+      expect(selectTransactionById(state, 'tx-1')).toStrictEqual(tx);
+    });
+
+    it('returns undefined when no transaction matches', () => {
+      const tx = makeTx({ id: 'tx-1', time: 1 });
+      const state = createMockState([tx]);
+
+      expect(selectTransactionById(state, 'non-existent')).toBeUndefined();
+    });
+
+    it('returns undefined for empty transactions', () => {
+      const state = createMockState([]);
+
+      expect(selectTransactionById(state, 'tx-1')).toBeUndefined();
+    });
+
+    it('returns undefined when ID is undefined', () => {
+      const tx = makeTx({ id: 'tx-1', time: 1 });
+      const state = createMockState([tx]);
+
+      expect(selectTransactionById(state, undefined)).toBeUndefined();
+    });
+  });
+
+  describe('selectUnapprovedTransactionById', () => {
+    it('returns unapproved transaction matching the given ID', () => {
+      const tx = makeTx({
+        id: 'tx-1',
+        time: 1,
+        status: TransactionStatus.unapproved,
+      });
+      const state = createMockState([tx]);
+
+      expect(selectUnapprovedTransactionById(state, 'tx-1')).toStrictEqual(tx);
+    });
+
+    it('returns undefined when transaction exists but is not unapproved', () => {
+      const tx = makeTx({
+        id: 'tx-1',
+        time: 1,
+        status: TransactionStatus.submitted,
+      });
+      const state = createMockState([tx]);
+
+      expect(selectUnapprovedTransactionById(state, 'tx-1')).toBeUndefined();
+    });
+
+    it('returns undefined when no transaction matches the given ID', () => {
+      const tx = makeTx({
+        id: 'tx-1',
+        time: 1,
+        status: TransactionStatus.unapproved,
+      });
+      const state = createMockState([tx]);
+
+      expect(
+        selectUnapprovedTransactionById(state, 'non-existent'),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined for empty transactions', () => {
+      const state = createMockState([]);
+
+      expect(selectUnapprovedTransactionById(state, 'tx-1')).toBeUndefined();
+    });
+
+    it('returns undefined when ID is undefined', () => {
+      const tx = makeTx({
+        id: 'tx-1',
+        time: 1,
+        status: TransactionStatus.unapproved,
+      });
+      const state = createMockState([tx]);
+
+      expect(selectUnapprovedTransactionById(state, undefined)).toBeUndefined();
     });
   });
 });
