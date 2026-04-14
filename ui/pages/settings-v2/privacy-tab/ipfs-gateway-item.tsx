@@ -69,7 +69,7 @@ export const IpfsGatewayItem = () => {
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_ipfs_gateway_enabled: newValue,
+        use_ipfs_gateway: newValue,
       },
     });
 
