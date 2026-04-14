@@ -638,7 +638,10 @@ function PermissionsConnect() {
   );
 
   return (
-    <ConnectionTrustSignalGate origin={origin}>
+    <ConnectionTrustSignalGate
+      origin={origin}
+      onCancel={() => cancelPermissionsRequest(permissionsRequestId || '')}
+    >
       <div className="permissions-connect">
         {!hideTopBar &&
           permissionsRequestId &&
