@@ -955,7 +955,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           className="overflow-hidden rounded-xl"
         >
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[62px] w-full rounded-none" />
+            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
           ))}
         </Box>
       );
@@ -976,11 +976,12 @@ const PerpsMarketDetailPage: React.FC = () => {
         flexDirection={BoxFlexDirection.Column}
         className="overflow-hidden rounded-xl"
       >
-        {recentActivityTransactions.map((transaction) => (
+        {recentActivityTransactions.map((transaction, index) => (
           <TransactionCard
             key={transaction.id}
             transaction={transaction}
             variant="muted"
+            showTopBorder={index > 0}
           />
         ))}
       </Box>
