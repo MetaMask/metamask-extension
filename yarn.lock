@@ -5554,7 +5554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:7.0.0":
+"@metamask/account-tree-controller@npm:7.0.0, @metamask/account-tree-controller@npm:^7.0.0":
   version: 7.0.0
   resolution: "@metamask/account-tree-controller@npm:7.0.0"
   dependencies:
@@ -5703,7 +5703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:3.3.0":
+"@metamask/assets-controller@npm:3.3.0, @metamask/assets-controller@npm:^3.2.1":
   version: 3.3.0
   resolution: "@metamask/assets-controller@npm:3.3.0"
   dependencies:

@@ -268,8 +268,6 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
-    "@metamask/assets-controller@npm:^3.2.1": "patch:@metamask/assets-controller@npm%3A3.3.0#~/.yarn/patches/@metamask-assets-controller-npm-3.3.0-aa75c5002e.patch",
-    "@metamask/account-tree-controller@npm:^7.0.0": "patch:@metamask/account-tree-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-account-tree-controller-npm-7.0.0-950cdc9003.patch",
     "@metamask/perps-controller": "^3.0.0"
   },
   "dependencies": {
