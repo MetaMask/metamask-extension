@@ -5,8 +5,8 @@
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
-} from '../../shared/constants/benchmarks';
-import type { HistoricalBaselineReference } from './historical-comparison';
+} from '../../shared/constants/benchmarks.ts';
+import type { HistoricalBaselineReference } from './historical-comparison.ts';
 
 export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =
   'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';

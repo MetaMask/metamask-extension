@@ -1,4 +1,4 @@
-import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
+import { type ThresholdConfig } from '../../../../shared/constants/benchmarks.ts';
 
 /**
  * Default CI multiplier for thresholds.

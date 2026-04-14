@@ -7,7 +7,7 @@
  * 2. Historical baseline from extension_benchmark_stats — informational delta
  *
  * Usage:
- * yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts \
+ * node development/metamaskbot-build-announce/compare-benchmarks.ts \
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
@@ -20,22 +20,22 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
 
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks.ts';
 import type {
   ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
-} from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
-import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
-import type { HistoricalBaselineReference } from './historical-comparison';
+} from '../../shared/constants/benchmarks.ts';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds.ts';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison.ts';
+import type { HistoricalBaselineReference } from './historical-comparison.ts';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
-} from './comparison-utils';
-import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
+} from './comparison-utils.ts';
+import { parseArtifactName, resolveBaselineFromArtifactName } from './utils.ts';
 
 type LoadedBenchmark = {
   name: string;
