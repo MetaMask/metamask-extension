@@ -16,7 +16,7 @@ import {
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import {
-  IconSize as LocalIconSize,
+  IconSize as LegacyIconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -128,7 +128,7 @@ const NetworkSelector = ({
                       setShowNetworkListMenu(false);
                     }}
                     iconSrc={getImageForChainId(chainId)}
-                    iconSize={LocalIconSize.Sm}
+                    iconSize={LegacyIconSize.Sm}
                     focus={false}
                     chainId={chainId}
                     variant={DsTextVariant.bodyMdMedium}
