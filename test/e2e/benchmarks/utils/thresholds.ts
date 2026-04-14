@@ -1,5 +1,4 @@
-// eslint-disable-next-line import-x/extensions
-import { type ThresholdConfig } from '../../../../shared/constants/benchmarks.ts';
+import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
 
 /**
  * Default CI multiplier for thresholds.

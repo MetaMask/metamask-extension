@@ -19,15 +19,14 @@ import type {
   ThresholdViolation,
   RelativeThresholds,
   ComparisonKey,
-} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
+} from '../../shared/constants/benchmarks';
 import {
   PERCENTILE_KEY,
   STAT_KEY,
   THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
-} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
-// eslint-disable-next-line import-x/extensions
-import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics.ts';
+} from '../../shared/constants/benchmarks';
+import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
 export const COMPARISON_SEVERITY = {
   Regression: { value: 'regression' as const, icon: '🔴' },

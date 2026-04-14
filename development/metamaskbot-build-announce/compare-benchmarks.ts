@@ -20,27 +20,22 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
 
-// eslint-disable-next-line import-x/extensions
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks.ts';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
-} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
-// eslint-disable-next-line import-x/extensions
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds.ts';
-// eslint-disable-next-line import-x/extensions
-import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison.ts';
-// eslint-disable-next-line import-x/extensions
-import type { HistoricalBaselineReference } from './historical-comparison.ts';
+} from '../../shared/constants/benchmarks';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
+import type { HistoricalBaselineReference } from './historical-comparison';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
-} from './comparison-utils.ts'; // eslint-disable-line import-x/extensions
-// eslint-disable-next-line import-x/extensions
-import { parseArtifactName, resolveBaselineFromArtifactName } from './utils.ts';
+} from './comparison-utils';
+import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
   name: string;
@@ -388,4 +383,9 @@ async function main(): Promise<void> {
   process.exit(result.anyFailed ? 1 : 0);
 }
 
-export { main };
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('Fatal error:', err);
+    process.exit(2);
+  });
+}

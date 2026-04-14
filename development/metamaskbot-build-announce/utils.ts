@@ -5,9 +5,8 @@
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
-} from '../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
-// eslint-disable-next-line import-x/extensions
-import type { HistoricalBaselineReference } from './historical-comparison.ts';
+} from '../../shared/constants/benchmarks';
+import type { HistoricalBaselineReference } from './historical-comparison';
 
 export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =
   'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';

@@ -8,8 +8,7 @@
  * - Sanity checks for metric validation
  */
 
-// eslint-disable-next-line import-x/extensions
-import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks.ts';
+import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   PercentileKey,
@@ -22,7 +21,7 @@ import type {
   WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRating,
-} from '../../../../shared/constants/benchmarks.ts'; // eslint-disable-line import-x/extensions
+} from '../../../../shared/constants/benchmarks';
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
