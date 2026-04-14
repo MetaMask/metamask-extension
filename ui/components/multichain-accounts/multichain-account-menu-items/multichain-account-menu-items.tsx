@@ -28,6 +28,7 @@ export const MultichainAccountMenuItems = ({
         !isDisabled && (
           <Box
             key={item.textKey}
+            data-testid={`multichain-account-menu-item-${item.textKey}`}
             className={classnames('multichain-account-cell-menu-item', {
               'multichain-account-cell-menu-item--with-border': !isLast,
               'multichain-account-cell-menu-item--disabled': isDisabled,

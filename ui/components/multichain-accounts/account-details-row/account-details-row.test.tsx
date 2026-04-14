@@ -28,7 +28,7 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          iconProps={{ color: IconColor.IconAlternative }}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
@@ -94,7 +94,7 @@ describe('AccountDetailsRow', () => {
       const arrowButton = (
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          iconProps={{ color: IconColor.IconAlternative }}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.viewDetails.message}
           data-testid="arrow-button"
@@ -120,7 +120,7 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          iconProps={{ color: IconColor.IconAlternative }}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"

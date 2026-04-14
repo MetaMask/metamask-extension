@@ -209,7 +209,7 @@ export const MultichainAccountDetailsPage = () => {
             value={multichainAccount.metadata.name}
             onClick={handleAccountNameAction}
             endAccessory={
-              <Box marginLeft={2}>
+              <Box className="ml-2">
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
                   iconProps={{ color: IconColor.IconAlternative }}
@@ -225,7 +225,7 @@ export const MultichainAccountDetailsPage = () => {
             value={`${addressCount} ${addressCount > 1 ? t('addressesLabel') : t('addressLabel')}`}
             onClick={handleAddressesClick}
             endAccessory={
-              <Box marginLeft={2}>
+              <Box className="ml-2">
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
                   iconProps={{ color: IconColor.IconAlternative }}
@@ -242,7 +242,7 @@ export const MultichainAccountDetailsPage = () => {
               value={t('unlockToReveal')}
               onClick={handlePrivateKeysClick}
               endAccessory={
-                <Box marginLeft={2}>
+                <Box className="ml-2">
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
                     iconProps={{ color: IconColor.IconAlternative }}
@@ -260,7 +260,7 @@ export const MultichainAccountDetailsPage = () => {
               value={t('setUp')}
               onClick={handleSmartAccountClick}
               endAccessory={
-                <Box marginLeft={2}>
+                <Box className="ml-2">
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
                     iconProps={{ color: IconColor.IconAlternative }}
@@ -279,7 +279,7 @@ export const MultichainAccountDetailsPage = () => {
             value={wallet.metadata.name}
             onClick={handleWalletAction}
             endAccessory={
-              <Box marginLeft={2}>
+              <Box className="ml-2">
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
                   iconProps={{ color: IconColor.IconAlternative }}
@@ -309,7 +309,7 @@ export const MultichainAccountDetailsPage = () => {
               value={''}
               onClick={() => setIsAccountRemoveModalOpen(true)}
               endAccessory={
-                <Box marginLeft={2}>
+                <Box className="ml-2">
                   <ButtonIcon
                     iconName={IconName.ArrowRight}
                     iconProps={{ color: IconColor.IconAlternative }}

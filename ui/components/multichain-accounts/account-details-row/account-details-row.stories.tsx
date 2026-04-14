@@ -60,9 +60,10 @@ WithEditButton.args = {
   endAccessory: (
     <ButtonIcon
       iconName={IconName.Edit}
-      iconProps={{ color: IconColor.IconAlternative }}
+      color={IconColor.IconAlternative}
       size={ButtonIconSize.Md}
       ariaLabel="Edit account name"
+      className="ml-2"
     />
   ),
 };
@@ -74,9 +75,10 @@ WithArrowButton.args = {
   endAccessory: (
     <ButtonIcon
       iconName={IconName.ArrowRight}
-      iconProps={{ color: IconColor.IconAlternative }}
+      color={IconColor.IconAlternative}
       size={ButtonIconSize.Md}
       ariaLabel="View details"
+      className="ml-2"
     />
   ),
 };
@@ -89,9 +91,10 @@ export const MultipleRows: StoryFn<typeof AccountDetailsRow> = () => (
       endAccessory={
         <ButtonIcon
           iconName={IconName.Edit}
-          iconProps={{ color: IconColor.IconAlternative }}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="Edit account name"
+          className="ml-2"
         />
       }
       style={{
@@ -106,9 +109,10 @@ export const MultipleRows: StoryFn<typeof AccountDetailsRow> = () => (
       endAccessory={
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          iconProps={{ color: IconColor.IconAlternative }}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="View QR code"
+          className="ml-2"
         />
       }
       style={{
