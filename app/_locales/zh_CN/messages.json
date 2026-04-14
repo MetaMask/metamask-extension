@@ -3105,7 +3105,8 @@
     "message": "继续以确保："
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "您的 Ledger 已解锁"
+    "message": "您的 $1 已解锁",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "以太坊应用已打开"
@@ -9146,12 +9147,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourTransactionConfirmed": {
-    "message": "交易已确认"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "在区块链上确认之前，我们无法取消您的交易。"
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"

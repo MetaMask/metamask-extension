@@ -7,7 +7,8 @@ import {
 } from '@metamask/message-manager';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import EncryptionPublicKeyController, {
+import {
+  EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
 } from './encryption-public-key';
@@ -45,6 +46,7 @@ const requestMock = {
 const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
+    registerMethodActionHandlers: jest.fn(),
     publish: jest.fn(),
     subscribe: jest.fn(),
     call: jest.fn(),

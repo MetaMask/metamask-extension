@@ -32,7 +32,11 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { Position, PriceUpdate, Order } from '@metamask/perps-controller';
+import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
@@ -49,9 +53,14 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility, usePerpsMarketFills } from '../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsMarketFills,
+  usePerpsEventTracking,
+} from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -70,7 +79,10 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
+  formatChangePercent,
 } from '../../components/app/perps/utils';
+import { formatPerpsPrice } from '../../components/app/perps/utils/formatPerpsPrice';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -82,6 +94,8 @@ import { ReversePositionModal } from '../../components/app/perps/reverse-positio
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
+import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
+import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
@@ -90,6 +104,7 @@ import {
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
@@ -243,7 +258,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const locale = useSelector(getIntlLocale);
   const { isEligible } = usePerpsEligibility();
+  const { track } = usePerpsEventTracking();
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -280,9 +297,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
+    usePerpsDepositConfirmation();
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
@@ -291,6 +310,24 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(account.availableBalance) > 0,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
+      ...(decodedSymbol && {
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      }),
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+    },
+    resetKey: decodedSymbol,
+  });
 
   const [showSizeInFiat, setShowSizeInFiat] = useState(false);
 
@@ -354,6 +391,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
+  const hasNoAvailableBalance =
+    !position && !isLoadingAccount && !hasPerpBalance;
 
   // Ref to track current position - avoids stale data in callbacks
   // This follows mobile's pattern (currentPositionRef) to ensure we always
@@ -422,6 +461,11 @@ const PerpsMarketDetailPage: React.FC = () => {
     return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
   }, [marketFills]);
 
+  usePerpsMeasurement(
+    'PerpsMarketDetailLoaded',
+    !marketsLoading && !isCandleLoading && !fillsLoading,
+  );
+
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
 
@@ -475,8 +519,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [chartCurrentPrice, market, formatNumber]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange =
-    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
+  const displayChange = formatChangePercent(
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
+  );
 
   // Build price lines for chart overlay (current price + TP, Entry, SL)
   // Current price line is always shown; TP/Entry/SL only when position exists.
@@ -604,13 +649,55 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible || !decodedSymbol) {
+      if (!isEligible || !decodedSymbol || isLoadingAccount) {
         return;
       }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+        [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+      });
       navigate(buildOrderEntryUrl(direction, 'new'));
     },
-    [isEligible, decodedSymbol, navigate, buildOrderEntryUrl],
+    [
+      isEligible,
+      decodedSymbol,
+      isLoadingAccount,
+      navigate,
+      buildOrderEntryUrl,
+      track,
+    ],
   );
+
+  const handleAddFunds = useCallback(() => {
+    if (!isEligible || !selectedAddress || isDepositLoading) {
+      return;
+    }
+
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
+    });
+
+    triggerDeposit();
+  }, [
+    decodedSymbol,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    track,
+    triggerDeposit,
+  ]);
 
   const handleClosePosition = useCallback(() => {
     if (!isEligible || !position) {
@@ -620,16 +707,32 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [isEligible, position]);
 
   const handleOpenAddMarginModal = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen(false);
     setMarginModalMode('add');
-  }, []);
+  }, [track]);
 
   const handleOpenDecreaseMarginModal = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen(false);
     setMarginModalMode('remove');
-  }, []);
+  }, [track]);
 
   const handleOpenReverseModal = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -640,24 +743,48 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!position || !decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'modify'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
     if (!position || !decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
     navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl]);
+  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.MARGIN,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     setIsModifyMenuOpen(false);
     setIsMarginMenuOpen((prev) => !prev);
-  }, []);
+  }, [track]);
 
   const handleCloseMarginModal = useCallback(() => {
     setMarginModalMode(null);
@@ -679,12 +806,19 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.FAVORITE_TOGGLED,
+      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
     submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
     ]).catch((e) => {
       console.warn('[Perps] Toggle watchlist failed:', e);
     });
-  }, [decodedSymbol]);
+  }, [decodedSymbol, track]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
@@ -1064,9 +1198,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
-                    {/* Controller/mobile ROE is percent (e.g. 15.79), formatter expects ratio. */}
+                    {/* Controller/mobile ROE is a ratio (e.g. 0.1579), same as what the formatter expects. */}
                     {formatPercentWithMinThreshold(
-                      Number.parseFloat(position.returnOnEquity) / 100,
+                      Number.parseFloat(position.returnOnEquity),
                     )}
                   </Text>
                 </Box>
@@ -1132,12 +1266,15 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Popover
                     referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}
+                    isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
                     onPressEscKey={() => setIsMarginMenuOpen(false)}
                     position={PopoverPosition.Top}
+                    preventOverflow
+                    flip
                     offset={[0, 8]}
                     padding={0}
-                    className="min-w-[220px] rounded-lg"
+                    className="min-w-[220px] rounded-lg z-[1050]"
                     data-testid="perps-margin-menu"
                   >
                     <Box flexDirection={BoxFlexDirection.Column}>
@@ -1253,10 +1390,12 @@ const PerpsMarketDetailPage: React.FC = () => {
                         ? TextColor.SuccessDefault
                         : TextColor.ErrorDefault
                     }
+                    data-testid="perps-position-leverage"
                   >
                     {parseFloat(position.size) >= 0
                       ? t('perpsLong')
-                      : t('perpsShort')}
+                      : t('perpsShort')}{' '}
+                    {position.leverage.value}x
                   </Text>
                 </Box>
 
@@ -1299,7 +1438,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                   >
                     {position.liquidationPrice
-                      ? `$${position.liquidationPrice}`
+                      ? formatPerpsPrice(
+                          parseFloat(position.liquidationPrice),
+                          locale,
+                        )
                       : '-'}
                   </Text>
                 </Box>
@@ -1550,7 +1692,17 @@ const PerpsMarketDetailPage: React.FC = () => {
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
             data-testid="perps-learn-basics"
-            onClick={() => dispatch(setTutorialModalOpen(true))}
+            onClick={() => {
+              track(MetaMetricsEventName.PerpsUiInteraction, {
+                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                  PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+                [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                  PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+                [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+                  PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+              });
+              dispatch(setTutorialModalOpen(true));
+            }}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsLearnBasics')}
@@ -1612,12 +1764,16 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Popover
                 referenceElement={modifyMenuRef.current}
                 isOpen={isModifyMenuOpen}
+                isPortal
                 onClickOutside={() => setIsModifyMenuOpen(false)}
                 onPressEscKey={() => setIsModifyMenuOpen(false)}
                 position={PopoverPosition.Top}
+                preventOverflow
+                flip
+                offset={[0, 8]}
                 padding={0}
                 matchWidth
-                className="rounded-lg"
+                className="rounded-lg z-[1050]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -1680,7 +1836,21 @@ const PerpsMarketDetailPage: React.FC = () => {
         )}
 
         {/* Without Position: Show Long and Short buttons */}
-        {!position && (
+        {!position && hasNoAvailableBalance && (
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleAddFunds}
+            disabled={!isEligible || !selectedAddress || isDepositLoading}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            className="w-full"
+            data-testid="perps-add-funds-cta-button"
+          >
+            {t('addFunds')}
+          </Button>
+        )}
+
+        {!position && !hasNoAvailableBalance && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -1691,7 +1861,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              disabled={!isEligible}
+              disabled={!isEligible || isLoadingAccount}
               title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-long-cta-button"
@@ -1704,7 +1874,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              disabled={!isEligible}
+              disabled={!isEligible || isLoadingAccount}
               title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-short-cta-button"

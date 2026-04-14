@@ -1,7 +1,6 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import {
@@ -49,6 +48,7 @@ const ShowENSDomainsToggleItem = createToggleItem({
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
   containerDataTestId: 'ipfs-gateway-resolution-container',
+  trackEventProperty: 'use_address_bar_ens_resolution',
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
@@ -58,6 +58,7 @@ const MakeSmartContractsEasierToggleItem = createToggleItem({
   selector: (state: MetaMaskReduxState) => state.metamask.use4ByteResolution,
   action: setUse4ByteResolution,
   dataTestId: 'make-smart-contracts-easier-toggle',
+  trackEventProperty: 'use_4byte_resolution',
 });
 
 const ProposedNicknamesToggleItem = createToggleItem({
@@ -68,13 +69,7 @@ const ProposedNicknamesToggleItem = createToggleItem({
     state.metamask.useExternalNameSources,
   action: setUseExternalNameSources,
   dataTestId: 'proposed-nicknames-toggle',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      use_external_name_sources: newValue,
-    }),
-  },
+  trackEventProperty: 'use_external_name_sources',
 });
 
 /** Registry of setting items for the Third-party APIs sub-page */

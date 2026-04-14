@@ -18,10 +18,11 @@ describe('useHardwareWalletConnection', () => {
     abortControllerRef: { current: AbortController | null };
     adapterRef: { current: HardwareWalletAdapter | null };
     connectingPromiseRef: { current: Promise<void> | null };
-    ensureDeviceReadyPromiseRef: { current: Map<boolean, Promise<boolean>> };
+    ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
     isConnectingRef: { current: boolean };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
+    isEnsuringDeviceReadyRef: { current: boolean };
     currentConnectionIdRef: { current: number | null };
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
@@ -49,6 +50,7 @@ describe('useHardwareWalletConnection', () => {
       isConnectingRef: { current: false },
       hasAutoConnectedRef: { current: false },
       lastConnectedAccountRef: { current: null },
+      isEnsuringDeviceReadyRef: { current: false },
       currentConnectionIdRef: { current: null },
       connectRef: { current: null },
       walletTypeRef: { current: HardwareWalletType.Ledger },
@@ -817,6 +819,39 @@ describe('useHardwareWalletConnection', () => {
 
       expect(results).toStrictEqual([true, true]);
       expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('tracks whether ensureDeviceReady is currently in flight', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockRefs.adapterRef.current = mockAdapter;
+
+      let resolveEnsure: ((value: boolean) => void) | undefined;
+      mockAdapter.ensureDeviceReadyMock.mockImplementation(
+        () =>
+          new Promise<boolean>((resolve) => {
+            resolveEnsure = resolve;
+          }),
+      );
+
+      const { result } = setupHook();
+
+      const pendingEnsure = result.current.ensureDeviceReady();
+
+      expect(mockRefs.isEnsuringDeviceReadyRef.current).toBe(true);
+
+      await act(async () => {
+        resolveEnsure?.(true);
+        await pendingEnsure;
+      });
+
+      expect(mockRefs.isEnsuringDeviceReadyRef.current).toBe(false);
     });
 
     it('does not reuse in-flight ensureDeviceReady promise when options differ', async () => {

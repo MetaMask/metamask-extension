@@ -388,32 +388,32 @@ describe('useConfirmationNavigation', () => {
       });
     });
 
-    it('navigates with only returnTo param when no loader provided', () => {
+    it('navigates with only goBackTo param when no loader provided', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToTransaction('tx-100', {
-        returnTo: '/asset/0x1/0xabc',
+        goBackTo: '/asset/0x1/0xabc',
       });
 
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-100`,
-        search: 'returnTo=%2Fasset%2F0x1%2F0xabc',
+        search: 'goBackTo=%2Fasset%2F0x1%2F0xabc',
       });
     });
 
-    it('navigates with both loader and returnTo params', () => {
+    it('navigates with both loader and goBackTo params', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToTransaction('tx-200', {
         loader: ConfirmationLoader.CustomAmount,
-        returnTo: '/home?tab=tokens',
+        goBackTo: '/home?tab=tokens',
       });
 
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-200`,
-        search: 'loader=customAmount&returnTo=%2Fhome%3Ftab%3Dtokens',
+        search: 'loader=customAmount&goBackTo=%2Fhome%3Ftab%3Dtokens',
       });
     });
   });
@@ -459,31 +459,31 @@ describe('useConfirmationNavigationOptions', () => {
     expect(result.loader).toBe(ConfirmationLoader.Default);
   });
 
-  it('returns sanitized returnTo from search params', () => {
+  it('returns sanitized goBackTo from search params', () => {
     const searchParams = new URLSearchParams({
-      returnTo: '/asset/0x1/0xabc',
+      goBackTo: '/asset/0x1/0xabc',
     });
 
     const result = renderOptionsHook(searchParams);
 
-    expect(result.returnTo).toBe('/asset/0x1/0xabc');
+    expect(result.goBackTo).toBe('/asset/0x1/0xabc');
   });
 
-  it('returns undefined returnTo when not present in search params', () => {
+  it('returns undefined goBackTo when not present in search params', () => {
     const searchParams = new URLSearchParams();
 
     const result = renderOptionsHook(searchParams);
 
-    expect(result.returnTo).toBeUndefined();
+    expect(result.goBackTo).toBeUndefined();
   });
 
-  it('rejects unsafe returnTo values', () => {
+  it('rejects unsafe goBackTo values', () => {
     const searchParams = new URLSearchParams({
-      returnTo: 'https://evil.com',
+      goBackTo: 'https://evil.com',
     });
 
     const result = renderOptionsHook(searchParams);
 
-    expect(result.returnTo).toBeUndefined();
+    expect(result.goBackTo).toBeUndefined();
   });
 });
