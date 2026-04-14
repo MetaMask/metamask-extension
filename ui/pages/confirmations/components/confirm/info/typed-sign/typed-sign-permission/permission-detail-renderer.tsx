@@ -338,6 +338,19 @@ export const PermissionDetailRenderer: React.FC<{
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];
+  const tokenResolution: TokenResolution = schemaEntry?.tokenResolution ?? {
+    kind: 'none',
+  };
+
+  // Hooks must run before any code that can throw (invalid type / validate),
+  // so hook order stays stable if permission data changes between renders.
+  const nativeToken = useNativeTokenData(chainId, tokenResolution);
+  const erc20Decimals = useErc20DecimalsResolved(
+    permission,
+    chainId,
+    tokenResolution,
+  );
+
   if (!schemaEntry) {
     throw new Error('Invalid permission type');
   }
@@ -345,13 +358,6 @@ export const PermissionDetailRenderer: React.FC<{
   if (schemaEntry.validate) {
     schemaEntry.validate(permission);
   }
-
-  const nativeToken = useNativeTokenData(chainId, schemaEntry.tokenResolution);
-  const erc20Decimals = useErc20DecimalsResolved(
-    permission,
-    chainId,
-    schemaEntry.tokenResolution,
-  );
 
   // Build tokenInfo from whichever resolution path is active
   let tokenInfo: PermissionRenderContext['tokenInfo'];
