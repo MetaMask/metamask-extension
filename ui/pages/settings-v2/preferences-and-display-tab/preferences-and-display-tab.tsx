@@ -70,13 +70,7 @@ const ManageInstitutionalWalletItem = createToggleItem({
   selector: getManageInstitutionalWallets,
   action: setManageInstitutionalWallets,
   dataTestId: 'manage-institutional-wallets',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manage_institutional_wallets: newValue,
-    }),
-  },
+  trackEventProperty: 'manage_institutional_wallets',
 });
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */
