@@ -159,7 +159,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               </Text>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
-                size={IconSize.Sm}
+                size={IconSize.Xs}
                 color={IconColor.IconAlternative}
                 data-testid="perps-balance-dropdown-chevron"
               />
@@ -201,7 +201,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
       {/* Unrealized P&L Row - only shown when there are positions */}
       {hasPositions && (
         <Box
-          className="w-full rounded-t-none rounded-b-xl bg-muted px-4 py-3"
+          className="w-full rounded-t-none rounded-b-xl bg-muted px-4 py-3 -mt-px"
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}

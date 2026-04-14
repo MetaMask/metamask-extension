@@ -5978,7 +5978,7 @@
     "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
-    "message": "Total Balance"
+    "message": "Total balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
