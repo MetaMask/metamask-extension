@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
-  ButtonSecondary,
+  BoxFlexDirection,
+  Button,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   FormTextField,
   Modal,
   ModalBody,
@@ -13,11 +17,7 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
-import {
-  Display,
-  FlexDirection,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
+import { FontWeight } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAccountEditModalProps = {
@@ -74,11 +74,7 @@ export const MultichainAccountEditModal = ({
           {t('rename')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Box>
               <FormTextField
                 label={t('accountName')}
@@ -94,15 +90,17 @@ export const MultichainAccountEditModal = ({
                 autoFocus
               />
             </Box>
-            <ButtonSecondary
+            <Button
+              variant={ButtonVariant.Secondary}
               onClick={handleSave}
-              disabled={!accountName.trim()}
+              isDisabled={!accountName.trim()}
               aria-label={t('confirm')}
-              block
-              marginTop={4}
+              isFullWidth
+              className="mt-4"
+              data-testid="multichain-account-edit-confirm"
             >
               {t('confirm')}
-            </ButtonSecondary>
+            </Button>
           </Box>
         </ModalBody>
       </ModalContent>

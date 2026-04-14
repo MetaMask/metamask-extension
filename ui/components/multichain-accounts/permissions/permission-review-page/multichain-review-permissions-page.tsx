@@ -8,11 +8,14 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -29,17 +32,7 @@ import {
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  Box,
-  Button,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../component-library';
+import { AvatarFavicon, AvatarFaviconSize } from '../../../component-library';
 import { ToastContainer, Toast } from '../../../multichain/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
@@ -414,11 +407,10 @@ export const MultichainReviewPermissions = () => {
           <>
             {existingConnectedCaipAccountIds.length > 0 ? (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Column}
+                className="w-full"
                 gap={2}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
               >
                 {showAccountToast ? (
                   <ToastContainer>
@@ -452,10 +444,10 @@ export const MultichainReviewPermissions = () => {
                 ) : null}
                 <Button
                   size={ButtonSize.Lg}
-                  block
+                  isFullWidth
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
-                  danger
+                  isDanger
                   onClick={handleDisconnectClick}
                   data-test-id="disconnect-all"
                 >
@@ -465,16 +457,17 @@ export const MultichainReviewPermissions = () => {
             ) : (
               <>
                 {connectedAccountGroups.length > 0 ? (
-                  <ButtonPrimary
-                    size={ButtonPrimarySize.Lg}
-                    block
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    isFullWidth
                     data-test-id="no-connections-button"
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}
-                  </ButtonPrimary>
+                  </Button>
                 ) : null}
               </>
             )}

@@ -38,8 +38,9 @@ describe('MultichainAccountEditModal', () => {
     expect(inputField).toBeInTheDocument();
 
     // Check confirm button exists and is disabled initially
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     expect(confirmButton).toBeInTheDocument();
+    expect(confirmButton).toHaveTextContent(messages.confirm.message);
     expect(confirmButton).toBeDisabled();
   });
 
@@ -56,7 +57,7 @@ describe('MultichainAccountEditModal', () => {
       screen.queryByText(messages.accountName.message),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(messages.confirm.message),
+      screen.queryByTestId('multichain-account-edit-confirm'),
     ).not.toBeInTheDocument();
   });
 
@@ -65,7 +66,7 @@ describe('MultichainAccountEditModal', () => {
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
 
     // Initially disabled
     expect(confirmButton).toBeDisabled();
@@ -128,7 +129,7 @@ describe('MultichainAccountEditModal', () => {
     const input = screen.getByPlaceholderText('Account 1');
     fireEvent.change(input, { target: { value: 'New Account Name' } });
 
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     fireEvent.click(confirmButton);
 
     await waitFor(() => {
@@ -154,7 +155,7 @@ describe('MultichainAccountEditModal', () => {
     });
 
     // Click the confirm button
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     fireEvent.click(confirmButton);
 
     // Check that dispatch was not called
@@ -175,7 +176,7 @@ describe('MultichainAccountEditModal', () => {
     fireEvent.change(input, { target: { value: '  New Account Name  ' } });
 
     // Click the confirm button
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     fireEvent.click(confirmButton);
 
     // Check if dispatch was called with the trimmed name
@@ -201,7 +202,7 @@ describe('MultichainAccountEditModal', () => {
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
 
     // Type something first to enable the button
     fireEvent.change(input, { target: { value: 'Something' } });
@@ -224,7 +225,7 @@ describe('MultichainAccountEditModal', () => {
     const differentName = 'Different Account Name';
     fireEvent.change(input, { target: { value: differentName } });
 
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     fireEvent.click(confirmButton);
 
     await waitFor(() => {
@@ -249,7 +250,7 @@ describe('MultichainAccountEditModal', () => {
     const input = screen.getByPlaceholderText('Account 1');
     fireEvent.change(input, { target: { value: 'Duplicate Account Name' } });
 
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByTestId('multichain-account-edit-confirm');
     fireEvent.click(confirmButton);
 
     // Wait for the error message to appear

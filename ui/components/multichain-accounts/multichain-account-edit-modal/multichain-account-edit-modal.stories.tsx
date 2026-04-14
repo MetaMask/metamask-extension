@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StoryObj, Meta } from '@storybook/react';
-import { ButtonPrimary } from '../../component-library';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { MultichainAccountEditModal } from './multichain-account-edit-modal';
 import { AccountGroupId } from '@metamask/account-api';
 
@@ -23,9 +23,13 @@ const ModalWithTrigger = ({
 
   return (
     <>
-      <ButtonPrimary onClick={handleOpen} data-testid="open-modal-button">
+      <Button
+        variant={ButtonVariant.Primary}
+        onClick={handleOpen}
+        data-testid="open-modal-button"
+      >
         {buttonText}
-      </ButtonPrimary>
+      </Button>
       <MultichainAccountEditModal
         isOpen={isOpen}
         onClose={handleClose}

@@ -3,38 +3,46 @@ import { StoryFn, Meta } from '@storybook/react';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, Checkbox } from '../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Checkbox,
+  Icon,
+  IconName,
+} from '@metamask/design-system-react';
 
 // End accessory
 const MoreOptionsAccessory = () => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
-    backgroundColor={BackgroundColor.backgroundMuted}
-    borderRadius={BorderRadius.LG}
-    padding={1}
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
+    backgroundColor={BoxBackgroundColor.BackgroundMuted}
+    className="rounded-lg p-1"
   >
     <Icon name={IconName.MoreVertical} />
   </Box>
 );
 
-const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
-  <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
-    marginRight={2}
-  >
-    <Checkbox isChecked={checked} />
-  </Box>
-);
+const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => {
+  const checkboxId = React.useId();
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      marginRight={2}
+    >
+      <Checkbox
+        id={checkboxId}
+        isSelected={checked}
+        onChange={() => undefined}
+      />
+    </Box>
+  );
+};
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountCell',
