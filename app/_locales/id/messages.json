@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
   },
-  "yourTransactionConfirmed": {
-    "message": "Transaksi telah dikonfirmasi"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Kami tidak dapat membatalkan transaksi Anda sebelum dikonfirmasi di blockchain."
-  },
   "yourWalletIsReady": {
     "message": "Dompet Anda sudah siap"
   },
