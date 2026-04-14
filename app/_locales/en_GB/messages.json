@@ -8859,6 +8859,9 @@
   "switchBack": {
     "message": "Switch back"
   },
+  "switchBackToPopup": {
+    "message": "Switch back to popup"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
   },
@@ -8873,8 +8876,7 @@
     "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
   },
   "switchToPopup": {
-    "message": "Switch back to popup",
-    "description": "Label for switching the extension from side panel to popup view (global menu and inline toast link)."
+    "message": "Switch back to popup"
   },
   "switchToSidePanel": {
     "message": "Switch to side panel"
