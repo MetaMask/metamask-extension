@@ -1,7 +1,7 @@
 import { Action } from 'redux'; // Import types for actions
 import { createSelector } from 'reselect';
 import * as actionConstants from '../../store/actionConstants';
-import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { getNormalizedLocale } from '../../../shared/constants/locales';
 
 /**
  * Type for the locale messages part of the state
@@ -82,10 +82,7 @@ export const getCurrentLocale = (state: AppState): string | undefined =>
  */
 export const getIntlLocale = createSelector(
   getCurrentLocale,
-  (locale): string =>
-    Intl.getCanonicalLocales(
-      locale ? locale.replace(/_/gu, '-') : FALLBACK_LOCALE,
-    )[0],
+  (locale): string => getNormalizedLocale(locale),
 );
 
 /**

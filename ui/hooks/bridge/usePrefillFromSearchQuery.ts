@@ -17,6 +17,7 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -148,10 +149,14 @@ export const usePrefillFromSearchQuery = () => {
         parsedFromAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
 
-    // Process from chain/token first
-    if (fromTokenMetadata) {
-      dispatch(setFromToken(fromTokenMetadata));
+    if (!fromTokenMetadata) {
+      // Exit effect if from-token metadata is not available due to unknown or malformed asset id.
+      return;
     }
+
+    // setFromToken auto-enables the network via addNetwork when needed, then
+    // falls through to complete the full token-setting flow in one thunk invocation.
+    dispatch(setFromToken(fromTokenMetadata));
   }, [assetMetadataByAssetId, parsedFromAssetId]);
 
   // Set toChainId and toToken
@@ -159,6 +164,12 @@ export const usePrefillFromSearchQuery = () => {
     if (!parsedToAssetId) {
       return;
     }
+
+    if (!isSupportedBridgeChain(parsedToAssetId.chainId)) {
+      // Reject unsupported or unknown to-chains (similar to for from-chains check).
+      return;
+    }
+
     const toTokenMetadata =
       assetMetadataByAssetId?.[parsedToAssetId.assetId] ??
       assetMetadataByAssetId?.[

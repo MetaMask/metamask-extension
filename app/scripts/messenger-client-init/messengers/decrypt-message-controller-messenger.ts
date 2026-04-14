@@ -1,14 +1,11 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/decrypt-message';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { DecryptMessageControllerMessenger } from '../../controllers/decrypt-message';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
-
-export type DecryptMessageControllerMessenger = ReturnType<
-  typeof getDecryptMessageControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -18,14 +15,12 @@ export type DecryptMessageControllerMessenger = ReturnType<
  * messenger.
  */
 export function getDecryptMessageControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<
+    MessengerActions<DecryptMessageControllerMessenger>,
+    MessengerEvents<DecryptMessageControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'DecryptMessageController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  const controllerMessenger: DecryptMessageControllerMessenger = new Messenger({
     namespace: 'DecryptMessageController',
     parent: messenger,
   });

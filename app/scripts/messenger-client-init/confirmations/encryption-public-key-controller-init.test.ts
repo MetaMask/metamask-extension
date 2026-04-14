@@ -1,9 +1,11 @@
-import EncryptionPublicKeyController from '../../controllers/encryption-public-key';
+import {
+  EncryptionPublicKeyController,
+  EncryptionPublicKeyControllerMessenger,
+} from '../../controllers/encryption-public-key';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEncryptionPublicKeyControllerMessenger,
-  EncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
   EncryptionPublicKeyControllerInitMessenger,
 } from '../messengers';

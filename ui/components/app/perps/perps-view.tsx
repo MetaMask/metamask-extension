@@ -27,6 +27,8 @@ import {
   setTutorialModalOpen,
 } from '../../../ducks/perps';
 
+import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -177,6 +179,8 @@ export const PerpsView: React.FC = () => {
 
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
+
+  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and

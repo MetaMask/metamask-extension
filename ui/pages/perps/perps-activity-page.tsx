@@ -12,6 +12,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -34,6 +38,8 @@ import type {
   PerpsTransactionFilter,
 } from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
@@ -50,10 +56,19 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-
   // Fetch real transaction data from the Perps controller
   const { transactions, isLoading, error, refetch } =
     usePerpsTransactionHistory();
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
 
   // Refetch on mount to ensure fresh data
   useEffect(() => {
