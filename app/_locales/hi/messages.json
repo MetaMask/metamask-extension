@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
   },
-  "yourTransactionConfirmed": {
-    "message": "ट्रांसेक्शन पहले ही कन्फर्म हो चुका है"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "हम आपके ट्रांसेक्शन को रद्द नहीं कर सके क्योंकि ब्लॉकचेन पर यह पहले ही कन्फर्म हो चुका है।"
-  },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"
   },

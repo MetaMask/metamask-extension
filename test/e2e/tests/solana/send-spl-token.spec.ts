@@ -5,9 +5,7 @@ import { merge } from 'lodash';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-} from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -47,12 +45,21 @@ async function mockAccountsApiV2WithSolana(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-    )
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337, SOLANA_CHAIN_ID],
+      fullSupport: [
+        1,
+        137,
+        56,
+        59144,
+        8453,
+        10,
+        42161,
+        534352,
+        1337,
+        SOLANA_CHAIN_ID,
+      ],
       partialSupport: { balances: [42220, 43114] },
     });
 }

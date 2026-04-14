@@ -2,7 +2,7 @@ import {
   CronjobController,
   CronjobControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the cronjob controller.
@@ -14,7 +14,7 @@ import { ControllerInitFunction } from '../types';
  * CronjobController.
  * @returns The initialized controller.
  */
-export const CronjobControllerInit: ControllerInitFunction<
+export const CronjobControllerInit: MessengerClientInitFunction<
   CronjobController,
   CronjobControllerMessenger
 > = ({

@@ -1,6 +1,6 @@
 import { StorageService } from '@metamask/storage-service';
 import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { StorageServiceMessenger } from './messengers';
 
 /**
@@ -13,7 +13,7 @@ import { StorageServiceMessenger } from './messengers';
  * @param request.controllerMessenger - The messenger for the service
  * @returns The initialized service with null state keys (stateless)
  */
-export const StorageServiceInit: ControllerInitFunction<
+export const StorageServiceInit: MessengerClientInitFunction<
   StorageService,
   StorageServiceMessenger
 > = ({ controllerMessenger }) => {

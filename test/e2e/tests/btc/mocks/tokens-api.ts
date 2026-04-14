@@ -3,8 +3,7 @@ import { Mockttp } from 'mockttp';
 const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 const BTC_CHAIN_CAIP_ID = 'bip122:000000000019d6689c085ae165831e93';
 
-const SOL_CAIP_ASSET_ID =
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const SOL_CAIP_ASSET_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const SOL_CHAIN_CAIP_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOL_USDC_CAIP_ASSET_ID =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -65,7 +64,11 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
 
       const results = [];
 
-      if(assetIds.includes('eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')) {
+      if (
+        assetIds.includes(
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        )
+      ) {
         results.push({
           assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           name: 'USD Coin',
@@ -73,7 +76,11 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           decimals: 6,
         });
       }
-      if(assetIds.includes('eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7')) {
+      if (
+        assetIds.includes(
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        )
+      ) {
         results.push({
           assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
           name: 'Tether USD',

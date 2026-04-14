@@ -3,7 +3,7 @@ import {
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
@@ -19,7 +19,7 @@ import {
 jest.mock('@metamask/notification-services-controller/push-services');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     NotificationServicesPushControllerMessenger,
     NotificationServicesPushControllerInitMessenger
   >

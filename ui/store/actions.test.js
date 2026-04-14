@@ -3144,7 +3144,7 @@ describe('Actions', () => {
   });
 
   describe('#createCancelTransaction', () => {
-    it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
+    it('dispatches DISPLAY_WARNING and rethrows when createCancelTransaction fails', async () => {
       const store = mockStore();
 
       const createCancelTransactionStub = sinon
@@ -3156,20 +3156,19 @@ describe('Actions', () => {
 
       const txId = '123-456';
 
-      try {
-        await store.dispatch(actions.createCancelTransaction(txId));
-      } catch (error) {
-        /* eslint-disable-next-line jest/no-conditional-expect */
-        expect(error.message).toBe('Previous transaction is already confirmed');
-      }
+      await expect(
+        store.dispatch(actions.createCancelTransaction(txId)),
+      ).rejects.toThrow('Previous transaction is already confirmed');
 
       const resultantActions = store.getActions();
-      const expectedAction = resultantActions.find(
-        (action) => action.type === actionConstants.MODAL_OPEN,
+      const warningAction = resultantActions.find(
+        (action) => action.type === actionConstants.DISPLAY_WARNING,
       );
 
-      expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
-      expect(expectedAction.payload.originalTransactionId).toBe(txId);
+      expect(warningAction).toBeDefined();
+      expect(warningAction.payload).toBe(
+        'Previous transaction is already confirmed',
+      );
     });
   });
 

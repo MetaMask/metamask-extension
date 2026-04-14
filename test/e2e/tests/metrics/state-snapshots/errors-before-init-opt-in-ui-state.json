@@ -7,7 +7,6 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
-      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
@@ -219,6 +218,7 @@
       },
       "referrals": "object",
       "securityAlertsEnabled": "boolean",
+      "showSidePanelMigrationToast": "boolean",
       "snapRegistryList": "object",
       "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "os",
@@ -295,5 +295,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 203 }
+  "meta": { "storageKind": "split", "version": 204 }
 }

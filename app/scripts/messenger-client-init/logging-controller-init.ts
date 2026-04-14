@@ -1,6 +1,6 @@
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { LOG_EVENT } from '../../../shared/constants/logs';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { LoggingControllerMessenger } from './messengers';
 
 /**
@@ -13,7 +13,7 @@ import { LoggingControllerMessenger } from './messengers';
  * @param request.extension
  * @returns The initialized controller.
  */
-export const LoggingControllerInit: ControllerInitFunction<
+export const LoggingControllerInit: MessengerClientInitFunction<
   LoggingController,
   LoggingControllerMessenger
 > = ({ controllerMessenger, persistedState, extension }) => {

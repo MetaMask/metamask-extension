@@ -2,7 +2,7 @@ import {
   AppStateController,
   AppStateControllerMessenger,
 } from '../controllers/app-state-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the app state controller.
@@ -14,7 +14,7 @@ import { ControllerInitFunction } from './types';
  * @param request.extension - The extension browser API.
  * @returns The initialized controller.
  */
-export const AppStateControllerInit: ControllerInitFunction<
+export const AppStateControllerInit: MessengerClientInitFunction<
   AppStateController,
   AppStateControllerMessenger
 > = ({ controllerMessenger, persistedState, setLocked, extension }) => {
