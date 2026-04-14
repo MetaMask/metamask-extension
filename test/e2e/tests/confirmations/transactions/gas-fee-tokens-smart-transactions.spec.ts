@@ -1,10 +1,9 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
@@ -25,13 +24,13 @@ const TRANSACTION_HASH_2 =
   '0x62700f83ba1bbc29004bf7aef71ed0ea735de4fd59861b4235200d8fa028281f';
 
 describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
-  it('confirms one transaction if successful', async function () {
+    it('confirms one transaction if successful', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .withAssetsController({
             assetsBalance: {
               'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
@@ -40,9 +39,6 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             },
           })
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
@@ -107,13 +103,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSimulationResponse(mockServer);
           await mockSmartTransactionBatchRequests(mockServer, {

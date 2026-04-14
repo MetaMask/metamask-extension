@@ -2,7 +2,7 @@ import {
   EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
 } from '../../controllers/encryption-public-key';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEncryptionPublicKeyControllerMessenger,
@@ -15,7 +15,7 @@ import { EncryptionPublicKeyControllerInit } from './encryption-public-key-contr
 jest.mock('../../controllers/encryption-public-key');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     EncryptionPublicKeyControllerMessenger,
     EncryptionPublicKeyControllerInitMessenger
   >

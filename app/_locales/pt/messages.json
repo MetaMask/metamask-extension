@@ -9148,12 +9148,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
   },
-  "yourTransactionConfirmed": {
-    "message": "Transação já confirmada"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Não pudemos cancelar sua transação antes de ser confirmada na blockchain."
-  },
   "yourWalletIsReady": {
     "message": "Sua carteira está pronta"
   },

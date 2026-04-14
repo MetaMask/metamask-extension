@@ -3,7 +3,7 @@ import {
   MetaMetricsDataDeletionControllerMessenger,
 } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import type { DataDeletionService } from '../services/data-deletion-service';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the MetaMetrics data deletion controller.
@@ -15,7 +15,7 @@ import { ControllerInitFunction } from './types';
  * @param request.getController - The function to get other controllers.
  * @returns The initialized controller.
  */
-export const MetaMetricsDataDeletionControllerInit: ControllerInitFunction<
+export const MetaMetricsDataDeletionControllerInit: MessengerClientInitFunction<
   MetaMetricsDataDeletionController,
   MetaMetricsDataDeletionControllerMessenger
 > = ({ controllerMessenger, persistedState, getController }) => {

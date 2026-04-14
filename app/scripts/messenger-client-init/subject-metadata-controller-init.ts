@@ -1,6 +1,6 @@
 import { SubjectMetadataController } from '@metamask/permission-controller';
 import { SubjectMetadataControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the subject metadata controller.
@@ -10,7 +10,7 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SubjectMetadataControllerInit: ControllerInitFunction<
+export const SubjectMetadataControllerInit: MessengerClientInitFunction<
   SubjectMetadataController,
   SubjectMetadataControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

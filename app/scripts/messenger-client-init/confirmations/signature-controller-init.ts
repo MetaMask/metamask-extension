@@ -1,5 +1,5 @@
 import { SignatureController } from '@metamask/signature-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   SignatureControllerInitMessenger,
   SignatureControllerMessenger,
@@ -15,7 +15,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const SignatureControllerInit: ControllerInitFunction<
+export const SignatureControllerInit: MessengerClientInitFunction<
   SignatureController,
   SignatureControllerMessenger,
   SignatureControllerInitMessenger

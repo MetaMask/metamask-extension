@@ -12,7 +12,6 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockEthPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
@@ -30,10 +29,9 @@ const ETH_USD_PRICE = 1700;
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
+    showConfirmationAdvancedDetails: true,
     showFiatInTestnets: true,
   },
-  // Enables advanced details due to migration 123
-  useNonceField: true,
 };
 
 describe('Send ETH - Advanced', function () {
@@ -88,7 +86,7 @@ describe('Send ETH - Advanced', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
@@ -147,7 +145,7 @@ describe('Send ETH - Advanced', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
@@ -209,7 +207,7 @@ describe('Send ETH - Advanced', function () {
     it('renders correct recipient with ERC20 transfer signature in hex data', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               featureFlags: {
                 sendHexData: true,
