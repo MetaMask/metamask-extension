@@ -1337,5 +1337,54 @@ describe('PerpsMarketDetailPage', () => {
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });
+
+    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
+      fireEvent.click(addFundsButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Close while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const closeButton = screen.getByTestId('perps-close-cta-button');
+      fireEvent.click(closeButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+    });
+
+    it('shows geo-block modal when clicking Modify while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const modifyButton = screen.getByTestId('perps-modify-cta-button');
+      fireEvent.click(modifyButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+    });
   });
 });

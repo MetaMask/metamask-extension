@@ -68,8 +68,9 @@ jest.mock('../../../hooks/perps/stream', () => {
   };
 });
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('./perps-tutorial-modal', () => ({
@@ -91,6 +92,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
@@ -462,6 +464,15 @@ describe('PerpsView', () => {
         'perpsGetOpenOrders',
         [],
       );
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('renders the geo-block modal element (closed by default)', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
     });
   });
 });

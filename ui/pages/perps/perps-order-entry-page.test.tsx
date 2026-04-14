@@ -511,6 +511,31 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
+    it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
+
     it('disables submit while account state is still loading for a new order', () => {
       mockLiveAccount.mockReturnValue({
         account: {
