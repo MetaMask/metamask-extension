@@ -296,7 +296,6 @@ function renderElement({
         />
       ) : null;
 
-    case 'totalExposure':
     case 'divider':
     case 'origin':
     case 'address':

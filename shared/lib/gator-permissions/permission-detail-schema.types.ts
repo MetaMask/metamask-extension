@@ -106,24 +106,6 @@ export type ExpiryField = {
   includeInViews: FieldView[];
 };
 
-/** Stream parameters for total exposure calculation. */
-export type TotalExposureStreamParams = {
-  initialAmount?: Hex | null;
-  maxAmount?: Hex | null;
-  amountPerSecond: Hex;
-  startTime: number;
-};
-
-/** Total exposure row for stream permissions. */
-export type TotalExposureField = {
-  type: 'totalExposure';
-  labelKey: string;
-  testId: string;
-  getValue: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
-  isVisible: (ctx: PermissionRenderContext) => boolean;
-  includeInViews: FieldView[];
-};
-
 /** A visual divider between rows. */
 export type DividerElement = {
   type: 'divider';
@@ -187,7 +169,6 @@ export type SchemaElement =
   | TextField
   | DateField
   | ExpiryField
-  | TotalExposureField
   | DividerElement
   | JustificationField
   | AccountField

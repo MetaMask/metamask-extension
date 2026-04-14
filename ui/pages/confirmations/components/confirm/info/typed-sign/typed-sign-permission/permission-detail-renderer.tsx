@@ -36,13 +36,11 @@ import type {
   SchemaElement,
   SchemaSection,
   TokenResolution,
-  TotalExposureField,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
 import { Expiry } from './expiry';
-import { TotalExposure } from './total-exposure';
 
 // ---------------------------------------------------------------------------
 // Hook wrappers — called unconditionally to satisfy React rules of hooks.
@@ -186,10 +184,6 @@ function renderElement(
       return <Expiry key={index} expiry={ctx.expiry} />;
     }
 
-    case 'totalExposure': {
-      return renderTotalExposure(element, ctx, schemaEntry, index);
-    }
-
     case 'divider': {
       return <ConfirmInfoRowDivider key={index} />;
     }
@@ -252,51 +246,6 @@ function renderElement(
     default:
       return throwUnhandledPermissionSchemaElement(element);
   }
-}
-
-function renderTotalExposure(
-  element: TotalExposureField,
-  ctx: PermissionRenderContext,
-  schemaEntry: PermissionSchemaEntry,
-  index: number,
-): React.ReactNode {
-  const streamParams = element.getValue(ctx);
-
-  if (schemaEntry.tokenVariant === 'native') {
-    const tokenInfo = ctx.tokenInfo as DeepNonNullable<
-      PermissionRenderContext['tokenInfo']
-    >;
-    return (
-      <TotalExposure
-        key={index}
-        variant="native"
-        initialAmount={streamParams.initialAmount}
-        maxAmount={streamParams.maxAmount}
-        amountPerSecond={streamParams.amountPerSecond}
-        startTime={streamParams.startTime}
-        expiry={ctx.expiry}
-        symbol={tokenInfo.symbol}
-        decimals={tokenInfo.decimals}
-        imageUrl={tokenInfo.imageUrl}
-      />
-    );
-  }
-
-  const { data } = ctx.permission;
-  return (
-    <TotalExposure
-      key={index}
-      variant="erc20"
-      initialAmount={streamParams.initialAmount}
-      maxAmount={streamParams.maxAmount}
-      amountPerSecond={streamParams.amountPerSecond}
-      startTime={streamParams.startTime}
-      expiry={ctx.expiry}
-      tokenAddress={data.tokenAddress as Hex}
-      chainId={ctx.chainId}
-      decimals={ctx.tokenInfo?.decimals}
-    />
-  );
 }
 
 // ---------------------------------------------------------------------------
