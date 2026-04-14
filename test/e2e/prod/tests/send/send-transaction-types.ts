@@ -17,6 +17,8 @@ export type SendTransactionStep = {
   duration?: number; // milliseconds
 };
 
+export type ActivityCheckStatus = 'pass' | 'warning' | 'fail';
+
 /**
  * Represents the result of sending a transaction on a specific network
  * Aggregates all steps and provides summary statistics
@@ -29,8 +31,16 @@ export type SendTransactionResult = {
   account1Address: string;
   account2Address: string;
   transactionHash?: string;
+  sentAmount?: string;
+  sentActivityStatus?: ActivityCheckStatus;
+  receivedActivityStatusAccount1?: ActivityCheckStatus;
+  receivedActivityStatusAccount2?: ActivityCheckStatus;
   initialBalance?: string;
   finalBalance?: string;
+  account1InitialBalance?: string;
+  account1UpdatedBalance?: string;
+  account2InitialBalance?: string;
+  account2UpdatedBalance?: string;
   steps: SendTransactionStep[];
   overallStatus: 'passed' | 'failed' | 'running';
   timestamp: Date;

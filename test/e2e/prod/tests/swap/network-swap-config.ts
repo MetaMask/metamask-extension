@@ -101,7 +101,7 @@ export interface SwapRouteResult {
   toAmount: string;
   /** Per-check validation results captured while executing this route */
   validations?: SwapValidationResult[];
-  status: 'passed' | 'failed';
+  status: 'passed' | 'warning' | 'failed';
   error?: string;
 }
 
@@ -126,6 +126,7 @@ export interface SwapExecutionReport {
   timestamp: string;
   totalRoutes: number;
   passedRoutes: number;
+  warningRoutes: number;
   failedRoutes: number;
   routeResults: SwapRouteResult[];
 }

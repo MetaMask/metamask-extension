@@ -45,10 +45,20 @@ describe('Production E2E: Additional Networks, Import Account and Send (Paramete
       it(`should add ${networkConfig.networkName}, import account, and send ${networkConfig.symbol}`, async function () {
         // Create fixture builder and call the appropriate setup method dynamically
         const fixtureBuilder = new FixtureBuilder();
-        const setupMethod = fixtureBuilder[
-          networkConfig.fixtureSetupMethod as keyof typeof fixtureBuilder
-        ] as any;
-        const builtFixture = setupMethod.call(fixtureBuilder).build();
+        const setupMethod =
+          fixtureBuilder[
+            networkConfig.fixtureSetupMethod as keyof typeof fixtureBuilder
+          ];
+        if (typeof setupMethod !== 'function') {
+          throw new Error(
+            `Invalid fixture setup method: ${networkConfig.fixtureSetupMethod}`,
+          );
+        }
+        const builtFixture = (
+          setupMethod as (this: FixtureBuilder) => FixtureBuilder
+        )
+          .call(fixtureBuilder)
+          .build();
 
         await withProductionFixtures(
           {
@@ -81,7 +91,7 @@ describe('Production E2E: Additional Networks, Import Account and Send (Paramete
         );
       } catch (error) {
         console.warn(
-          `[PROD TEST] ⚠️  Failed to generate consolidated report: ${error}`,
+          `[PROD TEST] ⚠️  Failed to generate consolidated report: ${String(error)}`,
         );
       }
     }
@@ -104,9 +114,12 @@ async function runNetworkSendTest(
     chainIdHex,
     networkName,
     sendAmount,
-    rpcUrl = '',
     tab = 'Additional',
-  } = networkConfig as any;
+  } = networkConfig;
+  const rpcUrl =
+    'rpcUrl' in networkConfig
+      ? String((networkConfig as Record<string, unknown>).rpcUrl ?? '')
+      : '';
 
   // Convert chainIdHex to decimal for reporting
   const chainId = parseInt(chainIdHex, 16);
@@ -151,6 +164,7 @@ async function runNetworkSendTest(
     const privateKeyTo = getRequiredE2EEnv('PRIVATE_KEY_TO');
     const recipientAddress = getRequiredE2EEnv('RECIPIENT_ADDRESS');
     const senderAddress = getRequiredE2EEnv('SENDER_ADDRESS');
+    let sentActivityStatus: 'pass' | 'warning' = 'pass';
 
     // ============================================
     // Step: Login to wallet
@@ -252,7 +266,7 @@ async function runNetworkSendTest(
       await homePage.checkPageIsLoaded();
     } catch (balanceError) {
       console.log(
-        `[PROD TEST] Could not fetch Account 1 balance: ${balanceError}`,
+        `[PROD TEST] Could not fetch Account 1 balance: ${String(balanceError)}`,
       );
     }
     reporter.captureStep(
@@ -260,6 +274,7 @@ async function runNetworkSendTest(
       undefined,
       'success',
     );
+    reporter.setAccount1BalanceInfo(account1InitialBalance);
 
     // ============================================
     // STEP 2: Import Account 2 (From account) and check balance
@@ -317,7 +332,7 @@ async function runNetworkSendTest(
       await homePage.checkPageIsLoaded();
     } catch (balanceError) {
       console.log(
-        `[PROD TEST] Could not fetch Account 2 balance: ${balanceError}`,
+        `[PROD TEST] Could not fetch Account 2 balance: ${String(balanceError)}`,
       );
     }
     reporter.captureStep(
@@ -325,6 +340,8 @@ async function runNetworkSendTest(
       undefined,
       'success',
     );
+    reporter.setAccount2BalanceInfo(account2InitialBalance);
+    reporter.setSentAmount(sendAmount);
 
     // ============================================
     // STEP 3: Send from Account 2 to Account 1
@@ -367,13 +384,14 @@ async function runNetworkSendTest(
     console.log(`[PROD TEST] Proceeding to confirmation on ${networkName}...`);
     await sendPage.pressContinueButton();
 
+    let firstSendLabelSuccessMessage = '';
+
     // Verify "Paid by MetaMask" label
     await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
     try {
       await driver.findElement('[data-testid="paid-by-meta-mask"]');
-      console.log(
-        `[PROD TEST] ✅ "Paid by MetaMask" label is displayed on ${networkName}`,
-      );
+      firstSendLabelSuccessMessage = `[PROD TEST] ✅ "Paid by MetaMask" label is displayed on ${networkName}`;
+      console.log(firstSendLabelSuccessMessage);
     } catch (error) {
       console.error(
         `[PROD TEST] ❌ FAILURE: "Paid by MetaMask" label NOT found on ${networkName}!`,
@@ -387,7 +405,7 @@ async function runNetworkSendTest(
     const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
     await sendTokenConfirmPage.checkPageIsLoaded();
     console.log(`[PROD TEST] Confirming transaction on ${networkName}...`);
-    await sendTokenConfirmPage.clickConfirmButton(PROD_DELAYS.RPC_RESPONSE * 2);
+    await sendTokenConfirmPage.clickConfirmButton();
 
     // Wait for submission
     await driver.delay(PROD_DELAYS.RPC_RESPONSE);
@@ -399,9 +417,16 @@ async function runNetworkSendTest(
     const activityListPage = new ActivityListPage(driver);
     await homePage.goToActivityList();
     await driver.delay(PROD_DELAYS.API_RESPONSE);
-    await activityListPage.checkTransactionActivityByText('Sent');
-    await activityListPage.checkWaitForTransactionStatus('confirmed');
-    await activityListPage.checkTransactionAmount(`-${sendAmount} ${symbol}`);
+    try {
+      await activityListPage.checkTransactionActivityByText('Sent');
+      reporter.setSentActivityStatus('pass');
+      await activityListPage.checkWaitForTransactionStatus('confirmed');
+      await activityListPage.checkTransactionAmount(`-${sendAmount} ${symbol}`);
+    } catch (error) {
+      sentActivityStatus = 'warning';
+      reporter.setSentActivityStatus('warning');
+      throw error;
+    }
 
     console.log(`[PROD TEST] ✅ First send completed on ${networkName}!`);
     console.log(
@@ -412,6 +437,12 @@ async function runNetworkSendTest(
       undefined,
       'success',
     );
+
+    reporter.startStep(
+      'Verify Paid by MetaMask label (first send)',
+      `Paid by MetaMask label is displayed on ${networkName}`,
+    );
+    reporter.captureStep(firstSendLabelSuccessMessage, undefined, 'success');
 
     // ============================================
     // STEP 4: Switch to Account 1 and verify received balance
@@ -449,7 +480,7 @@ async function runNetworkSendTest(
     await driver.delay(2000);
 
     const account1ExpectedBalance =
-      parseInt(account1InitialBalance) + parseInt(sendAmount);
+      parseInt(account1InitialBalance, 10) + parseInt(sendAmount, 10);
     console.log(
       `[PROD TEST] Expected Account 1 balance: ${account1ExpectedBalance} ${symbol}`,
     );
@@ -464,7 +495,7 @@ async function runNetworkSendTest(
         `[PROD TEST] ✅ Account 1 updated balance on ${networkName}: ${account1UpdatedBalance}`,
       );
 
-      if (parseInt(account1UpdatedBalance) === account1ExpectedBalance) {
+      if (parseInt(account1UpdatedBalance, 10) === account1ExpectedBalance) {
         console.log(
           `[PROD TEST] ✅ Account 1 received balance matches sent amount!`,
         );
@@ -475,9 +506,10 @@ async function runNetworkSendTest(
       }
     } catch (balanceError) {
       console.log(
-        `[PROD TEST] Could not fetch Account 1 updated balance on ${networkName}: ${balanceError}`,
+        `[PROD TEST] Could not fetch Account 1 updated balance on ${networkName}: ${String(balanceError)}`,
       );
     }
+    reporter.setAccount1BalanceInfo(undefined, account1UpdatedBalance);
 
     // Navigate back
     await driver.clickElement('button[aria-label="Back"]');
@@ -498,10 +530,12 @@ async function runNetworkSendTest(
 
     try {
       await activityListPage2.checkTransactionActivityByText('Received');
+      reporter.setReceivedActivityStatusAccount1('pass');
       console.log(
         `[PROD TEST] ✅ "Received" transaction found for Account 1 on ${networkName}!`,
       );
     } catch (error) {
+      reporter.setReceivedActivityStatusAccount1('warning');
       console.warn(
         `[PROD TEST] ⚠️  WARNING: "Received" transaction NOT found for Account 1 on ${networkName}. Continuing test...`,
       );
@@ -558,13 +592,14 @@ async function runNetworkSendTest(
     );
     await sendPage.pressContinueButton();
 
+    let secondSendLabelSuccessMessage = '';
+
     // Verify "Paid by MetaMask" label
     await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
     try {
       await driver.findElement('[data-testid="paid-by-meta-mask"]');
-      console.log(
-        `[PROD TEST] ✅ "Paid by MetaMask" label is displayed for second send on ${networkName}`,
-      );
+      secondSendLabelSuccessMessage = `[PROD TEST] ✅ "Paid by MetaMask" label is displayed for second send on ${networkName}`;
+      console.log(secondSendLabelSuccessMessage);
     } catch (error) {
       console.error(
         `[PROD TEST] ❌ FAILURE: "Paid by MetaMask" label NOT found on ${networkName}!`,
@@ -579,7 +614,7 @@ async function runNetworkSendTest(
     console.log(
       `[PROD TEST] Confirming second send transaction on ${networkName}...`,
     );
-    await sendTokenConfirmPage.clickConfirmButton(PROD_DELAYS.RPC_RESPONSE * 2);
+    await sendTokenConfirmPage.clickConfirmButton();
 
     // Wait for submission
     await driver.delay(PROD_DELAYS.RPC_RESPONSE);
@@ -590,9 +625,18 @@ async function runNetworkSendTest(
     );
     await homePage.goToActivityList();
     await driver.delay(PROD_DELAYS.API_RESPONSE);
-    await activityListPage.checkTransactionActivityByText('Sent');
-    await activityListPage.checkWaitForTransactionStatus('confirmed');
-    await activityListPage.checkTransactionAmount(`-${sendAmount} ${symbol}`);
+    try {
+      await activityListPage.checkTransactionActivityByText('Sent');
+      if (sentActivityStatus === 'pass') {
+        reporter.setSentActivityStatus('pass');
+      }
+      await activityListPage.checkWaitForTransactionStatus('confirmed');
+      await activityListPage.checkTransactionAmount(`-${sendAmount} ${symbol}`);
+    } catch (error) {
+      sentActivityStatus = 'warning';
+      reporter.setSentActivityStatus('warning');
+      throw error;
+    }
 
     console.log(`[PROD TEST] ✅ Second send completed on ${networkName}!`);
     console.log(
@@ -603,6 +647,12 @@ async function runNetworkSendTest(
       undefined,
       'success',
     );
+
+    reporter.startStep(
+      'Verify Paid by MetaMask label (second send)',
+      `Paid by MetaMask label is displayed for second send on ${networkName}`,
+    );
+    reporter.captureStep(secondSendLabelSuccessMessage, undefined, 'success');
     // ============================================
     // STEP 6: Switch to Account 2 and verify received balance
     // ============================================
@@ -639,7 +689,7 @@ async function runNetworkSendTest(
     await driver.delay(2000);
 
     const account2ExpectedBalance =
-      parseInt(account2InitialBalance) + parseInt(sendAmount);
+      parseInt(account2InitialBalance, 10) + parseInt(sendAmount, 10);
     console.log(
       `[PROD TEST] Expected Account 2 balance: ${account2ExpectedBalance} ${symbol}`,
     );
@@ -654,7 +704,7 @@ async function runNetworkSendTest(
         `[PROD TEST] ✅ Account 2 updated balance on ${networkName}: ${account2UpdatedBalance}`,
       );
 
-      if (parseInt(account2UpdatedBalance) === account2ExpectedBalance) {
+      if (parseInt(account2UpdatedBalance, 10) === account2ExpectedBalance) {
         console.log(
           `[PROD TEST] ✅ Account 2 received balance matches sent amount!`,
         );
@@ -665,9 +715,10 @@ async function runNetworkSendTest(
       }
     } catch (balanceError) {
       console.log(
-        `[PROD TEST] Could not fetch Account 2 updated balance on ${networkName}: ${balanceError}`,
+        `[PROD TEST] Could not fetch Account 2 updated balance on ${networkName}: ${String(balanceError)}`,
       );
     }
+    reporter.setAccount2BalanceInfo(undefined, account2UpdatedBalance);
 
     // Navigate back
     await driver.clickElement('button[aria-label="Back"]');
@@ -685,10 +736,12 @@ async function runNetworkSendTest(
     );
     try {
       await activityListPage2.checkTransactionActivityByText('Received');
+      reporter.setReceivedActivityStatusAccount2('pass');
       console.log(
         `[PROD TEST] ✅ "Received" transaction found for Account 2 on ${networkName}!`,
       );
     } catch (error) {
+      reporter.setReceivedActivityStatusAccount2('warning');
       console.warn(
         `[PROD TEST] ⚠️  WARNING: "Received" transaction NOT found for Account 2 on ${networkName}. Continuing test...`,
       );

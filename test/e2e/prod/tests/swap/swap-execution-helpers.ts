@@ -364,6 +364,93 @@ export async function assertDetailRow(
   console.log(`[EXEC] Row "${rowLabel}" OK: "${rowText}"`);
 }
 
+function truncateToDecimals(value: number, decimals: number): string {
+  const factor = 10 ** decimals;
+  const truncated = Math.trunc(value * factor) / factor;
+  return truncated.toFixed(decimals);
+}
+
+/**
+ * Validate a token amount row using truncated decimal comparison instead of
+ * exact raw-text matching. This is used for "You received" because the detail
+ * page may show more precision than the quote capture step.
+ *
+ * @param driver - WebDriver instance
+ * @param rowLabel - Row label text (e.g. 'You received')
+ * @param expectedText - Expected amount/symbol text (e.g. '0.678 AUSD')
+ * @param decimals - Number of decimals to compare after truncation
+ * @returns Structured validation result for report recording
+ */
+export async function validateDetailRowAmountAtPrecision(
+  driver: Driver,
+  rowLabel: string,
+  expectedText: string,
+  decimals = 2,
+): Promise<{ isValid: boolean; message: string }> {
+  console.log(
+    `[EXEC] Validating detail row "${rowLabel}" at ${decimals} decimals against "${expectedText}"`,
+  );
+
+  const expectedMatch = expectedText.match(/^([\d,]+(?:\.\d+)?)\s+(\S+)$/u);
+  if (!expectedMatch) {
+    return {
+      isValid: false,
+      message: `Unable to parse expected amount text: ${expectedText}`,
+    };
+  }
+
+  const [, expectedAmountRaw, expectedSymbol] = expectedMatch;
+  const expectedAmount = parseFloat(expectedAmountRaw.replace(/,/gu, ''));
+  const xpath = `//*[@data-testid="transaction-detail-row"]/p[text()='${rowLabel}']/../div`;
+
+  try {
+    const rowEl = await driver.findElement({ xpath });
+    const rowText = await rowEl.getText();
+
+    if (!rowText.includes(expectedSymbol)) {
+      return {
+        isValid: false,
+        message: `Expected symbol "${expectedSymbol}" not found in row text "${rowText}"`,
+      };
+    }
+
+    const actualAmountMatch = rowText.match(/[\d,]+(?:\.\d+)?/u);
+    if (!actualAmountMatch) {
+      return {
+        isValid: false,
+        message: `Unable to parse actual amount from row text "${rowText}"`,
+      };
+    }
+
+    const actualAmount = parseFloat(actualAmountMatch[0].replace(/,/gu, ''));
+    const expectedTruncated = truncateToDecimals(expectedAmount, decimals);
+    const actualTruncated = truncateToDecimals(actualAmount, decimals);
+
+    if (expectedTruncated !== actualTruncated) {
+      return {
+        isValid: false,
+        message:
+          `Amount mismatch at ${decimals} decimals. ` +
+          `Expected ${expectedTruncated} ${expectedSymbol}, ` +
+          `actual ${actualTruncated} ${expectedSymbol}. ` +
+          `Raw row text: "${rowText}"`,
+      };
+    }
+
+    const message =
+      `Matched at ${decimals} decimals: ` +
+      `${expectedTruncated} ${expectedSymbol}. Raw row text: "${rowText}"`;
+    console.log(`[EXEC] ✅ ${message}`);
+    return { isValid: true, message };
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    return {
+      isValid: false,
+      message: `Unable to read row "${rowLabel}": ${errorMsg}`,
+    };
+  }
+}
+
 /**
  * Assert the "Total gas fee" row on the swap detail page.
  *
@@ -644,6 +731,7 @@ export function generateSwapExecutionReport(
   }
 
   const passed = results.filter((r) => r.status === 'passed').length;
+  const warnings = results.filter((r) => r.status === 'warning').length;
   const failed = results.filter((r) => r.status === 'failed').length;
   const timestamp = new Date().toISOString();
   const allValidations: SwapValidationResult[] = results.flatMap(
@@ -665,6 +753,7 @@ export function generateSwapExecutionReport(
     timestamp,
     totalRoutes: results.length,
     passedRoutes: passed,
+    warningRoutes: warnings,
     failedRoutes: failed,
     routeResults: results,
   };
@@ -679,6 +768,7 @@ export function generateSwapExecutionReport(
   md += `|--------|-------|\n`;
   md += `| Total Routes | ${report.totalRoutes} |\n`;
   md += `| ✅ Passed | ${report.passedRoutes} |\n`;
+  md += `| ⚠️ Warning | ${report.warningRoutes} |\n`;
   md += `| ❌ Failed | ${report.failedRoutes} |\n\n`;
 
   md += `## Validation Coverage\n\n`;
@@ -696,9 +786,8 @@ export function generateSwapExecutionReport(
   md += `- Activity row secondary value text matched expected format\n`;
   md += `- Detail status was confirmed\n`;
   md += `- Detail You sent row matched captured source amount\n`;
-  md += `- Detail You received row matched captured destination amount\n`;
+  md += `- Detail You received row matched captured destination amount at 2 decimals and warns on mismatch\n`;
   md += `- Detail Swapped row contained token pair (soft validation)\n`;
-  md += `- Detail Time stamp row existed and non-empty (soft validation)\n`;
   md += `- Detail Total gas fee row matched network sponsorship rules\n\n`;
 
   md += `---\n\n`;
@@ -707,7 +796,12 @@ export function generateSwapExecutionReport(
   md += `|---|-------|-------------|-----------|--------|-------------|-------|\n`;
 
   results.forEach((r, i) => {
-    const statusIcon = r.status === 'passed' ? '✅' : '❌';
+    let statusIcon = '❌';
+    if (r.status === 'passed') {
+      statusIcon = '✅';
+    } else if (r.status === 'warning') {
+      statusIcon = '⚠️';
+    }
     const validationSummary = `${(r.validations ?? []).filter((v) => v.status === 'passed').length}✅ ${(r.validations ?? []).filter((v) => v.status === 'warning').length}⚠️ ${(r.validations ?? []).filter((v) => v.status === 'failed').length}❌`;
     const notes = r.error
       ? r.error.replace(/\|/gu, '\\|').substring(0, 80)

@@ -1,41 +1,41 @@
 {
   "additionalNetworks": [
-    {
-      "id": "monad",
-      "networkName": "Monad",
+     {
+      "id": "Sei",
+      "networkName": "Sei",
       "tab": "Popular",
-      "symbol": "MON",
-      "chainIdHex": "0x8f",
+      "symbol": "SEI",
+      "chainIdHex": "0x531",
       "sendAmount": "2",
-      "fixtureSetupMethod": "withNetworkControllerOnMonad",
-      "description": "Monad - Additional Network"
+      "fixtureSetupMethod": "withNetworkControllerOnSei",
+      "description": "Sei - Additional Network"
     }
   ],
   "popularNetworks": [
-    {
-      "id": "base",
-      "networkName": "Base",
+  {
+      "id": "Arbitrum",
+      "networkName": "Arbitrum",
       "tab": "Popular",
       "symbol": "ETH",
-      "chainIdHex": "0x2105",
-      "sendAmount": "0.00001",
-      "fixtureSetupMethod": "withNetworkControllerOnBase",
-      "description": "Base - Popular Network"
+      "chainIdHex": "0xa4b1",
+      "sendAmount": "0.0000001",
+      "fixtureSetupMethod": "withNetworkControllerOnArbitrum",
+      "description": "Arbitrum - Popular Network"
     }
   ],
   "customNetworks": [
     {
-      "id": "chiliz",
-      "networkName": "Chiliz",
-      "networkNameLong": "Chiliz Chain",
-      "symbol": "CHZ",
-      "chainId": 88888,
-      "chainIdHex": "0x15b38",
-      "rpcUrl": "https://rpc.ankr.com/chiliz",
-      "rpcName": "Chiliz RPC",
-      "sendAmount": "2",
+      "id": "injective",
+      "networkName": "Injective",
+      "networkNameLong": "Injective",
+      "symbol": "INJ",
+      "chainId": 1776,
+      "chainIdHex": "0x6f0",
+      "rpcUrl": "https://sentry.evm-rpc.injective.network",
+      "rpcName": "Injective RPC",
+      "sendAmount": "0.00000002",
       "fixtureSetupMethod": "withNetworkControllerOnMainnet",
-      "description": "Chiliz - Custom Network",
+      "description": "Injective - Custom Network",
       "requiresManualSetup": true
     }
   ]

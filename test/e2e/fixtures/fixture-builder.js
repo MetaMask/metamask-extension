@@ -364,7 +364,7 @@ class FixtureBuilder {
         sei: {
           chainId: CHAIN_IDS.SEI,
           nickname: 'Sei',
-          rpcUrl: 'https://sei-mainnet.infura.io/v3/',
+          rpcUrl: `https://sei-mainnet.infura.io/v3/${getInfuraProjectId()}`,
           ticker: 'SEI',
           rpcPrefs: {
             blockExplorerUrl: 'https://seitrace.com',
@@ -390,6 +390,26 @@ class FixtureBuilder {
             blockExplorerUrl: 'https://basescan.org',
           },
           id: 'base',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnArbitrum() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum',
+      networkConfigurations: {
+        arbitrum: {
+          chainId: CHAIN_IDS.ARBITRUM,
+          nickname: 'Arbitrum',
+          rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${getInfuraProjectId()}`,
+          ticker: 'ETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://arbiscan.io',
+          },
+          id: 'arbitrum',
           type: 'rpc',
           isCustom: true,
         },

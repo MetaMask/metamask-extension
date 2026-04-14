@@ -6,7 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  SendTransactionReport,
+  ActivityCheckStatus,
   SendTransactionResult,
 } from './send-transaction-types';
 
@@ -64,11 +64,11 @@ export function generateSendConsolidatedReport(
     lines.push('|-------|-------|');
     lines.push(`| Chain ID | \`${result.chainId}\` |`);
     lines.push(`| Symbol | ${result.nativeSymbol} |`);
-    lines.push(`| Status | ${result.overallStatus === 'passed' ? '✅ PASSED' : '❌ FAILED'} |`);
+    lines.push(
+      `| Status | ${result.overallStatus === 'passed' ? '✅ PASSED' : '❌ FAILED'} |`,
+    );
     if (result.duration) {
-      lines.push(
-        `| Duration | ${(result.duration / 1000).toFixed(2)}s |`,
-      );
+      lines.push(`| Duration | ${(result.duration / 1000).toFixed(2)}s |`);
     }
     if (result.transactionHash) {
       lines.push(
@@ -76,10 +76,54 @@ export function generateSendConsolidatedReport(
       );
     }
     if (result.initialBalance) {
-      lines.push(`| Initial Balance | ${result.initialBalance} ${result.nativeSymbol} |`);
+      lines.push(
+        `| Initial Balance | ${result.initialBalance} ${result.nativeSymbol} |`,
+      );
     }
     if (result.finalBalance) {
-      lines.push(`| Final Balance | ${result.finalBalance} ${result.nativeSymbol} |`);
+      lines.push(
+        `| Final Balance | ${result.finalBalance} ${result.nativeSymbol} |`,
+      );
+    }
+    if (result.sentAmount) {
+      lines.push(
+        `| Sent Amount | ${result.sentAmount} ${result.nativeSymbol} |`,
+      );
+    }
+    if (result.sentActivityStatus) {
+      lines.push(
+        `| Sent Activity Status | ${formatActivityStatus(result.sentActivityStatus)} |`,
+      );
+    }
+    if (result.receivedActivityStatusAccount1) {
+      lines.push(
+        `| Received Activity Status (Account 1) | ${formatActivityStatus(result.receivedActivityStatusAccount1)} |`,
+      );
+    }
+    if (result.receivedActivityStatusAccount2) {
+      lines.push(
+        `| Received Activity Status (Account 2) | ${formatActivityStatus(result.receivedActivityStatusAccount2)} |`,
+      );
+    }
+    if (result.account1InitialBalance) {
+      lines.push(
+        `| Account 1 Initial Balance | ${result.account1InitialBalance} ${result.nativeSymbol} |`,
+      );
+    }
+    if (result.account1UpdatedBalance) {
+      lines.push(
+        `| Account 1 Updated Balance | ${result.account1UpdatedBalance} ${result.nativeSymbol} |`,
+      );
+    }
+    if (result.account2InitialBalance) {
+      lines.push(
+        `| Account 2 Initial Balance | ${result.account2InitialBalance} ${result.nativeSymbol} |`,
+      );
+    }
+    if (result.account2UpdatedBalance) {
+      lines.push(
+        `| Account 2 Updated Balance | ${result.account2UpdatedBalance} ${result.nativeSymbol} |`,
+      );
     }
     lines.push('');
 
@@ -90,15 +134,12 @@ export function generateSendConsolidatedReport(
       lines.push(
         '| # | Step | Expected | Actual | Status | Duration | Error |',
       );
-      lines.push('|---|------|----------|--------|--------|----------|-------|');
+      lines.push(
+        '|---|------|----------|--------|--------|----------|-------|',
+      );
 
       result.steps.forEach((step, stepIndex) => {
-        const statusIcon =
-          step.status === 'success'
-            ? '✅'
-            : step.status === 'failure'
-              ? '❌'
-              : '⏭️';
+        const statusIcon = formatStepStatusIcon(step.status);
         const duration = step.duration ? `${step.duration}ms` : '—';
         const error = step.error ? `\`${escapeMarkdown(step.error)}\`` : '—';
 
@@ -150,24 +191,30 @@ export function generateSendConsolidatedReport(
     fs.writeFileSync(reportPath, lines.join('\n'), 'utf8');
     console.log(`[PROD TEST] 📄 Report generated: ${reportPath}`);
   } catch (error) {
-    console.error(`[PROD TEST] ❌ Failed to write report: ${error}`);
+    console.error(`[PROD TEST] ❌ Failed to write report: ${String(error)}`);
     throw error;
   }
 }
 
 /**
  * Calculate overall summary statistics from all results
+ * @param results
  */
 function calculateSummary(results: SendTransactionResult[]) {
   const totalNetworks = results.length;
-  const passedNetworks = results.filter((r) => r.overallStatus === 'passed').length;
+  const passedNetworks = results.filter(
+    (r) => r.overallStatus === 'passed',
+  ).length;
   const failedNetworks = totalNetworks - passedNetworks;
   const totalSteps = results.reduce((sum, r) => sum + r.summary.totalSteps, 0);
   const successfulSteps = results.reduce(
     (sum, r) => sum + r.summary.successfulSteps,
     0,
   );
-  const failedSteps = results.reduce((sum, r) => sum + r.summary.failedSteps, 0);
+  const failedSteps = results.reduce(
+    (sum, r) => sum + r.summary.failedSteps,
+    0,
+  );
   const passRate =
     totalNetworks > 0
       ? `${((passedNetworks / totalNetworks) * 100).toFixed(1)}%`
@@ -186,12 +233,35 @@ function calculateSummary(results: SendTransactionResult[]) {
 
 /**
  * Escape special markdown characters in strings
+ * @param text
  */
 function escapeMarkdown(text: string): string {
-  if (!text) return '';
+  if (!text) {
+    return '';
+  }
   return text
-    .replace(/\|/g, '\\|')
-    .replace(/\n/g, '\\n')
-    .replace(/\[/g, '\\[')
-    .replace(/\]/g, '\\]');
+    .replace(/\|/gu, '\\|')
+    .replace(/\n/gu, '\\n')
+    .replace(/\[/gu, '\\[')
+    .replace(/\]/gu, '\\]');
+}
+
+function formatStepStatusIcon(status: string): string {
+  if (status === 'success') {
+    return '✅';
+  }
+  if (status === 'failure') {
+    return '❌';
+  }
+  return '⏭️';
+}
+
+function formatActivityStatus(status: ActivityCheckStatus): string {
+  if (status === 'pass') {
+    return '✅ PASS';
+  }
+  if (status === 'warning') {
+    return '⚠️ WARNING';
+  }
+  return '❌ FAIL';
 }

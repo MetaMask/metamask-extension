@@ -4,6 +4,7 @@
  */
 
 import {
+  ActivityCheckStatus,
   SendTransactionResult,
   SendTransactionStep,
   SendTestNetworkConfig,
@@ -15,9 +16,14 @@ import {
  */
 export class SendTransactionReporter {
   private currentResult: SendTransactionResult;
+
   private stepStartTime: Date | null = null;
 
-  constructor(networkConfig: SendTestNetworkConfig, account1: string, account2: string) {
+  constructor(
+    networkConfig: SendTestNetworkConfig,
+    account1: string,
+    account2: string,
+  ) {
     this.currentResult = {
       networkName: networkConfig.name,
       chainId: networkConfig.chainId,
@@ -80,7 +86,9 @@ export class SendTransactionReporter {
     }
 
     const lastStep = this.currentResult.steps[stepCount - 1];
-    const duration = this.stepStartTime ? Date.now() - this.stepStartTime.getTime() : 0;
+    const duration = this.stepStartTime
+      ? Date.now() - this.stepStartTime.getTime()
+      : 0;
 
     // Determine status
     let finalStatus: 'success' | 'failure' | 'skipped' = status || 'success';
@@ -105,8 +113,12 @@ export class SendTransactionReporter {
 
     // Log result
     const indent = '   ';
-    const statusIcon =
-      finalStatus === 'success' ? '✅' : finalStatus === 'failure' ? '❌' : '⏭️';
+    let statusIcon = '⏭️';
+    if (finalStatus === 'success') {
+      statusIcon = '✅';
+    } else if (finalStatus === 'failure') {
+      statusIcon = '❌';
+    }
     console.log(`[PROD TEST] ${statusIcon} Actual: ${actualOutcome}`);
 
     if (error) {
@@ -141,7 +153,8 @@ export class SendTransactionReporter {
    * Useful for async operations where captureStep is called after completion
    */
   updateStepTiming(): void {
-    const lastStep = this.currentResult.steps[this.currentResult.steps.length - 1];
+    const lastStep =
+      this.currentResult.steps[this.currentResult.steps.length - 1];
     if (lastStep && this.stepStartTime) {
       lastStep.duration = Date.now() - this.stepStartTime.getTime();
     }
@@ -149,13 +162,32 @@ export class SendTransactionReporter {
 
   /**
    * Set transaction-level metadata
+   * @param hash
    */
   setTransactionHash(hash: string): void {
     this.currentResult.transactionHash = hash;
   }
 
+  setSentAmount(amount: string): void {
+    this.currentResult.sentAmount = amount;
+  }
+
+  setSentActivityStatus(status: ActivityCheckStatus): void {
+    this.currentResult.sentActivityStatus = status;
+  }
+
+  setReceivedActivityStatusAccount1(status: ActivityCheckStatus): void {
+    this.currentResult.receivedActivityStatusAccount1 = status;
+  }
+
+  setReceivedActivityStatusAccount2(status: ActivityCheckStatus): void {
+    this.currentResult.receivedActivityStatusAccount2 = status;
+  }
+
   /**
    * Set balance information
+   * @param initialBalance
+   * @param finalBalance
    */
   setBalanceInfo(initialBalance?: string, finalBalance?: string): void {
     if (initialBalance !== undefined) {
@@ -163,6 +195,30 @@ export class SendTransactionReporter {
     }
     if (finalBalance !== undefined) {
       this.currentResult.finalBalance = finalBalance;
+    }
+  }
+
+  setAccount1BalanceInfo(
+    initialBalance?: string,
+    updatedBalance?: string,
+  ): void {
+    if (initialBalance !== undefined) {
+      this.currentResult.account1InitialBalance = initialBalance;
+    }
+    if (updatedBalance !== undefined) {
+      this.currentResult.account1UpdatedBalance = updatedBalance;
+    }
+  }
+
+  setAccount2BalanceInfo(
+    initialBalance?: string,
+    updatedBalance?: string,
+  ): void {
+    if (initialBalance !== undefined) {
+      this.currentResult.account2InitialBalance = initialBalance;
+    }
+    if (updatedBalance !== undefined) {
+      this.currentResult.account2UpdatedBalance = updatedBalance;
     }
   }
 
@@ -180,6 +236,7 @@ export class SendTransactionReporter {
 
   /**
    * Mark test as failed
+   * @param reason
    */
   markAsFailed(reason?: string): void {
     this.currentResult.overallStatus = 'failed';
@@ -203,6 +260,7 @@ export class SendTransactionReporter {
 
   /**
    * Reset reporter for next network (keep config, clear steps)
+   * @param newNetworkConfig
    */
   reset(newNetworkConfig?: SendTestNetworkConfig): void {
     if (newNetworkConfig) {
@@ -213,8 +271,16 @@ export class SendTransactionReporter {
     }
     this.currentResult.steps = [];
     this.currentResult.transactionHash = undefined;
+    this.currentResult.sentAmount = undefined;
+    this.currentResult.sentActivityStatus = undefined;
+    this.currentResult.receivedActivityStatusAccount1 = undefined;
+    this.currentResult.receivedActivityStatusAccount2 = undefined;
     this.currentResult.initialBalance = undefined;
     this.currentResult.finalBalance = undefined;
+    this.currentResult.account1InitialBalance = undefined;
+    this.currentResult.account1UpdatedBalance = undefined;
+    this.currentResult.account2InitialBalance = undefined;
+    this.currentResult.account2UpdatedBalance = undefined;
     this.currentResult.overallStatus = 'running';
     this.currentResult.timestamp = new Date();
     this.currentResult.summary = {
