@@ -1042,7 +1042,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (isPartialClose) {
           setSubmitError(translatedError ?? t('somethingWentWrong'));
         }
-        replacePerpsToastByKey(getCloseFailureToastConfig(translatedError));
+        replacePerpsToastByKey(
+          getCloseFailureToastConfig(translatedError ?? undefined),
+        );
       } else {
         const failedToastDescription =
           translatedError ??
