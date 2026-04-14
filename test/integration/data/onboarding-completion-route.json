@@ -105,6 +105,7 @@
   },
   "currentAppVersion": "11.14.4-flask.0",
   "currentCurrency": "usd",
+  "selectedCurrency": "usd",
   "currentExtensionPopupId": 1715943310719,
   "currentLocale": "en",
   "currentMigrationVersion": 119,

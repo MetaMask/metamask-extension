@@ -68,6 +68,7 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
       },
     },
     currentCurrency: 'usd',
+    selectedCurrency: 'usd',
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,

@@ -312,6 +312,39 @@
   "announcements": [],
   "approvalFlows": [],
   "assetsMetadata": {},
+  "assetsBalance": {
+    "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+      "eip155:11155111/slip44:60": {
+        "amount": "1.582717"
+      }
+    }
+  },
+  "assetsInfo": {
+    "eip155:1/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "ETH"
+    },
+    "eip155:11155111/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "SepoliaETH"
+    }
+  },
+  "assetsPrice": {
+    "eip155:1/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721393858000
+    },
+    "eip155:11155111/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721392020000
+    }
+  },
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"
@@ -333,6 +366,7 @@
   },
   "currentAppVersion": "11.14.5",
   "currentCurrency": "usd",
+  "selectedCurrency": "usd",
   "currentLocale": "en",
   "customNonceValue": "",
   "database": {

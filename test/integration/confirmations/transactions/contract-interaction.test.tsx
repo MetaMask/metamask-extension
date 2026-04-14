@@ -70,6 +70,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
       },
     },
     currentCurrency: 'usd',
+    selectedCurrency: 'usd',
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,
