@@ -267,11 +267,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Checkout quality-gate sources
+        uses: actions/checkout@v6
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .nvmrc
+            tsconfig.json
+            development/metamaskbot-build-announce
+            shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/thresholds.ts
+            test/e2e/benchmarks/utils/statistics.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install quality-gate dependencies
+        run: npm install --no-save tsx lodash
 
       - name: Download all benchmark artifacts
         id: download-benchmarks
@@ -308,7 +322,7 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        run: npx tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
