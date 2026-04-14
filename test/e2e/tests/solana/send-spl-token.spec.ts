@@ -20,8 +20,6 @@ import {
   mockGetMinimumBalanceForRentExemption,
   mockGetMintAccountInfo,
   mockGetMultipleAccounts,
-  mockGetSuccessSignaturesForAddress,
-  mockGetSuccessSplTokenTransaction,
   mockGetFailedSignaturesForAddress,
   mockGetFailedTransaction,
   mockGetTokenAccountsUSDCOnly,
@@ -31,13 +29,17 @@ import {
   mockPriceApiSpotPriceSwap,
   mockSendSolanaTransaction,
   mockSolanaBalanceQuote,
-  mockTokenApiAssets,
   simulateSolanaTransaction,
+  buildSolanaTestSpecificMock,
 } from './common-solana';
+import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.json';
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const USDC_CAIP_ASSET =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 const SOL_PRICE = 168.88;
+const USDC_PRICE = 0.999761;
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
@@ -85,6 +87,7 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   assetsBalance: {
     [SOL_ACCOUNT_ID]: {
       [SOL_CAIP_ASSET]: { amount: '50' },
+      [USDC_CAIP_ASSET]: { amount: '8.908267' },
     },
   },
   assetsInfo: {
@@ -96,6 +99,14 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
       symbol: 'SOL',
       type: 'native',
     },
+    [USDC_CAIP_ASSET]: {
+      decimals: 6,
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      type: 'token',
+    },
   },
   assetsPrice: {
     [SOL_CAIP_ASSET]: {
@@ -104,33 +115,95 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
       price: SOL_PRICE,
       usdPrice: SOL_PRICE,
     },
+    [USDC_CAIP_ASSET]: {
+      assetPriceType: 'fungible',
+      id: 'usd-coin',
+      price: USDC_PRICE,
+      usdPrice: USDC_PRICE,
+    },
   },
 };
 
-async function mockSendWithUSDCVisible(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
-    await mockGetTokenAccountsUSDCOnly(mockServer),
-    await mockGetTokenAccountBalance(mockServer),
-    await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote({ mockServer }),
-    await mockGetFeeForMessage(mockServer),
-    await mockGetLatestBlockhash(mockServer),
-    await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
-    await mockGetMultipleAccounts(mockServer),
-    await mockSendSolanaTransaction(mockServer),
-    await mockGetSuccessSignaturesForAddress(mockServer),
-    await mockGetSuccessSplTokenTransaction(mockServer),
-    await mockGetMintAccountInfo(mockServer),
-    await mockTokenApiAssets(mockServer),
-  ];
+const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
+  MultichainAssetsController: {
+    accountsAssets: {
+      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+    },
+    assetsMetadata: {
+      [USDC_CAIP_ASSET]: {
+        fungible: true,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+        name: 'USD Coin',
+        symbol: 'USDC',
+        units: [{ decimals: 6, name: 'USD Coin', symbol: 'USDC' }],
+      },
+    },
+  },
+};
+
+async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
+  const solanaAssets: Record<
+    string,
+    {
+      name: string;
+      symbol: string;
+      decimals: number;
+      iconUrl?: string;
+      coingeckoId?: string;
+    }
+  > = {
+    [SOL_CAIP_ASSET]: {
+      name: 'Solana',
+      symbol: 'SOL',
+      decimals: 9,
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+      coingeckoId: 'solana',
+    },
+    [USDC_CAIP_ASSET]: {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+      coingeckoId: 'usd-coin',
+    },
+  };
+
+  // Only intercept v3/assets requests that contain Solana asset IDs.
+  // EVM-only and Tron-only requests fall through to mockTokenApiMainnetTest.
+  return await mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets.*solana/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const ids = url.searchParams.get('assetIds')?.split(',') ?? [];
+      const results = ids
+        .filter((id) => solanaAssets[id])
+        .map((id) => ({ assetId: id, ...solanaAssets[id] }));
+      return { statusCode: 200, json: results };
+    });
 }
+
+const mockSendWithUSDCVisible = buildSolanaTestSpecificMock({
+  mockGetTransactionSuccess: true,
+  mockTokenAccountAccountInfo: false,
+  withCustomMocks: async (mockServer) => [
+    await mockSolanaTokenApiAssets(mockServer),
+    await mockGetTokenAccountBalance(mockServer),
+    await mockServer
+      .forPost(/https:\/\/solana-mainnet\.infura\.io/u)
+      .withBodyIncluding('getTransaction')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: succeededSplTokenTransaction,
+      })),
+    await mockGetTokenAccountsUSDCOnly(mockServer),
+    await mockGetMintAccountInfo(mockServer),
+  ],
+});
 
 async function mockSendSPLTokenFailed(
   mockServer: Mockttp,
@@ -153,7 +226,7 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
-    await mockTokenApiAssets(mockServer),
+    await mockSolanaTokenApiAssets(mockServer),
   ];
 }
 
@@ -174,6 +247,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
                 },
               },
             },
+            ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
           });
           return fixture;
         })(),
@@ -222,7 +296,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.1 USDC', 1);
+        await driver.waitForSelector({
+          css: '[data-testid="transaction-list-item-primary-currency"]',
+          text: '0.1',
+        });
         await activityList.checkNoFailedTransactions();
       },
     );

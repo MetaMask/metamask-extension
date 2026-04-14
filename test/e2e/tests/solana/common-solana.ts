@@ -1434,6 +1434,7 @@ export async function mockGetMintAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
+    .always()
     .thenCallback(async (req) => {
       const body = (await req.body.getJson()) as {
         params?: [string];
@@ -1875,6 +1876,7 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({ method: 'getTokenAccountBalance' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
