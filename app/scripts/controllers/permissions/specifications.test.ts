@@ -19,7 +19,7 @@ describe('PermissionController specifications', () => {
       const caveatSpecifications = getCaveatSpecifications(
         {} as Parameters<typeof caip25CaveatBuilder>[0],
       );
-      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(14);
       expect(caveatSpecifications[Caip25CaveatType].type).toStrictEqual(
         Caip25CaveatType,
       );
@@ -59,6 +59,9 @@ describe('PermissionController specifications', () => {
       );
       expect(caveatSpecifications.protocolSnapScopes.type).toStrictEqual(
         SnapCaveatType.ProtocolSnapScopes,
+      );
+      expect(caveatSpecifications.keyringCapabilities.type).toStrictEqual(
+        SnapCaveatType.KeyringCapabilities,
       );
     });
   });
