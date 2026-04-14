@@ -2030,7 +2030,7 @@
           "sortCallback": "stringNumeric"
         },
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "useSidePanelAsDefault": true
+        "useSidePanelAsDefault": false
       },
       "referrals": {
         "asterdex": {},
