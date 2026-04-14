@@ -8081,9 +8081,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^15.0.1, @metamask/snaps-rpc-methods@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "@metamask/snaps-rpc-methods@npm:15.1.0"
+"@metamask/snaps-rpc-methods@npm:^15.1.0, @metamask/snaps-rpc-methods@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "@metamask/snaps-rpc-methods@npm:15.1.1"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^12.3.0"
@@ -8094,7 +8094,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     "@noble/hashes": "npm:^1.7.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/9eb1544d379d788a974b1d54226f15f67768d35633d19e8774245f642f60a5765a14d6d58fc166ad8fa8a0c814dca1e5c58e1ae8d2376c3ecbb3e3ec9cc0f205
+  checksum: 10/906eafa8a2d4944e50d73b8aa4d32a7070c33367ad3d58843e892e62b3bd8facb0a02e1d88a9245c18a281637435d97266212b7706ef67ee6a68db85a5991ea3
   languageName: node
   linkType: hard
 
@@ -34202,7 +34202,7 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^20.0.0"
     "@metamask/snaps-execution-environments": "npm:^11.0.2"
     "@metamask/snaps-registry": "npm:^4.0.0"
-    "@metamask/snaps-rpc-methods": "npm:^15.0.1"
+    "@metamask/snaps-rpc-methods": "npm:^15.1.1"
     "@metamask/snaps-sdk": "npm:^11.1.0"
     "@metamask/snaps-utils": "npm:^12.2.0"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
