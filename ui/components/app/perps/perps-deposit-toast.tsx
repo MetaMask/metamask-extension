@@ -25,13 +25,7 @@ export function PerpsDepositToast() {
   );
   const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
     useState<string | null>(null);
-  const [dismissedCompletionTimestamp, setDismissedCompletionTimestamp] =
-    useState<number | null>(null);
-
-  const completionTimestamp =
-    typeof lastDepositResult?.timestamp === 'number'
-      ? lastDepositResult.timestamp
-      : null;
+  const [dismissedCompletion, setDismissedCompletion] = useState(false);
 
   useEffect(() => {
     if (!depositInProgress) {
@@ -49,36 +43,34 @@ export function PerpsDepositToast() {
   ]);
 
   useEffect(() => {
-    if (
-      completionTimestamp &&
-      completionTimestamp !== dismissedCompletionTimestamp
-    ) {
-      setDismissedCompletionTimestamp(null);
-    }
-  }, [completionTimestamp, dismissedCompletionTimestamp]);
+    setDismissedCompletion(false);
+  }, [
+    lastDepositResult?.timestamp,
+    lastDepositResult?.success,
+    lastDepositResult?.error,
+  ]);
 
   const dismissPendingToast = useCallback(() => {
     setDismissedPendingTransactionId(lastDepositTransactionId ?? 'pending');
   }, [lastDepositTransactionId]);
 
   const dismissCompletionToast = useCallback(() => {
-    setDismissedCompletionTimestamp(completionTimestamp);
+    setDismissedCompletion(true);
     submitRequestToBackground('perpsClearDepositResult', []).catch(() => {
       // Non-blocking: toast is already dismissed locally
     });
-  }, [completionTimestamp]);
+  }, []);
 
   const hasDismissedPendingToast =
     (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
-  const hasDismissedCompletionToast =
-    completionTimestamp !== null &&
-    completionTimestamp === dismissedCompletionTimestamp;
 
-  if (lastDepositResult && !hasDismissedCompletionToast) {
+  if (lastDepositResult && !dismissedCompletion) {
     const isSuccess = lastDepositResult.success === true;
     return (
       <Toast
-        key={`perps-deposit-toast-${completionTimestamp}`}
+        key={`perps-deposit-toast-${
+          lastDepositResult.timestamp ?? lastDepositResult.error ?? 'result'
+        }`}
         dataTestId="perps-deposit-toast"
         text={
           isSuccess

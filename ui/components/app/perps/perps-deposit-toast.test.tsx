@@ -193,6 +193,32 @@ describe('PerpsDepositToast', () => {
     );
   });
 
+  it('dismisses a completion toast without a numeric timestamp', async () => {
+    const user = userEvent.setup();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        depositInProgress: false,
+        lastDepositResult: {
+          success: false,
+          error: 'Bridge failed',
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    await user.click(
+      screen.getByRole('button', { name: messages.close.message }),
+    );
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
   it('prefers the completion toast when a result and in-progress state coexist', () => {
     const store = configureStore({
       metamask: {
