@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
-import { IconSize } from '@metamask/design-system-react';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
