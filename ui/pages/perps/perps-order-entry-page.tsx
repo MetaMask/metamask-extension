@@ -64,6 +64,7 @@ import {
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
@@ -104,6 +105,7 @@ import {
   type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
+import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
 
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
@@ -182,10 +184,16 @@ function buildClosePositionParams(
   formState: OrderFormState,
   currentPrice: number,
   existingPositionSize: string,
+  szDecimals?: number,
 ): ClosePositionParams {
   const closePercent = formState.closePercent ?? FULL_CLOSE_PERCENT;
   const positionSize = Math.abs(Number.parseFloat(existingPositionSize)) || 0;
-  const closeSize = ((positionSize * closePercent) / 100).toString();
+  const closeNotionalUsd = positionSize * currentPrice * (closePercent / 100);
+  const closeSize = calculatePositionSize(
+    closeNotionalUsd,
+    currentPrice,
+    szDecimals,
+  ).toString();
 
   return {
     symbol: formState.asset,
@@ -308,6 +316,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
+  const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
 
   useEffect(() => {
     if (!orderTypeInteractionSkippedRef.current) {
@@ -619,8 +628,15 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const directionLabel =
+    let directionLabel =
       orderFormState.direction === 'long' ? t('perpsLong') : t('perpsShort');
+
+    if (orderMode === 'close' && position?.size) {
+      directionLabel =
+        Number.parseFloat(position.size) >= 0
+          ? t('perpsLong')
+          : t('perpsShort');
+    }
     const rawAssetSymbol = orderFormState.asset;
     const displayAssetSymbol = getDisplayName(rawAssetSymbol);
     const formattedPositionSize = orderCalculations?.positionSize?.trim();
@@ -641,7 +657,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       rawAmount,
       displayAssetSymbol,
     ]);
-  }, [orderCalculations, orderFormState, orderMode, t]);
+  }, [orderCalculations, orderFormState, orderMode, position, t]);
 
   const getClosePartialToastDescription = useCallback(() => {
     if (orderMode !== 'close' || !orderFormState || !position?.size) {
@@ -661,7 +677,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     const closeSize = (positionSize * closePercent) / 100;
     const directionLabel = t(
       Number.parseFloat(position.size) >= 0 ? 'perpsLong' : 'perpsShort',
-    ).toLowerCase();
+    );
 
     return t('perpsToastOrderPlacementSubtitle', [
       directionLabel,
@@ -699,6 +715,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (isPartialClose) {
         return {
           key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
+          // Match mobile toast copy for partial-close failures; detailed errors
+          // are shown separately in the page-level submit error.
           description: t('perpsToastPositionStillActive'),
         };
       }
@@ -839,6 +857,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState,
           currentPrice,
           position.size,
+          marketInfo?.szDecimals,
         );
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
@@ -1067,6 +1086,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     replacePerpsToastByKey,
     t,
     closeFeeRate,
+    marketInfo?.szDecimals,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
