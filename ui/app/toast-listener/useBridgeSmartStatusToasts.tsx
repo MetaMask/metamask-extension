@@ -1,11 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../helpers/utils/transaction-display';
-import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
 import {
   selectBridgeHistoryToastStates,
   selectBridgeSmartStatusToastStates,
@@ -17,11 +11,7 @@ import {
   trackBridgeToast,
   untrackBridgeToast,
 } from './bridgeToastState';
-
-const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-  return <ToastContentBase title={title} />;
-};
+import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
 
 export function useBridgeSmartStatusToasts() {
   const bridgeSmartStatusToasts = useSelector(
@@ -44,9 +34,7 @@ export function useBridgeSmartStatusToasts() {
 
       if (previousStatus === undefined && toastState.isPending) {
         trackBridgeToast(toastState.toastId);
-        toast.loading(<ToastContent status="pending" />, {
-          id: toastState.toastId,
-        });
+        showPendingToast(toastState.toastId);
       }
     }
 
@@ -61,17 +49,13 @@ export function useBridgeSmartStatusToasts() {
       }
 
       if (toastState.isSuccess) {
-        toast.success(<ToastContent status="success" />, {
-          id: toastState.toastId,
-        });
+        showSuccessToast(toastState.toastId);
         untrackBridgeToast(toastState.toastId);
         continue;
       }
 
       if (toastState.isFailed) {
-        toast.error(<ToastContent status="failed" />, {
-          id: toastState.toastId,
-        });
+        showFailedToast(toastState.toastId);
         untrackBridgeToast(toastState.toastId);
       }
     }

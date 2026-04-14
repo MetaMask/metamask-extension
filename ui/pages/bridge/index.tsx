@@ -31,7 +31,6 @@ import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
-import { useRootCssVariable } from '../../hooks/useRootCssVariable';
 import { transitionBack } from '../../components/ui/transition';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -41,7 +40,6 @@ import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTran
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
-  useRootCssVariable('--toast-display', 'none');
 
   useBridging();
 

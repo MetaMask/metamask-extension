@@ -1,15 +1,17 @@
 import { createSelector } from 'reselect';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
-import { getBridgeTransactionToastId } from '../helpers/utils/getTransactionToastId';
+import { getBridgeTransactionToastId } from '../helpers/utils/toasts';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
+import { isBridgeComplete } from '../../shared/lib/bridge-status/utils';
 import { getPendingApprovals } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import { selectCurrentAccountIds } from './multichain-transactions';
@@ -18,27 +20,11 @@ import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
-import { isBridgeComplete } from '../../shared/lib/bridge-status/utils';
-
-type ToastEligibilityCriteria = {
-  bridgeApprovalIds: Set<string>;
-  crossChainBridgeIds: Set<string>;
-  requiredTransactionIds: Set<string>;
-  requiredTransactionHashes: Set<string>;
-};
-
-export type EvmToastEligibilityCriteria = ToastEligibilityCriteria;
 
 export type NonEvmToastEligibilityCriteria = {
   currentAccountIds: Set<string>;
   enabledNonEvmChainIds: Set<string>;
   crossChainBridgeIds: Set<string>;
-};
-
-type EvmToastTransaction = {
-  id?: string;
-  type?: string;
-  hash?: string;
 };
 
 type NonEvmToastTransaction = {
@@ -82,6 +68,7 @@ const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
 const selectTxHistory = (state: MetaMaskReduxState) =>
   state.metamask?.txHistory ?? EMPTY_OBJECT;
 
+// Smart-status approvals only know about a tx id, so bridge toast startup needs to resolve that to bridge history.
 function findBridgeHistoryItemForTxId(
   txHistory: Record<string, BridgeHistoryItem>,
   txId?: string,
@@ -102,6 +89,7 @@ function findBridgeHistoryItemForTxId(
   );
 }
 
+// Smart-status approval data is only used to decide whether a bridge toast should start pending.
 function getBridgeSmartStatusToastState(
   approvalId: string,
   bridgeHistoryItem: BridgeHistoryItem | undefined,
@@ -160,13 +148,13 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
 );
 
 export function isEvmTransactionEligibleForToast(
-  transaction: EvmToastTransaction,
+  transaction: TransactionMeta,
   {
     bridgeApprovalIds,
     crossChainBridgeIds,
     requiredTransactionIds,
     requiredTransactionHashes,
-  }: ToastEligibilityCriteria,
+  }: Record<string, Set<string>>,
 ) {
   const type = transaction?.type;
   if (typeof type !== 'string') {
@@ -221,8 +209,11 @@ export const selectNonEvmToastEligibilityCriteria = createSelector(
     enabledNonEvmChainIds,
     crossChainBridgeIds,
   ): NonEvmToastEligibilityCriteria => ({
+    // Non-EVM toasts should only reflect the currently selected account group.
     currentAccountIds: new Set(currentAccountIds),
+    // Only enabled non-EVM networks should produce toasts.
     enabledNonEvmChainIds: new Set(enabledNonEvmChainIds),
+    // Cross-chain bridge rows are handled by the bridge toast path instead.
     crossChainBridgeIds,
   }),
 );
@@ -268,7 +259,7 @@ export const selectEvmTransactionsForToast = createSelector(
   },
 );
 
-export const selectEvmToastEligibilityCriteria = createSelector(
+export const selectEvmToastEligibility = createSelector(
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
   selectRequiredTransactionIds,
@@ -278,7 +269,7 @@ export const selectEvmToastEligibilityCriteria = createSelector(
     crossChainBridgeIds,
     requiredTransactionIds,
     requiredTransactionHashes,
-  ): EvmToastEligibilityCriteria => ({
+  ) => ({
     bridgeApprovalIds,
     crossChainBridgeIds,
     requiredTransactionIds,
@@ -322,6 +313,7 @@ export const selectBridgeSmartStatusToastStates = createSelector(
   selectTxHistory,
   (pendingApprovals, txHistory): BridgeSmartStatusToastState[] =>
     pendingApprovals.flatMap((approval) => {
+      // Only smart-status approvals can start the bridge pending toast from approval state.
       if (
         approval.type !==
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
@@ -332,6 +324,7 @@ export const selectBridgeSmartStatusToastStates = createSelector(
       const requestState = approval.requestState as
         | SmartStatusRequestState
         | undefined;
+      // The smart-status approval must still map back to a real cross-chain bridge item.
       const bridgeHistoryItem = findBridgeHistoryItemForTxId(
         txHistory,
         requestState?.txId,
@@ -364,6 +357,7 @@ export const selectBridgeHistoryToastStates = createSelector(
   selectTxHistory,
   (txHistory): BridgeHistoryToastState[] =>
     Object.values(txHistory).flatMap((bridgeHistoryItem) => {
+      // Bridge history is the durable source for terminal bridge status updates.
       if (
         !bridgeHistoryItem.quote ||
         !isCrossChain(
@@ -374,6 +368,7 @@ export const selectBridgeHistoryToastStates = createSelector(
         return EMPTY_ARRAY as BridgeHistoryToastState[];
       }
 
+      // Toast identity follows the source transaction id so pending and completion update the same toast.
       const txId =
         bridgeHistoryItem.originalTransactionId ?? bridgeHistoryItem.txMetaId;
 
@@ -383,6 +378,7 @@ export const selectBridgeHistoryToastStates = createSelector(
 
       return [
         {
+          // approvalTxId only matters as a fallback id source when there is no better transaction id.
           toastId: getBridgeTransactionToastId({
             approvalId: bridgeHistoryItem.approvalTxId ?? txId,
             txId,

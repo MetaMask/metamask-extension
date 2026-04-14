@@ -1,26 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/keyring-api';
-import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import {
-  useTransactionDisplay,
-  type TransactionStatus as ToastTransactionStatus,
-} from '../../helpers/utils/transaction-display';
-import { getNonEvmTransactionToastId } from '../../helpers/utils/getTransactionToastId';
-import { getNonEvmToastStatus } from '../../helpers/utils/nonEvmTransactionStatus';
-import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
+  getNonEvmToastStatus,
+  getNonEvmTransactionToastId,
+} from '../../helpers/utils/toasts';
 import {
   type NonEvmToastEligibilityCriteria,
   isNonEvmTransactionEligibleForToast,
   selectNonEvmToastEligibilityCriteria,
 } from '../../selectors/toast';
 import { subscribeToMessengerEvent } from '../../store/background-connection';
-
-const ToastContent = ({ status }: { status: ToastTransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-  return <ToastContentBase title={title} />;
-};
+import { showPendingToast, showSuccessToast, showFailedToast } from './shared';
 
 type Unsubscribe = () => Promise<void>;
 
@@ -44,8 +36,9 @@ export function useNonEvmTransactionMessengerToasts() {
   ) as NonEvmToastEligibilityCriteria;
 
   // Stable callbacks read the latest non-EVM eligibility inputs from this ref.
-  const latestEligibilityCriteriaRef =
-    useRef<NonEvmToastEligibilityCriteria>(nonEvmToastEligibilityCriteria);
+  const latestEligibilityCriteriaRef = useRef<NonEvmToastEligibilityCriteria>(
+    nonEvmToastEligibilityCriteria,
+  );
   // Remembers the last seen status so we only toast on real changes.
   const previousStatusesRef = useRef<Record<string, TransactionStatus>>({});
 
@@ -60,17 +53,16 @@ export function useNonEvmTransactionMessengerToasts() {
 
     const showToastForStatus = (
       transaction: Transaction,
-      status: ToastTransactionStatus,
+      status: 'pending' | 'success' | 'failed',
     ) => {
-      toast[
-        status === 'pending'
-          ? 'loading'
-          : status === 'success'
-            ? 'success'
-            : 'error'
-      ](<ToastContent status={status} />, {
-        id: getNonEvmTransactionToastId(transaction.id),
-      });
+      const id = getNonEvmTransactionToastId(transaction.id);
+      if (status === 'pending') {
+        showPendingToast(id);
+      } else if (status === 'success') {
+        showSuccessToast(id);
+      } else {
+        showFailedToast(id);
+      }
     };
 
     const handleTransaction = (transaction: Transaction) => {

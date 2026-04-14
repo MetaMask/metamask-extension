@@ -31,7 +31,7 @@ import {
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getBridgeTransactionToastId } from '../../../helpers/utils/getTransactionToastId';
+import { getBridgeTransactionToastId } from '../../../helpers/utils/toasts';
 import { useTransactionDisplay } from '../../../helpers/utils/transaction-display';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { ToastContent as ToastContentBase } from '../../../components/ui/toast/toast';
