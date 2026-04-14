@@ -151,16 +151,12 @@ function renderElement(
   index: number,
 ): React.ReactNode {
   // Check visibility predicate
-  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
+  if ('isVisible' in element && !element.isVisible(ctx)) {
     return null;
   }
 
   // Skip elements not intended for the confirmation view
-  if (
-    'includeInViews' in element &&
-    element.includeInViews &&
-    !element.includeInViews.includes('confirmation')
-  ) {
+  if (!element.includeInViews.includes('confirmation')) {
     return null;
   }
 
@@ -186,7 +182,7 @@ function renderElement(
       return (
         <DateAndTimeRow
           key={index}
-          timestamp={element.getTimestamp(ctx)}
+          timestamp={element.getValue(ctx)}
           label={t(element.labelKey)}
           tooltip={element.tooltip}
         />
@@ -242,7 +238,7 @@ function renderElement(
     }
 
     case 'address': {
-      const address = element.getAddress(ctx);
+      const address = element.getValue(ctx);
       if (!address) {
         return null;
       }
@@ -268,7 +264,7 @@ function renderTotalExposure(
   schemaEntry: PermissionSchemaEntry,
   index: number,
 ): React.ReactNode {
-  const streamParams = element.getStreamParams(ctx);
+  const streamParams = element.getValue(ctx);
 
   if (schemaEntry.tokenVariant === 'native') {
     const tokenInfo = ctx.tokenInfo as DeepNonNullable<

@@ -16,6 +16,7 @@ import {
 import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import type {
   AmountField,
+  ExpiryField,
   FieldView,
   I18nFunction,
   I18nValue,
@@ -74,7 +75,11 @@ function schemaElementDomKey(
     element.type === 'amount' ||
     element.type === 'text' ||
     element.type === 'date' ||
-    element.type === 'address'
+    element.type === 'address' ||
+    element.type === 'expiry' ||
+    element.type === 'justification' ||
+    element.type === 'account' ||
+    element.type === 'origin'
   ) {
     return `${sectionTestId}-${element.type}-${element.labelKey}`;
   }
@@ -223,17 +228,13 @@ function renderElement({
   rules,
 }: RenderElementOptions): React.ReactNode {
   // Skip elements not intended for the current view
-  if (
-    'includeInViews' in element &&
-    element.includeInViews &&
-    !element.includeInViews.includes(viewMode)
-  ) {
+  if (!element.includeInViews.includes(viewMode)) {
     return null;
   }
 
   const rowKey = schemaElementDomKey(sectionTestId, element, index);
 
-  if ('isVisible' in element && element.isVisible && !element.isVisible(ctx)) {
+  if ('isVisible' in element && !element.isVisible(ctx)) {
     return null;
   }
 
@@ -253,9 +254,9 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.reviewLabelKey ?? element.labelKey)}
+          label={t(element.labelKey)}
           value={translateValue(t, element.getValue(ctx))}
-          testId={element.reviewTestId}
+          testId={element.testId}
         />
       );
 
@@ -263,22 +264,22 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.reviewLabelKey ?? element.labelKey)}
-          value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
-          testId={element.reviewTestId}
+          label={t(element.labelKey)}
+          value={convertTimestampToReadableDate(element.getValue(ctx) ?? 0)}
+          testId={element.testId}
         />
       );
 
     case 'expiry':
-      return renderExpiryElement(rowKey, ctx, t, element.reviewTestId, rules);
+      return renderExpiryElement(rowKey, element, ctx, t, rules);
 
     case 'justification':
-      return ctx.permission.justification ? (
+      return element.getValue(ctx) ? (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t('gatorPermissionsJustification')}
-          value={ctx.permission.justification}
-          testId="review-gator-permission-justification"
+          label={t(element.labelKey)}
+          value={element.getValue(ctx) as string}
+          testId={element.testId}
         />
       ) : null;
 
@@ -326,9 +327,9 @@ function renderAmountElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(element.reviewLabelKey ?? element.labelKey)}
+      label={t(element.labelKey)}
       value={displayValue}
-      testId={element.reviewTestId}
+      testId={element.testId}
       isLoading={loading}
     />
   );
@@ -336,27 +337,29 @@ function renderAmountElement(
 
 function renderExpiryElement(
   rowKey: string,
+  element: ExpiryField,
   ctx: PermissionRenderContext,
   t: I18nFunction,
-  testId: string | undefined,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   let displayValue: string;
   if (rules?.length) {
     const expiryDate = extractExpiryToReadableDate(rules);
     displayValue = expiryDate || t('gatorPermissionNoExpiration');
-  } else if (ctx.expiry === null) {
-    displayValue = t('gatorPermissionNoExpiration');
   } else {
-    displayValue = convertTimestampToReadableDate(ctx.expiry);
+    const expiry = element.getValue(ctx);
+    displayValue =
+      expiry === null
+        ? t('gatorPermissionNoExpiration')
+        : convertTimestampToReadableDate(expiry);
   }
 
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t('gatorPermissionsExpirationDate')}
+      label={t(element.labelKey)}
       value={displayValue}
-      testId={testId}
+      testId={element.testId}
     />
   );
 }

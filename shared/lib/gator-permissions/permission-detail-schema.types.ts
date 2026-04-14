@@ -62,18 +62,14 @@ export type TokenVariant = 'native' | 'erc20';
 export type AmountField = {
   type: 'amount';
   labelKey: string;
+  testId: string;
   /** BigNumber value. Each renderer formats this for its view. */
   getValue: (ctx: PermissionRenderContext) => BigNumber;
   /** For ERC20 amounts, returns the token contract address. */
   getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
   tooltip?: string;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  /** Which views this field appears in. Omit for all views. */
-  includeInViews?: FieldView[];
-  /** Alternative label key for the review page. */
-  reviewLabelKey?: string;
-  /** Test ID for the review-page row. */
-  reviewTestId?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
   /** If true, the review renderer appends "/sec" to the formatted value. */
   isRatePerSecond?: boolean;
 };
@@ -82,32 +78,32 @@ export type AmountField = {
 export type TextField = {
   type: 'text';
   labelKey: string;
+  testId: string;
   getValue: (ctx: PermissionRenderContext) => I18nValue;
   tooltip?: string;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
-  reviewLabelKey?: string;
-  reviewTestId?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** A date/time row. */
 export type DateField = {
   type: 'date';
   labelKey: string;
-  getTimestamp: (ctx: PermissionRenderContext) => number;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
-  reviewLabelKey?: string;
-  reviewTestId?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** An expiry row. Renderers handle the "never expires" case. */
 export type ExpiryField = {
   type: 'expiry';
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
-  reviewTestId?: string;
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => number | null;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** Stream parameters for total exposure calculation. */
@@ -121,15 +117,17 @@ export type TotalExposureStreamParams = {
 /** Total exposure row for stream permissions. */
 export type TotalExposureField = {
   type: 'totalExposure';
-  getStreamParams: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** A visual divider between rows. */
 export type DividerElement = {
   type: 'divider';
-  includeInViews?: FieldView[];
+  includeInViews: FieldView[];
 };
 
 // ---------------------------------------------------------------------------
@@ -139,36 +137,48 @@ export type DividerElement = {
 /** Displays the justification text. */
 export type JustificationField = {
   type: 'justification';
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string | undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** Displays the account row (account selector). */
 export type AccountField = {
   type: 'account';
-  includeInViews?: FieldView[];
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** Displays the request origin URL. */
 export type OriginField = {
   type: 'origin';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string;
   tooltip?: string;
-  includeInViews?: FieldView[];
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** Displays a recipient / delegate address. */
 export type AddressField = {
   type: 'address';
   labelKey: string;
-  getAddress: (ctx: PermissionRenderContext) => string | undefined;
-  isVisible?: (ctx: PermissionRenderContext) => boolean;
-  includeInViews?: FieldView[];
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string | undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
 /** Displays the network row. */
 export type NetworkField = {
   type: 'network';
-  includeInViews?: FieldView[];
+  includeInViews: FieldView[];
 };
 
 /** Union of all renderable items within a section. */
