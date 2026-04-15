@@ -1,10 +1,10 @@
-import { MessengerClientInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
 import { getRootMessenger } from '../lib/messenger';
 import {
   BackgroundApiService,
   BackgroundApiServiceMessenger,
 } from '../services/background-api-service';
+import { MessengerClientInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
 import { BackgroundApiServiceInit } from './background-api-service-init';
 import { getBackgroundApiServiceMessenger } from './messengers/background-api-service-messenger';
 

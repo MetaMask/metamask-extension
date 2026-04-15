@@ -39,6 +39,7 @@ export class BackgroundApiService {
   name: typeof serviceName = serviceName;
 
   readonly #messenger: BackgroundApiServiceMessenger;
+
   /**
    * Creates a new instance of the BackgroundApiService.
    * @param options - The options required to initialize the BackgroundApiService.
