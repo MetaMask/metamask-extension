@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 
 import { useCustomAmount } from '../../../../../hooks/musd/useCustomAmount';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
@@ -36,11 +37,16 @@ const mockUseTransactionPayAvailableTokens =
 const mockUseTransactionPayToken =
   useTransactionPayToken as jest.MockedFunction<typeof useTransactionPayToken>;
 
-const MOCK_PAY_TOKEN = {
+const MOCK_PAY_TOKEN: TransactionPaymentToken = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   chainId: '0x1',
   symbol: 'USDC',
-} as const;
+  decimals: 6,
+  balanceFiat: '100',
+  balanceHuman: '100',
+  balanceRaw: '100000000',
+  balanceUsd: '100',
+};
 
 describe('MusdOverrideContent', () => {
   beforeEach(() => {
