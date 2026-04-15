@@ -47,7 +47,7 @@ function createMockController(): jest.Mocked<
     subscribeToConnectionState: jest.fn().mockReturnValue(jest.fn()),
     getWebSocketConnectionState: jest
       .fn()
-      .mockReturnValue(WebSocketConnectionState.Connected),
+      .mockReturnValue(WebSocketConnectionState.Connected as never),
     reconnect: jest.fn().mockResolvedValue(undefined),
     getMarketDataWithPrices: jest.fn().mockResolvedValue([]),
     getPositions: jest.fn().mockResolvedValue([]),
@@ -936,7 +936,7 @@ describe('PerpsStreamBridge', () => {
     it('calls reconnect when connection state is disconnected', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Disconnected,
+        WebSocketConnectionState.Disconnected as never,
       );
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -952,7 +952,7 @@ describe('PerpsStreamBridge', () => {
     it('does not call reconnect when connection state is connected', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Connected,
+        WebSocketConnectionState.Connected as never,
       );
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -968,7 +968,7 @@ describe('PerpsStreamBridge', () => {
     it('is a no-op when bridge is not activated', () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Disconnected,
+        WebSocketConnectionState.Disconnected as never,
       );
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -983,7 +983,7 @@ describe('PerpsStreamBridge', () => {
     it('swallows reconnect errors', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Disconnected,
+        WebSocketConnectionState.Disconnected as never,
       );
       controller.reconnect.mockRejectedValue(new Error('reconnect failed'));
       const { bridge } = createBridge({
@@ -1217,7 +1217,7 @@ describe('PerpsStreamBridge', () => {
     it('triggers reconnect when device transitions from offline to online', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Disconnected,
+        WebSocketConnectionState.Disconnected as never,
       );
       const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
       const { bridge } = createBridge({
@@ -1255,7 +1255,7 @@ describe('PerpsStreamBridge', () => {
     it('does not reconnect when WS is already connected', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Connected,
+        WebSocketConnectionState.Connected as never,
       );
       const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
       const { bridge } = createBridge({
@@ -1276,7 +1276,7 @@ describe('PerpsStreamBridge', () => {
     it('swallows reconnect errors on connectivity change', async () => {
       const controller = createMockController();
       controller.getWebSocketConnectionState.mockReturnValue(
-        WebSocketConnectionState.Disconnected,
+        WebSocketConnectionState.Disconnected as never,
       );
       controller.reconnect.mockRejectedValue(new Error('reconnect failed'));
       const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
@@ -1300,7 +1300,7 @@ describe('PerpsStreamBridge', () => {
     function getConnectionStateListener(
       controller: ReturnType<typeof createMockController>,
     ): (state: string) => void {
-      return controller.subscribeToConnectionState.mock.calls[0][0] as (
+      return controller.subscribeToConnectionState.mock.calls[0][0] as unknown as (
         state: string,
       ) => void;
     }
