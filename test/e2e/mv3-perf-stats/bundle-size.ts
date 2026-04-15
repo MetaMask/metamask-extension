@@ -42,8 +42,6 @@ const extraContentScriptFiles = [
 const htmlScriptSrcRegex =
   /<script\b[^>]*\bsrc=(['"])(?<src>[^'"#?]+(?:\.(?:mjs|cjs|js)))\1[^>]*>/giu;
 
-export { createBundleSizeSummary };
-
 type DistManifest = {
   background?: {
     ['service_worker']?: string;

@@ -3,10 +3,8 @@ import path from 'path';
 import { tmpdir } from 'os';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import {
-  collectBundleSizeArtifact,
-  createBundleSizeSummary,
-} from './bundle-size';
+import { createBundleSizeSummary } from '../../../development/lib/bundle-size';
+import { collectBundleSizeArtifact } from './bundle-size';
 
 async function withTempDirectory<TReturnValue>(
   callback: (directory: string) => Promise<TReturnValue>,
