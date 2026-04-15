@@ -6,7 +6,7 @@ import {
 } from '@metamask/perps-controller';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
 /**
@@ -24,7 +24,27 @@ function getFallbackBlockedRegions(): string[] {
     .filter(Boolean);
 }
 
-export const PerpsControllerInit: ControllerInitFunction<
+/**
+ * Read HyperLiquid builder fee wallet addresses from env vars.
+ * Returns undefined when neither env var is set (package defaults apply).
+ */
+function getHyperLiquidBuilderAddresses():
+  | { builderAddressMainnet?: string; builderAddressTestnet?: string }
+  | undefined {
+  const mainnet =
+    process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET?.trim() || undefined;
+  const testnet =
+    process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET?.trim() || undefined;
+  if (!mainnet && !testnet) {
+    return undefined;
+  }
+  return {
+    ...(mainnet ? { builderAddressMainnet: mainnet } : {}),
+    ...(testnet ? { builderAddressTestnet: testnet } : {}),
+  };
+}
+
+export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsController,
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
@@ -33,6 +53,7 @@ export const PerpsControllerInit: ControllerInitFunction<
   };
   const infrastructure = createPerpsInfrastructure({ trackEvent });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
+  const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
   const completedOnboarding =
     persistedState.OnboardingController?.completedOnboarding ?? false;
   const useExternalServices =
@@ -50,6 +71,13 @@ export const PerpsControllerInit: ControllerInitFunction<
       fallbackHip3Enabled: true,
       fallbackHip3AllowlistMarkets: [],
       fallbackBlockedRegions,
+      ...(hyperLiquidBuilderAddresses
+        ? {
+            providerCredentials: {
+              hyperliquid: hyperLiquidBuilderAddresses,
+            },
+          }
+        : {}),
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });

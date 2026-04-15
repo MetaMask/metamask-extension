@@ -468,7 +468,7 @@ describe('PerpsWithdrawPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows geo-blocked copy and disables submit when user is not eligible', async () => {
+  it('allows withdrawal even when user is geo-blocked', async () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
 
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
@@ -476,13 +476,11 @@ describe('PerpsWithdrawPage', () => {
     await settleInitialWithdrawRoutesFetch();
 
     expect(
-      screen.getByText(messages.perpsGeoBlockedTooltip.message),
+      screen.getByTestId('perps-withdraw-percentage-buttons'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('perps-withdraw-percentage-buttons'),
-    ).not.toBeInTheDocument();
-    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toBeDisabled();
-    expect(screen.getByTestId('perps-withdraw-submit')).toBeDisabled();
+      screen.getByTestId('perps-fiat-hero-amount-input'),
+    ).not.toBeDisabled();
   });
 
   it('fills amount from Max and 50% quick actions', async () => {

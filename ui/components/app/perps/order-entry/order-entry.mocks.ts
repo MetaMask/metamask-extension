@@ -11,6 +11,7 @@ import type { OrderFormState } from './order-entry.types';
 export const mockOrderFormDefaults: OrderFormState = {
   asset: 'BTC',
   direction: 'long',
+  closePercent: 100,
   amount: '',
   leverage: 3,
   balancePercent: 0,
@@ -49,71 +50,33 @@ export const mockMaxLeverage: Record<string, number> = {
 export const mockAvailableBalance = 10125.0;
 
 /**
- * Calculate position size from USD amount and price
+ * Calculate position size from USD amount and price, rounded to asset size decimals.
+ *
+ * Mirrors HyperLiquid's server-side rounding: orders are quantised to `szDecimals`
+ * decimal places, so the effective notional (positionSize × price) can differ
+ * slightly from the user-entered USD amount. This rounding must be applied before
+ * computing margin to match the values shown on mobile.
+ *
+ * When `szDecimals` is not provided (market info not yet loaded) the raw unrounded
+ * division is returned as a safe fallback.
  *
  * @param usdAmount - Amount in USD
  * @param assetPrice - Current asset price
- * @returns Position size in asset units
+ * @param szDecimals - HyperLiquid size decimals for the asset (optional; omit to skip rounding)
+ * @returns Position size in asset units, rounded to szDecimals when provided
  */
 export function calculatePositionSize(
   usdAmount: number,
   assetPrice: number,
+  szDecimals?: number,
 ): number {
   if (assetPrice === 0) {
     return 0;
   }
-  return usdAmount / assetPrice;
-}
-
-/**
- * Calculate margin required for a position
- *
- * @param usdAmount - Amount in USD
- * @param leverage - Leverage multiplier
- * @returns Margin required in USD
- */
-export function calculateMarginRequired(
-  usdAmount: number,
-  leverage: number,
-): number {
-  if (leverage === 0) {
-    return 0;
+  const raw = usdAmount / assetPrice;
+  if (szDecimals === undefined) {
+    return raw;
   }
-  return usdAmount / leverage;
-}
-
-/**
- * Calculate maximum possible order amount
- *
- * @param availableBalance - Available balance in USD
- * @param leverage - Leverage multiplier
- * @returns Maximum order amount in USD
- */
-export function calculateMaxAmount(
-  availableBalance: number,
-  leverage: number,
-): number {
-  return availableBalance * leverage;
-}
-
-/**
- * Estimate liquidation price for a position
- * This is a simplified calculation for mock purposes
- *
- * @param entryPrice - Entry price
- * @param leverage - Leverage multiplier
- * @param isLong - Whether position is long
- * @returns Estimated liquidation price
- */
-export function estimateLiquidationPrice(
-  entryPrice: number,
-  leverage: number,
-  isLong: boolean,
-): number {
-  // Simplified: liquidation occurs at ~(1/leverage) move against position
-  const liquidationMove = entryPrice / leverage;
-  if (isLong) {
-    return entryPrice - liquidationMove * 0.9; // 90% of theoretical for safety margin
-  }
-  return entryPrice + liquidationMove * 0.9;
+  const factor = Math.pow(10, szDecimals);
+  return Math.trunc(raw * factor) / factor;
 }

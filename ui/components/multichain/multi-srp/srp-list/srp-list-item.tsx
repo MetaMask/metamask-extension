@@ -1,17 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../../app/preferred-avatar';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Text,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 import { getIconSeedAddressByAccountGroupId } from '../../../../selectors/multichain-accounts/account-tree';
-import { Text, Box } from '../../../component-library';
 
 type SrpListItemProps = {
   accountId: AccountGroupId;
@@ -31,15 +31,14 @@ export const SrpListItem = ({
   return (
     <Box
       key={accountId}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
       >
         <PreferredAvatar
           address={seedAddress}
@@ -48,14 +47,13 @@ export const SrpListItem = ({
         />
         <Text
           className="srp-list__account-name"
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           ellipsis
-          paddingInlineStart={5}
         >
           {accountName}
         </Text>
       </Box>
-      <Text variant={TextVariant.bodySm}>{balance}</Text>
+      <Text variant={TextVariant.BodySm}>{balance}</Text>
     </Box>
   );
 };

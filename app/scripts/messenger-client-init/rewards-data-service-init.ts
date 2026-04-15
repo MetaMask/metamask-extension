@@ -1,6 +1,6 @@
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsDataServiceMessenger } from '../controllers/rewards/rewards-data-service-types';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the rewards data service.
@@ -12,7 +12,7 @@ import { ControllerInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the service.
  * @returns The initialized controller.
  */
-export const RewardsDataServiceInit: ControllerInitFunction<
+export const RewardsDataServiceInit: MessengerClientInitFunction<
   RewardsDataService,
   RewardsDataServiceMessenger
 > = ({ controllerMessenger }) => {

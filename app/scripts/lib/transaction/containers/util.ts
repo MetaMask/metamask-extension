@@ -112,7 +112,7 @@ export async function applyTransactionContainersExisting({
 
   updateEditableParams(transactionId, {
     containerTypes,
-    data: newTransactionMeta.txParams.data,
+    data: newTransactionMeta.txParams.data ?? '0x',
     gas: newTransactionMeta.txParams.gas,
     gasPrice: transactionMeta.txParams.gasPrice,
     maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
