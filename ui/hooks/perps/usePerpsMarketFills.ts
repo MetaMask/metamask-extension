@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
@@ -23,13 +23,67 @@ type UsePerpsMarketFillsReturn = {
 /** Cache TTL: re-use fills REST result for 30 seconds across re-navigations */
 const FILLS_CACHE_TTL_MS = 30_000;
 
-type FillsCache = {
-  fills: OrderFill[];
+type FillsCacheEntry = {
+  cached: OrderFill[] | null;
   fetchedAt: number;
-  cacheKey: string;
+  inflight: Promise<OrderFill[]> | null;
 };
 
-let fillsCache: FillsCache | null = null;
+const fillsCacheByKey = new Map<string, FillsCacheEntry>();
+
+function getFillsCacheEntry(cacheKey: string): FillsCacheEntry {
+  let entry = fillsCacheByKey.get(cacheKey);
+  if (!entry) {
+    entry = { cached: null, fetchedAt: 0, inflight: null };
+    fillsCacheByKey.set(cacheKey, entry);
+  }
+  return entry;
+}
+
+function peekWarmFills(cacheKey: string): OrderFill[] | undefined {
+  const entry = fillsCacheByKey.get(cacheKey);
+  if (
+    entry &&
+    entry.cached !== null &&
+    Date.now() - entry.fetchedAt < FILLS_CACHE_TTL_MS
+  ) {
+    return entry.cached;
+  }
+  return undefined;
+}
+
+/**
+ * Ensures REST fills for `cacheKey` are loading or loaded; updates module cache
+ * when the request completes even if no component is still mounted (same idea
+ * as `fetchMarketInfos` in usePerpsMarketInfo).
+ */
+function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
+  const warm = peekWarmFills(cacheKey);
+  if (warm !== undefined) {
+    return Promise.resolve(warm);
+  }
+
+  const entry = getFillsCacheEntry(cacheKey);
+  if (!entry.inflight) {
+    const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
+    entry.inflight = submitRequestToBackground<OrderFill[]>(
+      'perpsGetOrderFills',
+      [{ aggregateByTime: false, startTime }],
+    )
+      .then((result) => {
+        const fills = Array.isArray(result) ? result : [];
+        entry.cached = fills;
+        entry.fetchedAt = Date.now();
+        entry.inflight = null;
+        return fills;
+      })
+      .catch(() => {
+        entry.inflight = null;
+        return [] as OrderFill[];
+      });
+  }
+  return entry.inflight;
+}
 
 /**
  * Clears the module-level REST fills cache. Invoked when the Perps stream
@@ -37,12 +91,7 @@ let fillsCache: FillsCache | null = null;
  * fills (mirrors `clearPerpsMarketInfoModuleCache` in usePerpsMarketInfo).
  */
 export function clearPerpsMarketFillsModuleCache(): void {
-  fillsCache = null;
-}
-
-/** @internal Alias for unit tests. */
-export function _resetFillsCacheForTesting(): void {
-  clearPerpsMarketFillsModuleCache();
+  fillsCacheByKey.clear();
 }
 
 /**
@@ -80,35 +129,17 @@ export function usePerpsMarketFills({
     throttleMs,
   });
 
-  // Initialise from cache so re-navigation renders immediately without a spinner
-  const isCacheHit = Boolean(
-    fillsCache &&
-      fillsCache.cacheKey === fillsCacheKey &&
-      Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS,
+  const [restFills, setRestFills] = useState<OrderFill[]>(() =>
+    peekWarmFills(fillsCacheKey) ?? [],
   );
-
-  const [restFills, setRestFills] = useState<OrderFill[]>(
-    isCacheHit ? (fillsCache as FillsCache).fills : [],
+  const [isRestLoading, setIsRestLoading] = useState(
+    () => peekWarmFills(fillsCacheKey) === undefined,
   );
-  const [isRestLoading, setIsRestLoading] = useState(!isCacheHit);
-
-  const fetchRestFills = useCallback(async () => {
-    const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
-    const result = await submitRequestToBackground<OrderFill[]>(
-      'perpsGetOrderFills',
-      [{ aggregateByTime: false, startTime }],
-    );
-    return Array.isArray(result) ? result : [];
-  }, []);
 
   useEffect(() => {
-    // Skip fetch if the cache is still warm for this scope (provider, net, account).
-    if (
-      fillsCache &&
-      fillsCache.cacheKey === fillsCacheKey &&
-      Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS
-    ) {
-      setRestFills(fillsCache.fills);
+    const cached = peekWarmFills(fillsCacheKey);
+    if (cached !== undefined) {
+      setRestFills(cached);
       setIsRestLoading(false);
       return undefined;
     }
@@ -117,19 +148,11 @@ export function usePerpsMarketFills({
     setRestFills([]);
     setIsRestLoading(true);
 
-    fetchRestFills()
+    fetchFillsForCacheKey(fillsCacheKey)
       .then((result) => {
         if (!cancelled) {
-          fillsCache = {
-            fills: result,
-            fetchedAt: Date.now(),
-            cacheKey: fillsCacheKey,
-          };
           setRestFills(result);
         }
-      })
-      .catch(() => {
-        // REST fetch failed silently — WebSocket fills still work
       })
       .finally(() => {
         if (!cancelled) {
@@ -140,7 +163,7 @@ export function usePerpsMarketFills({
     return () => {
       cancelled = true;
     };
-  }, [fetchRestFills, fillsCacheKey]);
+  }, [fillsCacheKey]);
 
   const fills = useMemo(() => {
     const fillsMap = new Map<string, OrderFill>();

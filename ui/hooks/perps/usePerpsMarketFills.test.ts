@@ -2,7 +2,6 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import type { OrderFill } from '@metamask/perps-controller';
 import {
   usePerpsMarketFills,
-  _resetFillsCacheForTesting,
   clearPerpsMarketFillsModuleCache,
 } from './usePerpsMarketFills';
 
@@ -60,7 +59,7 @@ function setRestFillsResponse(fills: OrderFill[] | null) {
 describe('usePerpsMarketFills', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    _resetFillsCacheForTesting();
+    clearPerpsMarketFillsModuleCache();
     setLiveFills([]);
     mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
     mockSelectPerpsActiveProvider.mockReturnValue('hyperliquid');
@@ -354,6 +353,33 @@ describe('usePerpsMarketFills', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(result2.current.isInitialLoading).toBe(false);
       expect(result2.current.fills).toHaveLength(1);
+    });
+
+    it('populates module cache when hook unmounts before REST resolves', async () => {
+      let resolveRest!: (fills: OrderFill[]) => void;
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise<OrderFill[]>((resolve) => {
+          resolveRest = resolve;
+        }),
+      );
+
+      const { unmount } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      unmount();
+
+      await act(async () => {
+        resolveRest([
+          makeFill({ orderId: 'completed-after-unmount', timestamp: 1000 }),
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      const { result } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(result.current.isInitialLoading).toBe(false);
+      expect(result.current.fills).toHaveLength(1);
+      expect(result.current.fills[0].orderId).toBe('completed-after-unmount');
     });
 
     it('re-fetches after TTL expires', async () => {
