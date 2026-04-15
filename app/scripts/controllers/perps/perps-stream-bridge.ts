@@ -66,21 +66,6 @@ export class PerpsStreamBridge {
 
   #activated = false;
 
-  // Debounce timers for price, order-book, and candle stream activations.
-  // Rapid navigation (e.g. BTC → ETH within 150 ms) collapses into a single
-  // subscription call, avoiding unsubscribe + immediate resubscribe bursts
-  // that trigger Hyperliquid's WebSocket subscription rate limit (429).
-  #pendingPriceActivation: ReturnType<typeof setTimeout> | null = null;
-
-  #pendingOrderBookActivation: ReturnType<typeof setTimeout> | null = null;
-
-  // Candle streams are multiplexed by symbol+interval key, so a Map is used
-  // instead of a single timer — each period toggle gets its own debounce slot.
-  readonly #pendingCandleActivations: Map<
-    string,
-    ReturnType<typeof setTimeout>
-  > = new Map();
-
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
     this.#perpsInit = options.perpsInit;
@@ -132,48 +117,23 @@ export class PerpsStreamBridge {
         symbols: string[];
         includeMarketData?: boolean;
       }) => {
-        // Debounce: cancel any pending activation so rapid navigation between
-        // assets collapses into a single subscribe call.
-        if (this.#pendingPriceActivation !== null) {
-          clearTimeout(this.#pendingPriceActivation);
-        }
         await this.#initAndActivate();
-        this.#pendingPriceActivation = setTimeout(() => {
-          this.#pendingPriceActivation = null;
-          if (this.#isConnectionAlive()) {
-            this.#activatePriceStream(symbols, includeMarketData);
-          }
-        }, 150);
+        if (this.#isConnectionAlive()) {
+          this.#activatePriceStream(symbols, includeMarketData);
+        }
         return 'ok';
       },
       perpsDeactivatePriceStream: () => {
-        // Cancel any pending debounced activation before tearing down.
-        if (this.#pendingPriceActivation !== null) {
-          clearTimeout(this.#pendingPriceActivation);
-          this.#pendingPriceActivation = null;
-        }
         this.#tearDownChannel('prices');
       },
       perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
-        // Debounce: same pattern as price stream.
-        if (this.#pendingOrderBookActivation !== null) {
-          clearTimeout(this.#pendingOrderBookActivation);
-        }
         await this.#initAndActivate();
-        this.#pendingOrderBookActivation = setTimeout(() => {
-          this.#pendingOrderBookActivation = null;
-          if (this.#isConnectionAlive()) {
-            this.#activateOrderBookStream(symbol);
-          }
-        }, 150);
+        if (this.#isConnectionAlive()) {
+          this.#activateOrderBookStream(symbol);
+        }
         return 'ok';
       },
       perpsDeactivateOrderBookStream: () => {
-        // Cancel any pending debounced activation before tearing down.
-        if (this.#pendingOrderBookActivation !== null) {
-          clearTimeout(this.#pendingOrderBookActivation);
-          this.#pendingOrderBookActivation = null;
-        }
         this.#tearDownChannel('orderBook');
       },
       perpsActivateCandleStream: async ({
@@ -185,24 +145,10 @@ export class PerpsStreamBridge {
         interval: CandlePeriod;
         duration?: TimeDuration;
       }) => {
-        // Debounce: same pattern as price/order-book streams. Rapid period
-        // toggling (e.g. 1m → 5m → 15m) collapses into a single subscribe call
-        // per key, avoiding bursts that trigger the 429 rate limit.
-        const key = this.#candleSubscriptionKey(symbol, interval);
-        const pending = this.#pendingCandleActivations.get(key);
-        if (pending !== undefined) {
-          clearTimeout(pending);
-        }
         await this.#initAndActivate();
-        this.#pendingCandleActivations.set(
-          key,
-          setTimeout(() => {
-            this.#pendingCandleActivations.delete(key);
-            if (this.#isConnectionAlive()) {
-              this.#activateCandleStream({ symbol, interval, duration });
-            }
-          }, 150),
-        );
+        if (this.#isConnectionAlive()) {
+          this.#activateCandleStream({ symbol, interval, duration });
+        }
         return 'ok';
       },
       perpsDeactivateCandleStream: ({
@@ -215,16 +161,7 @@ export class PerpsStreamBridge {
         if (!symbol || !interval) {
           return;
         }
-        // Cancel any pending debounced activation before tearing down so a
-        // deactivate arriving before the 150ms timer fires doesn't leave a
-        // dangling subscribe that fires after the stream should be gone.
-        const key = this.#candleSubscriptionKey(symbol, interval);
-        const pending = this.#pendingCandleActivations.get(key);
-        if (pending !== undefined) {
-          clearTimeout(pending);
-          this.#pendingCandleActivations.delete(key);
-        }
-        this.#tearDownDynamicKey(key);
+        this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
       },
     };
   }
@@ -234,20 +171,6 @@ export class PerpsStreamBridge {
   }
 
   destroy(): void {
-    // Cancel any pending debounced stream activations.
-    if (this.#pendingPriceActivation !== null) {
-      clearTimeout(this.#pendingPriceActivation);
-      this.#pendingPriceActivation = null;
-    }
-    if (this.#pendingOrderBookActivation !== null) {
-      clearTimeout(this.#pendingOrderBookActivation);
-      this.#pendingOrderBookActivation = null;
-    }
-    for (const timer of this.#pendingCandleActivations.values()) {
-      clearTimeout(timer);
-    }
-    this.#pendingCandleActivations.clear();
-
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }

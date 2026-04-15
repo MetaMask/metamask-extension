@@ -57,7 +57,6 @@ import {
   usePerpsEligibility,
   usePerpsMarketFills,
   usePerpsEventTracking,
-  useDebouncedValue,
 } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -312,11 +311,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
-  // Debounce symbol for stream subscriptions (price + candle) so rapid market
-  // navigation (BTC → ETH → SOL) collapses into a single subscription swap.
-  // UI content uses decodedSymbol for instant visual feedback.
-  const streamSymbol = useDebouncedValue(decodedSymbol, 500);
-
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(account.availableBalance) > 0,
   );
@@ -343,14 +337,14 @@ const PerpsMarketDetailPage: React.FC = () => {
     undefined,
   );
   useEffect(() => {
-    if (!streamSymbol || !selectedAddress) {
+    if (!decodedSymbol || !selectedAddress) {
       setLivePrice(undefined);
       return undefined;
     }
 
     // Activate background price stream for this symbol
     submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [streamSymbol], includeMarketData: true },
+      { symbols: [decodedSymbol], includeMarketData: true },
     ]).catch(() => {
       // Controller not ready yet, skip silently
     });
@@ -376,7 +370,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
-  }, [streamSymbol, decodedSymbol, selectedAddress]);
+  }, [decodedSymbol, selectedAddress]);
 
   // Find market data for the given symbol
   const market = useMemo(() => {
@@ -449,9 +443,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     error: candleError,
     fetchMoreHistory,
   } = usePerpsLiveCandles({
-    symbol: streamSymbol ?? '',
+    symbol: decodedSymbol ?? '',
     interval: selectedPeriod,
-    duration: TimeDuration.OneWeek,
+    duration: TimeDuration.YearToDate,
     throttleMs: 1000,
   });
 
@@ -914,7 +908,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             color={IconColor.IconAlternative}
           />
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {'Failed to load chart data'}
+            {t('perpsChartLoadError') ?? 'Failed to load chart data'}
           </Text>
         </Box>
       );

@@ -16,7 +16,7 @@
 import type { CandleData } from '@metamask/perps-controller';
 import {
   type CandlePeriod,
-  TimeDuration,
+  type TimeDuration,
   calculateCandleCount,
 } from '../../components/app/perps/constants/chartConfig';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -30,39 +30,9 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
-/**
- * Grace period before a candle stream is torn down after the last subscriber
- * leaves.  If a new subscriber for the same symbol+interval arrives within
- * this window (e.g. navigating back to the same chart), the pending
- * deactivation is cancelled and the live subscription is preserved, avoiding
- * a redundant unsubscribe + resubscribe POST to the Hyperliquid API.
- *
- * 500ms matches mobile's CandleConnectDebounceMs — long enough to absorb
- * React's async cleanup-then-remount cycle during page transitions, short
- * enough that abandoned subscriptions don't linger.
- */
-const DISCONNECT_GRACE_MS = 500;
-
-/**
- * If cache was updated within this window, skip the immediate
- * `perpsActivateCandleStream` call and serve from cache instead. A deferred
- * activation fires after DEFERRED_ACTIVATION_MS to re-establish the live WS
- * subscription. This avoids the two heaviest WS messages (candleSnapshot POST +
- * candle subscribe) during rapid market navigation.
- */
-const CACHE_FRESH_MS = 30_000;
-
-/**
- * Delay before a deferred candle activation fires. Long enough that rapid
- * navigation (BTC → ETH → SOL) only triggers one activation for the final
- * market, short enough that live updates resume quickly.
- */
-const DEFERRED_ACTIVATION_MS = 2_000;
-
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
-  onError?: (error: Error) => void;
   throttleMs: number;
   lastDeliveryTime: number;
   pendingTimer: ReturnType<typeof setTimeout> | null;
@@ -71,17 +41,11 @@ type SubscriberEntry = {
 /** Per cache-key state */
 type ChannelEntry = {
   cache: CandleData | null;
-  /** Epoch ms when cache was last updated via pushFromBackground */
-  cacheUpdatedAt: number;
   subscribers: Map<string, SubscriberEntry>;
   unsubscribeFromSource: (() => void) | null;
   isConnected: boolean;
   /** The duration used for the initial subscription */
   duration: TimeDuration | undefined;
-  /** Timer to defer disconnect so rapid re-navigation can cancel teardown */
-  disconnectTimer: ReturnType<typeof setTimeout> | null;
-  /** Timer for deferred activation when serving from fresh cache */
-  deferredConnectTimer: ReturnType<typeof setTimeout> | null;
 };
 
 /**
@@ -154,28 +118,17 @@ export class CandleStreamChannel {
     if (!entry) {
       entry = {
         cache: null,
-        cacheUpdatedAt: 0,
         subscribers: new Map(),
         unsubscribeFromSource: null,
         isConnected: false,
         duration,
-        disconnectTimer: null,
-        deferredConnectTimer: null,
       };
       this.channels.set(key, entry);
-    }
-
-    // Cancel any pending teardown for this key so re-navigation reuses the
-    // existing background subscription instead of forcing a new one.
-    if (entry.disconnectTimer !== null) {
-      clearTimeout(entry.disconnectTimer);
-      entry.disconnectTimer = null;
     }
 
     // Register subscriber
     const subscriber: SubscriberEntry = {
       callback,
-      onError,
       throttleMs,
       lastDeliveryTime: 0,
       pendingTimer: null,
@@ -208,15 +161,9 @@ export class CandleStreamChannel {
 
       currentEntry.subscribers.delete(subscriberId);
 
-      // Defer disconnect to allow rapid re-navigation to cancel teardown.
+      // Disconnect if no more subscribers (keep cache)
       if (currentEntry.subscribers.size === 0) {
-        currentEntry.disconnectTimer = setTimeout(() => {
-          currentEntry.disconnectTimer = null;
-          // Re-check: a new subscriber may have arrived during the grace period.
-          if (currentEntry.subscribers.size === 0) {
-            this.disconnect(key, currentEntry);
-          }
-        }, DISCONNECT_GRACE_MS);
+        this.disconnect(key, currentEntry);
       }
     };
   }
@@ -328,18 +275,14 @@ export class CandleStreamChannel {
     if (!entry) {
       entry = {
         cache: null,
-        cacheUpdatedAt: 0,
         subscribers: new Map(),
         unsubscribeFromSource: null,
         isConnected: false,
         duration: undefined,
-        disconnectTimer: null,
-        deferredConnectTimer: null,
       };
       this.channels.set(key, entry);
     }
     entry.cache = data;
-    entry.cacheUpdatedAt = Date.now();
     this.notifySubscribers(entry, data);
   }
 
@@ -351,11 +294,6 @@ export class CandleStreamChannel {
     for (const [key, entry] of this.channels.entries()) {
       // Only reconnect channels that have active subscribers
       if (entry.subscribers.size > 0) {
-        // Cancel any deferred activation from a previous connect
-        if (entry.deferredConnectTimer !== null) {
-          clearTimeout(entry.deferredConnectTimer);
-          entry.deferredConnectTimer = null;
-        }
         // Disconnect existing source
         if (entry.unsubscribeFromSource) {
           entry.unsubscribeFromSource();
@@ -383,12 +321,6 @@ export class CandleStreamChannel {
         }
       }
 
-      // Cancel any pending deferred disconnect
-      if (entry.disconnectTimer !== null) {
-        clearTimeout(entry.disconnectTimer);
-        entry.disconnectTimer = null;
-      }
-
       this.disconnect(key, entry);
     }
     this.channels.clear();
@@ -399,7 +331,7 @@ export class CandleStreamChannel {
    *
    * @param key - Cache key
    * @param entry - Channel entry
-   * @param _onError - Optional error callback (unused; errors are forwarded to all subscribers)
+   * @param _onError - Optional error callback
    */
   private connect(
     key: string,
@@ -410,72 +342,27 @@ export class CandleStreamChannel {
       return;
     }
 
-    // Cancel any previously deferred activation for this key so only the
-    // latest connect intent wins (e.g., rapid period toggling).
-    if (entry.deferredConnectTimer !== null) {
-      clearTimeout(entry.deferredConnectTimer);
-      entry.deferredConnectTimer = null;
-    }
-
-    const cacheAge = Date.now() - entry.cacheUpdatedAt;
-    const hasFreshCache = entry.cache && cacheAge < CACHE_FRESH_MS;
-
-    if (hasFreshCache) {
-      // Cache is fresh enough — serve it immediately and defer the WS
-      // activation so rapid market navigation doesn't burst the rate limit.
-      // Mark connected so subsequent subscribers don't trigger extra activations.
-      entry.isConnected = true;
-
-      entry.deferredConnectTimer = setTimeout(() => {
-        entry.deferredConnectTimer = null;
-        // Only fire if still connected and has subscribers; the user may have
-        // navigated away during the deferral window.
-        if (entry.isConnected && entry.subscribers.size > 0) {
-          this.activateBackground(key, entry);
-        }
-      }, DEFERRED_ACTIVATION_MS);
-
-      // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-      entry.unsubscribeFromSource = () => {};
-      return;
-    }
-
-    // No fresh cache — activate immediately so the user sees data ASAP.
-    entry.isConnected = true;
-    this.activateBackground(key, entry);
-
-    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-    entry.unsubscribeFromSource = () => {};
-  }
-
-  /**
-   * Send `perpsActivateCandleStream` to the background.
-   * Extracted so both immediate and deferred paths share the same logic.
-   * @param key
-   * @param entry
-   */
-  private activateBackground(key: string, entry: ChannelEntry): void {
     const { symbol, interval } = parseCacheKey(key);
 
-    // Use a lighter duration on revisit to conserve rate limit budget (mobile
-    // pattern from PR #28141). When cache already has data the controller only
-    // needs a short refresh; users can lazy-load more history via scroll.
-    const connectDuration = entry.cache ? TimeDuration.OneDay : entry.duration;
+    entry.isConnected = true;
 
+    // Tell the background to start emitting candle updates for this key.
+    // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
+    // which is routed to CandleStreamChannel.pushFromBackground().
     submitRequestToBackground('perpsActivateCandleStream', [
-      { symbol, interval, duration: connectDuration },
+      { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
-      const error = err instanceof Error ? err : new Error(String(err));
       console.warn(
         '[CandleStreamChannel] Failed to activate streaming for key:',
         key,
-        error,
+        err,
       );
       entry.isConnected = false;
-      for (const sub of entry.subscribers.values()) {
-        sub.onError?.(error);
-      }
     });
+
+    // Set a no-op unsubscribe (background handles cleanup on stream close)
+    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+    entry.unsubscribeFromSource = () => {};
   }
 
   /**
@@ -486,10 +373,6 @@ export class CandleStreamChannel {
    * @param entry - Channel entry
    */
   private disconnect(key: string, entry: ChannelEntry): void {
-    if (entry.deferredConnectTimer !== null) {
-      clearTimeout(entry.deferredConnectTimer);
-      entry.deferredConnectTimer = null;
-    }
     if (entry.unsubscribeFromSource) {
       entry.unsubscribeFromSource();
       entry.unsubscribeFromSource = null;
