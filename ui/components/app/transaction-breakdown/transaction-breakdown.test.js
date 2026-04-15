@@ -206,5 +206,50 @@ describe('TransactionBreakdown', () => {
         ['Network fee', 'Paid by MetaMask'],
       ]);
     });
+
+    it('does not show "Paid by MetaMask" for a failed transaction without receipt', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              status: 'failed',
+              isGasFeeSponsored: true,
+              txReceipt: undefined,
+            },
+          }}
+        />,
+        store,
+      );
+
+      const rows = getActualDataFrom(
+        getAllByTestId('transaction-breakdown-row'),
+      );
+      const networkFeeRow = rows.find(([title]) => title === 'Network fee');
+      expect(networkFeeRow).toBeUndefined();
+    });
+
+    it('does not show "Paid by MetaMask" for a rejected transaction', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              status: 'rejected',
+              isGasFeeSponsored: true,
+            },
+          }}
+        />,
+        store,
+      );
+
+      const rows = getActualDataFrom(
+        getAllByTestId('transaction-breakdown-row'),
+      );
+      const networkFeeRow = rows.find(([title]) => title === 'Network fee');
+      expect(networkFeeRow).toBeUndefined();
+    });
   });
 });
