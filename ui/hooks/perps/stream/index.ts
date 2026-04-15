@@ -25,6 +25,7 @@ export {
   type UsePerpsStreamManagerReturn,
 } from './usePerpsStreamManager';
 export { usePerpsViewActive } from './usePerpsViewActive';
+
 // Generic channel hook (shared implementation for channel-based hooks)
 export { usePerpsChannel, type UsePerpsChannelReturn } from './usePerpsChannel';
 
