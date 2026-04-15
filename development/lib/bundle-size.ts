@@ -40,11 +40,13 @@ export type BundleSizeArtifact = {
 } & Record<BundlePart, BundleStats>;
 
 export type BundleSizeSummary = {
+  background: number;
+  ui: number;
+  common: number;
+  auxiliaryPages?: number;
+  contentScripts?: number;
   timestamp: number;
-} & Record<Exclude<BundlePart, 'auxiliaryPages' | 'contentScripts'>, number> &
-  Partial<
-    Record<Extract<BundlePart, 'auxiliaryPages' | 'contentScripts'>, number>
-  >;
+};
 
 export type StoredBundleSizeData = Record<string, BundleSizeSummary>;
 
