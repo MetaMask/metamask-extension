@@ -123,7 +123,7 @@ jobs:
       - name: Check for policy diffs
         if: ${{ !cancelled() }}
         id: check-diffs
-        run: echo "HAS_DIFFS=$([ -d lavamoat-policy-diffs ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+        run: echo "HAS_DIFFS=$(compgen -G 'lavamoat-policy-diffs/*.patch' > /dev/null 2>&1 && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       - name: Apply policy diffs
         if: ${{ steps.check-diffs.outputs.HAS_DIFFS == 'true' }}
