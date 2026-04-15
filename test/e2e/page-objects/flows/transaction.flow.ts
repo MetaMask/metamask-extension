@@ -1,9 +1,11 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+import ActivityListPage from '../pages/home/activity-list';
 import HomePage from '../pages/home/homepage';
-import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
 import SendPage from '../pages/send/send-page';
+import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
+import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 
 export const createInternalTransaction = async ({
@@ -21,9 +23,6 @@ export const createInternalTransaction = async ({
   recipientName?: string;
   amount?: string;
 }) => {
-  // Firefox has incorrect balance if send flow started too quickly.
-  await driver.delay(1000);
-
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
 
@@ -55,9 +54,6 @@ export const createInternalTransactionWithMaxAmount = async ({
   recipientAddress?: string;
   recipientName?: string;
 }) => {
-  // Firefox has incorrect balance if send flow started too quickly.
-  await driver.delay(1000);
-
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
 
@@ -93,4 +89,64 @@ export const createDappTransaction = async (
       ...override,
     },
   ]);
+};
+
+type CreateInternalTransactionOptions = Parameters<
+  typeof createInternalTransaction
+>[0];
+
+/**
+ * Wallet send flow through {@link createInternalTransaction}, then confirms on the transaction confirmation screen.
+ */
+export const createInternalTransactionAndConfirm = async (
+  params: CreateInternalTransactionOptions,
+): Promise<void> => {
+  await createInternalTransaction(params);
+
+  const transactionConfirmationPage = new TransactionConfirmation(
+    params.driver,
+  );
+  await transactionConfirmationPage.clickFooterConfirmButtonAndWaitToDisappear();
+};
+
+/**
+ * {@link createInternalTransactionAndConfirm} for an address recipient, then optionally approves via the snap keyring when not using sync flow.
+ */
+export const sendRedesignedTransactionWithSnapAccount = async ({
+  driver,
+  recipientAddress,
+  amount,
+  isSyncFlow = true,
+  approveTransaction = true,
+}: {
+  driver: Driver;
+  recipientAddress: string;
+  amount: string;
+  isSyncFlow?: boolean;
+  approveTransaction?: boolean;
+}): Promise<void> => {
+  await createInternalTransactionAndConfirm({
+    driver,
+    recipientAddress,
+    amount,
+  });
+
+  if (!isSyncFlow) {
+    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+      approveTransaction,
+    );
+  }
+};
+
+/**
+ * After a send completes, asserts activity list shows one confirmed send with the expected ETH amount label.
+ */
+export const validateTransaction = async (driver: Driver, quantity: string) => {
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
+  await activityList.checkTxAction({ action: 'Sent' });
+  await activityList.checkTxAmountInActivity(`${quantity} ETH`, 1);
 };

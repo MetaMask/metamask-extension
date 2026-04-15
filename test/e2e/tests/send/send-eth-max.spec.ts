@@ -9,11 +9,13 @@
 
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction.flow';
+import {
+  createInternalTransactionWithMaxAmount,
+  validateTransaction,
+} from '../../page-objects/flows/transaction.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';
-import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';

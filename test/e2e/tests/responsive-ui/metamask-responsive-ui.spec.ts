@@ -10,7 +10,7 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import { createInternalTransactionAndConfirm } from '../../page-objects/flows/transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
@@ -138,7 +138,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await login(driver);
 
         // send ETH from inside MetaMask
-        await sendRedesignedTransactionToAddress({
+        await createInternalTransactionAndConfirm({
           driver,
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',

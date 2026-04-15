@@ -16,7 +16,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
