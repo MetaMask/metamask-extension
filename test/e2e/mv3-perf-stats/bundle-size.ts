@@ -3,7 +3,6 @@ import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import {
-  BUNDLE_SIZE_ARTIFACT_FILE,
   BUNDLE_SIZE_SUMMARY_FILE,
   WEBPACK_BUNDLE_STATS_FILE,
   createBundleSizeArtifact,
@@ -238,34 +237,35 @@ function partitionSurfaceAssets({
   contentScriptAssets: Set<string>;
   assetSizeMap: ReadonlyMap<string, number>;
 }): BundleSizeArtifact {
-  // @ts-expect-error Node 24 supports Set.prototype.intersection, but the repo TS lib config does not type it yet.
   const backgroundUiAssets: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.intersection, but the repo TS lib config does not type it yet.
     backgroundAssets.intersection(uiAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const commonAssets: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     backgroundUiAssets.difference(contentScriptAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const backgroundWithoutCommon: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     backgroundAssets.difference(commonAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const backgroundOnlyAssets: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     backgroundWithoutCommon.difference(contentScriptAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-  const uiWithoutCommon: Set<string> = uiAssets.difference(commonAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const uiWithoutCommon: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+    uiAssets.difference(commonAssets);
   const uiOnlyAssets: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     uiWithoutCommon.difference(contentScriptAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const auxiliaryPagesWithoutContentScripts: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     auxiliaryPageAssets.difference(contentScriptAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const auxiliaryPagesWithoutCommon: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     auxiliaryPagesWithoutContentScripts.difference(commonAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const auxiliaryPagesWithoutBackground: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     auxiliaryPagesWithoutCommon.difference(backgroundOnlyAssets);
-  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
   const auxiliaryPageOnlyAssets: Set<string> =
+    // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
     auxiliaryPagesWithoutBackground.difference(uiOnlyAssets);
 
   return createBundleSizeArtifact({
@@ -362,8 +362,9 @@ export async function collectBundleSizeArtifact(
 }
 
 async function ensureOutputDirectory(outDirectory: string): Promise<void> {
-  const bundleSizePath = path.join(outDirectory, BUNDLE_SIZE_ARTIFACT_FILE);
-  const outputDirectory = path.dirname(bundleSizePath);
+  const outputDirectory = path.dirname(
+    path.join(outDirectory, BUNDLE_SIZE_SUMMARY_FILE),
+  );
   const existingParentDirectory =
     await getFirstParentDirectoryThatExists(outputDirectory);
 
@@ -382,10 +383,6 @@ export async function writeBundleSizeArtifact(
 ): Promise<void> {
   await ensureOutputDirectory(outDirectory);
 
-  await fs.writeFile(
-    path.join(outDirectory, BUNDLE_SIZE_ARTIFACT_FILE),
-    JSON.stringify(artifact, null, 2),
-  );
   await fs.writeFile(
     path.join(outDirectory, BUNDLE_SIZE_SUMMARY_FILE),
     JSON.stringify(createBundleSizeSummary(artifact), null, 2),
