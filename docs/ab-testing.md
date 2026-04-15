@@ -11,8 +11,8 @@ example. The rest of the document explains the rules behind that workflow.
 Use this order every time:
 
 1. Create a remote JSON flag named `{teamName}{TICKET}Abtest{TestName}`.
-2. Add a feature-local config module that keeps the flag key, variants, and
-   any analytics mapping together.
+2. Add a single experiment config module in
+   `shared/lib/ab-testing/configs/`.
 3. In the feature, call `useABTest(flagKey, variants)`.
 4. If the feature sends business events through the shared MetaMetrics path,
    register an `ABTestAnalyticsMapping` in background-safe shared code used by
@@ -26,7 +26,8 @@ Use this order every time:
 
 Most A/B tests change only these places:
 
-- A feature-local config module, often something like `abTestConfig.ts`
+- A single background-safe shared experiment config module in
+  `shared/lib/ab-testing/configs/`
 - The feature component or hook that consumes `useABTest`
 - Background-safe shared analytics mapping code used by
   `shared/lib/ab-testing/ab-test-analytics.ts`
@@ -53,8 +54,11 @@ This is the smallest complete pattern for a new extension A/B test.
 
 ### 1. Create the config module
 
-Keep the test definition in one place. This keeps the flag key, variants, and
-analytics mapping in sync.
+Keep the flag key, variants, and analytics mapping together in one
+background-safe shared module, for example
+`shared/lib/ab-testing/configs/swaps-button-color.ts`. This is the standard
+pattern for extension A/B tests because the same config must be safe to import
+from both UI code and background analytics code.
 
 ```typescript
 import type { ABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
@@ -114,10 +118,13 @@ Important behavior:
 ### 3. Register business-event auto-enrichment
 
 If the feature tracks business events through the shared MetaMetrics path,
-register the mapping in background-safe shared code:
+register the mapping in background-safe shared code and keep existing mappings
+intact:
 
 ```typescript
+// In shared/lib/ab-testing/ab-test-analytics.ts
 export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [
+  // Existing mappings...
   FEATURE_AB_TEST_ANALYTICS_MAPPING,
 ];
 ```
@@ -134,7 +141,8 @@ trackEvent({
 ### 4. Handle bypass paths manually
 
 If an event bypasses the shared MetaMetrics enrichment path, add
-`active_ab_tests` yourself:
+`active_ab_tests` yourself. Do not copy this pattern for `trackEvent(...)`
+calls that already flow through shared enrichment.
 
 ```typescript
 const activeABTests = isActive
@@ -146,12 +154,9 @@ const activeABTests = isActive
     ]
   : undefined;
 
-trackEvent({
-  event: MetaMetricsEventName.TransactionSubmitted,
-  category: MetaMetricsEventCategory.Swaps,
-  properties: {
-    ...(activeABTests && { active_ab_tests: activeABTests }),
-  },
+sendCustomAnalyticsPayload({
+  event: 'Custom Swap Metric',
+  ...(activeABTests && { active_ab_tests: activeABTests }),
 });
 ```
 
