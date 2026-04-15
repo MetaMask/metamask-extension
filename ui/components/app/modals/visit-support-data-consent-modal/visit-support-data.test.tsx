@@ -32,12 +32,6 @@ jest.mock('../../../../hooks/subscription/useSubscription', () => ({
   useUserSubscriptions: jest.fn(),
 }));
 
-jest.mock('../../../../../shared/lib/ui-utils', () => ({
-  ...jest.requireActual('../../../../../shared/lib/ui-utils'),
-  SUPPORT_LINK:
-    'https://support.metamask.io/hc/contact-us?utm_source=metamask&utm_medium=extension',
-}));
-
 describe('VisitSupportDataConsentModal', () => {
   const store = configureMockState([thunk])(mockState);
   const mockTrackEvent = jest.fn();
