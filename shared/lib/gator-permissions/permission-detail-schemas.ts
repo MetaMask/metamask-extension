@@ -4,6 +4,7 @@ import type { Hex } from '@metamask/utils';
 import { DAY } from '../../constants/time';
 import { formatPermissionPeriodDuration } from './format-permission-period-duration';
 import { MAX_UINT256 } from './permission-constants';
+import { parseHexPermissionAmount } from './parse-hex-permission-amount';
 import type {
   PermissionRenderContext,
   PermissionSchemaEntry,
@@ -130,7 +131,7 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'amount',
           testId: 'review-gator-permission-amount-label',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'periodAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'periodAmount')),
           isVisible: alwaysVisible,
           includeInViews: ['reviewSummary'],
         },
@@ -151,7 +152,7 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldAllowance',
           testId: 'confirmation-allowance',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'periodAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'periodAmount')),
           isVisible: alwaysVisible,
           includeInViews: ['confirmation'],
         },
@@ -204,7 +205,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsStreamingAmountLabel',
           testId: 'review-gator-permission-amount-label',
           getValue: (ctx) =>
-            new BigNumber(
+            parseHexPermissionAmount(
               convertAmountPerSecondToAmountPerPeriod(
                 getData<Hex>(ctx, 'amountPerSecond'),
                 'weekly',
@@ -226,7 +227,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsInitialAllowance',
           testId: 'review-gator-permission-initial-allowance',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'initialAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'initialAmount')),
           isVisible: (ctx) => Boolean(getData(ctx, 'initialAmount')),
           includeInViews: ['confirmation', 'reviewDetail'],
         },
@@ -234,7 +235,8 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'gatorPermissionsMaxAllowance',
           testId: 'review-gator-permission-max-allowance',
-          getValue: (ctx) => new BigNumber(getData<string>(ctx, 'maxAmount')),
+          getValue: (ctx) =>
+            parseHexPermissionAmount(getData<string>(ctx, 'maxAmount')),
           isVisible: (ctx) => {
             const max = getData<string | null | undefined>(ctx, 'maxAmount');
             return (
@@ -283,7 +285,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsStreamRate',
           testId: 'review-gator-permission-stream-rate',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'amountPerSecond')),
+            parseHexPermissionAmount(getData<string>(ctx, 'amountPerSecond')),
           isRatePerSecond: true,
           isVisible: alwaysVisible,
           includeInViews: ['confirmation', 'reviewDetail'],
@@ -293,9 +295,9 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldAvailablePerDay',
           testId: 'confirmation-available-per-day',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'amountPerSecond')).mul(
-              DAY / 1000,
-            ),
+            parseHexPermissionAmount(
+              getData<string>(ctx, 'amountPerSecond'),
+            ).mul(DAY / 1000),
           isVisible: alwaysVisible,
           includeInViews: ['confirmation'],
         },
@@ -339,7 +341,7 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'amount',
           testId: 'review-gator-permission-amount-label',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'periodAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'periodAmount')),
           isVisible: alwaysVisible,
           includeInViews: ['reviewSummary'],
         },
@@ -360,7 +362,7 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldAllowance',
           testId: 'confirmation-allowance',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'periodAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'periodAmount')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: alwaysVisible,
           includeInViews: ['confirmation'],
@@ -417,7 +419,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsStreamingAmountLabel',
           testId: 'review-gator-permission-amount-label',
           getValue: (ctx) =>
-            new BigNumber(
+            parseHexPermissionAmount(
               convertAmountPerSecondToAmountPerPeriod(
                 getData<Hex>(ctx, 'amountPerSecond'),
                 'weekly',
@@ -439,7 +441,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsInitialAllowance',
           testId: 'review-gator-permission-initial-allowance',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'initialAmount')),
+            parseHexPermissionAmount(getData<string>(ctx, 'initialAmount')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: (ctx) => Boolean(getData(ctx, 'initialAmount')),
           includeInViews: ['confirmation', 'reviewDetail'],
@@ -448,7 +450,8 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'gatorPermissionsMaxAllowance',
           testId: 'review-gator-permission-max-allowance',
-          getValue: (ctx) => new BigNumber(getData<string>(ctx, 'maxAmount')),
+          getValue: (ctx) =>
+            parseHexPermissionAmount(getData<string>(ctx, 'maxAmount')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: (ctx) => {
             const max = getData<string | null | undefined>(ctx, 'maxAmount');
@@ -498,7 +501,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'gatorPermissionsStreamRate',
           testId: 'review-gator-permission-stream-rate',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'amountPerSecond')),
+            parseHexPermissionAmount(getData<string>(ctx, 'amountPerSecond')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isRatePerSecond: true,
           isVisible: alwaysVisible,
@@ -509,9 +512,9 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldAvailablePerDay',
           testId: 'confirmation-available-per-day',
           getValue: (ctx) =>
-            new BigNumber(getData<string>(ctx, 'amountPerSecond')).mul(
-              DAY / 1000,
-            ),
+            parseHexPermissionAmount(
+              getData<string>(ctx, 'amountPerSecond'),
+            ).mul(DAY / 1000),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: alwaysVisible,
           includeInViews: ['confirmation'],
