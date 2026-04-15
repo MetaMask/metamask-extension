@@ -42,9 +42,9 @@ describe('DefiPositionsControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(DeFiPositionsControllerInit(requestMock).controller).toBeInstanceOf(
-      DeFiPositionsController,
-    );
+    expect(
+      DeFiPositionsControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(DeFiPositionsController);
   });
 
   it('initializes with correct messenger and state', () => {

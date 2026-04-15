@@ -40,9 +40,9 @@ describe('AccountTreeControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(AccountTreeControllerInit(requestMock).controller).toBeInstanceOf(
-      AccountTreeController,
-    );
+    expect(
+      AccountTreeControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(AccountTreeController);
   });
 
   it('initializes with correct messenger and state', () => {

@@ -23,7 +23,7 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
   AccountTreeControllerMessenger,
   AccountTreeControllerInitMessenger
 > = ({ controllerMessenger, persistedState, initMessenger }) => {
-  const controller = new AccountTreeController({
+  const messengerClient = new AccountTreeController({
     messenger: controllerMessenger,
     state: persistedState.AccountTreeController,
     config: {
@@ -84,5 +84,5 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
   // the `AccountsController.updateAccounts` method and re-construct the tree at the
   // same time.
 
-  return { controller };
+  return { messengerClient };
 };

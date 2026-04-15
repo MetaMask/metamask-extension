@@ -31,7 +31,7 @@ function buildControllerInitResultMock({
   memStateKey?: string | null;
 } = {}) {
   return {
-    controller: buildControllerMock(name),
+    messengerClient: buildControllerMock(name),
     api,
     persistedStateKey,
     memStateKey,
@@ -100,7 +100,7 @@ describe('Messenger Client Init Utils', () => {
       expect(init2Mock).toHaveBeenCalledTimes(1);
     });
 
-    describe('provides getController method', () => {
+    describe('provides getMessengerClient method', () => {
       it('that returns initialized controller', () => {
         const requestMock = buildControllerInitRequestMock();
         const initMock = buildControllerFunctionMock();
@@ -113,10 +113,10 @@ describe('Messenger Client Init Utils', () => {
           initRequest: requestMock,
         });
 
-        const { getController } = initMock.mock.calls[0][0];
+        const { getMessengerClient } = initMock.mock.calls[0][0];
 
         expect(
-          getController(CONTROLLER_NAME_MOCK as MessengerClientName),
+          getMessengerClient(CONTROLLER_NAME_MOCK as MessengerClientName),
         ).toStrictEqual({ name: CONTROLLER_NAME_MOCK });
       });
 
@@ -132,10 +132,10 @@ describe('Messenger Client Init Utils', () => {
           initRequest: requestMock,
         });
 
-        const { getController } = initMock.mock.calls[0][0];
+        const { getMessengerClient } = initMock.mock.calls[0][0];
 
         expect(() =>
-          getController('InvalidController' as MessengerClientName),
+          getMessengerClient('InvalidController' as MessengerClientName),
         ).toThrow(
           'Messenger client requested before it was initialized: InvalidController',
         );

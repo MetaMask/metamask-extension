@@ -29,7 +29,7 @@ describe('ClaimsServiceInit', () => {
 
   it('should return Service instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(ClaimsServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(ClaimsServiceInit(requestMock).messengerClient).toBeInstanceOf(
       ClaimsService,
     );
   });

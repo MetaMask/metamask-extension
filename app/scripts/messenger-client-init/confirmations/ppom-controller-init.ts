@@ -13,15 +13,20 @@ export const PPOMControllerInit: MessengerClientInitFunction<
   PPOMControllerMessenger,
   PPOMControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, initMessenger, getController, persistedState } =
-    request;
+  const {
+    controllerMessenger,
+    initMessenger,
+    getMessengerClient,
+    persistedState,
+  } = request;
 
-  const preferencesController = () => getController('PreferencesController');
+  const preferencesController = () =>
+    getMessengerClient('PreferencesController');
 
   const { provider } =
     initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
 
-  const controller = new PPOMController({
+  const messengerClient = new PPOMController({
     messenger: controllerMessenger,
     storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
     // @ts-expect-error: PPOMController expects `provider` to be defined, but it
@@ -47,6 +52,6 @@ export const PPOMControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

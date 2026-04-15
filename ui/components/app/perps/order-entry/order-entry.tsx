@@ -18,6 +18,7 @@ import {
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { getDisplaySymbol } from '../utils';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -170,13 +171,50 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           : t('perpsConfirmCloseShort');
       default:
         return isLong
-          ? t('perpsOpenLong', [asset])
-          : t('perpsOpenShort', [asset]);
+          ? t('perpsOpenLong', [getDisplaySymbol(asset)])
+          : t('perpsOpenShort', [getDisplaySymbol(asset)]);
     }
   }, [mode, isLong, asset, t]);
 
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
+
+  const estimatedSize = useMemo(() => {
+    if (mode === 'modify' && existingPosition) {
+      const parsed = Number.parseFloat(
+        existingPosition.size.replaceAll(',', ''),
+      );
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
+    if (amount === 0) {
+      return undefined;
+    }
+
+    let fillPrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsed = Number.parseFloat(
+        formState.limitPrice.replaceAll(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsed) && parsed > 0) {
+        fillPrice = parsed;
+      }
+    }
+    if (fillPrice === 0) {
+      return undefined;
+    }
+
+    const size = amount / fillPrice;
+    return formState.direction === 'long' ? size : -size;
+  }, [
+    mode,
+    existingPosition,
+    formState.amount,
+    formState.direction,
+    formState.type,
+    formState.limitPrice,
+    currentPrice,
+  ]);
 
   return (
     <Box
@@ -329,8 +367,10 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                   })()
                 : undefined
             }
+            estimatedSize={estimatedSize}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
+            asset={asset}
           />
         )}
 
