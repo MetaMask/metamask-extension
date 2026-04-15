@@ -33,7 +33,7 @@ export const RateLimitControllerInit: MessengerClientInitFunction<
   persistedState,
   showNotification,
 }) => {
-  const controller = new RateLimitController({
+  const messengerClient = new RateLimitController({
     state: persistedState.RateLimitController,
     messenger: controllerMessenger,
 
@@ -99,7 +99,7 @@ export const RateLimitControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

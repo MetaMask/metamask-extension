@@ -94,6 +94,7 @@ import { ReversePositionModal } from '../../components/app/perps/reverse-positio
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
@@ -101,7 +102,7 @@ import {
   type PerpsToastKey,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
-import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import Tooltip from '../../components/ui/tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -268,6 +269,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
     const parsedRouteState = parsePerpsToastRouteState(location.state);
@@ -637,7 +639,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
-    (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
+    (direction: 'long' | 'short', mode: 'new' | 'modify') => {
       if (!decodedSymbol) {
         return '#';
       }
@@ -649,7 +651,11 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible || !decodedSymbol || isLoadingAccount) {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!decodedSymbol || isLoadingAccount) {
         return;
       }
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -675,7 +681,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
 
   const handleAddFunds = useCallback(() => {
-    if (!isEligible || !selectedAddress || isDepositLoading) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!selectedAddress || isDepositLoading) {
       return;
     }
 
@@ -700,7 +710,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   ]);
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible || !position) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!position) {
       return;
     }
     setIsCloseModalOpen(true);
@@ -757,6 +771,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (!position || !decodedSymbol) {
       return;
     }
@@ -769,9 +787,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+    setIsCloseModalOpen(true);
+  }, [isEligible, position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -955,7 +972,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           className="overflow-hidden rounded-xl"
         >
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[62px] w-full rounded-none" />
+            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
           ))}
         </Box>
       );
@@ -976,11 +993,12 @@ const PerpsMarketDetailPage: React.FC = () => {
         flexDirection={BoxFlexDirection.Column}
         className="overflow-hidden rounded-xl"
       >
-        {recentActivityTransactions.map((transaction) => (
+        {recentActivityTransactions.map((transaction, index) => (
           <TransactionCard
             key={transaction.id}
             transaction={transaction}
             variant="muted"
+            showTopBorder={index > 0}
           />
         ))}
       </Box>
@@ -1549,10 +1567,17 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     {t('perpsOpenInterest')}
                   </Text>
-                  <InfoTooltip
+                  <Tooltip
                     position="top"
-                    contentText={t('perpsOpenInterestTooltip')}
-                  />
+                    html={t('perpsOpenInterestTooltip')}
+                    interactive
+                  >
+                    <Icon
+                      name={IconName.Info}
+                      size={IconSize.Sm}
+                      color={IconColor.IconAlternative}
+                    />
+                  </Tooltip>
                 </Box>
                 <Text
                   variant={TextVariant.BodySm}
@@ -1582,10 +1607,17 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     {t('perpsFundingRate')}
                   </Text>
-                  <InfoTooltip
+                  <Tooltip
                     position="top"
-                    contentText={t('perpsFundingRateTooltip')}
-                  />
+                    html={t('perpsFundingRateTooltip')}
+                    interactive
+                  >
+                    <Icon
+                      name={IconName.Info}
+                      size={IconSize.Sm}
+                      color={IconColor.IconAlternative}
+                    />
+                  </Tooltip>
                 </Box>
                 <Box
                   flexDirection={BoxFlexDirection.Row}
@@ -1636,10 +1668,17 @@ const PerpsMarketDetailPage: React.FC = () => {
                 >
                   {t('perpsOraclePrice')}
                 </Text>
-                <InfoTooltip
+                <Tooltip
                   position="top"
-                  contentText={t('perpsOraclePriceTooltip')}
-                />
+                  html={t('perpsOraclePriceTooltip')}
+                  interactive
+                >
+                  <Icon
+                    name={IconName.Info}
+                    size={IconSize.Sm}
+                    color={IconColor.IconAlternative}
+                  />
+                </Tooltip>
               </Box>
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {livePrice?.markPrice
@@ -1746,9 +1785,13 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
-                onClick={() => setIsModifyMenuOpen((prev) => !prev)}
-                disabled={!isEligible}
-                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+                onClick={() => {
+                  if (!isEligible) {
+                    setIsGeoBlockModalOpen(true);
+                    return;
+                  }
+                  setIsModifyMenuOpen((prev) => !prev);
+                }}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
@@ -1822,8 +1865,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 onClick={handleClosePosition}
-                disabled={!isEligible}
-                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
                 className="w-full"
                 data-testid="perps-close-cta-button"
               >
@@ -1841,8 +1882,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
-            disabled={!isEligible || !selectedAddress || isDepositLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={!selectedAddress || isDepositLoading}
             className="w-full"
             data-testid="perps-add-funds-cta-button"
           >
@@ -1861,8 +1901,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              disabled={!isEligible || isLoadingAccount}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              disabled={isLoadingAccount}
               className="flex-1"
               data-testid="perps-long-cta-button"
             >
@@ -1874,8 +1913,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              disabled={!isEligible || isLoadingAccount}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              disabled={isLoadingAccount}
               className="flex-1"
               data-testid="perps-short-cta-button"
             >
@@ -1939,6 +1977,11 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       {/* Tutorial modal — opened via "Learn the basics of perps" */}
       <PerpsTutorialModal />
+
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

@@ -34,7 +34,9 @@ describe('ClaimsControllerInit', () => {
     const request = buildInitRequestMock();
     const controllerInitResult = ClaimsControllerInit(request);
     expect(controllerInitResult).toBeDefined();
-    expect(controllerInitResult.controller).toBeInstanceOf(ClaimsController);
+    expect(controllerInitResult.messengerClient).toBeInstanceOf(
+      ClaimsController,
+    );
   });
 
   it('should initialize with correct messenger and state', () => {

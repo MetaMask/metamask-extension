@@ -27,7 +27,7 @@ function getInitRequestMock(): jest.Mocked<
   };
 
   // @ts-expect-error: Partial mock.
-  requestMock.getController.mockImplementation((name: string) => {
+  requestMock.getMessengerClient.mockImplementation((name: string) => {
     if (name === 'EnsController') {
       return {
         reverseResolveAddress: jest.fn(),
@@ -46,8 +46,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('NameControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = NameControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(NameController);
+    const { messengerClient } = NameControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(NameController);
   });
 
   it('passes the proper arguments to the controller', () => {

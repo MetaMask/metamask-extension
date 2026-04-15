@@ -68,6 +68,7 @@ import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -218,6 +219,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -488,7 +490,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   const hasInvalidTPSL = useMemo(() => {
-    if (!orderFormState?.autoCloseEnabled) {
+    // In modify mode the TP/SL section is hidden and values carry over untouched,
+    // so stale prices that crossed the current market should not block submission.
+    if (!orderFormState?.autoCloseEnabled || orderMode === 'modify') {
       return false;
     }
 
@@ -522,7 +526,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
 
     return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice]);
+  }, [orderFormState, orderType, currentPrice, orderMode]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {
@@ -538,7 +542,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [orderFormState, orderMode, availableBalance]);
 
   const isSubmitDisabled =
-    !isEligible ||
     !selectedAddress ||
     isDepositLoading ||
     isOrderPending ||
@@ -757,12 +760,11 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleOrderSubmit = useCallback(async () => {
-    if (
-      !isEligible ||
-      !orderFormState ||
-      !selectedAddress ||
-      currentPrice <= 0
-    ) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!orderFormState || !selectedAddress || currentPrice <= 0) {
       return;
     }
 
@@ -1093,7 +1095,11 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const handlePrimaryAction = useCallback(async () => {
     if (hasNoAvailableBalance) {
-      if (!isEligible || !selectedAddress || isDepositLoading) {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!selectedAddress || isDepositLoading) {
         return;
       }
 
@@ -1288,10 +1294,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
-        <DirectionTabs
-          direction={orderDirection}
-          onDirectionChange={handleDirectionChange}
-        />
+        {orderMode === 'new' && (
+          <DirectionTabs
+            direction={orderDirection}
+            onDirectionChange={handleDirectionChange}
+          />
+        )}
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}
@@ -1344,7 +1352,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           size={ButtonSize.Lg}
           onClick={handlePrimaryAction}
           disabled={isSubmitDisabled}
-          title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
           className={twMerge(
             'w-full',
             isSubmitDisabled && 'opacity-70 cursor-not-allowed',
@@ -1354,6 +1361,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
       </Box>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

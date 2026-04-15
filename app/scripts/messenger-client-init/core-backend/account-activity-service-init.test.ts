@@ -31,8 +31,9 @@ describe('AccountActivityServiceInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = AccountActivityServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AccountActivityService);
+    const { messengerClient } =
+      AccountActivityServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AccountActivityService);
   });
 
   it('passes the messenger and traceFn to the controller', () => {
@@ -53,9 +54,10 @@ describe('AccountActivityServiceInit', () => {
   });
 
   it('returns the controller instance', () => {
-    const { controller } = AccountActivityServiceInit(getInitRequestMock());
+    const { messengerClient } =
+      AccountActivityServiceInit(getInitRequestMock());
 
-    expect(controller).toBeDefined();
-    expect(controller).toBeInstanceOf(AccountActivityService);
+    expect(messengerClient).toBeDefined();
+    expect(messengerClient).toBeInstanceOf(AccountActivityService);
   });
 });

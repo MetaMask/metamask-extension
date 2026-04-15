@@ -37,8 +37,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SignatureControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = SignatureControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(Object);
+    const { messengerClient } = SignatureControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(Object);
   });
 
   it('passes the proper arguments to the controller', () => {

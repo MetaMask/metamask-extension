@@ -16,7 +16,7 @@ export const AccountActivityServiceInit: MessengerClientInitFunction<
   AccountActivityService,
   AccountActivityServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new AccountActivityService({
+  const messengerClient = new AccountActivityService({
     messenger: controllerMessenger,
     // @ts-expect-error: Types of `TraceRequest` are not the same.
     traceFn: trace,
@@ -25,6 +25,6 @@ export const AccountActivityServiceInit: MessengerClientInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

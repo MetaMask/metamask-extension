@@ -122,7 +122,7 @@ describe('SmartTransactionsController Init', () => {
       initMessenger: getSmartTransactionsControllerInitMessenger(
         mocks.baseControllerMessenger,
       ),
-      getController: jest.fn((name: string) => {
+      getMessengerClient: jest.fn((name: string) => {
         switch (name) {
           case 'AccountsController':
             return mocks.accountsController;
@@ -222,7 +222,7 @@ describe('SmartTransactionsController Init', () => {
     const { fullRequest } = buildInitRequest();
     const result = SmartTransactionsControllerInit(fullRequest);
 
-    expect(result.controller).toBeInstanceOf(SmartTransactionsController);
+    expect(result.messengerClient).toBeInstanceOf(SmartTransactionsController);
   });
 
   it('initializes with correct supported chain IDs', () => {

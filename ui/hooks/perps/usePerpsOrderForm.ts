@@ -13,6 +13,7 @@ import type {
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
 import { formatPerpsPrice } from '../../../shared/lib/perps-formatters';
+import { getDisplaySymbol } from '../../components/app/perps/utils';
 import { getIntlLocale } from '../../ducks/locale/locale';
 
 /**
@@ -329,7 +330,7 @@ export function usePerpsOrderForm({
       const estimatedFees = closeValueUsd * (feeRate ?? 0);
 
       return {
-        positionSize: formatTokenQuantity(closeAmount, asset),
+        positionSize: formatTokenQuantity(closeAmount, getDisplaySymbol(asset)),
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
         liquidationPriceRaw: null,
@@ -402,7 +403,7 @@ export function usePerpsOrderForm({
     );
 
     return {
-      positionSize: formatTokenQuantity(positionSize, asset),
+      positionSize: formatTokenQuantity(positionSize, getDisplaySymbol(asset)),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice:
         liquidationPriceValue > 0

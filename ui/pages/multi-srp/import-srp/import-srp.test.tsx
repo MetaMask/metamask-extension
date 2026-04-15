@@ -24,10 +24,12 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../components/app/toast-master/utils', () => ({
-  setShowNewSrpAddedToast: jest.fn().mockImplementation((value: boolean) => ({
-    type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
-    payload: value,
-  })),
+  setShowNewSrpAddedToast: jest
+    .fn()
+    .mockImplementation((value: number | false) => ({
+      type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
+      payload: value,
+    })),
 }));
 
 const mockNavigate = jest.fn();
@@ -99,7 +101,7 @@ describe('ImportSrp', () => {
       expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(true);
+      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(2);
     });
   });
 
