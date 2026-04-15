@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsReconnectOnFocus } from '../../hooks/perps/stream/usePerpsReconnectOnFocus';
-import { usePerpsPrewarm } from '../../hooks/perps/stream/usePerpsPrewarm';
+import { usePerpsStreamManager } from '../../hooks/perps/stream/usePerpsStreamManager';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 
 /**
@@ -20,8 +20,25 @@ import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycl
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsReconnectOnFocus();
-  usePerpsPrewarm();
   usePerpsLifecycleBreadcrumbs();
+
+  const { streamManager } = usePerpsStreamManager();
+
+  // Keep all PerpsStreamManager channels connected for the lifetime of this
+  // layout, even when no leaf UI subscribers exist. Without this, navigating
+  // between Perps pages drops subscriber count to 0, disconnecting channels and
+  // triggering a fresh REST fetch that can overwrite the cache with incomplete data.
+  useEffect(() => {
+    if (!streamManager) {
+      return undefined;
+    }
+
+    streamManager.prewarm();
+
+    return () => {
+      streamManager.cleanupPrewarm();
+    };
+  }, [streamManager]);
 
   return (
     <PerpsToastProvider>

@@ -26,7 +26,6 @@ export {
 } from './usePerpsStreamManager';
 export { usePerpsViewActive } from './usePerpsViewActive';
 export { usePerpsReconnectOnFocus } from './usePerpsReconnectOnFocus';
-export { usePerpsPrewarm } from './usePerpsPrewarm';
 
 // Generic channel hook (shared implementation for channel-based hooks)
 export { usePerpsChannel, type UsePerpsChannelReturn } from './usePerpsChannel';
