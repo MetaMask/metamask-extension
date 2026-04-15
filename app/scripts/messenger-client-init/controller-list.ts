@@ -91,12 +91,12 @@ import {
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
 import { PerpsController } from '@metamask/perps-controller';
-import OnboardingController from '../controllers/onboarding';
+import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
-import OAuthService from '../services/oauth/oauth-service';
-import MetaMetricsController from '../controllers/metametrics-controller';
+import { MetaMetricsController } from '../controllers/metametrics-controller';
+import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
@@ -106,15 +106,16 @@ import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { AppMetadataController } from '../controllers/app-metadata';
 import { DecryptMessageController } from '../controllers/decrypt-message';
-import EncryptionPublicKeyController from '../controllers/encryption-public-key';
+import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { DataDeletionService } from '../services/data-deletion-service';
 
 /**
- * Union of all controllers supporting or required by modular initialization.
+ * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
  */
-export type Controller =
+export type MessengerClient =
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
@@ -131,6 +132,7 @@ export type Controller =
   | ClaimsController
   | CronjobController
   | CurrencyRateController
+  | DataDeletionService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController
@@ -214,10 +216,10 @@ export type Controller =
   | ConnectivityController;
 
 /**
- * Flat state object for all controllers supporting or required by modular initialization.
+ * Flat state object for all messenger clients supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type ControllerFlatState = AccountOrderController['state'] &
+export type MessengerClientFlatState = AccountOrderController['state'] &
   AccountsController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &

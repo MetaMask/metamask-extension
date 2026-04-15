@@ -3105,7 +3105,8 @@
     "message": "Devam edin ve aşağıdakilerden emin olun:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledger'ınızın kilidi açık"
+    "message": "$1'ınızın kilidi açık",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Ethereum uygulaması açık"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Fiyatları piyasa ile uyumlu tutmak için yatırımcılar arasında saatlik bir işlem ücreti ödenir. Oran pozitifse uzunlar kısalara ödeme yapar. Negatifse kısalar uzunlara ödeme yapar."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Sürekli vadeli işlemler bölgenizde kullanılamıyor"
   },
   "perpsGiveFeedback": {
     "message": "Bize geri bildirim gönder"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
-  },
-  "yourTransactionConfirmed": {
-    "message": "İşlem zaten onaylandı"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Blok zinciri üzerinde onaylanmadan işleminizi iptal edemedik."
   },
   "yourWalletIsReady": {
     "message": "Cüzdanınız hazır!"

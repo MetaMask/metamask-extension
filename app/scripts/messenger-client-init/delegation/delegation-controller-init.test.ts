@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { type Hex } from '../../../../shared/lib/delegation/utils';
 import { buildControllerInitRequestMock } from '../test/utils';
-import type { ControllerInitRequest } from '../types';
+import type { MessengerClientInitRequest } from '../types';
 import {
   type DelegationControllerMessenger,
   type DelegationControllerInitMessenger,
@@ -22,7 +22,7 @@ import {
 jest.mock('@metamask/delegation-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     DelegationControllerMessenger,
     DelegationControllerInitMessenger
   >

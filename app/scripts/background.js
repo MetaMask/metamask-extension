@@ -247,6 +247,23 @@ function setGlobalInitializers() {
 setGlobalInitializers();
 
 /**
+ * Prefer opening the side panel on toolbar click as soon as the service worker starts.
+ * Without this, the first click after a cold start can use manifest `default_popup` until
+ * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
+ */
+function applyEarlySidePanelToolbarBehavior() {
+  if (!browser?.sidePanel?.setPanelBehavior) {
+    return;
+  }
+  browser.sidePanel
+    .setPanelBehavior({ openPanelOnActionClick: true })
+    .catch(() => {
+      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
+    });
+}
+applyEarlySidePanelToolbarBehavior();
+
+/**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
  * For non-dapp pages, the message will be sent and ignored.
@@ -2124,52 +2141,34 @@ function onNavigateToTab() {
 }
 
 // Sidepanel-specific functionality
-// Set initial side panel behavior based on user preference
-const initSidePanelBehavior = async () => {
-  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
-  if (!browser?.sidePanel) {
+async function applyToolbarSidePanelBehavior() {
+  if (!browser?.sidePanel?.setPanelBehavior) {
     return;
   }
+  const useSidePanelAsDefault =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  await browser.sidePanel.setPanelBehavior({
+    openPanelOnActionClick: useSidePanelAsDefault,
+  });
+}
 
-  try {
-    // Wait for controller to be initialized
-    await isInitialized;
-
-    // Get user preference (default to false for side panel)
-    const useSidePanelAsDefault =
-      controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? false;
-
-    // Set panel behavior based on preference
-    if (browser?.sidePanel?.setPanelBehavior) {
-      await browser.sidePanel.setPanelBehavior({
-        openPanelOnActionClick: useSidePanelAsDefault,
-      });
-    }
-  } catch (error) {
-    console.error('Error setting side panel behavior:', error);
-  }
-};
-
-initSidePanelBehavior();
-
-// Listen for preference changes to update side panel behavior dynamically
-const setupPreferenceListener = async () => {
-  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
+/**
+ * Sets initial side panel toolbar behavior after startup, then subscribes only to
+ * `useSidePanelAsDefault` changes (not every PreferencesController update).
+ */
+const setupSidePanelToolbarBehavior = async () => {
   if (!browser?.sidePanel) {
     return;
   }
 
   try {
     await isInitialized;
+    await applyToolbarSidePanelBehavior();
 
-    // Listen for preference changes using the controller messenger
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (state) => {
-        const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? false;
-
+      (useSidePanelAsDefault) => {
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -2180,13 +2179,15 @@ const setupPreferenceListener = async () => {
             );
         }
       },
+      (preferencesControllerState) =>
+        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    console.error('Error setting up preference listener:', error);
+    console.error('Error setting side panel toolbar behavior:', error);
   }
 };
 
-setupPreferenceListener();
+setupSidePanelToolbarBehavior();
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {

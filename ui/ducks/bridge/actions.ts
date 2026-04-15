@@ -10,13 +10,19 @@ import {
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addNetwork,
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import {
   bridgeSlice,
@@ -35,7 +41,12 @@ import {
   getLastSelectedChainId,
   getToToken,
 } from './selectors';
-import { getDefaultToToken, getMaybeHexChainId } from './utils';
+import {
+  getDefaultToToken,
+  getMaybeHexChainId,
+  isSupportedBridgeChain,
+} from './utils';
+import { BridgeMissingNetworkConfigError } from './errors';
 
 const {
   setFromToken: setFromTokenAction,
@@ -157,9 +168,40 @@ export const setFromToken = (token: TokenPayload) => {
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
     const isNonEvm = isNonEvmChainId(chainId);
+    const maybeHexChainId = getMaybeHexChainId(chainId);
+
+    // Deep links and other external callers can inject tokens from arbitrary chains;
+    // this check prevents invalid state from propagating to selectors and components that
+    // assume fromToken is always on a supported, enabled chain.
+    if (!isSupportedBridgeChain(chainId)) {
+      return;
+    }
+
+    if (maybeHexChainId) {
+      const networkConfigs =
+        getMultichainNetworkConfigurationsByChainId(getState());
+      if (!networkConfigs[maybeHexChainId]) {
+        const featuredRpc = FEATURED_RPCS.find(
+          (rpc) => rpc.chainId === maybeHexChainId,
+        );
+        if (featuredRpc) {
+          // EVM chain is supported but not yet in the user's network configs.
+          // Auto-enable it via addNetwork, then fall through so the rest of
+          // setFromToken runs immediately with the updated state; no external
+          // retry needed and no risk of spurious re-dispatches.
+          await dispatch(addNetwork(featuredRpc));
+        } else {
+          // Supported bridge chain absent from both user configs and FEATURED_RPCS —
+          // this is a configuration bug that must be fixed in FEATURED_RPCS.
+          captureException(
+            new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+          );
+          return;
+        }
+      }
+    }
 
     const currentChainId = getMultichainProviderConfig(getState()).chainId;
-    const maybeHexChainId = getMaybeHexChainId(chainId);
     const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );

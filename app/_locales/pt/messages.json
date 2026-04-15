@@ -3105,7 +3105,8 @@
     "message": "Prossiga para garantir que:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Sua Ledger esteja desbloqueada"
+    "message": "Sua $1 esteja desbloqueada",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "O app Ethereum esteja aberto"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Uma taxa horária paga entre traders para manter os preços alinhados com o mercado. Se a taxa for positiva, posições long pagam posições short. Se for negativa, posições short pagam posições long."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "O sistema de negociação de perpétuos não está disponível em sua região"
   },
   "perpsGiveFeedback": {
     "message": "Deixe seus comentários"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transação já confirmada"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Não pudemos cancelar sua transação antes de ser confirmada na blockchain."
   },
   "yourWalletIsReady": {
     "message": "Sua carteira está pronta"

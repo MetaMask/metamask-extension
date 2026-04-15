@@ -3105,7 +3105,8 @@
     "message": "Continuez à vérifier que :"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Votre Ledger est déverrouillé"
+    "message": "Votre $1 est déverrouillé",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "L’application Ethereum est ouverte"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Des frais horaires versés par les traders à d’autres traders afin d’aligner les prix sur ceux appliqués par le marché. Si le taux est positif, les acheteurs paient les vendeurs. S’il est négatif, les vendeurs paient les acheteurs."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Le trading de contrats à terme perpétuels n’est pas disponible dans votre région"
   },
   "perpsGiveFeedback": {
     "message": "Donnez-nous votre avis"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transaction déjà confirmée"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Nous n'avons pas pu annuler votre transaction avant qu'elle ne soit confirmée sur la blockchain."
   },
   "yourWalletIsReady": {
     "message": "Votre portefeuille est prêt"

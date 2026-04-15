@@ -9,13 +9,13 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { getConnectivityControllerMessenger } from '../messengers/connectivity';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ConnectivityControllerInit } from './connectivity-controller-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<ConnectivityControllerMessenger>
+  MessengerClientInitRequest<ConnectivityControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger<
     MockAnyNamespace,

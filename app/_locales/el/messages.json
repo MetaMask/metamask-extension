@@ -3105,7 +3105,8 @@
     "message": "Συνεχίστε για να βεβαιωθείτε ότι:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Το Ledger σας είναι ξεκλείδωτο"
+    "message": "Το $1 σας είναι ξεκλείδωτο",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Η εφαρμογή Ethereum είναι ανοιχτή"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Μια ωριαία χρέωση που καταβάλλεται μεταξύ των traders για να παραμένουν οι τιμές κοντά στην τιμή αγοράς. Αν η τιμή είναι θετική, οι θέσεις αγορών (long) πληρώνουν τις θέσεις πωλήσεων (short). Αν είναι αρνητική, οι θέσεις πωλήσεων (short) πληρώνουν τις θέσεις αγορών (long)."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Οι συναλλαγές με perpetuals δεν είναι διαθέσιμες στην περιοχή σας"
   },
   "perpsGiveFeedback": {
     "message": "Πείτε μας τη γνώμη σας"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Η συναλλαγή έχει ήδη επιβεβαιωθεί"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Δεν μπορέσαμε να ακυρώσουμε τη συναλλαγή σας πριν επιβεβαιωθεί από το blockchain."
   },
   "yourWalletIsReady": {
     "message": "Το πορτοφόλι σας είναι έτοιμο!"

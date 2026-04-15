@@ -3105,7 +3105,8 @@
     "message": "Lanjut untuk memastikan:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledger sudah dibuka"
+    "message": "$1 sudah dibuka",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Aplikasi Ethereum sudah dibuka"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Biaya per jam yang dibayarkan antar trader untuk mempertahankan harga agar sesuai dengan pasar. Jika nilainya positif, pemegang posisi long membayar pemegang posisi short. Jika negatif, pemegang posisi short membayar pemegang posisi long."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Perdagangan perpetual tidak tersedia di wilayah Anda"
   },
   "perpsGiveFeedback": {
     "message": "Berikan masukan kepada kami"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transaksi telah dikonfirmasi"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Kami tidak dapat membatalkan transaksi Anda sebelum dikonfirmasi di blockchain."
   },
   "yourWalletIsReady": {
     "message": "Dompet Anda sudah siap"

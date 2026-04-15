@@ -24,9 +24,6 @@ describe.skip('Ledger Swap', function () {
         localNodeOptions: {
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
         },
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockLedgerTransactionRequests,
       },

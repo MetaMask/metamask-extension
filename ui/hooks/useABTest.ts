@@ -5,6 +5,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { resolveABTestAssignment } from '../../shared/lib/ab-testing/resolve-ab-test-assignment';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import { getRemoteFeatureFlags } from '../selectors/remote-feature-flags';
 
@@ -64,25 +65,6 @@ const rememberExposureAssignment = (assignmentKey: string) => {
   trackedExposureAssignments.add(assignmentKey);
 };
 
-const getAssignedVariantName = (flagData: unknown): string | undefined => {
-  if (typeof flagData === 'string') {
-    return flagData;
-  }
-
-  const namedFlagData = flagData as { name?: unknown } | null;
-
-  if (
-    typeof flagData === 'object' &&
-    flagData !== null &&
-    'name' in flagData &&
-    typeof namedFlagData?.name === 'string'
-  ) {
-    return namedFlagData.name;
-  }
-
-  return undefined;
-};
-
 /**
  * Test-only helper for clearing the module-level exposure cache.
  */
@@ -118,18 +100,10 @@ export function useABTest<TVariants extends ABTestVariants>(
 ): UseABTestResult<TVariants> {
   const { trackEvent } = useContext(MetaMetricsContext);
   const flags = useSelector(getRemoteFeatureFlags);
-  const flagData = flags?.[flagKey];
-  const assignedVariantName = getAssignedVariantName(flagData);
-
-  const hasVariant = (key: string) =>
-    Object.prototype.hasOwnProperty.call(variants, key);
-
-  const variantName =
-    assignedVariantName && hasVariant(assignedVariantName)
-      ? assignedVariantName
-      : 'control';
-  const isActive = Boolean(
-    assignedVariantName && hasVariant(assignedVariantName),
+  const { variantName, isActive } = resolveABTestAssignment(
+    flags,
+    flagKey,
+    Object.keys(variants),
   );
   const variationDisplayName =
     exposureMetadata?.variationNames?.[

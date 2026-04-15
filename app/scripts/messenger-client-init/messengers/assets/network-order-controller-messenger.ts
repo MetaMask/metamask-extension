@@ -1,32 +1,18 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkRemovedEvent,
-  NetworkControllerSetActiveNetworkAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | NetworkControllerGetStateAction
-  | NetworkControllerSetActiveNetworkAction;
-type Events =
-  | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent;
-
-export type NetworkOrderControllerMessenger = ReturnType<
-  typeof getNetworkOrderControllerMessenger
->;
+import { NetworkOrderControllerMessenger } from '../../../controllers/network-order';
 
 export function getNetworkOrderControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<NetworkOrderControllerMessenger>,
+    MessengerEvents<NetworkOrderControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'NetworkOrderController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const controllerMessenger: NetworkOrderControllerMessenger = new Messenger({
     namespace: 'NetworkOrderController',
     parent: messenger,
   });

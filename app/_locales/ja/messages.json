@@ -3105,7 +3105,8 @@
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledgerのロックが解除されていること"
+    "message": "$1のロックが解除されていること",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "お住まいの地域ではパーペチュアル取引は利用できません"
   },
   "perpsGiveFeedback": {
     "message": "ご意見をお聞かせください"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourTransactionConfirmed": {
-    "message": "トランザクションはすでに確定済みです"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "ブロックチェーン上で確定しているため、トランザクションをキャンセルできませんでした。"
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"

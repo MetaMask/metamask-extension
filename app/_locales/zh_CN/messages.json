@@ -3105,7 +3105,8 @@
     "message": "继续以确保："
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "您的 Ledger 已解锁"
+    "message": "您的 $1 已解锁",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "以太坊应用已打开"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "交易者之间为使价格与市场保持一致而支付的每小时费用。当费率为正时，多头向空头支付费用；为负时，空头向多头支付费用。"
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "您所在的地区不支持永续合约交易"
   },
   "perpsGiveFeedback": {
     "message": "向我们提供反馈"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourTransactionConfirmed": {
-    "message": "交易已确认"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "在区块链上确认之前，我们无法取消您的交易。"
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"
