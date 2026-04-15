@@ -39,10 +39,10 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
-  private readonly networkPicker = '.mm-picker-network';
+  private readonly selectedNetworkItem = (networkName: string) =>
+    `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
 
-  private readonly toastBannerButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+  private readonly networkPicker = '.mm-picker-network';
 
   private readonly notificationCounterMenuIcon = {
     testId: 'notifications-tag-counter__unread-dot',
@@ -242,9 +242,25 @@ class HeaderNavbar {
    */
   async openDappNetworkMenu(): Promise<void> {
     console.log('Opening dapp network menu from control bar');
-    // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
-    await this.driver.clickElementSafe(this.toastBannerButton, 3000);
     await this.driver.clickElement(this.dappNetworkButton);
+  }
+
+  /**
+   * Opens the connection menu popover and verifies the network shown for the
+   * connected dapp matches the expected name.
+   *
+   * @param expectedNetwork - The network name expected to appear in the popover.
+   */
+  async checkConnectedSitePopoverNetwork(
+    expectedNetwork: string,
+  ): Promise<void> {
+    console.log(
+      `Verify the connected site popover network is: ${expectedNetwork}`,
+    );
+    await this.openDappNetworkMenu();
+    await this.driver.waitForSelector(
+      this.selectedNetworkItem(expectedNetwork),
+    );
   }
 
   /**

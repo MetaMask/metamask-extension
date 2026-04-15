@@ -521,12 +521,37 @@ describe('PerpsStreamBridge', () => {
 
       expect(controller.subscribeToPrices).toHaveBeenCalledWith({
         symbols: ['ETH', 'BTC'],
+        includeMarketData: undefined,
         callback: expect.any(Function),
       });
       const callback = controller.subscribeToPrices.mock.calls[0][0]
         .callback as (data: unknown) => void;
       callback({ price: '100' });
       expect(emit).toHaveBeenCalledWith('prices', { price: '100' });
+    });
+
+    it('forwards includeMarketData when requested', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivatePriceStream as (p: {
+          symbols: string[];
+          includeMarketData?: boolean;
+        }) => Promise<string>
+      )({
+        symbols: ['ETH'],
+        includeMarketData: true,
+      });
+
+      expect(controller.subscribeToPrices).toHaveBeenCalledWith({
+        symbols: ['ETH'],
+        includeMarketData: true,
+        callback: expect.any(Function),
+      });
     });
 
     it('deactivatePriceStream tears down price subscription', async () => {

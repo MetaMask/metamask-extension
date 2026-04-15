@@ -7,8 +7,8 @@ import {
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import {
-  bridgeTransaction,
   getBridgeFixtures,
   EventTypes,
   EXPECTED_EVENT_TYPES,
@@ -29,12 +29,11 @@ describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        false,
-        true,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '0' });
 

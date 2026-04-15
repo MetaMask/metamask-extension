@@ -77,7 +77,7 @@ export function usePerpsLivePrices(
         symbol: update.symbol,
         price: update.price,
         timestamp: ts ?? Date.now(),
-        markPrice: mark ?? update.price,
+        markPrice: mark,
       };
     }
   });

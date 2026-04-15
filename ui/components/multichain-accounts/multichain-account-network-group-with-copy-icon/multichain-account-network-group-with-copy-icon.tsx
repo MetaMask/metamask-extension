@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import classnames from 'clsx';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
@@ -20,13 +19,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  getIsDefaultAddressEnabled,
-  getShowDefaultAddressPreference,
-} from '../../../selectors/selectors';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE } from '../../../../shared/constants/default-address';
+import { useDefaultAddress } from '../hooks/useDefaultAddress';
 
 const MAX_NETWORK_AVATARS = 4;
 
@@ -35,9 +30,9 @@ export type MultichainAccountNetworkGroupWithCopyIconProps = {
 };
 
 /**
- * Displays network avatars with a copy icon. When the showDefaultAddress
- * preference is enabled, also displays the shortened default address.
- * Click copies the default address and shows "Copied" briefly.
+ * Displays network avatars with a copy icon. When a default address
+ * is available, also displays the shortened default address.
+ * Click copies the default address and shows a message.
  *
  * @param options0
  * @param options0.groupId
@@ -46,28 +41,17 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
   groupId,
 }: MultichainAccountNetworkGroupWithCopyIconProps) => {
   const t = useI18nContext();
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddressPreference = useSelector(
-    getShowDefaultAddressPreference,
-  );
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, groupId),
-  );
-  const shouldShowDefaultAddress =
-    isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-
-  const handleDefaultAddressClick = useCallback(() => {
-    if (defaultAddress) {
-      handleCopy(normalizeSafeAddress(defaultAddress));
-    }
-  }, [defaultAddress, handleCopy]);
+  const {
+    defaultAddress,
+    defaultAddressScope,
+    displayDefaultAddress,
+    addressCopied,
+    handleDefaultAddressClick,
+  } = useDefaultAddress(groupId);
 
   return (
     <Box
-      onClick={shouldShowDefaultAddress ? handleDefaultAddressClick : undefined}
+      onClick={displayDefaultAddress ? handleDefaultAddressClick : undefined}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       backgroundColor={
@@ -79,7 +63,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       gap={1}
       className={classnames(
         'rounded-lg h-6',
-        shouldShowDefaultAddress && 'cursor-pointer',
+        displayDefaultAddress && 'cursor-pointer',
       )}
       data-testid="network-group-with-copy-icon"
     >
@@ -87,7 +71,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
         groupId={groupId}
         limit={MAX_NETWORK_AVATARS}
       />
-      {shouldShowDefaultAddress && (
+      {displayDefaultAddress && defaultAddress && (
         <Text
           ellipsis
           variant={TextVariant.BodySm}
@@ -99,7 +83,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
           data-testid="default-address-container"
         >
           {addressCopied
-            ? t('addressCopied')
+            ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
             : shortenAddress(normalizeSafeAddress(defaultAddress))}
         </Text>
       )}

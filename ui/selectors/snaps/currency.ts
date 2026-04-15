@@ -1,4 +1,4 @@
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 
 export const getMemoizedCurrentCurrency = createDeepEqualSelector(

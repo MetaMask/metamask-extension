@@ -11,6 +11,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import {
   BackgroundColor,
   BorderRadius,
@@ -57,6 +59,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onAddFunds
  * @param props.initialLeverage
  * @param props.sizeDecimals
+ * @param props.markPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -77,8 +80,18 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onAddFunds,
   initialLeverage,
   sizeDecimals,
+  markPrice,
 }) => {
   const t = useI18nContext();
+
+  // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
+  const marketInfo = usePerpsMarketInfo(asset);
+
+  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
+  const { feeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: orderType ?? 'market',
+  });
 
   // Use custom hook for form state management
   const {
@@ -107,6 +120,10 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     orderType,
     initialLeverage,
     sizeDecimals,
+    maxLeverage,
+    szDecimals: marketInfo?.szDecimals,
+    markPrice,
+    feeRate,
   });
 
   const isLong = formState.direction === 'long';
@@ -245,6 +262,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onClosePercentChange={handleClosePercentChange}
             asset={asset}
             currentPrice={currentPrice}
+            sizeDecimals={sizeDecimals}
           />
         )}
 
@@ -300,6 +318,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            leverage={
+              mode === 'modify' && existingPosition?.leverage
+                ? existingPosition.leverage
+                : formState.leverage
+            }
             entryPrice={
               mode === 'modify' && existingPosition?.entryPrice
                 ? (() => {
@@ -310,6 +333,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                   })()
                 : undefined
             }
+            orderType={formState.type}
+            limitPrice={formState.limitPrice}
           />
         )}
 

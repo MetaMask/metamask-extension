@@ -27,8 +27,7 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
-import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
-import { MultichainAccountNetworkGroupWithCopyIcon } from '../multichain-account-network-group-with-copy-icon';
+import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-default-address';
 
 type AccountCellAvatarProps = {
   seedAddress: string;
@@ -78,7 +77,7 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
-  showHoverableNetworkGroup?: boolean;
+  showDefaultAddress?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -94,7 +93,7 @@ export const MultichainAccountCell = ({
   disableHoverEffect = false,
   connectionStatus,
   privacyMode = false,
-  showHoverableNetworkGroup = false,
+  showDefaultAddress = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
@@ -159,23 +158,14 @@ export const MultichainAccountCell = ({
               {walletName}
             </TextDeprecated>
           )}
-          {showHoverableNetworkGroup && (
+          {showDefaultAddress && (
             <Box
               flexDirection={BoxFlexDirection.Row}
               marginLeft={3}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               data-testid="multichain-account-cell-hovered-addresses"
             >
-              <MultichainHoveredAddressRowsList
-                groupId={accountId}
-                showAccountHeaderAndBalance={false}
-                showDefaultAddressSection={false}
-                showViewAllButton={false}
-              >
-                <MultichainAccountNetworkGroupWithCopyIcon
-                  groupId={accountId}
-                />
-              </MultichainHoveredAddressRowsList>
+              <MultichainAccountCellDefaultAddress groupId={accountId} />
             </Box>
           )}
         </BoxDeprecated>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -13,6 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export type DefiReferralConsentProps = {
   onActionComplete: (result: {
@@ -64,17 +65,13 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   learnMoreUrl,
 }) => {
   const t = useI18nContext();
-  const [isChecked, setIsChecked] = useState(true);
+  const { value: isChecked, toggle } = useBoolean(true);
 
   const handleSubmit = () => {
     onActionComplete({
       approved: isChecked,
       selectedAddress,
     });
-  };
-
-  const handleCheckboxClick = () => {
-    setIsChecked(!isChecked);
   };
 
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
@@ -122,7 +119,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           <Checkbox
             id="defi-referral-consent-checkbox"
             isSelected={isChecked}
-            onChange={handleCheckboxClick}
+            onChange={toggle}
             label={t('defiReferralCheckboxLabel')}
             labelProps={{
               variant: TextVariant.BodySm,

@@ -40,14 +40,10 @@ export const PERPS_CONSTANTS = {
 
   RECENT_ACTIVITY_LIMIT: 3,
   FILLS_LOOKBACK_MS: 90 * 24 * 60 * 60 * 1000, // 3 months in milliseconds
-} as const;
 
-/**
- * HyperLiquid taker fee rate for market orders.
- * Used to estimate fees in close/reverse position flows.
- * TODO: Replace with dynamic fee from the API when available.
- */
-export const PERPS_MARKET_ORDER_FEE_RATE = 0.0001;
+  /** Max markets shown in the explore section (aligned with mobile). */
+  EXPLORE_MARKETS_LIMIT: 8,
+} as const;
 
 /**
  * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).

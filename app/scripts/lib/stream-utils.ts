@@ -13,6 +13,8 @@ type StreamLike = {
   _writableState?: { ended: boolean };
 };
 
+// TODO: Move these to `shared/lib/stream-utils.ts`.
+
 /**
  * Sets up stream multiplexing for the given stream
  *

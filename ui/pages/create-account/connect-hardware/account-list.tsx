@@ -17,6 +17,7 @@ import {
   ButtonIconSize,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Checkbox,
   IconName,
   Text,
@@ -25,7 +26,7 @@ import {
 } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 
-import { getURLHostName } from '../../../helpers/utils/util';
+import { getURLHostName, shortenString } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
@@ -195,18 +196,27 @@ const AccountList = ({
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              className="hw-account-list__item__checkbox"
+              justifyContent={BoxJustifyContent.Between}
+              className="hw-account-list__item__main"
             >
-              <Checkbox
-                id={`address-${idx}`}
-                isSelected={checked}
-                isDisabled={accountAlreadyConnected}
-                onChange={() => {
-                  onAccountChange(value);
-                }}
-                label={
-                  <Box asChild className="hw-account-list__item__label">
-                    <span>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                className="hw-account-list__item__checkbox"
+              >
+                <Checkbox
+                  id={`address-${idx}`}
+                  isSelected={checked}
+                  isDisabled={accountAlreadyConnected}
+                  onChange={() => {
+                    onAccountChange(value);
+                  }}
+                  label={
+                    <Box
+                      flexDirection={BoxFlexDirection.Row}
+                      alignItems={BoxAlignItems.Center}
+                      className="hw-account-list__item__label"
+                    >
                       <Text
                         asChild
                         variant={TextVariant.BodySm}
@@ -214,20 +224,27 @@ const AccountList = ({
                       >
                         <span>{account.index + 1}</span>
                       </Text>
-                      {`${account.address.slice(0, 4)}...${account.address.slice(
-                        -4,
-                      )}`}
-                      <Text
-                        asChild
-                        variant={TextVariant.BodySm}
-                        className="hw-account-list__item__balance"
-                      >
-                        <span>{account.balance}</span>
+                      <Text asChild variant={TextVariant.BodyMd}>
+                        <span>
+                          {shortenString(account.address, {
+                            truncatedStartChars: 4,
+                            truncatedEndChars: 4,
+                            truncatedCharLimit: 4,
+                            skipCharacterInEnd: false,
+                          })}
+                        </span>
                       </Text>
-                    </span>
-                  </Box>
-                }
-              />
+                    </Box>
+                  }
+                />
+              </Box>
+              <Text
+                asChild
+                variant={TextVariant.BodySm}
+                className="hw-account-list__item__balance"
+              >
+                <span>{account.balance}</span>
+              </Text>
             </Box>
             <ButtonIcon
               className="hw-account-list__item__link"

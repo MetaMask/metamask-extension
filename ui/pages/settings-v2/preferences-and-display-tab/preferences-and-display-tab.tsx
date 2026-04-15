@@ -70,6 +70,7 @@ const ManageInstitutionalWalletItem = createToggleItem({
   selector: getManageInstitutionalWallets,
   action: setManageInstitutionalWallets,
   dataTestId: 'manage-institutional-wallets',
+  trackEventProperty: 'manage_institutional_wallets',
 });
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */

@@ -1,11 +1,15 @@
 import { createSelector } from 'reselect';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  selectRequiredTransactionHashes,
+  selectRequiredTransactionIds,
+} from './transactionController';
 
 const selectTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.transactions ?? EMPTY_ARRAY;
@@ -57,7 +61,15 @@ export const selectEvmTransactionsForToast = createSelector(
   selectTransactions,
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
-  (rawTransactions, bridgeApprovalIds, crossChainBridgeIds) => {
+  selectRequiredTransactionIds,
+  selectRequiredTransactionHashes,
+  (
+    rawTransactions,
+    bridgeApprovalIds,
+    crossChainBridgeIds,
+    requiredTransactionIds,
+    requiredTransactionHashes,
+  ) => {
     if (!rawTransactions?.length) {
       return EMPTY_ARRAY;
     }
@@ -79,7 +91,12 @@ export const selectEvmTransactionsForToast = createSelector(
         Boolean(type) &&
         !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
         !bridgeApprovalIds.has(transaction.id?.toLowerCase()) &&
-        !crossChainBridgeIds.has(transaction.id)
+        !crossChainBridgeIds.has(transaction.id) &&
+        !requiredTransactionIds.has(transaction.id) &&
+        !(
+          transaction.hash &&
+          requiredTransactionHashes.has(transaction.hash.toLowerCase())
+        )
       );
     });
   },

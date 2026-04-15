@@ -85,7 +85,7 @@ describe('usePerpsLivePrices', () => {
     });
   });
 
-  it('uses fallback timestamp and markPrice when absent', () => {
+  it('uses fallback timestamp and preserves missing markPrice', () => {
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(999);
     mockUsePerpsChannel.mockReturnValue({
       data: [{ symbol: 'BTC', price: '100' }] as PriceUpdate[],
@@ -99,7 +99,7 @@ describe('usePerpsLivePrices', () => {
         symbol: 'BTC',
         price: '100',
         timestamp: 999,
-        markPrice: '100',
+        markPrice: undefined,
       },
     });
 

@@ -27,7 +27,7 @@ import {
   getIsStxEnabled,
   getValidationErrors,
   getPriceImpact,
-  getFormattedPriceImpact,
+  getFormattedPriceImpactPercentage,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
@@ -105,7 +105,7 @@ export const MultichainBridgeQuoteCard = ({
   );
 
   const priceImpact = useSelector(getPriceImpact);
-  const formattedPriceImpact = useSelector(getFormattedPriceImpact);
+  const formattedPriceImpact = useSelector(getFormattedPriceImpactPercentage);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
