@@ -349,12 +349,12 @@ describe('usePerpsMarketFills', () => {
 
     it('re-fetches after TTL expires', async () => {
       jest.useFakeTimers();
-      const nowSpy = jest
-        .spyOn(Date, 'now')
-        .mockReturnValue(1_000_000);
+      const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1_000_000);
 
       try {
-        setRestFillsResponse([makeFill({ orderId: 'fresh-1', timestamp: 1000 })]);
+        setRestFillsResponse([
+          makeFill({ orderId: 'fresh-1', timestamp: 1000 }),
+        ]);
 
         const { waitForNextUpdate: waitFirst } = renderHook(() =>
           usePerpsMarketFills({ symbol: 'BTC' }),
@@ -365,7 +365,9 @@ describe('usePerpsMarketFills', () => {
 
         // Advance time past the 30s TTL
         nowSpy.mockReturnValue(1_000_000 + 30_001);
-        setRestFillsResponse([makeFill({ orderId: 'stale-1', timestamp: 2000 })]);
+        setRestFillsResponse([
+          makeFill({ orderId: 'stale-1', timestamp: 2000 }),
+        ]);
 
         const { waitForNextUpdate: waitSecond } = renderHook(() =>
           usePerpsMarketFills({ symbol: 'BTC' }),

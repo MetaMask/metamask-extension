@@ -2,8 +2,13 @@ import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import type { MarketInfo } from '@metamask/perps-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_PRIVATE_KEY,
+} from '../../../test/data/mock-accounts';
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import {
+  clearPerpsMarketInfoModuleCache,
   resetPerpsMarketInfoModuleCacheForTesting,
   usePerpsMarketInfo,
 } from './usePerpsMarketInfo';
@@ -28,6 +33,13 @@ const defaultPerpsMetamask = {
   isUnlocked: true,
   isTestnet: false,
   activeProvider: 'hyperliquid',
+  internalAccounts: {
+    selectedAccount: MOCK_ACCOUNT_EOA.id,
+    accounts: {
+      [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+      [MOCK_ACCOUNT_PRIVATE_KEY.id]: MOCK_ACCOUNT_PRIVATE_KEY,
+    },
+  },
 };
 
 describe('usePerpsMarketInfo', () => {
@@ -38,10 +50,9 @@ describe('usePerpsMarketInfo', () => {
 
   it('returns undefined before the fetch resolves', () => {
     mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
-    const { result } = renderHookWithProvider(
-      () => usePerpsMarketInfo('BTC'),
-      { metamask: defaultPerpsMetamask },
-    );
+    const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
+      metamask: defaultPerpsMetamask,
+    });
     expect(result.current).toBeUndefined();
   });
 
@@ -190,6 +201,70 @@ describe('usePerpsMarketInfo', () => {
     await waitFor(() => {
       expect(testResult.current?.szDecimals).toBe(1);
     });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+  });
+
+  it('refetches when selected account address changes', async () => {
+    const marketsA = [makeMarketInfo({ name: 'BTC', szDecimals: 5 })];
+    const marketsB = [makeMarketInfo({ name: 'BTC', szDecimals: 3 })];
+
+    let call = 0;
+    mockSubmitRequestToBackground.mockImplementation(async () => {
+      call += 1;
+      return call === 1 ? marketsA : marketsB;
+    });
+
+    const { result, store } = renderHookWithProvider(
+      () => usePerpsMarketInfo('BTC'),
+      { metamask: defaultPerpsMetamask },
+    );
+
+    await waitFor(() => {
+      expect(result.current?.szDecimals).toBe(5);
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      store?.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: {
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_PRIVATE_KEY.id,
+            accounts: defaultPerpsMetamask.internalAccounts.accounts,
+          },
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    });
+    await waitFor(() => {
+      expect(result.current?.szDecimals).toBe(3);
+    });
+  });
+
+  it('refetches after clearPerpsMarketInfoModuleCache', async () => {
+    const markets = [makeMarketInfo({ name: 'BTC' })];
+    mockSubmitRequestToBackground.mockResolvedValue(markets);
+
+    const { unmount, waitForNextUpdate } = renderHookWithProvider(
+      () => usePerpsMarketInfo('BTC'),
+      { metamask: defaultPerpsMetamask },
+    );
+
+    await waitForNextUpdate();
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+    clearPerpsMarketInfoModuleCache();
+    unmount();
+
+    const { waitForNextUpdate: wait2 } = renderHookWithProvider(
+      () => usePerpsMarketInfo('BTC'),
+      { metamask: defaultPerpsMetamask },
+    );
+
+    await wait2();
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
   });
 });

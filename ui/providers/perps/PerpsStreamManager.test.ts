@@ -187,7 +187,6 @@ describe('PerpsStreamManager', () => {
         jest.useRealTimers();
       }
     });
-
   });
 
   describe('init', () => {

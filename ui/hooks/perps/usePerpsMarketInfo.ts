@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   selectPerpsActiveProvider,
   selectPerpsIsTestnet,
@@ -12,29 +13,32 @@ type EnvCacheEntry = {
   inflight: Promise<MarketInfo[]> | null;
 };
 
-const cacheByEnvKey = new Map<string, EnvCacheEntry>();
+const cacheByKey = new Map<string, EnvCacheEntry>();
 
-function getEnvCacheEntry(envKey: string): EnvCacheEntry {
-  let entry = cacheByEnvKey.get(envKey);
+function getCacheEntry(cacheKey: string): EnvCacheEntry {
+  let entry = cacheByKey.get(cacheKey);
   if (!entry) {
     entry = { cached: null, inflight: null };
-    cacheByEnvKey.set(envKey, entry);
+    cacheByKey.set(cacheKey, entry);
   }
   return entry;
 }
 
-function peekCachedMarketInfos(envKey: string): MarketInfo[] | undefined {
-  const cached = cacheByEnvKey.get(envKey)?.cached;
+function peekCachedMarketInfos(cacheKey: string): MarketInfo[] | undefined {
+  const cached = cacheByKey.get(cacheKey)?.cached;
   return cached ?? undefined;
 }
 
-function fetchMarketInfos(envKey: string): Promise<MarketInfo[]> {
-  const entry = getEnvCacheEntry(envKey);
+function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
+  const entry = getCacheEntry(cacheKey);
   if (entry.cached) {
     return Promise.resolve(entry.cached);
   }
   if (!entry.inflight) {
-    entry.inflight = submitRequestToBackground<MarketInfo[]>('perpsGetMarkets', [{}])
+    entry.inflight = submitRequestToBackground<MarketInfo[]>(
+      'perpsGetMarkets',
+      [{}],
+    )
       .then((infos) => {
         entry.cached = infos;
         entry.inflight = null;
@@ -49,10 +53,19 @@ function fetchMarketInfos(envKey: string): Promise<MarketInfo[]> {
 }
 
 /**
- * Clears the module-level market info cache. Intended for unit tests only.
+ * Clears all module-level `MarketInfo` cache entries and drops in-flight
+ * requests (callers hold their own `EnvCacheEntry` references; stale resolves
+ * write only to orphaned entries). Invoked when the Perps stream layer resets
+ * (account switch, `clearAllCaches`, etc.) so UI never reads cross-account or
+ * cross-session stale metadata.
  */
+export function clearPerpsMarketInfoModuleCache(): void {
+  cacheByKey.clear();
+}
+
+/** @internal Alias for unit tests. */
 export function resetPerpsMarketInfoModuleCacheForTesting(): void {
-  cacheByEnvKey.clear();
+  clearPerpsMarketInfoModuleCache();
 }
 
 /**
@@ -62,9 +75,11 @@ export function resetPerpsMarketInfoModuleCacheForTesting(): void {
  * (e.g. szDecimals, maxLeverage as a number, marginTableId), which are
  * required for accurate pre-trade calculations that mirror the mobile app.
  *
- * The market list is fetched once per Perps environment (active provider +
- * mainnet/testnet) and cached at module level so navigating between detail
- * pages does not trigger additional REST calls for the same environment.
+ * The market list is fetched once per Perps scope (active provider, mainnet
+ * vs testnet, and selected wallet address) and cached at module level so
+ * navigating between detail pages does not trigger additional REST calls for
+ * the same scope. `PerpsStreamManager` clears this cache alongside its own
+ * channels on account / stream reset.
  * Until the fetch resolves the hook returns `undefined`, and callers should
  * fall back to safe defaults (e.g. szDecimals = 0).
  *
@@ -74,26 +89,30 @@ export function resetPerpsMarketInfoModuleCacheForTesting(): void {
 export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const isTestnet = useSelector(selectPerpsIsTestnet);
-  const envKey = useMemo(
-    () => `${activeProvider}:${isTestnet ? 'testnet' : 'mainnet'}`,
-    [activeProvider, isTestnet],
-  );
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
+
+  const marketInfoCacheKey = useMemo(() => {
+    const net = isTestnet ? 'testnet' : 'mainnet';
+    const addressKey = (selectedAddress ?? '').toLowerCase();
+    return `${activeProvider}:${net}:${addressKey}`;
+  }, [activeProvider, isTestnet, selectedAddress]);
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
-    () => peekCachedMarketInfos(envKey) ?? [],
+    () => peekCachedMarketInfos(marketInfoCacheKey) ?? [],
   );
 
   useEffect(() => {
     let cancelled = false;
 
-    const cached = peekCachedMarketInfos(envKey);
+    const cached = peekCachedMarketInfos(marketInfoCacheKey);
     if (cached) {
       setMarketInfos(cached);
     } else {
       setMarketInfos([]);
     }
 
-    fetchMarketInfos(envKey).then((infos) => {
+    fetchMarketInfos(marketInfoCacheKey).then((infos) => {
       if (!cancelled) {
         setMarketInfos(infos);
       }
@@ -102,7 +121,7 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
     return () => {
       cancelled = true;
     };
-  }, [envKey]);
+  }, [marketInfoCacheKey]);
 
   return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());
 }

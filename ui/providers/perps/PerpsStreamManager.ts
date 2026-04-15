@@ -36,6 +36,7 @@ import type {
   CandleData,
   CandlePeriod,
 } from '@metamask/perps-controller';
+import { clearPerpsMarketInfoModuleCache } from '../../hooks/perps/usePerpsMarketInfo';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
@@ -438,6 +439,7 @@ class PerpsStreamManager {
       this.orderBook.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
+      clearPerpsMarketInfoModuleCache();
     }
 
     this.initializedAddress = address;
@@ -645,6 +647,7 @@ class PerpsStreamManager {
     this.orderBook.clearCache();
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
+    clearPerpsMarketInfoModuleCache();
   }
 
   /**
@@ -665,6 +668,7 @@ class PerpsStreamManager {
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
     this._lastStreamUpdateAt = 0;
+    clearPerpsMarketInfoModuleCache();
   }
 }
 
