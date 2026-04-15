@@ -391,7 +391,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(\"We couldn't load this page.\"),
+          screen.getByText("We couldn't load this page."),
         ).toBeInTheDocument();
       });
 
@@ -423,7 +423,7 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(\"We couldn't load this page.\"),
+          screen.getByText("We couldn't load this page."),
         ).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();

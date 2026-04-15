@@ -177,7 +177,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   ]);
 
   return (
-<<<<<<< HEAD
     <>
       <Modal
         isOpen={isOpen}
@@ -191,70 +190,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
           </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-=======
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="perps-reverse-position-modal"
-    >
-      <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{t('perpsReversePosition')}</ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsDirection')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {directionLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsEstSize')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {estSizeLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsFees')}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                data-testid="perps-reverse-fee-value"
-              >
-                {estimatedFees !== undefined
-                  ? formatCurrencyWithMinThreshold(estimatedFees, 'USD')
-                  : '--'}
-              </Text>
-            </Box>
-            {error && (
->>>>>>> b96b80b3c2 (fix: show -- instead of $0.00 when fee rate is loading)
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
