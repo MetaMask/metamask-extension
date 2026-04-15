@@ -37,6 +37,11 @@ import {
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import {
+  AB_TEST_ANALYTICS_MAPPINGS,
+  clearABTestAnalyticsMappings,
+} from '../../../shared/lib/ab-testing/ab-test-analytics';
+import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -51,6 +56,10 @@ import {
   Preferences,
   PreferencesControllerState,
 } from './preferences-controller';
+
+const TEST_BADGE_FLAG_KEY = 'testTEST338AbtestAttentionBadge';
+const TEST_QUICK_AMOUNTS_FLAG_KEY = 'testTEST4135AbtestQuickAmounts';
+const TEST_LAYOUT_FLAG_KEY = 'testTEST4242AbtestBalanceLayout';
 
 const segmentMock = createSegmentMock(2);
 
@@ -173,6 +182,10 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 };
 
 describe('MetaMetricsController', function () {
+  beforeEach(() => {
+    clearABTestAnalyticsMappings();
+  });
+
   describe('constructor', function () {
     it('should properly initialize', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
@@ -951,6 +964,329 @@ describe('MetaMetricsController', function () {
           spy.mock.calls[1][1],
         );
       });
+    });
+
+    it('injects one active assignment for a matching allowlisted event', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push({
+        flagKey: TEST_BADGE_FLAG_KEY,
+        validVariants: ['control', 'withBadge'],
+        eventNames: ['Card Button Viewed'],
+      });
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_BADGE_FLAG_KEY]: 'withBadge',
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Card Button Viewed',
+            category: 'Unit Test',
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
+                  {
+                    key: TEST_BADGE_FLAG_KEY,
+                    value: 'withBadge',
+                  },
+                ],
+              }),
+            }),
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('injects multiple assignments for a single allowlisted event', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push(
+        {
+          flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
+          validVariants: ['control', 'treatment'],
+          eventNames: ['Unified SwapBridge Page Viewed'],
+        },
+        {
+          flagKey: TEST_LAYOUT_FLAG_KEY,
+          validVariants: ['control', 'treatment'],
+          eventNames: ['Unified SwapBridge Page Viewed'],
+        },
+      );
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
+            [TEST_LAYOUT_FLAG_KEY]: 'control',
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Unified SwapBridge Page Viewed',
+            category: 'Unit Test',
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
+                  {
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    value: 'treatment',
+                  },
+                  {
+                    key: TEST_LAYOUT_FLAG_KEY,
+                    value: 'control',
+                  },
+                ],
+              }),
+            }),
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('merges with existing active_ab_tests and avoids duplicate keys', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push(
+        {
+          flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
+          validVariants: ['control', 'treatment'],
+          eventNames: ['Unified SwapBridge Page Viewed'],
+        },
+        {
+          flagKey: TEST_LAYOUT_FLAG_KEY,
+          validVariants: ['control', 'treatment'],
+          eventNames: ['Unified SwapBridge Page Viewed'],
+        },
+      );
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: 'treatment',
+            [TEST_LAYOUT_FLAG_KEY]: 'treatment',
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Unified SwapBridge Page Viewed',
+            category: 'Unit Test',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [
+                {
+                  key: TEST_QUICK_AMOUNTS_FLAG_KEY,
+                  value: 'manual-value',
+                },
+              ],
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              quote_count: 3,
+            },
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                quote_count: 3,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
+                  {
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    value: 'manual-value',
+                  },
+                  {
+                    key: TEST_LAYOUT_FLAG_KEY,
+                    value: 'treatment',
+                  },
+                ],
+              }),
+            }),
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('does not inject assignments for unrelated or invalid flags', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push({
+        flagKey: TEST_BADGE_FLAG_KEY,
+        validVariants: ['control', 'withBadge'],
+        eventNames: ['Card Button Viewed'],
+      });
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_BADGE_FLAG_KEY]: 'unknown',
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Card Button Viewed',
+            category: 'Unit Test',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_prop: 'value',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_prop: 'value',
+              }),
+            }),
+            expect.anything(),
+          );
+          expect(spy.mock.calls[0][0].properties).not.toHaveProperty(
+            'active_ab_tests',
+          );
+        },
+      );
+    });
+
+    it('does not fetch feature flags for unmapped events', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push({
+        flagKey: TEST_BADGE_FLAG_KEY,
+        validVariants: ['control', 'withBadge'],
+        eventNames: ['Card Button Viewed'],
+      });
+      const getManifestFlagsSpy = jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
+
+      await withController(({ controller }) => {
+        controller.trackEvent({
+          event: 'Unrelated Event',
+          category: 'Unit Test',
+        });
+
+        expect(getManifestFlagsSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('preserves sensitiveProperties and only enriches the identified event', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push({
+        flagKey: TEST_BADGE_FLAG_KEY,
+        validVariants: ['control', 'withBadge'],
+        eventNames: ['Card Button Viewed'],
+      });
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_BADGE_FLAG_KEY]: 'control',
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Card Button Viewed',
+            category: 'Unit Test',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              button_type: 'card',
+            },
+            sensitiveProperties: {
+              sensitive: 'value',
+            },
+          });
+
+          expect(spy).toHaveBeenCalledTimes(2);
+          expect(spy).toHaveBeenNthCalledWith(
+            1,
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                button_type: 'card',
+                sensitive: 'value',
+              }),
+            }),
+            expect.anything(),
+          );
+          expect(spy.mock.calls[0][0].properties).not.toHaveProperty(
+            'active_ab_tests',
+          );
+          expect(spy).toHaveBeenNthCalledWith(
+            2,
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                button_type: 'card',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
+                  {
+                    key: TEST_BADGE_FLAG_KEY,
+                    value: 'control',
+                  },
+                ],
+              }),
+            }),
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('prefers manifest overrides over controller state flags', async function () {
+      AB_TEST_ANALYTICS_MAPPINGS.push({
+        flagKey: TEST_QUICK_AMOUNTS_FLAG_KEY,
+        validVariants: ['control', 'treatment'],
+        eventNames: ['Unified SwapBridge Page Viewed'],
+      });
+      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
+        remoteFeatureFlags: {
+          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
+        },
+      });
+
+      await withController(
+        {
+          remoteFeatureFlags: {
+            [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'control' },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.trackEvent({
+            event: 'Unified SwapBridge Page Viewed',
+            category: 'Unit Test',
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_ab_tests: [
+                  {
+                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    value: 'treatment',
+                  },
+                ],
+              }),
+            }),
+            expect.anything(),
+          );
+        },
+      );
     });
   });
 
@@ -2235,6 +2571,7 @@ type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
 type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
+  remoteFeatureFlags?: Record<string, unknown>;
   mockNetworkClientConfigurationsByNetworkClientId?: Record<
     NetworkClientId,
     {
@@ -2271,6 +2608,7 @@ async function withController<ReturnValue>(
     const {
       options = {},
       currentLocale = LOCALE,
+      remoteFeatureFlags = {},
       mockNetworkClientConfigurationsByNetworkClientId = {
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
@@ -2307,6 +2645,13 @@ async function withController<ReturnValue>(
       }),
     );
 
+    messenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      jest.fn().mockReturnValue({
+        remoteFeatureFlags,
+      }),
+    );
+
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',
       AllowedActions,
@@ -2322,6 +2667,7 @@ async function withController<ReturnValue>(
         'PreferencesController:getState',
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
+        'RemoteFeatureFlagController:getState',
       ],
       events: [
         'PreferencesController:stateChange',

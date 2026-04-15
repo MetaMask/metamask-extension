@@ -245,40 +245,35 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Header: Size, then Available to trade below (both left-aligned) */}
-      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-        <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
+      {/* Available to trade row */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm}>{t('perpsAvailableToTrade')}</Text>
         <Box
           flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {t('perpsAvailableToTrade')}
+          <Text variant={TextVariant.BodySm}>
+            {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
-          >
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
-            >
-              {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
-            </Text>
-            <Icon
-              name={IconName.AddCircle}
-              size={IconSize.Sm}
-              color={IconColor.IconMuted}
-              aria-label="Add Funds"
-              onClick={onAddFunds}
-              className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
-              data-testid="amount-input-add-funds"
-            />
-          </Box>
+          <Icon
+            name={IconName.AddCircle}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+            aria-label="Add Funds"
+            onClick={onAddFunds}
+            className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
+            data-testid="amount-input-add-funds"
+          />
         </Box>
       </Box>
+
+      {/* Size label */}
+      <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
 
       {/* Two side-by-side inputs: USD (left), Token (right) */}
       <Box

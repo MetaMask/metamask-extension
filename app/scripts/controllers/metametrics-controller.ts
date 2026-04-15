@@ -23,6 +23,7 @@ import type {
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -84,6 +85,11 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import {
+  hasABTestAnalyticsMappingForEvent,
+  enrichWithABTests,
+  getRemoteFeatureFlagsWithManifestOverrides,
+} from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import type {
@@ -335,7 +341,8 @@ export type MetaMetricsControllerEvents = MetaMetricsControllerStateChangeEvent;
 export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -1035,6 +1042,19 @@ export class MetaMetricsController extends BaseController<
       options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
+    let identifiedPayload = payload;
+
+    if (hasABTestAnalyticsMappingForEvent(payload.event)) {
+      try {
+        identifiedPayload = enrichWithABTests(
+          payload,
+          this.#getRemoteFeatureFlags(),
+        );
+      } catch {
+        identifiedPayload = payload;
+      }
+    }
+
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
     const events = [];
@@ -1075,7 +1095,9 @@ export class MetaMetricsController extends BaseController<
       );
     }
 
-    events.push(this.#track(this.#buildEventPayload(payload), options));
+    events.push(
+      this.#track(this.#buildEventPayload(identifiedPayload), options),
+    );
 
     await Promise.all(events);
   }
@@ -1261,6 +1283,13 @@ export class MetaMetricsController extends BaseController<
       referrer,
       marketingCampaignCookieId: this.state.marketingCampaignCookieId,
     };
+  }
+
+  #getRemoteFeatureFlags(): Record<string, unknown> {
+    return getRemoteFeatureFlagsWithManifestOverrides(
+      this.messenger.call('RemoteFeatureFlagController:getState')
+        ?.remoteFeatureFlags as Record<string, unknown> | undefined,
+    );
   }
 
   /**
