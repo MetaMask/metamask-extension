@@ -122,6 +122,18 @@ describe('CloseAmountSection', () => {
     });
   });
 
+  describe('HIP-3 symbol display', () => {
+    it('strips the dex prefix from HIP-3 asset symbols in the position size display', () => {
+      renderWithProvider(
+        <CloseAmountSection {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByText(/2\.5.*BRENTOIL/u)).toBeInTheDocument();
+      expect(screen.queryByText(/xyz:BRENTOIL/u)).not.toBeInTheDocument();
+    });
+  });
+
   describe('edge cases', () => {
     it('handles zero position size', () => {
       renderWithProvider(

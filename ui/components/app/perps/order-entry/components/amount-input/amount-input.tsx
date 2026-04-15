@@ -21,6 +21,7 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
+import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
 import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
@@ -322,7 +323,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
               >
-                {asset}
+                {getDisplaySymbol(asset)}
               </Text>
             }
           />

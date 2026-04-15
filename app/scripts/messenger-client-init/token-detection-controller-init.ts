@@ -17,7 +17,7 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
       'PreferencesController:getState',
     ) as unknown as PreferencesControllerState;
 
-  const controller = new TokenDetectionController({
+  const messengerClient = new TokenDetectionController({
     messenger: controllerMessenger,
     disabled: false,
     getBalancesInSingleCall: (...args) =>
@@ -35,6 +35,6 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

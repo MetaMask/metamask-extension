@@ -106,7 +106,7 @@ export type MessengerClientInitRequest<
    *
    * @param name - The name of the messenger client to retrieve.
    */
-  getController<Name extends MessengerClientName>(
+  getMessengerClient<Name extends MessengerClientName>(
     name: Name,
   ): MessengerClientByName[Name];
 
@@ -266,7 +266,7 @@ export type MessengerClientInitResult<
   /**
    * The initialized messenger client instance.
    */
-  controller: MessengerClientType;
+  messengerClient: MessengerClientType;
 
   /**
    * The background API methods available for the messenger client.

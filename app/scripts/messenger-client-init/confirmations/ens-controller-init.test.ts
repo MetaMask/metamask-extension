@@ -28,8 +28,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('EnsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = EnsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(EnsController);
+    const { messengerClient } = EnsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(EnsController);
   });
 
   it('passes the proper arguments to the controller', () => {

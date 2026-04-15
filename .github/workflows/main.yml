@@ -389,6 +389,10 @@ jobs:
 
   run-benchmarks:
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements

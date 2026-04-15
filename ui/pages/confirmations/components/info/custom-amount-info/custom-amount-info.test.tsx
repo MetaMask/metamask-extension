@@ -89,6 +89,7 @@ const DEFAULT_ALERTS_HOOK_RETURN = {
 
 function render({
   hasMax = false,
+  disableAutomaticToken,
   disablePay = false,
   hidePayTokenAmount = false,
   availableTokens = [MOCK_AVAILABLE_TOKEN],
@@ -101,6 +102,7 @@ function render({
   requiredTokens = [],
 }: {
   hasMax?: boolean;
+  disableAutomaticToken?: boolean;
   disablePay?: boolean;
   hidePayTokenAmount?: boolean;
   availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
@@ -166,6 +168,7 @@ function render({
   return renderWithConfirmContextProvider(
     <CustomAmountInfo
       hasMax={hasMax}
+      disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
@@ -181,6 +184,39 @@ describe('CustomAmountInfo', () => {
   it('renders custom amount component', () => {
     const { getByTestId } = render();
     expect(getByTestId('custom-amount')).toBeInTheDocument();
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
+    render();
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: false,
+      }),
+    );
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable true when disableAutomaticToken is true', () => {
+    render({ disableAutomaticToken: true });
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable true when disablePay is true', () => {
+    render({ disablePay: true });
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
   });
 
   it('renders pay token amount when disablePay is false', () => {

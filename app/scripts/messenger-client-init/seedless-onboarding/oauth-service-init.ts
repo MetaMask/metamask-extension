@@ -8,13 +8,13 @@ export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
   OAuthServiceMessenger
 > = (request) => {
-  const { controllerMessenger, getController } = request;
+  const { controllerMessenger, getMessengerClient } = request;
 
-  const metaMetricsController = getController(
+  const metaMetricsController = getMessengerClient(
     'MetaMetricsController',
   ) as MetaMetricsController;
 
-  const service = new OAuthService({
+  const messengerClient = new OAuthService({
     messenger: controllerMessenger,
     env: {
       googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',
@@ -42,7 +42,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

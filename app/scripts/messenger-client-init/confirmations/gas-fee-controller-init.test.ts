@@ -31,8 +31,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('GasFeeControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = GasFeeControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(GasFeeController);
+    const { messengerClient } = GasFeeControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(GasFeeController);
   });
 
   it('passes the proper arguments to the controller', () => {
