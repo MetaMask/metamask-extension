@@ -363,7 +363,9 @@ describe('usePerpsMarketFills', () => {
         }),
       );
 
-      const { unmount } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      const { unmount } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
       unmount();
 
       await act(async () => {
@@ -374,7 +376,9 @@ describe('usePerpsMarketFills', () => {
 
       mockSubmitRequestToBackground.mockClear();
 
-      const { result } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      const { result } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
       expect(result.current.isInitialLoading).toBe(false);

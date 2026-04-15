@@ -129,8 +129,8 @@ export function usePerpsMarketFills({
     throttleMs,
   });
 
-  const [restFills, setRestFills] = useState<OrderFill[]>(() =>
-    peekWarmFills(fillsCacheKey) ?? [],
+  const [restFills, setRestFills] = useState<OrderFill[]>(
+    () => peekWarmFills(fillsCacheKey) ?? [],
   );
   const [isRestLoading, setIsRestLoading] = useState(
     () => peekWarmFills(fillsCacheKey) === undefined,
