@@ -5,4 +5,13 @@
     background-color: var(--color-background-hover) !important;
     cursor: pointer;
   }
+
+  // Override default NFT image styles for consistent sizing in send flow
+  .nft-default-image-placeholder {
+    .nft-default {
+      padding-top: 0 !important;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }

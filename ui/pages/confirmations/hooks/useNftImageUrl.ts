@@ -3,7 +3,7 @@ import { getIpfsGateway } from '../../../selectors';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 
 export function useNftImageUrl(imageUrl: string) {
-  const ipfsGateway = useSelector(getIpfsGateway);
+  const ipfsGateway = useSelector(getIpfsGateway) as string;
   const nftImageURL = useGetAssetImageUrl(imageUrl, ipfsGateway);
 
   const isImageHosted = imageUrl && !imageUrl.startsWith('ipfs:');
