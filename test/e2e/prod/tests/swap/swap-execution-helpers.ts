@@ -385,7 +385,7 @@ export async function validateDetailRowAmountAtPrecision(
   driver: Driver,
   rowLabel: string,
   expectedText: string,
-  decimals = 2,
+  decimals = 6,
 ): Promise<{ isValid: boolean; message: string }> {
   console.log(
     `[EXEC] Validating detail row "${rowLabel}" at ${decimals} decimals against "${expectedText}"`,

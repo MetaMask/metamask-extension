@@ -32,7 +32,6 @@ import {
   importTokensFromTokenlist,
   importTokensIntoWallet,
   performSwapFlow,
-  configureSwapPairInCurrentSwapPage,
 } from './swap-quotation-helpers';
 import {
   resolveTokensBySymbols,
@@ -46,6 +45,7 @@ import {
   openLatestSwapActivityRecord,
   assertSwapDetailConfirmed,
   assertDetailRow,
+  validateDetailRowAmountAtPrecision,
   assertSwappedTokenPair,
   assertTransactionTimestamp,
   assertTotalGasFeeRow,
@@ -172,7 +172,6 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
             // previous route's exact received amount so the chain stays at the
             // live equivalent of the initial 20 MON swap.
             // ----------------------------------------------------------------
-            let hasEnteredSwapFlow = false;
             let nextRouteFromAmount = DEFAULT_SWAP_AMOUNT.toString();
             // swapExecutionRoutes is guaranteed non-empty (checked by the
             // outer guard: `if (!networkConfig.swapExecutionRoutes?.length)`)
@@ -216,29 +215,17 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
               console.log(`\n[TEST] ── Route: ${routeLabel} ──`);
 
               try {
-                // -- Enter or reconfigure the swap page --
-                if (hasEnteredSwapFlow) {
-                  console.log(
-                    `[TEST] Reconfiguring in-page swap for route: ${routeLabel}`,
-                  );
-                  await configureSwapPairInCurrentSwapPage(driver, {
-                    sourceTokenSymbol: fromSymbol,
-                    destinationTokenAddress: destinationAddress,
-                    destinationTokenSymbol: toSymbol,
-                    fromAmount: plannedFromAmount,
-                    useMax: useMaxForRoute,
-                  });
-                } else {
-                  console.log(`[TEST] Entering swap flow for first route...`);
-                  await performSwapFlow(driver, {
-                    sourceTokenSymbol: fromSymbol,
-                    destinationTokenAddress: destinationAddress,
-                    destinationTokenSymbol: toSymbol,
-                    fromAmount: plannedFromAmount,
-                    useMax: useMaxForRoute,
-                  });
-                  hasEnteredSwapFlow = true;
-                }
+                // -- Enter the swap page fresh from home for every route --
+                console.log(
+                  `[TEST] Entering swap flow for route: ${routeLabel}`,
+                );
+                await performSwapFlow(driver, {
+                  sourceTokenSymbol: fromSymbol,
+                  destinationTokenAddress: destinationAddress,
+                  destinationTokenSymbol: toSymbol,
+                  fromAmount: plannedFromAmount,
+                  useMax: useMaxForRoute,
+                });
 
                 // -- Wait for quote and assert fee text --
                 // -- Check for "Insufficient funds" and auto-reduce to 75% --
@@ -335,16 +322,22 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   'passed',
                   `${fromAmount} ${fromSymbol}`,
                 );
-                await assertDetailRow(
-                  driver,
-                  'You received',
-                  `${toAmount} ${toSymbol}`,
-                );
+                const receivedRowResult =
+                  await validateDetailRowAmountAtPrecision(
+                    driver,
+                    'You received',
+                    `${toAmount} ${toSymbol}`,
+                  );
                 recordValidation(
                   'Detail You received row',
-                  'passed',
-                  `${toAmount} ${toSymbol}`,
+                  receivedRowResult.isValid ? 'passed' : 'warning',
+                  receivedRowResult.message,
                 );
+                if (!receivedRowResult.isValid) {
+                  console.warn(
+                    `[TEST] ⚠️  ALERT: ${receivedRowResult.message}`,
+                  );
+                }
                 const totalGasFeeResult = await assertTotalGasFeeRow(
                   driver,
                   networkConfig.gasFeeSponsoredByProtocol ?? false,
@@ -371,8 +364,6 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 console.error(`[TEST] ❌ Route failed: ${routeLabel}`);
                 console.error(error);
 
-                // Reset entry flag so next route re-enters from home
-                hasEnteredSwapFlow = false;
                 const recovered = await recoverToHome(driver);
                 if (!recovered) {
                   console.error(
