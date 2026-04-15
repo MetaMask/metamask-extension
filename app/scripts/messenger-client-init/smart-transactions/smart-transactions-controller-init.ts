@@ -7,13 +7,16 @@ import type { Hex } from '@metamask/utils';
 import type { TraceCallback } from '@metamask/controller-utils';
 import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { ControllerInitFunction, ControllerInitRequest } from '../types';
+import {
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+} from '../types';
 import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-transactions-controller-messenger';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../../ui/store/store';
 
-type SmartTransactionsControllerInitRequest = ControllerInitRequest<
+type SmartTransactionsControllerInitRequest = MessengerClientInitRequest<
   SmartTransactionsControllerMessenger,
   SmartTransactionsControllerInitMessenger
 > & {
@@ -25,7 +28,7 @@ type SmartTransactionsControllerInitRequest = ControllerInitRequest<
   trace: TraceCallback;
 };
 
-export const SmartTransactionsControllerInit: ControllerInitFunction<
+export const SmartTransactionsControllerInit: MessengerClientInitFunction<
   SmartTransactionsController,
   SmartTransactionsControllerMessenger,
   SmartTransactionsControllerInitMessenger

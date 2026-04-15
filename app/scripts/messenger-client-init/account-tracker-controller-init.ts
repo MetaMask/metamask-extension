@@ -1,12 +1,12 @@
 import { AccountTrackerController } from '@metamask/assets-controllers';
 import { NetworkClientId } from '@metamask/network-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   AccountTrackerControllerInitMessenger,
   AccountTrackerControllerMessenger,
 } from './messengers';
 
-export const AccountTrackerControllerInit: ControllerInitFunction<
+export const AccountTrackerControllerInit: MessengerClientInitFunction<
   AccountTrackerController,
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger

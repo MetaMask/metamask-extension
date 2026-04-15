@@ -1,6 +1,6 @@
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
@@ -13,7 +13,7 @@ import { AccountTreeControllerInit } from './account-tree-controller-init';
 jest.mock('@metamask/account-tree-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     AccountTreeControllerMessenger,
     AccountTreeControllerInitMessenger
   >

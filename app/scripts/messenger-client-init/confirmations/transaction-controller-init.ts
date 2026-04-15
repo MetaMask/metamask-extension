@@ -45,12 +45,12 @@ import {
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
 import { accountSupports7702 } from '../../lib/account-supports-7702';
-import { ControllerFlatState } from '../controller-list';
+import { MessengerClientFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
-  ControllerInitFunction,
-  ControllerInitRequest,
-  ControllerInitResult,
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+  MessengerClientInitResult,
 } from '../types';
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
@@ -71,7 +71,7 @@ const TRANSACTION_SUBMISSION_METHOD = {
   SENTINEL_RELAY: 'sentinel_relay',
 };
 
-export const TransactionControllerInit: ControllerInitFunction<
+export const TransactionControllerInit: MessengerClientInitFunction<
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerInitMessenger
@@ -275,7 +275,7 @@ export const TransactionControllerInit: ControllerInitFunction<
 
 function getApi(
   controller: TransactionController,
-): ControllerInitResult<TransactionController>['api'] {
+): MessengerClientInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
       controller.abortTransactionSigning.bind(controller),
@@ -300,7 +300,7 @@ function getApi(
 }
 
 function getControllers(
-  request: ControllerInitRequest<
+  request: MessengerClientInitRequest<
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >,
@@ -393,7 +393,7 @@ function addTransactionControllerListeners(
   );
 }
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
@@ -407,7 +407,7 @@ export async function publishHook({
   transactionController,
   transactionMeta,
 }: {
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   initMessenger: TransactionControllerInitMessenger;
   keyringController: Parameters<typeof accountSupports7702>[1];
@@ -518,7 +518,7 @@ export function publishBatchHook({
   transactionController: TransactionController;
   smartTransactionsController: SmartTransactionsController;
   hookControllerMessenger: SmartTransactionHookMessenger;
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
   // Get transactionMeta based on the last transaction ID

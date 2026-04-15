@@ -1,7 +1,7 @@
 import { ApprovalController } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { ApprovalControllerMessenger } from '../messengers';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 
@@ -13,7 +13,7 @@ import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constan
  * @param request.showUserConfirmation
  * @returns The initialized controller.
  */
-export const ApprovalControllerInit: ControllerInitFunction<
+export const ApprovalControllerInit: MessengerClientInitFunction<
   ApprovalController,
   ApprovalControllerMessenger
 > = ({ controllerMessenger, showUserConfirmation }) => {

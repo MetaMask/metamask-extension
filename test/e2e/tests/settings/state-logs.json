@@ -1292,6 +1292,7 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "null",
+    "showSidePanelMigrationToast": "boolean",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
