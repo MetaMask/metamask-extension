@@ -1,4 +1,4 @@
-import { noop } from 'lodash';
+import { get, noop } from 'lodash';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -212,6 +212,7 @@ import { getGeolocationApiServiceMessenger } from './geolocation-api-service-mes
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getBackgroundApiServiceMessenger } from './background-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -444,6 +445,10 @@ export const MESSENGER_FACTORIES = {
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
+  },
+  BackgroundApiService: {
+    getMessenger: getBackgroundApiServiceMessenger,
+    getInitMessenger: noop,
   },
   BridgeController: {
     getMessenger: getBridgeControllerMessenger,

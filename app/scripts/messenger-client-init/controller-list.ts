@@ -115,6 +115,7 @@ import { RewardsDataService } from '../controllers/rewards/rewards-data-service'
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { BackgroundApiService } from '../services/background-api-service';
 
 /**
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
@@ -131,6 +132,7 @@ export type MessengerClient =
   | AppStateController
   | AssetsController
   | AuthenticationController
+  | BackgroundApiService
   | BridgeController
   | BridgeStatusController
   | ClaimsController

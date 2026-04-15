@@ -454,6 +454,7 @@ import { ProfileMetricsControllerInit } from './messenger-client-init/profile-me
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { BackgroundApiServiceInit } from './messenger-client-init/background-api-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -701,6 +702,7 @@ export default class MetamaskController extends EventEmitter {
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
+      BackgroundApiService: BackgroundApiServiceInit,
     };
 
     const {
@@ -828,6 +830,7 @@ export default class MetamaskController extends EventEmitter {
     this.claimsService = messengerClientsByName.ClaimsService;
     this.profileMetricsController =
       messengerClientsByName.ProfileMetricsController;
+    this.backgroundApiService = messengerClientsByName.BackgroundApiService;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
