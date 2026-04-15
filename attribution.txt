@@ -13618,7 +13618,7 @@ SOFTWARE.
 ******************************
 
 follow-redirects
-1.15.11 <https://github.com/follow-redirects/follow-redirects>
+1.16.0 <https://github.com/follow-redirects/follow-redirects>
 Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
