@@ -1558,7 +1558,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1598,7 +1598,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     <Icon
                       name={IconName.Info}
-                      size={IconSize.Sm}
+                      size={IconSize.Xs}
                       color={IconColor.IconAlternative}
                     />
                   </Tooltip>
@@ -1659,7 +1659,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 >
                   <Icon
                     name={IconName.Info}
-                    size={IconSize.Sm}
+                    size={IconSize.Xs}
                     color={IconColor.IconAlternative}
                   />
                 </Tooltip>
