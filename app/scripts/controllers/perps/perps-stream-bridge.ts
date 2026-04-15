@@ -1,11 +1,21 @@
-import {
-  WebSocketConnectionState,
-  type PerpsController,
-  type PerpsControllerState,
-  type CandlePeriod,
-  type TimeDuration,
+import type {
+  PerpsController,
+  PerpsControllerState,
+  CandlePeriod,
+  TimeDuration,
 } from '@metamask/perps-controller';
 import type { Patch } from 'immer';
+
+// Defined locally to avoid a value import from @metamask/perps-controller,
+// which transitively pulls in the Hyperliquid SDK (ESM-only) and breaks Jest.
+const WebSocketConnectionState = {
+  Connected: 'connected',
+  Connecting: 'connecting',
+  Disconnected: 'disconnected',
+  Disconnecting: 'disconnecting',
+} as const;
+type WebSocketConnectionState =
+  (typeof WebSocketConnectionState)[keyof typeof WebSocketConnectionState];
 
 type EmitFn = (
   channel: string,
