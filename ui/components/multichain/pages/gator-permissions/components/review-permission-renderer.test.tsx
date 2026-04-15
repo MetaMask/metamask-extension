@@ -82,20 +82,4 @@ describe('ReviewPermissionRenderer', () => {
     );
     expect(streamRate.textContent).not.toContain('(raw units)/sec');
   });
-
-  it('returns null for unknown permission type', () => {
-    const { container } = renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="unknown-permission-type"
-        permissionData={{}}
-        chainId="0x1"
-        expiry={null}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-      />,
-      store,
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
 });

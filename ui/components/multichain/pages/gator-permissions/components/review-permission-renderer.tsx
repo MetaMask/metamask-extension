@@ -13,7 +13,10 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
-import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import {
+  PERMISSION_SCHEMAS,
+  assertPermissionSchemaEntry,
+} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
@@ -470,9 +473,7 @@ export const ReviewPermissionRenderer: React.FC<
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];
-  if (!schemaEntry) {
-    return null;
-  }
+  assertPermissionSchemaEntry(permissionType, schemaEntry);
 
   const ctx: PermissionRenderContext = {
     permission: {

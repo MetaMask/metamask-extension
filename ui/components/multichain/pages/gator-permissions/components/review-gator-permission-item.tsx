@@ -19,7 +19,10 @@ import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { extractExpiryTimestampFromRules } from '../../../../../../shared/lib/gator-permissions';
-import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import {
+  PERMISSION_SCHEMAS,
+  assertPermissionSchemaEntry,
+} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
@@ -105,8 +108,6 @@ export const ReviewGatorPermissionItem = ({
     );
   }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
 
-  const schemaEntry = PERMISSION_SCHEMAS[permissionType];
-
   const permissionData = useMemo(
     () => permissionDataForReview(permissionResponse.permission),
     [permissionResponse.permission],
@@ -136,9 +137,10 @@ export const ReviewGatorPermissionItem = ({
     ],
   );
 
-  if (!schemaEntry) {
-    return null;
-  }
+  assertPermissionSchemaEntry(
+    permissionType,
+    PERMISSION_SCHEMAS[permissionType],
+  );
 
   return (
     <Card

@@ -238,7 +238,7 @@ describe('PermissionDetailRenderer', () => {
           />,
           getMockStore(),
         ),
-      ).toThrow('Invalid permission type');
+      ).toThrow('Invalid permission type: invalid');
     });
 
     it('throws when startTime is missing for periodic types', () => {

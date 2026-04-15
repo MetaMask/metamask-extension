@@ -24,7 +24,10 @@ import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
-import { PERMISSION_SCHEMAS } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import {
+  PERMISSION_SCHEMAS,
+  assertPermissionSchemaEntry,
+} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
@@ -297,9 +300,10 @@ export const PermissionDetailRenderer: React.FC<{
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];
-  const tokenResolution: TokenResolution = schemaEntry?.tokenResolution ?? {
-    kind: 'none',
-  };
+  // Use an explicit branch (not `?.`) so React Compiler output cannot read
+  // `.tokenResolution` off an undefined schema entry during invalid types.
+  const tokenResolution: TokenResolution =
+    schemaEntry === undefined ? { kind: 'none' } : schemaEntry.tokenResolution;
 
   // Hooks must run before any code that can throw (invalid type / validate),
   // so hook order stays stable if permission data changes between renders.
@@ -310,9 +314,7 @@ export const PermissionDetailRenderer: React.FC<{
     tokenResolution,
   );
 
-  if (!schemaEntry) {
-    throw new Error('Invalid permission type');
-  }
+  assertPermissionSchemaEntry(permission.type, schemaEntry);
 
   if (schemaEntry.validate) {
     schemaEntry.validate(permission);

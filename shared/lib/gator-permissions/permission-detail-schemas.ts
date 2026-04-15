@@ -617,3 +617,20 @@ export const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
   'erc20-token-stream': erc20TokenStreamSchema,
   'erc20-token-revocation': erc20TokenRevocationSchema,
 };
+
+/**
+ * Ensures a permission type is registered in {@link PERMISSION_SCHEMAS}.
+ * Call this when the controller can return types the UI registry does not yet implement,
+ * so the failure is explicit instead of rendering nothing.
+ *
+ * @param permissionType - Permission type string from the permission payload
+ * @param entry - Result of `PERMISSION_SCHEMAS[permissionType]`
+ */
+export function assertPermissionSchemaEntry(
+  permissionType: string,
+  entry: PermissionSchemaEntry | undefined,
+): asserts entry is PermissionSchemaEntry {
+  if (!entry) {
+    throw new Error(`Invalid permission type: ${permissionType}`);
+  }
+}
