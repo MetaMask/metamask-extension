@@ -276,34 +276,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [priceToPercent, stopLossPrice],
   );
 
-  const estimatedPnlAtTp = useMemo(() => {
-    if (!estimatedSize || !takeProfitPrice || !entryPrice) {
-      return null;
-    }
-    const exitPrice = Number.parseFloat(takeProfitPrice);
-    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
-      return null;
-    }
-    const grossPnl = estimatedSize * (exitPrice - entryPrice);
-    const closingFee =
-      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
-    return grossPnl - closingFee;
-  }, [estimatedSize, takeProfitPrice, entryPrice, closingFeeRate]);
-
-  const estimatedPnlAtSl = useMemo(() => {
-    if (!estimatedSize || !stopLossPrice || !entryPrice) {
-      return null;
-    }
-    const exitPrice = Number.parseFloat(stopLossPrice);
-    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
-      return null;
-    }
-    const grossPnl = estimatedSize * (exitPrice - entryPrice);
-    const closingFee =
-      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
-    return grossPnl - closingFee;
-  }, [estimatedSize, stopLossPrice, entryPrice, closingFeeRate]);
-
   const isLimitWithPrice = orderType === 'limit' && Boolean(limitPrice?.trim());
   const validationReferencePrice = useMemo(() => {
     if (isLimitWithPrice && limitPrice) {
@@ -312,6 +284,38 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     }
     return currentPrice;
   }, [isLimitWithPrice, limitPrice, currentPrice]);
+
+  const pnlEntryPrice = isLimitWithPrice
+    ? validationReferencePrice
+    : entryPrice;
+
+  const estimatedPnlAtTp = useMemo(() => {
+    if (!estimatedSize || !takeProfitPrice || !pnlEntryPrice) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(takeProfitPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
+    const closingFee =
+      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    return grossPnl - closingFee;
+  }, [estimatedSize, takeProfitPrice, pnlEntryPrice, closingFeeRate]);
+
+  const estimatedPnlAtSl = useMemo(() => {
+    if (!estimatedSize || !stopLossPrice || !pnlEntryPrice) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(stopLossPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
+    const closingFee =
+      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    return grossPnl - closingFee;
+  }, [estimatedSize, stopLossPrice, pnlEntryPrice, closingFeeRate]);
 
   const priceLabel = isLimitWithPrice ? 'entry' : 'current';
 
