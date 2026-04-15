@@ -3,6 +3,7 @@
  */
 import { SolScope } from '@metamask/keyring-api';
 import {
+  ACCOUNT_2,
   DAPP_HOST_ADDRESS,
   DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
@@ -34,8 +35,6 @@ import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-
-import { ACCOUNT_2 } from '../../constants';
 
 const EVM_ADDRESS_TWO = ACCOUNT_2;
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
