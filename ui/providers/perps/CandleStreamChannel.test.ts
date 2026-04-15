@@ -118,8 +118,8 @@ describe('CandleStreamChannel', () => {
       // Deactivation is deferred — not fired yet
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
 
-      // Advance past the 200ms grace period
-      jest.advanceTimersByTime(200);
+      // Advance past the 500ms grace period
+      jest.advanceTimersByTime(500);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -183,6 +183,50 @@ describe('CandleStreamChannel', () => {
         ],
       );
     });
+
+    it('uses OneDay duration on reconnect when cache already exists', () => {
+      const unsub1 = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        duration: TimeDuration.OneWeek,
+        callback: jest.fn(),
+      });
+
+      // Populate cache via pushFromBackground
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      // Tear down all subscriptions so the channel disconnects
+      unsub1();
+      jest.advanceTimersByTime(500);
+
+      // Re-subscribe — cache exists and is fresh, activation is deferred
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        duration: TimeDuration.OneWeek,
+        callback: jest.fn(),
+      });
+
+      // Advance past the deferred activation delay (2000ms)
+      jest.advanceTimersByTime(2000);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        [
+          expect.objectContaining({
+            symbol: 'BTC',
+            interval: CandlePeriod.OneHour,
+            duration: TimeDuration.OneDay,
+          }),
+        ],
+      );
+    });
   });
 
   describe('unsubscribe', () => {
@@ -200,7 +244,7 @@ describe('CandleStreamChannel', () => {
       // Not fired yet within grace period
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(200);
+      jest.advanceTimersByTime(500);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
@@ -226,7 +270,7 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
-      jest.advanceTimersByTime(200);
+      jest.advanceTimersByTime(500);
 
       // No deactivation, no re-activation — stream was preserved
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
@@ -250,7 +294,7 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubscribe();
-      jest.advanceTimersByTime(200);
+      jest.advanceTimersByTime(500);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
@@ -810,6 +854,271 @@ describe('CandleStreamChannel', () => {
       const limit = callArgs?.[1]?.[0]?.limit as number;
       expect(limit).toBeGreaterThanOrEqual(50);
       expect(limit).toBeLessThanOrEqual(500);
+    });
+  });
+
+  describe('connect error handling', () => {
+    it('calls onError on all subscribers when perpsActivateCandleStream rejects', async () => {
+      const error = new Error('rate limit exceeded');
+      mockSubmitRequestToBackground.mockRejectedValueOnce(error);
+
+      const onError1 = jest.fn();
+      const onError2 = jest.fn();
+
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+        onError: onError1,
+      });
+      // Second subscriber for the same key — connect is already in-flight
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+        onError: onError2,
+      });
+
+      // Flush the microtask queue so the Promise rejection propagates
+      await Promise.resolve();
+
+      expect(onError1).toHaveBeenCalledWith(error);
+      expect(onError2).toHaveBeenCalledWith(error);
+    });
+
+    it('wraps non-Error rejections in an Error object', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce('string rejection');
+
+      const onError = jest.fn();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+        onError,
+      });
+
+      await Promise.resolve();
+
+      expect(onError).toHaveBeenCalledWith(expect.any(Error));
+      const [err] = onError.mock.calls[0] as [Error];
+      expect(err.message).toBe('string rejection');
+    });
+
+    it('does not call onError when activation succeeds', async () => {
+      const onError = jest.fn();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+        onError,
+      });
+
+      await Promise.resolve();
+
+      expect(onError).not.toHaveBeenCalled();
+    });
+
+    it('sets isConnected to false after activation failure so re-subscribe can retry', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('network error'),
+      );
+
+      const cb = jest.fn();
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: cb,
+        onError: jest.fn(),
+      });
+
+      await Promise.resolve();
+      // Clear the activation call from the first subscribe
+      mockSubmitRequestToBackground.mockClear();
+
+      // Unsubscribe so the channel is torn down
+      unsubscribe();
+      jest.advanceTimersByTime(500);
+
+      // Re-subscribe — channel was disconnected, so it should try to activate again
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+    });
+
+    it('does not call onError when subscriber is not provided an onError callback', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('unexpected'),
+      );
+
+      // Should not throw even without onError
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      await expect(Promise.resolve()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('fresh-cache deferred activation', () => {
+    it('defers perpsActivateCandleStream when cache is fresh', () => {
+      // First subscribe + populate cache
+      const unsub = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      // Tear down so channel disconnects
+      unsub();
+      jest.advanceTimersByTime(500);
+      mockSubmitRequestToBackground.mockClear();
+
+      // Re-subscribe — cache is fresh, should NOT call activate immediately
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+
+      // After deferred activation delay (2000ms), it should fire
+      jest.advanceTimersByTime(2000);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+    });
+
+    it('delivers cached data immediately even when activation is deferred', () => {
+      const cb1 = jest.fn();
+      const unsub = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: cb1,
+      });
+
+      const data = makeCandleData([100, 200]);
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data,
+      });
+
+      unsub();
+      jest.advanceTimersByTime(500);
+
+      // Re-subscribe with fresh cache — should get cached data immediately
+      const cb2 = jest.fn();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: cb2,
+      });
+
+      expect(cb2).toHaveBeenCalledWith(data);
+    });
+
+    it('activates immediately when cache is stale (> 30s old)', () => {
+      const unsub = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      unsub();
+      jest.advanceTimersByTime(500);
+      mockSubmitRequestToBackground.mockClear();
+
+      // Advance past the cache freshness window (30s)
+      jest.advanceTimersByTime(30_000);
+
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      // Should activate immediately since cache is stale
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+    });
+
+    it('cancels deferred activation if subscriber leaves before it fires', () => {
+      const unsub1 = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      unsub1();
+      jest.advanceTimersByTime(500);
+      mockSubmitRequestToBackground.mockClear();
+
+      // Re-subscribe with fresh cache (deferred activation scheduled)
+      const unsub2 = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      // Leave before deferred activation fires
+      unsub2();
+      jest.advanceTimersByTime(500); // disconnect grace
+      jest.advanceTimersByTime(2000); // deferred activation window
+
+      // Should NOT have called activate — subscriber left
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+    });
+
+    it('activates immediately on first visit (no cache)', () => {
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      // No cache populated — should activate immediately
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
     });
   });
 

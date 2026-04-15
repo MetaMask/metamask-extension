@@ -23,6 +23,8 @@ export type {
 
 export { usePerpsMarketFills } from './usePerpsMarketFills';
 
+export { useDebouncedValue } from './useDebouncedValue';
+
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
   UsePerpsMarginCalculationsParams,

@@ -63,7 +63,11 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+  useDebouncedValue,
+} from '../../hooks/perps';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { useFormatters } from '../../hooks/useFormatters';
@@ -240,6 +244,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  // Debounce symbol for stream subscriptions so rapid market navigation
+  // collapses into a single subscription swap (same pattern as detail page).
+  const streamSymbol = useDebouncedValue(decodedSymbol, 500);
+
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
@@ -257,9 +265,9 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   // Same candle stream as market detail (default 5m) so header price matches chart line.
   const { candleData } = usePerpsLiveCandles({
-    symbol: decodedSymbol ?? '',
+    symbol: streamSymbol ?? '',
     interval: CandlePeriod.FiveMinutes,
-    duration: TimeDuration.YearToDate,
+    duration: TimeDuration.OneWeek,
     throttleMs: 1000,
   });
 
@@ -344,13 +352,13 @@ const PerpsOrderEntryPage: React.FC = () => {
     undefined,
   );
   useEffect(() => {
-    if (!decodedSymbol || !selectedAddress) {
+    if (!streamSymbol || !selectedAddress) {
       setLivePrice(undefined);
       return undefined;
     }
     // Activate background price stream for this symbol
     submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [decodedSymbol], includeMarketData: true },
+      { symbols: [streamSymbol], includeMarketData: true },
     ]).catch(() => {
       // Controller not ready
     });
@@ -383,7 +391,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
-  }, [decodedSymbol, selectedAddress]);
+  }, [streamSymbol, decodedSymbol, selectedAddress]);
 
   const [topOfBook, setTopOfBook] = useState<{
     midPrice: number;

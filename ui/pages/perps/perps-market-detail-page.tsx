@@ -57,6 +57,7 @@ import {
   usePerpsEligibility,
   usePerpsMarketFills,
   usePerpsEventTracking,
+  useDebouncedValue,
 } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -311,6 +312,11 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  // Debounce symbol for stream subscriptions (price + candle) so rapid market
+  // navigation (BTC → ETH → SOL) collapses into a single subscription swap.
+  // UI content uses decodedSymbol for instant visual feedback.
+  const streamSymbol = useDebouncedValue(decodedSymbol, 500);
+
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(account.availableBalance) > 0,
   );
@@ -337,14 +343,14 @@ const PerpsMarketDetailPage: React.FC = () => {
     undefined,
   );
   useEffect(() => {
-    if (!decodedSymbol || !selectedAddress) {
+    if (!streamSymbol || !selectedAddress) {
       setLivePrice(undefined);
       return undefined;
     }
 
     // Activate background price stream for this symbol
     submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [decodedSymbol], includeMarketData: true },
+      { symbols: [streamSymbol], includeMarketData: true },
     ]).catch(() => {
       // Controller not ready yet, skip silently
     });
@@ -370,7 +376,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
-  }, [decodedSymbol, selectedAddress]);
+  }, [streamSymbol, decodedSymbol, selectedAddress]);
 
   // Find market data for the given symbol
   const market = useMemo(() => {
@@ -443,9 +449,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     error: candleError,
     fetchMoreHistory,
   } = usePerpsLiveCandles({
-    symbol: decodedSymbol ?? '',
+    symbol: streamSymbol ?? '',
     interval: selectedPeriod,
-    duration: TimeDuration.YearToDate,
+    duration: TimeDuration.OneWeek,
     throttleMs: 1000,
   });
 
