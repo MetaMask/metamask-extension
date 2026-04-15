@@ -863,6 +863,34 @@ describe('PerpsStreamManager', () => {
         expect.anything(),
       );
     });
+
+    it('notifies subscribers with null when REST fallback fails without cache', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetAccountState') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        manager.account.subscribe(onData);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(onData).toHaveBeenCalledWith(null);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch account',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
   });
 
   describe('getCurrentAddress', () => {

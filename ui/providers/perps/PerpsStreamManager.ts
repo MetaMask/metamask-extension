@@ -202,6 +202,9 @@ class PerpsStreamManager {
                 '[PerpsStreamManager] Failed to fetch account',
                 err,
               );
+              if (!cancelled && !this.account.hasCachedData()) {
+                push(null);
+              }
             });
         }, WS_GRACE_PERIOD_MS);
 
