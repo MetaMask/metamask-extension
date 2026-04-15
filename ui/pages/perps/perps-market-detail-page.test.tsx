@@ -155,6 +155,14 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.0001,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
   getSelectedInternalAccount: () => ({ address: '0x123' }),
