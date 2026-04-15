@@ -365,7 +365,7 @@ jobs:
           filters: .github/rules/filter-rules.yml
           list-files: shell
 
-      # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
+      # Detect locales-only PRs so we can run the dedicated locale validation job.
       - name: Compute needs-locales flag
         id: set-needs-locales
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
@@ -420,14 +420,13 @@ jobs:
             echo "just-package-json-version=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true' || just-repository-health-checks = 'true' || just-package-json-version == 'true'
+      # skip-everything is a shortcut for up-to-date == 'true' || just-repository-health-checks == 'true' || just-package-json-version == 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
         if: >-
           ${{
             env.IS_RUN_EVERYTHING_BRANCH == 'false' && (
               steps.check-skip-merge-queue.outputs.up-to-date == 'true' ||
-              steps.set-needs-locales.outputs.needs-locales == 'true' ||
               steps.set-just-repository-health-checks.outputs.just-repository-health-checks == 'true' ||
               steps.set-just-package-json-version.outputs.just-package-json-version == 'true'
             )
