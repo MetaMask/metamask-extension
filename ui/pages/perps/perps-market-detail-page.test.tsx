@@ -210,8 +210,9 @@ const mockLiveAccount = jest.fn(() => ({
   isInitialLoading: false,
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
   usePerpsEventTracking: () => ({ track: jest.fn() }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
@@ -334,6 +335,7 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
     mockLiveAccount.mockReturnValue({
@@ -1301,6 +1303,87 @@ describe('PerpsMarketDetailPage', () => {
         expect(
           screen.queryByTestId('perps-cancel-order-modal'),
         ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal when clicking Long while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const longButton = screen.getByTestId('perps-long-cta-button');
+      fireEvent.click(longButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Short while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const shortButton = screen.getByTestId('perps-short-cta-button');
+      fireEvent.click(shortButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
+      fireEvent.click(addFundsButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Close while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const closeButton = screen.getByTestId('perps-close-cta-button');
+      fireEvent.click(closeButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+    });
+
+    it('shows geo-block modal when clicking Modify while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const modifyButton = screen.getByTestId('perps-modify-cta-button');
+      fireEvent.click(modifyButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
     });
   });

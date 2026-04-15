@@ -43,6 +43,7 @@ import {
   deriveTpslType,
   formatRoePercent,
 } from '../utils';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
@@ -105,6 +106,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [editingTpPrice, setEditingTpPrice] = useState(
     () => position.takeProfitPrice ?? '',
@@ -378,7 +380,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, formatEditPrice]);
 
   const handleSave = useCallback(async () => {
-    if (!isEligible || !position) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!position) {
       return;
     }
     setIsSaving(true);
@@ -498,17 +504,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: !isEligible || isSaving || hasInvalidTPSL,
-      submitButtonTitle: isEligible ? undefined : t('perpsGeoBlockedTooltip'),
+      submitDisabled: isSaving || hasInvalidTPSL,
+      submitButtonTitle: undefined,
     });
-  }, [
-    onSubmitStateChange,
-    handleSave,
-    isSaving,
-    isEligible,
-    hasInvalidTPSL,
-    t,
-  ]);
+  }, [onSubmitStateChange, handleSave, isSaving, hasInvalidTPSL, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -771,6 +770,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Text>
         )}
       </Box>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

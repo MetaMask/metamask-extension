@@ -39,6 +39,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
@@ -100,6 +101,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [marginAmount, setMarginAmount] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
@@ -233,7 +235,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !isValid) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!isValid) {
       return;
     }
 
@@ -351,7 +357,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible ||
     !isValid ||
     isSaving ||
     Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
@@ -550,6 +555,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           {getConfirmButtonLabel()}
         </Button>
       )}
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };
