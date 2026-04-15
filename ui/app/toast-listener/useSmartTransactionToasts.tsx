@@ -22,7 +22,8 @@ function mapToastStatus(status?: string): TransactionStatus | undefined {
   if (
     status === SmartTransactionStatuses.CANCELLED ||
     status === SmartTransactionStatuses.CANCELLED_USER_CANCELLED ||
-    status === SmartTransactionStatuses.REVERTED
+    status === SmartTransactionStatuses.REVERTED ||
+    status === SmartTransactionStatuses.UNKNOWN
   ) {
     return 'failed';
   }
