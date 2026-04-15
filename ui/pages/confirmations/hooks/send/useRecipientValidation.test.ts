@@ -12,8 +12,8 @@ import { useSendContext } from '../../context/send';
 import * as SendValidationUtils from '../../utils/sendValidations';
 import * as NameValidation from './useNameValidation';
 import { useSendType } from './useSendType';
-import { useSendAlerts } from './alerts/useSendAlerts';
 import { useRecipientValidation } from './useRecipientValidation';
+import { useSendAlerts } from './alerts/useSendAlerts';
 
 jest.mock('../../../../hooks/useI18nContext');
 jest.mock('../../context/send');
@@ -36,6 +36,11 @@ describe('useRecipientValidation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue(mockT);
+    mockUseSendAlerts.mockReturnValue({
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: mockAcknowledgeAlerts,
+    });
     mockUseSendContext.mockReturnValue({
       to: '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73',
       chainId: '0x1',
@@ -50,11 +55,6 @@ describe('useRecipientValidation', () => {
       isEvmSendType: true,
       isSolanaSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
-    mockUseSendAlerts.mockReturnValue({
-      alerts: [],
-      hasUnacknowledgedAlerts: false,
-      acknowledgeAlerts: mockAcknowledgeAlerts,
-    });
   });
 
   it('returns recipient validation functions and state', () => {
@@ -64,7 +64,7 @@ describe('useRecipientValidation', () => {
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
       recipientErrorAllowAcknowledge: false,
-      acknowledgeError: mockAcknowledgeAlerts,
+      acknowledgeError: expect.any(Function),
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
@@ -477,38 +477,7 @@ describe('useRecipientValidation', () => {
   });
 
   describe('acknowledgment', () => {
-    it('returns hasUnacknowledgedAlerts when useSendAlerts has alerts', async () => {
-      mockUseSendAlerts.mockReturnValue({
-        alerts: [
-          {
-            key: 'tokenContract',
-            title: 'Token contract',
-            message: 'This is a token contract',
-          },
-        ],
-        hasUnacknowledgedAlerts: true,
-        acknowledgeAlerts: mockAcknowledgeAlerts,
-      });
-
-      const { result } = renderHook();
-
-      expect(result.current.hasUnacknowledgedAlerts).toBe(true);
-      expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
-    });
-
-    it('returns allowAcknowledge when validation includes it and alerts are unacknowledged', async () => {
-      mockUseSendAlerts.mockReturnValue({
-        alerts: [
-          {
-            key: 'tokenContract',
-            title: 'Token contract',
-            message: 'This is a token contract',
-          },
-        ],
-        hasUnacknowledgedAlerts: true,
-        acknowledgeAlerts: mockAcknowledgeAlerts,
-      });
-
+    it('returns recipientErrorAllowAcknowledge when validation includes allowAcknowledge and not yet acknowledged', async () => {
       jest
         .spyOn(SendValidationUtils, 'validateEvmHexAddress')
         .mockResolvedValue({
@@ -524,19 +493,7 @@ describe('useRecipientValidation', () => {
       });
     });
 
-    it('clears recipientError when alerts are acknowledged', async () => {
-      mockUseSendAlerts.mockReturnValue({
-        alerts: [
-          {
-            key: 'tokenContract',
-            title: 'Token contract',
-            message: 'This is a token contract',
-          },
-        ],
-        hasUnacknowledgedAlerts: false,
-        acknowledgeAlerts: mockAcknowledgeAlerts,
-      });
-
+    it('clears recipientError when acknowledgeError is called', async () => {
       jest
         .spyOn(SendValidationUtils, 'validateEvmHexAddress')
         .mockResolvedValue({
@@ -547,14 +504,117 @@ describe('useRecipientValidation', () => {
       const { result } = renderHook();
 
       await waitFor(() => {
-        expect(result.current.recipientError).toBeUndefined();
+        expect(result.current.recipientError).toBe('tokenContractError');
+      });
+
+      act(() => {
+        result.current.acknowledgeError();
+      });
+
+      expect(result.current.recipientError).toBeUndefined();
+      expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
+    });
+
+    it('resets acknowledgment when recipient address changes', async () => {
+      jest.useFakeTimers();
+      const validateSpy = jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'tokenContractError',
+          allowAcknowledge: true,
+        });
+
+      const { result, rerender } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+      });
+
+      act(() => {
+        result.current.acknowledgeError();
+      });
+
+      expect(result.current.recipientError).toBeUndefined();
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: '0x9999999999999999999999999999999999999999',
+        chainId: '0x1',
+        from: '',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateValue: jest.fn(),
+        value: '',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      validateSpy.mockResolvedValue({
+        error: 'tokenContractError',
+        allowAcknowledge: true,
+      });
+
+      rerender();
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('does not suppress a hard error when an unrelated alert is active (Issue 2 regression)', async () => {
+      jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'contractAddressError',
+          allowAcknowledge: false,
+        });
+
+      mockUseSendAlerts.mockReturnValue({
+        alerts: [
+          {
+            key: 'firstTimeInteraction',
+            title: 'First time',
+            message: 'First time sending to this address',
+          },
+        ],
+        hasUnacknowledgedAlerts: true,
+        acknowledgeAlerts: mockAcknowledgeAlerts,
+      });
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('contractAddressError');
         expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
+        expect(result.current.hasUnacknowledgedAlerts).toBe(true);
       });
     });
 
-    it('delegates acknowledgeError to useSendAlerts acknowledgeAlerts', () => {
+    it('does not auto-dismiss error during async loading when alerts are empty (Issue 1 regression)', async () => {
+      jest
+        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
+        .mockResolvedValue({
+          error: 'tokenContractError',
+          allowAcknowledge: true,
+        });
+
+      mockUseSendAlerts.mockReturnValue({
+        alerts: [],
+        hasUnacknowledgedAlerts: false,
+        acknowledgeAlerts: mockAcknowledgeAlerts,
+      });
+
       const { result } = renderHook();
-      expect(result.current.acknowledgeError).toBe(mockAcknowledgeAlerts);
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('tokenContractError');
+        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
+      });
     });
   });
 });

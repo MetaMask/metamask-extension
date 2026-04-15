@@ -35,13 +35,18 @@ export const AmountRecipient = () => {
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipientValidationResult = useRecipientValidation();
 
-  const { hasUnacknowledgedAlerts, acknowledgeAlerts, alerts } =
-    recipientValidationResult;
+  const {
+    recipientErrorAllowAcknowledge,
+    hasUnacknowledgedAlerts,
+    acknowledgeError,
+    acknowledgeAlerts,
+    alerts,
+  } = recipientValidationResult;
 
   const hasBlockingError =
     Boolean(amountError) ||
     (Boolean(recipientValidationResult.recipientError) &&
-      !hasUnacknowledgedAlerts) ||
+      !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
   const isDisabled = hasBlockingError || !toResolved;
@@ -79,19 +84,29 @@ export const AmountRecipient = () => {
   const handleAlertModalAcknowledge = useCallback(async () => {
     setIsAlertModalOpen(false);
     acknowledgeAlerts();
+    acknowledgeError();
     if (shouldSubmitOnAcknowledge) {
       await proceedWithSubmit();
     }
-  }, [acknowledgeAlerts, shouldSubmitOnAcknowledge, proceedWithSubmit]);
+  }, [
+    acknowledgeAlerts,
+    acknowledgeError,
+    shouldSubmitOnAcknowledge,
+    proceedWithSubmit,
+  ]);
 
   const onClick = useCallback(async () => {
-    if (hasUnacknowledgedAlerts) {
+    if (hasUnacknowledgedAlerts || recipientErrorAllowAcknowledge) {
       setShouldSubmitOnAcknowledge(true);
       setIsAlertModalOpen(true);
       return;
     }
     await proceedWithSubmit();
-  }, [hasUnacknowledgedAlerts, proceedWithSubmit]);
+  }, [
+    hasUnacknowledgedAlerts,
+    recipientErrorAllowAcknowledge,
+    proceedWithSubmit,
+  ]);
 
   if (!asset) {
     return <LoadingScreen />;

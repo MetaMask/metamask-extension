@@ -42,6 +42,7 @@ export const Recipient = ({
 }) => {
   const {
     recipientError,
+    recipientErrorAllowAcknowledge,
     hasUnacknowledgedAlerts,
     recipientWarning,
     recipientResolvedLookup,
@@ -122,7 +123,7 @@ export const Recipient = ({
       />
       {to === toAddressValidated &&
         recipientError &&
-        !hasUnacknowledgedAlerts && (
+        !recipientErrorAllowAcknowledge && (
           <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
             {recipientError}
           </HelpText>

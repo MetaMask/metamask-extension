@@ -56,6 +56,8 @@ describe('RecipientInput', () => {
           {
             recipientConfusableCharacters: [],
             recipientError: null,
+            recipientErrorAllowAcknowledge: false,
+            hasUnacknowledgedAlerts: false,
             recipientWarning: null,
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
