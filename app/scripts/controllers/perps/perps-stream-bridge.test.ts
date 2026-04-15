@@ -67,6 +67,7 @@ function createMockControllerApi() {
 type BridgeOverrides = {
   controller?: PerpsController;
   controllerApi?: ReturnType<typeof createMockControllerApi>;
+  onControllerStateChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
   emit?: jest.Mock;
 };
@@ -77,10 +78,13 @@ function createBridge(overrides: BridgeOverrides = {}) {
     overrides.controller ??
     (createMockController() as unknown as PerpsController);
   const controllerApi = overrides.controllerApi ?? createMockControllerApi();
+  const onControllerStateChange =
+    overrides.onControllerStateChange ?? jest.fn().mockReturnValue(jest.fn());
   const isConnectionAlive = overrides.isConnectionAlive ?? (() => true);
 
   const bridge = new PerpsStreamBridge({
     controller,
+    onControllerStateChange,
     perpsInit: controllerApi.perpsInit,
     perpsDisconnect: controllerApi.perpsDisconnect,
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
@@ -88,7 +92,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     emit,
   });
 
-  return { bridge, emit, controller, controllerApi };
+  return { bridge, emit, controller, controllerApi, onControllerStateChange };
 }
 
 describe('PerpsStreamBridge', () => {
@@ -206,10 +210,12 @@ describe('PerpsStreamBridge', () => {
       expect(bridge.isActive).toBe(false);
     });
 
-    it('subscribes to connection state during activation', async () => {
+    it('subscribes to connection state and controller state during activation', async () => {
       const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
+        onControllerStateChange,
       });
       await bridge.bridgeApi().perpsInit();
 
@@ -217,10 +223,18 @@ describe('PerpsStreamBridge', () => {
       expect(controller.subscribeToConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+      expect(onControllerStateChange).toHaveBeenCalledTimes(1);
+      expect(onControllerStateChange).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
     });
 
     it('tears down previous static subscriptions on re-activation after destroy', async () => {
       const controller = createMockController();
+      const stateChangeUnsub = jest.fn();
+      const onControllerStateChange = jest
+        .fn()
+        .mockReturnValue(stateChangeUnsub);
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
@@ -230,6 +244,7 @@ describe('PerpsStreamBridge', () => {
 
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
+        onControllerStateChange,
       });
       const api = bridge.bridgeApi();
 
@@ -237,6 +252,7 @@ describe('PerpsStreamBridge', () => {
       for (const unsub of unsubs) {
         expect(unsub).not.toHaveBeenCalled();
       }
+      expect(stateChangeUnsub).not.toHaveBeenCalled();
 
       bridge.destroy();
       await api.perpsInit();
@@ -244,6 +260,7 @@ describe('PerpsStreamBridge', () => {
       for (const unsub of unsubs) {
         expect(unsub).toHaveBeenCalledTimes(1);
       }
+      expect(stateChangeUnsub).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -771,6 +788,10 @@ describe('PerpsStreamBridge', () => {
   describe('destroy', () => {
     it('tears down all static subscriptions', async () => {
       const controller = createMockController();
+      const stateChangeUnsub = jest.fn();
+      const onControllerStateChange = jest
+        .fn()
+        .mockReturnValue(stateChangeUnsub);
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
@@ -780,6 +801,7 @@ describe('PerpsStreamBridge', () => {
 
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
+        onControllerStateChange,
       });
       await bridge.bridgeApi().perpsInit();
       bridge.destroy();
@@ -787,6 +809,7 @@ describe('PerpsStreamBridge', () => {
       for (const unsub of unsubs) {
         expect(unsub).toHaveBeenCalledTimes(1);
       }
+      expect(stateChangeUnsub).toHaveBeenCalledTimes(1);
     });
 
     it('tears down all dynamic subscriptions', async () => {
@@ -949,9 +972,224 @@ describe('PerpsStreamBridge', () => {
       const api = bridge.bridgeApi();
       await api.perpsInit();
 
-      expect(() =>
-        (api.perpsCheckHealth as () => void)(),
-      ).not.toThrow();
+      expect(() => (api.perpsCheckHealth as () => void)()).not.toThrow();
+    });
+  });
+
+  describe('market data preload sync', () => {
+    it('emits markets when cachedMarketDataByProvider updates', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const mockMarkets = [{ symbol: 'ETH' }, { symbol: 'BTC' }];
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': { data: mockMarkets, timestamp: 1000 },
+          },
+        },
+        [],
+      );
+
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+    });
+
+    it('skips emit when market data is empty', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': { data: [], timestamp: 1000 },
+          },
+        },
+        [],
+      );
+
+      expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
+    });
+
+    it('does not re-emit when timestamp has not changed', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const state = {
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': {
+            data: [{ symbol: 'ETH' }],
+            timestamp: 1000,
+          },
+        },
+      };
+
+      stateChangeCallback(state, []);
+      stateChangeCallback(state, []);
+
+      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'ETH' }]);
+      expect(emit).toHaveBeenCalledTimes(1);
+    });
+
+    it('emits again when timestamp changes', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }],
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }, { symbol: 'BTC' }],
+              timestamp: 2000,
+            },
+          },
+        },
+        [],
+      );
+
+      expect(emit).toHaveBeenCalledTimes(2);
+      expect(emit).toHaveBeenNthCalledWith(1, 'markets', [{ symbol: 'ETH' }]);
+      expect(emit).toHaveBeenNthCalledWith(2, 'markets', [
+        { symbol: 'ETH' },
+        { symbol: 'BTC' },
+      ]);
+    });
+
+    it('uses correct key for testnet', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const mockMarkets = [{ symbol: 'ETH' }];
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: true,
+          cachedMarketDataByProvider: {
+            'hyperliquid:testnet': { data: mockMarkets, timestamp: 1000 },
+          },
+        },
+        [],
+      );
+
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+    });
+
+    it('resets deduplication key on destroy', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+      });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback1 = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const state = {
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': {
+            data: [{ symbol: 'ETH' }],
+            timestamp: 1000,
+          },
+        },
+      };
+
+      stateChangeCallback1(state, []);
+      expect(emit).toHaveBeenCalledTimes(1);
+
+      bridge.destroy();
+      await api.perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback2 = onControllerStateChange.mock.calls[1][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback2(state, []);
+      expect(emit).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -959,8 +1197,9 @@ describe('PerpsStreamBridge', () => {
     function getConnectionStateListener(
       controller: ReturnType<typeof createMockController>,
     ): (state: string) => void {
-      return controller.subscribeToConnectionState.mock
-        .calls[0][0] as (state: string) => void;
+      return controller.subscribeToConnectionState.mock.calls[0][0] as (
+        state: string,
+      ) => void;
     }
 
     it('emits connectionState updates to UI', async () => {
@@ -1068,9 +1307,7 @@ describe('PerpsStreamBridge', () => {
       controller.getMarketDataWithPrices.mockRejectedValue(
         new Error('network error'),
       );
-      controller.getPositions.mockRejectedValue(
-        new Error('network error'),
-      );
+      controller.getPositions.mockRejectedValue(new Error('network error'));
 
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,

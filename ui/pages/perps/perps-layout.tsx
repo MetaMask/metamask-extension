@@ -4,7 +4,6 @@ import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsConnectionHealth } from '../../hooks/perps/stream/usePerpsConnectionHealth';
 import { usePerpsPrewarm } from '../../hooks/perps/stream/usePerpsPrewarm';
-import { usePerpsMarketDataSync } from '../../hooks/perps/stream/usePerpsMarketDataSync';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 
 /**
@@ -22,7 +21,6 @@ export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsConnectionHealth();
   usePerpsPrewarm();
-  usePerpsMarketDataSync();
   usePerpsLifecycleBreadcrumbs();
 
   return (

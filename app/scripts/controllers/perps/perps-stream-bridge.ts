@@ -1,9 +1,11 @@
 import {
   WebSocketConnectionState,
   type PerpsController,
+  type PerpsControllerState,
   type CandlePeriod,
   type TimeDuration,
 } from '@metamask/perps-controller';
+import type { Patch } from 'immer';
 
 type EmitFn = (
   channel: string,
@@ -18,8 +20,13 @@ type ActivateStreamingParams = {
   candle?: { symbol: string; interval: CandlePeriod; duration?: TimeDuration };
 };
 
+type StateChangeListener = (
+  callback: (state: PerpsControllerState, patches: Patch[]) => void,
+) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
+  onControllerStateChange: StateChangeListener;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
@@ -53,6 +60,8 @@ export class PerpsStreamBridge {
 
   readonly #controller: PerpsController;
 
+  readonly #onControllerStateChange: StateChangeListener;
+
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
 
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
@@ -73,8 +82,11 @@ export class PerpsStreamBridge {
 
   #isHydrating = false;
 
+  #lastMarketCacheKey: string | null = null;
+
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
+    this.#onControllerStateChange = options.onControllerStateChange;
     this.#perpsInit = options.perpsInit;
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
@@ -203,6 +215,7 @@ export class PerpsStreamBridge {
     this.#viewActive = false;
     this.#wasDisconnected = false;
     this.#isHydrating = false;
+    this.#lastMarketCacheKey = null;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -249,6 +262,14 @@ export class PerpsStreamBridge {
           },
         ),
       );
+
+      this.#staticUnsubs.push(
+        this.#onControllerStateChange(
+          (state: PerpsControllerState, _patches: Patch[]) => {
+            this.#handleMarketDataPreload(state);
+          },
+        ),
+      );
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -267,13 +288,35 @@ export class PerpsStreamBridge {
       return;
     }
 
-    if (
-      state === WebSocketConnectionState.Connected &&
-      this.#wasDisconnected
-    ) {
+    if (state === WebSocketConnectionState.Connected && this.#wasDisconnected) {
       this.#wasDisconnected = false;
       this.#hydrateAfterReconnect();
     }
+  }
+
+  /**
+   * Reacts to controller state changes by checking if the cached market data
+   * has been updated (e.g. by the background preloader after HIP-3 config
+   * arrives from LaunchDarkly). Pushes updated data to the UI via the
+   * existing 'markets' channel so the stream manager stays in sync.
+   * @param state
+   */
+  #handleMarketDataPreload(state: PerpsControllerState): void {
+    const provider = state.activeProvider ?? 'hyperliquid';
+    const isTestnet = state.isTestnet ?? false;
+    const cacheKey = `${provider}:${isTestnet ? 'testnet' : 'mainnet'}`;
+    const entry = state.cachedMarketDataByProvider?.[cacheKey];
+
+    if (!entry?.data || entry.data.length === 0) {
+      return;
+    }
+
+    const snapshotKey = `${cacheKey}:${entry.timestamp}`;
+    if (snapshotKey === this.#lastMarketCacheKey) {
+      return;
+    }
+    this.#lastMarketCacheKey = snapshotKey;
+    this.#emit('markets', entry.data);
   }
 
   /**
