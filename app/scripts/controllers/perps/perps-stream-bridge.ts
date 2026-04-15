@@ -99,6 +99,9 @@ export class PerpsStreamBridge {
 
   #isHydrating = false;
 
+  /** Bumped on each hydration start and on destroy() so stale #finally blocks cannot clear #isHydrating. */
+  #hydrationSeq = 0;
+
   #lastMarketCacheKey: string | null = null;
 
   #wasDeviceOffline = false;
@@ -234,6 +237,7 @@ export class PerpsStreamBridge {
     this.#activated = false;
     this.#viewActive = false;
     this.#wasDisconnected = false;
+    this.#hydrationSeq += 1;
     this.#isHydrating = false;
     this.#lastMarketCacheKey = null;
     this.#wasDeviceOffline = false;
@@ -379,6 +383,8 @@ export class PerpsStreamBridge {
       return;
     }
     this.#isHydrating = true;
+    this.#hydrationSeq += 1;
+    const hydrationToken = this.#hydrationSeq;
 
     try {
       const marketsResult = await this.#controller
@@ -412,7 +418,9 @@ export class PerpsStreamBridge {
     } catch (err) {
       console.debug('[PerpsStreamBridge] post-reconnect hydration failed', err);
     } finally {
-      this.#isHydrating = false;
+      if (hydrationToken === this.#hydrationSeq) {
+        this.#isHydrating = false;
+      }
     }
   }
 

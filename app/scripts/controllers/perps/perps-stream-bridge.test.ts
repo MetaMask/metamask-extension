@@ -1427,5 +1427,64 @@ describe('PerpsStreamBridge', () => {
 
       jest.useRealTimers();
     });
+
+    it('stale hydration finally does not unblock the guard for an active run after destroy', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+
+      let resolveFirst: (value: unknown) => void = () => undefined;
+      const firstMarketsPromise = new Promise((resolve) => {
+        resolveFirst = resolve;
+      });
+
+      const secondMarkets = [{ symbol: 'SECOND' }];
+      let getMarketDataWithPricesCalls = 0;
+      controller.getMarketDataWithPrices.mockImplementation(() => {
+        getMarketDataWithPricesCalls += 1;
+        if (getMarketDataWithPricesCalls === 1) {
+          return firstMarketsPromise as never;
+        }
+        return Promise.resolve(secondMarkets as never);
+      });
+      controller.getPositions.mockResolvedValue([] as never);
+      controller.getOpenOrders.mockResolvedValue([] as never);
+      controller.getAccountState.mockResolvedValue(null as never);
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+
+      const listenerRound1 = getConnectionStateListener(controller);
+      listenerRound1(WebSocketConnectionState.Disconnected);
+      listenerRound1(WebSocketConnectionState.Connected);
+
+      await Promise.resolve();
+
+      bridge.destroy();
+      await api.perpsInit();
+
+      const subscribeCalls = controller.subscribeToConnectionState.mock.calls;
+      const listenerRound2 = subscribeCalls[subscribeCalls.length - 1][0] as (
+        state: string,
+      ) => void;
+      listenerRound2(WebSocketConnectionState.Disconnected);
+      listenerRound2(WebSocketConnectionState.Connected);
+
+      await Promise.resolve();
+
+      resolveFirst([{ symbol: 'STALE' }]);
+      await jest.advanceTimersByTimeAsync(300);
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(2);
+
+      const marketPayloads = emit.mock.calls
+        .filter((call) => call[0] === 'markets')
+        .map((call) => call[1]);
+      expect(marketPayloads).toContainEqual(secondMarkets);
+
+      jest.useRealTimers();
+    });
   });
 });
