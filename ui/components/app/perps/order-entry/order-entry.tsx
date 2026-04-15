@@ -353,7 +353,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         >
           <Button
             variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
+            size={ButtonSize.Md}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',
