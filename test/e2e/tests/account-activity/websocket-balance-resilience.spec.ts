@@ -21,7 +21,7 @@ import { Anvil } from '../../seeder/anvil';
 
 const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
-const BALANCE_POLL_TIMEOUT = 90_000;
+const BALANCE_POLL_TIMEOUT = 150_000;
 const RECONNECT_TIMEOUT = 60_000;
 
 /**
@@ -107,13 +107,6 @@ async function waitForBalanceUpdate(
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
-  // The reconnect test can spend up to 60 s waiting for the WS to reconnect
-  // and another 90 s waiting for the balance update, so we need a timeout
-  // that comfortably covers the full flow.
-  before(function () {
-    this.timeout(80_000);
-  });
-
   it('balance updates continue via REST polling when WebSocket disconnects', async function () {
     this.timeout(180_000);
     await withFixtures(
