@@ -1161,6 +1161,28 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('does not disable submit in modify mode when pre-loaded TP has crossed market price', async () => {
+      mockSearchParams.set('mode', 'modify');
+      // Market has run above the existing TP ($3,200) — stale TP is now on the wrong
+      // side of the current price for a long, which previously silently blocked submit.
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((m) =>
+          m.symbol === 'ETH' ? { ...m, price: '$3,500.00' } : m,
+        ),
+        isInitialLoading: false,
+      });
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+    });
+
     it('does not submit when currentPrice is 0', async () => {
       mockLiveMarketData.mockReturnValue({
         markets: mockCryptoMarkets.map((m) => ({
