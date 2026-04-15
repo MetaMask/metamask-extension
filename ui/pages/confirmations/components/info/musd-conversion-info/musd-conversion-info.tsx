@@ -1,5 +1,8 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useRef } from 'react';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
@@ -15,6 +18,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useMusdConversionTokens } from '../../../../../hooks/musd';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
@@ -86,9 +90,25 @@ export const MusdConversionInfo = () => {
     }
   }, [existingPayToken?.chainId, existingPayToken?.address, transactionId]);
 
-  const preferredToken = existingPayToken
-    ? { address: existingPayToken.address, chainId: existingPayToken.chainId }
-    : undefined;
+  const { defaultPaymentToken } = useMusdConversionTokens({
+    transactionType: TransactionType.musdConversion,
+  });
+
+  const preferredToken = useMemo(() => {
+    if (existingPayToken) {
+      return {
+        address: existingPayToken.address,
+        chainId: existingPayToken.chainId,
+      };
+    }
+    if (defaultPaymentToken) {
+      return {
+        address: defaultPaymentToken.address as `0x${string}`,
+        chainId: defaultPaymentToken.chainId,
+      };
+    }
+    return undefined;
+  }, [defaultPaymentToken, existingPayToken]);
 
   const renderOverrideContent = useCallback(
     (amountHuman: string) => <MusdOverrideContent amountHuman={amountHuman} />,
@@ -97,7 +117,7 @@ export const MusdConversionInfo = () => {
 
   return (
     <CustomAmountInfo
-      disablePay={Boolean(existingPayToken)}
+      disableAutomaticToken={true}
       preferredToken={preferredToken}
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}

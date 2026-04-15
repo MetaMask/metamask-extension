@@ -48,6 +48,13 @@ import { useConfirmContext } from '../../../context/confirm';
 export type CustomAmountInfoProps = {
   children?: ReactNode;
   currency?: string;
+  /**
+   * When true, it prevents automatic selection of payment token based on balance and feature flags
+   */
+  disableAutomaticToken?: boolean;
+  /**
+   * When true, it disables MetaMask Pay for transactions that just need custom amount input
+   */
   disablePay?: boolean;
   hasMax?: boolean;
   preferredToken?: SetPayTokenRequest;
@@ -59,6 +66,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
     children,
     currency,
+    disableAutomaticToken,
     disablePay,
     hasMax,
     overrideBottomContent,
@@ -66,7 +74,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     preferredToken,
   }) => {
     useAutomaticTransactionPayToken({
-      disable: disablePay,
+      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
     useTransactionPayMetrics();

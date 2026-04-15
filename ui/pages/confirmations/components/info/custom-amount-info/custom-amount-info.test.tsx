@@ -89,6 +89,7 @@ const DEFAULT_ALERTS_HOOK_RETURN = {
 
 function render({
   hasMax = false,
+  disableAutomaticToken,
   disablePay = false,
   availableTokens = [MOCK_AVAILABLE_TOKEN],
   customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
@@ -100,6 +101,7 @@ function render({
   requiredTokens = [],
 }: {
   hasMax?: boolean;
+  disableAutomaticToken?: boolean;
   disablePay?: boolean;
   availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
   customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
@@ -162,7 +164,11 @@ function render({
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
   return renderWithConfirmContextProvider(
-    <CustomAmountInfo hasMax={hasMax} disablePay={disablePay} />,
+    <CustomAmountInfo
+      hasMax={hasMax}
+      disableAutomaticToken={disableAutomaticToken}
+      disablePay={disablePay}
+    />,
     mockStore(state),
   );
 }
@@ -175,6 +181,39 @@ describe('CustomAmountInfo', () => {
   it('renders custom amount component', () => {
     const { getByTestId } = render();
     expect(getByTestId('custom-amount')).toBeInTheDocument();
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
+    render();
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: false,
+      }),
+    );
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable true when disableAutomaticToken is true', () => {
+    render({ disableAutomaticToken: true });
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable true when disablePay is true', () => {
+    render({ disablePay: true });
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
   });
 
   it('renders pay token amount when disablePay is false', () => {
