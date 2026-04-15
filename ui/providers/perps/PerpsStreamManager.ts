@@ -36,7 +36,6 @@ import type {
   CandleData,
   CandlePeriod,
 } from '@metamask/perps-controller';
-import { clearPerpsMarketInfoModuleCache } from '../../hooks/perps/usePerpsMarketInfo';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
@@ -64,12 +63,6 @@ type OptimisticTPSLOverride = {
   stopLossPrice?: string;
   expiresAt: number;
 };
-
-// Grace period before falling back to REST.
-// Gives the WebSocket time to deliver fresh data on reload, avoiding
-// redundant REST calls that contribute to 429 rate-limit errors.
-// If no WS data arrives within this window, the REST fallback fires.
-const WS_GRACE_PERIOD_MS = 3000;
 
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
@@ -105,9 +98,6 @@ class PerpsStreamManager {
   // Tracks which address this manager is initialized for
   private initializedAddress: string | null = null;
 
-  // Timestamp of the most recent background stream update (any channel).
-  private _lastStreamUpdateAt = 0;
-
   // Deduplicates concurrent initForAddress calls
   private pendingInit: { address: string; promise: Promise<void> } | null =
     null;
@@ -124,32 +114,19 @@ class PerpsStreamManager {
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
-        let cancelled = false;
-        const timer = setTimeout(() => {
-          if (cancelled || this.positions.hasCachedData()) {
-            return;
-          }
-          submitRequestToBackground<Position[]>('perpsGetPositions', [])
-            .then((data) => {
-              if (!cancelled && !this.positions.hasCachedData()) {
-                push(data ?? EMPTY_POSITIONS);
-              }
-            })
-            .catch((err) => {
-              console.error(
-                '[PerpsStreamManager] Failed to fetch positions',
-                err,
-              );
-              if (!cancelled && !this.positions.hasCachedData()) {
-                push(EMPTY_POSITIONS);
-              }
-            });
-        }, WS_GRACE_PERIOD_MS);
-
-        return () => {
-          cancelled = true;
-          clearTimeout(timer);
-        };
+        submitRequestToBackground<Position[]>('perpsGetPositions', [])
+          .then((data) => {
+            push(data ?? EMPTY_POSITIONS);
+          })
+          .catch((err) => {
+            console.error(
+              '[PerpsStreamManager] Failed to fetch positions',
+              err,
+            );
+            push(EMPTY_POSITIONS);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
       },
       initialValue: EMPTY_POSITIONS,
       name: 'positions',
@@ -157,29 +134,16 @@ class PerpsStreamManager {
 
     this.orders = new PerpsDataChannel<Order[]>({
       connectFn: (push) => {
-        let cancelled = false;
-        const timer = setTimeout(() => {
-          if (cancelled || this.orders.hasCachedData()) {
-            return;
-          }
-          submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
-            .then((data) => {
-              if (!cancelled && !this.orders.hasCachedData()) {
-                push(data ?? EMPTY_ORDERS);
-              }
-            })
-            .catch((err) => {
-              console.error('[PerpsStreamManager] Failed to fetch orders', err);
-              if (!cancelled && !this.orders.hasCachedData()) {
-                push(EMPTY_ORDERS);
-              }
-            });
-        }, WS_GRACE_PERIOD_MS);
-
-        return () => {
-          cancelled = true;
-          clearTimeout(timer);
-        };
+        submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
+          .then((data) => {
+            push(data ?? EMPTY_ORDERS);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch orders', err);
+            push(EMPTY_ORDERS);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
       },
       initialValue: EMPTY_ORDERS,
       name: 'orders',
@@ -187,32 +151,16 @@ class PerpsStreamManager {
 
     this.account = new PerpsDataChannel<AccountState | null>({
       connectFn: (push) => {
-        let cancelled = false;
-        const timer = setTimeout(() => {
-          if (cancelled || this.account.hasCachedData()) {
-            return;
-          }
-          submitRequestToBackground<AccountState>('perpsGetAccountState', [])
-            .then((data) => {
-              if (!cancelled && !this.account.hasCachedData()) {
-                push(data ?? null);
-              }
-            })
-            .catch((err) => {
-              console.error(
-                '[PerpsStreamManager] Failed to fetch account',
-                err,
-              );
-              if (!cancelled && !this.account.hasCachedData()) {
-                push(null);
-              }
-            });
-        }, WS_GRACE_PERIOD_MS);
-
-        return () => {
-          cancelled = true;
-          clearTimeout(timer);
-        };
+        submitRequestToBackground<AccountState>('perpsGetAccountState', [])
+          .then((data) => {
+            push(data ?? null);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch account', err);
+            push(null);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
       },
       initialValue: null,
       name: 'account',
@@ -220,38 +168,28 @@ class PerpsStreamManager {
 
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
       connectFn: (push) => {
-        let cancelled = false;
-        const timer = setTimeout(() => {
-          if (cancelled || this.markets.hasCachedData()) {
-            return;
-          }
-          submitRequestToBackground<PerpsMarketData[]>(
-            'perpsGetMarketDataWithPrices',
-            [],
-          )
-            .then((data) => {
-              if (!cancelled && !this.markets.hasCachedData()) {
-                push(data ?? EMPTY_MARKETS);
-              }
-            })
-            .catch((err) => {
-              if (cancelled) {
-                return;
-              }
-              console.error(
-                '[PerpsStreamManager] Failed to fetch markets',
-                err,
-              );
-              if (!this.markets.hasCachedData()) {
-                push(EMPTY_MARKETS);
-              }
-            });
-        }, WS_GRACE_PERIOD_MS);
+        submitRequestToBackground<PerpsMarketData[]>(
+          'perpsGetMarketDataWithPrices',
+          [],
+        )
+          .then((data) => {
+            push(data ?? EMPTY_MARKETS);
+          })
+          .catch((err) => {
+            console.error('[PerpsStreamManager] Failed to fetch markets', err);
+            const cachedMarkets = this.markets.getCachedData();
+            const hasCachedMarkets = this.markets.hasCachedData();
 
-        return () => {
-          cancelled = true;
-          clearTimeout(timer);
-        };
+            // Preserve the last known good market list when refresh fails.
+            if (hasCachedMarkets) {
+              push(cachedMarkets);
+              return;
+            }
+
+            push(EMPTY_MARKETS);
+          });
+        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+        return () => {};
       },
       initialValue: EMPTY_MARKETS,
       name: 'markets',
@@ -276,14 +214,6 @@ class PerpsStreamManager {
     });
 
     this.candles = new CandleStreamChannel();
-  }
-
-  /**
-   * Returns the timestamp of the last background stream update.
-   * Returns 0 if no update has been received yet.
-   */
-  getLastStreamUpdateAt(): number {
-    return this._lastStreamUpdateAt;
   }
 
   /**
@@ -439,7 +369,6 @@ class PerpsStreamManager {
       this.orderBook.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
-      clearPerpsMarketInfoModuleCache();
     }
 
     this.initializedAddress = address;
@@ -520,7 +449,6 @@ class PerpsStreamManager {
     symbol?: string;
     interval?: CandlePeriod;
   }): void {
-    this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
     switch (channel) {
       case 'positions': {
@@ -646,8 +574,6 @@ class PerpsStreamManager {
     this.prices.clearCache();
     this.orderBook.clearCache();
     this.candles.clearAll();
-    this._lastStreamUpdateAt = 0;
-    clearPerpsMarketInfoModuleCache();
   }
 
   /**
@@ -667,8 +593,6 @@ class PerpsStreamManager {
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
-    this._lastStreamUpdateAt = 0;
-    clearPerpsMarketInfoModuleCache();
   }
 }
 

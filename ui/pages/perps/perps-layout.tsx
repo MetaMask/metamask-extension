@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
-import { usePerpsStreamManager } from '../../hooks/perps/stream/usePerpsStreamManager';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
 
@@ -22,8 +21,6 @@ const MIN_HIDDEN_DURATION_MS = 30_000;
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
-
-  const { streamManager } = usePerpsStreamManager();
 
   // Nudge background perps WebSocket health when the tab becomes visible after
   // being hidden for a while. Offline→online is handled in PerpsStreamBridge.
@@ -55,22 +52,6 @@ export default function PerpsLayout() {
     return () =>
       document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
-
-  // Keep all PerpsStreamManager channels connected for the lifetime of this
-  // layout, even when no leaf UI subscribers exist. Without this, navigating
-  // between Perps pages drops subscriber count to 0, disconnecting channels and
-  // triggering a fresh REST fetch that can overwrite the cache with incomplete data.
-  useEffect(() => {
-    if (!streamManager) {
-      return undefined;
-    }
-
-    streamManager.prewarm();
-
-    return () => {
-      streamManager.cleanupPrewarm();
-    };
-  }, [streamManager]);
 
   return (
     <PerpsToastProvider>

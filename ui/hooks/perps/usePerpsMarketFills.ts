@@ -16,22 +16,6 @@ type UsePerpsMarketFillsReturn = {
   isInitialLoading: boolean;
 };
 
-/** Cache TTL: re-use fills REST result for 30 seconds across re-navigations */
-const FILLS_CACHE_TTL_MS = 30_000;
-
-type FillsCache = {
-  fills: OrderFill[];
-  fetchedAt: number;
-  address: string;
-};
-
-let fillsCache: FillsCache | null = null;
-
-/** @internal Exported only for testing — resets the module-level fills cache. */
-export function _resetFillsCacheForTesting(): void {
-  fillsCache = null;
-}
-
 /**
  * Hook for fetching market-specific fills with combined WebSocket + REST data.
  *
@@ -59,17 +43,8 @@ export function usePerpsMarketFills({
     throttleMs,
   });
 
-  // Initialise from cache so re-navigation renders immediately without a spinner
-  const isCacheHit = Boolean(
-    fillsCache &&
-      fillsCache.address === selectedAddress &&
-      Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS,
-  );
-
-  const [restFills, setRestFills] = useState<OrderFill[]>(
-    isCacheHit ? (fillsCache as FillsCache).fills : [],
-  );
-  const [isRestLoading, setIsRestLoading] = useState(!isCacheHit);
+  const [restFills, setRestFills] = useState<OrderFill[]>([]);
+  const [isRestLoading, setIsRestLoading] = useState(true);
 
   const fetchRestFills = useCallback(async () => {
     const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
@@ -81,17 +56,6 @@ export function usePerpsMarketFills({
   }, []);
 
   useEffect(() => {
-    // Skip fetch if the cache is still warm for this address.
-    if (
-      fillsCache &&
-      fillsCache.address === selectedAddress &&
-      Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS
-    ) {
-      setRestFills(fillsCache.fills);
-      setIsRestLoading(false);
-      return undefined;
-    }
-
     let cancelled = false;
     setRestFills([]);
     setIsRestLoading(true);
@@ -99,11 +63,6 @@ export function usePerpsMarketFills({
     fetchRestFills()
       .then((result) => {
         if (!cancelled) {
-          fillsCache = {
-            fills: result,
-            fetchedAt: Date.now(),
-            address: selectedAddress ?? '',
-          };
           setRestFills(result);
         }
       })

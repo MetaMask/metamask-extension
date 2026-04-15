@@ -1,9 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import type { OrderFill } from '@metamask/perps-controller';
-import {
-  usePerpsMarketFills,
-  _resetFillsCacheForTesting,
-} from './usePerpsMarketFills';
+import { usePerpsMarketFills } from './usePerpsMarketFills';
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
@@ -53,7 +50,6 @@ function setRestFillsResponse(fills: OrderFill[] | null) {
 describe('usePerpsMarketFills', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    _resetFillsCacheForTesting();
     setLiveFills([]);
     mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
     setRestFillsResponse([]);
@@ -322,89 +318,6 @@ describe('usePerpsMarketFills', () => {
 
       expect(result.current.fills).toHaveLength(1);
       expect(result.current.fills[0].orderId).toBe('b-1');
-    });
-  });
-
-  describe('module-level cache', () => {
-    it('skips REST fetch and returns immediately when cache is warm', async () => {
-      const fill = makeFill({ orderId: 'cached-1', timestamp: 1000 });
-      setRestFillsResponse([fill]);
-
-      // First render — populates cache
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-
-      // Second render (e.g. re-navigation) — cache is warm, no additional REST call
-      const { result: result2 } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-      expect(result2.current.isInitialLoading).toBe(false);
-      expect(result2.current.fills).toHaveLength(1);
-    });
-
-    it('re-fetches after TTL expires', async () => {
-      jest.useFakeTimers();
-      const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1_000_000);
-
-      try {
-        setRestFillsResponse([
-          makeFill({ orderId: 'fresh-1', timestamp: 1000 }),
-        ]);
-
-        const { waitForNextUpdate: waitFirst } = renderHook(() =>
-          usePerpsMarketFills({ symbol: 'BTC' }),
-        );
-        await waitFirst();
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-        mockSubmitRequestToBackground.mockClear();
-
-        // Advance time past the 30s TTL
-        nowSpy.mockReturnValue(1_000_000 + 30_001);
-        setRestFillsResponse([
-          makeFill({ orderId: 'stale-1', timestamp: 2000 }),
-        ]);
-
-        const { waitForNextUpdate: waitSecond } = renderHook(() =>
-          usePerpsMarketFills({ symbol: 'BTC' }),
-        );
-        await waitSecond();
-
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsGetOrderFills',
-          expect.anything(),
-        );
-      } finally {
-        nowSpy.mockRestore();
-        jest.useRealTimers();
-      }
-    });
-
-    it('re-fetches for a different account even when cache is warm', async () => {
-      setRestFillsResponse([makeFill({ orderId: 'abc-1', timestamp: 1000 })]);
-
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
-      mockSubmitRequestToBackground.mockClear();
-
-      // Different address — cache is for 0xabc, not 0xdef
-      mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
-      setRestFillsResponse([makeFill({ orderId: 'def-1', timestamp: 2000 })]);
-
-      const { result: result2, waitForNextUpdate: waitSecond } = renderHook(
-        () => usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitSecond();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-      expect(result2.current.fills[0].orderId).toBe('def-1');
     });
   });
 });
