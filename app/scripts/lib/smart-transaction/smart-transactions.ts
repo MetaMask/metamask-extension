@@ -26,6 +26,8 @@ import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  type EnvironmentType,
+  ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
@@ -39,7 +41,7 @@ import {
 } from '../../../../shared/lib/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
-import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
+import { ControllerFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
 import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 
@@ -71,6 +73,7 @@ export type SubmitSmartTransactionRequest = {
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
+  environmentType?: EnvironmentType;
   transactions?: PublishBatchHookTransaction[];
 };
 
@@ -104,7 +107,11 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
+  // Enables approval flow
   #shouldShowStatusPage: boolean;
+
+  // Actually renders the page
+  #shouldRenderStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -116,6 +123,7 @@ class SmartTransactionHook {
       controllerMessenger,
       featureFlags,
       transactions,
+      environmentType,
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
@@ -137,10 +145,15 @@ class SmartTransactionHook {
         (this.#transactions && this.#transactions.length > 0),
     );
 
-    this.#shouldShowStatusPage =
-      featureFlags?.extensionSkipTransactionStatusPage
-        ? false
-        : legacyShowStatusPage;
+    this.#shouldShowStatusPage = legacyShowStatusPage;
+
+    const skipStatusPage =
+      featureFlags?.extensionSkipTransactionStatusPage &&
+      environmentType !== undefined &&
+      environmentType !== ENVIRONMENT_TYPE_NOTIFICATION;
+
+    this.#shouldRenderStatusPage =
+      this.#shouldShowStatusPage && !skipStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -169,7 +182,7 @@ class SmartTransactionHook {
     }
 
     if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
+      await this.#startApprovalFlow(this.#shouldRenderStatusPage);
     }
 
     let getFeesResponse;
@@ -239,7 +252,7 @@ class SmartTransactionHook {
     }
 
     if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow();
+      await this.#startApprovalFlow(this.#shouldRenderStatusPage);
     }
 
     try {
@@ -323,7 +336,7 @@ class SmartTransactionHook {
     }
   }
 
-  async #startApprovalFlow() {
+  async #startApprovalFlow(show: boolean) {
     if (SmartTransactionHook.#sharedApprovalFlowId) {
       await this.#endExistingApprovalFlow(
         SmartTransactionHook.#sharedApprovalFlowId,
@@ -333,6 +346,7 @@ class SmartTransactionHook {
     // Create a new approval flow
     const { id: approvalFlowId } = await this.#controllerMessenger.call(
       'ApprovalController:startFlow',
+      { show },
     );
 
     // Store the flow ID both in the instance and in the static property
@@ -386,7 +400,7 @@ class SmartTransactionHook {
             txId: this.#transactionMeta.id,
           },
         },
-        true,
+        this.#shouldRenderStatusPage,
       )
       .then(onApproveOrRejectWrapper, onApproveOrRejectWrapper);
   }
@@ -590,12 +604,12 @@ export const submitBatchSmartTransactionHook = (
   return smartTransactionHook.submitBatch();
 };
 
-function getUIState(flatState: MessengerClientFlatState) {
+function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
 export function getSmartTransactionCommonParams(
-  flatState: MessengerClientFlatState,
+  flatState: ControllerFlatState,
   chainId?: Hex,
 ) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.

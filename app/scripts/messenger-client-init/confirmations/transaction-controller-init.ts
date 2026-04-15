@@ -51,6 +51,7 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+import { EnvironmentType } from '../../../../shared/constants/app';
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.swap,
@@ -472,6 +473,11 @@ export async function publishHook({
     isSmartTransaction &&
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
+    const environmentType =
+      getTransactionMetricsRequest().getTransactionUIMetricsFragment(
+        transactionMeta.id,
+      )?.environmentType as EnvironmentType | undefined;
+
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -480,6 +486,7 @@ export async function publishHook({
       controllerMessenger: initMessenger,
       isSmartTransaction,
       featureFlags,
+      environmentType,
     });
 
     if (result?.transactionHash) {

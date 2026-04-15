@@ -2045,6 +2045,9 @@ async function approveTransaction(
   const actionId = generateActionId();
 
   try {
+    await upsertTransactionUIMetricsFragment(String(txMeta.id), {
+      environmentType: getEnvironmentType(),
+    });
     await submitRequestToBackground('resolvePendingApproval', [
       String(txMeta.id),
       { txMeta, actionId },
@@ -2094,6 +2097,9 @@ async function approveHardwareWalletTransaction(
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
+    await upsertTransactionUIMetricsFragment(String(txMeta.id), {
+      environmentType: getEnvironmentType(),
+    });
     await submitRequestToBackground('approveHardwareWalletTransaction', [
       {
         txId: txMeta.id,

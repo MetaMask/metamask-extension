@@ -13,18 +13,6 @@ import {
   selectRequiredTransactionIds,
 } from './transactionController';
 
-export type ExperimentalEvmOriginToastState = {
-  txId: string;
-  smartTransactionStatus?: string;
-};
-
-type SmartStatusRequestState = {
-  txId?: string;
-  smartTransaction?: {
-    status?: string;
-  };
-};
-
 const selectTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.transactions ?? EMPTY_ARRAY;
 
@@ -147,31 +135,42 @@ export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
   },
 );
 
-export const selectExperimentalEvmOriginToastStates = createSelector(
+type TxRequest = {
+  approvalId: string;
+  txId: string;
+  smartTransactionStatus: string | undefined;
+};
+
+export const selectSmartTransactions = createSelector(
   getPendingApprovals,
-  (pendingApprovals): ExperimentalEvmOriginToastState[] =>
-    pendingApprovals.flatMap((approval) => {
+  (pendingApprovals) => {
+    const result: TxRequest[] = [];
+
+    for (const approval of pendingApprovals) {
       if (
         approval.type !==
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
       ) {
-        return EMPTY_ARRAY as unknown as ExperimentalEvmOriginToastState[];
+        continue;
       }
 
-      const requestState = approval.requestState as
-        | SmartStatusRequestState
-        | undefined;
-      const txId = requestState?.txId;
+      const { requestState = {} } = approval;
+      const { txId, smartTransaction } = requestState as {
+        txId?: string;
+        smartTransaction?: { status?: string };
+      };
 
       if (!txId) {
-        return EMPTY_ARRAY as unknown as ExperimentalEvmOriginToastState[];
+        continue;
       }
 
-      return [
-        {
-          txId,
-          smartTransactionStatus: requestState?.smartTransaction?.status,
-        },
-      ];
-    }),
+      result.push({
+        approvalId: approval.id,
+        txId,
+        smartTransactionStatus: smartTransaction?.status,
+      });
+    }
+
+    return result;
+  },
 );

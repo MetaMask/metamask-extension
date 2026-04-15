@@ -76,7 +76,7 @@ export function isLegacyTransaction(txParams) {
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
  * @param {object} transaction - The txMeta object of a transaction.
- * @param {object} [transaction.txReceipt] - The transaction receipt.
+ * @param {object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {

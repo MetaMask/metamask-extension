@@ -9,10 +9,6 @@ import { ToastContent as ToastContentBase } from '../../components/ui/toast/toas
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
-export type EventPayloadArg =
-  | TransactionMeta
-  | { transactionMeta?: TransactionMeta };
-
 export const ToastContent = ({ status }: { status: TransactionStatus }) => {
   const { title } = useTransactionDisplay(status);
   return <ToastContentBase title={title} />;

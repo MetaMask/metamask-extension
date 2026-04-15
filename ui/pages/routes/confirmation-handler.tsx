@@ -30,6 +30,7 @@ import {
   selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
+import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
 import { useModalState } from '../../hooks/useModalState';
 import {
   isMerklClaimTransaction,
@@ -70,6 +71,7 @@ export const ConfirmationHandler = () => {
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
+  const skipStatusPage = useSelector(getExtensionSkipTransactionStatusPage);
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
@@ -91,6 +93,7 @@ export const ConfirmationHandler = () => {
         pendingApprovals,
         hasApprovalFlows,
         '',
+        skipStatusPage,
       );
 
       if (url) {
@@ -105,6 +108,7 @@ export const ConfirmationHandler = () => {
     hasBridgeQuotes,
     navigate,
     pendingApprovals,
+    skipStatusPage,
     isPopup,
   ]);
 

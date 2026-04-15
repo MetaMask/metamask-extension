@@ -20,7 +20,7 @@ type NonEvmTransactionsMap = Record<
 const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
   state.metamask.nonEvmTransactions as NonEvmTransactionsMap;
 
-export const selectCurrentAccountIds = createSelector(
+const selectCurrentAccountIds = createSelector(
   getSelectedAccountGroup,
   getAccountGroupWithInternalAccounts,
   (selectedGroupId, groups): string[] => {

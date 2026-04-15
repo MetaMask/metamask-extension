@@ -22,6 +22,8 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 
 export enum ConfirmationLoader {
@@ -45,6 +47,7 @@ export type ConfirmationNavigationOptions = {
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const skipStatusPage = useSelector(getExtensionSkipTransactionStatusPage);
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
@@ -67,13 +70,20 @@ export function useConfirmationNavigation() {
         confirmations,
         Boolean(approvalFlows?.length),
         queryString,
+        skipStatusPage,
       );
 
       if (url) {
         navigate(url, { replace: true });
       }
     },
-    [approvalFlows?.length, confirmations, navigate, queryString],
+    [
+      approvalFlows?.length,
+      confirmations,
+      navigate,
+      queryString,
+      skipStatusPage,
+    ],
   );
 
   const navigateToIndex = useCallback(
@@ -133,10 +143,15 @@ export function getConfirmationRoute(
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
   queryString: string = '',
+  skipStatusPage?: boolean,
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
+    if (skipStatusPage) {
+      return '';
+    }
+
     return CONFIRMATION_V_NEXT_ROUTE;
   }
 
@@ -153,6 +168,13 @@ export function getConfirmationRoute(
   }
 
   const type = nextConfirmation.type as ApprovalType;
+
+  if (
+    skipStatusPage &&
+    type === SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+  ) {
+    return '';
+  }
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;

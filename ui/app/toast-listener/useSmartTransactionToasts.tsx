@@ -1,41 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { toast } from 'react-hot-toast';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
-import { useSelector } from 'react-redux';
-import { ToastContent as ToastContentBase } from '../../components/ui/toast/toast';
-import {
-  type TransactionStatus,
-  useTransactionDisplay,
-} from '../../helpers/utils/transaction-display';
-import {
-  selectExperimentalEvmOriginToastStates,
-  type ExperimentalEvmOriginToastState,
-} from '../../selectors/toast';
-
-type ToastStatus = 'pending' | 'success' | 'failed' | undefined;
+import { useDispatch, useSelector } from 'react-redux';
+import { type TransactionStatus } from '../../helpers/utils/transaction-display';
+import { resolvePendingApproval } from '../../store/actions';
+import { selectSmartTransactions } from '../../selectors/toast';
+import { showFailedToast, showPendingToast, showSuccessToast } from './shared';
 
 function generateToastId(txId: string) {
-  return `exp-evm-origin-${txId}`;
+  return `stx-${txId}`;
 }
 
-const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-  return <ToastContentBase title={`[EVM Origin] ${title}`} />;
-};
-
-function showPendingToast(id: string) {
-  toast.loading(<ToastContent status="pending" />, { id });
-}
-
-function showSuccessToast(id: string) {
-  toast.success(<ToastContent status="success" />, { id });
-}
-
-function showFailedToast(id: string) {
-  toast.error(<ToastContent status="failed" />, { id });
-}
-
-function mapToastStatus(status?: string): ToastStatus {
+function mapToastStatus(status?: string): TransactionStatus | undefined {
   if (!status || status === SmartTransactionStatuses.PENDING) {
     return 'pending';
   }
@@ -54,19 +29,18 @@ function mapToastStatus(status?: string): ToastStatus {
 }
 
 export function useSmartTransactionToasts() {
-  const toastStates =
-    (useSelector(selectExperimentalEvmOriginToastStates) as
-      | ExperimentalEvmOriginToastState[]
-      | undefined) ?? [];
-
-  const previousStatusesRef = useRef<Record<string, ToastStatus>>({});
+  const dispatch = useDispatch();
+  const transactions = useSelector(selectSmartTransactions);
+  const previousStatusesRef = useRef<
+    Record<string, TransactionStatus | undefined>
+  >({});
 
   useEffect(() => {
-    const nextStatuses: Record<string, ToastStatus> = {};
+    const nextStatuses: Record<string, TransactionStatus | undefined> = {};
 
-    for (const toastState of toastStates) {
-      const toastId = generateToastId(toastState.txId);
-      const currentStatus = mapToastStatus(toastState.smartTransactionStatus);
+    for (const tx of transactions) {
+      const toastId = generateToastId(tx.txId);
+      const currentStatus = mapToastStatus(tx.smartTransactionStatus);
       const previousStatus = previousStatusesRef.current[toastId];
 
       nextStatuses[toastId] = currentStatus;
@@ -82,14 +56,16 @@ export function useSmartTransactionToasts() {
 
       if (currentStatus === 'success') {
         showSuccessToast(toastId);
+        dispatch(resolvePendingApproval(tx.approvalId, true));
         continue;
       }
 
       if (currentStatus === 'failed') {
         showFailedToast(toastId);
+        dispatch(resolvePendingApproval(tx.approvalId, true));
       }
     }
 
     previousStatusesRef.current = nextStatuses;
-  }, [toastStates]);
+  }, [dispatch, transactions]);
 }
