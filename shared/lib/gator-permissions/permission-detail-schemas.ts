@@ -25,6 +25,31 @@ const getData = <TReturn = unknown>(
   key: string,
 ): TReturn => ctx.permission.data[key] as TReturn;
 
+/** One {@link computeTotalExposure} result per `ctx` instance (one UI render pass). */
+const streamTotalExposureByContext = new WeakMap<
+  PermissionRenderContext,
+  { value: BigNumber | null }
+>();
+
+function getStreamTotalExposureForContext(
+  ctx: PermissionRenderContext,
+): BigNumber | null {
+  let entry = streamTotalExposureByContext.get(ctx);
+  if (entry === undefined) {
+    entry = {
+      value: computeTotalExposure({
+        initialAmount: getData<Hex>(ctx, 'initialAmount'),
+        maxAmount: getData<Hex>(ctx, 'maxAmount'),
+        amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
+        startTime: getData<number>(ctx, 'startTime'),
+        expiry: ctx.expiry,
+      }),
+    };
+    streamTotalExposureByContext.set(ctx, entry);
+  }
+  return entry.value;
+}
+
 const requireStartTime = (permission: {
   data: Record<string, unknown>;
 }): void => {
@@ -293,24 +318,9 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure',
-          getValue: (ctx) => {
-            const result = computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            });
-            return result ?? new BigNumber(0);
-          },
-          isVisible: (ctx) =>
-            computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            }) !== null,
+          getValue: (ctx) =>
+            getStreamTotalExposureForContext(ctx) ?? new BigNumber(0),
+          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) !== null,
           includeInViews: ['confirmation'],
         },
         {
@@ -318,14 +328,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure-unlimited',
           getValue: () => ({ key: 'unlimited' }),
-          isVisible: (ctx) =>
-            computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            }) === null,
+          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) === null,
           includeInViews: ['confirmation'],
         },
       ],
@@ -533,25 +536,10 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure',
-          getValue: (ctx) => {
-            const result = computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            });
-            return result ?? new BigNumber(0);
-          },
+          getValue: (ctx) =>
+            getStreamTotalExposureForContext(ctx) ?? new BigNumber(0),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
-          isVisible: (ctx) =>
-            computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            }) !== null,
+          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) !== null,
           includeInViews: ['confirmation'],
         },
         {
@@ -559,14 +547,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure-unlimited',
           getValue: () => ({ key: 'unlimited' }),
-          isVisible: (ctx) =>
-            computeTotalExposure({
-              initialAmount: getData<Hex>(ctx, 'initialAmount'),
-              maxAmount: getData<Hex>(ctx, 'maxAmount'),
-              amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-              startTime: getData<number>(ctx, 'startTime'),
-              expiry: ctx.expiry,
-            }) === null,
+          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) === null,
           includeInViews: ['confirmation'],
         },
       ],
