@@ -83,19 +83,12 @@ function schemaElementDomKey(
   element: SchemaElement,
   index: number,
 ): string {
-  if (
-    element.type === 'amount' ||
-    element.type === 'text' ||
-    element.type === 'date' ||
-    element.type === 'address' ||
-    element.type === 'expiry' ||
-    element.type === 'justification' ||
-    element.type === 'account' ||
-    element.type === 'origin'
-  ) {
-    return `${sectionTestId}-${element.type}-${element.labelKey}`;
+  // Prefer schema `testId` so sibling rows stay unique even when they share a labelKey
+  // (e.g. numeric vs unlimited max allowance) or the same type + labelKey if the schema grows.
+  if (element.type === 'divider' || element.type === 'network') {
+    return `${sectionTestId}-${element.type}-${index}`;
   }
-  return `${sectionTestId}-${element.type}-${index}`;
+  return `${sectionTestId}-${element.testId}`;
 }
 
 // ---------------------------------------------------------------------------
