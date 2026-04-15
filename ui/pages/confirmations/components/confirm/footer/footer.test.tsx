@@ -1205,6 +1205,27 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
+  it('renders SingleActionFooter for perpsDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
   describe('goBackTo navigation', () => {
     it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();

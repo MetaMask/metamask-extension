@@ -88,8 +88,9 @@ jest.mock('@metamask/perps-controller', () => ({
   },
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
@@ -278,6 +279,7 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     const { isNearLiquidationPrice: realIsNearLiquidation } =
       jest.requireActual(
         '../../components/app/perps/order-entry/limit-price-warnings',
@@ -492,6 +494,55 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows geo-block modal instead of depositing when user is not eligible and balance is zero', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
+
+    it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
     it('disables submit while account state is still loading for a new order', () => {

@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "시장가와 균형을 맞추기 위해 트레이더 간에 매시간 부과되는 수수료입니다. 비율이 0보다 크면 롱 포지션 보유자가 숏 포지션 보유자에게, 0보다 작으면 숏 포지션 보유자가 롱 포지션 보유자에게 지불합니다."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "해당 지역에서는 무기한 선물 거래를 이용할 수 없습니다"
-  },
   "perpsGiveFeedback": {
     "message": "피드백 보내기"
   },

@@ -254,6 +254,21 @@ describe('check-ab-testing-compliance.ts', () => {
     );
   });
 
+  it('treats shared enricher changes as risky A/B integration changes', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      'const enriched = enrichWithABTests(payload, flags);\n',
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).toContain(
+      'Risky A/B integration changes were detected without any test-file updates',
+    );
+  });
+
   it('does not warn on regex source that mentions Abtest', () => {
     const repo = createRepo();
     appendFileSync(

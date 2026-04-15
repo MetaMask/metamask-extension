@@ -1580,7 +1580,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 5,
+      "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/developer-options-tab/developer-options-toggle-row-component.test.tsx": {

@@ -5605,8 +5605,11 @@
   "perpsFundingRateTooltip": {
     "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Perpetual trading is not available in your region"
+  "perpsGeoBlockedDescription": {
+    "message": "Perps trading isn't available in your location due to local restrictions or sanctions."
+  },
+  "perpsGeoBlockedTitle": {
+    "message": "Perps unavailable in your region"
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
@@ -5987,7 +5990,7 @@
     "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
-    "message": "Total Balance"
+    "message": "Total balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
@@ -6038,7 +6041,7 @@
     "message": "Watch out for liquidation"
   },
   "perpsTutorialWhatArePerpsDescription": {
-    "message": "MetaMask now supports perpetual futures-aka perps-letting you trade on a token's price movement without buying it."
+    "message": "MetaMask now supports perpetual futures — aka perps — letting you trade on a token's price movement without buying it."
   },
   "perpsTutorialWhatArePerpsSubtitle": {
     "message": "Here's how it works."

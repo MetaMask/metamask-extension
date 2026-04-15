@@ -739,9 +739,12 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
+      if (
+        connectivityReady &&
+        controller.messengerClientApi.setConnectivityStatus
+      ) {
         const status = isOnline ? 'online' : 'offline';
-        controller.controllerApi.setConnectivityStatus(status);
+        controller.messengerClientApi.setConnectivityStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -833,13 +836,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.controllerApi.setConnectivityStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.controllerApi.setConnectivityStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));

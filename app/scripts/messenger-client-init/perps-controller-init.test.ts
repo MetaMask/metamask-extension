@@ -533,4 +533,100 @@ describe('PerpsControllerInit', () => {
       ).toHaveBeenCalledWith(params);
     });
   });
+
+  describe('withAutoInit recovery', () => {
+    it('retries after CLIENT_NOT_INITIALIZED and succeeds', async () => {
+      const { api, controller } = initWithApi();
+      const getPositions = controller.getPositions as jest.Mock;
+      getPositions
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce([{ symbol: 'ETH' }]);
+
+      const result = await api.perpsGetPositions();
+
+      expect(controller.init).toHaveBeenCalledTimes(1);
+      expect(getPositions).toHaveBeenCalledTimes(2);
+      expect(result).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('retries after CLIENT_REINITIALIZING and succeeds', async () => {
+      const { api, controller } = initWithApi();
+      const getMarkets = controller.getMarkets as jest.Mock;
+      getMarkets
+        .mockRejectedValueOnce(new Error('CLIENT_REINITIALIZING'))
+        .mockResolvedValueOnce([{ market: 'BTC' }]);
+
+      const result = await api.perpsGetMarkets();
+
+      expect(controller.init).toHaveBeenCalledTimes(1);
+      expect(getMarkets).toHaveBeenCalledTimes(2);
+      expect(result).toEqual([{ market: 'BTC' }]);
+    });
+
+    it('does not retry for unrelated errors', async () => {
+      const { api, controller } = initWithApi();
+      const getPositions = controller.getPositions as jest.Mock;
+      getPositions.mockRejectedValueOnce(new Error('NETWORK_ERROR'));
+
+      await expect(api.perpsGetPositions()).rejects.toThrow('NETWORK_ERROR');
+      expect(controller.init).not.toHaveBeenCalled();
+      expect(getPositions).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not wrap lifecycle methods (perpsInit)', async () => {
+      const { api, controller } = initWithApi();
+      const init = controller.init as jest.Mock;
+      init.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
+
+      // perpsInit should NOT auto-retry — it IS the init
+      await expect(api.perpsInit()).rejects.toThrow('CLIENT_NOT_INITIALIZED');
+      expect(init).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not wrap preference methods (perpsSaveTradeConfiguration)', async () => {
+      const { api, controller } = initWithApi();
+      const save = controller.saveTradeConfiguration as jest.Mock;
+      save.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
+
+      // Preferences are state-only — should NOT auto-retry
+      await expect(
+        api.perpsSaveTradeConfiguration(
+          ...([] as unknown as Parameters<
+            typeof controller.saveTradeConfiguration
+          >),
+        ),
+      ).rejects.toThrow('CLIENT_NOT_INITIALIZED');
+      expect(controller.init).not.toHaveBeenCalled();
+    });
+
+    it('recovers provider passthrough (perpsGetUserHistory)', async () => {
+      const { api, controller } = initWithApi();
+      const getUserHistory = controller.getActiveProvider()
+        .getUserHistory as jest.Mock;
+      getUserHistory
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce([{ id: 'h1' }]);
+
+      const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+      expect(controller.init).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([{ id: 'h1' }]);
+    });
+
+    it('recovers trading mutations (perpsPlaceOrder)', async () => {
+      const { api, controller } = initWithApi();
+      const placeOrder = controller.placeOrder as jest.Mock;
+      placeOrder
+        .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+        .mockResolvedValueOnce({ orderId: '123' });
+
+      const result = await api.perpsPlaceOrder(
+        ...([] as unknown as Parameters<typeof controller.placeOrder>),
+      );
+
+      expect(controller.init).toHaveBeenCalledTimes(1);
+      expect(placeOrder).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({ orderId: '123' });
+    });
+  });
 });
