@@ -6,6 +6,11 @@ import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
+  PLATFORM_BRAVE,
+  PLATFORM_EDGE,
+  PLATFORM_FIREFOX,
+} from '../constants/app';
+import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
   // TODO: Remove restricted import
@@ -100,4 +105,16 @@ export function getBrowserName(
   }
 
   return bowser.getBrowserName();
+}
+
+/**
+ * @param bowser - Optional Bowser parser (defaults from `window.navigator.userAgent`).
+ * @param nav - Optional Navigator (defaults to `window.navigator`).
+ * @returns Whether the host browser is Firefox (MV2 extension build).
+ */
+export function isFirefoxBrowser(
+  bowser: Bowser.Parser.Parser = Bowser.getParser(window.navigator.userAgent),
+  nav: Navigator = window.navigator,
+): boolean {
+  return getBrowserName(bowser, nav) === PLATFORM_FIREFOX;
 }
