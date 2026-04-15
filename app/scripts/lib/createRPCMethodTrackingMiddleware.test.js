@@ -1110,12 +1110,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
       },
     );
     describe('iframe detection properties', () => {
-      it('should include is_iframe=false when mainFrameOrigin matches origin', async () => {
+      it('should include is_iframe=false when frameId is 0 (top-level frame)', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.PERSONAL_SIGN,
           origin: 'some.dapp',
           mainFrameOrigin: 'some.dapp',
+          frameId: 0,
         };
 
         const res = { error: null };
@@ -1126,12 +1127,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         });
       });
 
-      it('should include is_iframe=true with iframe_origin and top_level_origin when origins differ', async () => {
+      it('should include is_iframe=true and is_cross_origin_iframe=true when frameId > 0 and origins differ', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -1154,7 +1156,30 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should include is_iframe=false when mainFrameOrigin is not present', async () => {
+      it('should include is_iframe=true but is_cross_origin_iframe=false for same-origin iframes', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'https://dapp.com',
+          mainFrameOrigin: 'https://dapp.com',
+          frameId: 2,
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+          is_iframe: true,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
+        });
+      });
+
+      it('should include is_iframe=false when frameId is not present', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -1169,6 +1194,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
           is_iframe: false,
+          is_cross_origin_iframe: false,
           iframe_origin: null,
           top_level_origin: null,
         });
