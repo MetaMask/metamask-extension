@@ -43,6 +43,7 @@ export type BundleSizeSummary = {
   common: number;
   auxiliaryPages?: number;
   contentScripts?: number;
+  zip?: number;
   timestamp: number;
 };
 
@@ -100,9 +101,15 @@ export function createBundleSizeArtifact(
 
 export function createBundleSizeSummary(
   artifact: BundleSizeArtifact,
+  {
+    zip,
+  }: {
+    zip?: number;
+  } = {},
 ): BundleSizeSummary {
   return {
     ...mapBundleParts((part) => artifact[part].size),
+    zip,
     timestamp: Date.now(),
   };
 }
@@ -167,6 +174,7 @@ export function isBundleSizeSummary(
     (value.auxiliaryPages === undefined ||
       typeof value.auxiliaryPages === 'number') &&
     (value.contentScripts === undefined ||
-      typeof value.contentScripts === 'number')
+      typeof value.contentScripts === 'number') &&
+    (value.zip === undefined || typeof value.zip === 'number')
   );
 }

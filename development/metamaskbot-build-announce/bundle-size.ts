@@ -16,6 +16,8 @@ const bundlePartLabels: Record<BundlePart, string> = {
   contentScripts: 'content scripts',
 };
 
+const zipLabel = 'zip';
+
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
 const BUNDLE_SIZE_THRESHOLD = 1_000;
 
@@ -110,6 +112,36 @@ function buildBundlePartRow({
   currentSize: number;
   baselineSize?: number;
 }): string {
+  return buildSizeRow({
+    label: bundlePartLabels[part],
+    currentSize,
+    baselineSize,
+  });
+}
+
+function buildZipRow({
+  currentSize,
+  baselineSize,
+}: {
+  currentSize: number;
+  baselineSize?: number;
+}): string {
+  return buildSizeRow({
+    label: zipLabel,
+    currentSize,
+    baselineSize,
+  });
+}
+
+function buildSizeRow({
+  label,
+  currentSize,
+  baselineSize,
+}: {
+  label: string;
+  currentSize: number;
+  baselineSize?: number;
+}): string {
   const totalSize = getHumanReadableSize(currentSize);
   const diff =
     baselineSize === undefined
@@ -119,16 +151,22 @@ function buildBundlePartRow({
           currentSize,
         )}%)`;
 
-  return `${bundlePartLabels[part]}: total ${totalSize}, diff ${diff}`;
+  return `${label}: total ${totalSize}, diff ${diff}`;
 }
 
 function buildUnavailableComparisonContent(
   currentSizes: Record<BundlePart, number>,
+  currentZipSize: number,
 ): string {
   const currentSizeRows = bundleParts.map((part) =>
     buildBundlePartRow({
       part,
       currentSize: currentSizes[part],
+    }),
+  );
+  currentSizeRows.push(
+    buildZipRow({
+      currentSize: currentZipSize,
     }),
   );
 
@@ -186,6 +224,7 @@ function buildBundleSizeSection({
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
+  const currentZipSize = currentSummary.zip ?? 0;
   const baselineSummary = getBaselineSummary(
     storedBundleSizeData,
     mergeBaseCommitHash,
@@ -194,10 +233,12 @@ function buildBundleSizeSection({
   if (!baselineSummary) {
     return `<details><summary>Webpack bundle size diffs</summary>${buildUnavailableComparisonContent(
       currentSizes,
+      currentZipSize,
     )}</details>\n\n`;
   }
 
   const baselineSizes = getBundlePartSizes(baselineSummary);
+  const baselineZipSize = baselineSummary.zip ?? 0;
   const diffs = mapBundleParts(
     (part) => currentSizes[part] - baselineSizes[part],
   );
@@ -207,6 +248,12 @@ function buildBundleSizeSection({
       part,
       currentSize: currentSizes[part],
       baselineSize: baselineSizes[part],
+    }),
+  );
+  sizeDiffRows.push(
+    buildZipRow({
+      currentSize: currentZipSize,
+      baselineSize: baselineZipSize,
     }),
   );
 

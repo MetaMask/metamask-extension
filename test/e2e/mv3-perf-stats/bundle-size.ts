@@ -48,6 +48,7 @@ type DistManifest = {
   ['content_scripts']?: {
     js?: string[];
   }[];
+  ['version_name']?: string;
 };
 
 function normalizeRelativePath(filePath: string): string {
@@ -118,6 +119,36 @@ async function readDistManifest(distDirectory: string): Promise<DistManifest> {
   return JSON.parse(
     await fs.readFile(path.join(distDirectory, 'manifest.json'), 'utf8'),
   ) as DistManifest;
+}
+
+async function getBundleZipSize(distDirectory: string): Promise<number> {
+  const manifest = await readDistManifest(distDirectory);
+  const versionName = manifest.version_name;
+
+  if (!versionName) {
+    throw new Error(
+      'Bundle-size collector expects manifest.version_name to locate the build zip',
+    );
+  }
+
+  const platform = path.basename(path.resolve(distDirectory));
+  const zipPath = path.join(
+    path.resolve(distDirectory, '..', '..'),
+    'builds',
+    `metamask-${platform}-${versionName}.zip`,
+  );
+
+  try {
+    const stats = await fs.stat(zipPath);
+
+    return stats.size;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`Unable to find build zip at "${zipPath}"`);
+    }
+
+    throw error;
+  }
 }
 
 function getServiceWorkerPath(manifest: DistManifest): string {
@@ -380,12 +411,17 @@ async function ensureOutputDirectory(outDirectory: string): Promise<void> {
 export async function writeBundleSizeArtifact(
   artifact: BundleSizeArtifact,
   outDirectory: string,
+  zipSize: number,
 ): Promise<void> {
   await ensureOutputDirectory(outDirectory);
 
   await fs.writeFile(
     path.join(outDirectory, BUNDLE_SIZE_SUMMARY_FILE),
-    JSON.stringify(createBundleSizeSummary(artifact), null, 2),
+    JSON.stringify(
+      createBundleSizeSummary(artifact, { zip: zipSize }),
+      null,
+      2,
+    ),
   );
 }
 
@@ -414,7 +450,11 @@ async function main(): Promise<void> {
   const artifact = await collectBundleSizeArtifact(distDirectory);
 
   if (out) {
-    await writeBundleSizeArtifact(artifact, out);
+    await writeBundleSizeArtifact(
+      artifact,
+      out,
+      await getBundleZipSize(distDirectory),
+    );
   } else {
     console.log(JSON.stringify(artifact, null, 2));
   }

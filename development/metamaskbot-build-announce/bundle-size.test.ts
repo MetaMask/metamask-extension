@@ -75,6 +75,7 @@ describe('buildBundleSizeDiffSection', () => {
     common: 400,
     auxiliaryPages: 100,
     contentScripts: 60,
+    zip: 4200,
     timestamp: 2,
   } as const;
 
@@ -85,6 +86,7 @@ describe('buildBundleSizeDiffSection', () => {
       common: 400,
       auxiliaryPages: 90,
       contentScripts: 50,
+      zip: 4000,
       timestamp: 1,
     },
   } as const;
@@ -115,6 +117,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('Webpack bundle size diffs');
     expect(result).toContain('auxiliary pages:');
     expect(result).toContain('content scripts:');
+    expect(result).toContain('zip:');
   });
 
   it('compares webpack against the stored baseline', async () => {
@@ -132,6 +135,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain(
       'content scripts: total 60 Bytes, diff +10 Bytes (20%)',
     );
+    expect(result).toContain('zip: total 4.1 KiB, diff +200 Bytes (5%)');
   });
 
   it('shows a warning when the background diff exceeds the threshold', async () => {
@@ -192,6 +196,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain(
       'content scripts: total 60 Bytes, diff +60 Bytes (100%)',
     );
+    expect(result).toContain('zip: total 4.1 KiB, diff +4.1 KiB (100%)');
   });
 
   it('renders bundle size unavailable when the current summary fetch fails', async () => {
@@ -225,6 +230,7 @@ describe('buildBundleSizeDiffSection', () => {
 
     expect(result).toContain('Comparison unavailable.');
     expect(result).toContain('background: total 1.56 KiB, diff n/a');
+    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
     expect(result).not.toContain('Bundle size data unavailable.');
   });
 });

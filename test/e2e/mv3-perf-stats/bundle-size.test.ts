@@ -38,6 +38,7 @@ async function writeSizedFile(
 }
 
 const manifestVersionKey = 'manifest_version';
+const versionNameKey = 'version_name';
 const serviceWorkerKey = 'service_worker';
 const contentScriptsKey = 'content_scripts';
 
@@ -54,6 +55,7 @@ describe('bundle-size collector', () => {
       await Promise.all([
         fs.mkdir(distDirectory, { recursive: true }),
         fs.mkdir(statsDirectory, { recursive: true }),
+        fs.mkdir(path.join(rootDirectory, 'builds'), { recursive: true }),
       ]);
 
       await Promise.all([
@@ -62,6 +64,7 @@ describe('bundle-size collector', () => {
           'manifest.json',
           JSON.stringify({
             [manifestVersionKey]: 3,
+            [versionNameKey]: '1.2.3',
             background: { [serviceWorkerKey]: 'service-worker.js' },
             [contentScriptsKey]: [
               {
@@ -120,6 +123,7 @@ describe('bundle-size collector', () => {
         writeSizedFile(distDirectory, 'scripts/contentscript.js', 10),
         writeSizedFile(distDirectory, 'scripts/inpage.js', 20),
         writeSizedFile(distDirectory, 'vendor/trezor/content-script.js', 30),
+        writeSizedFile(rootDirectory, 'builds/metamask-chrome-1.2.3.zip', 999),
         writeFile(
           statsDirectory,
           'stats.json',
@@ -172,7 +176,7 @@ describe('bundle-size collector', () => {
       ]);
 
       const artifact = await collectBundleSizeArtifact(distDirectory);
-      const summary = createBundleSizeSummary(artifact);
+      const summary = createBundleSizeSummary(artifact, { zip: 999 });
 
       assert.strictEqual(artifact.schemaVersion, 4);
       assert.deepStrictEqual(
@@ -215,6 +219,7 @@ describe('bundle-size collector', () => {
           common: summary.common,
           auxiliaryPages: summary.auxiliaryPages,
           contentScripts: summary.contentScripts,
+          zip: summary.zip,
         },
         {
           background: 330,
@@ -222,6 +227,7 @@ describe('bundle-size collector', () => {
           common: 130,
           auxiliaryPages: 540,
           contentScripts: 60,
+          zip: 999,
         },
       );
     });
