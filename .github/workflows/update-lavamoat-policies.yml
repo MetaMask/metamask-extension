@@ -26,6 +26,7 @@ jobs:
       VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ steps.find-ci-run.outputs.NO_CI_RUN }}
       VALIDATION_FAILED: ${{ steps.find-ci-run.outputs.VALIDATION_FAILED }}
+      FAILED_JOBS: ${{ steps.find-ci-run.outputs.FAILED_JOBS }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -73,13 +74,18 @@ jobs:
             exit 0
           fi
 
-          NOT_SUCCESS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion != "success") | .id')
+          FAILED_JOBS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '[.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion != "success") | "- [" + .name + "](" + .html_url + ") (" + .conclusion + ")"] | join("\n")')
 
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
-          if [ -n "$NOT_SUCCESS" ]; then
+          if [ -n "$FAILED_JOBS" ]; then
             echo "LavaMoat validation completed with non-success conclusions — policy diffs may exist"
             echo "VALIDATION_FAILED=true" >> "$GITHUB_OUTPUT"
+            {
+              echo 'FAILED_JOBS<<EOF'
+              echo "$FAILED_JOBS"
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
           else
             echo "LavaMoat validation completed — all policies up to date"
           fi
@@ -98,6 +104,7 @@ jobs:
       VALIDATION_PENDING: ${{ needs.prepare.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ needs.prepare.outputs.NO_CI_RUN }}
       VALIDATION_FAILED: ${{ needs.prepare.outputs.VALIDATION_FAILED }}
+      FAILED_JOBS: ${{ needs.prepare.outputs.FAILED_JOBS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
@@ -189,7 +196,7 @@ jobs:
       - name: Post comment (validation failed but no diffs available)
         if: ${{ !cancelled() && env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
         run: |
-          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation failed but no policy diffs were produced (the validation job may have crashed before generating diffs). You can [review the CI logs here](${ACTION_RUN_URL})."
+          printf 'LavaMoat validation failed but no policy diffs were produced (the validation job may have crashed before generating diffs).\n\nFailed jobs:\n%s' "$FAILED_JOBS" | gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body-file -
 
       - name: Post comment (no policy changes)
         if: ${{ needs.prepare.result == 'success' && env.RUN_ID && env.VALIDATION_FAILED != 'true' && !env.VALIDATION_PENDING }}
