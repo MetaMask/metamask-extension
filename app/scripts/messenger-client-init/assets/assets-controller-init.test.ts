@@ -1,5 +1,5 @@
 import { AssetsController } from '@metamask/assets-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getRootMessenger } from '../../lib/messenger';
 import {
@@ -42,7 +42,7 @@ function getInitRequestMock(
     useTokenDetection?: boolean;
   } = {},
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     AssetsControllerMessenger,
     AssetsControllerInitMessenger
   >

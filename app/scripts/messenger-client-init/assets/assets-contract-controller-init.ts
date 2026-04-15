@@ -1,5 +1,5 @@
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   AssetsContractControllerInitMessenger,
   AssetsContractControllerMessenger,
@@ -14,7 +14,7 @@ import { getGlobalChainId } from '../init-utils';
  * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
-export const AssetsContractControllerInit: ControllerInitFunction<
+export const AssetsContractControllerInit: MessengerClientInitFunction<
   AssetsContractController,
   AssetsContractControllerMessenger,
   AssetsContractControllerInitMessenger

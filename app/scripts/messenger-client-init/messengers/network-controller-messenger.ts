@@ -16,7 +16,7 @@ import {
 import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
-} from '../../controllers/metametrics-controller';
+} from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**

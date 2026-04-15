@@ -10,7 +10,7 @@ import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTokensControllerInitMessenger,
@@ -25,7 +25,7 @@ jest.mock('@metamask/assets-controllers');
 const MOCK_PROVIDER = jest.fn();
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokensControllerMessenger,
     TokensControllerInitMessenger
   >

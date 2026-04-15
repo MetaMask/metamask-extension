@@ -7,7 +7,7 @@ import {
 import { assert } from '@metamask/utils';
 import { SubjectType } from '@metamask/permission-controller';
 import { Duplex } from 'readable-stream';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { setupMultiplex } from '../../lib/stream-utils';
 import {
@@ -28,7 +28,7 @@ import {
  * CAIP-25 communication.
  * @returns The initialized controller.
  */
-export const ExecutionServiceInit: ControllerInitFunction<
+export const ExecutionServiceInit: MessengerClientInitFunction<
   ExecutionService,
   ExecutionServiceMessenger
 > = ({

@@ -3,7 +3,7 @@ import {
   NetworkOrderControllerMessenger,
   NetworkOrderControllerState,
 } from '../../controllers/network-order';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 const generateDefaultNetworkOrderControllerState =
   (): NetworkOrderControllerState => {
@@ -22,7 +22,7 @@ const generateDefaultNetworkOrderControllerState =
     };
   };
 
-export const NetworkOrderControllerInit: ControllerInitFunction<
+export const NetworkOrderControllerInit: MessengerClientInitFunction<
   NetworkOrderController,
   NetworkOrderControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

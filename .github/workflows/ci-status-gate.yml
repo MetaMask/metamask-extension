@@ -55,15 +55,18 @@ jobs:
           script: |
             const needs = JSON.parse(process.env.NEEDS_JSON);
             let allPassed = true;
+            let onlyCancelled = true;
             const errors = [];
 
             for (const [job, { result }] of Object.entries(needs)) {
               if (!result) {
                 errors.push(`Could not determine result for job: ${job}`);
                 allPassed = false;
+                onlyCancelled = false;
               } else if (result !== 'success' && result !== 'skipped') {
                 errors.push(`${job} did not succeed (result: ${result})`);
                 allPassed = false;
+                if (result !== 'cancelled') onlyCancelled = false;
               }
             }
 
@@ -73,11 +76,14 @@ jobs:
                 'Remove the [skip-builds] tag or label and push again to merge.',
               );
               allPassed = false;
+              onlyCancelled = false;
             }
 
-            for (const msg of errors) core.error(msg);
+            // Three-state result: success, cancelled (all failures are cancellations), failure
+            const checkResult = allPassed ? 'success' : (onlyCancelled ? 'cancelled' : 'failure');
+            core.setOutput('checkResult', checkResult);
 
-            core.setOutput('checkResult', allPassed ? 'success' : 'failure');
+            for (const msg of errors) core.error(msg);
             core.setOutput('errors', errors.join('\n'));
 
       # ── Retry gate (merge queue only) ──────────────────────────────
@@ -166,18 +172,24 @@ jobs:
           STATUS_STATE: ${{ steps.check.outputs.checkResult || 'failure' }}
         with:
           script: |
-            const state = process.env.STATUS_STATE;
+            // Map cancelled → failure for the commit status API
+            // (which only accepts error/failure/pending/success).
+            const raw = process.env.STATUS_STATE;
+            const state = raw === 'cancelled' ? 'failure' : raw;
+            const description = raw === 'cancelled'
+              ? 'CI run was cancelled (queue reshuffle or manual cancellation)'
+              : state === 'success'
+                ? 'All CI jobs completed successfully'
+                : 'One or more CI jobs failed';
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
               sha: process.env.HEAD_COMMIT_HASH,
               state,
               context: 'All jobs pass',
-              description: state === 'success'
-                ? 'All CI jobs completed successfully'
-                : 'One or more CI jobs failed',
+              description,
             });
-            core.info(`Posted commit status: ${state}`);
+            core.info(`Posted commit status: ${state} (${raw})`);
 
       # ── Emit Sentry events ───────────────────────────────────────
       #
@@ -233,17 +245,66 @@ jobs:
             }
 
             // 2. Merge queue outcome (only when status is final)
+            //    Skip when result is 'cancelled' (queue reshuffle).
+            //    Also skip when a human manually dequeued the PR.
+            //    Also skip when the merge group ref is gone (reshuffled while running).
             if (process.env.EVENT_NAME === 'merge_group'
-                && process.env.SKIP_STATUS !== 'true') {
-              const outcome = process.env.CI_RESULT === 'success'
-                ? 'merged' : 'ejected';
-              events.push({
-                body: `Merge queue ${outcome}`,
-                attrs: {
-                  'ci.mergeQueue.event': 'outcome',
-                  'ci.mergeQueue.outcome': outcome,
-                },
-              });
+                && process.env.SKIP_STATUS !== 'true'
+                && process.env.CI_RESULT !== 'cancelled') {
+              let skipOutcome = false;
+              const prMatch = process.env.BRANCH?.match(/pr-(\d+)-/);
+              if (prMatch) {
+                try {
+                  const { data: evts } = await github.rest.issues.listEvents({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: Number(prMatch[1]),
+                    per_page: 100,
+                  });
+                  const lastRemoval = evts
+                    .filter(e => e.event === 'removed_from_merge_queue')
+                    .pop();
+                  const lastAdded = evts
+                    .filter(e => e.event === 'added_to_merge_queue')
+                    .pop();
+                  if (lastRemoval
+                    && (!lastAdded || lastRemoval.created_at > lastAdded.created_at)
+                    && lastRemoval.actor?.login !== 'github-merge-queue[bot]') {
+                    core.info(`PR #${prMatch[1]} manually dequeued by ${lastRemoval.actor?.login} — skipping outcome event`);
+                    skipOutcome = true;
+                  }
+                } catch (err) {
+                  core.warning(`Could not check merge queue events: ${err.message}`);
+                }
+              }
+              // Check if our merge group ref still exists (detects reshuffle mid-run)
+              if (!skipOutcome && process.env.CI_RESULT === 'success') {
+                try {
+                  await github.rest.git.getRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: 'heads/' + process.env.BRANCH,
+                  });
+                } catch (e) {
+                  if (e.status === 404) {
+                    core.info(`Merge group ref gone (reshuffled) — skipping outcome event`);
+                    skipOutcome = true;
+                  } else {
+                    core.warning(`Could not check merge group ref: ${e.message}`);
+                  }
+                }
+              }
+              if (!skipOutcome) {
+                const outcome = process.env.CI_RESULT === 'success'
+                  ? 'merged' : 'ejected';
+                events.push({
+                  body: `Merge queue ${outcome}`,
+                  attrs: {
+                    'ci.mergeQueue.event': 'outcome',
+                    'ci.mergeQueue.outcome': outcome,
+                  },
+                });
+              }
             }
 
             if (events.length === 0) return;
@@ -299,7 +360,7 @@ jobs:
             }
 
       - name: Fail job if checks failed
-        if: ${{ steps.check.outputs.checkResult == 'failure' }}
+        if: ${{ steps.check.outputs.checkResult == 'failure' || steps.check.outputs.checkResult == 'cancelled' }}
         env:
           ERRORS: ${{ steps.check.outputs.errors }}
         run: |

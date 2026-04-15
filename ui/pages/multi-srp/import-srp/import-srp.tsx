@@ -19,7 +19,10 @@ import {
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
-import { getIsSocialLoginFlow } from '../../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getMetaMaskHdKeyrings,
+} from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
@@ -35,6 +38,7 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const { trackEvent } = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
@@ -71,7 +75,7 @@ export const ImportSrp = () => {
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
       navigate(DEFAULT_ROUTE);
-      dispatch(setShowNewSrpAddedToast(true));
+      dispatch(setShowNewSrpAddedToast(hdKeyrings.length + 1));
     } catch (error) {
       switch ((error as Error)?.message) {
         case 'KeyringController - The account you are trying to import is a duplicate':

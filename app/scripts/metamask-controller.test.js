@@ -1786,6 +1786,150 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('wallet_getSupportedExecutionPermissions (processGetSupportedExecutionPermissions)', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0x1', '0x5'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+        jest
+          .mocked(getEnabledAdvancedPermissions)
+          .mockReturnValue(['erc20-token-revocation']);
+      });
+
+      /**
+       * Run wallet_getSupportedExecutionPermissions through the controller's
+       * metamask middleware and return the JSON-RPC response.
+       * @returns The JSON-RPC response.
+       */
+      async function getSupportedExecutionPermissions() {
+        const engine = new JsonRpcEngine();
+        engine.push(metamaskController.metamaskMiddleware);
+        const request = {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'wallet_getSupportedExecutionPermissions',
+          params: [],
+        };
+        return await engine.handle(request);
+      }
+
+      it('returns an empty object when the permissions kernel returns null', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue(null);
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.error).toBeUndefined();
+        expect(response.result).toStrictEqual({});
+      });
+
+      it('returns an empty object when the permissions kernel returns undefined', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue(undefined);
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.error).toBeUndefined();
+        expect(response.result).toStrictEqual({});
+      });
+
+      it('omits permission types that are not enabled in the environment', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['a'],
+          },
+          'some-other-permission': {
+            ruleTypes: ['b'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['a'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('fills chainIds from EIP-7702 supported chains when the kernel omits chainIds', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('lowercases and filters kernel chainIds to EIP-7702 supported chains', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0X5', '0x99', '0xAA'],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+
+      it('keeps chainIds empty when the kernel sends an empty chainIds array', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: [],
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: [],
+          },
+        });
+      });
+
+      it('uses EIP-7702 supported chains when kernel chainIds is null', async () => {
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: null,
+          },
+        });
+
+        const response = await getSupportedExecutionPermissions();
+
+        expect(response.result).toStrictEqual({
+          'erc20-token-revocation': {
+            ruleTypes: ['revoke'],
+            chainIds: ['0x1', '0x5'],
+          },
+        });
+      });
+    });
+
     describe('requestApprovalPermittedChainsPermission', () => {
       it('requests approval', async () => {
         jest

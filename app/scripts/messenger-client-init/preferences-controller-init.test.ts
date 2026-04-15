@@ -3,7 +3,7 @@ import {
   PreferencesControllerMessenger,
 } from '../controllers/preferences-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getPreferencesControllerMessenger } from './messengers';
 import { PreferencesControllerInit } from './preferences-controller-init';
@@ -11,7 +11,7 @@ import { PreferencesControllerInit } from './preferences-controller-init';
 jest.mock('../controllers/preferences-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<PreferencesControllerMessenger>
+  MessengerClientInitRequest<PreferencesControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

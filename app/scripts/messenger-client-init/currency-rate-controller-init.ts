@@ -6,7 +6,7 @@ import {
   CurrencyRateControllerInitMessenger,
   CurrencyRateControllerMessenger,
 } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the currency rate controller.
@@ -17,7 +17,7 @@ import { ControllerInitFunction } from './types';
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const CurrencyRateControllerInit: ControllerInitFunction<
+export const CurrencyRateControllerInit: MessengerClientInitFunction<
   CurrencyRateController,
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger

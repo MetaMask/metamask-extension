@@ -3,7 +3,7 @@ import {
   ShieldRemoteBackend,
 } from '@metamask/shield-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
@@ -16,7 +16,7 @@ import { ShieldControllerInit } from './shield-controller-init';
 jest.mock('@metamask/shield-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     ShieldControllerMessengerType,
     ShieldControllerInitMessenger
   >

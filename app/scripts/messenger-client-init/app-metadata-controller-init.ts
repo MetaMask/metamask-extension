@@ -2,7 +2,7 @@ import {
   AppMetadataController,
   AppMetadataControllerMessenger,
 } from '../controllers/app-metadata';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the appMetadata controller.
@@ -14,7 +14,7 @@ import { ControllerInitFunction } from './types';
  * @param request.currentMigrationVersion
  * @returns The initialized controller.
  */
-export const AppMetadataControllerInit: ControllerInitFunction<
+export const AppMetadataControllerInit: MessengerClientInitFunction<
   AppMetadataController,
   AppMetadataControllerMessenger
 > = ({ controllerMessenger, persistedState, currentMigrationVersion }) => {

@@ -15,7 +15,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { MessageType } from '../../../../../shared/constants/app';
 import type MetamaskController from '../../../metamask-controller';
-import type MetaMetricsController from '../../../controllers/metametrics-controller';
+import type { MetaMetricsController } from '../../../controllers/metametrics-controller';
 import type { AppStateController } from '../../../controllers/app-state-controller';
 
 export type HandlerWrapper = {

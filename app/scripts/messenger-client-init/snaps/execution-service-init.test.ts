@@ -3,7 +3,7 @@ import {
   IframeExecutionService,
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getExecutionServiceMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
@@ -15,7 +15,7 @@ jest.mock('../../../../shared/lib/mv3.utils', () => ({
 }));
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<ExecutionServiceMessenger>
+  MessengerClientInitRequest<ExecutionServiceMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

@@ -1,7 +1,7 @@
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import { RestrictedMethods } from '../../../shared/constants/permissions';
 import { PermissionLogControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the permission log controller.
@@ -11,7 +11,7 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const PermissionLogControllerInit: ControllerInitFunction<
+export const PermissionLogControllerInit: MessengerClientInitFunction<
   PermissionLogController,
   PermissionLogControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

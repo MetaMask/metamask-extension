@@ -46,13 +46,6 @@ export const PERPS_CONSTANTS = {
 } as const;
 
 /**
- * HyperLiquid taker fee rate for market orders.
- * Used to estimate fees in close/reverse position flows.
- * TODO: Replace with dynamic fee from the API when available.
- */
-export const PERPS_MARKET_ORDER_FEE_RATE = 0.0001;
-
-/**
  * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.

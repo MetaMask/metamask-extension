@@ -23,8 +23,9 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -89,6 +90,7 @@ function renderTpslModalContent(
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdatePositionTPSL') {
@@ -298,6 +300,51 @@ describe('UpdateTPSLModalContent', () => {
       expect((tpInput as HTMLInputElement).value).toBe('');
     });
 
+    it('allows typing a SL price directly', () => {
+      renderTpslModalContent();
+
+      const slInput = screen.getAllByPlaceholderText('0.00')[1];
+      fireEvent.change(slInput, { target: { value: '2500' } });
+
+      expect((slInput as HTMLInputElement).value).toBe('2500');
+    });
+
+    it('rejects non-numeric characters in TP price input', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const tpInput = screen.getAllByPlaceholderText('0.00')[0];
+      fireEvent.change(tpInput, { target: { value: 'abc' } });
+
+      expect((tpInput as HTMLInputElement).value).toBe('');
+    });
+
+    it('rejects non-numeric characters in SL price input', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slInput = screen.getAllByPlaceholderText('0.00')[1];
+      fireEvent.change(slInput, { target: { value: 'xyz' } });
+
+      expect((slInput as HTMLInputElement).value).toBe('');
+    });
+
+    it('does not reformat TP price on blur when input is empty', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const tpInput = screen.getAllByPlaceholderText('0.00')[0];
+      fireEvent.blur(tpInput);
+
+      expect((tpInput as HTMLInputElement).value).toBe('');
+    });
+
+    it('does not reformat SL price on blur when input is empty', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slInput = screen.getAllByPlaceholderText('0.00')[1];
+      fireEvent.blur(slInput);
+
+      expect((slInput as HTMLInputElement).value).toBe('');
+    });
+
     it('formats the TP price on blur', () => {
       renderTpslModalContent({ position: positionWithoutTPSL });
 
@@ -367,6 +414,57 @@ describe('UpdateTPSLModalContent', () => {
         '0.00',
       )[0] as HTMLInputElement;
       expect(tpPriceInput.value).toBe('');
+    });
+
+    it('clears TP price when only a minus sign is typed in percent input', () => {
+      renderTpslModalContent();
+
+      const tpPercentInput = screen.getAllByPlaceholderText('0')[0];
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '-' } });
+
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+      expect(tpPriceInput.value).toBe('');
+    });
+
+    it('clears SL price when only a minus sign is typed in SL percent input', () => {
+      renderTpslModalContent();
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '-' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      expect(slPriceInput.value).toBe('');
+    });
+
+    it('shows raw input while SL percent is focused and formatted value after blur', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getAllByPlaceholderText('0')[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '10' } });
+
+      expect((slPercentInput as HTMLInputElement).value).toBe('10');
+
+      fireEvent.blur(slPercentInput);
+
+      const blurredValue = (slPercentInput as HTMLInputElement).value;
+      expect(blurredValue).toMatch(/^\d+(\.\d+)?$/u);
+    });
+
+    it('rejects non-numeric characters in TP percent input', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const tpPercentInput = screen.getAllByPlaceholderText('0')[0];
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: 'abc' } });
+
+      expect((tpPercentInput as HTMLInputElement).value).toBe('');
     });
 
     it('does not insert a decimal point when typing a whole number like 15', () => {
@@ -565,6 +663,41 @@ describe('UpdateTPSLModalContent', () => {
       expect(screen.queryByText('Network failure')).not.toBeInTheDocument();
     });
 
+    it('shows fallback toast when result.error is empty', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: false });
+        }
+        return Promise.resolve(mockPositions);
+      });
+
+      renderTpslModalContent();
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Failed to update TP/SL',
+        });
+      });
+    });
+
+    it('shows fallback message when a non-Error value is thrown', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue('string-error');
+
+      renderTpslModalContent();
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'An unknown error occurred',
+        });
+      });
+    });
+
     it('does not call onClose when save fails', async () => {
       const onClose = jest.fn();
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
@@ -627,6 +760,24 @@ describe('UpdateTPSLModalContent', () => {
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slInput.value.replace(/,/gu, ''));
       expect(numValue).toBeCloseTo(45300, 0);
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of saving when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderTpslModalContent();
+
+      const submitButton = screen.getByTestId('perps-update-tpsl-modal-submit');
+      expect(submitButton).toBeEnabled();
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });

@@ -10,7 +10,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTokenListControllerInitMessenger,
@@ -31,7 +31,7 @@ jest.mock('@metamask/assets-controllers', () => {
 });
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokenListControllerMessenger,
     TokenListControllerInitMessenger
   >

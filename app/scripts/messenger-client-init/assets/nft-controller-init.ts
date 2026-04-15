@@ -1,6 +1,6 @@
 import { NftController } from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   NftControllerMessenger,
   NftControllerInitMessenger,
@@ -19,7 +19,7 @@ import {
  * @param request.initMessenger - The messenger used for initialization.
  * @returns The initialized controller.
  */
-export const NftControllerInit: ControllerInitFunction<
+export const NftControllerInit: MessengerClientInitFunction<
   NftController,
   NftControllerMessenger,
   NftControllerInitMessenger

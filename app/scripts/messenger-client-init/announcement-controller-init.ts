@@ -1,6 +1,6 @@
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { AnnouncementControllerMessenger } from './messengers';
 
 /**
@@ -12,7 +12,7 @@ import { AnnouncementControllerMessenger } from './messengers';
  * controller.
  * @returns The initialized controller.
  */
-export const AnnouncementControllerInit: ControllerInitFunction<
+export const AnnouncementControllerInit: MessengerClientInitFunction<
   AnnouncementController,
   AnnouncementControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

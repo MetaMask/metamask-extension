@@ -1,5 +1,5 @@
 import { RateLimitController } from '@metamask/rate-limit-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getRateLimitControllerInitMessenger,
@@ -13,7 +13,7 @@ import { RateLimitControllerInit } from './rate-limit-controller-init';
 jest.mock('@metamask/rate-limit-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     RateLimitControllerMessenger,
     RateLimitControllerInitMessenger
   >

@@ -129,6 +129,23 @@ export const BridgeInputGroup = ({
     );
   }, [locale, balanceAmount, token.symbol]);
 
+  const inputFontSize = useMemo(() => {
+    const len = (amountFieldProps?.value ?? '').toString().length;
+    if (len <= 10) {
+      return 40;
+    }
+    if (len <= 15) {
+      return 35;
+    }
+    if (len <= 20) {
+      return 30;
+    }
+    if (len <= 25) {
+      return 25;
+    }
+    return 20;
+  }, [amountFieldProps?.value]);
+
   useEffect(() => {
     if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
@@ -188,7 +205,7 @@ export const BridgeInputGroup = ({
             width={128}
             height={40}
             data-testid={`${amountFieldProps.testId}-loading-skeleton`}
-            style={{ minWidth: 96, maxWidth: 190 }}
+            style={{ flex: 1, minWidth: 0 }}
           />
         ) : (
           <TextField
@@ -197,24 +214,14 @@ export const BridgeInputGroup = ({
               textAlign: TextAlign.Start,
               style: {
                 fontWeight: 400,
-                fontSize: Math.max(
-                  14, // Minimum font size
-                  36 * // Maximum font size
-                    // Up to 9 characters, use 36px
-                    (9 /
-                      // Otherwise, shrink the font size down to 14
-                      Math.max(
-                        9,
-                        (amountFieldProps?.value ?? '').toString().length,
-                      )),
-                ),
+                fontSize: inputFontSize,
                 transition: 'font-size 0.1s',
                 padding: 0,
               },
             }}
             style={{
-              minWidth: 96,
-              maxWidth: 190,
+              flex: 1,
+              minWidth: 0,
               opacity:
                 isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
             }}

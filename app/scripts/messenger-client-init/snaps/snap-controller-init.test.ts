@@ -11,7 +11,7 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSnapControllerInitMessenger,
@@ -26,7 +26,10 @@ jest.mock('@metamask/snaps-controllers');
 function getInitRequestMock(
   baseMessenger = getRootMessenger(),
 ): jest.Mocked<
-  ControllerInitRequest<SnapControllerMessenger, SnapControllerInitMessenger>
+  MessengerClientInitRequest<
+    SnapControllerMessenger,
+    SnapControllerInitMessenger
+  >
 > {
   const requestMock = {
     ...buildControllerInitRequestMock(),

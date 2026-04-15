@@ -1,5 +1,5 @@
 import { DeFiPositionsController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger,
@@ -9,7 +9,7 @@ import {
   FeatureFlagNames,
 } from '../../../../shared/lib/feature-flags';
 
-export const DeFiPositionsControllerInit: ControllerInitFunction<
+export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger
