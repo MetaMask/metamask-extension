@@ -48,6 +48,15 @@ import { useConfirmContext } from '../../../context/confirm';
 export type CustomAmountInfoProps = {
   children?: ReactNode;
   currency?: string;
+  /**
+   * When true, passed to `useAutomaticTransactionPayToken` as `disableAutomaticToken` so automatic
+   * `setPayToken` is skipped. Does not hide Pay UI; independent of `disablePay`.
+   */
+  disableAutomaticToken?: boolean;
+  /**
+   * When true, hides `PayTokenAmount` and `PayWithRow` in the default center layout and is passed to
+   * `useAutomaticTransactionPayToken` as `disable`.
+   */
   disablePay?: boolean;
   hasMax?: boolean;
   preferredToken?: SetPayTokenRequest;
@@ -59,6 +68,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
     children,
     currency,
+    disableAutomaticToken,
     disablePay,
     hasMax,
     overrideBottomContent,
@@ -66,7 +76,8 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     preferredToken,
   }) => {
     useAutomaticTransactionPayToken({
-      disable: disablePay,
+      disable: disablePay === true,
+      disableAutomaticToken: disableAutomaticToken === true,
       preferredToken,
     });
     useTransactionPayMetrics();
