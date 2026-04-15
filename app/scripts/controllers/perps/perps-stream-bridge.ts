@@ -352,6 +352,8 @@ export class PerpsStreamBridge {
    * has been updated (e.g. by the background preloader after HIP-3 config
    * arrives from LaunchDarkly). Pushes updated data to the UI via the
    * existing 'markets' channel so the stream manager stays in sync.
+   *
+   * Note that this is only supports a single provider (non aggregated), meaning that if we added another provider outside of hyperliquid, we'd need to update this cache
    * @param state
    */
   #handleMarketDataPreload(state: PerpsControllerState): void {
