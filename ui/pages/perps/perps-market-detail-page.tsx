@@ -1058,7 +1058,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               ? t('perpsRemoveFromFavorites')
               : t('perpsAddToFavorites')
           }
-          className="p-2 cursor-pointer"
+          className="p-2 cursor-pointer transition-transform hover:scale-110"
           onClick={handleFavoriteClick}
         >
           <Icon
