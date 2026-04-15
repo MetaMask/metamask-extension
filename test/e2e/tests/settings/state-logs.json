@@ -19439,9 +19439,7 @@
         "entropy:01KGPGYE2JJGMXDJPEVXKPJ1JG": {
           "groups": {
             "entropy:01KGPGYE2JJGMXDJPEVXKPJ1JG/0": {
-              "accounts": [
-                "string"
-              ],
+              "accounts": ["string"],
               "id": "string",
               "metadata": {
                 "entropy": {
@@ -19469,15 +19467,9 @@
     },
     "accountWalletsMetadata": {},
     "accountsAssets": {
-      "<bitcoin-account-1>": [
-        "string"
-      ],
-      "<solana-account-1>": [
-        "string"
-      ],
-      "<tron-account-1>": [
-        "string"
-      ]
+      "<bitcoin-account-1>": ["string"],
+      "<solana-account-1>": ["string"],
+      "<tron-account-1>": ["string"]
     },
     "accountsByChainId": {
       "0x1": {
@@ -19959,9 +19951,7 @@
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
-      "supportedNetworks": [
-        "string"
-      ],
+      "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
     "completedOnboarding": "boolean",
@@ -19993,9 +19983,7 @@
       }
     },
     "coverageResults": {},
-    "cryptocurrencies": [
-      "string"
-    ],
+    "cryptocurrencies": ["string"],
     "currencyRates": {
       "ETH": {
         "conversionDate": "null",
@@ -20029,9 +20017,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20056,9 +20042,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20167,9 +20151,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20199,9 +20181,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20233,9 +20213,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20259,9 +20237,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20290,9 +20266,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20356,9 +20330,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20392,9 +20364,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20426,9 +20396,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20492,9 +20460,7 @@
             },
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20525,9 +20491,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20559,9 +20523,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20587,9 +20549,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20626,9 +20586,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20747,9 +20705,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20773,9 +20729,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20832,9 +20786,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20865,9 +20817,7 @@
             },
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -20903,9 +20853,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21000,9 +20948,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21034,9 +20980,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21165,9 +21109,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21199,9 +21141,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21233,9 +21173,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21293,9 +21231,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21349,9 +21285,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21386,9 +21320,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21412,9 +21344,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21446,9 +21376,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -21539,9 +21467,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22497,9 +22423,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22534,9 +22458,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22600,9 +22522,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22687,9 +22607,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22747,9 +22665,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22780,9 +22696,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22818,9 +22732,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22854,9 +22766,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22891,9 +22801,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22922,9 +22830,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22959,9 +22865,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -22993,9 +22897,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23057,9 +22959,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23100,9 +23000,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23163,9 +23061,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23197,9 +23093,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23239,9 +23133,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23267,9 +23159,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23299,9 +23189,7 @@
             },
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23357,9 +23245,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23391,9 +23277,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23424,9 +23308,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23452,9 +23334,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23486,9 +23366,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23574,9 +23452,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23709,9 +23585,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23741,9 +23615,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23775,9 +23647,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23901,9 +23771,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23952,9 +23820,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -23980,9 +23846,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24096,9 +23960,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24124,9 +23986,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24313,9 +24173,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24347,9 +24205,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24382,9 +24238,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24409,9 +24263,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24436,9 +24288,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24469,9 +24319,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24575,9 +24423,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24631,9 +24477,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24685,9 +24529,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24711,9 +24553,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24739,9 +24579,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24797,9 +24635,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24830,9 +24666,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24881,9 +24715,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24936,9 +24768,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -24961,9 +24791,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25073,9 +24901,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25137,9 +24963,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25174,9 +24998,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25227,9 +25049,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25260,9 +25080,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25294,9 +25112,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25322,9 +25138,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25349,9 +25163,7 @@
             "category": "string",
             "description": "string",
             "name": "string",
-            "screenshots": [
-              "string"
-            ],
+            "screenshots": ["string"],
             "sourceCode": "string",
             "summary": "string",
             "support": {
@@ -25560,9 +25372,7 @@
     "firstTimeInfo": {},
     "forgottenPassword": "boolean",
     "fragments": {},
-    "fullScreenGasPollTokens": [
-      "string"
-    ],
+    "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
@@ -25603,9 +25413,7 @@
               "name": "string"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "options": {
             "entropy": {
               "derivationPath": "string",
@@ -25616,9 +25424,7 @@
             "entropySource": "string",
             "exportable": "boolean"
           },
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "type": "string"
         },
         "<solana-account-1>": {
@@ -25637,9 +25443,7 @@
               "name": "string"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "options": {
             "derivationPath": "string",
             "entropy": {
@@ -25651,9 +25455,7 @@
             "entropySource": "string",
             "index": "number"
           },
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "type": "string"
         },
         "<tron-account-1>": {
@@ -25672,9 +25474,7 @@
               "name": "string"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "options": {
             "addressType": "string",
             "entropy": {
@@ -25689,9 +25489,7 @@
             "index": "number",
             "scope": "string"
           },
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "type": "string"
         },
         "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
@@ -25705,9 +25503,7 @@
             "lastSelected": "number",
             "name": "string"
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "options": {
             "derivationPath": "string",
             "entropy": {
@@ -25719,9 +25515,7 @@
             "entropySource": "string",
             "groupIndex": "number"
           },
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "type": "string"
         }
       },
@@ -25763,9 +25557,7 @@
     "isWalletResetInProgress": "boolean",
     "keyrings": [
       {
-        "accounts": [
-          "string"
-        ],
+        "accounts": ["string"],
         "metadata": {
           "id": "string",
           "name": "string"
@@ -25896,9 +25688,7 @@
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {
       "0x1": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -25914,9 +25704,7 @@
         ]
       },
       "0x18c7": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -25932,9 +25720,7 @@
         ]
       },
       "0x2105": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -25950,9 +25736,7 @@
         ]
       },
       "0x279f": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -25968,9 +25752,7 @@
         ]
       },
       "0x38": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26001,9 +25783,7 @@
         ]
       },
       "0x89": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26019,9 +25799,7 @@
         ]
       },
       "0xa": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26037,9 +25815,7 @@
         ]
       },
       "0xa4b1": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26055,9 +25831,7 @@
         ]
       },
       "0xaa36a7": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26073,9 +25847,7 @@
         ]
       },
       "0xe705": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26091,9 +25863,7 @@
         ]
       },
       "0xe708": {
-        "blockExplorerUrls": [
-          "string"
-        ],
+        "blockExplorerUrls": ["string"],
         "chainId": "string",
         "defaultBlockExplorerUrlIndex": "number",
         "defaultRpcEndpointIndex": "number",
@@ -26362,9 +26132,7 @@
         "id": "string",
         "initialPermissions": {
           "endowment:assets": {
-            "scopes": [
-              "string"
-            ]
+            "scopes": ["string"]
           },
           "endowment:cronjob": {
             "jobs": [
@@ -26384,9 +26152,7 @@
           "snap_getBip32Entropy": [
             {
               "curve": "string",
-              "path": [
-                "string"
-              ]
+              "path": ["string"]
             }
           ],
           "snap_getPreferences": {},
@@ -26614,9 +26380,7 @@
           "description": "string",
           "initialPermissions": {
             "endowment:assets": {
-              "scopes": [
-                "string"
-              ]
+              "scopes": ["string"]
             },
             "endowment:cronjob": {
               "jobs": [
@@ -26636,9 +26400,7 @@
             "snap_getBip32Entropy": [
               {
                 "curve": "string",
-                "path": [
-                  "string"
-                ]
+                "path": ["string"]
               }
             ],
             "snap_getPreferences": {},
@@ -26653,9 +26415,7 @@
             "url": "string"
           },
           "source": {
-            "locales": [
-              "string"
-            ],
+            "locales": ["string"],
             "location": {
               "npm": {
                 "filePath": "string",
@@ -26848,16 +26608,12 @@
           },
           "endowment:ethereum-provider": {},
           "endowment:keyring": {
-            "allowedOrigins": [
-              "string"
-            ]
+            "allowedOrigins": ["string"]
           },
           "endowment:network-access": {},
           "endowment:page-home": {},
           "endowment:rpc": {
-            "allowedOrigins": [
-              "string"
-            ]
+            "allowedOrigins": ["string"]
           },
           "snap_dialog": {},
           "snap_manageAccounts": {},
@@ -26913,16 +26669,12 @@
             },
             "endowment:ethereum-provider": {},
             "endowment:keyring": {
-              "allowedOrigins": [
-                "string"
-              ]
+              "allowedOrigins": ["string"]
             },
             "endowment:network-access": {},
             "endowment:page-home": {},
             "endowment:rpc": {
-              "allowedOrigins": [
-                "string"
-              ]
+              "allowedOrigins": ["string"]
             },
             "snap_dialog": {},
             "snap_manageAccounts": {},
@@ -27091,36 +26843,26 @@
         },
         "initialPermissions": {
           "endowment:assets": {
-            "scopes": [
-              "string"
-            ]
+            "scopes": ["string"]
           },
           "endowment:cronjob": {
             "jobs": []
           },
           "endowment:keyring": {
-            "allowedOrigins": [
-              "string"
-            ]
+            "allowedOrigins": ["string"]
           },
           "endowment:lifecycle-hooks": {},
           "endowment:name-lookup": {
-            "chains": [
-              "string"
-            ]
+            "chains": ["string"]
           },
           "endowment:network-access": {},
           "endowment:protocol": {
             "scopes": {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
-                "methods": [
-                  "string"
-                ]
+                "methods": ["string"]
               },
               "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
-                "methods": [
-                  "string"
-                ]
+                "methods": ["string"]
               }
             }
           },
@@ -27132,9 +26874,7 @@
           "snap_getBip32Entropy": [
             {
               "curve": "string",
-              "path": [
-                "string"
-              ]
+              "path": ["string"]
             }
           ],
           "snap_getPreferences": {},
@@ -27437,36 +27177,26 @@
           },
           "initialPermissions": {
             "endowment:assets": {
-              "scopes": [
-                "string"
-              ]
+              "scopes": ["string"]
             },
             "endowment:cronjob": {
               "jobs": []
             },
             "endowment:keyring": {
-              "allowedOrigins": [
-                "string"
-              ]
+              "allowedOrigins": ["string"]
             },
             "endowment:lifecycle-hooks": {},
             "endowment:name-lookup": {
-              "chains": [
-                "string"
-              ]
+              "chains": ["string"]
             },
             "endowment:network-access": {},
             "endowment:protocol": {
               "scopes": {
                 "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
-                  "methods": [
-                    "string"
-                  ]
+                  "methods": ["string"]
                 },
                 "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
-                  "methods": [
-                    "string"
-                  ]
+                  "methods": ["string"]
                 }
               }
             },
@@ -27478,9 +27208,7 @@
             "snap_getBip32Entropy": [
               {
                 "curve": "string",
-                "path": [
-                  "string"
-                ]
+                "path": ["string"]
               }
             ],
             "snap_getPreferences": {},
@@ -27495,9 +27223,7 @@
             "url": "string"
           },
           "source": {
-            "locales": [
-              "string"
-            ],
+            "locales": ["string"],
             "location": {
               "npm": {
                 "filePath": "string",
@@ -27532,9 +27258,7 @@
         },
         "initialPermissions": {
           "endowment:assets": {
-            "scopes": [
-              "string"
-            ]
+            "scopes": ["string"]
           },
           "endowment:cronjob": {
             "jobs": [
@@ -27547,18 +27271,14 @@
             ]
           },
           "endowment:keyring": {
-            "allowedOrigins": [
-              "string"
-            ]
+            "allowedOrigins": ["string"]
           },
           "endowment:network-access": {},
           "snap_dialog": {},
           "snap_getBip32Entropy": [
             {
               "curve": "string",
-              "path": [
-                "string"
-              ]
+              "path": ["string"]
             }
           ],
           "snap_getPreferences": {},
@@ -27684,9 +27404,7 @@
           },
           "initialPermissions": {
             "endowment:assets": {
-              "scopes": [
-                "string"
-              ]
+              "scopes": ["string"]
             },
             "endowment:cronjob": {
               "jobs": [
@@ -27699,18 +27417,14 @@
               ]
             },
             "endowment:keyring": {
-              "allowedOrigins": [
-                "string"
-              ]
+              "allowedOrigins": ["string"]
             },
             "endowment:network-access": {},
             "snap_dialog": {},
             "snap_getBip32Entropy": [
               {
                 "curve": "string",
-                "path": [
-                  "string"
-                ]
+                "path": ["string"]
               }
             ],
             "snap_getPreferences": {},
@@ -27725,9 +27439,7 @@
             "url": "string"
           },
           "source": {
-            "locales": [
-              "string"
-            ],
+            "locales": ["string"],
             "location": {
               "npm": {
                 "filePath": "string",
@@ -28538,9 +28250,7 @@
             "caveats": [
               {
                 "type": "string",
-                "value": [
-                  "string"
-                ]
+                "value": ["string"]
               }
             ],
             "date": "number",
@@ -28611,9 +28321,7 @@
                 "value": [
                   {
                     "curve": "string",
-                    "path": [
-                      "string"
-                    ]
+                    "path": ["string"]
                   }
                 ]
               }
@@ -28777,9 +28485,7 @@
               {
                 "type": "string",
                 "value": {
-                  "allowedOrigins": [
-                    "string"
-                  ]
+                  "allowedOrigins": ["string"]
                 }
               }
             ],
@@ -28807,9 +28513,7 @@
               {
                 "type": "string",
                 "value": {
-                  "allowedOrigins": [
-                    "string"
-                  ]
+                  "allowedOrigins": ["string"]
                 }
               }
             ],
@@ -28916,9 +28620,7 @@
             "caveats": [
               {
                 "type": "string",
-                "value": [
-                  "string"
-                ]
+                "value": ["string"]
               }
             ],
             "date": "number",
@@ -28945,9 +28647,7 @@
               {
                 "type": "string",
                 "value": {
-                  "allowedOrigins": [
-                    "string"
-                  ]
+                  "allowedOrigins": ["string"]
                 }
               }
             ],
@@ -28967,9 +28667,7 @@
             "caveats": [
               {
                 "type": "string",
-                "value": [
-                  "string"
-                ]
+                "value": ["string"]
               }
             ],
             "date": "number",
@@ -28990,14 +28688,10 @@
                 "type": "string",
                 "value": {
                   "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
-                    "methods": [
-                      "string"
-                    ]
+                    "methods": ["string"]
                   },
                   "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
-                    "methods": [
-                      "string"
-                    ]
+                    "methods": ["string"]
                   }
                 }
               }
@@ -29036,9 +28730,7 @@
                 "value": [
                   {
                     "curve": "string",
-                    "path": [
-                      "string"
-                    ]
+                    "path": ["string"]
                   }
                 ]
               }
@@ -29078,9 +28770,7 @@
             "caveats": [
               {
                 "type": "string",
-                "value": [
-                  "string"
-                ]
+                "value": ["string"]
               }
             ],
             "date": "number",
@@ -29114,9 +28804,7 @@
               {
                 "type": "string",
                 "value": {
-                  "allowedOrigins": [
-                    "string"
-                  ]
+                  "allowedOrigins": ["string"]
                 }
               }
             ],
@@ -29146,9 +28834,7 @@
                 "value": [
                   {
                     "curve": "string",
-                    "path": [
-                      "string"
-                    ]
+                    "path": ["string"]
                   }
                 ]
               }
@@ -29183,18 +28869,14 @@
       }
     },
     "submitHistory": [],
-    "subscriptionAccountsSeen": [
-      "string"
-    ],
+    "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
     "syncQueue": {
       "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
         {
           "address": "string",
-          "scopes": [
-            "string"
-          ]
+          "scopes": ["string"]
         }
       ]
     },
@@ -29213,9 +28895,7 @@
         "data": {
           "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
             "address": "string",
-            "aggregators": [
-              "string"
-            ],
+            "aggregators": ["string"],
             "decimals": "number",
             "iconUrl": "string",
             "name": "string",
@@ -29224,9 +28904,7 @@
           },
           "0x6b175474e89094c44da98b954eedeac495271d0f": {
             "address": "string",
-            "aggregators": [
-              "string"
-            ],
+            "aggregators": ["string"],
             "decimals": "number",
             "erc20Permit": "boolean",
             "fees": {
