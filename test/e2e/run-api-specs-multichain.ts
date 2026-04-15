@@ -19,7 +19,6 @@ import {
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixtures/fixture-builder';
 import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
 import { withFixtures } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
@@ -168,8 +167,8 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToMultichainTestDapp()
+      fixtures: new FixtureBuilderV2()
+        .withPermissionControllerConnectedToTestDapp()
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',

@@ -1,6 +1,6 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
@@ -824,11 +824,15 @@ class FixtureBuilderV2 {
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
+    scopes,
   }: {
     account?: string | string[];
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
     chainIds?: number[];
+    // When provided, replaces the auto-generated EVM scopes entirely
+    // (e.g. for Solana or other non-EVM permissions).
+    scopes?: Record<string, Json>;
   } = {}): this {
     const MAX_DAPPS = 3;
     if (numberOfDapps < 1 || numberOfDapps > MAX_DAPPS) {
@@ -847,17 +851,28 @@ class FixtureBuilderV2 {
       DAPP_TWO_URL,
     ].slice(0, numberOfDapps);
 
-    // Build optionalScopes from the provided chainIds (default: localhost 1337)
-    const optionalScopes: Record<string, { accounts: string[] }> = {};
-    for (const chainId of chainIds) {
-      const scopeKey = `eip155:${chainId}`;
-      optionalScopes[scopeKey] = {
-        accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+    // Use custom scopes if provided, otherwise build EVM scopes from chainIds
+    let scopeValue: Record<string, Json>;
+    if (scopes) {
+      scopeValue = scopes;
+    } else {
+      const optionalScopes: Record<string, { accounts: string[] }> = {};
+      for (const chainId of chainIds) {
+        const scopeKey = `eip155:${chainId}`;
+        optionalScopes[scopeKey] = {
+          accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+        };
+      }
+      optionalScopes['wallet:eip155'] = {
+        accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
+      };
+      scopeValue = {
+        isMultichainOrigin: true,
+        optionalScopes,
+        requiredScopes: {},
+        sessionProperties: {},
       };
     }
-    optionalScopes['wallet:eip155'] = {
-      accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
-    };
 
     // Unique random IDs for each dapp subject's permission
     const permissionIds = [
@@ -876,12 +891,7 @@ class FixtureBuilderV2 {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
-                  isMultichainOrigin: true,
-                  optionalScopes,
-                  requiredScopes: {},
-                  sessionProperties: {},
-                },
+                value: scopeValue,
               },
             ],
             date: 1770296204693,
