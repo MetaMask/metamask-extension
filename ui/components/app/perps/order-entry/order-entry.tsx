@@ -18,6 +18,7 @@ import {
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { getDisplaySymbol } from '../utils';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -170,8 +171,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           : t('perpsConfirmCloseShort');
       default:
         return isLong
-          ? t('perpsOpenLong', [asset])
-          : t('perpsOpenShort', [asset]);
+          ? t('perpsOpenLong', [getDisplaySymbol(asset)])
+          : t('perpsOpenShort', [getDisplaySymbol(asset)]);
     }
   }, [mode, isLong, asset, t]);
 

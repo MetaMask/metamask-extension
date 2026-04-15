@@ -12,6 +12,7 @@ import {
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { PerpsSlider } from '../../../perps-slider';
+import { getDisplaySymbol } from '../../../utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
@@ -70,7 +71,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsAvailableToClose')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatTokenQuantity(totalPositionSize, asset)}
+          {formatTokenQuantity(totalPositionSize, getDisplaySymbol(asset))}
         </Text>
       </Box>
 
