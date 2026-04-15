@@ -141,7 +141,7 @@ type TxRequest = {
   smartTransactionStatus: string | undefined;
 };
 
-export const selectSmartTransactions = createSelector(
+export const selectSmartTransactions = createDeepEqualSelector(
   getPendingApprovals,
   (pendingApprovals) => {
     const result: TxRequest[] = [];

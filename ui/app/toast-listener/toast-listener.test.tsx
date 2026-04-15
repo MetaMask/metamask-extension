@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockUseSmartTransactionToasts = jest.fn();
@@ -23,7 +24,6 @@ jest.mock('./useSmartTransactionToasts', () => ({
 
 describe('ToastListener', () => {
   beforeEach(() => {
-    jest.resetModules();
     jest.clearAllMocks();
   });
 
@@ -36,13 +36,6 @@ describe('ToastListener', () => {
   }) {
     mockUseSelector.mockReturnValue(transactionToastEnabled);
     mockIsInteractiveUI.mockReturnValue(isInteractive);
-
-    let ToastListener: typeof import('./toast-listener').ToastListener;
-
-    jest.isolateModules(() => {
-      ToastListener = require('./toast-listener').ToastListener;
-    });
-
     render(<ToastListener />);
   }
 

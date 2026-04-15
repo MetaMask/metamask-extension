@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { type TransactionStatus } from '../../helpers/utils/transaction-display';
@@ -22,7 +22,8 @@ function mapToastStatus(status?: string): TransactionStatus | undefined {
   if (
     status === SmartTransactionStatuses.CANCELLED ||
     status === SmartTransactionStatuses.CANCELLED_USER_CANCELLED ||
-    status === SmartTransactionStatuses.REVERTED
+    status === SmartTransactionStatuses.REVERTED ||
+    status === SmartTransactionStatuses.UNKNOWN
   ) {
     return 'failed';
   }
