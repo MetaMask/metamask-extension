@@ -1140,7 +1140,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       <>
         {/* Position Section */}
         {position && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1475,7 +1475,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
