@@ -24,9 +24,14 @@ type StateChangeListener = (
   callback: (state: PerpsControllerState, patches: Patch[]) => void,
 ) => () => void;
 
+type ConnectivityChangeListener = (
+  callback: (state: { connectivityStatus: string }) => void,
+) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
   onControllerStateChange: StateChangeListener;
+  onConnectivityChange: ConnectivityChangeListener;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
@@ -62,6 +67,8 @@ export class PerpsStreamBridge {
 
   readonly #onControllerStateChange: StateChangeListener;
 
+  readonly #onConnectivityChange: ConnectivityChangeListener;
+
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
 
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
@@ -84,9 +91,12 @@ export class PerpsStreamBridge {
 
   #lastMarketCacheKey: string | null = null;
 
+  #wasDeviceOffline = false;
+
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
     this.#onControllerStateChange = options.onControllerStateChange;
+    this.#onConnectivityChange = options.onConnectivityChange;
     this.#perpsInit = options.perpsInit;
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
@@ -216,6 +226,7 @@ export class PerpsStreamBridge {
     this.#wasDisconnected = false;
     this.#isHydrating = false;
     this.#lastMarketCacheKey = null;
+    this.#wasDeviceOffline = false;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -270,6 +281,12 @@ export class PerpsStreamBridge {
           },
         ),
       );
+
+      this.#staticUnsubs.push(
+        this.#onConnectivityChange((state: { connectivityStatus: string }) => {
+          this.#handleConnectivityChange(state.connectivityStatus);
+        }),
+      );
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -291,6 +308,28 @@ export class PerpsStreamBridge {
     if (state === WebSocketConnectionState.Connected && this.#wasDisconnected) {
       this.#wasDisconnected = false;
       this.#hydrateAfterReconnect();
+    }
+  }
+
+  /**
+   * Triggers a health check when the device transitions from offline to online.
+   * @param status
+   */
+  #handleConnectivityChange(status: string): void {
+    const isOffline = status === 'offline';
+    const wasOffline = this.#wasDeviceOffline;
+    this.#wasDeviceOffline = isOffline;
+
+    if (wasOffline && !isOffline) {
+      const wsState = this.#controller.getWebSocketConnectionState();
+      if (wsState === WebSocketConnectionState.Disconnected) {
+        this.#controller.reconnect().catch((err) => {
+          console.debug(
+            '[PerpsStreamBridge] connectivity-change reconnect failed',
+            err,
+          );
+        });
+      }
     }
   }
 

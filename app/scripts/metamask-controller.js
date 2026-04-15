@@ -6985,6 +6985,17 @@ export default class MetamaskController extends EventEmitter {
                 cb,
               );
           },
+          onConnectivityChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'ConnectivityController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'ConnectivityController:stateChange',
+                cb,
+              );
+          },
           perpsInit: this.messengerClientApi.perpsInit,
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,

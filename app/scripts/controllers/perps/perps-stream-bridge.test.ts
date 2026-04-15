@@ -68,6 +68,7 @@ type BridgeOverrides = {
   controller?: PerpsController;
   controllerApi?: ReturnType<typeof createMockControllerApi>;
   onControllerStateChange?: jest.Mock;
+  onConnectivityChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
   emit?: jest.Mock;
 };
@@ -80,11 +81,14 @@ function createBridge(overrides: BridgeOverrides = {}) {
   const controllerApi = overrides.controllerApi ?? createMockControllerApi();
   const onControllerStateChange =
     overrides.onControllerStateChange ?? jest.fn().mockReturnValue(jest.fn());
+  const onConnectivityChange =
+    overrides.onConnectivityChange ?? jest.fn().mockReturnValue(jest.fn());
   const isConnectionAlive = overrides.isConnectionAlive ?? (() => true);
 
   const bridge = new PerpsStreamBridge({
     controller,
     onControllerStateChange,
+    onConnectivityChange,
     perpsInit: controllerApi.perpsInit,
     perpsDisconnect: controllerApi.perpsDisconnect,
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
@@ -92,7 +96,14 @@ function createBridge(overrides: BridgeOverrides = {}) {
     emit,
   });
 
-  return { bridge, emit, controller, controllerApi, onControllerStateChange };
+  return {
+    bridge,
+    emit,
+    controller,
+    controllerApi,
+    onControllerStateChange,
+    onConnectivityChange,
+  };
 }
 
 describe('PerpsStreamBridge', () => {
@@ -235,6 +246,8 @@ describe('PerpsStreamBridge', () => {
       const onControllerStateChange = jest
         .fn()
         .mockReturnValue(stateChangeUnsub);
+      const connectivityUnsub = jest.fn();
+      const onConnectivityChange = jest.fn().mockReturnValue(connectivityUnsub);
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
@@ -245,6 +258,7 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
         onControllerStateChange,
+        onConnectivityChange,
       });
       const api = bridge.bridgeApi();
 
@@ -253,6 +267,7 @@ describe('PerpsStreamBridge', () => {
         expect(unsub).not.toHaveBeenCalled();
       }
       expect(stateChangeUnsub).not.toHaveBeenCalled();
+      expect(connectivityUnsub).not.toHaveBeenCalled();
 
       bridge.destroy();
       await api.perpsInit();
@@ -261,6 +276,7 @@ describe('PerpsStreamBridge', () => {
         expect(unsub).toHaveBeenCalledTimes(1);
       }
       expect(stateChangeUnsub).toHaveBeenCalledTimes(1);
+      expect(connectivityUnsub).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -792,6 +808,8 @@ describe('PerpsStreamBridge', () => {
       const onControllerStateChange = jest
         .fn()
         .mockReturnValue(stateChangeUnsub);
+      const connectivityUnsub = jest.fn();
+      const onConnectivityChange = jest.fn().mockReturnValue(connectivityUnsub);
       const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
@@ -802,6 +820,7 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
         onControllerStateChange,
+        onConnectivityChange,
       });
       await bridge.bridgeApi().perpsInit();
       bridge.destroy();
@@ -810,6 +829,7 @@ describe('PerpsStreamBridge', () => {
         expect(unsub).toHaveBeenCalledTimes(1);
       }
       expect(stateChangeUnsub).toHaveBeenCalledTimes(1);
+      expect(connectivityUnsub).toHaveBeenCalledTimes(1);
     });
 
     it('tears down all dynamic subscriptions', async () => {
@@ -1190,6 +1210,89 @@ describe('PerpsStreamBridge', () => {
 
       stateChangeCallback2(state, []);
       expect(emit).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('connectivity change handling', () => {
+    it('triggers reconnect when device transitions from offline to online', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Disconnected,
+      );
+      const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onConnectivityChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const connectivityCallback = onConnectivityChange.mock
+        .calls[0][0] as (state: { connectivityStatus: string }) => void;
+
+      connectivityCallback({ connectivityStatus: 'offline' });
+      connectivityCallback({ connectivityStatus: 'online' });
+
+      expect(controller.reconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not reconnect when device stays online', async () => {
+      const controller = createMockController();
+      const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onConnectivityChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const connectivityCallback = onConnectivityChange.mock
+        .calls[0][0] as (state: { connectivityStatus: string }) => void;
+
+      connectivityCallback({ connectivityStatus: 'online' });
+
+      expect(controller.reconnect).not.toHaveBeenCalled();
+    });
+
+    it('does not reconnect when WS is already connected', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Connected,
+      );
+      const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onConnectivityChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const connectivityCallback = onConnectivityChange.mock
+        .calls[0][0] as (state: { connectivityStatus: string }) => void;
+
+      connectivityCallback({ connectivityStatus: 'offline' });
+      connectivityCallback({ connectivityStatus: 'online' });
+
+      expect(controller.reconnect).not.toHaveBeenCalled();
+    });
+
+    it('swallows reconnect errors on connectivity change', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Disconnected,
+      );
+      controller.reconnect.mockRejectedValue(new Error('reconnect failed'));
+      const onConnectivityChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onConnectivityChange,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const connectivityCallback = onConnectivityChange.mock
+        .calls[0][0] as (state: { connectivityStatus: string }) => void;
+
+      expect(() => {
+        connectivityCallback({ connectivityStatus: 'offline' });
+        connectivityCallback({ connectivityStatus: 'online' });
+      }).not.toThrow();
     });
   });
 
