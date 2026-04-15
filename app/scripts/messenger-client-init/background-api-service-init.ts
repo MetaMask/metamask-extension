@@ -22,5 +22,6 @@ export const BackgroundApiServiceInit: MessengerClientInitFunction<
   return {
     controller,
     persistedStateKey: null,
+    memStateKey: null,
   };
 };
