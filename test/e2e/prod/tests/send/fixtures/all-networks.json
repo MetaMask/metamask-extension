@@ -1,6 +1,16 @@
 {
   "additionalNetworks": [
-     {
+    {
+      "id": "monad",
+      "networkName": "Monad",
+      "tab": "Popular",
+      "symbol": "MON",
+      "chainIdHex": "0x8f",
+      "sendAmount": "2",
+      "fixtureSetupMethod": "withNetworkControllerOnMonad",
+      "description": "Monad - Additional Network"
+    },
+    {
       "id": "Sei",
       "networkName": "Sei",
       "tab": "Popular",
@@ -12,7 +22,17 @@
     }
   ],
   "popularNetworks": [
-  {
+    {
+      "id": "base",
+      "networkName": "Base",
+      "tab": "Popular",
+      "symbol": "ETH",
+      "chainIdHex": "0x2105",
+      "sendAmount": "0.00001",
+      "fixtureSetupMethod": "withNetworkControllerOnBase",
+      "description": "Base - Popular Network"
+    },
+    {
       "id": "Arbitrum",
       "networkName": "Arbitrum",
       "tab": "Popular",
@@ -24,6 +44,48 @@
     }
   ],
   "customNetworks": [
+    {
+      "id": "chiliz",
+      "networkName": "Chiliz",
+      "networkNameLong": "Chiliz Chain",
+      "symbol": "CHZ",
+      "chainId": 88888,
+      "chainIdHex": "0x15b38",
+      "rpcUrl": "https://rpc.ankr.com/chiliz",
+      "rpcName": "Chiliz RPC",
+      "sendAmount": "2",
+      "fixtureSetupMethod": "withNetworkControllerOnMainnet",
+      "description": "Chiliz - Custom Network",
+      "requiresManualSetup": true
+    },
+    {
+      "id": "etherlink",
+      "networkName": "Etherlink",
+      "networkNameLong": "Etherlink",
+      "symbol": "XTZ",
+      "chainId": 42793,
+      "chainIdHex": "0xa729",
+      "rpcUrl": "https://node.mainnet.etherlink.com",
+      "rpcName": "Etherlink RPC",
+      "sendAmount": "0.002",
+      "fixtureSetupMethod": "withNetworkControllerOnMainnet",
+      "description": "Etherlink - Custom Network",
+      "requiresManualSetup": true
+    },
+    {
+      "id": "bob",
+      "networkName": "BOB",
+      "networkNameLong": "BOB",
+      "symbol": "ETH",
+      "chainId": 60808,
+      "chainIdHex": "0xed88",
+      "rpcUrl": "https://rpc.gobob.xyz",
+      "rpcName": "BOB RPC",
+      "sendAmount": "0.00000002",
+      "fixtureSetupMethod": "withNetworkControllerOnMainnet",
+      "description": "BOB - Custom Network",
+      "requiresManualSetup": true
+    },
     {
       "id": "injective",
       "networkName": "Injective",
