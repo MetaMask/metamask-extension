@@ -28,12 +28,12 @@ export function PerpsDepositToast() {
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
 
   useEffect(() => {
-    if (!depositInProgress) {
-      setDismissedPendingTransactionId(null);
-    } else if (
+    const hasNewPendingTransaction =
+      depositInProgress &&
       lastDepositTransactionId &&
-      lastDepositTransactionId !== dismissedPendingTransactionId
-    ) {
+      lastDepositTransactionId !== dismissedPendingTransactionId;
+
+    if (!depositInProgress || hasNewPendingTransaction) {
       setDismissedPendingTransactionId(null);
     }
   }, [
