@@ -587,6 +587,7 @@ describe('Query hooks', () => {
       expect.objectContaining({
         select: expect.any(Function),
         enabled: true,
+        staleTime: 300000,
       }),
     );
   });
@@ -616,7 +617,7 @@ describe('Query hooks', () => {
     });
 
     expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining(queryOptions),
+      expect.objectContaining({ ...queryOptions, staleTime: 300000 }),
     );
   });
 });
