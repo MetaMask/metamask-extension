@@ -186,26 +186,24 @@ describe('CustomAmountInfo', () => {
     expect(getByTestId('custom-amount')).toBeInTheDocument();
   });
 
-  it('calls useAutomaticTransactionPayToken with disable and disableAutomaticToken false when unset', () => {
+  it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
     render();
     expect(
       useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         disable: false,
-        disableAutomaticToken: false,
       }),
     );
   });
 
-  it('calls useAutomaticTransactionPayToken with disableAutomaticToken true when set', () => {
+  it('calls useAutomaticTransactionPayToken with disable true when disableAutomaticToken is true', () => {
     render({ disableAutomaticToken: true });
     expect(
       useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        disable: false,
-        disableAutomaticToken: true,
+        disable: true,
       }),
     );
   });
@@ -217,7 +215,6 @@ describe('CustomAmountInfo', () => {
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         disable: true,
-        disableAutomaticToken: false,
       }),
     );
   });

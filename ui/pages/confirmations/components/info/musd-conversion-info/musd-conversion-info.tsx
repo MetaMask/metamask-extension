@@ -123,7 +123,6 @@ export const MusdConversionInfo = () => {
   return (
     <CustomAmountInfo
       disableAutomaticToken={true}
-      disablePay={Boolean(preferredToken)}
       preferredToken={preferredToken}
       hasMax={true}
       overrideCenterContent={renderOverrideContent}

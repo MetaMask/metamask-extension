@@ -259,15 +259,14 @@ describe('MusdConversionInfo', () => {
   });
 
   describe('preferredToken and automatic transaction pay token', () => {
-    it('calls useAutomaticTransactionPayToken with disable false, disableAutomaticToken true, when no preferred token', () => {
+    it('calls useAutomaticTransactionPayToken with disable true when no preferred token', () => {
       render();
 
       expect(
         useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
-          disable: false,
-          disableAutomaticToken: true,
+          disable: true,
           preferredToken: undefined,
         }),
       );
@@ -289,7 +288,6 @@ describe('MusdConversionInfo', () => {
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           disable: true,
-          disableAutomaticToken: true,
           preferredToken: {
             address: PERSISTED_PAYMENT_TOKEN.address,
             chainId: PERSISTED_PAYMENT_TOKEN.chainId,
@@ -308,7 +306,6 @@ describe('MusdConversionInfo', () => {
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           disable: true,
-          disableAutomaticToken: true,
           preferredToken: {
             address: DEFAULT_HOOK_PAYMENT_TOKEN.address as `0x${string}`,
             chainId: DEFAULT_HOOK_PAYMENT_TOKEN.chainId,

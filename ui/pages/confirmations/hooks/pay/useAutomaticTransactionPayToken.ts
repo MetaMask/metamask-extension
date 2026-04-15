@@ -10,13 +10,9 @@ import type { SetPayTokenRequest } from './types';
 
 export function useAutomaticTransactionPayToken({
   disable = false,
-  disableAutomaticToken = false,
   preferredToken,
 }: {
-  /** When true, skips the whole effect (e.g. MetaMask Pay UI disabled). */
   disable?: boolean;
-  /** When true, skips automatic `getBestToken` / `setPayToken` logic only; independent of `disable`. */
-  disableAutomaticToken?: boolean;
   preferredToken?: SetPayTokenRequest;
 } = {}) {
   const isUpdated = useRef(false);
@@ -45,10 +41,6 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    if (disableAutomaticToken) {
-      return;
-    }
-
     const automaticToken = getBestToken({
       isHardwareWallet,
       targetToken,
@@ -68,7 +60,6 @@ export function useAutomaticTransactionPayToken({
     isUpdated.current = true;
   }, [
     disable,
-    disableAutomaticToken,
     isHardwareWallet,
     preferredToken,
     requiredTokens,

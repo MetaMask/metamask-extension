@@ -49,13 +49,11 @@ export type CustomAmountInfoProps = {
   children?: ReactNode;
   currency?: string;
   /**
-   * When true, passed to `useAutomaticTransactionPayToken` as `disableAutomaticToken` so automatic
-   * `setPayToken` is skipped. Does not hide Pay UI; independent of `disablePay`.
+   * When true, it prevents automatic selection of payment token based on balance and feature flags
    */
   disableAutomaticToken?: boolean;
   /**
-   * When true, hides `PayTokenAmount` and `PayWithRow` in the default center layout and is passed to
-   * `useAutomaticTransactionPayToken` as `disable`.
+   * When true, it disables MetaMask Pay for transactions that just need custom amount input
    */
   disablePay?: boolean;
   hasMax?: boolean;
@@ -78,8 +76,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     preferredToken,
   }) => {
     useAutomaticTransactionPayToken({
-      disable: disablePay === true,
-      disableAutomaticToken: disableAutomaticToken === true,
+      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
     useTransactionPayMetrics();

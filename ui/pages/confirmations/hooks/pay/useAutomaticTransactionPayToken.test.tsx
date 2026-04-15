@@ -41,11 +41,9 @@ const STATE_MOCK = {
 
 function renderHookWithProvider({
   disable = false,
-  disableAutomaticToken = false,
   preferredToken,
 }: {
   disable?: boolean;
-  disableAutomaticToken?: boolean;
   preferredToken?: SetPayTokenRequest;
 } = {}) {
   const store = mockStore(STATE_MOCK);
@@ -71,7 +69,6 @@ function renderHookWithProvider({
     () =>
       useAutomaticTransactionPayToken({
         disable,
-        disableAutomaticToken,
         preferredToken,
       }),
     { wrapper },
@@ -160,19 +157,6 @@ describe('useAutomaticTransactionPayToken', () => {
     ] as Asset[]);
 
     renderHookWithProvider({ disable: true });
-
-    expect(setPayTokenMock).not.toHaveBeenCalled();
-  });
-
-  it('does nothing if disableAutomaticToken is true', () => {
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        address: TOKEN_ADDRESS_1_MOCK,
-        chainId: CHAIN_ID_1_MOCK,
-      },
-    ] as Asset[]);
-
-    renderHookWithProvider({ disableAutomaticToken: true });
 
     expect(setPayTokenMock).not.toHaveBeenCalled();
   });
