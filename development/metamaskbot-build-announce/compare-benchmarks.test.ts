@@ -63,6 +63,24 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons.length).toBeGreaterThan(0);
     });
 
+    it('sets source from artifact filename', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults({
+              p75: { importWalletToSocialScreen: 1500 },
+              p95: { importWalletToSocialScreen: 2000 },
+              mean: { importWalletToSocialScreen: 1200 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.comparisons[0].source).toBe('chrome-browserify');
+    });
+
     it('fails when p75 exceeds fail threshold', () => {
       const benchmarks = [
         {
@@ -253,17 +271,17 @@ describe('printReport', () => {
       anyFailed: true,
     });
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('FAIL — at least one benchmark'),
-    );
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('FAIL'));
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('FAIL — at least one benchmark');
+    expect(allCalls).toContain('FAIL  standardHome');
   });
 
-  it('prints the benchmark name and PASS status for a passing comparison', () => {
+  it('shows passing comparison in grouped PASS section', () => {
     printReport({
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
+          source: 'chrome-browserify',
           absoluteFailed: false,
         }),
       ],
@@ -271,15 +289,17 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('1 benchmarks within thresholds');
     expect(allCalls).toContain('loadNewAccount');
-    expect(allCalls).toContain('PASS');
+    expect(allCalls).toContain('chrome-browserify');
   });
 
-  it('prints the benchmark name and FAIL status for a failing comparison', () => {
+  it('shows failing comparison with source label and FAIL prefix', () => {
     printReport({
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
+          source: 'firefox-webpack',
           absoluteFailed: true,
         }),
       ],
@@ -287,11 +307,10 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('loadNewAccount');
-    expect(allCalls).toContain('FAIL');
+    expect(allCalls).toContain('FAIL  loadNewAccount [firefox-webpack]');
   });
 
-  it('prints (no historical baseline data) when comparison has no metric lines', () => {
+  it('groups passing entries without baseline into PASS section', () => {
     printReport({
       comparisons: [
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
@@ -299,18 +318,19 @@ describe('printReport', () => {
       anyFailed: false,
     });
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('no historical baseline data'),
-    );
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('1 benchmarks within thresholds');
   });
 
-  it('prints pass icon with [Show logs] when all metrics pass', () => {
+  it('shows all-passing metrics in PASS section without detail lines', () => {
     const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
       './comparison-utils',
     ) as typeof import('./comparison-utils');
     printReport({
       comparisons: [
         makeComparison({
+          benchmarkName: 'standardHome',
+          source: 'chrome-browserify',
           relativeMetrics: [
             {
               metric: 'uiStartup',
@@ -329,7 +349,9 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('[Show logs]');
+    expect(allCalls).toContain('1 benchmarks within thresholds');
+    expect(allCalls).toContain('standardHome: chrome-browserify');
+    expect(allCalls).not.toContain('[Show logs]');
   });
 
   it('prints issue metric lines for comparisons with violations', () => {
@@ -343,6 +365,7 @@ describe('printReport', () => {
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
+          source: 'chrome-browserify',
           absoluteFailed: true,
           absoluteViolations: [
             {
@@ -359,6 +382,7 @@ describe('printReport', () => {
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('FAIL  standardHome [chrome-browserify]');
     expect(allCalls).toContain('uiStartup');
     expect(allCalls).toContain(SEV.Regression.icon);
   });
@@ -392,6 +416,28 @@ describe('printReport', () => {
     expect(allCalls).toContain('3 benchmarks');
     expect(allCalls).toContain('1 failed');
     expect(allCalls).toContain('1 warnings');
+  });
+
+  it('groups multiple sources for the same benchmark name in PASS section', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'startupStandardHome',
+          source: 'chrome-browserify',
+        }),
+        makeComparison({
+          benchmarkName: 'startupStandardHome',
+          source: 'firefox-browserify',
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('2 benchmarks within thresholds');
+    expect(allCalls).toContain(
+      'startupStandardHome: chrome-browserify, firefox-browserify',
+    );
   });
 });
 
