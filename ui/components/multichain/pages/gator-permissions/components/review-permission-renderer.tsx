@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { Rule } from '@metamask/7715-permission-types';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
@@ -34,9 +35,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import {
   convertTimestampToReadableDate,
+  extractExpiryTimestampFromRules,
   extractExpiryToReadableDate,
   formatDecimalShiftedValue,
-  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getInternalAccountByAddress } from '../../../../../selectors';
@@ -211,7 +212,7 @@ type RenderElementOptions = {
     permissionAccount?: string;
     networkName?: string;
   };
-  rules?: GatorPermissionRule[] | null;
+  rules?: Rule[] | null;
 };
 
 function renderElement({
@@ -341,12 +342,29 @@ function renderAmountElement(
   );
 }
 
+/**
+ * Expiry timestamp used for schema context and stream exposure, aligned with
+ * {@link renderExpiryElement}: when `rules` is non-empty, expiry comes only from rules
+ * (same as the expiry row), not from the `expiry` prop.
+ * @param expiry
+ * @param rules
+ */
+function getEffectiveExpiryForReviewRenderer(
+  expiry: number | null,
+  rules?: Rule[] | null,
+): number | null {
+  if (rules?.length) {
+    return extractExpiryTimestampFromRules(rules);
+  }
+  return expiry;
+}
+
 function renderExpiryElement(
   rowKey: string,
   element: ExpiryField,
   ctx: PermissionRenderContext,
   t: I18nFunction,
-  rules?: GatorPermissionRule[] | null,
+  rules?: Rule[] | null,
 ): React.ReactNode {
   let displayValue: string;
   if (rules?.length) {
@@ -386,7 +404,7 @@ type RenderSectionOptions = {
     permissionAccount?: string;
     networkName?: string;
   };
-  rules?: GatorPermissionRule[] | null;
+  rules?: Rule[] | null;
 };
 
 function renderSection({
@@ -430,11 +448,11 @@ export type ReviewPermissionRendererProps = {
   permissionData: Record<string, unknown>;
   chainId: Hex;
   expiry: number | null;
-  rules?: GatorPermissionRule[] | null;
+  rules?: Rule[] | null;
   tokenInfo: Pick<GatorTokenInfo, 'symbol' | 'decimals'>;
   tokenLoading: boolean;
   /** Which view to filter fields by. Defaults to 'reviewDetail'. */
-  viewMode?: 'reviewDetail' | 'reviewSummary';
+  viewMode?: FieldView;
   /** Account address for rendering account fields. */
   permissionAccount?: string;
   /** Network name for rendering network fields. */
@@ -480,13 +498,15 @@ export const ReviewPermissionRenderer: React.FC<
     permissionType === 'native-token-stream' ||
     permissionType === 'erc20-token-stream';
 
+  const effectiveExpiry = getEffectiveExpiryForReviewRenderer(expiry, rules);
+
   const ctx: PermissionRenderContext = {
     permission: {
       type: permissionType,
       data: permissionData,
       justification: permissionData.justification as string | undefined,
     },
-    expiry,
+    expiry: effectiveExpiry,
     chainId,
     origin: '',
     tokenInfo: {
@@ -497,7 +517,7 @@ export const ReviewPermissionRenderer: React.FC<
       ? {
           streamTotalExposure: computeStreamTotalExposureForPermission(
             { data: permissionData },
-            expiry,
+            effectiveExpiry,
           ),
         }
       : {}),

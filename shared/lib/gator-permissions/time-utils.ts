@@ -1,3 +1,4 @@
+import type { Rule } from '@metamask/7715-permission-types';
 import { bigIntToHex, Hex, hexToBigInt } from '@metamask/utils';
 import { DateTime } from 'luxon';
 import {
@@ -9,10 +10,7 @@ import {
   YEAR,
 } from '../../constants/time';
 
-export type GatorPermissionRule = {
-  type: string;
-  data: Record<string, unknown>;
-};
+export type { Rule };
 
 /**
  * Generates a human-readable description for a period duration in seconds to be used for translation.
@@ -112,7 +110,7 @@ export const convertTimestampToReadableDate = (timestamp: number): string => {
  * @returns The expiry timestamp, or null when there is no expiry rule or it is not usable.
  */
 export function extractExpiryTimestampFromRules(
-  rules: GatorPermissionRule[] | null | undefined,
+  rules: Rule[] | null | undefined,
 ): number | null {
   if (!rules?.length) {
     return null;
@@ -134,9 +132,7 @@ export function extractExpiryTimestampFromRules(
  * @param rules - The rules to extract the expiry from.
  * @returns The expiry timestamp in a readable date format.
  */
-export const extractExpiryToReadableDate = (
-  rules: GatorPermissionRule[],
-): string => {
+export const extractExpiryToReadableDate = (rules: Rule[]): string => {
   const timestamp = extractExpiryTimestampFromRules(rules);
   if (timestamp === null) {
     return '';

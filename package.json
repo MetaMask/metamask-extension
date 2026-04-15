@@ -295,6 +295,7 @@
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
+    "@metamask/7715-permission-types": "^0.5.0",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.0",
     "@metamask/account-tree-controller": "^7.0.0",

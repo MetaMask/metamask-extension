@@ -56,6 +56,36 @@ describe('ReviewPermissionRenderer', () => {
     ).toBeInTheDocument();
   });
 
+  it('uses rules expiry for stream total exposure when expiry prop is null', () => {
+    renderWithProvider(
+      <ReviewPermissionRenderer
+        permissionType="native-token-stream"
+        permissionData={{
+          initialAmount: '0x0',
+          maxAmount: '0x100',
+          amountPerSecond: '0x1',
+          startTime: 1000,
+        }}
+        chainId="0x1"
+        expiry={null}
+        rules={[
+          {
+            type: 'expiry',
+            data: { timestamp: 1100 },
+          },
+        ]}
+        tokenInfo={{ symbol: 'ETH', decimals: 0 }}
+        tokenLoading={false}
+        viewMode="confirmation"
+      />,
+      store,
+    );
+
+    const totalExposure = screen.getByTestId('confirmation-total-exposure');
+    expect(totalExposure).toHaveTextContent('100 ETH');
+    expect(totalExposure.textContent).not.toContain('256');
+  });
+
   it('places /sec before (raw units) when token decimals are unknown', () => {
     renderWithProvider(
       <ReviewPermissionRenderer

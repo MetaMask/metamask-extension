@@ -19,10 +19,6 @@ import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { extractExpiryTimestampFromRules } from '../../../../../../shared/lib/gator-permissions';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
@@ -30,7 +26,8 @@ import { useBoolean } from '../../../../../hooks/useBoolean';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 /**
- * Permission `data` for the shared schema renderer (single assertion at the boundary).
+ * Permission `data` for the shared schema renderer.
+ * Schema validation runs in `ReviewPermissionRenderer`.
  *
  * @param permission - Gator permission whose `data` is passed into `PERMISSION_SCHEMAS`.
  * @param permission.data - Raw permission payload; coerced to a plain object for the schema.
@@ -135,11 +132,6 @@ export const ReviewGatorPermissionItem = ({
       permissionAccount,
       networkName,
     ],
-  );
-
-  assertPermissionSchemaEntry(
-    permissionType,
-    PERMISSION_SCHEMAS[permissionType],
   );
 
   return (
