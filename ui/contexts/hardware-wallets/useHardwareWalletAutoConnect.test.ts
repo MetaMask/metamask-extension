@@ -5,7 +5,6 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
-import { flushPromises } from '../../../test/lib/timer-helpers';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -222,8 +221,7 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      connectCallback(mockDevice);
-      await flushPromises();
+      await connectCallback(mockDevice);
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -267,8 +265,7 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      connectCallback({ productId: 123 } as USBDevice);
-      await flushPromises();
+      await connectCallback({ productId: 123 } as USBDevice);
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -305,8 +302,7 @@ describe('useHardwareWalletAutoConnect', () => {
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
-      expect(() => connectCallback(mockDevice)).not.toThrow();
-      await flushPromises();
+      await expect(connectCallback(mockDevice)).resolves.toBeUndefined();
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -340,8 +336,7 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      connectCallback({ productId: 123 } as HIDDevice);
-      await flushPromises();
+      await connectCallback({ productId: 123 } as HIDDevice);
 
       expect(mockConnectRef).toHaveBeenCalled();
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
@@ -369,12 +364,13 @@ describe('useHardwareWalletAutoConnect', () => {
       const mockDevice = { productId: 123 } as HIDDevice;
 
       disconnectCallback(mockDevice);
-      await flushPromises();
 
-      expect(mockHandleDisconnect).toHaveBeenCalled();
-      expect(
-        webConnectionUtils.checkHardwareWalletPermission,
-      ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      await waitFor(() => {
+        expect(mockHandleDisconnect).toHaveBeenCalled();
+        expect(
+          webConnectionUtils.checkHardwareWalletPermission,
+        ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      });
     });
 
     it('handles native Trezor device disconnect event through WebUSB', async () => {
@@ -412,12 +408,13 @@ describe('useHardwareWalletAutoConnect', () => {
       const disconnectCallback = subscribeCall[2];
 
       disconnectCallback({ productId: 123 } as USBDevice);
-      await flushPromises();
 
-      expect(mockHandleDisconnect).toHaveBeenCalled();
-      expect(
-        webConnectionUtils.checkHardwareWalletPermission,
-      ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
+      await waitFor(() => {
+        expect(mockHandleDisconnect).toHaveBeenCalled();
+        expect(
+          webConnectionUtils.checkHardwareWalletPermission,
+        ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
+      });
     });
 
     it('ignores disconnect when not connected', async () => {
@@ -438,7 +435,6 @@ describe('useHardwareWalletAutoConnect', () => {
       const mockDevice = { productId: 123 } as HIDDevice;
 
       disconnectCallback(mockDevice);
-      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
     });
@@ -452,7 +448,6 @@ describe('useHardwareWalletAutoConnect', () => {
       const disconnectCallback = subscribeCall[2];
 
       disconnectCallback({ productId: 123 } as HIDDevice);
-      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -472,8 +467,7 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      connectCallback({ productId: 123 } as HIDDevice);
-      await flushPromises();
+      await connectCallback({ productId: 123 } as HIDDevice);
 
       expect(mockConnectRef).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -501,7 +495,6 @@ describe('useHardwareWalletAutoConnect', () => {
       const disconnectCallback = subscribeCall[2];
 
       disconnectCallback({ productId: 123 } as HIDDevice);
-      await flushPromises();
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
@@ -548,11 +541,11 @@ describe('useHardwareWalletAutoConnect', () => {
       ).mock.calls[0];
       const connectCallback = subscribeCall[1];
 
-      connectCallback({ productId: 123 } as HIDDevice);
+      const connectPromise = connectCallback({ productId: 123 } as HIDDevice);
       refs.isEnsuringDeviceReadyRef.current = true;
 
       resolvePermission?.(HardwareConnectionPermissionState.Granted);
-      await flushPromises();
+      await connectPromise;
 
       expect(mockUpdateConnectionState).not.toHaveBeenCalledWith(
         ConnectionState.connected(),
