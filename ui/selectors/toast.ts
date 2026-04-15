@@ -1,43 +1,21 @@
 import { createSelector } from 'reselect';
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
-import { Transaction } from '@metamask/keyring-api';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
-import { getBridgeTransactionToastId } from '../app/toast-listener/helpers';
 import type { MetaMaskReduxState } from '../store/store';
 import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
-import { isBridgeComplete } from '../../shared/lib/bridge-status/utils';
 import { getPendingApprovals } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import { selectCurrentAccountIds } from './multichain-transactions';
-import { selectNonEvmChainIds } from './multichain/networks';
 import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
 
-export type BridgeSmartStatusToastState = {
-  approvalId: string;
-  status?: string;
-  toastId: string;
-  txId?: string;
-  isPending: boolean;
-  isSuccess: boolean;
-  isFailed: boolean;
-};
-
-export type BridgeHistoryToastState = {
-  toastId: string;
-  txId?: string;
-  status?: string;
-  isSuccess: boolean;
-  isFailed: boolean;
+export type ExperimentalEvmOriginToastState = {
+  txId: string;
+  smartTransactionStatus?: string;
 };
 
 type SmartStatusRequestState = {
@@ -55,54 +33,6 @@ const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
 
 const selectTxHistory = (state: MetaMaskReduxState) =>
   state.metamask?.txHistory ?? EMPTY_OBJECT;
-
-// Smart-status approvals only know about a tx id, so bridge toast startup needs to resolve that to bridge history.
-function findBridgeHistoryItemForTxId(
-  txHistory: Record<string, BridgeHistoryItem>,
-  txId?: string,
-) {
-  if (!txId) {
-    return undefined;
-  }
-
-  if (txHistory[txId]) {
-    return txHistory[txId];
-  }
-
-  return Object.values(txHistory).find(
-    (item) =>
-      item.originalTransactionId === txId ||
-      item.txMetaId === txId ||
-      item.approvalTxId === txId,
-  );
-}
-
-// Smart-status approval data is only used to decide whether a bridge toast should start pending.
-function getBridgeSmartStatusToastState(
-  approvalId: string,
-  bridgeHistoryItem: BridgeHistoryItem | undefined,
-  requestState: SmartStatusRequestState | undefined,
-): BridgeSmartStatusToastState {
-  const txId =
-    bridgeHistoryItem?.originalTransactionId ??
-    bridgeHistoryItem?.txMetaId ??
-    requestState?.txId;
-  const status = requestState?.smartTransaction?.status;
-
-  return {
-    approvalId,
-    status,
-    txId,
-    toastId: getBridgeTransactionToastId({ approvalId, txId }),
-    isPending: !status || status === SmartTransactionStatuses.PENDING,
-    isSuccess: status === SmartTransactionStatuses.SUCCESS,
-    isFailed:
-      Boolean(status?.startsWith(SmartTransactionStatuses.CANCELLED)) ||
-      (Boolean(status) &&
-        status !== SmartTransactionStatuses.PENDING &&
-        status !== SmartTransactionStatuses.SUCCESS),
-  };
-}
 
 export const selectTransactionIds = createSelector(
   selectTransactions,
@@ -135,59 +65,6 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
   },
 );
 
-export function isEvmTransactionEligibleForToast(
-  transaction: TransactionMeta,
-  {
-    bridgeApprovalIds,
-    crossChainBridgeIds,
-    requiredTransactionIds,
-    requiredTransactionHashes,
-  }: Record<string, Set<string>>,
-) {
-  const type = transaction?.type;
-  if (typeof type !== 'string') {
-    return false;
-  }
-
-  return (
-    Boolean(type) &&
-    !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
-    !bridgeApprovalIds.has(transaction.id?.toLowerCase?.() ?? '') &&
-    !crossChainBridgeIds.has(transaction.id ?? '') &&
-    !requiredTransactionIds.has(transaction.id ?? '') &&
-    !(
-      transaction.hash &&
-      requiredTransactionHashes.has(transaction.hash.toLowerCase())
-    )
-  );
-}
-
-export function isNonEvmTransactionEligibleForToast(
-  transaction: Transaction,
-  {
-    currentAccountIds,
-    enabledNonEvmChainIds,
-    crossChainBridgeIds,
-  }: Record<string, Set<string>>,
-) {
-  const type = transaction?.type;
-  if (
-    typeof type !== 'string' ||
-    !transaction?.id ||
-    !transaction?.account ||
-    !transaction?.chain
-  ) {
-    return false;
-  }
-
-  return (
-    !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type) &&
-    currentAccountIds.has(transaction.account) &&
-    enabledNonEvmChainIds.has(transaction.chain) &&
-    !crossChainBridgeIds.has(transaction.id)
-  );
-}
-
 /**
  * Returns EVM transactions eligible for toast notifications.
  *
@@ -219,12 +96,22 @@ export const selectEvmTransactionsForToast = createSelector(
       }
 
       seen.add(transaction.id);
-      return isEvmTransactionEligibleForToast(transaction, {
-        bridgeApprovalIds,
-        crossChainBridgeIds,
-        requiredTransactionIds,
-        requiredTransactionHashes,
-      });
+
+      const type = transaction?.type;
+      if (typeof type !== 'string') {
+        return false;
+      }
+      return (
+        Boolean(type) &&
+        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
+        !bridgeApprovalIds.has(transaction.id?.toLowerCase()) &&
+        !crossChainBridgeIds.has(transaction.id) &&
+        !requiredTransactionIds.has(transaction.id) &&
+        !(
+          transaction.hash &&
+          requiredTransactionHashes.has(transaction.hash.toLowerCase())
+        )
+      );
     });
   },
 );
@@ -260,120 +147,31 @@ export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
   },
 );
 
-export const selectBridgeSmartStatusToastStates = createSelector(
+export const selectExperimentalEvmOriginToastStates = createSelector(
   getPendingApprovals,
-  selectTxHistory,
-  (pendingApprovals, txHistory): BridgeSmartStatusToastState[] =>
+  (pendingApprovals): ExperimentalEvmOriginToastState[] =>
     pendingApprovals.flatMap((approval) => {
-      // Only smart-status approvals can start the bridge pending toast from approval state.
       if (
         approval.type !==
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
       ) {
-        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
+        return EMPTY_ARRAY as unknown as ExperimentalEvmOriginToastState[];
       }
 
       const requestState = approval.requestState as
         | SmartStatusRequestState
         | undefined;
-      // The smart-status approval must still map back to a real cross-chain bridge item.
-      const bridgeHistoryItem = findBridgeHistoryItemForTxId(
-        txHistory,
-        requestState?.txId,
-      );
-
-      if (!bridgeHistoryItem?.quote) {
-        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
-      }
-
-      if (
-        !isCrossChain(
-          bridgeHistoryItem.quote.srcChainId,
-          bridgeHistoryItem.quote.destChainId,
-        )
-      ) {
-        return EMPTY_ARRAY as unknown as BridgeSmartStatusToastState[];
-      }
-
-      return [
-        getBridgeSmartStatusToastState(
-          approval.id,
-          bridgeHistoryItem,
-          requestState,
-        ),
-      ];
-    }),
-);
-
-export const selectBridgeHistoryToastStates = createSelector(
-  selectTxHistory,
-  (txHistory): BridgeHistoryToastState[] =>
-    Object.values(txHistory).flatMap((bridgeHistoryItem) => {
-      // Bridge history is the durable source for terminal bridge status updates.
-      if (
-        !bridgeHistoryItem.quote ||
-        !isCrossChain(
-          bridgeHistoryItem.quote.srcChainId,
-          bridgeHistoryItem.quote.destChainId,
-        )
-      ) {
-        return EMPTY_ARRAY as BridgeHistoryToastState[];
-      }
-
-      // Toast identity follows the source transaction id so pending and completion update the same toast.
-      const txId =
-        bridgeHistoryItem.originalTransactionId ?? bridgeHistoryItem.txMetaId;
+      const txId = requestState?.txId;
 
       if (!txId) {
-        return EMPTY_ARRAY as BridgeHistoryToastState[];
+        return EMPTY_ARRAY as unknown as ExperimentalEvmOriginToastState[];
       }
 
       return [
         {
-          // approvalTxId only matters as a fallback id source when there is no better transaction id.
-          toastId: getBridgeTransactionToastId({
-            approvalId: bridgeHistoryItem.approvalTxId ?? txId,
-            txId,
-          }),
           txId,
-          status: bridgeHistoryItem.status?.status,
-          isSuccess: isBridgeComplete(bridgeHistoryItem),
-          isFailed: bridgeHistoryItem.status?.status === StatusTypes.FAILED,
+          smartTransactionStatus: requestState?.smartTransaction?.status,
         },
       ];
     }),
-);
-
-export const selectEvmToastEligibility = createSelector(
-  selectBridgeApprovalTxIds,
-  selectCrossChainBridgeSourceTxIds,
-  selectRequiredTransactionIds,
-  selectRequiredTransactionHashes,
-  (
-    bridgeApprovalIds,
-    crossChainBridgeIds,
-    requiredTransactionIds,
-    requiredTransactionHashes,
-  ) => ({
-    // Exclude transactions already associated with bridge approvals
-    bridgeApprovalIds,
-    // Cross-chain bridge rows are handled by the bridge toast path instead
-    crossChainBridgeIds,
-    requiredTransactionIds,
-    requiredTransactionHashes,
-  }),
-);
-
-export const selectNonEvmToastEligibility = createSelector(
-  selectCurrentAccountIds,
-  selectNonEvmChainIds,
-  selectCrossChainBridgeSourceTxIds,
-  (currentAccountIds, enabledNonEvmChainIds, crossChainBridgeIds) => ({
-    // Non-EVM toasts should only reflect the currently selected account group
-    currentAccountIds: new Set(currentAccountIds),
-    // Only enabled non-EVM networks should produce toasts
-    enabledNonEvmChainIds: new Set(enabledNonEvmChainIds),
-    // Cross-chain bridge rows are handled by the bridge toast path instead
-    crossChainBridgeIds,
-  }),
 );
