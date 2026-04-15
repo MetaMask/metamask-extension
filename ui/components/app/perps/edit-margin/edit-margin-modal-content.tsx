@@ -17,6 +17,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -24,6 +25,7 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
@@ -273,6 +275,12 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
       });
 
+      const streamManager = getPerpsStreamManager();
+      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+      streamManager.pushPositionsWithOverrides(freshPositions);
       const displaySymbol = getDisplayName(position.symbol);
 
       replacePerpsToastByKey({
