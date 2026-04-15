@@ -73,12 +73,12 @@ jobs:
             exit 0
           fi
 
-          FAILED=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion == "failure") | .id')
+          NOT_SUCCESS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion != "success") | .id')
 
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
-          if [ -n "$FAILED" ]; then
-            echo "LavaMoat validation completed with failures — policy diffs expected"
+          if [ -n "$NOT_SUCCESS" ]; then
+            echo "LavaMoat validation completed with non-success conclusions — policy diffs may exist"
             echo "VALIDATION_FAILED=true" >> "$GITHUB_OUTPUT"
           else
             echo "LavaMoat validation completed — all policies up to date"
