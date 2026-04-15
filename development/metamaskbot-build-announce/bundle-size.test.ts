@@ -114,10 +114,14 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('Webpack bundle size diffs');
-    expect(result).toContain('auxiliary pages:');
-    expect(result).toContain('content scripts:');
-    expect(result).toContain('zip:');
+    expect(result).toContain('<details>');
+    expect(result).toContain(
+      '<summary><strong>Bundle Size Diffs</strong></summary>',
+    );
+    expect(result).toContain('| Status | Bundle | Total | Diff | Change |');
+    expect(result).toContain('| ✅ | auxiliary pages |');
+    expect(result).toContain('| ✅ | content scripts |');
+    expect(result).toContain('| ✅ | zip |');
   });
 
   it('compares webpack against the stored baseline', async () => {
@@ -126,16 +130,16 @@ describe('buildBundleSizeDiffSection', () => {
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain(
-      'background: total 1.56 KiB, diff +100 Bytes (6.67%)',
+      '| ✅ | background | 1.56 KiB | +100 Bytes | +6.67% |',
     );
-    expect(result).toContain('ui: total 2.44 KiB, diff +100 Bytes (4.17%)');
+    expect(result).toContain('| ✅ | ui | 2.44 KiB | +100 Bytes | +4.17% |');
     expect(result).toContain(
-      'auxiliary pages: total 100 Bytes, diff +10 Bytes (11.11%)',
+      '| ✅ | auxiliary pages | 100 Bytes | +10 Bytes | +11.11% |',
     );
     expect(result).toContain(
-      'content scripts: total 60 Bytes, diff +10 Bytes (20%)',
+      '| ✅ | content scripts | 60 Bytes | +10 Bytes | +20.00% |',
     );
-    expect(result).toContain('zip: total 4.1 KiB, diff +200 Bytes (5%)');
+    expect(result).toContain('| ✅ | zip | 4.1 KiB | +200 Bytes | +5.00% |');
   });
 
   it('shows a warning when the background diff exceeds the threshold', async () => {
@@ -148,7 +152,9 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('Warning! Bundle size has increased!');
+    expect(result).toContain(
+      '<summary><strong>Bundle Size Diffs 🚨 bundle size increased</strong></summary>',
+    );
   });
 
   it('does not use content scripts increases to trigger warnings', async () => {
@@ -173,7 +179,11 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
+    expect(result).toContain(
+      '<summary><strong>Bundle Size Diffs</strong></summary>',
+    );
     expect(result).toContain('Comparison unavailable.');
+    expect(result).toContain('|  | background | 1.56 KiB | - | - |');
   });
 
   it('renders n/a for missing new baseline fields during the cutover', async () => {
@@ -190,9 +200,9 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('auxiliary pages: total 100 Bytes, diff n/a');
-    expect(result).toContain('content scripts: total 60 Bytes, diff n/a');
-    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
+    expect(result).toContain('|  | auxiliary pages | 100 Bytes | - | - |');
+    expect(result).toContain('|  | content scripts | 60 Bytes | - | - |');
+    expect(result).toContain('|  | zip | 4.1 KiB | - | - |');
   });
 
   it('renders bundle size unavailable when the current summary fetch fails', async () => {
@@ -225,8 +235,8 @@ describe('buildBundleSizeDiffSection', () => {
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain('Comparison unavailable.');
-    expect(result).toContain('background: total 1.56 KiB, diff n/a');
-    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
+    expect(result).toContain('|  | background | 1.56 KiB | - | - |');
+    expect(result).toContain('|  | zip | 4.1 KiB | - | - |');
     expect(result).not.toContain('Bundle size data unavailable.');
   });
 });

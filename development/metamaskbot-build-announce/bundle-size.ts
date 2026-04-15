@@ -17,6 +17,10 @@ const bundlePartLabels: Record<BundlePart, string> = {
 };
 
 const zipLabel = 'zip';
+const bundleSizeTableHeader = [
+  '| Status | Bundle | Total | Diff | Change |',
+  '|:--:|---|---:|---:|---:|',
+].join('\n');
 
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
 const BUNDLE_SIZE_THRESHOLD = 1_000;
@@ -103,33 +107,43 @@ function getHumanReadableDiffSize(bytes: number): string {
   return bytes > 0 ? `+${size}` : size;
 }
 
+function getHumanReadablePercentageChange(change: number): string {
+  return `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+}
+
 function buildBundlePartRow({
   part,
   currentSize,
   baselineSize,
+  status,
 }: {
   part: BundlePart;
   currentSize: number;
   baselineSize?: number;
+  status?: string;
 }): string {
   return buildSizeRow({
     label: bundlePartLabels[part],
     currentSize,
     baselineSize,
+    status,
   });
 }
 
 function buildZipRow({
   currentSize,
   baselineSize,
+  status,
 }: {
   currentSize: number;
   baselineSize?: number;
+  status?: string;
 }): string {
   return buildSizeRow({
     label: zipLabel,
     currentSize,
     baselineSize,
+    status,
   });
 }
 
@@ -137,21 +151,40 @@ function buildSizeRow({
   label,
   currentSize,
   baselineSize,
+  status,
 }: {
   label: string;
   currentSize: number;
   baselineSize?: number;
+  status?: string;
 }): string {
   const totalSize = getHumanReadableSize(currentSize);
   const diff =
     baselineSize === undefined
-      ? 'n/a'
-      : `${getHumanReadableDiffSize(currentSize - baselineSize)} (${getPercentageChange(
-          baselineSize,
-          currentSize,
-        )}%)`;
+      ? '-'
+      : getHumanReadableDiffSize(currentSize - baselineSize);
+  const change =
+    baselineSize === undefined
+      ? '-'
+      : getHumanReadablePercentageChange(
+          getPercentageChange(baselineSize, currentSize),
+        );
 
-  return `${label}: total ${totalSize}, diff ${diff}`;
+  return `| ${status ?? ''} | ${label} | ${totalSize} | ${diff} | ${change} |`;
+}
+
+function getRowStatus({
+  currentSize,
+  baselineSize,
+}: {
+  currentSize: number;
+  baselineSize?: number;
+}): string | undefined {
+  if (baselineSize === undefined) {
+    return undefined;
+  }
+
+  return currentSize - baselineSize > BUNDLE_SIZE_THRESHOLD ? '🚨' : '✅';
 }
 
 function buildUnavailableComparisonContent(
@@ -170,13 +203,28 @@ function buildUnavailableComparisonContent(
     }),
   );
 
-  return `<p>Comparison unavailable.</p><ul>${currentSizeRows
-    .map((row) => `<li>${row}</li>`)
-    .join('\n')}</ul>`;
+  return [
+    'Comparison unavailable.',
+    '',
+    bundleSizeTableHeader,
+    ...currentSizeRows,
+  ].join('\n');
 }
 
 function buildUnavailableBundleSizeContent(): string {
-  return '<p>Bundle size data unavailable.</p>';
+  return 'Bundle size data unavailable.';
+}
+
+function buildCollapsibleSection(summary: string, body: string): string {
+  return [
+    '<details>',
+    `<summary><strong>${summary}</strong></summary>`,
+    '',
+    body,
+    '',
+    '</details>',
+    '',
+  ].join('\n');
 }
 
 async function fetchOptionalBundleSizeSummary(
@@ -220,7 +268,10 @@ function buildBundleSizeSection({
   mergeBaseCommitHash: string;
 }): string {
   if (!currentSummary) {
-    return `<details><summary>Webpack bundle size diffs</summary>${buildUnavailableBundleSizeContent()}</details>\n\n`;
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      buildUnavailableBundleSizeContent(),
+    );
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
@@ -231,10 +282,10 @@ function buildBundleSizeSection({
   );
 
   if (!baselineSummary) {
-    return `<details><summary>Webpack bundle size diffs</summary>${buildUnavailableComparisonContent(
-      currentSizes,
-      currentZipSize,
-    )}</details>\n\n`;
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      buildUnavailableComparisonContent(currentSizes, currentZipSize),
+    );
   }
 
   const baselineSizes = getBundlePartSizes(baselineSummary);
@@ -248,18 +299,22 @@ function buildBundleSizeSection({
       part,
       currentSize: currentSizes[part],
       baselineSize: baselineSummary[part],
+      status: getRowStatus({
+        currentSize: currentSizes[part],
+        baselineSize: baselineSummary[part],
+      }),
     }),
   );
   sizeDiffRows.push(
     buildZipRow({
       currentSize: currentZipSize,
       baselineSize: baselineSummary.zip,
+      status: getRowStatus({
+        currentSize: currentZipSize,
+        baselineSize: baselineSummary.zip,
+      }),
     }),
   );
-
-  const sizeDiffHiddenContent = `<ul>${sizeDiffRows
-    .map((row) => `<li>${row}</li>`)
-    .join('\n')}</ul>`;
 
   const sizeDiffBackground = diffs.background + diffs.common;
   const sizeDiffUi = diffs.ui + diffs.common;
@@ -269,17 +324,20 @@ function buildBundleSizeSection({
     sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
     sizeDiffUi > BUNDLE_SIZE_THRESHOLD
   ) {
-    sizeDiffWarning = '🚨 Warning! Bundle size has increased!';
+    sizeDiffWarning = '🚨 bundle size increased';
   } else if (
     sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
     sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
   ) {
-    sizeDiffWarning = '🚀 Bundle size reduced!';
+    sizeDiffWarning = '🚀 bundle size reduced';
   }
 
-  const sizeDiffTitle = `Webpack bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`;
+  const sizeDiffTitle = `Bundle Size Diffs${sizeDiffWarning ? ` ${sizeDiffWarning}` : ''}`;
 
-  return `<details><summary>${sizeDiffTitle}</summary>${sizeDiffHiddenContent}</details>\n\n`;
+  return buildCollapsibleSection(
+    sizeDiffTitle,
+    [bundleSizeTableHeader, ...sizeDiffRows].join('\n'),
+  );
 }
 
 /**
