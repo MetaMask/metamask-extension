@@ -220,6 +220,8 @@ function buildCollapsibleSection(summary: string, body: string): string {
     '<details>',
     `<summary><strong>${summary}</strong></summary>`,
     '',
+    '<br>',
+    '',
     body,
     '',
     '</details>',
@@ -324,12 +326,12 @@ function buildBundleSizeSection({
     sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
     sizeDiffUi > BUNDLE_SIZE_THRESHOLD
   ) {
-    sizeDiffWarning = '🚨 bundle size increased';
+    sizeDiffWarning = '[🚨 Warning! Bundle size has increased!]';
   } else if (
     sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
     sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
   ) {
-    sizeDiffWarning = '🚀 bundle size reduced';
+    sizeDiffWarning = '[🚀 Bundle size reduced!]';
   }
 
   const sizeDiffTitle = `Bundle Size Diffs${sizeDiffWarning ? ` ${sizeDiffWarning}` : ''}`;

@@ -118,6 +118,9 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain(
       '<summary><strong>Bundle Size Diffs</strong></summary>',
     );
+    expect(result).toContain(
+      '\n\n<br>\n\n| Status | Bundle | Total | Diff | Change |',
+    );
     expect(result).toContain('| Status | Bundle | Total | Diff | Change |');
     expect(result).toContain('| ✅ | auxiliary pages |');
     expect(result).toContain('| ✅ | content scripts |');
@@ -153,7 +156,7 @@ describe('buildBundleSizeDiffSection', () => {
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain(
-      '<summary><strong>Bundle Size Diffs 🚨 bundle size increased</strong></summary>',
+      '<summary><strong>Bundle Size Diffs [🚨 Warning! Bundle size has increased!]</strong></summary>',
     );
   });
 
