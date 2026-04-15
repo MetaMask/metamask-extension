@@ -57,48 +57,6 @@ function normalizeRelativePath(filePath: string): string {
   return filePath.split(path.sep).join(path.posix.sep);
 }
 
-function getSetUnion<TValue>(...sets: Iterable<TValue>[]): Set<TValue> {
-  const result = new Set<TValue>();
-
-  for (const set of sets) {
-    for (const value of set) {
-      result.add(value);
-    }
-  }
-
-  return result;
-}
-
-function getSetIntersection<TValue>(
-  left: ReadonlySet<TValue>,
-  right: ReadonlySet<TValue>,
-): Set<TValue> {
-  const result = new Set<TValue>();
-
-  for (const value of left) {
-    if (right.has(value)) {
-      result.add(value);
-    }
-  }
-
-  return result;
-}
-
-function getSetDifference<TValue>(
-  left: ReadonlySet<TValue>,
-  right: ReadonlySet<TValue>,
-): Set<TValue> {
-  const result = new Set<TValue>();
-
-  for (const value of left) {
-    if (!right.has(value)) {
-      result.add(value);
-    }
-  }
-
-  return result;
-}
-
 async function getDistFileStats(distDirectory: string): Promise<FileStat[]> {
   const rootDirectory = path.resolve(distDirectory);
   const fileStats: FileStat[] = [];
@@ -257,7 +215,8 @@ function getWebpackSurfaceAssetNamesFromInitialAssets(
     ),
   );
 
-  return getSetUnion(initialAssetNames, asyncAssetNames);
+  // @ts-expect-error Node 24 supports Set.prototype.union, but the repo TS lib config does not type it yet.
+  return new Set(initialAssetNames).union(asyncAssetNames);
 }
 
 function createFileStatsFromAssetNames(
@@ -288,28 +247,24 @@ function partitionSurfaceAssets({
   contentScriptAssets: Set<string>;
   assetSizeMap: ReadonlyMap<string, number>;
 }): BundleSizeArtifact {
-  const commonAssets = getSetDifference(
-    getSetIntersection(backgroundAssets, uiAssets),
-    contentScriptAssets,
-  );
-  const backgroundOnlyAssets = getSetDifference(
-    getSetDifference(backgroundAssets, commonAssets),
-    contentScriptAssets,
-  );
-  const uiOnlyAssets = getSetDifference(
-    getSetDifference(uiAssets, commonAssets),
-    contentScriptAssets,
-  );
-  const auxiliaryPageOnlyAssets = getSetDifference(
-    getSetDifference(
-      getSetDifference(
-        getSetDifference(auxiliaryPageAssets, contentScriptAssets),
-        commonAssets,
-      ),
-      backgroundOnlyAssets,
-    ),
-    uiOnlyAssets,
-  );
+  // @ts-expect-error Node 24 supports Set.prototype.intersection/difference, but the repo TS lib config does not type them yet.
+  const commonAssets = backgroundAssets
+    .intersection(uiAssets)
+    .difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const backgroundOnlyAssets = backgroundAssets
+    .difference(commonAssets)
+    .difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const uiOnlyAssets = uiAssets
+    .difference(commonAssets)
+    .difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const auxiliaryPageOnlyAssets = auxiliaryPageAssets
+    .difference(contentScriptAssets)
+    .difference(commonAssets)
+    .difference(backgroundOnlyAssets)
+    .difference(uiOnlyAssets);
 
   return createBundleSizeArtifact({
     background: createFileStatsFromAssetNames(
