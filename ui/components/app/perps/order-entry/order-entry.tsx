@@ -341,8 +341,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
-        {mode !== 'close' && (
+        {/* New Mode Only: Show Auto Close (TP/SL) Section */}
+        {mode === 'new' && (
           <AutoCloseSection
             enabled={formState.autoCloseEnabled}
             onEnabledChange={handleAutoCloseEnabledChange}

@@ -295,7 +295,7 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
     });
 
-    it('auto-expands auto-close section when TP/SL exists', () => {
+    it('does not show auto-close section when TP/SL exists in modify mode', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -305,9 +305,10 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show TP/SL inputs because existing position has TP/SL
-      expect(screen.getByTestId('tp-price-input')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
+      // Auto-close is hidden in modify mode — existing TP/SL carries over untouched
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
     });
   });
 
@@ -399,6 +400,19 @@ describe('OrderEntry', () => {
         <OrderEntry
           {...defaultProps}
           mode="close"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
+
+    it('hides auto-close section in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
           existingPosition={existingPosition}
         />,
         mockStore,

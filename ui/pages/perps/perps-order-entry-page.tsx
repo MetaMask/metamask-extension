@@ -1292,10 +1292,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
-        <DirectionTabs
-          direction={orderDirection}
-          onDirectionChange={handleDirectionChange}
-        />
+        {orderMode === 'new' && (
+          <DirectionTabs
+            direction={orderDirection}
+            onDirectionChange={handleDirectionChange}
+          />
+        )}
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}
