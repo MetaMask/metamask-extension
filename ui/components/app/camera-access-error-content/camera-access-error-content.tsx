@@ -27,6 +27,172 @@ import {
 
 const DEFAULT_ROOT_PADDING: BoxSpacing = 4;
 
+type TranslateFn = ReturnType<typeof useI18nContext>;
+
+type FirefoxInstructionStep = {
+  id: string;
+  order: number;
+  text: string;
+};
+
+/**
+ * Resolves root test id, title, and body copy for the camera access variant.
+ *
+ * @param variant - Needed vs blocked UI branch.
+ * @param t - i18n `t` from `useI18nContext`.
+ * @returns Root `data-testid` plus localized title and body.
+ */
+function resolveCameraAccessCopy(
+  variant: CameraAccessErrorContentVariant,
+  t: TranslateFn,
+): { rootTestId: string; title: string; body: string } {
+  const isNeeded = variant === CameraAccessErrorContentVariant.Needed;
+  return {
+    rootTestId: isNeeded
+      ? 'qr-camera-access-needed'
+      : 'qr-camera-access-blocked',
+    title: isNeeded
+      ? t('qrCameraAccessNeededTitle')
+      : t('qrCameraAccessBlockedTitle'),
+    body: isNeeded
+      ? t('qrCameraAccessNeededBody')
+      : t('qrCameraAccessBlockedBody'),
+  };
+}
+
+/**
+ * Builds numbered Firefox permission instructions with stable row ids for list keys.
+ *
+ * @param t - i18n `t` from `useI18nContext`.
+ * @param mozExtensionDisplay - Extension origin string shown in Firefox step 2.
+ * @returns Rows for `renderFirefoxCameraInstructions` (`id`, `order`, `text`).
+ */
+function buildFirefoxInstructionSteps(
+  t: TranslateFn,
+  mozExtensionDisplay: string,
+): FirefoxInstructionStep[] {
+  return [
+    {
+      id: 'qr-camera-firefox-step-permissions',
+      order: 1,
+      text: t('qrCameraAccessBlockedFirefoxStep1'),
+    },
+    {
+      id: 'qr-camera-firefox-step-extension-url',
+      order: 2,
+      text: t('qrCameraAccessBlockedFirefoxStep2', [mozExtensionDisplay]),
+    },
+    {
+      id: 'qr-camera-firefox-step-reload',
+      order: 3,
+      text: t('qrCameraAccessBlockedFirefoxStep3'),
+    },
+  ];
+}
+
+/**
+ * Returns the `data-testid` for the primary continue button by variant.
+ *
+ * @param variant - Needed vs blocked UI branch.
+ * @returns Continue button `data-testid` string.
+ */
+function continueButtonTestId(
+  variant: CameraAccessErrorContentVariant,
+): string {
+  return variant === CameraAccessErrorContentVariant.Needed
+    ? 'qr-camera-access-needed-continue'
+    : 'qr-camera-blocked-continue';
+}
+
+/**
+ * Renders the Firefox blocked-state numbered instruction list.
+ *
+ * @param params - List props.
+ * @param params.steps - Instruction rows (`id`, `order`, `text`).
+ */
+function renderFirefoxCameraInstructions(params: {
+  steps: readonly FirefoxInstructionStep[];
+}) {
+  const { steps } = params;
+  return (
+    <Box
+      data-testid="qr-camera-firefox-instructions"
+      flexDirection={BoxFlexDirection.Column}
+      gap={2}
+      marginTop={2}
+      padding={3}
+      backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+      style={{ borderRadius: 8 }}
+    >
+      {steps.map((step) => (
+        <Text
+          key={step.id}
+          variant={TextVariant.BodyMd}
+          textAlign={TextAlign.Left}
+          color={TextColor.TextDefault}
+        >
+          {`${step.order}. ${step.text}`}
+        </Text>
+      ))}
+    </Box>
+  );
+}
+
+/**
+ * Renders the Chromium blocked-state hint callout with videocam icon.
+ *
+ * @param params - Hint props.
+ * @param params.hintText - Localized Chromium blocked-state hint body.
+ */
+function renderChromiumCameraHint(params: { hintText: string }) {
+  const { hintText } = params;
+  return (
+    <Box
+      data-testid="qr-camera-chromium-hint"
+      flexDirection={BoxFlexDirection.Column}
+      marginTop={2}
+      padding={3}
+      backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+      style={{ borderRadius: 8 }}
+    >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        gap={3}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Box
+          data-testid="qr-camera-chromium-hint-videocam"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 8,
+            flexShrink: 0,
+          }}
+        >
+          <Icon
+            name={IconName.Videocam}
+            color={IconColor.IconDefault}
+            size={IconSize.Md}
+          />
+        </Box>
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            variant={TextVariant.BodyMd}
+            textAlign={TextAlign.Left}
+            color={TextColor.TextDefault}
+          >
+            {hintText}
+          </Text>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
 export const CameraAccessErrorContent = (
   props: CameraAccessErrorContentProps,
 ) => {
@@ -42,30 +208,11 @@ export const CameraAccessErrorContent = (
   const isFirefox = isBlocked && props.isFirefox;
   const showChromiumActions = isBlocked && !props.isFirefox;
 
-  const rootTestId =
-    variant === CameraAccessErrorContentVariant.Needed
-      ? 'qr-camera-access-needed'
-      : 'qr-camera-access-blocked';
-
-  const title =
-    variant === CameraAccessErrorContentVariant.Needed
-      ? t('qrCameraAccessNeededTitle')
-      : t('qrCameraAccessBlockedTitle');
-
-  let body: string;
-  if (variant === CameraAccessErrorContentVariant.Needed) {
-    body = t('qrCameraAccessNeededBody');
-  } else {
-    body = t('qrCameraAccessBlockedBody');
-  }
+  const { rootTestId, title, body } = resolveCameraAccessCopy(variant, t);
 
   const firefoxSteps =
-    variant === CameraAccessErrorContentVariant.Blocked && isFirefox
-      ? [
-          t('qrCameraAccessBlockedFirefoxStep1'),
-          t('qrCameraAccessBlockedFirefoxStep2', [props.mozExtensionDisplay]),
-          t('qrCameraAccessBlockedFirefoxStep3'),
-        ]
+    isBlocked && isFirefox
+      ? buildFirefoxInstructionSteps(t, props.mozExtensionDisplay)
       : [];
 
   const chromiumHintText = showChromiumActions
@@ -116,73 +263,12 @@ export const CameraAccessErrorContent = (
           {body}
         </Text>
       </Box>
-      {isBlocked && isFirefox ? (
-        <Box
-          data-testid="qr-camera-firefox-instructions"
-          flexDirection={BoxFlexDirection.Column}
-          gap={2}
-          marginTop={2}
-          padding={3}
-          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
-          style={{ borderRadius: 8 }}
-        >
-          {firefoxSteps.map((step, index) => (
-            <Text
-              key={`firefox-camera-step-${index}`}
-              variant={TextVariant.BodyMd}
-              textAlign={TextAlign.Left}
-              color={TextColor.TextDefault}
-            >
-              {`${index + 1}. ${step}`}
-            </Text>
-          ))}
-        </Box>
-      ) : null}
-      {showChromiumActions ? (
-        <Box
-          data-testid="qr-camera-chromium-hint"
-          flexDirection={BoxFlexDirection.Column}
-          marginTop={2}
-          padding={3}
-          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
-          style={{ borderRadius: 8 }}
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            gap={3}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Box
-              data-testid="qr-camera-chromium-hint-videocam"
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              justifyContent={BoxJustifyContent.Center}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 8,
-                flexShrink: 0,
-              }}
-            >
-              <Icon
-                name={IconName.Videocam}
-                color={IconColor.IconDefault}
-                size={IconSize.Md}
-              />
-            </Box>
-            <Box style={{ flex: 1, minWidth: 0 }}>
-              <Text
-                variant={TextVariant.BodyMd}
-                textAlign={TextAlign.Left}
-                color={TextColor.TextDefault}
-              >
-                {chromiumHintText}
-              </Text>
-            </Box>
-          </Box>
-        </Box>
-      ) : null}
+      {firefoxSteps.length > 0
+        ? renderFirefoxCameraInstructions({ steps: firefoxSteps })
+        : null}
+      {showChromiumActions
+        ? renderChromiumCameraHint({ hintText: chromiumHintText })
+        : null}
       <Box flexDirection={BoxFlexDirection.Column} gap={3} marginTop={4}>
         {showChromiumActions && handleOpenSettings ? (
           <Button
@@ -201,11 +287,7 @@ export const CameraAccessErrorContent = (
           onClick={onContinue}
           isLoading={continueLoading}
           isDisabled={continueLoading}
-          data-testid={
-            variant === CameraAccessErrorContentVariant.Needed
-              ? 'qr-camera-access-needed-continue'
-              : 'qr-camera-blocked-continue'
-          }
+          data-testid={continueButtonTestId(variant)}
           isFullWidth
         >
           {t('continue')}
