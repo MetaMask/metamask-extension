@@ -311,7 +311,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LABELS=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/labels --jq '.[].name')
+          LABELS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --jq '.[].name')
           if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
