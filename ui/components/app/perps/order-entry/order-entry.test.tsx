@@ -104,9 +104,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(
-        screen.getByTestId('order-entry-submit-button'),
-      ).toHaveTextContent('Open Long BRENTOIL');
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open Long BRENTOIL',
+      );
       expect(
         screen.getByTestId('order-entry-submit-button'),
       ).not.toHaveTextContent('xyz:BRENTOIL');
