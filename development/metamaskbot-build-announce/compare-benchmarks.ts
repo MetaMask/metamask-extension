@@ -7,7 +7,7 @@
  * 2. Historical baseline from extension_benchmark_stats — informational delta
  *
  * Usage:
- * yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts \
+ * node development/metamaskbot-build-announce/compare-benchmarks.ts \
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
@@ -35,7 +35,7 @@ import {
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
-import { resolveBaselineFromArtifactName } from './utils';
+import { parseArtifactName, resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
   name: string;
@@ -107,6 +107,11 @@ export function runComparison(
         thresholdConfig,
         baselineMetrics,
       );
+
+      const parsed = parseArtifactName(name);
+      if (parsed) {
+        comparison.source = `${parsed.browser}-${parsed.buildType}`;
+      }
 
       comparisons.push(comparison);
 
@@ -252,8 +257,16 @@ export function buildMetricLines(
   });
 }
 
+function formatName(comparison: BenchmarkEntryComparison): string {
+  const source = comparison.source ? ` [${comparison.source}]` : '';
+  return `${comparison.benchmarkName}${source}`;
+}
+
 /**
  * Prints a human-readable report of the comparison results.
+ *
+ * Output groups entries by severity (FAIL → WARN → PASS) and includes
+ * browser/buildType source labels for disambiguation.
  *
  * @param result - Comparison results.
  * @param result.comparisons
@@ -264,36 +277,70 @@ export function printReport(result: {
   anyFailed: boolean;
 }): void {
   console.log('\n═══════════════════════════════════════');
-  console.log('  Performance Benchmark Comparison');
-  console.log('═══════════════════════════════════════\n');
+  console.log('  Performance Benchmark Quality Gate');
+  console.log('═══════════════════════════════════════');
 
-  for (const comparison of result.comparisons) {
-    const status = comparison.absoluteFailed ? 'FAIL' : 'PASS';
-    console.log(`\n${status}  ${comparison.benchmarkName}\n`);
+  // Pre-compute metric lines to avoid duplicate work
+  const withLines = result.comparisons.map((c) => ({
+    comparison: c,
+    lines: buildMetricLines(c),
+  }));
 
-    const lines = buildMetricLines(comparison);
+  const failed = withLines.filter((w) => w.comparison.absoluteFailed);
+  const warned = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      (w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) ||
+        w.lines.some((l) => l.hasIssue)),
+  );
+  const passed = withLines.filter(
+    (w) =>
+      !w.comparison.absoluteFailed &&
+      !w.comparison.absoluteViolations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ) &&
+      !w.lines.some((l) => l.hasIssue),
+  );
 
-    if (lines.length === 0) {
-      console.log('    (no historical baseline data)');
-    } else {
-      const issueLines = lines.filter((line) => line.hasIssue);
-      if (issueLines.length === 0) {
-        console.log(`${COMPARISON_SEVERITY.Pass.icon} [Show logs]`);
-      } else {
-        for (const line of issueLines) {
-          const details = line.details ? ` | ${line.details}` : '';
-          console.log(`${line.icon} ${line.metric}${details}`);
-        }
-      }
+  // Show failed entries with details
+  for (const { comparison, lines } of failed) {
+    console.log(`\nFAIL  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
     }
   }
 
-  const failCount = result.comparisons.filter((c) => c.absoluteFailed).length;
-  const warnCount = result.comparisons.filter(
-    (c) =>
-      !c.absoluteFailed &&
-      c.absoluteViolations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
-  ).length;
+  // Show warned entries with details
+  for (const { comparison, lines } of warned) {
+    console.log(`\nWARN  ${formatName(comparison)}`);
+    for (const line of lines.filter((l) => l.hasIssue)) {
+      const details = line.details ? ` | ${line.details}` : '';
+      console.log(`      ${line.icon} ${line.metric}${details}`);
+    }
+  }
+
+  // Show passing entries grouped by benchmark name
+  if (passed.length > 0) {
+    const grouped = new Map<string, string[]>();
+    for (const { comparison } of passed) {
+      const list = grouped.get(comparison.benchmarkName) ?? [];
+      list.push(comparison.source ?? '');
+      grouped.set(comparison.benchmarkName, list);
+    }
+
+    console.log(`\nPASS  ${passed.length} benchmarks within thresholds`);
+    for (const [name, sources] of grouped) {
+      const filtered = sources.filter(Boolean);
+      const suffix = filtered.length > 0 ? `: ${filtered.join(', ')}` : '';
+      console.log(`      ${name}${suffix}`);
+    }
+  }
+
+  const failCount = failed.length;
+  const warnCount = warned.length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
@@ -324,8 +371,8 @@ async function main(): Promise<void> {
 
   const benchmarks = await loadCurrentBenchmarks(values.current);
   if (benchmarks.length === 0) {
-    console.warn('No benchmark JSON files found in', values.current);
-    process.exit(0);
+    console.error('No benchmark JSON files found in', values.current);
+    process.exit(1);
   }
 
   const baseline = await loadBaseline();

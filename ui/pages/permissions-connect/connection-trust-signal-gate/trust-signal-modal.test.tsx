@@ -8,6 +8,7 @@ const MOCK_I18N: Record<string, string> = {
   trustSignalBlockTitle: messages.trustSignalBlockTitle.message,
   trustSignalBlockDescription: messages.trustSignalBlockDescription.message,
   trustSignalContinueAnyway: messages.trustSignalContinueAnyway.message,
+  cancel: messages.cancel.message,
 };
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -46,5 +47,32 @@ describe('TrustSignalModal', () => {
 
     fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
     expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders cancel button when onCancel is provided', () => {
+    const onCancel = jest.fn();
+    const { getByTestId } = render(
+      <TrustSignalModal {...defaultProps} onCancel={onCancel} />,
+    );
+
+    expect(getByTestId('trust-signal-block-modal-cancel')).toBeInTheDocument();
+  });
+
+  it('calls onCancel when cancel button is clicked', () => {
+    const onCancel = jest.fn();
+    const { getByTestId } = render(
+      <TrustSignalModal {...defaultProps} onCancel={onCancel} />,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render cancel button when onCancel is not provided', () => {
+    const { queryByTestId } = render(<TrustSignalModal {...defaultProps} />);
+
+    expect(
+      queryByTestId('trust-signal-block-modal-cancel'),
+    ).not.toBeInTheDocument();
   });
 });

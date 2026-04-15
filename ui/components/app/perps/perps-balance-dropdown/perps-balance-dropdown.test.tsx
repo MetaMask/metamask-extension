@@ -30,10 +30,9 @@ jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLiveAccount: (...args: unknown[]) => mockUsePerpsLiveAccount(...args),
 }));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({
-    isEligible: true,
-  }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
 const mockStore = configureStore({
@@ -209,5 +208,22 @@ describe('PerpsBalanceDropdown', () => {
 
     expect(screen.getByText(/\+\$375\.00/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal and does not call onAddFunds when user is not eligible', () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <PerpsBalanceDropdown onAddFunds={onAddFunds} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-add-funds'));
+
+      expect(onAddFunds).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
   });
 });

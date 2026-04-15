@@ -36,10 +36,14 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
 
 export type CancelOrderModalProps = {
@@ -65,15 +69,18 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setIsSubmitting(false);
       setError(null);
+      setIsGeoBlockModalOpen(false);
     }
   }, [isOpen]);
 
@@ -112,6 +119,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   }, [order.orderType, isBuy, t]);
 
   const handleCancel = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
     try {
@@ -152,6 +163,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
+    isEligible,
     order.orderId,
     order.symbol,
     order.orderType,
@@ -162,216 +174,229 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   ]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="perps-cancel-order-modal"
-    >
-      <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{modalTitle}</ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {/* Token Logo + Name */}
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-            >
-              <PerpsTokenLogo symbol={order.symbol} size={AvatarTokenSize.Lg} />
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                {displayName}
-              </Text>
-            </Box>
-
-            {/* Order Details Rows */}
-            <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-              {/* Date */}
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        data-testid="perps-cancel-order-modal"
+      >
+        <ModalOverlay />
+        <ModalContent size={ModalContentSize.Sm}>
+          <ModalHeader onClose={onClose}>{modalTitle}</ModalHeader>
+          <ModalBody>
+            <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+              {/* Token Logo + Name */}
               <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsOrderDate')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {formattedDate}
-                </Text>
-              </Box>
-
-              {/* Price */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsLimitPrice')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {formattedPrice}
-                </Text>
-              </Box>
-
-              {/* Size */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsSize')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {order.size} {displayName}
-                </Text>
-              </Box>
-
-              {/* Original Size */}
-              {order.originalSize && order.originalSize !== order.size && (
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsOrderOriginalSize')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {order.originalSize} {displayName}
-                  </Text>
-                </Box>
-              )}
-
-              {/* Order Value */}
-              {orderValueUsd && (
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsOrderValue')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {orderValueUsd}
-                  </Text>
-                </Box>
-              )}
-
-              {/* Reduce Only */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsReduceOnly')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {order.reduceOnly ? t('yes') : t('no')}
-                </Text>
-              </Box>
-
-              {/* Status */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsOrderStatus')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                </Text>
-              </Box>
-            </Box>
-
-            {/* Error */}
-            {error && (
-              <Box
-                backgroundColor={BoxBackgroundColor.ErrorMuted}
-                className="rounded-lg"
-                padding={3}
-                flexDirection={BoxFlexDirection.Row}
+                flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Center}
                 gap={2}
               >
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Sm}
-                  color={IconColor.ErrorDefault}
+                <PerpsTokenLogo
+                  symbol={order.symbol}
+                  size={AvatarTokenSize.Lg}
                 />
                 <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
                 >
-                  {error}
+                  {displayName}
                 </Text>
               </Box>
-            )}
 
-            {/* Cancel Button */}
-            <Button
-              variant={ButtonVariant.Tertiary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              isDanger
-              isDisabled={isSubmitting}
-              isLoading={isSubmitting}
-              onClick={handleCancel}
-              data-testid="perps-cancel-order-button"
-            >
-              {t('perpsCancelOrder')}
-            </Button>
-          </Box>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+              {/* Order Details Rows */}
+              <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+                {/* Date */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsOrderDate')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {formattedDate}
+                  </Text>
+                </Box>
+
+                {/* Price */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsLimitPrice')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {formattedPrice}
+                  </Text>
+                </Box>
+
+                {/* Size */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsSize')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {order.size} {displayName}
+                  </Text>
+                </Box>
+
+                {/* Original Size */}
+                {order.originalSize && order.originalSize !== order.size && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    alignItems={BoxAlignItems.Center}
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsOrderOriginalSize')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {order.originalSize} {displayName}
+                    </Text>
+                  </Box>
+                )}
+
+                {/* Order Value */}
+                {orderValueUsd && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    alignItems={BoxAlignItems.Center}
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsOrderValue')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {orderValueUsd}
+                    </Text>
+                  </Box>
+                )}
+
+                {/* Reduce Only */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsReduceOnly')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {order.reduceOnly ? t('yes') : t('no')}
+                  </Text>
+                </Box>
+
+                {/* Status */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsOrderStatus')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {order.status.charAt(0).toUpperCase() +
+                      order.status.slice(1)}
+                  </Text>
+                </Box>
+              </Box>
+
+              {/* Error */}
+              {error && (
+                <Box
+                  backgroundColor={BoxBackgroundColor.ErrorMuted}
+                  className="rounded-lg"
+                  padding={3}
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={2}
+                >
+                  <Icon
+                    name={IconName.Warning}
+                    size={IconSize.Sm}
+                    color={IconColor.ErrorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                  >
+                    {error}
+                  </Text>
+                </Box>
+              )}
+
+              {/* Cancel Button */}
+              <Button
+                variant={ButtonVariant.Tertiary}
+                size={ButtonSize.Lg}
+                isFullWidth
+                isDanger
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+                onClick={handleCancel}
+                data-testid="perps-cancel-order-button"
+              >
+                {t('perpsCancelOrder')}
+              </Button>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
+    </>
   );
 };
 

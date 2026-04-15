@@ -49,7 +49,7 @@ import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-fla
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
-import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -85,7 +85,6 @@ const PerpsWithdrawPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { isEligible } = usePerpsEligibility();
   const { account } = usePerpsLiveAccount();
   const { track } = usePerpsEventTracking();
 
@@ -183,8 +182,7 @@ const PerpsWithdrawPage: React.FC = () => {
     isValidPerpsWithdrawAmount(amount.trim().replace(/,/gu, '.')) &&
     Number.isFinite(amountNum) &&
     amountNum >= minWithdrawNum &&
-    amountNum <= availableNum &&
-    isEligible;
+    amountNum <= availableNum;
 
   const handleHeroAmountChange = useCallback((value: string) => {
     const next = value.replace(/,/gu, '.');
@@ -454,7 +452,7 @@ const PerpsWithdrawPage: React.FC = () => {
             <PerpsFiatHeroAmountInput
               value={amount}
               onChange={handleHeroAmountChange}
-              disabled={!isEligible || isSubmitting}
+              disabled={isSubmitting}
               hasAlert={amountHasAlert}
             />
 
@@ -467,12 +465,10 @@ const PerpsWithdrawPage: React.FC = () => {
               {formatCurrency(availableNum, 'USD')}
             </Text>
 
-            {isEligible ? (
-              <PerpsWithdrawPercentageButtons
-                disabled={isSubmitting}
-                onPercentageClick={handlePercentageClick}
-              />
-            ) : null}
+            <PerpsWithdrawPercentageButtons
+              disabled={isSubmitting}
+              onPercentageClick={handlePercentageClick}
+            />
           </Box>
 
           <Box
@@ -496,15 +492,6 @@ const PerpsWithdrawPage: React.FC = () => {
                 {submitError}
               </Text>
             ) : null}
-
-            {isEligible ? null : (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsGeoBlockedTooltip')}
-              </Text>
-            )}
           </Box>
         </Box>
       </Content>

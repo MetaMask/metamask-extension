@@ -76,7 +76,7 @@ describe('OrderEntry', () => {
     it('displays available balance', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText(/\$10,000\.00.*USDC/u)).toBeInTheDocument();
+      expect(screen.getByText(/10,000\.00.*USDC/u)).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {

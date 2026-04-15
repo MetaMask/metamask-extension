@@ -129,13 +129,50 @@ You should not manually fire duplicate exposure events for experiments that use
 ## Business Event Instrumentation
 
 For page views, clicks, submits, conversions, and any other business events,
-attach active experiment assignments with `active_ab_tests`.
+use `active_ab_tests`.
 
 Shape:
 
 ```typescript
 type ActiveABTest = Array<{ key: string; value: string }>;
 ```
+
+### Shared MetaMetrics auto-enrichment
+
+The extension auto-injects `active_ab_tests` for allowlisted `trackEvent`
+payloads sent through `MetaMetricsContext.trackEvent` or direct
+`MetaMetricsController:trackEvent` callers.
+
+Define these mappings in background-safe shared code so the background
+MetaMetrics controller can import them:
+
+```typescript
+export type ABTestAnalyticsMapping = {
+  flagKey: string;
+  validVariants: readonly string[];
+  eventNames: readonly string[];
+};
+
+export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [
+  {
+    flagKey: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+    validVariants: ['control', 'treatment'],
+    eventNames: ['Unified SwapBridge Page Viewed'],
+  },
+];
+```
+
+When an event name is allowlisted and the current assignment is active, the
+controller injects:
+
+```typescript
+active_ab_tests: [{ key: flagKey, value: variantName }];
+```
+
+### Manual fallback for bypass paths
+
+If an event does not flow through the shared MetaMetrics event path, attach
+`active_ab_tests` manually.
 
 Single test example:
 
@@ -205,6 +242,8 @@ trackEvent({
 ```
 
 Do not emit per-test nested properties under `ab_tests`.
+Do not create analytics mappings in `ui/` modules that background code cannot
+import.
 
 ---
 
@@ -273,7 +312,7 @@ Recommended pattern:
 - [ ] Remote flag created with threshold-array JSON value
 - [ ] `useABTest` added in the feature component
 - [ ] `Experiment Viewed` fires for active assignments
-- [ ] Business events include `active_ab_tests`
+- [ ] Business events use allowlisted auto-enrichment or manual `active_ab_tests`
 - [ ] E2E feature flag registry updated with production default
 - [ ] Local override path documented for QA if needed
 
@@ -304,6 +343,8 @@ falls back to `control` and does not emit an exposure event.
 
 - `ui/hooks/useABTest.ts`
 - `ui/hooks/useABTest.test.ts`
-- `shared/constants/metametrics.ts`
+- `shared/lib/ab-testing/resolve-ab-test-assignment.ts`
+- `shared/lib/ab-testing/ab-test-analytics.ts`
+- `app/scripts/controllers/metametrics-controller.ts`
 - `ui/selectors/remote-feature-flags.ts`
 - `test/e2e/feature-flags/feature-flag-registry.ts`
