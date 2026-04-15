@@ -165,10 +165,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Should show calculated margin ($1,000 entered)
-      expect(screen.getByText('$1,000.00')).toBeInTheDocument();
-      // Should show calculated fees (0.05% of 3000 position value at 3x leverage = $1.50)
-      expect(screen.getByText('$1.50')).toBeInTheDocument();
+      // Controller-backed perps formatter strips trailing .00 for this range
+      expect(screen.getByText('$1,000')).toBeInTheDocument();
+      // Controller-backed perps formatter strips trailing zero here as well
+      expect(screen.getByText('$1.5')).toBeInTheDocument();
     });
   });
 

@@ -1848,12 +1848,12 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
         "performance.now": true,
-        "process": true,
         "setInterval": true,
         "setTimeout": true
       },

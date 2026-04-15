@@ -1,5 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
+  formatPerpsFiat,
+  formatPnl,
+  PRICE_RANGES_UNIVERSAL,
+} from '@metamask/perps-controller';
+import {
   Box,
   BoxBackgroundColor,
   BoxFlexDirection,
@@ -61,11 +66,6 @@ type FormatNumber = (
     minimumFractionDigits?: number;
     maximumFractionDigits?: number;
   },
-) => string;
-
-type FormatCurrencyWithMinThreshold = (
-  value: number,
-  currency: string,
 ) => string;
 
 type FormatPercentWithMinThreshold = (value: number) => string | undefined;
@@ -188,12 +188,10 @@ const getCloseFailureToastConfig = ({
   error,
   isPartialClose,
   t,
-  formatCurrencyWithMinThreshold,
 }: {
   error: unknown;
   isPartialClose: boolean;
   t: CloseToastTranslation;
-  formatCurrencyWithMinThreshold: FormatCurrencyWithMinThreshold;
 }): { errorMessage: string; toast: CloseToastConfig } => {
   const isOrderSizeMinError =
     error instanceof Error && error.message === 'ORDER_SIZE_MIN';
@@ -202,7 +200,9 @@ const getCloseFailureToastConfig = ({
 
   if (isOrderSizeMinError) {
     errorMessage = t('perpsClosePartialMinNotional', [
-      formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+      formatPerpsFiat(PERPS_MIN_MARKET_ORDER_USD, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      }),
     ]);
   } else if (error instanceof Error) {
     errorMessage = error.message;
@@ -232,6 +232,7 @@ export type ClosePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
@@ -239,13 +240,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
-  const {
-    formatCurrencyWithMinThreshold,
-    formatNumber,
-    formatPercentWithMinThreshold,
-  } = useFormatters();
+  const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
 
   const [closePercent, setClosePercent] = useState(100);
@@ -368,7 +366,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         error: err,
         isPartialClose,
         t,
-        formatCurrencyWithMinThreshold,
       });
       setError(errorMessage);
       replacePerpsToastByKey(toast);
@@ -385,7 +382,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     isPartialClose,
     onClose,
     t,
-    formatCurrencyWithMinThreshold,
     formatPercentWithMinThreshold,
     replacePerpsToastByKey,
   ]);
@@ -413,6 +409,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               onClosePercentChange={handlePercentChange}
               asset={displayName}
               currentPrice={currentPrice}
+              sizeDecimals={sizeDecimals}
             />
 
             {isPartialCloseBelowMinNotional ? (
@@ -434,10 +431,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   color={TextColor.WarningDefault}
                 >
                   {t('perpsClosePartialMinNotional', [
-                    formatCurrencyWithMinThreshold(
-                      PERPS_MIN_MARKET_ORDER_USD,
-                      'USD',
-                    ),
+                    formatPerpsFiat(PERPS_MIN_MARKET_ORDER_USD, {
+                      ranges: PRICE_RANGES_UNIVERSAL,
+                    }),
                   ])}
                 </Text>
               </Box>
@@ -466,7 +462,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     fontWeight={FontWeight.Medium}
                     textAlign={TextAlign.Right}
                   >
-                    {formatCurrencyWithMinThreshold(margin, 'USD')}
+                    {formatPerpsFiat(margin, {
+                      ranges: PRICE_RANGES_UNIVERSAL,
+                    })}
                   </Text>
                   <Text
                     variant={TextVariant.BodyXs}
@@ -484,12 +482,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                         }
                         asChild
                       >
-                        <span>
-                          {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                            Math.abs(unrealizedPnl),
-                            'USD',
-                          )}`}
-                        </span>
+                        <span>{formatPnl(unrealizedPnl)}</span>
                       </Text>,
                     ])}
                   </Text>
@@ -512,7 +505,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  -{formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
+                  -
+                  {formatPerpsFiat(estimatedFees, {
+                    ranges: PRICE_RANGES_UNIVERSAL,
+                  })}
                 </Text>
               </Box>
 
@@ -532,10 +528,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {formatCurrencyWithMinThreshold(
-                    Math.max(youWillReceive, 0),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.max(youWillReceive, 0), {
+                    ranges: PRICE_RANGES_UNIVERSAL,
+                  })}
                 </Text>
               </Box>
             </Box>

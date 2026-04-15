@@ -16,7 +16,11 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_UNIVERSAL,
+  type Position as PerpsPosition,
+} from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -84,7 +88,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSavingChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatNumber } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
 
@@ -139,7 +143,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatCurrencyWithMinThreshold(anchorLiquidationPrice, 'USD')}
+            {formatPerpsFiat(anchorLiquidationPrice, {
+              ranges: PRICE_RANGES_UNIVERSAL,
+            })}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
@@ -149,7 +155,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
           >
-            {formatCurrencyWithMinThreshold(estimatedLiquidationPrice, 'USD')}
+            {formatPerpsFiat(estimatedLiquidationPrice, {
+              ranges: PRICE_RANGES_UNIVERSAL,
+            })}
           </Text>
         </Box>
       );
@@ -160,17 +168,15 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
       >
-        {formatCurrencyWithMinThreshold(
-          estimatedLiquidationPrice ?? anchorLiquidationPrice,
-          'USD',
-        )}
+        {formatPerpsFiat(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
+          ranges: PRICE_RANGES_UNIVERSAL,
+        })}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
     showLiquidationComparison,
-    formatCurrencyWithMinThreshold,
   ]);
 
   const formatAmount = useCallback(
@@ -356,7 +362,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
         >
-          {`${formatCurrencyWithMinThreshold(maxAmount, 'USD')} USDC`}
+          {`${formatPerpsFiat(maxAmount, {
+            ranges: PRICE_RANGES_UNIVERSAL,
+          })} USDC`}
         </Text>
       </Box>
 

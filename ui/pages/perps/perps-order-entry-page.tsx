@@ -24,7 +24,9 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type {
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
   OrderType,
   OrderParams,
   PriceUpdate,
@@ -184,7 +186,6 @@ function formStateToOrderParams(
  */
 const PerpsOrderEntryPage: React.FC = () => {
   const t = useI18nContext();
-  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
@@ -448,10 +449,12 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const displayPrice = useMemo(() => {
     if (chartCurrentPrice > 0) {
-      return formatCurrencyWithMinThreshold(chartCurrentPrice, 'USD');
+      return formatPerpsFiat(chartCurrentPrice, {
+        ranges: PRICE_RANGES_MINIMAL_VIEW,
+      });
     }
     return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market?.price, formatCurrencyWithMinThreshold]);
+  }, [chartCurrentPrice, market?.price]);
 
   const displayChange =
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
@@ -933,6 +936,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
           initialLeverage={initialLeverage}
+          sizeDecimals={market.szDecimals}
         />
       </Box>
 

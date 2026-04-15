@@ -31,7 +31,17 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { Position, PriceUpdate, Order } from '@metamask/perps-controller';
+import {
+  formatFundingRate,
+  formatPerpsFiat,
+  formatPnl,
+  formatPositionSize,
+  PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
+  type Position,
+  type PriceUpdate,
+  type Order,
+} from '@metamask/perps-controller';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
@@ -121,6 +131,20 @@ function calculateFundingCountdown(): string {
   const mm = String(minutesRemaining).padStart(2, '0');
   const ss = String(secondsRemaining).padStart(2, '0');
   return `${hh}:${mm}:${ss}`;
+}
+
+function parsePerpsDisplayPrice(
+  value: string | number | null | undefined,
+): number {
+  return Number.parseFloat(String(value ?? '').replace(/,/gu, ''));
+}
+
+function formatPerpsFiatMinimal(value: string | number): string {
+  return formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW });
+}
+
+function formatPerpsFiatUniversal(value: string | number): string {
+  return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL });
 }
 
 /**
@@ -242,11 +266,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
-  const {
-    formatCurrencyWithMinThreshold,
-    formatNumber,
-    formatPercentWithMinThreshold,
-  } = useFormatters();
+  const { formatPercentWithMinThreshold } = useFormatters();
   const fundingCountdown = useFundingCountdown();
   const { replacePerpsToastByKey } = usePerpsToast();
 
@@ -467,10 +487,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Falls back to market.price string during initial candle load.
   const displayPrice = useMemo(() => {
     if (chartCurrentPrice > 0) {
-      return formatCurrencyWithMinThreshold(chartCurrentPrice, 'USD');
+      return formatPerpsFiatMinimal(chartCurrentPrice);
     }
     return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market, formatCurrencyWithMinThreshold]);
+  }, [chartCurrentPrice, market]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange =
@@ -496,7 +516,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (position) {
       // Take Profit line (green/lime, dashed)
       if (position.takeProfitPrice) {
-        const tpPrice = parseFloat(position.takeProfitPrice.replace(/,/gu, ''));
+        const tpPrice = parsePerpsDisplayPrice(position.takeProfitPrice);
         if (!isNaN(tpPrice) && tpPrice > 0) {
           lines.push({
             price: tpPrice,
@@ -509,7 +529,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       // Entry price line (gray, dashed)
       if (position.entryPrice) {
-        const entryPrice = parseFloat(position.entryPrice.replace(/,/gu, ''));
+        const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
         if (!isNaN(entryPrice) && entryPrice > 0) {
           lines.push({
             price: entryPrice,
@@ -522,7 +542,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       // Stop Loss line (red, dashed)
       if (position.stopLossPrice) {
-        const slPrice = parseFloat(position.stopLossPrice.replace(/,/gu, ''));
+        const slPrice = parsePerpsDisplayPrice(position.stopLossPrice);
         if (!isNaN(slPrice) && slPrice > 0) {
           lines.push({
             price: slPrice,
@@ -1034,11 +1054,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
-                    {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
-                    {formatCurrencyWithMinThreshold(
-                      Math.abs(parseFloat(position.unrealizedPnl)),
-                      'USD',
-                    )}
+                    {formatPnl(position.unrealizedPnl)}
                   </Text>
                 </Box>
 
@@ -1092,12 +1108,14 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
-                      ? formatCurrencyWithMinThreshold(
+                      ? formatPerpsFiatUniversal(
                           Math.abs(parseFloat(position.size)) *
-                            parseFloat(position.entryPrice.replace(/,/gu, '')),
-                          'USD',
+                            parsePerpsDisplayPrice(position.entryPrice),
                         )
-                      : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                      : `${formatPositionSize(
+                          Math.abs(parseFloat(position.size)),
+                          market.szDecimals,
+                        )} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
 
@@ -1121,10 +1139,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {formatCurrencyWithMinThreshold(
-                      parseFloat(position.marginUsed),
-                      'USD',
-                    )}
+                    {formatPerpsFiatUniversal(position.marginUsed)}
                   </Text>
                   <Popover
                     referenceElement={marginMenuRef.current}
@@ -1193,12 +1208,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       fontWeight={FontWeight.Medium}
                     >
                       {position.takeProfitPrice
-                        ? formatCurrencyWithMinThreshold(
-                            parseFloat(
-                              position.takeProfitPrice.replace(/,/gu, ''),
-                            ),
-                            'USD',
-                          )
+                        ? formatPerpsFiatUniversal(position.takeProfitPrice)
                         : '-'}
                     </Text>
                     <Text
@@ -1212,12 +1222,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       fontWeight={FontWeight.Medium}
                     >
                       {position.stopLossPrice
-                        ? formatCurrencyWithMinThreshold(
-                            parseFloat(
-                              position.stopLossPrice.replace(/,/gu, ''),
-                            ),
-                            'USD',
-                          )
+                        ? formatPerpsFiatUniversal(position.stopLossPrice)
                         : '-'}
                     </Text>
                   </Box>
@@ -1284,10 +1289,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
-                    {formatCurrencyWithMinThreshold(
-                      parseFloat(position.entryPrice.replace(/,/gu, '')),
-                      'USD',
-                    )}
+                    {formatPerpsFiatUniversal(position.entryPrice)}
                   </Text>
                 </Box>
 
@@ -1309,12 +1311,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                   >
                     {position.liquidationPrice
-                      ? formatCurrencyWithMinThreshold(
-                          parseFloat(
-                            position.liquidationPrice.replace(/,/gu, ''),
-                          ),
-                          'USD',
-                        )
+                      ? formatPerpsFiatUniversal(position.liquidationPrice)
                       : '-'}
                   </Text>
                 </Box>
@@ -1336,14 +1333,8 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
-                    {formatCurrencyWithMinThreshold(
-                      parseFloat(
-                        String(position.cumulativeFunding.sinceOpen).replace(
-                          /,/gu,
-                          '',
-                        ),
-                      ),
-                      'USD',
+                    {formatPerpsFiatUniversal(
+                      position.cumulativeFunding.sinceOpen,
                     )}
                   </Text>
                 </Box>
@@ -1482,12 +1473,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
-                    {market.fundingRate >= 0 ? '+' : ''}
-                    {formatNumber(market.fundingRate * 100, {
-                      minimumFractionDigits: 4,
-                      maximumFractionDigits: 4,
-                    })}
-                    %
+                    {formatFundingRate(market.fundingRate)}
                   </Text>
                   <Text
                     variant={TextVariant.BodySm}
@@ -1524,10 +1510,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               </Box>
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {livePrice?.markPrice
-                  ? formatCurrencyWithMinThreshold(
-                      parseFloat(livePrice.markPrice),
-                      'USD',
-                    )
+                  ? formatPerpsFiatUniversal(livePrice.markPrice)
                   : '—'}
               </Text>
             </Box>
@@ -1737,6 +1720,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={handleCloseReverseModal}
           position={position}
           currentPrice={currentPrice}
+          sizeDecimals={market.szDecimals}
         />
       )}
 
@@ -1758,6 +1742,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+          sizeDecimals={market.szDecimals}
         />
       )}
 

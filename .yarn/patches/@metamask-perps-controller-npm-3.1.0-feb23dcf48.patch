@@ -1,0 +1,44 @@
+diff --git a/dist/providers/MYXProvider.cjs b/dist/providers/MYXProvider.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..dab6c889464eef2e024e0c5746e73ba367180cff
+--- /dev/null
++++ b/dist/providers/MYXProvider.cjs
+@@ -0,0 +1,9 @@
++"use strict";
++
++class MYXProvider {
++  constructor() {
++    throw new Error('MYXProvider is not available in this published package');
++  }
++}
++
++exports.MYXProvider = MYXProvider;
+diff --git a/dist/providers/MYXProvider.d.cts b/dist/providers/MYXProvider.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..a30eb8e16ccb48bbfde9662c77377ee1451c2f5e
+--- /dev/null
++++ b/dist/providers/MYXProvider.d.cts
+@@ -0,0 +1,3 @@
++export declare class MYXProvider {
++  constructor(..._args: unknown[]);
++}
+diff --git a/dist/providers/MYXProvider.d.mts b/dist/providers/MYXProvider.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..a30eb8e16ccb48bbfde9662c77377ee1451c2f5e
+--- /dev/null
++++ b/dist/providers/MYXProvider.d.mts
+@@ -0,0 +1,3 @@
++export declare class MYXProvider {
++  constructor(..._args: unknown[]);
++}
+diff --git a/dist/providers/MYXProvider.mjs b/dist/providers/MYXProvider.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..912d0be9a17d981614f65d3d310ccd6c71230f72
+--- /dev/null
++++ b/dist/providers/MYXProvider.mjs
+@@ -0,0 +1,5 @@
++export class MYXProvider {
++  constructor() {
++    throw new Error('MYXProvider is not available in this published package');
++  }
++}

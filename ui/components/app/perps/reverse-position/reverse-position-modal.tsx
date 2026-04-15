@@ -9,7 +9,10 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  formatPositionSize,
+  type Position as PerpsPosition,
+} from '@metamask/perps-controller';
 import {
   Modal,
   ModalContent,
@@ -20,7 +23,6 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
@@ -32,6 +34,7 @@ export type ReversePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 /**
@@ -61,15 +64,16 @@ function toFlipPositionPayload(pos: Position): Position {
  * @param options0.onClose
  * @param options0.position
  * @param options0.currentPrice
+ * @param options0.sizeDecimals
  */
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
   currentPrice: _currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
-  const { formatTokenQuantity } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +84,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = formatTokenQuantity(sizeNum, position.symbol);
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
 
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),

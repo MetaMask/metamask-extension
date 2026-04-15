@@ -6,6 +6,7 @@
  */
 
 import { createProjectLogger } from '@metamask/utils';
+import browser from 'webextension-polyfill';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -21,6 +22,12 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
   InvalidateCacheParams,
+  FiatRangeConfig,
+} from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  formatPercentage,
+  PRICE_RANGES_UNIVERSAL,
 } from '@metamask/perps-controller';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
@@ -109,25 +116,18 @@ function createMarketDataFormatters(): MarketDataFormatters {
     maximumFractionDigits: 1,
   });
 
-  const fiatFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  const percentFormatter = new Intl.NumberFormat('en-US', {
-    style: 'percent',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
   return {
     formatVolume: (value: number) => compactFormatter.format(value),
-    formatPerpsFiat: (value: number) => fiatFormatter.format(value),
-    formatPercentage: (percent: number) =>
-      percentFormatter.format(percent / 100),
-    priceRangesUniversal: [],
+    formatPerpsFiat: (
+      value: number,
+      options?: { ranges?: unknown[] },
+    ): string =>
+      formatPerpsFiat(value, {
+        ...options,
+        ranges: options?.ranges as FiatRangeConfig[] | undefined,
+      }),
+    formatPercentage: (percent: number) => formatPercentage(percent),
+    priceRangesUniversal: PRICE_RANGES_UNIVERSAL,
   };
 }
 
@@ -138,6 +138,49 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
     },
     invalidateAll: () => {
       // TODO: Wire to React Query or custom cache when ready
+    },
+  };
+}
+
+function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
+  const memoryCache = new Map<string, string>();
+  const storageLocal = browser?.storage?.local;
+
+  return {
+    getItemSync: (key: string) => memoryCache.get(key) ?? null,
+    getItem: async (key: string) => {
+      if (memoryCache.has(key)) {
+        return memoryCache.get(key) ?? null;
+      }
+
+      if (!storageLocal) {
+        return null;
+      }
+
+      const result = await storageLocal.get(key);
+      if (!(key in result)) {
+        return null;
+      }
+
+      const value = result[key];
+      if (typeof value !== 'string') {
+        return null;
+      }
+
+      memoryCache.set(key, value);
+      return value;
+    },
+    setItem: async (key: string, value: string) => {
+      memoryCache.set(key, value);
+      if (storageLocal) {
+        await storageLocal.set({ [key]: value });
+      }
+    },
+    removeItem: async (key: string) => {
+      memoryCache.delete(key);
+      if (storageLocal) {
+        await storageLocal.remove(key);
+      }
     },
   };
 }
@@ -158,6 +201,7 @@ export function createPerpsInfrastructure(): PerpsPlatformDependencies {
     featureFlags: createFeatureFlags(),
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
+    diskCache: createDiskCache(),
     rewards: {
       getPerpsDiscountForAccount: async (
         _caipAccountId: `${string}:${string}:${string}`,

@@ -56,6 +56,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.sizeDecimals
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -75,6 +76,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
 
@@ -104,6 +106,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onSubmit,
     orderType,
     initialLeverage,
+    sizeDecimals,
   });
 
   const isLong = formState.direction === 'long';

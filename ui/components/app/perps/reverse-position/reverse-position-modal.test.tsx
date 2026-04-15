@@ -45,6 +45,7 @@ const defaultProps = {
   onClose: jest.fn(),
   position: longPosition,
   currentPrice: 2900,
+  sizeDecimals: 3,
 };
 
 describe('ReversePositionModal', () => {
@@ -143,7 +144,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('0.500 BTC')).toBeInTheDocument();
+      expect(screen.getByText('0.5 BTC')).toBeInTheDocument();
     });
   });
 

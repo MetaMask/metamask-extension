@@ -13,6 +13,7 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.featureFlags).toBeDefined();
     expect(infrastructure.marketDataFormatters).toBeDefined();
     expect(infrastructure.cacheInvalidator).toBeDefined();
+    expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
   });
 
@@ -44,8 +45,15 @@ describe('createPerpsInfrastructure', () => {
     it('formats percentage', () => {
       const { marketDataFormatters } = createPerpsInfrastructure();
       const formatted = marketDataFormatters.formatPercentage(2.5);
-      expect(formatted).toContain('2.50');
+      expect(formatted).toContain('+2.50');
       expect(formatted).toContain('%');
+    });
+
+    it('exposes shared universal price ranges', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure();
+      expect(marketDataFormatters.priceRangesUniversal.length).toBeGreaterThan(
+        0,
+      );
     });
   });
 
@@ -74,6 +82,22 @@ describe('createPerpsInfrastructure', () => {
       expect(() =>
         infrastructure.cacheInvalidator.invalidateAll(),
       ).not.toThrow();
+    });
+  });
+
+  describe('diskCache', () => {
+    it('supports sync and async cache access', async () => {
+      const { diskCache } = createPerpsInfrastructure();
+
+      expect(diskCache.getItemSync('missing-key')).toBeNull();
+
+      await diskCache.setItem('perps-test-key', 'value');
+
+      expect(diskCache.getItemSync('perps-test-key')).toBe('value');
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
+
+      await diskCache.removeItem('perps-test-key');
+      expect(diskCache.getItemSync('perps-test-key')).toBeNull();
     });
   });
 });

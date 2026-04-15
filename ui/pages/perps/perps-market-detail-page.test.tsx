@@ -469,6 +469,47 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeGreaterThanOrEqual(1);
     });
 
+    it('formats numeric position price fields without throwing', () => {
+      const store = mockStore(createMockState(true));
+      const originalPosition = mockPositions[0];
+      const originalEntryPrice = originalPosition.entryPrice;
+      const originalLiquidationPrice = originalPosition.liquidationPrice;
+      const originalTakeProfitPrice = originalPosition.takeProfitPrice;
+      const originalStopLossPrice = originalPosition.stopLossPrice;
+      const originalCumulativeFunding = {
+        ...originalPosition.cumulativeFunding,
+      };
+
+      Object.assign(originalPosition, {
+        entryPrice: 2850 as unknown as string,
+        liquidationPrice: 2400 as unknown as string,
+        takeProfitPrice: 3200 as unknown as string,
+        stopLossPrice: 2600 as unknown as string,
+        cumulativeFunding: {
+          ...originalPosition.cumulativeFunding,
+          sinceOpen: 8.3 as unknown as string,
+        },
+      });
+
+      try {
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(screen.getByText('$2,850')).toBeInTheDocument();
+        expect(screen.getAllByText('$2,400').length).toBeGreaterThan(0);
+        expect(screen.getByText('$3,200')).toBeInTheDocument();
+        expect(screen.getByText('$2,600')).toBeInTheDocument();
+        expect(screen.getByText('$8.3')).toBeInTheDocument();
+      } finally {
+        Object.assign(originalPosition, {
+          entryPrice: originalEntryPrice,
+          liquidationPrice: originalLiquidationPrice,
+          takeProfitPrice: originalTakeProfitPrice,
+          stopLossPrice: originalStopLossPrice,
+          cumulativeFunding: originalCumulativeFunding,
+        });
+      }
+    });
+
     it('displays stats section', () => {
       const store = mockStore(createMockState(true));
 

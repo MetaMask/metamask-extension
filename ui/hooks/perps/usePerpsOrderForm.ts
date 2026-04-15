@@ -1,4 +1,9 @@
-import type { OrderType } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  formatPositionSize,
+  PRICE_RANGES_UNIVERSAL,
+  type OrderType,
+} from '@metamask/perps-controller';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 
 import {
@@ -11,7 +16,6 @@ import type {
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
-import { useFormatters } from '../useFormatters';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -34,6 +38,8 @@ export type UsePerpsOrderFormOptions = {
   orderType?: OrderType;
   /** Initial leverage for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Market size decimals for position-size formatting parity with controller helpers */
+  sizeDecimals?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -89,6 +95,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
  * @param options.initialLeverage
+ * @param options.sizeDecimals - Market size decimals for controller-based size formatting
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -102,10 +109,8 @@ export function usePerpsOrderForm({
   onSubmit,
   orderType = 'market',
   initialLeverage,
+  sizeDecimals,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
-
   // Close percentage state (for 'close' mode, defaults to 100%)
   const [closePercent, setClosePercent] = useState<number>(100);
 
@@ -228,7 +233,7 @@ export function usePerpsOrderForm({
         ...(initialLeverage !== undefined && { leverage: initialLeverage }),
       });
     }
-  }, [mode, asset, initialDirection, initialLeverage]);
+  }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -247,12 +252,16 @@ export function usePerpsOrderForm({
       const estimatedFees = closeValueUsd * 0.0005;
 
       return {
-        positionSize: formatTokenQuantity(closeAmount, asset),
+        positionSize: `${formatPositionSize(closeAmount, sizeDecimals)} ${asset}`,
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
         liquidationPriceRaw: null,
-        orderValue: formatCurrencyWithMinThreshold(closeValueUsd, 'USD'),
-        estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
+        orderValue: formatPerpsFiat(closeValueUsd, {
+          ranges: PRICE_RANGES_UNIVERSAL,
+        }),
+        estimatedFees: formatPerpsFiat(estimatedFees, {
+          ranges: PRICE_RANGES_UNIVERSAL,
+        }),
       };
     }
 
@@ -293,12 +302,20 @@ export function usePerpsOrderForm({
     const estimatedFees = positionValue * 0.0005;
 
     return {
-      positionSize: formatTokenQuantity(positionSize, asset),
-      marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
+      positionSize: `${formatPositionSize(positionSize, sizeDecimals)} ${asset}`,
+      marginRequired: formatPerpsFiat(marginRequired, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      }),
+      liquidationPrice: formatPerpsFiat(liquidationPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      }),
       liquidationPriceRaw: liquidationPrice,
-      orderValue: formatCurrencyWithMinThreshold(positionValue, 'USD'),
-      estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
+      orderValue: formatPerpsFiat(positionValue, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      }),
+      estimatedFees: formatPerpsFiat(estimatedFees, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      }),
     };
   }, [
     formState.amount,
@@ -311,8 +328,7 @@ export function usePerpsOrderForm({
     existingPosition,
     closePercent,
     asset,
-    formatCurrencyWithMinThreshold,
-    formatTokenQuantity,
+    sizeDecimals,
   ]);
 
   // Form state update handlers

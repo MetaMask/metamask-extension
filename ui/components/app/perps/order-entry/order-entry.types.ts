@@ -125,6 +125,8 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Market size decimals for position-size formatting parity with controller helpers */
+  sizeDecimals?: number;
 };
 
 /**
@@ -226,4 +228,6 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
+  /** Market size decimals for position-size formatting parity with controller helpers */
+  sizeDecimals?: number;
 };
