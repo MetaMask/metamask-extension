@@ -114,6 +114,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             value={leverage}
             onChange={handleSliderChange}
             onChangeCommitted={handleSliderChangeCommitted}
+            markInterval={5}
           />
         </Box>
         <Box className="shrink-0 w-20">
@@ -141,6 +142,19 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             }
           />
         </Box>
+      </Box>
+
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        className="px-3 justify-between"
+        style={{ marginRight: 'calc(80px + 8px)' }}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {minLeverage}x
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {maxLeverage}x
+        </Text>
       </Box>
     </Box>
   );
