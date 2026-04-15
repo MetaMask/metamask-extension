@@ -151,8 +151,7 @@ describe('App Header', () => {
 
         await waitFor(() => {
           // When user doesn't consent, non-personal params (utm_source) are preserved
-          // URL constructor normalizes the URL (adds / before ?)
-          const expectedUrl = new URL(SUPPORT_LINK).toString();
+          const expectedUrl = SUPPORT_LINK;
           expect(openWindow).toHaveBeenCalledWith(expectedUrl);
         });
       });
