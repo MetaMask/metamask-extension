@@ -830,8 +830,6 @@ class FixtureBuilderV2 {
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
     chainIds?: number[];
-    // When provided, replaces the auto-generated EVM scopes entirely
-    // (e.g. for Solana or other non-EVM permissions).
     scopes?: Record<string, Json>;
   } = {}): this {
     const MAX_DAPPS = 3;
