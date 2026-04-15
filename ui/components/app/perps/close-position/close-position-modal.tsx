@@ -32,23 +32,25 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
-import {
-  PERPS_MARKET_ORDER_FEE_RATE,
-  PERPS_MIN_MARKET_ORDER_USD,
-} from '../constants';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
   usePerpsToast,
   type PerpsToastKeyConfig,
 } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
 
 type ClosePositionParams = {
@@ -244,7 +246,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
+  const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -271,6 +275,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setClosePercent(100);
       setIsSubmitting(false);
       setError(null);
+      setIsGeoBlockModalOpen(false);
     }
   }, [isOpen]);
 
@@ -287,6 +292,16 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [positionSize, closePercent],
   );
 
+  const closeNotionalUsd = useMemo(
+    () => closeSize * currentPrice,
+    [closeSize, currentPrice],
+  );
+
+  const { feeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
     return (totalMargin * closePercent) / 100;
@@ -298,14 +313,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, [position.unrealizedPnl, closePercent]);
 
   const estimatedFees = useMemo(
-    () => closeSize * currentPrice * PERPS_MARKET_ORDER_FEE_RATE,
-    [closeSize, currentPrice],
-  );
-
-  /** HyperLiquid requires ≥ $10 notional for partial closes; full close omits size and skips this. */
-  const closeNotionalUsd = useMemo(
-    () => closeSize * currentPrice,
-    [closeSize, currentPrice],
+    () => closeNotionalUsd * (feeRate ?? 0),
+    [closeNotionalUsd, feeRate],
   );
 
   const isPriceValid = useMemo(
@@ -321,9 +330,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
+  // Pre-round margin and fees to cents so the same values flow into both
+  // the display rows and the "You'll receive" arithmetic, avoiding any
+  // divergence between Math.round and Intl.NumberFormat rounding modes.
+  const roundedMargin = useMemo(() => Math.round(margin * 100) / 100, [margin]);
+
+  const roundedFees = useMemo(
+    () => Math.round(estimatedFees * 100) / 100,
+    [estimatedFees],
+  );
+
+  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
+  // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
-    () => margin + unrealizedPnl - estimatedFees,
-    [margin, unrealizedPnl, estimatedFees],
+    () => roundedMargin - roundedFees,
+    [roundedMargin, roundedFees],
   );
 
   const isSubmitDisabled =
@@ -335,6 +356,10 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 
   const handleClose = useCallback(async () => {
     if (isSubmitDisabled) {
+      return;
+    }
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
       return;
     }
 
@@ -434,6 +459,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     }
   }, [
     isSubmitDisabled,
+    isEligible,
     replacePerpsToastByKey,
     isPartialClose,
     position,
@@ -442,6 +468,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     t,
     formatNumber,
     currentPrice,
+    closeNotionalUsd,
+    estimatedFees,
     track,
     closePercent,
     onClose,
@@ -455,184 +483,193 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, []);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="perps-close-position-modal"
-    >
-      <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {/* Close Amount Section (input + slider) */}
-            <CloseAmountSection
-              positionSize={position.size}
-              closePercent={closePercent}
-              onClosePercentChange={handlePercentChange}
-              asset={displayName}
-              currentPrice={currentPrice}
-            />
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        data-testid="perps-close-position-modal"
+      >
+        <ModalOverlay />
+        <ModalContent size={ModalContentSize.Sm}>
+          <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
+          <ModalBody>
+            <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+              {/* Close Amount Section (input + slider) */}
+              <CloseAmountSection
+                positionSize={position.size}
+                closePercent={closePercent}
+                onClosePercentChange={handlePercentChange}
+                asset={displayName}
+                currentPrice={currentPrice}
+              />
 
-            {isPartialCloseBelowMinNotional ? (
-              <Box
-                backgroundColor={BoxBackgroundColor.WarningMuted}
-                className="rounded-lg"
-                padding={3}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Sm}
-                  color={IconColor.WarningDefault}
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.WarningDefault}
-                >
-                  {t('perpsClosePartialMinNotional', [
-                    formatCurrencyWithMinThreshold(
-                      PERPS_MIN_MARKET_ORDER_USD,
-                      'USD',
-                    ),
-                  ])}
-                </Text>
-              </Box>
-            ) : null}
-
-            {/* Summary rows */}
-            <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-              {/* Margin */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Start}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsMargin')}
-                </Text>
+              {isPartialCloseBelowMinNotional ? (
                 <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.End}
+                  backgroundColor={BoxBackgroundColor.WarningMuted}
+                  className="rounded-lg"
+                  padding={3}
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={2}
+                >
+                  <Icon
+                    name={IconName.Warning}
+                    size={IconSize.Sm}
+                    color={IconColor.WarningDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.WarningDefault}
+                  >
+                    {t('perpsClosePartialMinNotional', [
+                      formatCurrencyWithMinThreshold(
+                        PERPS_MIN_MARKET_ORDER_USD,
+                        'USD',
+                      ),
+                    ])}
+                  </Text>
+                </Box>
+              ) : null}
+
+              {/* Summary rows */}
+              <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                {/* Margin */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Start}
                 >
                   <Text
                     variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    textAlign={TextAlign.Right}
+                    color={TextColor.TextAlternative}
                   >
-                    {formatCurrencyWithMinThreshold(margin, 'USD')}
+                    {t('perpsMargin')}
+                  </Text>
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                      textAlign={TextAlign.Right}
+                      data-testid="perps-close-summary-margin-value"
+                    >
+                      {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                      textAlign={TextAlign.Right}
+                    >
+                      {t('perpsIncludesPnl', [
+                        <Text
+                          key="perps-close-margin-pnl"
+                          variant={TextVariant.BodyXs}
+                          color={
+                            unrealizedPnl >= 0
+                              ? TextColor.SuccessDefault
+                              : TextColor.ErrorDefault
+                          }
+                          asChild
+                        >
+                          <span>
+                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
+                              Math.abs(unrealizedPnl),
+                              'USD',
+                            )}`}
+                          </span>
+                        </Text>,
+                      ])}
+                    </Text>
+                  </Box>
+                </Box>
+
+                {/* Fees */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsFees')}
                   </Text>
                   <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                    textAlign={TextAlign.Right}
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    data-testid="perps-close-summary-fees-value"
                   >
-                    {t('perpsIncludesPnl', [
-                      <Text
-                        key="perps-close-margin-pnl"
-                        variant={TextVariant.BodyXs}
-                        color={
-                          unrealizedPnl >= 0
-                            ? TextColor.SuccessDefault
-                            : TextColor.ErrorDefault
-                        }
-                        asChild
-                      >
-                        <span>
-                          {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                            Math.abs(unrealizedPnl),
-                            'USD',
-                          )}`}
-                        </span>
-                      </Text>,
-                    ])}
+                    -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
+                  </Text>
+                </Box>
+
+                {/* You'll receive */}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsYouWillReceive')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    data-testid="perps-close-summary-receive-value"
+                  >
+                    {formatCurrencyWithMinThreshold(
+                      Math.max(youWillReceive, 0),
+                      'USD',
+                    )}
                   </Text>
                 </Box>
               </Box>
 
-              {/* Fees */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
+              {/* Error */}
+              {error && (
+                <Box
+                  backgroundColor={BoxBackgroundColor.ErrorMuted}
+                  className="rounded-lg"
+                  padding={3}
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={2}
                 >
-                  {t('perpsFees')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  -{formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
-                </Text>
-              </Box>
-
-              {/* You'll receive */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsYouWillReceive')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {formatCurrencyWithMinThreshold(
-                    Math.max(youWillReceive, 0),
-                    'USD',
-                  )}
-                </Text>
-              </Box>
+                  <Icon
+                    name={IconName.Warning}
+                    size={IconSize.Sm}
+                    color={IconColor.ErrorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                  >
+                    {error}
+                  </Text>
+                </Box>
+              )}
             </Box>
-
-            {/* Error */}
-            {error && (
-              <Box
-                backgroundColor={BoxBackgroundColor.ErrorMuted}
-                className="rounded-lg"
-                padding={3}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Sm}
-                  color={IconColor.ErrorDefault}
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                >
-                  {error}
-                </Text>
-              </Box>
-            )}
-          </Box>
-        </ModalBody>
-        <ModalFooter
-          onSubmit={handleClose}
-          submitButtonProps={{
-            'data-testid': 'perps-close-position-modal-submit',
-            children: t('perpsClosePosition'),
-            disabled: isSubmitDisabled,
-          }}
-        />
-      </ModalContent>
-    </Modal>
+          </ModalBody>
+          <ModalFooter
+            onSubmit={handleClose}
+            submitButtonProps={{
+              'data-testid': 'perps-close-position-modal-submit',
+              children: t('perpsClosePosition'),
+              disabled: isSubmitDisabled,
+            }}
+          />
+        </ModalContent>
+      </Modal>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
+    </>
   );
 };

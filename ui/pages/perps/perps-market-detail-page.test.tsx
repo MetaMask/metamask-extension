@@ -202,9 +202,17 @@ jest.mock('../../components/app/perps/perps-toast', () => {
 const mockUsePerpsMarketFills = jest
   .fn()
   .mockReturnValue({ fills: [], isInitialLoading: false });
+const mockTriggerDeposit = jest.fn().mockResolvedValue({
+  transactionId: 'perps-deposit-tx',
+});
+const mockLiveAccount = jest.fn(() => ({
+  account: mockAccountState,
+  isInitialLoading: false,
+}));
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
   usePerpsEventTracking: () => ({ track: jest.fn() }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
@@ -212,6 +220,15 @@ jest.mock('../../hooks/perps', () => ({
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
 }));
+jest.mock(
+  '../../components/app/perps/hooks/usePerpsDepositConfirmation',
+  () => ({
+    usePerpsDepositConfirmation: () => ({
+      trigger: mockTriggerDeposit,
+      isLoading: false,
+    }),
+  }),
+);
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -223,10 +240,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     orders: mockOrders,
     isInitialLoading: false,
   }),
-  usePerpsLiveAccount: () => ({
-    account: mockAccountState,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => ({
     markets: [...mockCryptoMarkets, ...mockHip3Markets],
     isInitialLoading: false,
@@ -238,10 +252,10 @@ jest.mock('../../hooks/perps/stream', () => ({
       candles: [
         {
           time: 1768188300000,
-          open: '2500.0',
-          high: '2520.0',
-          low: '2490.0',
-          close: '2510.0',
+          open: '2880.0',
+          high: '2920.0',
+          low: '2870.0',
+          close: '2900.0',
           volume: '100.0',
         },
       ],
@@ -321,7 +335,13 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
+    mockTriggerDeposit.mockClear();
+    mockLiveAccount.mockReturnValue({
+      account: mockAccountState,
+      isInitialLoading: false,
+    });
     mockUsePerpsMarketFills.mockReturnValue({
       fills: [],
       isInitialLoading: false,
@@ -441,6 +461,30 @@ describe('PerpsMarketDetailPage', () => {
           {
             symbol: 'ETH',
             percentChange24h: '+9.99%',
+          },
+        ]);
+      });
+
+      await waitFor(() => {
+        expect(getByTestId('perps-market-detail-change')).toHaveTextContent(
+          '+9.99%',
+        );
+      });
+    });
+
+    it('appends % to live percentChange24h when the stream omits it', async () => {
+      const store = mockStore(createMockState(true));
+      const { getByTestId } = await renderPage(store);
+
+      await waitFor(() => {
+        expect(mockPriceSubscribe).toHaveBeenCalled();
+      });
+
+      act(() => {
+        latestPriceSubscriber?.([
+          {
+            symbol: 'ETH',
+            percentChange24h: '+9.99',
           },
         ]);
       });
@@ -607,7 +651,9 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
-      expect(screen.getByTestId('perps-modify-menu')).toBeInTheDocument();
+      const modifyMenu = screen.getByTestId('perps-modify-menu');
+      expect(modifyMenu).toBeInTheDocument();
+      expect(modifyMenu.parentElement).toBe(document.body);
       expect(
         screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
@@ -634,7 +680,9 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-margin-card'));
-      expect(screen.getByTestId('perps-margin-menu')).toBeInTheDocument();
+      const marginMenu = screen.getByTestId('perps-margin-menu');
+      expect(marginMenu).toBeInTheDocument();
+      expect(marginMenu.parentElement).toBe(document.body);
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
@@ -729,6 +777,72 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('updates the selected candle period from the More menu', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+
+      expect(
+        screen.getByTestId('perps-candle-period-modal'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandleIntervals.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodMinutes.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodHours.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCandlePeriodDays.message),
+      ).toBeInTheDocument();
+
+      const morePeriodOption = screen.getByTestId(
+        'perps-candle-period-modal-30m',
+      );
+      expect(morePeriodOption).toBeInTheDocument();
+
+      fireEvent.click(morePeriodOption);
+
+      expect(screen.getByText('30min')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not mark 1min as selected after selecting 1M from the modal', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
+
+      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('closes the candle period modal when the close button is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByLabelText(messages.close.message));
+
+      expect(
+        screen.queryByTestId('perps-candle-period-modal'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays Close Long button text for long position', async () => {
       const store = mockStore(createMockState(true));
 
@@ -802,11 +916,12 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, TP input is initialized to position's existing TP (3200.00)
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3,087.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3,087.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -818,41 +933,42 @@ describe('PerpsMarketDetailPage', () => {
       // After expand, SL input is initialized to position's existing SL (2600.00)
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
-      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      // ETH is long, entry=2850, leverage=3.
+      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2,612.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2,612.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44,700.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44,700.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
-      // BTC is short (size=-0.5), entry = 45,000
+      // BTC is short (size=-0.5), entry=45,000, leverage=15
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
       await renderPage(store);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45,300.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45,300.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
@@ -937,6 +1053,49 @@ describe('PerpsMarketDetailPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('shows an add funds CTA instead of Long/Short when balance is zero', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-trade-cta-buttons'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-add-funds-cta-button'),
+      ).toHaveTextContent(messages.addFunds.message);
+    });
+
+    it('starts deposit flow from add funds CTA when balance is zero', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-add-funds-cta-button'));
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
     it('navigates to order entry when Long button is clicked', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
       const store = mockStore(createMockState(true));
@@ -978,6 +1137,20 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.queryByText(messages.perpsPosition.message),
       ).not.toBeInTheDocument();
+    });
+
+    it('keeps trade buttons disabled while account state is loading', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: mockAccountState,
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-long-cta-button')).toBeDisabled();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeDisabled();
     });
   });
 
@@ -1130,6 +1303,87 @@ describe('PerpsMarketDetailPage', () => {
         expect(
           screen.queryByTestId('perps-cancel-order-modal'),
         ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal when clicking Long while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const longButton = screen.getByTestId('perps-long-cta-button');
+      fireEvent.click(longButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Short while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const shortButton = screen.getByTestId('perps-short-cta-button');
+      fireEvent.click(shortButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
+      fireEvent.click(addFundsButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
+    it('shows geo-block modal when clicking Close while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const closeButton = screen.getByTestId('perps-close-cta-button');
+      fireEvent.click(closeButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+    });
+
+    it('shows geo-block modal when clicking Modify while not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+      const store = mockStore(createMockState(true));
+      await renderPage(store);
+
+      const modifyButton = screen.getByTestId('perps-modify-cta-button');
+      fireEvent.click(modifyButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
     });
   });

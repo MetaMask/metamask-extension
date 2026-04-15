@@ -20,7 +20,7 @@ import {
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
 import type { AccountTreeControllerMessenger as AccountTreeControllerMessengerType } from '@metamask/account-tree-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 

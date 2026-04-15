@@ -9,7 +9,7 @@ import {
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { previousValueComparator } from '../lib/util';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   RemoteFeatureFlagControllerInitMessenger,
   RemoteFeatureFlagControllerMessenger,
@@ -62,7 +62,7 @@ export function getConfigForRemoteFeatureFlagRequest() {
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
+export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
   RemoteFeatureFlagController,
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger

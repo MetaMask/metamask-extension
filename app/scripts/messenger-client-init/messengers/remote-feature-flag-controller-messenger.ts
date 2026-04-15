@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../controllers/metametrics-controller';
+import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,

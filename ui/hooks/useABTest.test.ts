@@ -2,13 +2,26 @@ import React from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 
-import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../contexts/metametrics';
 import type { ABTestExposureMetadata } from './useABTest';
 import { clearABTestExposureTrackingForTest, useABTest } from './useABTest';
+
+jest.mock('../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual('react');
+
+  return {
+    MetaMetricsContext: ReactActual.createContext({
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    }),
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
