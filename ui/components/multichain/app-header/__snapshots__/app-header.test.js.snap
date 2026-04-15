@@ -142,7 +142,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               class=""
             >
               <div
-                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg h-6"
+                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg h-6 hover:bg-muted-hover"
                 data-testid="network-group-with-copy-icon"
               >
                 <div
