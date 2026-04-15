@@ -107,10 +107,10 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
-  // Enables approval flow
+  // Tracking for pending approval + rendering the status page
   #shouldShowStatusPage: boolean;
 
-  // Actually renders the page
+  // Rendering the status page only
   #shouldRenderStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {

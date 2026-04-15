@@ -23,6 +23,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 
@@ -47,7 +48,8 @@ export type ConfirmationNavigationOptions = {
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const skipStatusPage = useSelector(getExtensionSkipTransactionStatusPage);
+  const skipStatusPage =
+    useSelector(getExtensionSkipTransactionStatusPage) && isInteractiveUI();
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;

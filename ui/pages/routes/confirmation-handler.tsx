@@ -71,7 +71,8 @@ export const ConfirmationHandler = () => {
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
-  const skipStatusPage = useSelector(getExtensionSkipTransactionStatusPage);
+  const skipStatusPage =
+    useSelector(getExtensionSkipTransactionStatusPage) && !isNotification;
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
