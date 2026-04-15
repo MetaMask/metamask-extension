@@ -144,13 +144,15 @@ export function selectShowConnectAccountGroupToast(
 }
 
 /**
- * Retrieves user preference to see the "New SRP Added" toast
+ * Retrieves the wallet number for the "New SRP Added" toast, or false if hidden.
  *
  * @param state - Redux state object.
- * @returns Boolean preference value
+ * @returns The new wallet number to display, or false if the toast should be hidden.
  */
-export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
-  return Boolean(state.appState.showNewSrpAddedToast);
+export function selectNewSrpAdded(
+  state: Pick<State, 'appState'>,
+): number | false {
+  return state.appState.showNewSrpAddedToast || false;
 }
 
 /**

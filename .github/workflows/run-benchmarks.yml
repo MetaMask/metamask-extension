@@ -11,6 +11,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  pull-requests: read
 
 jobs:
   benchmarks:
@@ -246,6 +247,84 @@ jobs:
           path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
           retention-days: 7
           if-no-files-found: ignore
+
+  # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
+  # Rollout across 4 phases:
+  # - Phase 2: continue-on-error: true (non-blocking, informational).
+  # - Phase 3: continue-on-error: false (red X in checks, not required).
+  # - Phase 4: continue-on-error: false + added to branch protection required checks.
+  quality-gate:
+    name: quality-gate
+    continue-on-error: true # Phase 2 — non-blocking, informational
+    needs:
+      - benchmarks
+      - benchmarks-page-load
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name != 'merge_group'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout quality-gate sources
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .nvmrc
+            tsconfig.json
+            development/metamaskbot-build-announce
+            shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/thresholds.ts
+            test/e2e/benchmarks/utils/statistics.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install tsx
+        run: npm install --no-save tsx
+        shell: bash
+
+      - name: Download all benchmark artifacts
+        id: download-benchmarks
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      # skip-benchmark-gate label: convenience escape hatch for Phase 2–3.
+      # Remove when graduating to Phase 4 (required check) — at that point,
+      # use admin bypass or update thresholds instead.
+      - name: Check for skip label
+        id: skip-check
+        continue-on-error: true
+        if: >-
+          ${{
+            steps.download-benchmarks.outcome == 'success' &&
+            github.event_name == 'pull_request'
+          }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LABELS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --jq '.[].name')
+          if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Run quality gate
+        if: >-
+          ${{
+            steps.download-benchmarks.outcome == 'success' &&
+            steps.skip-check.outputs.skip != 'true'
+          }}
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
