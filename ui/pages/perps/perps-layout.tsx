@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PerpsToastProvider } from '../../components/app/perps';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
-import { usePerpsReconnectOnFocus } from '../../hooks/perps/stream/usePerpsReconnectOnFocus';
 import { usePerpsStreamManager } from '../../hooks/perps/stream/usePerpsStreamManager';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
+import { submitRequestToBackground } from '../../store/background-connection';
+
+const MIN_HIDDEN_DURATION_MS = 30_000;
 
 /**
  * Layout wrapper for all Perps pages.
@@ -19,10 +21,40 @@ import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycl
  */
 export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
-  usePerpsReconnectOnFocus();
   usePerpsLifecycleBreadcrumbs();
 
   const { streamManager } = usePerpsStreamManager();
+
+  // Nudge background perps WebSocket health when the tab becomes visible after
+  // being hidden for a while. Offline→online is handled in PerpsStreamBridge.
+  useEffect(() => {
+    let hiddenAt: number | null = null;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        hiddenAt = Date.now();
+        return;
+      }
+
+      const wasHiddenAt = hiddenAt;
+      hiddenAt = null;
+
+      if (
+        wasHiddenAt !== null &&
+        Date.now() - wasHiddenAt < MIN_HIDDEN_DURATION_MS
+      ) {
+        return;
+      }
+
+      submitRequestToBackground('perpsCheckHealth').catch(() => {
+        // fire-and-forget
+      });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   // Keep all PerpsStreamManager channels connected for the lifetime of this
   // layout, even when no leaf UI subscribers exist. Without this, navigating

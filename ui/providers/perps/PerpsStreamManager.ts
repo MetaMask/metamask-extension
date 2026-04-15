@@ -105,7 +105,6 @@ class PerpsStreamManager {
   private initializedAddress: string | null = null;
 
   // Timestamp of the most recent background stream update (any channel).
-  // Used by usePerpsReconnectOnFocus to detect zombie WebSocket connections.
   private _lastStreamUpdateAt = 0;
 
   // Deduplicates concurrent initForAddress calls
