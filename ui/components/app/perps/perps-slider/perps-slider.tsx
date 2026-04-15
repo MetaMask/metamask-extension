@@ -159,7 +159,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   const hasFooter = infoText || onEdit;
 
   const marks = React.useMemo(() => {
-    if (!markInterval) {
+    if (!markInterval || markInterval * step <= 0) {
       return undefined;
     }
     const result: { value: number }[] = [];
