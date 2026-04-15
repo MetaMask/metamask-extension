@@ -5,9 +5,9 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import InfoTab from '.';
+import AboutInfo from './about-info';
 
-describe('InfoTab', () => {
+describe('AboutInfo', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {
     let getByRole: (role: string, options?: { name: string }) => HTMLElement;
@@ -15,7 +15,7 @@ describe('InfoTab', () => {
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {
-      const renderResult = renderWithProvider(<InfoTab />, mockStore);
+      const renderResult = renderWithProvider(<AboutInfo />, mockStore);
       getByRole = renderResult.getByRole;
       getByText = renderResult.getByText;
       getByTestId = renderResult.getByTestId;
