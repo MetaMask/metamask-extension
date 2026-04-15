@@ -724,7 +724,7 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
-    it('navigates to order entry in close mode when Reduce exposure is clicked', async () => {
+    it('opens Close position modal when Reduce exposure is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -732,12 +732,9 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
       fireEvent.click(screen.getByTestId('perps-modify-menu-reduce-exposure'));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('/perps/trade/ETH'),
-      );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('mode=close'),
-      );
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
     });
 
     it('opens Reverse position modal when Reverse position is clicked', async () => {

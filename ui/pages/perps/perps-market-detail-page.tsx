@@ -639,7 +639,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
-    (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
+    (direction: 'long' | 'short', mode: 'new' | 'modify') => {
       if (!decodedSymbol) {
         return '#';
       }
@@ -783,9 +783,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+    setIsCloseModalOpen(true);
+  }, [position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
