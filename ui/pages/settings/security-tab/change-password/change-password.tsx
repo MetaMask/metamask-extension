@@ -25,12 +25,15 @@ import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PasskeyCeremonyExtensionAdapter } from '../../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import {
+  startPasskeyRegistration,
+  startPasskeyAuthentication,
+} from '../../../../../shared/lib/passkey';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
   checkIsSeedlessPasswordOutdated,
-  completePasskeyRegistration,
+  protectVaultKeyWithPasskey,
   forceUpdateMetamaskState,
   generatePasskeyAuthenticationOptions,
   generatePasskeyRegistrationOptions,
@@ -143,9 +146,8 @@ const ChangePassword = () => {
         let authenticationResponse = passkeyAuthenticationResponse;
         if (!authenticationResponse) {
           const authOptions = await generatePasskeyAuthenticationOptions();
-          const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
           authenticationResponse =
-            await passkeyAdapter.startAuthentication(authOptions);
+            await startPasskeyAuthentication(authOptions);
         }
 
         // change password with passkey verification
@@ -177,10 +179,9 @@ const ChangePassword = () => {
 
         // register passkey
         const regOptions = await generatePasskeyRegistrationOptions();
-        const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
         const registrationResponse =
-          await passkeyAdapter.startRegistration(regOptions);
-        await completePasskeyRegistration(registrationResponse);
+          await startPasskeyRegistration(regOptions);
+        await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState(dispatch);
       } else {
         await dispatch(changePassword(newPassword, currentPassword));
@@ -266,8 +267,7 @@ const ChangePassword = () => {
       setIsAwaitingPasskeyVerification(true);
       try {
         const authOptions = await generatePasskeyAuthenticationOptions();
-        const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
-        const response = await passkeyAdapter.startAuthentication(authOptions);
+        const response = await startPasskeyAuthentication(authOptions);
         if (!cancelled) {
           initialPasskeyGateDoneRef.current = true;
           setPasskeyAuthenticationResponse(response);

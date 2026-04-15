@@ -21,9 +21,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { PasskeyCeremonyExtensionAdapter } from '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
 import {
-  completePasskeyRegistration,
+  protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
 } from '../../../store/actions';
 
@@ -54,10 +54,8 @@ export default function Biometrics() {
     setIsEnrolling(true);
     try {
       const options = await generatePasskeyRegistrationOptions();
-      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
-      const registrationResponse =
-        await passkeyAdapter.startRegistration(options);
-      await completePasskeyRegistration(registrationResponse);
+      const registrationResponse = await startPasskeyRegistration(options);
+      await protectVaultKeyWithPasskey(registrationResponse);
     } catch {
       // User cancelled or authenticator unavailable — continue onboarding
     } finally {

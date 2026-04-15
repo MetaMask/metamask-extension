@@ -34,23 +34,18 @@ jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
-jest.mock(
-  '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
-  () => ({
-    PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
-      startAuthentication: jest.fn().mockResolvedValue({
-        id: 'cred',
-        rawId: 'cred',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AQ',
-        },
-      }),
-    })),
+jest.mock('../../../shared/lib/passkey', () => ({
+  startPasskeyAuthentication: jest.fn().mockResolvedValue({
+    id: 'cred',
+    rawId: 'cred',
+    type: 'public-key',
+    response: {
+      clientDataJSON: 'e30',
+      authenticatorData: 'AA',
+      signature: 'AQ',
+    },
   }),
-);
+}));
 
 const mockTryUnlockMetamask = jest.fn(() => {
   return async () => {

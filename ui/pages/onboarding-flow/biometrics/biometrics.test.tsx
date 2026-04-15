@@ -10,27 +10,22 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import {
-  completePasskeyRegistration,
+  protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
 } from '../../../store/actions';
 import Biometrics from './biometrics';
 
-jest.mock(
-  '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
-  () => ({
-    PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
-      startRegistration: jest.fn().mockResolvedValue({
-        id: 'AQ',
-        rawId: 'AQ',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          attestationObject: 'e30',
-        },
-      }),
-    })),
+jest.mock('../../../../shared/lib/passkey', () => ({
+  startPasskeyRegistration: jest.fn().mockResolvedValue({
+    id: 'AQ',
+    rawId: 'AQ',
+    type: 'public-key',
+    response: {
+      clientDataJSON: 'e30',
+      attestationObject: 'e30',
+    },
   }),
-);
+}));
 
 jest.mock('../../../store/actions', () => {
   const actual = jest.requireActual('../../../store/actions');
@@ -51,7 +46,7 @@ jest.mock('../../../store/actions', () => {
       },
       extensions: { prf: { eval: { first: 'AQ' } } },
     }),
-    completePasskeyRegistration: jest.fn().mockResolvedValue(undefined),
+    protectVaultKeyWithPasskey: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -72,7 +67,7 @@ const buildMockStore = (firstTimeFlowType: FirstTimeFlowType) =>
 describe('Biometrics', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
-    jest.mocked(completePasskeyRegistration).mockClear();
+    jest.mocked(protectVaultKeyWithPasskey).mockClear();
     jest.mocked(generatePasskeyRegistrationOptions).mockClear();
   });
 
@@ -157,7 +152,7 @@ describe('Biometrics', () => {
       fireEvent.click(getByTestId('biometrics-set-up-button'));
 
       await waitFor(() => {
-        expect(completePasskeyRegistration).toHaveBeenCalled();
+        expect(protectVaultKeyWithPasskey).toHaveBeenCalled();
       });
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,

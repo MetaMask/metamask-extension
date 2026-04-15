@@ -49,24 +49,19 @@ const mockPasskeyStartAuthentication = jest
   .fn()
   .mockResolvedValue(mockPasskeyAuthSuccessResponse);
 
-jest.mock(
-  '../../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter',
-  () => ({
-    PasskeyCeremonyExtensionAdapter: jest.fn().mockImplementation(() => ({
-      startAuthentication: (...args: unknown[]) =>
-        mockPasskeyStartAuthentication(...args),
-      startRegistration: jest.fn().mockResolvedValue({
-        id: 'AAEC',
-        rawId: 'AAEC',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'AAEC',
-          attestationObject: 'AAEC',
-        },
-      }),
-    })),
+jest.mock('../../../../../shared/lib/passkey', () => ({
+  startPasskeyAuthentication: (...args: unknown[]) =>
+    mockPasskeyStartAuthentication(...args),
+  startPasskeyRegistration: jest.fn().mockResolvedValue({
+    id: 'AAEC',
+    rawId: 'AAEC',
+    type: 'public-key',
+    response: {
+      clientDataJSON: 'AAEC',
+      attestationObject: 'AAEC',
+    },
   }),
-);
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');

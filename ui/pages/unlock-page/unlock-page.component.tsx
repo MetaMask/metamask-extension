@@ -61,7 +61,7 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
-import { PasskeyCeremonyExtensionAdapter } from '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import { startPasskeyAuthentication } from '../../../shared/lib/passkey';
 import {
   generatePasskeyAuthenticationOptions,
   unlockWithPasskey,
@@ -629,9 +629,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         return;
       }
       const authOptions = await generatePasskeyAuthenticationOptions();
-      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
-      const authenticationResponse = await passkeyAdapter
-        .startAuthentication(authOptions)
+      const authenticationResponse = await startPasskeyAuthentication(
+        authOptions,
+      )
         .catch((error) => {
           // TODO: handle error message correctly
           throw new Error(t('passkeyUnlockFailed'));

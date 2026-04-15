@@ -2811,7 +2811,7 @@ export default class MetamaskController extends EventEmitter {
         this.generatePasskeyRegistrationOptions.bind(this),
       generatePasskeyAuthenticationOptions:
         this.generatePasskeyAuthenticationOptions.bind(this),
-      completePasskeyRegistration: this.completePasskeyRegistration.bind(this),
+      protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
       unlockWithPasskey: this.unlockWithPasskey.bind(this),
       isPasskeyEnrolled: this.passkeyController.isPasskeyEnrolled.bind(
         this.passkeyController,
@@ -4273,36 +4273,31 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
    */
   async generatePasskeyRegistrationOptions() {
-    return this.passkeyController.generatePasskeyRegistrationOptions();
+    return this.passkeyController.generateRegistrationOptions();
   }
 
   /**
-   * Starts passkey unlock: stores an authentication session and returns request options.
+   * Starts passkey authentication: stores an authentication session and returns request options.
    *
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
    */
   async generatePasskeyAuthenticationOptions() {
-    return this.passkeyController.generatePasskeyAuthenticationOptions();
+    return this.passkeyController.generateAuthenticationOptions();
   }
 
   /**
-   * Completes passkey registration after the UI runs WebAuthn credential creation.
+   * Protects the vault encryption key with a passkey after the UI runs WebAuthn credential creation.
    * Verifies the challenge against the open registration session, then exports the vault
-   * encryption key only in the background, builds the passkey record, and persists it.
+   * encryption key only in the background, and persists the passkey record.
    *
    * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Wire response from the UI.
    * @returns {Promise<void>}
    */
-  async completePasskeyRegistration(registrationResponse) {
-    const encryptionKey = await this.keyringController.exportEncryptionKey();
-    const { encryptionSalt } = this.keyringController.state;
-    if (!encryptionSalt) {
-      throw new Error('Missing encryption salt for passkey enrollment');
-    }
-    await this.passkeyController.completePasskeyRegistration({
+  async protectVaultKeyWithPasskey(registrationResponse) {
+    const vaultKey = await this.keyringController.exportEncryptionKey();
+    await this.passkeyController.protectVaultKeyWithPasskey({
       registrationResponse,
-      encryptionKey,
-      encryptionSalt,
+      vaultKey,
     });
   }
 
@@ -4317,10 +4312,10 @@ export default class MetamaskController extends EventEmitter {
     if (!isEnrolled) {
       throw new Error('Passkey is not enrolled');
     }
-    const encryptionKey = await this.passkeyController.unwrapVaultEncryptionKey(
+    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
       authenticationResponse,
     );
-    await this.submitEncryptionKey(encryptionKey);
+    await this.submitEncryptionKey(vaultKey);
   }
 
   /**
@@ -4335,7 +4330,7 @@ export default class MetamaskController extends EventEmitter {
     if (!isEnrolled) {
       throw new Error('Passkey is not enrolled');
     }
-    await this.passkeyController.unwrapVaultEncryptionKey(
+    await this.passkeyController.retrieveVaultKeyWithPasskey(
       authenticationResponse,
     );
     this.passkeyController.removePasskey();
@@ -4353,8 +4348,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Changes the wallet password using a verified passkey assertion, then re-wraps the
-   * passkey record for the new vault encryption key. Non–social-login only.
+   * Changes the wallet password using a verified passkey assertion, then renews the
+   * vault key protection for the new vault encryption key. Non-social-login only.
    *
    * @param {string} newPassword
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
@@ -4376,28 +4371,24 @@ export default class MetamaskController extends EventEmitter {
 
     const releaseLock = await this.seedlessOperationMutex.acquire();
     try {
-      const encryptionKeyBeforePasswordChange =
+      const vaultKeyBeforePasswordChange =
         await this.keyringController.exportEncryptionKey();
       await this.keyringController.changePassword(newPassword);
 
       try {
-        const encryptionKeyAfterPasswordChange =
+        const vaultKeyAfterPasswordChange =
           await this.keyringController.exportEncryptionKey();
-        const encryptionSaltAfterPasswordChange =
-          this.keyringController.state.encryptionSalt;
 
-        if (!encryptionSaltAfterPasswordChange) {
-          throw new Error('Missing encryption salt after password change');
-        }
-
-        await this.passkeyController.changeVaultEncryptionKey({
+        await this.passkeyController.renewVaultKeyProtection({
           authenticationResponse,
-          oldEncryptionKey: encryptionKeyBeforePasswordChange,
-          newEncryptionKey: encryptionKeyAfterPasswordChange,
-          newEncryptionSalt: encryptionSaltAfterPasswordChange,
+          oldVaultKey: vaultKeyBeforePasswordChange,
+          newVaultKey: vaultKeyAfterPasswordChange,
         });
       } catch (err) {
-        log.error('Passkey re-wrap failed after password change', err);
+        log.error(
+          'Passkey vault key protection renewal failed after password change',
+          err,
+        );
         this.passkeyController.removePasskey();
         throw err;
       }

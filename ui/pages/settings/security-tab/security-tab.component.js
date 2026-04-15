@@ -64,9 +64,12 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import { PasskeyCeremonyExtensionAdapter } from '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
 import {
-  completePasskeyRegistration,
+  startPasskeyRegistration,
+  startPasskeyAuthentication,
+} from '../../../../shared/lib/passkey';
+import {
+  protectVaultKeyWithPasskey,
   generatePasskeyAuthenticationOptions,
   generatePasskeyRegistrationOptions,
   removePasskeyWithPasskeyVerification,
@@ -233,10 +236,8 @@ export default class SecurityTab extends PureComponent {
       this.setState({ passkeyToggleBusy: true });
       try {
         const options = await generatePasskeyRegistrationOptions();
-        const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
-        const registrationResponse =
-          await passkeyAdapter.startRegistration(options);
-        await completePasskeyRegistration(registrationResponse);
+        const registrationResponse = await startPasskeyRegistration(options);
+        await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState();
         setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOn);
         trackEvent({
@@ -262,9 +263,8 @@ export default class SecurityTab extends PureComponent {
     this.setState({ passkeyToggleBusy: true });
     try {
       const authOptions = await generatePasskeyAuthenticationOptions();
-      const passkeyAdapter = new PasskeyCeremonyExtensionAdapter();
       const authenticationResponse =
-        await passkeyAdapter.startAuthentication(authOptions);
+        await startPasskeyAuthentication(authOptions);
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState();
       setShowPasskeySettingsToast(PasskeySettingsToastType.TurnedOff);

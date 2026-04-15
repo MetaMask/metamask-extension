@@ -1173,10 +1173,10 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
  *
  * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
  */
-export function completePasskeyRegistration(
+export function protectVaultKeyWithPasskey(
   registrationResponse: PasskeyRegistrationResponse,
 ): Promise<void> {
-  return submitRequestToBackground('completePasskeyRegistration', [
+  return submitRequestToBackground('protectVaultKeyWithPasskey', [
     registrationResponse,
   ]);
 }
