@@ -240,7 +240,10 @@ describe('matchesLocalTransaction', () => {
         nonce: '0x0',
       } as TransactionMeta['txParams'],
       nestedTransactions: [
-        { to: '0xTokenContract' as `0x${string}`, data: '0xa9059cbb' as `0x${string}` },
+        {
+          to: '0xTokenContract' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
       ],
     });
     expect(
@@ -260,7 +263,10 @@ describe('matchesLocalTransaction', () => {
         nonce: '0x0',
       } as TransactionMeta['txParams'],
       nestedTransactions: [
-        { to: '0xOtherToken' as `0x${string}`, data: '0xa9059cbb' as `0x${string}` },
+        {
+          to: '0xOtherToken' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
       ],
     });
     expect(
