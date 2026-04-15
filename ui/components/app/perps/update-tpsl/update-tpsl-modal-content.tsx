@@ -43,6 +43,7 @@ import {
   normalizeTpslPrices,
   deriveTpslType,
   formatRoePercent,
+  getPnlDisplayColor,
 } from '../utils';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
@@ -55,16 +56,6 @@ import {
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
-
-function getPnlDisplayColor(pnl: number): TextColor {
-  if (pnl > 0) {
-    return TextColor.SuccessDefault;
-  }
-  if (pnl < 0) {
-    return TextColor.ErrorDefault;
-  }
-  return TextColor.TextDefault;
-}
 
 export type UpdateTPSLSubmitState = {
   onSubmit: () => void;

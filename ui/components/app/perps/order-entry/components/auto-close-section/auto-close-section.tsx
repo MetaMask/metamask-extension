@@ -28,17 +28,7 @@ import {
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from '../../../utils/tpslValidation';
-import { formatRoePercent } from '../../../utils';
-
-function getPnlDisplayColor(pnl: number): TextColor {
-  if (pnl > 0) {
-    return TextColor.SuccessDefault;
-  }
-  if (pnl < 0) {
-    return TextColor.ErrorDefault;
-  }
-  return TextColor.TextDefault;
-}
+import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
