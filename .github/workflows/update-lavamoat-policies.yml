@@ -121,6 +121,7 @@ jobs:
           github-token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Check for policy diffs
+        if: ${{ !cancelled() }}
         id: check-diffs
         run: echo "HAS_DIFFS=$([ -d lavamoat-policy-diffs ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
@@ -186,7 +187,7 @@ jobs:
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation is still running. Please retry \`@metamaskbot update-policies\` after CI validation completes."
 
       - name: Post comment (validation failed but no diffs available)
-        if: ${{ env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
+        if: ${{ !cancelled() && env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true' }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation failed but no policy diffs were produced (the validation job may have crashed before generating diffs). You can [review the CI logs here](${ACTION_RUN_URL})."
 
@@ -196,6 +197,6 @@ jobs:
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No policy changes"
 
       - name: Post comment if the update failed
-        if: ${{ failure() || needs.prepare.result == 'failure' }}
+        if: ${{ (failure() && !(env.VALIDATION_FAILED == 'true' && steps.check-diffs.outputs.HAS_DIFFS != 'true')) || needs.prepare.result == 'failure' }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
