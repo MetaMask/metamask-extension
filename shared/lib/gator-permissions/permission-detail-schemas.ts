@@ -226,8 +226,12 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           testId: 'review-gator-permission-max-allowance',
           getValue: (ctx) => new BigNumber(getData<string>(ctx, 'maxAmount')),
           isVisible: (ctx) => {
-            const max = getData<string | undefined>(ctx, 'maxAmount');
-            return max !== undefined && max.toLowerCase() !== MAX_UINT256;
+            const max = getData<string | null | undefined>(ctx, 'maxAmount');
+            return (
+              max !== undefined &&
+              max !== null &&
+              max.toLowerCase() !== MAX_UINT256
+            );
           },
           includeInViews: ['confirmation', 'reviewDetail'],
         },
@@ -237,7 +241,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           testId: 'review-gator-permission-max-allowance-unlimited',
           getValue: () => ({ key: 'unlimited' }),
           isVisible: (ctx) => {
-            const max = getData<string | undefined>(ctx, 'maxAmount');
+            const max = getData<string | null | undefined>(ctx, 'maxAmount');
             return Boolean(max?.toLowerCase() === MAX_UINT256);
           },
           includeInViews: ['confirmation', 'reviewDetail'],
@@ -460,8 +464,12 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           getValue: (ctx) => new BigNumber(getData<string>(ctx, 'maxAmount')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: (ctx) => {
-            const max = getData<string | undefined>(ctx, 'maxAmount');
-            return max !== undefined && max.toLowerCase() !== MAX_UINT256;
+            const max = getData<string | null | undefined>(ctx, 'maxAmount');
+            return (
+              max !== undefined &&
+              max !== null &&
+              max.toLowerCase() !== MAX_UINT256
+            );
           },
           includeInViews: ['confirmation', 'reviewDetail'],
         },
@@ -471,7 +479,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           testId: 'review-gator-permission-max-allowance-unlimited',
           getValue: () => ({ key: 'unlimited' }),
           isVisible: (ctx) => {
-            const max = getData<string | undefined>(ctx, 'maxAmount');
+            const max = getData<string | null | undefined>(ctx, 'maxAmount');
             return Boolean(max?.toLowerCase() === MAX_UINT256);
           },
           includeInViews: ['confirmation', 'reviewDetail'],
