@@ -1374,8 +1374,17 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelSpeedupAlreadyConfirmedDescription": {
+    "message": "We were unable to update your transaction because it was already confirmed on the blockchain."
+  },
+  "cancelSpeedupFailedDescription": {
+    "message": "Something went wrong while updating your transaction."
+  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionFailed": {
+    "message": "Cancel transaction failed"
   },
   "cancelTransactionTitle": {
     "message": "Cancel transaction"
@@ -5596,8 +5605,11 @@
   "perpsFundingRateTooltip": {
     "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Perpetual trading is not available in your region"
+  "perpsGeoBlockedDescription": {
+    "message": "Perps trading isn't available in your location due to local restrictions or sanctions."
+  },
+  "perpsGeoBlockedTitle": {
+    "message": "Perps unavailable in your region"
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
@@ -7764,6 +7776,10 @@
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
   },
+  "sidePanelMigrationToast": {
+    "message": "MetaMask now opens in the side panel by default. $1 (or switch any time from the menu).",
+    "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
+  },
   "sign": {
     "message": "Sign"
   },
@@ -8198,6 +8214,9 @@
   },
   "speedUpTransactionDescription": {
     "message": "This network fee will replace the original."
+  },
+  "speedUpTransactionFailed": {
+    "message": "Speed up transaction failed"
   },
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
@@ -8854,6 +8873,9 @@
   },
   "switchBack": {
     "message": "Switch back"
+  },
+  "switchBackToPopup": {
+    "message": "Switch back to popup"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
@@ -9596,12 +9618,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Transaction already confirmed"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"

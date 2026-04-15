@@ -31,8 +31,6 @@ import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-t
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
-import TransactionAlreadyConfirmed from './transaction-already-confirmed';
-
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
@@ -138,17 +136,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_ALREADY_CONFIRMED: {
-    disableBackdropClick: true,
-    contents: <TransactionAlreadyConfirmed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
     },
   },
 

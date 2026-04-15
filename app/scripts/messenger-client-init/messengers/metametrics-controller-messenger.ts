@@ -23,6 +23,7 @@ export function getMetaMetricsControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
       'PreferencesController:stateChange',

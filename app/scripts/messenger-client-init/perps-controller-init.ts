@@ -6,7 +6,7 @@ import {
 } from '@metamask/perps-controller';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
 /**
@@ -44,7 +44,7 @@ function getHyperLiquidBuilderAddresses():
   };
 }
 
-export const PerpsControllerInit: ControllerInitFunction<
+export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsController,
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

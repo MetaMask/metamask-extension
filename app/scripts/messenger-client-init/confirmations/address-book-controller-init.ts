@@ -1,5 +1,5 @@
 import { AddressBookController } from '@metamask/address-book-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { AddressBookControllerMessenger } from '../messengers';
 
 /**
@@ -10,7 +10,7 @@ import { AddressBookControllerMessenger } from '../messengers';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const AddressBookControllerInit: ControllerInitFunction<
+export const AddressBookControllerInit: MessengerClientInitFunction<
   AddressBookController,
   AddressBookControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

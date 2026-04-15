@@ -1,6 +1,6 @@
 import { RatesController } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getRatesControllerMessenger,
@@ -11,7 +11,7 @@ import { RatesControllerInit } from './rates-controller-init';
 jest.mock('@metamask/assets-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<RatesControllerMessenger>
+  MessengerClientInitRequest<RatesControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
