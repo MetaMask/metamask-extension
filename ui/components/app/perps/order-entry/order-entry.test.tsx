@@ -97,6 +97,20 @@ describe('OrderEntry', () => {
         'Open Short BTC',
       );
     });
+
+    it('strips the dex prefix from HIP-3 symbols in the submit button label', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open Long BRENTOIL',
+      );
+      expect(
+        screen.getByTestId('order-entry-submit-button'),
+      ).not.toHaveTextContent('xyz:BRENTOIL');
+    });
   });
 
   describe('amount input', () => {
