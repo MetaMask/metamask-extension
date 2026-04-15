@@ -5554,7 +5554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:7.0.0, @metamask/account-tree-controller@npm:^7.0.0":
+"@metamask/account-tree-controller@npm:7.0.0":
   version: 7.0.0
   resolution: "@metamask/account-tree-controller@npm:7.0.0"
   dependencies:
@@ -5581,7 +5581,7 @@ __metadata:
 
 "@metamask/account-tree-controller@patch:@metamask/account-tree-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-account-tree-controller-npm-7.0.0-950cdc9003.patch":
   version: 7.0.0
-  resolution: "@metamask/account-tree-controller@patch:@metamask/account-tree-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-account-tree-controller-npm-7.0.0-950cdc9003.patch::version=7.0.0&hash=51de68"
+  resolution: "@metamask/account-tree-controller@patch:@metamask/account-tree-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-account-tree-controller-npm-7.0.0-950cdc9003.patch::version=7.0.0&hash=270f4a"
   dependencies:
     "@metamask/accounts-controller": "npm:^37.1.1"
     "@metamask/base-controller": "npm:^9.0.1"
@@ -5600,7 +5600,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/e941675f4aeed162f6c542cbec23283976b32fffa4e4ca1b186bced98b10ae3bc6d9bf2f960220b13ee634290731fb4d0d9e5620df2ac1793c78abb2375e6827
+  checksum: 10/e621ec8b8000a22f7cd26bfc471757b730ef6ab78d26d6b6dbbb7e22ea066e15660e907089fc7bf6ed2035d962608643a467f38535c125bf27a40d4cb2748ea4
   languageName: node
   linkType: hard
 
