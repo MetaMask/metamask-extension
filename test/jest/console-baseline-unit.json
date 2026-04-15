@@ -55,7 +55,7 @@
       "error: Error: A handler for SnapController:setClientActive": 2
     },
     "app/scripts/metamask-controller.actions.test.js": {
-      "Test errors: Fetch failures": 2,
+      "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
