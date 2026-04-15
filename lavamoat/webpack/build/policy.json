@@ -3428,6 +3428,7 @@
     "webpack-bundle-analyzer": {
       "builtin": {
         "node:fs.createReadStream": true,
+        "node:fs.createWriteStream": true,
         "node:fs.mkdirSync": true,
         "node:fs.promises.mkdir": true,
         "node:fs.promises.writeFile": true,
@@ -3437,6 +3438,8 @@
         "node:path.dirname": true,
         "node:path.join": true,
         "node:path.resolve": true,
+        "node:stream.Readable": true,
+        "node:stream/promises.pipeline": true,
         "node:util.inspect": true,
         "node:util.types.isRegExp": true,
         "node:zlib": true
@@ -3446,7 +3449,8 @@
         "__dirname": true,
         "console": true,
         "process.cwd": true,
-        "process.env.npm_package_name": true
+        "process.env.npm_package_name": true,
+        "setImmediate": true
       },
       "packages": {
         "webpack-cli>@discoveryjs/json-ext": true,

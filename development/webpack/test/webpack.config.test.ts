@@ -317,30 +317,25 @@ ${Object.entries(env)
       'Progress plugin should be absent',
     );
 
-    const bundleAnalyzerReportPlugin = instance.options.plugins.find(
-      (plugin) =>
-        plugin && plugin.constructor.name === 'BundleAnalyzerReportPlugin',
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
     assert.ok(
-      bundleAnalyzerReportPlugin,
-      'BundleAnalyzerReportPlugin should be present when --stats is enabled',
+      bundleAnalyzerPlugin,
+      'BundleAnalyzerPlugin should be present when --stats is enabled',
     );
   });
 
   it('should include bundle analyzer reporting plugins when --stats is passed', () => {
     const config: Configuration = getWebpackConfig(['--stats']);
     const instance = getWebpackInstance(config);
-    const bundleAnalyzerReportPlugin = instance.options.plugins.find(
-      (plugin) =>
-        plugin && plugin.constructor.name === 'BundleAnalyzerReportPlugin',
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
     const bundleSizeStatsPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleSizeStatsPlugin',
     );
-    assert.ok(
-      bundleAnalyzerReportPlugin,
-      'BundleAnalyzerReportPlugin should be present',
-    );
+    assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
     assert.ok(bundleSizeStatsPlugin, 'BundleSizeStatsPlugin should be present');
   });
 
