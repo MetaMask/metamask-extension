@@ -141,21 +141,14 @@ async function getHtmlSurfaceAssetNames(
 
   for (const htmlFile of htmlFiles) {
     const htmlPath = path.join(distDirectory, htmlFile);
+    const html = await fs.readFile(htmlPath, 'utf8');
 
-    try {
-      const html = await fs.readFile(htmlPath, 'utf8');
-
-      for (const match of html.matchAll(htmlScriptSrcRegex)) {
-        const scriptSource = match.groups?.src;
-        if (scriptSource) {
-          assetNames.add(
-            resolveDistAssetPath(distDirectory, htmlFile, scriptSource),
-          );
-        }
-      }
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        throw error;
+    for (const match of html.matchAll(htmlScriptSrcRegex)) {
+      const scriptSource = match.groups?.src;
+      if (scriptSource) {
+        assetNames.add(
+          resolveDistAssetPath(distDirectory, htmlFile, scriptSource),
+        );
       }
     }
   }
@@ -245,24 +238,35 @@ function partitionSurfaceAssets({
   contentScriptAssets: Set<string>;
   assetSizeMap: ReadonlyMap<string, number>;
 }): BundleSizeArtifact {
-  // @ts-expect-error Node 24 supports Set.prototype.intersection/difference, but the repo TS lib config does not type them yet.
-  const commonAssets = backgroundAssets
-    .intersection(uiAssets)
-    .difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.intersection, but the repo TS lib config does not type it yet.
+  const backgroundUiAssets: Set<string> =
+    backgroundAssets.intersection(uiAssets);
   // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-  const backgroundOnlyAssets = backgroundAssets
-    .difference(commonAssets)
-    .difference(contentScriptAssets);
+  const commonAssets: Set<string> =
+    backgroundUiAssets.difference(contentScriptAssets);
   // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-  const uiOnlyAssets = uiAssets
-    .difference(commonAssets)
-    .difference(contentScriptAssets);
+  const backgroundWithoutCommon: Set<string> =
+    backgroundAssets.difference(commonAssets);
   // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-  const auxiliaryPageOnlyAssets = auxiliaryPageAssets
-    .difference(contentScriptAssets)
-    .difference(commonAssets)
-    .difference(backgroundOnlyAssets)
-    .difference(uiOnlyAssets);
+  const backgroundOnlyAssets: Set<string> =
+    backgroundWithoutCommon.difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const uiWithoutCommon: Set<string> = uiAssets.difference(commonAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const uiOnlyAssets: Set<string> =
+    uiWithoutCommon.difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const auxiliaryPagesWithoutContentScripts: Set<string> =
+    auxiliaryPageAssets.difference(contentScriptAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const auxiliaryPagesWithoutCommon: Set<string> =
+    auxiliaryPagesWithoutContentScripts.difference(commonAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const auxiliaryPagesWithoutBackground: Set<string> =
+    auxiliaryPagesWithoutCommon.difference(backgroundOnlyAssets);
+  // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+  const auxiliaryPageOnlyAssets: Set<string> =
+    auxiliaryPagesWithoutBackground.difference(uiOnlyAssets);
 
   return createBundleSizeArtifact({
     background: createFileStatsFromAssetNames(

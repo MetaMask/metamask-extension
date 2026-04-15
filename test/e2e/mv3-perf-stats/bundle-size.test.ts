@@ -84,6 +84,8 @@ describe('bundle-size collector', () => {
             '<script src="./shared-ui-background.js"></script>',
           ].join('\n'),
         ),
+        writeFile(distDirectory, 'loading.html', ''),
+        writeFile(distDirectory, 'notification.html', ''),
         writeFile(
           distDirectory,
           'offscreen.html',
@@ -101,6 +103,9 @@ describe('bundle-size collector', () => {
             '<script src="./usb-permissions.js"></script>',
           ].join('\n'),
         ),
+        writeFile(distDirectory, 'popup-init.html', ''),
+        writeFile(distDirectory, 'popup.html', ''),
+        writeFile(distDirectory, 'sidepanel.html', ''),
         writeSizedFile(distDirectory, 'service-worker.js', 100),
         writeSizedFile(distDirectory, 'background-vendor.js', 110),
         writeSizedFile(distDirectory, 'background.js', 120),
