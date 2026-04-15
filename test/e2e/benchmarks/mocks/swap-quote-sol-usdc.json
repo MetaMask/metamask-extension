@@ -1,0 +1,108 @@
+{
+  "estimatedProcessingTimeInSeconds": 0,
+  "quote": {
+    "bridgeId": "lifi",
+    "requestId": "0x2e129c4c9f9b27f403a5397f659a2f11ee522e8f6d6deda4ee3b325907b96014",
+    "aggregator": "lifi",
+    "srcChainId": 1151111081099710,
+    "srcTokenAmount": "991250000",
+    "srcAsset": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": 1151111081099710,
+      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+      "symbol": "SOL",
+      "decimals": 9,
+      "name": "SOL",
+      "aggregators": [],
+      "occurrences": 100,
+      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+      "metadata": {},
+      "price": "79.58"
+    },
+    "destChainId": 1151111081099710,
+    "destTokenAmount": "79862593",
+    "minDestTokenAmount": "79623005",
+    "destAsset": {
+      "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "chainId": 1151111081099710,
+      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USDC",
+      "coingeckoId": "usd-coin",
+      "aggregators": ["coinGecko", "jupiter", "orca", "lifi"],
+      "occurrences": 4,
+      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+      "metadata": {},
+      "price": "0.999725"
+    },
+    "feeData": {
+      "metabridge": {
+        "amount": "8750000",
+        "asset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 1151111081099710,
+          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+          "symbol": "SOL",
+          "decimals": 9,
+          "name": "SOL",
+          "aggregators": [],
+          "occurrences": 100,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+          "metadata": {}
+        },
+        "quoteBpsFee": 87.5,
+        "baseBpsFee": 87.5
+      }
+    },
+    "bridges": ["dflow (via LiFi)"],
+    "protocols": ["dflow (via LiFi)"],
+    "steps": [
+      {
+        "action": "swap",
+        "srcChainId": 1151111081099710,
+        "destChainId": 1151111081099710,
+        "protocol": {
+          "name": "dflow",
+          "displayName": "DFlow",
+          "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/exchanges/dflow.svg"
+        },
+        "srcAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 1151111081099710,
+          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+          "symbol": "SOL",
+          "decimals": 9,
+          "name": "SOL",
+          "aggregators": [],
+          "occurrences": 100,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+          "metadata": {}
+        },
+        "destAsset": {
+          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "chainId": 1151111081099710,
+          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "symbol": "USDC",
+          "decimals": 6,
+          "name": "USDC",
+          "coingeckoId": "usd-coin",
+          "aggregators": ["coinGecko", "jupiter", "orca", "lifi"],
+          "occurrences": 4,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+          "metadata": {}
+        },
+        "srcAmount": "991250000",
+        "destAmount": "79862593"
+      }
+    ],
+    "slippage": 0.3,
+    "priceData": {
+      "totalFromAmountUsd": "80.49",
+      "totalToAmountUsd": "79.84055092433199",
+      "priceImpact": "-0.0006873213588461013",
+      "totalFeeAmountUsd": "0.7042875000000001"
+    }
+  },
+  "trade": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAFC89ch17Gu0N5Z7JwtA6HrdGyR2CzY+MHRN/7jSurEbZtn6H8x30ldqnoX82+lzTKb8RfiW1wQtXnrYYOQwI2jVzSW4xCPtxpuwRpoSzKGBA/QyngXmbPXGiL4UnwigVoVaVegTc6Qranlga3bciCK6DzhNXlTFbKeBx5WRVMMEOCrfpb/ReMeRjpl2d2+aHRAXDEXEwDoaKB3OFt6WDwVkcuQBHZ3jrOPHeN6sTQnKGFo1SLYLKKUETDCPrxkT/eGQMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAKD0N0oI1T+8K47DiJ9N82JyiZvsX3fj3y3zO++Tr3FWW/1jK6Qnuz60vh+fYD0n/Osr9RrLg0Zn4sjlKS5y7ibXjShTivHNIaQ7h9a9d7tZVOECjbaq4YLBQYHO9wDwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwUuD7MX+5WE8ZX9ZvVKts2Q8JCZsGyli7F+ZgWdITsgYGAAkDxaoDAAAAAAAGAAUCfxoGAAcCIwgJABmczdaMWSYACQYAASQlJgoQLz6brIPNJclQRhU7AAAAAAlCJSYKACcJKCkJCSorADALAQIMDQ4lDzEQESwtJQAZARoDGxwdHh8zLjQgNTYhIgIENzc3AC8tJQASAxMEFBUWFxgytgH4xp6R4XWHyAcAAAAlRtoA0R1z3gSLxKOVOuZpPMSYVLwbxDb3usV0wAqXT75Ek6ifkUq0cfbpnYf6ikyRauMmJVuE8q9ZcO/Z3FNBAhJcvxcAAAAAuQAAADAEAAAAmBGYAgAAAAA1h5kAAAAAAKxPmwIAAAAA7I4hAgAAAAAtBfs8ayAAAAAAAwEAVQmqGgAAAAABAwuTbJ0CAAAAAAEAK8SaAAAAAAABAEGbwgQAAAAAHgAAAAoCAAUMAgAAALCDhQAAAAAABaWE/DP9WIBHrzOweyMSqOwaIzazWa7vKZVsIZLvDVd1AA0EYgYIDAIHsURkMGxjnVAO37NAM+mrbnborFh+8jK9i7mcojV1uiDatYYUsacHFRMQEhsoKQIAB+nEJESoQ88B2zkGMQIHKwx3zqgnV1cItQzANnj6HlGpBwABBQMEDgkBCPAVA86UUUmEc18Tz+VGA2Yi8uzYBiPZvt80FJ6D0KUwBwgCAR0eHyABBCPLTbITvE5WliXJrke1tuAMzdM/Gwca+gEfmQiMxryRAw4QEQQABwgJ"
+}

@@ -10,12 +10,18 @@ import configureStore from '../../../store/store';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainSiteCell } from './multichain-site-cell';
 
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');
   return {
-    MetaMetricsContext: createContext(jest.fn()),
+    MetaMetricsContext: createContext({
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    }),
   };
 });
 
@@ -63,6 +69,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [mockEvmAccount1, mockSolAccount1],
     walletName: 'Test Wallet',
@@ -78,6 +85,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [mockEvmAccount2, mockSolAccount2],
     walletName: 'Test Wallet',
@@ -87,7 +95,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
 
 const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
-    name: 'Ethereum',
+    name: messages.networkNameEthereum.message,
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1' as CaipChainId,
     blockExplorerUrls: ['https://etherscan.io'],
@@ -103,7 +111,7 @@ const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     ],
   },
   {
-    name: 'Polygon',
+    name: messages.networkNamePolygon.message,
     chainId: '0x89' as Hex,
     caipChainId: 'eip155:137' as CaipChainId,
     blockExplorerUrls: ['https://polygonscan.com'],
@@ -142,7 +150,6 @@ const mockTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
 
 const createMockState = (overrides = {}) => ({
   metamask: {
-    useBlockie: false,
     keyrings: [
       {
         type: 'HD Key Tree',
@@ -153,8 +160,8 @@ const createMockState = (overrides = {}) => ({
         accounts: [mockSolAccount1.address, mockSolAccount2.address],
       },
     ],
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
@@ -176,6 +183,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 0,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount1.id, mockSolAccount1.id],
             },
@@ -189,6 +197,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 1,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount2.id, mockSolAccount2.id],
             },

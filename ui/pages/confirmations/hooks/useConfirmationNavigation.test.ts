@@ -13,15 +13,23 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigation,
+  useConfirmationNavigationOptions,
+} from './useConfirmationNavigation';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
+const mockSearchParams = new URLSearchParams();
+const mockUseSearchParams = jest.fn(() => [mockSearchParams]);
+
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
+    useSearchParams: () => mockUseSearchParams(),
   };
 });
 
@@ -337,5 +345,145 @@ describe('useConfirmationNavigation', () => {
         { replace: true },
       );
     });
+  });
+
+  describe('navigateToTransaction', () => {
+    it('navigates to transaction route with empty search when no options provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-123');
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+        search: '',
+      });
+    });
+
+    it('navigates to transaction route with loader param when loader option provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-456', {
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-456`,
+        search: 'loader=customAmount',
+      });
+    });
+
+    it('navigates without loader param when loader is Default', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-789', {
+        loader: ConfirmationLoader.Default,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-789`,
+        search: '',
+      });
+    });
+
+    it('navigates with only goBackTo param when no loader provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-100', {
+        goBackTo: '/asset/0x1/0xabc',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-100`,
+        search: 'goBackTo=%2Fasset%2F0x1%2F0xabc',
+      });
+    });
+
+    it('navigates with both loader and goBackTo params', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-200', {
+        loader: ConfirmationLoader.CustomAmount,
+        goBackTo: '/home?tab=tokens',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-200`,
+        search: 'loader=customAmount&goBackTo=%2Fhome%3Ftab%3Dtokens',
+      });
+    });
+  });
+});
+
+describe('useConfirmationNavigationOptions', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  function renderOptionsHook(searchParams: URLSearchParams) {
+    mockUseSearchParams.mockReturnValue([searchParams]);
+
+    const { result } = renderHookWithProvider(
+      () => useConfirmationNavigationOptions(),
+      mockState,
+    );
+
+    return result.current;
+  }
+
+  it('returns loader from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'customAmount' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.CustomAmount);
+  });
+
+  it('returns Default loader when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns default loader value from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'default' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns sanitized goBackTo from search params', () => {
+    const searchParams = new URLSearchParams({
+      goBackTo: '/asset/0x1/0xabc',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBe('/asset/0x1/0xabc');
+  });
+
+  it('returns undefined goBackTo when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBeUndefined();
+  });
+
+  it('rejects unsafe goBackTo values', () => {
+    const searchParams = new URLSearchParams({
+      goBackTo: 'https://evil.com',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBeUndefined();
   });
 });

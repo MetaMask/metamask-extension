@@ -12,6 +12,17 @@
       },
       "native": true
     },
+    "copy-webpack-plugin": {
+      "packages": {
+        "copy-webpack-plugin>serialize-javascript": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true,
+        "crypto.getRandomValues": true
+      }
+    },
     "@swc/core": {
       "packages": {
         "@swc/core>@swc/core-darwin-x64": true,
@@ -92,7 +103,8 @@
         "postcss-loader": true,
         "sass-loader": true,
         "@lavamoat/webpack": true,
-        "react-compiler-webpack": true
+        "react-compiler-webpack": true,
+        "thread-loader": true
       }
     },
     "webpack>loader-runner": {
@@ -103,7 +115,29 @@
         "postcss-loader": true,
         "sass-loader": true,
         "@lavamoat/webpack": true,
-        "react-compiler-webpack": true
+        "react-compiler-webpack": true,
+        "thread-loader": true
+      }
+    },
+    "thread-loader": {
+      "builtin": {
+        "os": true,
+        "child_process": true,
+        "path": true
+      },
+      "globals": {
+        "process": true,
+        "setTimeout": true,
+        "clearTimeout": true,
+        "setInterval": true,
+        "clearInterval": true
+      },
+      "packages": {
+        "thread-loader>neo-async": true,
+        "webpack": true,
+        "webpack>loader-runner": true,
+        "thread-loader>json-parse-better-errors": true,
+        "thread-loader>schema-utils": true
       }
     },
     "html-bundler-webpack-plugin": {
@@ -330,6 +364,28 @@
         "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
+    "@metamask/build-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
       }
     }
   }

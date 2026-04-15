@@ -6,15 +6,14 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  'endowment:multichain-provider': 'endowment:multichain-provider',
   'endowment:page-home': 'endowment:page-home',
   'endowment:page-settings': 'endowment:page-settings',
   'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
   'endowment:assets': 'endowment:assets',
   'endowment:protocol': 'endowment:protocol',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   'endowment:keyring': 'endowment:keyring',
-  ///: END:ONLY_INCLUDE_IF
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.

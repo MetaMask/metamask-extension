@@ -1,10 +1,9 @@
-/* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
@@ -13,31 +12,37 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
+import { mockGetTxStatus } from '../bridge/bridge-test-utils';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import { mockSmartTransactionsRemoteFlags } from './remote-flags';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
   mockChooseGasFeeTokenRequests,
+  mockSwapTokensMockApis,
+  mockSentinelNetworks,
 } from './mocks';
 
 async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
+    ignoredConsoleErrors,
+    expectedBalance = '20 ETH',
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
+    ignoredConsoleErrors?: string[];
+    expectedBalance?: string;
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .withNetworkControllerOnMainnet()
+      fixtures: new FixtureBuilderV2()
+        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+        .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
         .withEnabledNetworks({
           eip155: {
             '0x1': true,
@@ -49,13 +54,16 @@ async function withFixturesForSmartTransactions(
         hardfork: 'london',
         chainId: '1',
       },
-      testSpecificMock: async (mockServer: MockttpServer) => {
-        await mockSmartTransactionsRemoteFlags(mockServer);
-        await testSpecificMock(mockServer);
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        },
       },
+      testSpecificMock,
+      ignoredConsoleErrors,
     },
     async ({ driver }) => {
-      await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
+      await login(driver, { expectedBalance });
       await runTestWithFixtures({ driver });
     },
   );
@@ -77,13 +85,17 @@ describe('Smart Transactions', function () {
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }) => {
-        const homePage = new HomePage(driver);
-        await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
-
         // fill ens address as recipient when user lands on send token screen
         const transactionConfirmation = new TransactionConfirmation(driver);
+        const homePage = new HomePage(driver);
+        const activityList = new ActivityListPage(driver);
+
         await createInternalTransaction({
           driver,
           chainId: '0x1',
@@ -92,17 +104,18 @@ describe('Smart Transactions', function () {
         });
 
         await transactionConfirmation.selectTokenFee('USDC');
-        await driver.delay(1000);
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-        const activityList = new ActivityListPage(driver);
+        await homePage.goToActivityList();
+        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
   });
 
-  it.skip('should Swap using smart transaction', async function () {
+  it('should Swap using smart transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -114,11 +127,13 @@ describe('Smart Transactions', function () {
               pricePercentChange1d: 0,
             },
           });
+          await mockSmartTransactionRequests(mockServer);
+          await mockSwapTokensMockApis(mockServer);
+          await mockGetTxStatus(mockServer);
         },
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
         await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
@@ -126,12 +141,11 @@ describe('Smart Transactions', function () {
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
-
-        await swapPage.dismissManualTokenWarning();
-        await driver.delay(1500);
+        await swapPage.checkQuoteIsGasIncluded();
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete('DAI');
+        await swapPage.waitForSmartTransactionToComplete();
+        await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -146,7 +160,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it.skip('should Swap with gas included fee', async function () {
+  it('should Swap with gas included fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -154,20 +168,18 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
         await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('20');
+        await swapPage.waitForQuote();
         await swapPage.checkQuoteIsGasIncluded();
-
-        await swapPage.dismissManualTokenWarning();
-        await driver.delay(1500);
         await swapPage.submitSwap();
 
-        await swapPage.waitForSmartTransactionToComplete('USDC');
+        await swapPage.waitForSmartTransactionToComplete();
+        await swapPage.clickViewActivity();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -180,7 +192,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it.skip('should execute a dApp Transaction', async function () {
+  it('should execute a dApp Transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
@@ -207,23 +219,3 @@ describe('Smart Transactions', function () {
     );
   });
 });
-
-async function mockSentinelNetworks(mockServer: MockttpServer) {
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/networks`)
-    .always()
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            sendBundle: true,
-          },
-        },
-      };
-    });
-}

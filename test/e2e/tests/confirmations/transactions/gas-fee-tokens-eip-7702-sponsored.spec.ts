@@ -1,13 +1,12 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -23,13 +22,11 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
           .build(),
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         localNodeOptions: {
           loadState:
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
@@ -56,7 +53,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -86,9 +83,9 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         localNodeOptions: {
           loadState:
@@ -116,7 +113,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

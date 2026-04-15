@@ -9,12 +9,12 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { hasTransactionType } from '../../utils/transaction-pay';
-import { updateEventFragment } from '../../../../store/actions';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
-  useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -23,7 +23,7 @@ export function useTransactionPayMetrics() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
-  const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const automaticPayToken = useRef<TransactionPaymentToken>();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
@@ -35,8 +35,7 @@ export function useTransactionPayMetrics() {
   );
 
   const transactionId = transactionMeta?.id ?? '';
-  const { chainId, type } = transactionMeta ?? {};
-  const primaryRequiredToken = requiredTokens.find((t) => !t.skipIfBalance);
+  const { chainId } = transactionMeta ?? {};
   const sendingValue = Number(primaryRequiredToken?.amountHuman ?? '0');
 
   if (!automaticPayToken.current && payToken) {
@@ -69,16 +68,11 @@ export function useTransactionPayMetrics() {
       props.mm_pay_payment_token_list_size = availableTokens.length;
     }
 
-    if (payToken && type === TransactionType.perpsDeposit) {
-      props.mm_pay_use_case = 'perps_deposit';
-      props.simulation_sending_assets_total_value = sendingValue;
-    }
-
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [TransactionType.predictDeposit])
+      hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
     ) {
-      props.mm_pay_use_case = 'predict_deposit';
+      props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;
     }
 
@@ -114,12 +108,11 @@ export function useTransactionPayMetrics() {
     strategy,
     totals,
     transactionMeta,
-    type,
   ]);
 
   useEffect(() => {
     if (transactionId && Object.keys(properties).length > 0) {
-      updateEventFragment(transactionId, { properties });
+      upsertTransactionUIMetricsFragment(transactionId, { properties });
     }
   }, [transactionId, properties]);
 }

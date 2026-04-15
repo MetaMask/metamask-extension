@@ -1,6 +1,6 @@
 import { DEVELOPER_OPTIONS_ROUTE, Route } from './route';
 
-export default new Route({
+export const test = new Route({
   pathname: '/test',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(params: URLSearchParams) {

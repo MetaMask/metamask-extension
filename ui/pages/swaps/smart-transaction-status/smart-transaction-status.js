@@ -13,7 +13,7 @@ import {
   cancelSwapsSmartTransaction,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   isHardwareWallet,
   getHardwareWalletType,
@@ -22,7 +22,7 @@ import {
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import {
   DEFAULT_ROUTE,
@@ -54,6 +54,7 @@ import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -138,7 +139,7 @@ export default function SmartTransactionStatusPage() {
         latestSmartTransaction?.destinationTokenDecimals,
     ).toPrecision(8);
   }
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
     smartTransactionStatus === SmartTransactionStatus.pending;
@@ -246,7 +247,7 @@ export default function SmartTransactionStatusPage() {
       <a
         className="smart-transaction-status__support-link"
         key="smart-transaction-status-support-link"
-        href="https://support.metamask.io"
+        href={ZENDESK_URLS.SUPPORT_URL}
         target="_blank"
         rel="noopener noreferrer"
       >

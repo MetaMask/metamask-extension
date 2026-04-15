@@ -6,4 +6,8 @@
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
-export { getIsPerpsEnabled } from './feature-flags';
+export {
+  getIsPerpsExperienceAvailable,
+  getHip3AllowedSources,
+  getHip3AllowedSourcesSet,
+} from './feature-flags';

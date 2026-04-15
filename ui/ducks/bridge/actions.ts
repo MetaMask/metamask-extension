@@ -2,49 +2,70 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
-  formatChainIdToCaip,
-  isNativeAddress,
-  getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
-  formatChainIdToHex,
+  isCrossChain,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
-import { trace, TraceName } from '../../../shared/lib/trace';
-import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
+import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addNetwork,
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
+  setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
+import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+import {
   bridgeSlice,
   setSrcTokenExchangeRates,
   setTxAlerts,
-  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
+  setEVMSrcTokenBalance,
   setEVMSrcNativeBalance,
 } from './bridge';
-import { type TokenPayload } from './types';
-import { type BridgeAppState } from './selectors';
-import { isNonEvmChain } from './utils';
+import type { TokenPayload } from './types';
+import {
+  type BridgeAppState,
+  getFromAccount,
+  getFromAmount,
+  getFromChains,
+  getFromToken,
+  getLastSelectedChainId,
+  getToToken,
+} from './selectors';
+import {
+  getDefaultToToken,
+  getMaybeHexChainId,
+  isSupportedBridgeChain,
+} from './utils';
+import { BridgeMissingNetworkConfigError } from './errors';
 
 const {
-  setFromToken,
-  setToToken,
+  setFromToken: setFromTokenAction,
+  setToToken: setToTokenAction,
   setFromTokenInputValue,
   resetInputFields,
+  rehydrateBridgeStore,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 } = bridgeSlice.actions;
 
 export {
   resetInputFields,
-  setToToken,
-  setFromToken,
+  rehydrateBridgeStore,
   setFromTokenInputValue,
   setSrcTokenExchangeRates,
   setSortOrder,
@@ -52,8 +73,9 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
-  setEVMSrcNativeBalance,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 };
 
 const callBridgeControllerMethod = (
@@ -67,10 +89,10 @@ const callBridgeControllerMethod = (
 };
 
 // Background actions
-export const resetBridgeState = () => {
+export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(resetInputFields());
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    await clearAllBridgeCacheItems();
   };
 };
 
@@ -111,71 +133,134 @@ export const updateQuoteRequestParams = (
   };
 };
 
-export const setEVMSrcTokenBalance = (
-  token: TokenPayload['payload'],
-  selectedAddress?: string,
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (token) {
-      trace({
-        name: TraceName.BridgeBalancesUpdated,
-        data: {
-          srcChainId: formatChainIdToCaip(token.chainId),
-          isNative: isNativeAddress(token.address),
-        },
-        startTime: Date.now(),
-      });
-      await dispatch(
-        setEVMSrcTokenBalance_({
-          selectedAddress,
-          tokenAddress: token.address,
-          chainId: token.chainId,
-        }),
-      );
-    }
-  };
-};
-
-export const setFromChain = ({
-  chainId,
-  token = null,
-}: {
-  chainId: Hex | CaipChainId;
-  token?: TokenPayload['payload'];
-}) => {
+export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
     getState: () => BridgeAppState,
   ) => {
-    // Check for ALL non-EVM chains
-    const isNonEvm = isNonEvmChain(chainId);
+    const selectedAddress = getFromAccount(getState())?.address;
+    if (!selectedAddress) {
+      return;
+    }
+    const { chainId, assetReference } = parseCaipAssetType(assetId);
+    await dispatch(
+      setEVMSrcTokenBalance({
+        selectedAddress,
+        tokenAddress: assetReference,
+        chainId,
+        assetId,
+      }),
+    );
+    await dispatch(
+      setEVMSrcNativeBalance({
+        selectedAddress,
+        chainId,
+      }),
+    );
+  };
+};
+
+export const setFromToken = (token: TokenPayload) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    const { assetId } = token;
+    const { chainId } = parseCaipAssetType(assetId);
+    const isNonEvm = isNonEvmChainId(chainId);
+    const maybeHexChainId = getMaybeHexChainId(chainId);
+
+    // Deep links and other external callers can inject tokens from arbitrary chains;
+    // this check prevents invalid state from propagating to selectors and components that
+    // assume fromToken is always on a supported, enabled chain.
+    if (!isSupportedBridgeChain(chainId)) {
+      return;
+    }
+
+    if (maybeHexChainId) {
+      const networkConfigs =
+        getMultichainNetworkConfigurationsByChainId(getState());
+      if (!networkConfigs[maybeHexChainId]) {
+        const featuredRpc = FEATURED_RPCS.find(
+          (rpc) => rpc.chainId === maybeHexChainId,
+        );
+        if (featuredRpc) {
+          // EVM chain is supported but not yet in the user's network configs.
+          // Auto-enable it via addNetwork, then fall through so the rest of
+          // setFromToken runs immediately with the updated state; no external
+          // retry needed and no risk of spurious re-dispatches.
+          await dispatch(addNetwork(featuredRpc));
+        } else {
+          // Supported bridge chain absent from both user configs and FEATURED_RPCS —
+          // this is a configuration bug that must be fixed in FEATURED_RPCS.
+          captureException(
+            new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+          );
+          return;
+        }
+      }
+    }
+
+    const currentChainId = getMultichainProviderConfig(getState()).chainId;
+    const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
+      (c) => c && c === currentChainId,
+    );
 
     // Set the src network
-    if (isNonEvm) {
-      dispatch(setActiveNetworkWithError(chainId));
-    } else {
-      const hexChainId = formatChainIdToHex(chainId);
-      const networkId =
-        selectDefaultNetworkClientIdsByChainId(getState())[hexChainId];
-      if (networkId) {
-        dispatch(setActiveNetworkWithError(networkId));
+    if (!currentNetworkMatchesToken) {
+      // If the source chain changes, enable All Networks view so the user
+      // can see their bridging activity on the new chain
+      const lastSelectedChainId = getLastSelectedChainId(getState());
+      if (isCrossChain(chainId, lastSelectedChainId)) {
+        dispatch(setEnabledAllPopularNetworks());
+      }
+      if (isNonEvm) {
+        dispatch(setActiveNetworkWithError(chainId));
+      } else if (maybeHexChainId) {
+        const networkId =
+          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
+        if (networkId) {
+          dispatch(setActiveNetworkWithError(networkId));
+        }
       }
     }
+    // Set the fromToken
+    dispatch(setFromTokenAction(token));
+  };
+};
 
-    // Set the src token - if no token provided, set native token for non-EVM chains
-    if (token) {
-      dispatch(setFromToken(token));
-    } else if (isNonEvm) {
-      // Auto-select native token for non-EVM chains when switching
-      const nativeAsset = getNativeAssetForChainId(chainId);
-      if (nativeAsset) {
-        dispatch(
-          setFromToken({
-            ...nativeAsset,
-            chainId,
-          }),
+export const setToToken = (newToToken: TokenPayload) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    const state = getState();
+    const currentFromAmount = getFromAmount(state);
+    const fromToken = getFromToken(state);
+    const toToken = getToToken(state);
+    const fromChains = getFromChains(state);
+    // If the new toToken is the same as the current fromToken
+    // try to set the fromToken to the old toToken
+    if (fromToken?.assetId.toLowerCase() === newToToken.assetId.toLowerCase()) {
+      let fromTokenToUse = toToken;
+
+      // If the old toToken's chain is disabled, it can't be set as the fromToken
+      // So reset fromToken to a fallback value (either native or default)
+      if (
+        fromChains.every(({ chainId }) => chainId !== fromTokenToUse.chainId)
+      ) {
+        // If the new toToken is native, use default as the new fromToken
+        // otherwise use the native asset
+        fromTokenToUse = getDefaultToToken(
+          fromToken.chainId,
+          fromToken.assetId,
         );
       }
+      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
+      dispatch(setFromToken(fromTokenToUse));
     }
+
+    dispatch(setToTokenAction(newToToken));
+    dispatch(setFromTokenInputValue(currentFromAmount));
   };
 };

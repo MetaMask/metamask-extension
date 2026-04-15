@@ -52,16 +52,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: 'eip155:1' },
+            { chainId: MultichainNetworks.SOLANA },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -73,9 +67,7 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
 
@@ -92,16 +84,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: 'eip155:1' },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -111,9 +97,7 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_SOLANA_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
@@ -129,16 +113,7 @@ describe('useDestinationAccount', () => {
     const { result, store } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [{ chainId: 'eip155:1' }, { chainId: 'eip155:59144' }],
         },
       },
       bridgeSliceOverrides: {
@@ -148,13 +123,11 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
-    expect(getFromChain(store?.getState())?.chainId).toBe('0x1');
-    expect(getToChain(store?.getState())?.chainId).toBe('0xe708');
+    expect(getFromChain(store?.getState())?.chainId).toBe('eip155:1');
+    expect(getToChain(store?.getState())?.chainId).toBe('eip155:59144');
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
       isExternal: false,
@@ -224,10 +197,8 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-        },
+        selectedAccountGroup:
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
@@ -243,16 +214,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: 'eip155:1' },
+            { chainId: MultichainNetworks.SOLANA },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -264,10 +229,8 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-        },
+        selectedAccountGroup:
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toBeNull();
@@ -290,16 +253,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: 'eip155:1' },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -309,9 +266,7 @@ describe('useDestinationAccount', () => {
         internalAccounts: {
           selectedAccount: MOCK_SOLANA_ACCOUNT.id,
         },
-        accountTree: {
-          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-        },
+        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({

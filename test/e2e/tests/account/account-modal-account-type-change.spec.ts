@@ -4,13 +4,13 @@ import { Anvil } from '@viem/anvil';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/batch-confirmation';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
 // Switch Account is not available in BIP44 stage 2
@@ -20,7 +20,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
@@ -35,7 +35,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Upgrade Account
         const headerNavbar = new HeaderNavbar(driver);

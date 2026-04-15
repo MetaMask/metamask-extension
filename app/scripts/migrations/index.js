@@ -5,7 +5,7 @@
 // The `migrate` function receives the previous
 // config data format, and returns the new one.
 
-/* eslint node/global-require: "off" */
+/* eslint n/global-require: "off" */
 // (we have to turn off that global-require rule for this file in order to do the import-then-export magic)
 
 const migrations = [
@@ -225,6 +225,21 @@ const migrations = [
   require('./187'),
   require('./188'),
   require('./189'),
+  require('./190'),
+  require('./191'),
+  require('./192'),
+  require('./193'),
+  require('./194'),
+  require('./195'),
+  require('./196'),
+  require('./197'),
+  require('./198'),
+  require('./199'),
+  require('./200'),
+  require('./201'),
+  require('./202'),
+  require('./203'),
+  require('./204'),
 ];
 
 export default migrations;

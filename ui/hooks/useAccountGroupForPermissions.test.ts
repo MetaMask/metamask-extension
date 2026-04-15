@@ -5,6 +5,7 @@ import { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { CaipAccountId, CaipChainId, CaipNamespace } from '@metamask/utils';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
+import { toEvmCaipAccountId } from '../../shared/lib/multichain/scope-utils';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
@@ -70,8 +71,8 @@ const createMockState = (overrides = {}) => ({
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
@@ -93,6 +94,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 0,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount1.id, mockSolAccount1.id],
             },
@@ -106,6 +108,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 1,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount2.id, mockSolAccount2.id],
             },
@@ -310,8 +313,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('handles missing account groups gracefully', () => {
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {},
         },
       };
@@ -583,7 +586,7 @@ describe('useAccountGroupsForPermissions', () => {
     it('shows second group first when it has higher priority', () => {
       const emptyPermission = createEmptyPermission();
       const requestedCaipAccountIds: CaipAccountId[] = [
-        `eip155:0:${mockEvmAccount2.address}` as CaipAccountId, // Group 2 account
+        toEvmCaipAccountId(mockEvmAccount2.address), // Group 2 account
       ];
       const requestedChainIds: CaipChainId[] = ['eip155:0' as CaipChainId];
       const requestedNamespaces: CaipNamespace[] = [];
@@ -936,8 +939,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('includes first supported group when selected account group is not provided', () => {
       const stateOverrides = {
+        selectedAccountGroup: null, // No selected account group
         accountTree: {
-          selectedAccountGroup: null, // No selected account group
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,
@@ -959,6 +962,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id, mockSolAccount1.id],
                 },
@@ -972,6 +976,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount2.id, mockSolAccount2.id],
                 },
@@ -1025,8 +1030,8 @@ describe('useAccountGroupsForPermissions', () => {
       const requestedNamespaces: CaipNamespace[] = [];
 
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,
@@ -1048,6 +1053,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id],
                 },
@@ -1061,6 +1067,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockSolAccount1.id],
                 },

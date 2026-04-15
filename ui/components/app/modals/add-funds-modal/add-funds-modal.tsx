@@ -29,7 +29,7 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
@@ -46,7 +46,7 @@ const AddFundsModal = ({
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const buyableChains = useSelector(getBuyableChains);
 
@@ -81,7 +81,7 @@ const AddFundsModal = ({
       },
     });
     onClose();
-  }, [chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
+  }, [chainId, onClose, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -106,7 +106,7 @@ const AddFundsModal = ({
       address: token.address,
       chainId,
     });
-  }, [token, openBridgeExperience]);
+  }, [chainId, token, openBridgeExperience]);
 
   const buttonRow = ({
     label,

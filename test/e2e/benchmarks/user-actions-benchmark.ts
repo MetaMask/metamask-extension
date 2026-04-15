@@ -10,7 +10,7 @@ import {
 } from '../../helpers/file';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { withFixtures } from '../helpers';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import HomePage from '../page-objects/pages/home/homepage';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
@@ -53,7 +53,7 @@ async function loadNewAccount(): Promise<{
       title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.openAccountMenu();
@@ -85,7 +85,7 @@ async function confirmTx(): Promise<{
       title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
 
       await createInternalTransaction({
         driver,
@@ -145,7 +145,7 @@ async function bridgeUserActions(): Promise<{
       },
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
       const homePage = new HomePage(driver);
       const quotePage = new BridgeQuotePage(driver);
 

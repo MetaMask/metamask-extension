@@ -272,13 +272,13 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 10.68"
+                title="USD 3,065.02"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 10.68
+                  USD 3,065.02
                 </span>
               </div>
               <div
@@ -372,13 +372,13 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 2,524.28"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 2,524.28
                 </span>
               </div>
               <div
@@ -664,13 +664,13 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 10.68"
+                title="USD 3,065.02"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 10.68
+                  USD 3,065.02
                 </span>
               </div>
               <div
@@ -764,13 +764,13 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                 data-testid="first-currency-display"
-                title="USD 0.00"
+                title="USD 2,524.28"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
-                  USD 0.00
+                  USD 2,524.28
                 </span>
               </div>
               <div

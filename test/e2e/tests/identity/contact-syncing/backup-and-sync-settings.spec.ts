@@ -2,17 +2,17 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 import { withFixtures, getCleanAppState } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -27,7 +27,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -39,12 +39,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
-          const header = new HeaderNavbar(driver);
-          await header.checkPageIsLoaded();
-
-          // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
@@ -52,6 +48,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
           }, 30000);
 
+          const header = new HeaderNavbar(driver);
+          await header.checkPageIsLoaded();
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
@@ -125,9 +123,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.goToContactsSettings();
-
+          await settingsPage.clickBackButton();
+          await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
 
@@ -151,7 +148,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
       // Launch a new instance to verify the change wasn't synced
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -162,7 +159,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const { getCurrentContacts } = arrangeContactSyncingTestUtils(
             driver,
@@ -200,7 +197,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -211,12 +208,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
-          const header = new HeaderNavbar(driver);
-          await header.checkPageIsLoaded();
-
-          // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
@@ -224,6 +217,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
           }, 30000);
 
+          const header = new HeaderNavbar(driver);
+          await header.checkPageIsLoaded();
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
@@ -271,9 +266,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.goToContactsSettings();
-
+          await settingsPage.clickBackButton();
+          await header.openContactsPage();
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(

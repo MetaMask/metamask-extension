@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
+import { Box } from '@metamask/design-system-react';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
@@ -24,11 +25,11 @@ import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Box } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
@@ -39,7 +40,6 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import { CreatePasswordForm } from '../../create-password-form';
-import { BlockSize } from '../../../helpers/constants/design-system';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -64,9 +64,12 @@ export default function CreatePassword({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    trackEvent;
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
@@ -263,6 +266,18 @@ export default function CreatePassword({
       },
     });
     if (isSocialLoginFlow) {
+      // track analytics preference selected event for social login users
+      // as social login users will not see the metametrics screen
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
+          location: 'onboarding_create_password',
+        },
+      });
+
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
@@ -331,7 +346,7 @@ export default function CreatePassword({
   };
 
   return (
-    <Box height={BlockSize.Full} width={BlockSize.Full}>
+    <Box className="h-full w-full">
       <CreatePasswordForm
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}

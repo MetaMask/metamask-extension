@@ -10,6 +10,7 @@ const {
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
+const { getOrBuildXpi } = require('../helpers/xpi');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -95,7 +96,11 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension('dist/firefox');
+    // Pre-build an XPI and cache it across test runs.
+    // Without this, installAddon() zips the 348MB unpacked dir on every call,
+    // adding ~10s of overhead per test.
+    const xpiPath = await getOrBuildXpi('dist/firefox');
+    const installedExtensionId = await fxDriver.installExtension(xpiPath);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive || constrainWindowSize) {
@@ -104,7 +109,7 @@ class FirefoxDriver {
 
     return {
       driver,
-      extensionId,
+      extensionId: installedExtensionId,
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
   }

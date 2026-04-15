@@ -223,6 +223,9 @@ export const CHAIN_IDS = {
   BOB: '0xed88',
   ROOTSTOCK: '0x1e',
   ROOTSTOCK_TESTNET: '0x1f',
+  TEMPO_TESTNET: '0xa5bf',
+  TEMPO_MAINNET: '0x1079',
+  STABLE_MAINNET: '0x3dc',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -392,6 +395,10 @@ export const MSU_DISPLAY_NAME = 'MapleStory Universe';
 export const BOB_DISPLAY_NAME = 'BOB';
 export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
 export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
+export const CHILIZ_DISPLAY_NAME = 'Chiliz';
+export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
+export const TEMPO_MAINNET_DISPLAY_NAME = 'Tempo';
+export const STABLE_DISPLAY_NAME = 'Stable';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -484,6 +491,10 @@ export const CURRENCY_SYMBOLS = {
   BOB: 'ETH',
   ROOTSTOCK: 'RBTC',
   ROOTSTOCK_TESTNET: 'tRBTC',
+  TEMPO_TESTNET: 'USD',
+  TEMPO_MAINNET: 'USD',
+  CHILIZ: 'CHZ',
+  STABLE: 'USDT0',
 } as const;
 
 // Non-EVM currency symbols
@@ -716,6 +727,12 @@ export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
+export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
+export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
+export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
+export const STABLE_IMAGE_URL = './images/stable.svg';
+export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
+export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -731,6 +748,7 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MEGAETH_TESTNET,
   CHAIN_IDS.MEGAETH_TESTNET_V2,
   CHAIN_IDS.MONAD_TESTNET,
+  CHAIN_IDS.TEMPO_TESTNET,
 ];
 
 export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
@@ -896,6 +914,10 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.CHZ]: CHILIZ_DISPLAY_NAME,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_DISPLAY_NAME,
+  [CHAIN_IDS.STABLE_MAINNET]: STABLE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1062,6 +1084,10 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.BOB]: CURRENCY_SYMBOLS.BOB,
   [CHAIN_IDS.ROOTSTOCK]: CURRENCY_SYMBOLS.ROOTSTOCK,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: CURRENCY_SYMBOLS.ROOTSTOCK_TESTNET,
+  [CHAIN_IDS.CHZ]: CURRENCY_SYMBOLS.CHILIZ,
+  [CHAIN_IDS.TEMPO_TESTNET]: CURRENCY_SYMBOLS.TEMPO_TESTNET,
+  [CHAIN_IDS.TEMPO_MAINNET]: CURRENCY_SYMBOLS.TEMPO_MAINNET,
+  [CHAIN_IDS.STABLE_MAINNET]: CURRENCY_SYMBOLS.STABLE,
 } as const;
 
 /**
@@ -1248,6 +1274,10 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.STABLE_MAINNET]: STABLE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1340,6 +1370,10 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
+  [CHAIN_IDS.STABLE_MAINNET]: STABLE_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1480,6 +1514,7 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 ]);
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
+export const IPFS_FORBIDDEN_GATEWAY = 'gateway.ipfs.io';
 
 export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'ethereum-mainnet': () => process.env.QUICKNODE_MAINNET_URL,
@@ -1492,6 +1527,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
+  'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1646,7 +1682,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.HYPE,
     rpcEndpoints: [
       {
-        url: 'https://rpc.hyperliquid.xyz/evm',
+        url: `https://hyperevm-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1788,6 +1825,7 @@ export const TEST_NETWORKS = [
   MEGAETH_TESTNET_DISPLAY_NAME,
   MEGAETH_TESTNET_V2_DISPLAY_NAME,
   MONAD_TESTNET_DISPLAY_NAME,
+  TEMPO_TESTNET_DISPLAY_NAME,
 ];
 
 export const TEST_NETWORK_IDS = [
@@ -1799,6 +1837,7 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.MEGAETH_TESTNET,
   CHAIN_IDS.MEGAETH_TESTNET_V2,
   CHAIN_IDS.MONAD_TESTNET,
+  CHAIN_IDS.TEMPO_TESTNET,
 ];
 
 // default minimum number of `occurrences` per token

@@ -8,23 +8,31 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
-import { maskObject } from '../shared/modules/object.utils';
+import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
-import { getBrowserName } from '../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
+import { START_UI_SYNC } from '../shared/constants/ui-initialization';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../shared/constants/patch-store-substream-methods';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../shared/lib/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import {
+  setupLongTaskObserver,
+  setupLongTaskSentryReporting,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -43,17 +51,25 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  submitRequestToBackground,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
+import { getPerpsStreamManager } from './providers/perps';
+import { setupPatchStoreSubstreamConnection } from './store/patch-store-substream-connection';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
-const METHOD_START_UI_SYNC = 'startUISync';
+/**
+ * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
+ */
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -75,12 +91,11 @@ export const connectToBackground = (
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
-    if (method === 'sendUpdate') {
-      const store = await reduxStore.promise;
-      store.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else if (method === METHOD_START_UI_SYNC) {
-      await handleStartUISync();
-    } else {
+    if (method === START_UI_SYNC) {
+      await handleStartUISync(data.params[0]);
+    } else if (method === 'perpsStreamUpdate') {
+      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
@@ -90,17 +105,33 @@ export const connectToBackground = (
   });
 };
 
-export default async function launchMetamaskUi(opts) {
-  const { backgroundConnection, traceContext } = opts;
+/**
+ * Handles messages coming through the patch store substream from the
+ * background.
+ *
+ * @param {Substream} patchStoreSubstream - The connection with the background
+ * process.
+ */
+export const connectToBackgroundViaPatchStoreSubstream = (
+  patchStoreSubstream,
+) => {
+  setupPatchStoreSubstreamConnection(patchStoreSubstream, {
+    handleSendUpdate: async (notification) => {
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(notification.params[0]));
+    },
+  });
+};
 
-  const metamaskState = await trace(
-    { name: TraceName.GetState, parentContext: traceContext },
-    backgroundConnection.getState.bind(backgroundConnection),
-  );
+export async function launchMetamaskUi(opts) {
+  const { patchSubstream, initialState } = opts;
 
-  const store = await startApp(metamaskState, opts);
+  const store = await startApp(initialState, opts);
 
-  await backgroundConnection.startPatches();
+  patchSubstream.write({
+    jsonrpc: '2.0',
+    method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+  });
 
   setupStateHooks(store);
 
@@ -209,6 +240,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
+
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
   const store = await trace(
@@ -242,7 +276,7 @@ async function startApp(metamaskState, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
@@ -285,7 +319,9 @@ async function runInitialActions(store) {
     const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
       }
     };
     await validateSeedlessPasswordOutdated(initialState);
@@ -409,33 +445,55 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    exposeLongTaskMetricsForTesting();
+  }
+
+  // Agentic dev hooks — expose internals for CDP automation
+  if (process.env.METAMASK_DEBUG) {
+    globalThis.stateHooks.store = store;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
+    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  }
 }
 
-window.logStateString = async function (cb) {
+/**
+ * Returns the extension state as a formatted JSON string for debugging.
+ * Includes app state, logs, and platform info.
+ *
+ * @returns {Promise<string>} The state as a JSON string
+ */
+window.logStateString = async function () {
   const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
+  state.logs = window.stateHooks.getLogs();
+  state.platform = await browser.runtime.getPlatformInfo();
+  return JSON.stringify(state, null, 2);
 };
 
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
+window.logState = async function (toClipboard) {
+  try {
+    const result = await window.logStateString();
+    if (toClipboard) {
       copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);
     }
-  });
+  } catch (err) {
+    console.error(err.message);
+  }
 };

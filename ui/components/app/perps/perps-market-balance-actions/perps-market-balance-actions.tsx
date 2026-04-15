@@ -13,41 +13,84 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { mockAccountState } from '../mocks';
+import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import {
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from '../perps-balance-dropdown';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
   showActionButtons?: boolean;
+  /** Whether add funds transaction creation is in progress */
+  isAddFundsLoading?: boolean;
   /** Callback when Add funds button is pressed */
-  onAddFunds?: () => void;
+  onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
-  onWithdraw?: () => void;
+  onWithdraw?: PerpsBalanceActionHandler;
   /** Callback when Learn more button is pressed */
   onLearnMore?: () => void;
 };
 
 const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   showActionButtons = true,
+  isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
   onLearnMore,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
+  const { account } = usePerpsLiveAccount();
+  const { isEligible } = usePerpsEligibility();
 
-  // Use mock data for now
-  const { totalBalance, availableBalance } = mockAccountState;
-  const isBalanceEmpty = parseFloat(totalBalance) === 0;
+  // Use account data or defaults
+  const totalBalance = account?.totalBalance ?? '0';
+  const unrealizedPnl = account?.unrealizedPnl ?? '0';
+  const availableBalance = account?.availableBalance ?? '0';
+
+  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
+  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
-    onAddFunds?.();
-  }, [onAddFunds]);
+    if (!isEligible) {
+      return;
+    }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
+    invokePerpsBalanceAction(onAddFunds);
+  }, [isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
-    onWithdraw?.();
-  }, [onWithdraw]);
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    });
+    invokePerpsBalanceAction(onWithdraw);
+  }, [onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
     onLearnMore?.();
@@ -106,7 +149,10 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
+            disabled={!isEligible || isAddFundsLoading}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
@@ -133,13 +179,13 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
       flexDirection={BoxFlexDirection.Column}
       data-testid="perps-balance-actions"
     >
-      {/* Total Balance */}
+      {/* Account Value (includes unrealized PnL) */}
       <Text
         variant={TextVariant.DisplayMd}
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
-        {formatCurrency(parseFloat(totalBalance), 'USD')}
+        {formatCurrency(accountValue, 'USD')}
       </Text>
 
       {/* Available Balance */}
@@ -149,9 +195,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {t('perpsAvailable', [
-            formatCurrency(parseFloat(availableBalance), 'USD'),
-          ])}
+          {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
+          {t('perpsAvailable').toLowerCase()}
         </Text>
       </Box>
 
@@ -171,7 +216,10 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
+            disabled={!isEligible || isAddFundsLoading}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >

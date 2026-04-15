@@ -10,18 +10,23 @@ import { MultichainNetwork } from '@metamask/multichain-transactions-controller'
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
+  TRON_SPECIAL_ASSET_CAIP_TYPES,
+  TronSpecialAssetCaipType,
+} from '../constants/multichain/assets';
+import {
   getAssetImageUrl,
   fetchAssetMetadata,
   toAssetId,
   fetchAssetMetadataForAssetIds,
   isEvmChainId,
+  isTronSpecialAsset,
 } from './asset-utils';
 
 jest.mock('@metamask/multichain-network-controller');
 jest.mock('@metamask/controller-utils');
 
 const mockFetchWithTimeout = jest.fn();
-jest.mock('../modules/fetch-with-timeout', () => ({
+jest.mock('./fetch-with-timeout', () => ({
   // eslint-disable-next-line  @typescript-eslint/naming-convention
   __esModule: true,
   default: jest
@@ -70,13 +75,14 @@ describe('asset-utils', () => {
       ]);
     });
 
-    it('should return undefined if getNativeAssetForChainId throws an error', () => {
+    it('should return undefined if getNativeAssetForChainId returns undefined for unsupported chain', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
-      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
-        'No XChain Swaps native asset found for chainId: eip155:1231',
-      );
+      // getNativeAssetForChainId returns undefined (not throws) for chains not in the swaps map
+      // Format normalization in isEvmChainId should prevent conversion errors
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {
@@ -470,6 +476,101 @@ describe('asset-utils', () => {
 
     it('should return false for non-EVM chain ids', () => {
       expect(isEvmChainId('solana:1')).toBe(false);
+    });
+
+    it('should return true for EVM chain ids passed as decimal strings', () => {
+      // Test Injective testnet (1439) - the original bug case
+      expect(isEvmChainId('1439' as Hex)).toBe(true);
+      // Test other EVM chains as decimal strings
+      expect(isEvmChainId('1' as Hex)).toBe(true); // Ethereum mainnet
+      expect(isEvmChainId('137' as Hex)).toBe(true); // Polygon
+      expect(isEvmChainId('1776' as Hex)).toBe(true); // Injective mainnet
+    });
+
+    it('should return false for non-EVM chain ids passed as decimal strings', () => {
+      // Test Solana (1151111081099710)
+      expect(isEvmChainId('1151111081099710' as Hex)).toBe(false);
+      // Test Bitcoin (20000000000001)
+      expect(isEvmChainId('20000000000001' as Hex)).toBe(false);
+      // Test Tron (728126428)
+      expect(isEvmChainId('728126428' as Hex)).toBe(false);
+    });
+
+    it('should handle Injective testnet chainId in different formats', () => {
+      // All these should return true for Injective testnet (1439)
+      expect(isEvmChainId('1439' as Hex)).toBe(true); // Decimal string
+      expect(isEvmChainId('0x59f' as Hex)).toBe(true); // Hex format
+      expect(isEvmChainId('eip155:1439' as CaipChainId)).toBe(true); // CAIP format
+    });
+  });
+
+  describe('isTronSpecialAsset', () => {
+    const tronMainnet = MultichainNetworks.TRON;
+    const tronNile = MultichainNetworks.TRON_NILE;
+    const tronShasta = MultichainNetworks.TRON_SHASTA;
+
+    (
+      Object.entries(TRON_SPECIAL_ASSET_CAIP_TYPES) as [
+        string,
+        TronSpecialAssetCaipType,
+      ][]
+    ).forEach(([key, assetType]) => {
+      it(`returns true for ${key} on Tron mainnet`, () => {
+        expect(
+          isTronSpecialAsset(`${tronMainnet}/${assetType}` as CaipAssetType),
+        ).toBe(true);
+      });
+    });
+
+    it('returns true for special assets on Tron Nile testnet', () => {
+      expect(
+        isTronSpecialAsset(
+          `${tronNile}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetType,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for special assets on Tron Shasta testnet', () => {
+      expect(
+        isTronSpecialAsset(
+          `${tronShasta}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetType,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for native TRX (slip44:195)', () => {
+      expect(
+        isTronSpecialAsset(`${tronMainnet}/slip44:195` as CaipAssetType),
+      ).toBe(false);
+    });
+
+    it('returns false for a normal Tron TRC20 token', () => {
+      expect(
+        isTronSpecialAsset(
+          `${tronMainnet}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for non-Tron CAIP IDs', () => {
+      expect(isTronSpecialAsset('eip155:1/erc20:0x123' as CaipAssetType)).toBe(
+        false,
+      );
+      expect(
+        isTronSpecialAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for undefined', () => {
+      expect(isTronSpecialAsset(undefined)).toBe(false);
+    });
+
+    it('returns false for non-CAIP strings', () => {
+      expect(isTronSpecialAsset('0xabc123')).toBe(false);
+      expect(isTronSpecialAsset('')).toBe(false);
+      expect(isTronSpecialAsset('not-a-caip-id')).toBe(false);
     });
   });
 });

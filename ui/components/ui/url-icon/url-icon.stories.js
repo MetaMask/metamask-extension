@@ -2,8 +2,16 @@ import React from 'react';
 import UrlIcon from './url-icon';
 
 export default {
-  title: 'Components/UI/UrlIcon',
-
+  title: 'Components/UI/UrlIcon (deprecated)',
+  component: UrlIcon,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release.',
+      },
+    },
+  },
   argType: {
     name: { control: 'text' },
     url: { control: 'text' },
@@ -29,10 +37,4 @@ export const DefaultStory = (args) => {
   );
 };
 
-export const AST = () => {
-  return <UrlIcon name="AST" url="AST.png" />;
-};
-
-export const BAT = () => {
-  return <UrlIcon name="BAT" url="BAT_icon.svg" />;
-};
+DefaultStory.storyName = 'Default';

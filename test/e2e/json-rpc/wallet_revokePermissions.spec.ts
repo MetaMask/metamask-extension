@@ -2,22 +2,22 @@ import { strict as assert } from 'assert';
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('Revoke Dapp Permissions', function () {
   it('should revoke "eth_accounts" and "endowment:permitted-chains" when the dapp revokes permissions for just "eth_accounts"', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -72,13 +72,13 @@ describe('Revoke Dapp Permissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -131,13 +131,13 @@ describe('Revoke Dapp Permissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -194,17 +194,18 @@ describe('Revoke Dapp Permissions', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
+          await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
           const revokePermissionsRequest = JSON.stringify({
             jsonrpc: '2.0',

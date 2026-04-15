@@ -1,16 +1,17 @@
 import React from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { Box, Text } from '../../component-library';
-import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
+  Box,
+  Text,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
   TextVariant,
   TextAlign,
   TextColor,
-} from '../../../helpers/constants/design-system';
+  FontWeight,
+} from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 export type NotificationsSettingsAccountProps = {
@@ -27,25 +28,30 @@ export function NotificationsSettingsAccount({
   const checksumAddress = toChecksumHexAddress(address);
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      gap={4}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={3}
+      paddingTop={2}
+      paddingBottom={2}
     >
       <PreferredAvatar address={checksumAddress} />
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        justifyContent={BoxJustifyContent.Between}
       >
-        <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          textAlign={TextAlign.Left}
+        >
           {name ?? checksumAddress}
         </Text>
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Regular}
           textAlign={TextAlign.Left}
-          color={TextColor.textAlternative}
+          color={TextColor.TextAlternative}
         >
           {shortenAddress(checksumAddress)}
         </Text>

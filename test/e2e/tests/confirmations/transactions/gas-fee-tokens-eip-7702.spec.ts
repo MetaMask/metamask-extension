@@ -1,11 +1,10 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
@@ -16,7 +15,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -27,15 +26,12 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
           .build(),
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         localNodeOptions: {
-          hardfork: 'prague',
           loadState:
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
         },
@@ -57,7 +53,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await login(driver, { expectedBalance: '0' });
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -80,8 +76,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.checkGasFeeSymbol('USDC');
-        await transactionConfirmation.checkGasFeeFiat('$1.23');
-        await transactionConfirmation.checkGasFee('1.23');
         await transactionConfirmation.checkGasFeeTokenFee('$0.43');
         await transactionConfirmation.clickFooterConfirmButton();
 
@@ -102,12 +96,11 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         localNodeOptions: {
-          hardfork: 'prague',
           loadState:
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
         },
@@ -129,7 +122,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await login(driver, { expectedBalance: '0' });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -269,6 +262,7 @@ async function mockTransactionRelayStatus(
 ) {
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/smart-transactions/${UUID}`)
+    .always()
     .thenCallback(() => {
       return {
         ok: true,

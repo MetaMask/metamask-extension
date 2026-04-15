@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getErrorMessage } from '../../../../shared/modules/error';
+import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -29,7 +29,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
@@ -96,7 +96,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [nftAddFailed, setNftAddFailed] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_NFT);
 

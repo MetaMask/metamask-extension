@@ -10,10 +10,6 @@ class ConnectAccountConfirmation {
     };
   };
 
-  private readonly addSolanaAccountButton = {
-    testId: 'submit-add-account-with-name',
-  };
-
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
   };
@@ -32,16 +28,19 @@ class ConnectAccountConfirmation {
     tag: 'p',
   };
 
-  private readonly createSolanaAccountModalButton = {
-    testId: 'create-solana-account',
-  };
-
   private readonly editAccountButton = {
     text: 'Edit accounts',
     tag: 'button',
   };
 
   private readonly editPermissionsButton = '[data-testid="edit"]';
+
+  private readonly originHeader = (origin: string) => {
+    return {
+      tag: 'h2',
+      text: origin,
+    };
+  };
 
   private readonly permissionsTab = {
     testId: 'permissions-tab',
@@ -51,11 +50,14 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded({
+    origin = '127.0.0.1',
+  }: { origin?: string } = {}): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectAccountConfirmationTitle,
         this.connectAccountConfirmationButton,
+        this.originHeader(origin),
       ]);
     } catch (e) {
       console.log(
@@ -96,28 +98,6 @@ class ConnectAccountConfirmation {
       this.editPermissionsButton,
     );
     await editButtons[1].click();
-  }
-
-  async createCreateSolanaAccountFromModal(): Promise<void> {
-    console.log('Create Solana account from modal');
-    await this.driver.clickElement(this.createSolanaAccountModalButton);
-    await this.driver.clickElement(this.addSolanaAccountButton);
-  }
-
-  async isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(
-        this.createSolanaAccountModalButton,
-        {
-          timeout: 1000,
-        },
-      );
-    } catch (e) {
-      console.log('Create Solana account button not enabled', e);
-      return false;
-    }
-    console.log('Create Solana account button is enabled');
-    return true;
   }
 
   async isConfirmButtonEnabled(): Promise<boolean> {

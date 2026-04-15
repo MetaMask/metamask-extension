@@ -89,7 +89,6 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "showTermsOfUsePopup": "boolean",
-    "showWhatsNewPopup": "boolean",
     "singleExceptions": {
       "testKey": "null"
     },
@@ -105,6 +104,8 @@
     "fromTokenBalance": "null",
     "fromTokenExchangeRate": "null",
     "fromTokenInputValue": "null",
+    "isDestAssetPickerOpen": "boolean",
+    "isSrcAssetPickerOpen": "boolean",
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",
@@ -163,12 +164,19 @@
         "hidden": {
           "value": "boolean",
           "lastUpdatedAt": "number"
-        }
+        },
+        "lastSelected": "number"
       }
     },
-    "accountsAssets": {
-      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": ["string"]
+    "accountIdByAddress": {
+      "*": "string"
     },
+    "accountsAssets": {
+      "<solana-account-1>": ["string"],
+      "<bitcoin-account-1>": ["string"],
+      "<tron-account-1>": ["string"]
+    },
+    "accountState": "null",
     "accountsByChainId": {
       "0x1": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
@@ -191,11 +199,6 @@
         }
       },
       "0x38": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x531": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
           "balance": "string"
         }
@@ -258,26 +261,30 @@
                 "hidden": "boolean",
                 "entropy": {
                   "groupIndex": "number"
-                }
+                },
+                "lastSelected": "number"
               },
               "accounts": [
                 "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
-                "dcf615fa-115e-4b45-af18-2df686fffde2",
-                "3c62fe60-6f00-4227-86f4-33d0b1f4c39e"
+                "<solana-account-1>",
+                "<bitcoin-account-1>",
+                "<tron-account-1>"
               ]
             }
           }
         }
-      },
-      "selectedAccountGroup": "string"
+      }
     },
     "accountWalletsMetadata": {},
+    "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
     "addressBook": {},
+    "addressScanCache": {},
     "addressSecurityAlertResponses": {},
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "alertEnabledness": {
+      "smartTransactionsMigration": "boolean",
       "unconnectedAccount": "boolean",
       "web3ShimUsage": "boolean"
     },
@@ -291,13 +298,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
-    "announcements": {
-      "8": {
-        "date": "string",
-        "id": "number",
-        "isShown": "boolean"
-      }
-    },
+    "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
       "host": "string",
@@ -323,11 +324,282 @@
             "decimals": "number"
           }
         ]
+      },
+      "tron:728126428/slip44:195": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staked-for-bandwidth": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staked-for-energy": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-ready-for-withdrawal": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-in-lock-period": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staking-rewards": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:energy": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:maximum-energy": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:bandwidth": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:maximum-bandwidth": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
       }
     },
     "balances": {
-      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+      "<solana-account-1>": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "unit": "string",
+          "amount": "string"
+        }
+      },
+      "<tron-account-1>": {
+        "tron:728126428/slip44:195": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-staked-for-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-staked-for-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-staked-for-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-staked-for-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-staked-for-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-staked-for-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-in-lock-period": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-in-lock-period": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-in-lock-period": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:maximum-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:maximum-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:maximum-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:maximum-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:maximum-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:maximum-bandwidth": {
+          "unit": "string",
+          "amount": "string"
+        }
+      },
+      "<bitcoin-account-1>": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
           "unit": "string",
           "amount": "string"
         }
@@ -337,6 +609,8 @@
       "browser": "string",
       "os": "string"
     },
+    "cachedMarketDataByProvider": "object",
+    "cachedUserDataByProvider": "object",
     "cacheTimestamp": "number",
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
@@ -351,15 +625,20 @@
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
+      "BNB": {
+        "conversionDate": "null",
+        "conversionRate": "null",
+        "usdConversionRate": "null"
+      },
       "ETH": {
         "conversionDate": "number",
         "conversionRate": "number",
         "usdConversionRate": "number"
       },
-      "MON": {
-        "conversionDate": "number",
-        "conversionRate": "number",
-        "usdConversionRate": "number"
+      "POL": {
+        "conversionDate": "null",
+        "conversionRate": "null",
+        "usdConversionRate": "null"
       }
     },
     "currentAppVersion": "string",
@@ -381,29 +660,59 @@
     "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "delegations": {},
+    "depositInProgress": "boolean",
+    "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
     "drafts": [],
     "enabledNetworkMap": {
       "bip122": {
-        "bip122:000000000019d6689c085ae165831e93": "boolean"
+        "bip122:000000000019d6689c085ae165831e93": "boolean",
+        "bip122:000000000933ea01ad0ee984209779ba": "boolean",
+        "bip122:00000000da84f2bafbbc53dee25a72ae": "boolean",
+        "bip122:00000008819873e925422c1ff0f99f7c": "boolean",
+        "bip122:regtest": "boolean"
       },
       "eip155": {
+        "0x1": "boolean",
         "0x539": "boolean",
-        "0x18c7": "boolean"
+        "0x18c7": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean",
+        "0x279f": "boolean",
+        "0x2105": "boolean",
+        "0xa4b1": "boolean",
+        "0x38": "boolean",
+        "0xa": "boolean",
+        "0x89": "boolean"
       },
       "solana": {
-        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean"
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean",
+        "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": "boolean",
+        "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "boolean"
       },
       "tron": {
-        "tron:728126428": "boolean"
+        "tron:728126428": "boolean",
+        "tron:3448148188": "boolean",
+        "tron:2494104990": "boolean"
       }
     },
-    "enableEnforcedSimulations": "boolean",
-    "enableEnforcedSimulationsForTransactions": {},
+    "nativeAssetIdentifiers": {
+      "eip155:1": "string",
+      "eip155:11155111": "string",
+      "eip155:59141": "string",
+      "eip155:59144": "string",
+      "eip155:1337": "string",
+      "eip155:10143": "string",
+      "eip155:8453": "string",
+      "eip155:42161": "string",
+      "eip155:56": "string",
+      "eip155:10": "string",
+      "eip155:137": "string",
+      "eip155:6343": "string"
+    },
     "enableMV3TimestampSave": "boolean",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": {},
     "ensEntries": {
       "0x1": {
         ".": {
@@ -507,33 +816,31 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
+    "firstTimeInfo": {},
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
-    "gatorPermissionsMapSerialized": "string",
-    "gatorPermissionsProviderSnapId": "string",
+    "grantedPermissions": [],
+    "lastSyncedTimestamp": "number",
+    "hasPlacedFirstOrder": {
+      "testnet": "boolean",
+      "mainnet": "boolean"
+    },
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
+    "hip3ConfigVersion": "number",
     "historicalPrices": {},
-    "identities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
     "ignoredNfts": [],
+    "initializationAttempts": "number",
+    "initializationError": "null",
+    "initializationState": "string",
     "initialEnqueueCompleted": "boolean",
+    "initialDelayEndTimestamp": "number",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -564,7 +871,7 @@
             }
           }
         },
-        "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+        "<solana-account-1>": {
           "type": "string",
           "scopes": ["string"],
           "id": "string",
@@ -573,6 +880,70 @@
             "entropySource": "string",
             "derivationPath": "string",
             "index": "number",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string",
+              "name": "string",
+              "enabled": "boolean"
+            },
+            "lastSelected": "number"
+          }
+        },
+        "<bitcoin-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "entropySource": "string",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string",
+              "name": "string",
+              "enabled": "boolean"
+            },
+            "lastSelected": "number"
+          }
+        },
+        "<tron-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "addressType": "string",
+            "scope": "string",
+            "index": "number",
+            "groupIndex": "number",
+            "entropySource": "string",
             "entropy": {
               "type": "string",
               "id": "string",
@@ -606,11 +977,15 @@
     "isCheckingAccountsPresence": "boolean",
     "isContactSyncingEnabled": "boolean",
     "isContactSyncingInProgress": "boolean",
+    "isEligible": "boolean",
     "isEvmSelected": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
+    "isFirstTimeUser": {
+      "testnet": "boolean",
+      "mainnet": "boolean"
+    },
     "isFetchingGatorPermissions": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
-    "isGatorPermissionsEnabled": "boolean",
     "isInitialized": "boolean",
     "isIpfsGatewayEnabled": "boolean",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -619,10 +994,12 @@
     "isPushEnabled": "boolean",
     "isRampCardClosed": "boolean",
     "isReady": "boolean",
+    "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
+    "isUiOpen": "boolean",
     "isUnlocked": "boolean",
-    "isUpdateAvailable": "boolean",
+    "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": [],
@@ -638,7 +1015,13 @@
       }
     ],
     "knownMethodData": {},
+    "lastCompletedWithdrawalTimestamp": "null",
+    "lastCompletedWithdrawalTxHashes": [],
+    "lastDepositResult": "null",
+    "lastDepositTransactionId": "null",
+    "lastError": "null",
     "lastFetchedBlockNumbers": {},
+    "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
     "lastUpdatedFromVersion": "null",
@@ -646,21 +1029,21 @@
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
-    "lostIdentities": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      }
-    },
+    "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketData": {
-      "0x539": {}
+      "0x1": {},
+      "0x2105": {},
+      "0x38": {},
+      "0x539": {},
+      "0x89": {},
+      "0xa": {},
+      "0xa4b1": {},
+      "0xe708": {}
+    },
+    "marketFilterPreferences": {
+      "optionId": "string",
+      "direction": "string"
     },
     "marketingCampaignCookieId": "null",
     "metamaskNotificationsList": [],
@@ -738,17 +1121,10 @@
         "nativeCurrency": "string"
       }
     },
+    "musdConversionEducationSeen": "boolean",
+    "musdConversionDismissedCtaKeys": [],
     "names": {
-      "ethereumAddress": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "*": {
-            "name": "string",
-            "origin": "string",
-            "proposedNames": {},
-            "sourceId": "null"
-          }
-        }
-      }
+      "ethereumAddress": {}
     },
     "nameSources": {},
     "networkConfigurations": {},
@@ -770,7 +1146,9 @@
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},
     "nonEvmTransactions": {
-      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {}
+      "<solana-account-1>": {},
+      "<bitcoin-account-1>": {},
+      "<tron-account-1>": {}
     },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
@@ -786,6 +1164,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "participateInMetaMetrics": "boolean",
+    "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
@@ -804,23 +1183,24 @@
       }
     ],
     "permissionHistory": {},
+    "perpsBalances": {},
     "pinnedAccountList": [],
     "popupGasPollTokens": [],
     "preferences": {
       "avatarType": "string",
+      "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
-      "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
-      "shouldShowAggregatedBalancePopover": "boolean",
+      "showDefaultAddress": "boolean",
+      "showConfirmationAdvancedDetails": "boolean",
       "showExtensionInFullSizeView": "boolean",
       "showFiatInTestnets": "boolean",
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {
@@ -834,7 +1214,6 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
-    "preventPollingOnNetworkRestart": "boolean",
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
@@ -842,6 +1221,7 @@
     "quoteRequest": {
       "srcTokenAddress": "string"
     },
+    "quoteStreamComplete": "null",
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
@@ -860,6 +1240,8 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
+      "gmx": {},
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
@@ -870,18 +1252,38 @@
         "value": "string"
       }
     },
+    "rawRemoteFeatureFlags": {
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": [
+        {
+          "name": "string",
+          "value": "string",
+          "scope": {
+            "type": "string",
+            "value": "number"
+          }
+        }
+      ]
+    },
+    "thresholdCache": {
+      "*": "number"
+    },
+    "localOverrides": {},
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
+    "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},
-    "rewardsSubscriptionTokens": {},
     "securityAlertsEnabled": "boolean",
-    "seedPhraseBackedUp": "boolean",
+    "seedPhraseBackedUp": "null",
     "segmentApiCalls": {},
-    "selectedAddress": "string",
+    "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",
+    "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
     "showAccountBanner": "boolean",
@@ -889,20 +1291,20 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
-    "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": "boolean",
+    "showShieldEntryModalOnce": "null",
+    "showSidePanelMigrationToast": "boolean",
+    "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {
-      "null": [
+      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
         {
-          "address": "string"
-        }
-      ],
-      "01KBPCGKC0N982CH1VYK4WJ5BH": [
+          "address": "string",
+          "scopes": ["string"]
+        },
         {
           "address": "string",
           "scopes": ["string", "string", "string"]
@@ -911,17 +1313,33 @@
     },
     "slides": [],
     "smartTransactionsState": {
-      "fees": {},
-      "feesByChainId": {},
+      "fees": {
+        "approvalTxFees": "null",
+        "tradeTxFees": "null"
+      },
+      "feesByChainId": {
+        "0x1": {
+          "approvalTxFees": "null",
+          "tradeTxFees": "null"
+        },
+        "0xaa36a7": {
+          "approvalTxFees": "null",
+          "tradeTxFees": "null"
+        }
+      },
       "liveness": "boolean",
-      "livenessByChainId": {},
+      "livenessByChainId": {
+        "0x1": "boolean",
+        "0xaa36a7": "boolean"
+      },
       "smartTransactions": {
         "0x1": []
-      }
+      },
+      "userOptIn": "null",
+      "userOptInV2": "null"
     },
     "snapRegistryList": {},
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "snapsInstallPrivacyWarningShown": "boolean",
     "socialBackupsMetadata": [],
     "srpSessionData": {
       "01KA0MT07W98B2G9474CFDC6VM": {
@@ -1016,34 +1434,6 @@
     "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
-    "swapsState": {
-      "approveTxId": "null",
-      "customApproveTxData": "string",
-      "customGasPrice": "null",
-      "customMaxFeePerGas": "null",
-      "customMaxGas": "string",
-      "customMaxPriorityFeePerGas": "null",
-      "errorKey": "string",
-      "fetchParams": "null",
-      "quotes": {},
-      "quotesLastFetched": "null",
-      "quotesPollingLimitEnabled": "boolean",
-      "routeState": "string",
-      "saveFetchedQuotes": "boolean",
-      "selectedAggId": "null",
-      "swapsFeatureFlags": {},
-      "swapsFeatureIsLive": "boolean",
-      "swapsQuotePrefetchingRefreshTime": "number",
-      "swapsQuoteRefreshTime": "number",
-      "swapsStxBatchStatusRefreshTime": "number",
-      "swapsStxGetTransactionsRefreshTime": "number",
-      "swapsStxMaxFeeMultiplier": "number",
-      "swapsStxStatusDeadline": "number",
-      "swapsUserFeeLevel": "string",
-      "tokens": "null",
-      "topAggId": "null",
-      "tradeTxId": "null"
-    },
     "termsOfUseLastAgreed": "number",
     "theme": "string",
     "throttledOrigins": {},
@@ -1089,6 +1479,11 @@
         "timestamp": "number"
       }
     },
+    "tokenWarnings": [],
+    "tradeConfigurations": {
+      "testnet": {},
+      "mainnet": {}
+    },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
       "install_date_ext": "string",
@@ -1113,7 +1508,6 @@
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
-    "useBlockie": "boolean",
     "useCurrencyRateCheck": "boolean",
     "useExternalNameSources": "boolean",
     "useExternalServices": "boolean",
@@ -1126,8 +1520,24 @@
     "useTransactionSimulations": "boolean",
     "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
+    "watchlistMarkets": {
+      "testnet": [],
+      "mainnet": []
+    },
+    "withdrawInProgress": "boolean",
+    "withdrawalProgress": {
+      "progress": "number",
+      "lastUpdated": "number",
+      "activeWithdrawalId": "null"
+    },
+    "withdrawalRequests": [],
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",

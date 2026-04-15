@@ -35,12 +35,15 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedPermissions: PropTypes.object.isRequired,
     selectedAccounts: PropTypes.array,
     requestedChainIds: PropTypes.array,
+    /** CAIP chain IDs for multichain permission display (e.g., 'solana:...') */
+    selectedCaipChainIds: PropTypes.array,
   };
 
   static defaultProps = {
     request: {},
     selectedAccounts: [],
     requestedChainIds: [],
+    selectedCaipChainIds: null,
   };
 
   static contextTypes = {
@@ -55,6 +58,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       selectedAccounts,
       subjectMetadata,
       requestedChainIds,
+      selectedCaipChainIds,
       request,
     } = this.props;
 
@@ -142,6 +146,12 @@ export default class PermissionPageContainerContent extends PureComponent {
                 ? permissionDiffRequestedChainIds
                 : requestedChainIds
             }
+            // Incremental permission requests (permissionDiffMap present) are
+            // EVM-only (wallet_switchEthereumChain). Passing null here lets
+            // PermissionCell fall back to the EVM-only display via
+            // requestedChainIds, instead of showing pre-existing non-EVM
+            // chains (Bitcoin/Solana/Tron) from the full permission set.
+            caipChainIds={permissionDiffMap ? null : selectedCaipChainIds}
           />
         </Box>
       </Box>

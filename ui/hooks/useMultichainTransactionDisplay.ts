@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
@@ -37,13 +36,9 @@ type AggregatedMovement = {
   amount: number;
 };
 
-export function useMultichainTransactionDisplay(
-  transaction: Transaction,
-  networkConfig: MultichainProviderConfig,
-) {
+export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
-  const { chainId } = networkConfig;
-  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[chainId];
+  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[transaction.chain];
   const t = useI18nContext();
 
   const from = aggregateAmount(

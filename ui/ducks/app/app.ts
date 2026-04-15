@@ -90,7 +90,6 @@ type AppState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
@@ -210,7 +209,6 @@ const initialState: AppState = {
   requestAccountTabs: {},
   openMetaMaskTabs: {},
   currentWindowTab: {},
-  showWhatsNewPopup: true,
   showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
@@ -653,12 +651,6 @@ export default function reduceApp(
         openMetaMaskTabs: action.payload,
       };
 
-    case actionConstants.HIDE_WHATS_NEW_POPUP:
-      return {
-        ...appState,
-        showWhatsNewPopup: false,
-      };
-
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
       return {
         ...appState,
@@ -745,7 +737,6 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -763,17 +754,10 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IF
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
-      return {
-        ...appState,
-        showPasswordChangeToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
@@ -814,12 +798,6 @@ export default function reduceApp(
 }
 
 // Action Creators
-export function hideWhatsNewPopup(): Action {
-  return {
-    type: actionConstants.HIDE_WHATS_NEW_POPUP,
-  };
-}
-
 export function openBasicFunctionalityModal(): Action {
   return {
     type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,

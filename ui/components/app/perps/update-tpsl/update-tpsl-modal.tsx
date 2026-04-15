@@ -1,0 +1,111 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalContentSize,
+  ModalBody,
+  ModalFooter,
+} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import type { Position } from '../types';
+import {
+  UpdateTPSLModalContent,
+  type UpdateTPSLSubmitState,
+} from './update-tpsl-modal-content';
+
+export type UpdateTPSLModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  position: Position;
+  currentPrice: number;
+};
+
+/**
+ * Modal for updating Take Profit / Stop Loss on a position.
+ * Visually matches the Edit Margin modal flow.
+ * @param options0
+ * @param options0.isOpen
+ * @param options0.onClose
+ * @param options0.position
+ * @param options0.currentPrice
+ */
+export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
+  isOpen,
+  onClose,
+  position,
+  currentPrice,
+}) => {
+  const t = useI18nContext();
+  const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
+    null,
+  );
+
+  const hasExistingTpsl = Boolean(
+    position.takeProfitPrice || position.stopLossPrice,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasExistingTpsl
+        ? PERPS_EVENT_VALUE.SCREEN_TYPE.UPDATE_TP_SL
+        : PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TP_SL,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+    resetKey: position.symbol,
+  });
+
+  const handleSubmitStateChange = useCallback(
+    (state: UpdateTPSLSubmitState) => {
+      setSubmitState(state);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSubmitState(null);
+    }
+  }, [isOpen]);
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      data-testid="perps-update-tpsl-modal"
+    >
+      <ModalOverlay />
+      <ModalContent size={ModalContentSize.Sm}>
+        <ModalHeader onClose={onClose}>{t('perpsAutoClose')}</ModalHeader>
+        <ModalBody>
+          <UpdateTPSLModalContent
+            position={position}
+            currentPrice={currentPrice}
+            onClose={onClose}
+            onSubmitStateChange={handleSubmitStateChange}
+          />
+        </ModalBody>
+        <ModalFooter
+          onSubmit={submitState?.onSubmit}
+          submitButtonProps={{
+            'data-testid': 'perps-update-tpsl-modal-submit',
+            children: submitState?.isSaving
+              ? t('perpsSubmitting')
+              : t('perpsSaveChanges'),
+            disabled: submitState?.submitDisabled ?? true,
+            title: submitState?.submitButtonTitle,
+          }}
+        />
+      </ModalContent>
+    </Modal>
+  );
+};

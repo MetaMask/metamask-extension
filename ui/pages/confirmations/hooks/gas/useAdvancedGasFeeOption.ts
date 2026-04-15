@@ -12,7 +12,7 @@ import { type GasOption } from '../../types/gas';
 import { useConfirmContext } from '../../context/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 
 const HEX_ZERO = '0x0';
 

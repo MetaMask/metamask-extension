@@ -1,7 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+import {
+  HashRouter,
+  RouterProvider,
+  createHashRouter,
+  useRouteError,
+} from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
@@ -13,9 +19,68 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
-import ErrorPage from './error-page/error-page.component';
+import { queryClient } from '../contexts/query-client';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import ErrorPageBase from './error-page/error-page.component';
 
-import Routes from './routes';
+import Routes, { routeConfig } from './routes';
+
+function AppProviders() {
+  return (
+    <MetaMetricsProvider>
+      <LegacyMetaMetricsProvider>
+        <I18nProvider>
+          <LegacyI18nProvider>
+            <QueryClientProvider client={queryClient}>
+              <AssetPollingProvider>
+                <MetamaskIdentityProvider>
+                  <MetamaskNotificationsProvider>
+                    <HardwareWalletErrorProvider>
+                      <ShieldSubscriptionProvider>
+                        <RiveWasmProvider>
+                          <Routes />
+                        </RiveWasmProvider>
+                      </ShieldSubscriptionProvider>
+                    </HardwareWalletErrorProvider>
+                  </MetamaskNotificationsProvider>
+                </MetamaskIdentityProvider>
+              </AssetPollingProvider>
+            </QueryClientProvider>
+          </LegacyI18nProvider>
+        </I18nProvider>
+      </LegacyMetaMetricsProvider>
+    </MetaMetricsProvider>
+  );
+}
+
+function ErrorPage({ error }) {
+  return (
+    <MetaMetricsProvider>
+      <I18nProvider>
+        <LegacyI18nProvider>
+          <ErrorPageBase error={error} />
+        </LegacyI18nProvider>
+      </I18nProvider>
+    </MetaMetricsProvider>
+  );
+}
+
+ErrorPage.propTypes = {
+  error: PropTypes.object,
+};
+
+function RouteErrorBoundary() {
+  const error = useRouteError();
+  return <ErrorPage error={error} />;
+}
+
+const router = createHashRouter([
+  {
+    element: <AppProviders />,
+    errorElement: <RouteErrorBoundary />,
+    children: routeConfig,
+  },
+]);
 
 class Index extends PureComponent {
   state = {};
@@ -36,13 +101,7 @@ class Index extends PureComponent {
       return (
         <Provider store={store}>
           <HashRouter>
-            <MetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <ErrorPage error={error} />
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </MetaMetricsProvider>
+            <ErrorPage error={error} />
           </HashRouter>
         </Provider>
       );
@@ -50,27 +109,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter>
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <AssetPollingProvider>
-                    <MetamaskIdentityProvider>
-                      <MetamaskNotificationsProvider>
-                        <ShieldSubscriptionProvider>
-                          <RiveWasmProvider>
-                            <Routes />
-                          </RiveWasmProvider>
-                        </ShieldSubscriptionProvider>
-                      </MetamaskNotificationsProvider>
-                    </MetamaskIdentityProvider>
-                  </AssetPollingProvider>
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
+        <RouterProvider router={router} />
       </Provider>
     );
   }

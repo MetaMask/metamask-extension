@@ -1,15 +1,12 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
@@ -55,14 +52,17 @@ describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withConversionRateDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
       },
@@ -72,10 +72,9 @@ describe('Settings: Show native token as main balance', function () {
   it('Should show balance in fiat when toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withConversionRateEnabled()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -83,19 +82,19 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
         await homePage.headerNavbar.openSettingsPage();
+        const assetsSettings = new PreferencesAndDisplaySettings(driver);
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.toggleShowConversionOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.goToAssetsSettings();
+        await assetsSettings.checkAssetsPageIsLoaded();
+        await assetsSettings.toggleShowNativeTokenAsMainBalance();
+        await settingsPage.clickBackButton();
 
         // assert amount displayed
         const assetListPage = new AssetListPage(driver);
@@ -107,10 +106,9 @@ describe('Settings: Show native token as main balance', function () {
   it('Should not show popover twice', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withConversionRateEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -118,24 +116,24 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
         await homePage.headerNavbar.openSettingsPage();
+        const assetsSettings = new PreferencesAndDisplaySettings(driver);
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.toggleShowConversionOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.goToAssetsSettings();
+        await assetsSettings.checkAssetsPageIsLoaded();
+        await assetsSettings.toggleShowNativeTokenAsMainBalance();
+        await settingsPage.clickBackButton();
 
         // go to setting and back to home page and make sure popover is not shown again
         await homePage.headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await homePage.checkPageIsLoaded();
       },
     );

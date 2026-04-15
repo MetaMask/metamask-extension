@@ -133,12 +133,6 @@ function withRequest<ReturnValue>(
     }),
   );
 
-  // Register ErrorReportingService:captureException handler
-  messenger.registerActionHandler(
-    'ErrorReportingService:captureException',
-    jest.fn(),
-  );
-
   const smartTransactionsControllerMessenger = new Messenger<
     'SmartTransactionsController',
     MessengerActions<SmartTransactionsControllerMessenger>,
@@ -155,7 +149,6 @@ function withRequest<ReturnValue>(
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
       'RemoteFeatureFlagController:getState',
-      'ErrorReportingService:captureException',
     ],
     events: [
       'NetworkController:stateChange',
@@ -910,7 +903,7 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  describe('extensionSkipSTXStatusPage feature flag', () => {
+  describe('extensionSkipTransactionStatusPage feature flag', () => {
     const baseFeatureFlags = {
       extensionActive: true,
       mobileActive: false,
@@ -943,7 +936,7 @@ describe('submitSmartTransactionHook', () => {
             options: {
               featureFlags: {
                 ...baseFeatureFlags,
-                extensionSkipSmartTransactionStatusPage: flag,
+                extensionSkipTransactionStatusPage: flag,
               },
             },
           },
@@ -980,7 +973,7 @@ describe('submitSmartTransactionHook', () => {
           options: {
             featureFlags: {
               ...baseFeatureFlags,
-              extensionSkipSmartTransactionStatusPage: true,
+              extensionSkipTransactionStatusPage: true,
             },
             transactions: [
               {

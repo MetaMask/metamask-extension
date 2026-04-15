@@ -8,6 +8,7 @@ import {
   MOCK_NFT1155,
 } from '../../../../../../test/data/send/assets';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import * as SendContext from '../../../context/send';
 import { HexData } from './hex-data';
@@ -44,7 +45,7 @@ describe('HexData', () => {
 
     const { getByText } = render();
 
-    expect(getByText('Hex data')).toBeInTheDocument();
+    expect(getByText(messages.hexData.message)).toBeInTheDocument();
   });
 
   it('call updateHexData when hex data is changed', () => {
@@ -74,7 +75,7 @@ describe('HexData', () => {
     fireEvent.change(getByRole('textbox'), {
       target: { value: '###' },
     });
-    expect(getByText('Invalid hex data')).toBeInTheDocument();
+    expect(getByText(messages.invalidHexData.message)).toBeInTheDocument();
   });
 
   it('return null for ERC20 send', () => {
@@ -86,7 +87,7 @@ describe('HexData', () => {
 
     const { queryByText } = render();
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 
   it('return null for NFT send', () => {
@@ -98,7 +99,7 @@ describe('HexData', () => {
 
     const { queryByText } = render();
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 
   it('return null if flag sendHexData is not set', () => {
@@ -119,6 +120,6 @@ describe('HexData', () => {
       },
     });
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 });

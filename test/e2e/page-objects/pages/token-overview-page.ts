@@ -25,6 +25,8 @@ class TokenOverviewPage {
     tag: 'div',
   };
 
+  private readonly backButton = '.asset-page__back-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -66,6 +68,10 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
+  }
+
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
   }
 }
 

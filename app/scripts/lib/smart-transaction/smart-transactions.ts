@@ -1,9 +1,9 @@
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  StartFlow,
-  UpdateRequestState,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerEndFlowAction,
+  ApprovalControllerStartFlowAction,
+  ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import {
   SmartTransactionsController,
@@ -30,25 +30,27 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
+  getExtensionSkipTransactionStatusPage,
   getIsSmartTransaction,
   isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
-} from '../../../../shared/modules/selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
-import { ControllerFlatState } from '../../controller-init/controller-list';
+} from '../../../../shared/lib/selectors';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
+import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
+import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 
 const namespace = 'SmartTransactions';
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | UpdateRequestState
-  | StartFlow
-  | AcceptRequest
-  | EndFlow;
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerUpdateRequestStateAction
+  | ApprovalControllerStartFlowAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerEndFlowAction;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
 export type SmartTransactionHookMessenger = Messenger<
@@ -57,7 +59,9 @@ export type SmartTransactionHookMessenger = Messenger<
   AllowedEvents
 >;
 
-export type FeatureFlags = SmartTransactionsNetworkConfig;
+export type FeatureFlags = SmartTransactionsNetworkConfig & {
+  extensionSkipTransactionStatusPage?: boolean;
+};
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
@@ -126,17 +130,17 @@ class SmartTransactionHook {
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
-    const extensionSkipSmartTransactionStatusPage =
-      featureFlags?.extensionSkipSmartTransactionStatusPage;
 
-    this.#shouldShowStatusPage = extensionSkipSmartTransactionStatusPage
-      ? false
-      : Boolean(
-          (transactionMeta.type !== TransactionType.bridge &&
-            transactionMeta.type !==
-              TransactionType.shieldSubscriptionApprove) ||
-            (this.#transactions && this.#transactions.length > 0),
-        );
+    const legacyShowStatusPage = Boolean(
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
+        (this.#transactions && this.#transactions.length > 0),
+    );
+
+    this.#shouldShowStatusPage =
+      featureFlags?.extensionSkipTransactionStatusPage
+        ? false
+        : legacyShowStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -477,7 +481,11 @@ class SmartTransactionHook {
           );
           const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
           if (transactionMeta) {
-            signedTx.metadata = { txType: transactionMeta.type };
+            signedTx.metadata = {
+              txType: transactionMeta.type,
+              client: getClientForTransactionMetadata(),
+              origin: sanitizeOrigin(transactionMeta.origin),
+            };
           }
           return signedTx;
         });
@@ -486,7 +494,11 @@ class SmartTransactionHook {
       signedTransactionsWithMetadata = [
         {
           tx: this.#signedTransactionInHex,
-          metadata: { txType: this.#transactionMeta.type },
+          metadata: {
+            txType: this.#transactionMeta.type,
+            client: getClientForTransactionMetadata(),
+            origin: sanitizeOrigin(this.#transactionMeta.origin),
+          },
         },
       ];
     } else if (getFeesResponse) {
@@ -497,7 +509,11 @@ class SmartTransactionHook {
       );
       signedTransactionsWithMetadata = signed.map((signedTx) => ({
         tx: signedTx,
-        metadata: { txType: this.#transactionMeta.type },
+        metadata: {
+          txType: this.#transactionMeta.type,
+          client: getClientForTransactionMetadata(),
+          origin: sanitizeOrigin(this.#transactionMeta.origin),
+        },
       }));
     }
     signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
@@ -574,12 +590,12 @@ export const submitBatchSmartTransactionHook = (
   return smartTransactionHook.submitBatch();
 };
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
 export function getSmartTransactionCommonParams(
-  flatState: ControllerFlatState,
+  flatState: MessengerClientFlatState,
   chainId?: Hex,
 ) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
@@ -593,12 +609,18 @@ export function getSmartTransactionCommonParams(
     uiState,
     effectiveChainId,
   );
+  const extensionSkipTransactionStatusPage =
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    getExtensionSkipTransactionStatusPage(uiState);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
   return {
     isSmartTransaction,
-    featureFlags,
+    featureFlags: {
+      ...featureFlags,
+      extensionSkipTransactionStatusPage,
+    },
     isHardwareWalletAccount,
   };
 }

@@ -1,9 +1,26 @@
-import { AllProperties } from '../../../shared/modules/object.utils';
+import {
+  AllProperties,
+  type ObjectMask,
+} from '../../../shared/lib/object.utils';
 
-// This describes the subset of background controller state attached to errors
-// sent to Sentry These properties have some potential to be useful for
-// debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE = {
+/**
+ * Sentry “state” here means **masks** passed to `maskObject` (see
+ * `shared/lib/object.utils.ts`), not typed Redux or controller snapshots.
+ *
+ * Mask semantics match `ObjectMask`: `true` copies the value; `false` or `[]` replaces
+ * leaves with `typeof` strings; nested objects recurse; `[AllProperties]` masks dynamic keys.
+ *
+ * `SENTRY_BACKGROUND_STATE` is one mask per background controller (persisted / pre-init
+ * context in `setup-initial-state-hooks`). `SENTRY_UI_STATE` is the Redux root mask for
+ * the UI bundle; `metamask` merges flattened controller masks (not UI-only despite the name).
+ */
+type SentryBackgroundControllerMasks = Record<string, ObjectMask>;
+
+type SentryReduxRootMask = ObjectMask & {
+  metamask: ObjectMask;
+};
+
+export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AccountTreeController: {
     accountTree: false,
   },
@@ -59,8 +76,6 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
-    enableEnforcedSimulations: true,
-    enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -88,12 +103,13 @@ export const SENTRY_BACKGROUND_STATE = {
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
-    isUpdateAvailable: true,
+    pendingExtensionVersion: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    shieldSubscriptionError: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
-    showStorageErrorToast: true,
+    storageWriteErrorType: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
@@ -235,12 +251,10 @@ export const SENTRY_BACKGROUND_STATE = {
     overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
-    identities: false,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,
     ledgerTransportType: true,
-    lostIdentities: false,
     openSeaEnabled: true,
     preferences: {
       autoLockTimeLimit: true,
@@ -256,14 +270,12 @@ export const SENTRY_BACKGROUND_STATE = {
       avatarType: true,
     },
     useExternalServices: false,
-    selectedAddress: false,
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
     addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: true,
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
@@ -283,6 +295,7 @@ export const SENTRY_BACKGROUND_STATE = {
     rewardsSeasons: false,
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
+    rewardsPointsEstimateHistory: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -320,49 +333,18 @@ export const SENTRY_BACKGROUND_STATE = {
   SnapInsightsController: {
     insights: false,
   },
-  SnapsRegistry: {
+  SnapRegistryController: {
     database: false,
     lastUpdated: false,
     databaseUnavailable: false,
   },
+  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  SwapsController: {
-    swapsState: {
-      approveTxId: false,
-      customApproveTxData: false,
-      customGasPrice: true,
-      customMaxFeePerGas: true,
-      customMaxGas: true,
-      customMaxPriorityFeePerGas: true,
-      errorKey: true,
-      fetchParams: true,
-      quotes: false,
-      quotesLastFetched: true,
-      quotesPollingLimitEnabled: true,
-      routeState: true,
-      saveFetchedQuotes: true,
-      selectedAggId: true,
-      swapsFeatureFlags: true,
-      swapsFeatureIsLive: true,
-      swapsQuotePrefetchingRefreshTime: true,
-      swapsQuoteRefreshTime: true,
-      swapsStxBatchStatusRefreshTime: true,
-      swapsStxStatusDeadline: true,
-      swapsStxGetTransactionsRefreshTime: true,
-      swapsStxMaxFeeMultiplier: true,
-      swapsUserFeeLevel: true,
-      tokens: false,
-      topAggId: false,
-      tradeTxId: false,
-    },
-  },
-  TokenDetectionController: {
-    [AllProperties]: false,
-  },
+  // TokenDetectionController has no public controller state.
+  TokenDetectionController: {},
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -406,16 +388,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
 };
 
-const flattenedBackgroundStateMask: Record<string, unknown> = {};
+const flattenedBackgroundStateMask: ObjectMask = {};
 
 for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
-  Object.assign(flattenedBackgroundStateMask, controllerState);
+  // Copy only string keys to avoid leaking symbol-only wildcard masks into
+  // flattened UI masks. This isn't allowed by the types, but has happened
+  // before.
+  for (const [key, value] of Object.entries(controllerState)) {
+    flattenedBackgroundStateMask[key] = value;
+  }
 }
 
-// This describes the subset of Redux state attached to errors sent to Sentry
-// These properties have some potential to be useful for debugging, and they do
-// not contain any identifiable information.
-export const SENTRY_UI_STATE = {
+export const SENTRY_UI_STATE: SentryReduxRootMask = {
   gas: true,
   history: true,
   appState: {
@@ -433,10 +417,8 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },

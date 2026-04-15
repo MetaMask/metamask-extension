@@ -16,12 +16,9 @@ buildTypes:
   main:
     id: 10
     features:
-      - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - tron
     # Additional env variables that are specific to this build
     env:
@@ -32,7 +29,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -40,6 +37,7 @@ buildTypes:
       - APPLE_PROD_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
+      - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -51,9 +49,7 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - multi-srp
       - tron
     env:
@@ -62,11 +58,10 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
-      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -85,12 +80,9 @@ buildTypes:
     id: 12
     features:
       - build-experimental
-      - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
@@ -100,7 +92,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -109,6 +101,7 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
+      - PERPS_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -123,16 +116,14 @@ buildTypes:
       - bitcoin
       - tron
       - multi-srp
-      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - SUPPORT_LINK: https://support.metamask.io/
-      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
@@ -158,7 +149,6 @@ features:
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
 
-  build-main:
   build-beta:
     assets:
       # Assets that will be copied
@@ -176,6 +166,7 @@ features:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
+  # TODO: remove keyring-snaps section
   keyring-snaps:
     assets:
       - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
@@ -191,10 +182,12 @@ features:
       - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
         dest: snaps/gator-permissions-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
+  # TODO: remove bitcoin section
   bitcoin:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  # TODO: remove tron section
   tron:
     assets:
       - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
@@ -203,11 +196,6 @@ features:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  bitcoin-swaps:
-  multichain:
-  ocap-kernel:
-    assets:
-      - ./{app,shared,ui}/**/ocap-kernel/**
   build-experimental:
     assets:
       - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
@@ -218,6 +206,7 @@ features:
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - ENABLE_SENTRY: true
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
@@ -232,7 +221,6 @@ env:
   - DEBUG: null
   - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
   - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
@@ -300,6 +288,7 @@ env:
   - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
+  - QUICKNODE_HYPEREVM_URL: null
 
   ###
   # API keys to 3rd party services
@@ -383,10 +372,21 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: 'erc20-token-revocation'
+  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
+
+  # Perps geoblock fallback (comma-separated region codes when remote flag unavailable)
+  - MM_PERPS_BLOCKED_REGIONS: null
+  # Hyperliquid builder fee wallet addresses (public on-chain addresses, not secrets)
+  - MM_PERPS_HL_BUILDER_ADDRESS_MAINNET: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3'
+  - MM_PERPS_HL_BUILDER_ADDRESS_TESTNET: null
+  # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
+  - PERPS_ENABLED: false
+  # Build-time gate: when false AssetsController is instantiated but state remains empty.
+  # When true, the controller populates state (subject to remote feature flag).
+  - ASSETS_UNIFIED_STATE_ENABLED: false
 
   ###
   # Meta variables
@@ -407,13 +407,6 @@ env:
   # This should NEVER be enabled in production since it slows down react
   ###
   - ENABLE_WHY_DID_YOU_RENDER: false
-
-  ###
-  # Unused environment variables referenced in dependencies
-  # Unset environment variables cause a build error. These are set to `null` to tell our build
-  # system that they are intentionally unset.
-  ###
-  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
 
   ###
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.

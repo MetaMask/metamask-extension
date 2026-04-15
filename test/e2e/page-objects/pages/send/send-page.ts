@@ -3,12 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 class SendPage {
   private readonly driver: Driver;
 
-  private readonly amountInput = '[data-testid="send-amount-input"]';
+  private readonly amountInput = { testId: 'send-amount-input' };
 
-  private readonly continueButton = {
-    text: 'Continue',
-    tag: 'button',
-  };
+  private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly header = {
     tag: 'h4',
@@ -17,8 +14,9 @@ class SendPage {
 
   private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
-  private readonly inputRecipient =
-    'input[placeholder="Enter or paste an address or name"]';
+  private readonly inputRecipient = {
+    testId: 'recipient-address-input',
+  };
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
@@ -41,15 +39,25 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientModalButton =
-    '[data-testid="open-recipient-modal-btn"]';
+  private readonly recipientModalButton = {
+    testId: 'open-recipient-modal-btn',
+  };
 
   private readonly solanaNetwork = {
     text: 'Solana',
   };
 
-  private readonly tokenAsset = (chainId: string, symbol: string) =>
-    `[data-testid="token-asset-${chainId}-${symbol}"]`;
+  private readonly tokenAsset = (chainId: string, symbol: string) => {
+    return {
+      testId: `token-asset-${chainId}-${symbol}`,
+    };
+  };
+
+  private readonly networkName = (networkName: string) => {
+    return {
+      testId: networkName,
+    };
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -70,6 +78,17 @@ class SendPage {
     await this.driver.findElement(this.invalidAddressError);
   }
 
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkPicker);
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if send page is loaded');
     try {
@@ -82,6 +101,12 @@ class SendPage {
       throw e;
     }
     console.log('Send page is loaded');
+  }
+
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network ${networkName}`);
+    await this.driver.clickElement(this.networkPicker);
+    await this.driver.clickElement(this.networkName(networkName));
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
@@ -142,6 +167,13 @@ class SendPage {
     await this.pressContinueButton();
   }
 
+  async editAmountByKeys(keys: string[]): Promise<void> {
+    console.log('Editing amount value by key presses');
+    for (const key of keys) {
+      await this.driver.press(this.amountInput, key);
+    }
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Filling amount with ${amount}`);
     await this.driver.waitForSelector(this.amountInput);
@@ -151,6 +183,8 @@ class SendPage {
   async fillHexData(hexData: string): Promise<void> {
     console.log(`Filling hex data`);
     await this.driver.fill(this.hexDataInput, hexData);
+    // Tab out of the hex data field to trigger onBlur and ensure React commits the value to state
+    await this.driver.press(this.hexDataInput, '\uE004');
   }
 
   async fillRecipient(recipientAddress: string): Promise<void> {

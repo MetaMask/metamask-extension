@@ -4,6 +4,7 @@
 import { SolScope } from '@metamask/keyring-api';
 import {
   DAPP_HOST_ADDRESS,
+  DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
   WINDOW_TITLES,
 } from '../../constants';
@@ -18,23 +19,22 @@ import {
   OPTIMISM_DISPLAY_NAME,
   SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import Homepage from '../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withSolanaAccountSnap } from '../solana/common-solana';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   account1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -53,26 +53,6 @@ const SOLANA_PERMISSIONS = {
   },
 };
 
-/**
- * Helper to open a permissions page for a specific app hostname
- *
- * @param driver - The driver to use.
- * @param hostname - The hostname to get the permissions page for.
- * @returns The permissions page for the given host.
- */
-async function getPermissionsPageForHost(
-  driver: Driver,
-  hostname: string,
-): Promise<SitePermissionPage> {
-  const homepage = new Homepage(driver);
-  await homepage.headerNavbar.openPermissionsPage();
-  const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.checkPageIsLoaded();
-  await permissionListPage.openPermissionPageForSite(hostname);
-  const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.checkPageIsLoaded(hostname);
-  return sitePermissionPage;
-}
 /**
  * Checks if an account is displayed
  *
@@ -180,7 +160,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
@@ -189,7 +169,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
@@ -230,7 +210,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPreferencesController()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
@@ -239,7 +219,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
@@ -277,18 +257,22 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should retain EVM permissions when connecting through the Solana Wallet Standard', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesController()
+          .withAccountsControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToTestDappWithTwoAccounts(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+        },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -306,7 +290,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(9);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -321,6 +305,8 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
+            'Bitcoin',
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
@@ -329,23 +315,27 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should retain Solana permissions when connecting through the EVM provider', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
-          }),
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -357,7 +347,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(9);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -373,6 +363,7 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Bitcoin',
             'Solana',
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
         );
@@ -381,20 +372,23 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should default account selection to already permissioned Solana account and requested Ethereum account when `wallet_requestPermissions` is called with specific Ethereum account', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesController()
+          .withAccountsControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToMultichainTestDapp({
+            // @ts-expect-error Type error is expected here since its being inferred as null
+            value: SOLANA_PERMISSIONS,
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToMultichainTestDapp({
-              // @ts-expect-error Type error is expected here since its being inferred as null
-              value: SOLANA_PERMISSIONS,
-            }),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -430,7 +424,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(9);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -445,6 +439,8 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
+            'Bitcoin',
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
         );
@@ -453,16 +449,19 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should be able to request specific chains when connecting through the EVM provider with existing permissions', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
-          }),
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();

@@ -1,90 +1,54 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import browser from 'webextension-polyfill';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
-  IconColor as IconColorDeprecated,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
+  Box as BoxDeprecated,
   ButtonIcon,
   ButtonIconSize,
   IconName as IconNameDeprecated,
-  IconSize as IconSizeDeprecated,
   Text,
 } from '../../component-library';
-import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
+import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
-import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
-import { GlobalMenu } from '../global-menu';
+import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
-  getOriginOfCurrentTab,
-  getIsMultichainAccountsState2Enabled,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { shortenAddress } from '../../../helpers/utils/util';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
-import { PreferredAvatar } from '../../app/preferred-avatar';
-import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
   getAccountListStats,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -95,43 +59,46 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const origin = useSelector(getOriginOfCurrentTab);
-  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const tourAnchorRef = useRef<HTMLDivElement>(null);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
+  const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
   const selectedMultichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
-  const shortenedAddress =
-    internalAccount &&
-    shortenAddress(normalizeSafeAddress(internalAccount.address));
-  const accountName = isMultichainAccountsState2Enabled
-    ? (selectedMultichainAccount?.metadata.name ?? '')
-    : (internalAccount?.metadata.name ?? '');
+  const accountName = selectedMultichainAccount?.metadata.name ?? '';
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(2000, {
-    expireClipboard: false,
+
+  // useCopyToClipboard analysis: Copies a public address
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [copied, _, resetCopyState] = useCopyToClipboard({
+    clearDelayMs: null,
   });
 
   const showSupportDataConsentModal = useSelector(
     getShowSupportDataConsentModal,
   );
+
+  const closeAccountOptionsMenu = useCallback(() => {
+    setSearchParams((prev) => {
+      prev.delete('drawerOpen');
+      return prev;
+    });
+  }, [setSearchParams]);
 
   // Reset copy state when a switching accounts
   useEffect(() => {
@@ -148,78 +115,31 @@ export const AppHeaderUnlockedContent = ({
     }
   }, [copied, dispatch]);
 
-  const showConnectedStatus =
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin !== browser.runtime.id;
+  const handleMainMenuToggle = useCallback(() => {
+    const isMenuOpen = !accountOptionsMenuOpen;
+    if (isMenuOpen) {
+      trackEvent({
+        event: MetaMetricsEventName.NavMainMenuOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          location: 'Home',
+        },
+      });
+    }
 
-  const handleMainMenuToggle = () => {
-    setAccountOptionsMenuOpen((previous) => {
-      const isMenuOpen = !previous;
+    setSearchParams((prev) => {
       if (isMenuOpen) {
-        trackEvent({
-          event: MetaMetricsEventName.NavMainMenuOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location: 'Home',
-          },
-        });
+        prev.set('drawerOpen', 'true');
+      } else {
+        prev.delete('drawerOpen');
       }
-
-      return isMenuOpen;
+      return prev;
     });
-  };
-
-  const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
-  };
-
-  const handleCopyClick = useCallback(() => {
-    handleCopy(normalizedCurrentAddress);
-  }, [handleCopy, normalizedCurrentAddress]);
-
-  const CopyButton = useMemo(
-    () => (
-      <ButtonBase
-        className="multichain-app-header__address-copy-button"
-        onClick={handleCopyClick}
-        size={ButtonBaseSize.Sm}
-        backgroundColor={BackgroundColor.transparent}
-        borderRadius={BorderRadius.LG}
-        endIconName={
-          copied ? IconNameDeprecated.CopySuccess : IconNameDeprecated.Copy
-        }
-        endIconProps={{
-          color: IconColorDeprecated.iconAlternative,
-          size: IconSizeDeprecated.Sm,
-        }}
-        paddingLeft={2}
-        paddingRight={2}
-        ellipsis
-        textProps={{
-          display: Display.Flex,
-          gap: 2,
-          variant: TextVariant.bodyMdMedium,
-        }}
-        style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-        data-testid="app-header-copy-button"
-      >
-        <Text
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodySmMedium}
-          ellipsis
-          as="span"
-        >
-          {shortenedAddress}
-        </Text>
-      </ButtonBase>
-    ),
-    [copied, handleCopyClick, shortenedAddress],
-  );
+  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <Box style={{ overflow: 'hidden' }}>
+      <BoxDeprecated style={{ overflow: 'hidden' }}>
         {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
@@ -237,7 +157,7 @@ export const AppHeaderUnlockedContent = ({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              navigate(ACCOUNT_LIST_PAGE_ROUTE);
+              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,
@@ -259,19 +179,15 @@ export const AppHeaderUnlockedContent = ({
             paddingLeft={2}
             paddingRight={2}
           />
-          <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
         {selectedMultichainAccountId && (
-          <Box
+          <BoxDeprecated
             marginTop={1}
             marginLeft={2}
-            padding={1}
-            borderRadius={BorderRadius.LG}
-            backgroundColor={BackgroundColor.backgroundMuted}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
-            <MultichainHoveredAddressRowsList
+            <MultichainTriggeredAddressRowsList
               groupId={selectedMultichainAccountId}
               showAccountHeaderAndBalance={false}
               onViewAllClick={() => {
@@ -280,96 +196,21 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              <MultichainAccountNetworkGroup
+              <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
-                limit={4}
               />
-              <Icon
-                name={IconName.Copy}
-                size={IconSize.Xs}
-                color={IconColor.IconAlternative}
-              />
-            </MultichainHoveredAddressRowsList>
-          </Box>
+            </MultichainTriggeredAddressRowsList>
+          </BoxDeprecated>
         )}
-      </Box>
+      </BoxDeprecated>
     );
   }, [
-    CopyButton,
     accountName,
     disableAccountPicker,
+    isDefaultAddressEnabled,
     selectedMultichainAccountId,
-    navigate,
-    isMultichainAccountsState2Enabled,
-    trackEvent,
-    accountListStats,
-  ]);
-
-  // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
-  const AppContent = useMemo(() => {
-    const handleAccountMenuClick = () => {
-      trace({
-        name: TraceName.ShowAccountList,
-        op: TraceOperation.AccountUi,
-      });
-      navigate(ACCOUNT_LIST_PAGE_ROUTE);
-    };
-
-    return (
-      <>
-        <div ref={tourAnchorRef} className="flex">
-          {internalAccount && (
-            <PreferredAvatar address={internalAccount.address} />
-          )}
-        </div>
-
-        {internalAccount && (
-          <Text
-            as="div"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            ellipsis
-          >
-            <AccountPicker
-              address={internalAccount.address}
-              name={accountName}
-              showAvatarAccount={false}
-              onClick={() => {
-                handleAccountMenuClick();
-
-                trackEvent({
-                  event: MetaMetricsEventName.NavAccountMenuOpened,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    pinned_count: accountListStats.pinnedCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    hidden_count: accountListStats.hiddenCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    total_accounts: accountListStats.totalAccounts,
-                  },
-                });
-              }}
-              disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
-            />
-            <>{CopyButton}</>
-          </Text>
-        )}
-      </>
-    );
-  }, [
-    internalAccount,
-    accountName,
-    disableAccountPicker,
-    CopyButton,
     navigate,
     trackEvent,
     accountListStats,
@@ -377,68 +218,53 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <Box
+      <BoxDeprecated
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
         className="min-w-0"
       >
-        {isMultichainAccountsState2Enabled
-          ? multichainAccountAppContent
-          : AppContent}
-      </Box>
-      <Box
+        {multichainAccountAppContent}
+      </BoxDeprecated>
+      <BoxDeprecated
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={2}>
-          {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
-              <ConnectedStatusIndicator
-                onClick={() => handleConnectionsRoute()}
-              />
-            </Box>
-          )}{' '}
-          <Box
-            ref={menuRef}
+        <BoxDeprecated display={Display.Flex} gap={2}>
+          <BoxDeprecated
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={handleMainMenuToggle}>
+              <BoxDeprecated onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
-              </Box>
+              </BoxDeprecated>
             )}
             <ButtonIcon
+              ref={menuRef}
               iconName={IconNameDeprecated.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
               onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
-          </Box>
-        </Box>
-        <GlobalMenu
+          </BoxDeprecated>
+        </BoxDeprecated>
+        <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => {
-            setAccountOptionsMenuOpen(false);
-          }}
+          onClose={closeAccountOptionsMenu}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
-      </Box>
-
-      {!isMultichainAccountsState2Enabled && (
-        <AccountIconTour anchorElement={tourAnchorRef.current} />
-      )}
+      </BoxDeprecated>
     </>
   );
 };

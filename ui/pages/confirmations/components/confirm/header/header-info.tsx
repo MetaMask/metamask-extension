@@ -45,7 +45,7 @@ import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
@@ -56,7 +56,6 @@ const HeaderInfo = () => {
     senderAddress: fromAddress,
     senderName: fromName,
     walletName,
-    isBIP44,
     hasMoreThanOneWallet,
   } = useConfirmationRecipientInfo();
 
@@ -166,7 +165,7 @@ const HeaderInfo = () => {
                 >
                   {fromName}
                 </Text>
-                {isBIP44 && hasMoreThanOneWallet && (
+                {hasMoreThanOneWallet && (
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}

@@ -1,14 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 import { tEn } from '../../../../lib/i18n-helpers';
+import { THIRD_PARTY_APIS_ROUTE } from '../../../../../ui/helpers/constants/routes';
 
 class PrivacySettings {
   private readonly driver: Driver;
 
   private readonly autodetectNftToggleButton =
-    '[data-testid="useNftDetection"] .toggle-button > div';
+    '[data-testid="use-nft-detection"] .toggle-button > div';
 
   private readonly autoDetectToken =
-    '[data-testid="autoDetectTokens"] .toggle-button';
+    '[data-testid="autodetect-tokens"] .toggle-button';
+
+  private readonly blockaidAlertsToggle =
+    '[data-testid="securityAlert"] .toggle-button';
+
+  /** Security alerts (Blockaid) live under Transactions in Settings V2, not Privacy. */
+  private readonly settingsTransactionsTab =
+    '[data-testid="settings-v2-tab-item-transactions"]';
 
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
@@ -18,31 +26,31 @@ class PrivacySettings {
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
-  private readonly copiedSrpExclamation = {
-    text: tEn('copiedExclamation'),
-    tag: 'button',
-  };
+  private readonly copiedSrpExclamation =
+    '[data-testid="reveal-seed-copy-success-toast-banner-base"]';
 
-  private readonly copySrpButton = {
-    text: tEn('copyToClipboard'),
-    tag: 'button',
-  };
+  private readonly copySrpButton = '[data-testid="reveal-seed-copy-button"]';
 
   private readonly dataCollectionForMarketingToggle =
     '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
 
-  private readonly dataCollectionWarningAckButton = {
-    text: 'Okay',
-    tag: 'button',
-  };
-
-  private readonly dataCollectionWarningMessage = {
-    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
-    tag: 'p',
-  };
-
   private readonly deleteMetaMetricsDataButton =
     '[data-testid="delete-metametrics-data-button"]';
+
+  private readonly downloadStateLogsButton =
+    '[data-testid="advanced-setting-state-logs-button"]';
+
+  private readonly downloadStateLogsModalRoot =
+    '[data-testid="download-state-logs-modal"]';
+
+  private readonly downloadStateLogsModalButton =
+    '[data-testid="download-state-logs-modal-button"]';
+
+  private readonly exportYourDataButton =
+    '[data-testid="privacy-tab-export-your-data-button"]';
+
+  private readonly exportYourDataModalDownloadButton =
+    '[data-testid="export-your-data-modal-download-button"]';
 
   private readonly deleteMetaMetricsModalTitle = {
     text: 'Delete MetaMetrics data?',
@@ -55,13 +63,23 @@ class PrivacySettings {
   private readonly ipfsGatewayToggle =
     '[data-testid="ipfsToggle"] .toggle-button';
 
-  private readonly privacySettingsPageTitle = {
-    text: 'Security & privacy',
-    tag: 'h4',
+  private readonly privacySettingsLoadedMarker = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='basic-functionality-toggle']]",
   };
 
+  private readonly securityAndPasswordSettingsLoadedMarker =
+    '[data-testid="reveal-seed-words"]';
+
+  private readonly selectSrpContainer = '[data-testid="select-srp-container"]';
+
+  private readonly privacyTabButton =
+    '[data-testid="settings-v2-tab-item-privacy"]';
+
+  private readonly thirdPartyApisSubpageLink = `a[href="#${THIRD_PARTY_APIS_ROUTE}"]`;
+
   // reveal SRP related locators
-  private readonly displayedSrpText = '[data-testid="srp_text"]';
+  private readonly displayedSrpText = '[data-testid="recovery-phrase-chip-0"]';
 
   private readonly holdToRevealSRPButton = {
     text: tEn('holdToRevealSRP'),
@@ -82,10 +100,10 @@ class PrivacySettings {
   private readonly passwordChangeErrorToast =
     '[data-testid="password-change-toast-error"]';
 
-  private readonly revealSrpNextButton = {
-    text: 'Next',
-    tag: 'button',
-  };
+  private readonly revealSrpContinueButton =
+    '[data-testid="reveal-seed-password-continue"]';
+
+  private readonly tapToRevealButton = '[data-testid="recovery-phrase-reveal"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
@@ -95,11 +113,11 @@ class PrivacySettings {
     '[data-testid="srp-quiz-continue"]';
 
   private readonly revealSrpQuizGetStartedButton =
-    '[data-testid="srp-quiz-get-started"]';
+    '[data-testid="reveal-seed-quiz-get-started"]';
 
   private readonly revealSrpQuizModalTitle = {
-    text: 'Security quiz',
-    tag: 'header',
+    text: 'Reveal Secret Recovery Phrase',
+    tag: 'h4',
   };
 
   private readonly revealSrpQuizQuestionOne =
@@ -119,12 +137,12 @@ class PrivacySettings {
 
   private readonly revealSrpQuizWrongAnswerMessageOne = {
     text: 'Wrong! No one can help get your Secret Recovery Phrase back',
-    tag: 'p',
+    tag: 'h2',
   };
 
   private readonly revealSrpQuizWrongAnswerMessageTwo = {
     text: 'Nope! Never share your Secret Recovery Phrase with anyone, ever',
-    tag: 'p',
+    tag: 'h2',
   };
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
@@ -132,13 +150,16 @@ class PrivacySettings {
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
 
+  private readonly backToSrpListButton =
+    '[data-testid="reveal-recovery-phrase-back-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.privacySettingsPageTitle);
+      await this.driver.waitForSelector(this.privacySettingsLoadedMarker);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',
@@ -149,13 +170,44 @@ class PrivacySettings {
     console.log('Privacy & Security Settings page is loaded');
   }
 
+  async checkSecurityAndPasswordPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(
+        this.securityAndPasswordSettingsLoadedMarker,
+      );
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Security and password settings page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Security and password settings page is loaded');
+  }
+
   async checkSrpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
-    const srpSelector = {
-      text: `Secret Recovery Phrase 1`,
-      tag: 'p',
-    };
-    await this.driver.waitForSelector(srpSelector);
+    await this.driver.waitForSelector(this.selectSrpContainer);
+  }
+
+  async downloadStateLogs(): Promise<void> {
+    console.log('Downloading state logs on privacy settings page');
+    await this.driver.findScrollToAndClickElement(this.downloadStateLogsButton);
+    await this.driver.waitForSelector(this.downloadStateLogsModalRoot);
+    await this.driver.waitForSelector(this.downloadStateLogsModalButton);
+    await this.driver.clickElement(this.downloadStateLogsModalButton);
+  }
+
+  /**
+   * Settings V2 Privacy → Export your data: opens confirmation modal then downloads
+   * the JSON backup (preferences, accounts, address book, networks) from `backupUserData`.
+   */
+  async exportYourData(): Promise<void> {
+    console.log(
+      'Exporting user data (account settings backup) on privacy settings page',
+    );
+    await this.driver.clickElement(this.exportYourDataButton);
+    await this.driver.clickElement(this.exportYourDataModalDownloadButton);
   }
 
   async deleteMetaMetrics(): Promise<void> {
@@ -170,9 +222,9 @@ class PrivacySettings {
     );
   }
 
-  async closeRevealSrpDialog(): Promise<void> {
-    console.log('Close reveal SRP dialog on privacy settings page');
-    await this.driver.clickElement(this.closeRevealSrpDialogButton);
+  async backToSrpList(): Promise<void> {
+    console.log('Back to SRP list on privacy settings page');
+    await this.driver.clickElement(this.backToSrpListButton);
   }
 
   /**
@@ -225,17 +277,15 @@ class PrivacySettings {
   ): Promise<void> {
     console.log('Fill password to reveal SRP on privacy settings page');
     await this.driver.fill(this.revealSrpPasswordInput, password);
-    await this.driver.clickElement(this.revealSrpNextButton);
+    await this.driver.clickElement(this.revealSrpContinueButton);
     if (expectedErrorMessage) {
       await this.driver.waitForSelector({
         css: this.revealSrpWrongPasswordMessage,
         text: expectedErrorMessage,
       });
     } else {
-      await this.driver.holdMouseDownOnElement(
-        this.holdToRevealSRPButton,
-        3000,
-      );
+      await this.driver.waitForSelector(this.tapToRevealButton);
+      await this.driver.clickElement(this.tapToRevealButton);
     }
   }
 
@@ -265,30 +315,36 @@ class PrivacySettings {
 
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     await this.openSrpList();
-    // We only pass in the srpIndex when there are multiple SRPs
-    const srpSelector = {
+    await this.driver.waitForSelector(this.selectSrpContainer);
+    await this.driver.clickElement({
+      css: '.select-srp__container',
       text: `Secret Recovery Phrase ${srpIndex.toString()}`,
-      tag: 'p',
-    };
-    await this.driver.clickElement(srpSelector);
+    });
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
+  /**
+   * Settings V2 does not show the legacy “device only” popover when opting out;
+   * this only toggles the control off.
+   */
   async optOutDataCollectionForMarketing(): Promise<void> {
     console.log(
       'Opt out data collection for marketing on privacy settings page',
     );
-    await this.toggleDataCollectionForMarketing();
-    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.dataCollectionWarningAckButton,
-    );
+    await this.toggleDataCollectionForMarketing({ targetState: 'off' });
   }
 
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  async toggleBlockaidAlerts(): Promise<void> {
+    console.log('Toggle blockaid alerts on privacy settings page');
+    await this.driver.clickElement(this.settingsTransactionsTab);
+    await this.driver.waitForSelector(this.blockaidAlertsToggle);
+    await this.driver.clickElement(this.blockaidAlertsToggle);
   }
 
   async toggleEnsDomainResolution(): Promise<void> {
@@ -301,27 +357,36 @@ class PrivacySettings {
     await this.driver.clickElement(this.ipfsGatewayToggle);
   }
 
+  /**
+   * Opens Third-party APIs (nested under Privacy) by clicking the sidebar Privacy
+   * tab when needed, then the in-page link — same path a user takes in Settings V2.
+   */
+  async goToThirdPartyApisSettings(): Promise<void> {
+    console.log('Go to Third-party APIs settings page');
+    await this.driver.clickElement(this.privacyTabButton);
+    await this.checkPageIsLoaded();
+    await this.driver.clickElement(this.thirdPartyApisSubpageLink);
+    await this.driver.waitForSelector(this.ipfsGatewayToggle);
+  }
+
   async toggleNetworkDetailsCheck(): Promise<void> {
     console.log('Toggle network details check on privacy settings page');
+    await this.goToThirdPartyApisSettings();
+    await this.driver.waitForSelector(this.networkDetailsCheckToggle);
     await this.driver.clickElement(this.networkDetailsCheckToggle);
   }
 
   /**
-   * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
-   *
+   * Waits until the Delete MetaMetrics data button reaches the expected enabled/disabled state.
+   * Prefer this over reading `isEnabled()` immediately to avoid flakes on slow CI.
+   * @param expectedState
    */
-  async checkDeleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
-        waitAtLeastGuard: 2000,
-        timeout: 5000,
-      });
-    } catch (e) {
-      console.log('Delete MetaMetrics data button not enabled', e);
-      return false;
-    }
-    console.log('Delete MetaMetrics data button is enabled');
-    return true;
+  async waitForDeleteMetaMetricsDataButtonState(
+    expectedState: 'enabled' | 'disabled',
+  ): Promise<void> {
+    await this.driver.waitForSelector(this.deleteMetaMetricsDataButton, {
+      state: expectedState,
+    });
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
@@ -345,7 +410,7 @@ class PrivacySettings {
     console.log('Check SRP text is displayed on privacy settings page');
     await this.driver.waitForSelector({
       css: this.displayedSrpText,
-      text: expectedSrpText,
+      text: expectedSrpText.split(' ')[0],
     });
   }
 
@@ -356,18 +421,28 @@ class PrivacySettings {
     await this.driver.clickElement(this.autoDetectToken);
   }
 
-  async toggleParticipateInMetaMetrics(): Promise<void> {
+  async toggleParticipateInMetaMetrics({
+    targetState = 'on',
+  }: { targetState?: 'on' | 'off' } = {}): Promise<void> {
     console.log(
       'Toggle participate in meta metrics in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.participateInMetaMetricsToggle);
+    await this.driver.waitForSelector(
+      `${this.participateInMetaMetricsToggle}.toggle-button--${targetState}`,
+    );
   }
 
-  async toggleDataCollectionForMarketing(): Promise<void> {
+  async toggleDataCollectionForMarketing({
+    targetState = 'on',
+  }: { targetState?: 'on' | 'off' } = {}): Promise<void> {
     console.log(
       'Toggle data collection for marketing in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.dataCollectionForMarketingToggle);
+    await this.driver.waitForSelector(
+      `${this.dataCollectionForMarketingToggle}.toggle-button--${targetState}`,
+    );
   }
 }
 

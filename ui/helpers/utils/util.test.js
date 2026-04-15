@@ -1,5 +1,4 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -114,6 +113,80 @@ describe('util', () => {
     });
   });
 
+  describe('isResolvableName', () => {
+    // Traditional domain names (should match isValidDomainName behavior)
+    it('should return true for valid domain names', () => {
+      expect(util.isResolvableName('vitalik.eth')).toStrictEqual(true);
+      expect(util.isResolvableName('foo.bar')).toStrictEqual(true);
+      expect(util.isResolvableName('wallet.crypto')).toStrictEqual(true);
+    });
+
+    // Email-like formats (0xName, Clusters, etc.)
+    it('should return true for email-like names', () => {
+      expect(util.isResolvableName('yulia@beast')).toStrictEqual(true);
+      expect(util.isResolvableName('user@domain')).toStrictEqual(true);
+      expect(util.isResolvableName('test@example')).toStrictEqual(true);
+    });
+
+    // Scheme-based formats
+    it('should return true for scheme-based names', () => {
+      expect(util.isResolvableName('ens:vitalik')).toStrictEqual(true);
+      expect(util.isResolvableName('lens:username')).toStrictEqual(true);
+      expect(util.isResolvableName('cb:example')).toStrictEqual(true);
+    });
+
+    // Invalid inputs
+    it('should return false for empty or invalid inputs', () => {
+      expect(util.isResolvableName('')).toStrictEqual(false);
+      expect(util.isResolvableName(null)).toStrictEqual(false);
+      expect(util.isResolvableName(undefined)).toStrictEqual(false);
+      expect(util.isResolvableName('a')).toStrictEqual(false); // Too short
+    });
+
+    it('should return false for Ethereum addresses', () => {
+      expect(
+        util.isResolvableName('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('0xAbCdEf1234567890123456789012345678901234'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for pure numbers', () => {
+      expect(util.isResolvableName('12345')).toStrictEqual(false);
+      expect(util.isResolvableName('0')).toStrictEqual(false);
+    });
+
+    it('should return false for invalid email-like formats', () => {
+      expect(util.isResolvableName('@domain')).toStrictEqual(false);
+      expect(util.isResolvableName('user@')).toStrictEqual(false);
+    });
+
+    it('should return false for names without recognizable format', () => {
+      expect(util.isResolvableName('simpleword')).toStrictEqual(false);
+      expect(util.isResolvableName('no-special-chars')).toStrictEqual(false);
+    });
+
+    it('should return false for URLs', () => {
+      expect(util.isResolvableName('http://localhost:3000')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('https://metamask.io')).toStrictEqual(false);
+      expect(util.isResolvableName('ftp://files.example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('mailto:test@example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('file:///path/to/file')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('wss://socket.example.com')).toStrictEqual(
+        false,
+      );
+    });
+  });
+
   describe('isOriginContractAddress', () => {
     it('should return true when the send address is the same as the selected tokens contract address', () => {
       expect(
@@ -144,7 +217,7 @@ describe('util', () => {
   });
 
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });
@@ -167,13 +240,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -209,56 +282,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.52',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 OPR/109.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.165 Safari/537.36 OPR/98.0.4759.39',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36 OPR/108.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36 Edg/113.0.1774.50',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.2420.81 Safari/537.36 Edg/123.0.2420.81',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edge/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.2365.92 Safari/537.36 Edg/122.0.2365.92',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -416,6 +489,9 @@ describe('util', () => {
     });
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
     });
   });
   describe('sanitizeMessage', () => {

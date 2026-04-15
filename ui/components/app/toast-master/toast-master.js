@@ -1,19 +1,25 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
-  BorderColor,
   BorderRadius,
   IconColor,
   TextVariant,
@@ -30,31 +36,27 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getIsMultichainAccountsState2Enabled,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
-  getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  toggleDefaultView,
 } from '../../../store/actions';
-import {
-  AvatarNetwork,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
+import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -78,6 +80,11 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/settings/transaction-shield-tab/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
@@ -85,18 +92,18 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
-  selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
+  selectShowSidePanelMigrationToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -104,19 +111,16 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
+  dismissSidePanelMigrationToast,
 } from './utils';
 
 export function ToastMaster() {
   const location = useLocation();
-  const isMultichainAccountsFeatureState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
@@ -135,11 +139,7 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        {isMultichainAccountsFeatureState2Enabled ? (
-          <ConnectAccountGroupToast />
-        ) : (
-          <ConnectAccountToast />
-        )}
+        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -147,8 +147,12 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <MerklClaimToast />
+        <MusdConversionToast />
+        <PerpsWithdrawToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
+        <SidePanelMigrationToast />
       </ToastContainer>
     );
   }
@@ -157,7 +161,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -170,59 +173,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function ConnectAccountToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const account = useSelector(getSelectedAccount);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountAddress = usePrevious(account?.address);
-  if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectShowConnectAccountToast(state, account),
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={account.address} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          account?.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, account.address));
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
 }
 
 function ConnectAccountGroupToast() {
@@ -448,8 +398,8 @@ function PermittedNetworkToast() {
         key="switched-permitted-network-toast"
         startAdornment={
           <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
+            size={AvatarNetworkSize.Md}
+            className="border-transparent"
             src={getNetworkImageUrl()}
             name={displayNetwork?.name || displayNetwork?.nickname}
           />
@@ -461,7 +411,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />
@@ -535,51 +485,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const PasswordChangeToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPasswordChangeToast = useSelector(selectPasswordChangeToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showPasswordChangeToast !== null && (
-      <Toast
-        dataTestId={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? 'password-change-toast-success'
-            : 'password-change-toast-error'
-        }
-        className={classnames({
-          'toasts-container--password-change-toast--error':
-            showPasswordChangeToast === PasswordChangeToastType.Errored,
-        })}
-        key="password-change-toast"
-        text={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? t('securityChangePasswordToastSuccess')
-            : t('securityChangePasswordToastError')
-        }
-        startAdornment={
-          showPasswordChangeToast ===
-          PasswordChangeToastType.Success ? undefined : (
-            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
-          )
-        }
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function CopyAddressToast() {
   const t = useI18nContext();
@@ -872,27 +777,64 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
-
-  const handleRevealSrpClick = () => {
-    setIsDismissed(true);
-    navigate(REVEAL_SEED_ROUTE);
-  };
-
-  const handleClose = () => {
-    setIsDismissed(true);
-  };
+  const storageWriteErrorType = useSelector(selectStorageWriteErrorType);
 
   // Only show toast if selector returns true and user hasn't dismissed it
   const shouldShow = showStorageErrorToast && !isDismissed;
 
+  // Show disk space-specific message when error is due to no space
+  const isNoSpaceError =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace;
+  const description = isNoSpaceError
+    ? t('storageErrorDescriptionNoSpace')
+    : t('storageErrorDescriptionDefault');
+
+  // Track "Viewed" event when toast becomes visible
+  useEffect(() => {
+    if (shouldShow && !hasTrackedView) {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastViewed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setHasTrackedView(true);
+    }
+  }, [shouldShow, hasTrackedView, trackEvent]);
+
+  const handleRevealSrpClick = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
+  };
+
+  const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastDismissed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+  };
+
+  // Only show action button for default errors (not for no-space errors)
+  const actionProps = isNoSpaceError
+    ? {}
+    : {
+        actionText: t('storageErrorAction'),
+        onActionClick: handleRevealSrpClick,
+      };
+
   return (
     shouldShow && (
       <Toast
-        key="database-corruption-toast"
+        key="storage-error-toast"
         dataTestId="storage-error-toast"
         startAdornment={
           <Icon
@@ -902,12 +844,58 @@ function StorageErrorToast() {
           />
         }
         text={t('storageErrorTitle')}
-        description={t('storageErrorDescription')}
-        actionText={t('storageErrorAction')}
-        onActionClick={handleRevealSrpClick}
+        description={description}
+        {...actionProps}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}
+      />
+    )
+  );
+}
+
+function SidePanelMigrationToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showSidePanelMigrationToast = useSelector(
+    selectShowSidePanelMigrationToast,
+  );
+
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const handleSwitchBackToPopup = async () => {
+    try {
+      await dispatch(toggleDefaultView());
+    } finally {
+      dismissSidePanelMigrationToast();
+    }
+  };
+
+  return (
+    showSidePanelMigrationToast &&
+    isSidePanel && (
+      <Toast
+        key="side-panel-migration-toast"
+        dataTestId="side-panel-migration-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('sidePanelMigrationToast', [
+          <TextButton
+            key="side-panel-migration-switch-back"
+            size={TextButtonSize.BodyMd}
+            onClick={handleSwitchBackToPopup}
+            className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+          >
+            <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
+              {t('switchBackToPopup')}
+            </span>
+          </TextButton>,
+        ])}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={() => dismissSidePanelMigrationToast()}
       />
     )
   );

@@ -3,30 +3,9 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { openWindow } from '../../../helpers/utils/window';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeader } from '.';
-
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
-  getEnvironmentType: jest.fn(),
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -36,6 +15,10 @@ jest.mock('react-router-dom', () => ({
   CompatRouter: ({ children }) => <div>{children}</div>,
   matchPath: jest.fn(),
   useNavigate: () => jest.fn(),
+}));
+
+jest.mock('../../../helpers/utils/window', () => ({
+  openWindow: jest.fn(),
 }));
 
 const render = ({
@@ -58,9 +41,6 @@ const render = ({
 };
 
 describe('App Header', () => {
-  beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -96,24 +76,15 @@ describe('App Header', () => {
       fireEvent.click(settingsButton);
 
       await waitFor(() => {
-        const settingsMenu = container.querySelector(
-          '[data-testid="global-menu"]',
+        const settingsMenu = document.querySelector(
+          '[data-testid="global-menu-settings"]',
         );
         expect(settingsMenu).toBeInTheDocument();
       });
     });
 
-    it('can open the dapp connection', () => {
-      getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-      const { container } = render();
-      const connectionPickerButton = container.querySelector(
-        '[data-testid="connection-menu"]',
-      );
-      expect(connectionPickerButton).toBeInTheDocument();
-    });
-
-    describe('Global menu support button', () => {
-      beforeEach(() => {
+    describe('Drawer support button', () => {
+      beforeEach(async () => {
         const { container } = render();
 
         const settingsButton = container.querySelector(
@@ -121,10 +92,27 @@ describe('App Header', () => {
         );
         fireEvent.click(settingsButton);
 
-        const globalMenuSupportButton = container.querySelector(
-          '[data-testid="global-menu-support"]',
-        );
+        // Menu is in portaled drawer; wait for Support button to be in document
+        let globalMenuSupportButton;
+        await waitFor(() => {
+          globalMenuSupportButton = document.querySelector(
+            '[data-testid="global-menu-support"]',
+          );
+          if (!globalMenuSupportButton) {
+            throw new Error('Support button not found');
+          }
+        });
         fireEvent.click(globalMenuSupportButton);
+        // Wait for consent modal to be open so drawer-close and modal-open updates are flushed (avoids Act warnings)
+        await waitFor(() => {
+          if (
+            !document.querySelector(
+              '[data-testid="visit-support-data-consent-modal"]',
+            )
+          ) {
+            throw new Error('Consent modal not open');
+          }
+        });
       });
 
       it('can open the visit support data consent modal', async () => {
@@ -137,30 +125,32 @@ describe('App Header', () => {
       });
 
       it('opens the support site when "Confirm" button is clicked', async () => {
-        const spy = jest.spyOn(window, 'open');
-
-        const acceptButton = document.querySelector(
-          '[data-testid="visit-support-data-consent-modal-accept-button"]',
-        );
-        expect(acceptButton).toBeInTheDocument();
+        let acceptButton;
+        await waitFor(() => {
+          acceptButton = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal-accept-button"]',
+          );
+          expect(acceptButton).toBeInTheDocument();
+        });
         fireEvent.click(acceptButton);
 
         await waitFor(() => {
-          expect(spy).toHaveBeenCalled();
+          expect(openWindow).toHaveBeenCalled();
         });
       });
 
       it(`opens the support site when "Don't share" button is clicked`, async () => {
-        const spy = jest.spyOn(window, 'open');
-
-        const rejectButton = document.querySelector(
-          '[data-testid="visit-support-data-consent-modal-reject-button"]',
-        );
-        expect(rejectButton).toBeInTheDocument();
+        let rejectButton;
+        await waitFor(() => {
+          rejectButton = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal-reject-button"]',
+          );
+          expect(rejectButton).toBeInTheDocument();
+        });
         fireEvent.click(rejectButton);
 
         await waitFor(() => {
-          expect(spy).toHaveBeenCalled();
+          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
         });
       });
     });
@@ -185,16 +175,6 @@ describe('App Header', () => {
         '[data-testid="account-options-menu-button"]',
       );
       expect(settingsButton).not.toBeInTheDocument();
-    });
-
-    it('does not show dapp connection', () => {
-      const { container } = render({
-        isUnlocked: false,
-      });
-      const connectionPickerButton = container.querySelector(
-        '[data-testid="connection-menu"]',
-      );
-      expect(connectionPickerButton).not.toBeInTheDocument();
     });
   });
 });

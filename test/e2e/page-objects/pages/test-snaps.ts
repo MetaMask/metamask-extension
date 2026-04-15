@@ -24,6 +24,8 @@ const inputLocator = {
   backgroundEventDateInput: '#backgroundEventDate',
   backgroundEventDurationInput: '#backgroundEventDuration',
   cancelBackgroundEventInput: '#backgroundEventId',
+  signMessageMultichainInput: '#signMessageMultichain',
+  signTypedDataMultichainInput: '#signTypedDataMultichain',
 } satisfies Record<string, string>;
 
 export const buttonLocator = {
@@ -36,6 +38,7 @@ export const buttonLocator = {
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
   connectGetFileButton: '#connectgetfile',
+  connectGetLocaleButton: '#connectgetlocale',
   connectHomePageButton: '#connecthomepage',
   connectjsxButton: '#connectjsx',
   displayJsxButton: '#displayJsx',
@@ -43,8 +46,12 @@ export const buttonLocator = {
   connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
+  connectSignatureInsightsButton: '#connectsignature-insights',
+  showSvgImageButton: '#showSVGImage',
+  showPngImageButton: '#showPNGImage',
   connectNameLookUpButton: '#connectname-lookup',
   connectManageStateButton: '#connectmanage-state',
+  connectMultiInstallButton: '#multi-install-connect',
   connectstateButton: '#connectstate',
   connectPreinstalledButton: '#connectpreinstalled-snap',
   connectProtocolButton: '#connectprotocol',
@@ -53,6 +60,7 @@ export const buttonLocator = {
   connectUpdateNewButton: '#connectUpdateNew',
   connectWasmButton: '#connectwasm',
   connectNotificationButton: '#connectnotifications',
+  connectMultichainProviderButton: '#connectmultichain-provider',
   confirmationButton: '#sendConfirmationButton',
   createDialogButton: '#createDialogButton',
   createDialogDisabledButton: '#createDisabledDialogButton',
@@ -71,6 +79,10 @@ export const buttonLocator = {
   personalSignButton: '#signPersonalSignMessage',
   publicKeyBip44Button: '#sendBip44Test',
   connectNetworkAccessButton: '#connectnetwork-access',
+  sendCreateSessionButton: '#sendCreateSession',
+  sendMultichainChainIdButton: '#sendMultichainChainId',
+  sendMultichainGetGenesisHashButton: '#sendMultichainGetGenesisHash',
+  sendMultichainGetAccountsButton: '#sendMultichainAccounts',
   sendErrorButton: '#sendError',
   sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
   sendInAppNotificationButton: '#sendInAppNotification',
@@ -84,6 +96,10 @@ export const buttonLocator = {
   sendManageStateButton: '#sendManageState',
   sendStateButton: '#sendState',
   sendRpcButton: '#sendRpc',
+  sendAlertButton: '#sendAlertButton',
+  sendPromptButton: '#sendPromptButton',
+  sendCustomButton: '#sendCustomButton',
+  sendGetLocaleHelloButton: '#sendGetLocaleHelloButton',
   sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
   sendWasmMessageButton: '#sendWasmMessage',
   signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
@@ -91,6 +107,8 @@ export const buttonLocator = {
   signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
   signEd25519MessageButton: '#sendBip32-ed25519',
   signEntropyMessageButton: '#signEntropyMessage',
+  signMessageMultichainButton: '#signMessageMultichainButton',
+  signTypedDataMultichainButton: '#signTypedDataMultichainButton',
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
   trackErrorButton: '#trackError',
@@ -113,7 +131,7 @@ export const buttonLocator = {
   getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
-const spanLocator = {
+export const spanLocator = {
   addressResultSpan: '#ethproviderResult',
   bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
   bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
@@ -124,11 +142,13 @@ const spanLocator = {
   clientStatusResultSpan: '#clientStatusResult',
   clearManageStateResultSpan: '#clearManageStateResult',
   clearUnencryptedManageStateResultSpan: '#clearUnencryptedManageStateResult',
+  dialogResultSpan: '#dialogResult',
   encryptedStateResultSpan: '#encryptedStateResult',
   entropySignResultSpan: '#entropySignResult',
   errorResultSpan: '#errorResult',
   getStateResultSpan: '#getStateResult',
   fileResultSpan: '#getFileResult',
+  getLocaleResultSpan: '#getLocaleResult',
   installedSnapResultSpan: '#installedSnapsResult',
   interactiveUIResultSpan: '#interactiveUIResult',
   networkAccessResultSpan: '#networkAccessResult',
@@ -136,9 +156,13 @@ const spanLocator = {
   personalSignResultSpan: '#personalSignResult',
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
+  multichainProviderResultSpan: '#multichainProviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
+  snapUiRendererPanel: '.snap-ui-renderer__panel',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  signMessageMultichainResultSpan: '#signMessageMultichainResult',
+  signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
   signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
   retrieveManageStateUnencryptedResultSpan:
@@ -157,6 +181,7 @@ const dropDownLocator = {
   bip44EntropyDropDown: '#bip44-entropy-selector',
   getEntropyDropDown: '#get-entropy-entropy-selector',
   networkDropDown: '#select-chain',
+  multichainNetworkDropdown: '#select-multichain-chain',
 } satisfies Record<string, string>;
 
 export class TestSnaps {
@@ -374,7 +399,7 @@ export class TestSnaps {
    */
   async scrollAndSelectNetwork(
     dropDownName: keyof typeof dropDownLocator,
-    name: 'Ethereum' | 'Linea' | 'Sepolia',
+    name: 'Ethereum' | 'Linea' | 'Sepolia' | 'Solana',
   ) {
     const locator = dropDownLocator[dropDownName];
     console.log(`Select ${name} network`);

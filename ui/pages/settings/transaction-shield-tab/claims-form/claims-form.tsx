@@ -21,7 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -41,7 +41,7 @@ import {
 import { useClaimState } from '../../../../hooks/shield/useClaimState';
 import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { submitShieldClaim } from '../../../../store/actions';

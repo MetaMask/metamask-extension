@@ -37,6 +37,7 @@ export const Toast = ({
   onClose,
   borderRadius,
   textVariant,
+  textClassName,
   autoHideTime,
   onAutoHideToast,
   dataTestId,
@@ -44,7 +45,8 @@ export const Toast = ({
   contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
+  /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
+  text: React.ReactNode;
   description?: string;
   descriptionVariant?: TextVariant;
   actionText?: string;
@@ -52,6 +54,8 @@ export const Toast = ({
   onClose: () => void;
   borderRadius?: BorderRadius;
   textVariant?: TextVariant;
+  /** Tailwind classes for the message text (e.g. "text-base") */
+  textClassName?: string;
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
@@ -107,8 +111,14 @@ export const Toast = ({
         )}
         <Box>
           <Text
-            className="toast-text"
-            variant={textVariant || TextVariant.bodyMdMedium}
+            className={
+              textClassName ? `toast-text ${textClassName}` : 'toast-text'
+            }
+            variant={
+              textClassName
+                ? undefined
+                : textVariant || TextVariant.bodyMdMedium
+            }
           >
             {text}
           </Text>

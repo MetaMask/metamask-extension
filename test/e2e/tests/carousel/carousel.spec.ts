@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { tinyDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/constants';
 
 describe('Carousel component e2e tests', function () {
@@ -13,11 +13,11 @@ describe('Carousel component e2e tests', function () {
     const skip = this.skip.bind(this);
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.waitForSelector(
           '[data-testid="eth-overview__primary-currency"]',
@@ -65,11 +65,11 @@ describe('Carousel component e2e tests', function () {
   it('dismisses slides that are dismissable and hides the carousel when none remain', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // If the carousel doesn't render (e.g., zero Contentful slides), consider it already “hidden”.
         const hasCarousel = await driver.isElementPresent('.mm-carousel');

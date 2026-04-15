@@ -9,7 +9,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import {
   useTransactionPayIsMaxAmount,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -19,12 +19,11 @@ const DEBOUNCE_DELAY = 500;
 
 export function useTransactionCustomAmount({
   currency,
-}: { currency?: string } = {}) {
-  const [amountFiatState, setAmountFiat] = useState('0');
+  disableUpdate = false,
+}: { currency?: string; disableUpdate?: boolean } = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
-  const requiredTokens = useTransactionPayRequiredTokens();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -43,21 +42,34 @@ export function useTransactionCustomAmount({
     null,
   );
 
-  const debounceSetAmountDelayed = useMemo(() => {
+  // Create and update debounced function
+  useEffect(() => {
+    // Cancel any existing debounced calls
     debounceRef.current?.cancel();
 
+    // Create new debounced function
     const debouncedFn = debounce((value: string) => {
       setAmountHumanDebounced(value);
-      updateTokenAmountCallback(value);
+      if (!disableUpdate) {
+        updateTokenAmountCallback(value);
+      }
     }, DEBOUNCE_DELAY);
 
+    // Store in ref
     debounceRef.current = debouncedFn;
-    return debouncedFn;
-  }, [updateTokenAmountCallback]);
 
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((t) => !t.skipIfBalance),
-    [requiredTokens],
+    // Cleanup: cancel on unmount or when dependencies change
+    return () => {
+      debouncedFn.cancel();
+    };
+  }, [disableUpdate, updateTokenAmountCallback]);
+
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  const [amountFiatState, setAmountFiat] = useState(
+    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+      .round(2, BigNumber.ROUND_HALF_UP)
+      .toString(10),
   );
 
   const amountFiat = useMemo(() => {
@@ -81,14 +93,11 @@ export function useTransactionCustomAmount({
   );
 
   useEffect(() => {
-    debounceSetAmountDelayed(amountHuman);
-  }, [amountHuman, debounceSetAmountDelayed]);
-
-  useEffect(() => {
-    return () => {
-      debounceRef.current?.cancel();
-    };
-  }, []);
+    // Use ref directly to avoid re-running when callback is recreated
+    if (debounceRef.current) {
+      debounceRef.current(amountHuman);
+    }
+  }, [amountHuman]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
@@ -155,10 +164,13 @@ export function useTransactionCustomAmount({
         .toString(10);
 
       setAmountHumanDebounced(newAmountHuman);
-      updateTokenAmountCallback(newAmountHuman);
+      if (!disableUpdate) {
+        updateTokenAmountCallback(newAmountHuman);
+      }
     },
     [
       balanceUsd,
+      disableUpdate,
       isMaxAmount,
       setIsMax,
       tokenFiatRate,

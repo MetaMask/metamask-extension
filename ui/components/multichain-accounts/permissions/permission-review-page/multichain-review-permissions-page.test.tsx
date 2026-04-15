@@ -3,16 +3,18 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { CaipAccountId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 const mockUseNavigate = jest.fn();
@@ -20,10 +22,12 @@ jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useSearchParams: () => [
+      new URLSearchParams('origin=https%3A%2F%2Ftest.dapp'),
+    ],
     useLocation: () => ({
       pathname: '/test',
-      search: '',
+      search: '?origin=https%3A%2F%2Ftest.dapp',
       hash: '',
       state: null,
     }),
@@ -52,11 +56,16 @@ jest.mock('../../../../store/actions', () => ({
   setPermittedChains: jest.fn(() => ({ type: 'SET_PERMITTED_CHAINS' })),
 }));
 
-jest.mock('../../../../../shared/modules/environment');
+jest.mock('../../../../../shared/lib/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
   getTokenTransferPermissionsByOrigin: jest.fn(),
+}));
+
+jest.mock('../../../../../shared/lib/multichain/scope-utils', () => ({
+  ...jest.requireActual('../../../../../shared/lib/multichain/scope-utils'),
+  getCaip25AccountIdsFromAccountGroupAndScope: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -80,6 +89,7 @@ const mockAccountGroups = [
       entropy: { groupIndex: 0 },
       pinned: false,
       hidden: false,
+      lastSelected: 0,
     },
     walletName: 'Test Wallet 1',
     walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as const,
@@ -99,6 +109,7 @@ const mockAccountGroups = [
       entropy: { groupIndex: 1 },
       pinned: false,
       hidden: false,
+      lastSelected: 0,
     },
     walletName: 'Test Wallet 2',
     walletId: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8' as const,
@@ -148,7 +159,8 @@ const render = (state = {}) => {
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(<MultichainReviewPermissions />, store);
+  const pathname = `/test?origin=${encodeURIComponent('https://test.dapp')}`;
+  return renderWithProvider(<MultichainReviewPermissions />, store, pathname);
 };
 
 describe('MultichainReviewPermissions', () => {
@@ -219,7 +231,7 @@ describe('MultichainReviewPermissions', () => {
       const { getByText, getAllByTestId } = render();
 
       expect(
-        getByText('See your accounts and suggest transactions'),
+        getByText(messages.accountsPermissionsTitle.message),
       ).toBeInTheDocument();
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
@@ -262,8 +274,37 @@ describe('MultichainReviewPermissions', () => {
       });
     });
 
-    it('allows deselecting account groups', async () => {
+    it('dispatches setPermittedAccounts when deselecting some account groups', async () => {
+      const useAccountGroupsForPermissionsSpy = jest.spyOn(
+        hooks,
+        'useAccountGroupsForPermissions',
+      );
+      useAccountGroupsForPermissionsSpy.mockReturnValue({
+        supportedAccountGroups: mockAccountGroups,
+        connectedAccountGroups: mockAccountGroups,
+        existingConnectedCaipAccountIds:
+          generateCaipAccountIds(mockAccountGroups),
+        connectedAccountGroupWithRequested: mockAccountGroups,
+        caipAccountIdsOfConnectedAndRequestedAccountGroups:
+          generateCaipAccountIds(mockAccountGroups),
+        selectedAndRequestedAccountGroups: mockAccountGroups,
+      });
+
+      const remainingCaipAccountIds = generateCaipAccountIds([
+        mockAccountGroups[0],
+      ]);
+
+      const mockGetCaip25AccountIds =
+        getCaip25AccountIdsFromAccountGroupAndScope as jest.MockedFunction<
+          typeof getCaip25AccountIdsFromAccountGroupAndScope
+        >;
+      mockGetCaip25AccountIds.mockReturnValue(remainingCaipAccountIds);
+
       const { getAllByTestId, getByTestId } = render();
+      const setPermittedAccountsSpy = jest.spyOn(
+        actions,
+        'setPermittedAccounts',
+      );
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -273,15 +314,19 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      const firstAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
+      const secondAccountCell = getByTestId(
+        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
       );
-      fireEvent.click(firstAccountCell);
+      fireEvent.click(secondAccountCell);
 
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(setPermittedAccountsSpy).toHaveBeenCalledWith(
+          'https://test.dapp',
+          remainingCaipAccountIds,
+        );
         expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
       });
     });
@@ -297,11 +342,11 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText('Edit accounts')).toBeInTheDocument();
+      expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
     });
 
-    it('handles deselecting all accounts', async () => {
-      const { getAllByTestId, getByTestId } = render();
+    it('returns to connections page and triggers disconnect flow when deselecting all accounts', async () => {
+      const { getAllByTestId, getByTestId, getAllByRole } = render();
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -311,10 +356,17 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      const firstAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
-      );
-      fireEvent.click(firstAccountCell);
+      const checkboxes = getAllByRole('checkbox');
+      const firstCheckbox = checkboxes[0] as HTMLInputElement;
+
+      expect(firstCheckbox).toBeChecked();
+
+      // To deselect all accounts.
+      fireEvent.change(firstCheckbox, { target: { checked: false } });
+
+      await waitFor(() => {
+        expect(firstCheckbox).not.toBeChecked();
+      });
 
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);
@@ -376,7 +428,7 @@ describe('MultichainReviewPermissions', () => {
       });
 
       expect(
-        getByText('See your accounts and suggest transactions'),
+        getByText(messages.accountsPermissionsTitle.message),
       ).toBeInTheDocument();
     });
   });

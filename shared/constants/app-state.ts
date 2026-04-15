@@ -1,5 +1,5 @@
 import { NetworkClientId } from '@metamask/network-controller';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 
@@ -17,7 +17,6 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
-  [AccountOverviewTabKey.Perps]: MetaMetricsEventName.PerpsScreenOpened,
 } as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
@@ -55,6 +54,17 @@ export enum ClaimSubmitToastType {
   DraftSaveFailed = 'draft-save-failed',
   DraftDeleted = 'draft-deleted',
   DraftDeleteFailed = 'draft-delete-failed',
+}
+
+/**
+ * Type of storage write error that occurred.
+ * Used to show specific error messages in the storage error toast.
+ */
+export enum StorageWriteErrorType {
+  /** A general storage write error */
+  Default = 'default',
+  /** Device is out of disk space */
+  FileErrorNoSpace = 'file-error-no-space',
 }
 
 export type NetworkConnectionBanner =

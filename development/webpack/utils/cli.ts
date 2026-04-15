@@ -8,7 +8,6 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
-import { ENVIRONMENT } from '../../build/constants';
 import {
   Browsers,
   type Manifest,
@@ -16,26 +15,155 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
+import { ENVIRONMENTS, MODES } from './constants';
+import {
+  getAvailableMemoryMB,
+  resolveAutoJobs,
+  resolveAutoThreads,
+} from './loaders/threadLoader';
 
-const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
-type OptionsKeys = keyof Omit<Options, typeof addFeat | typeof omitFeat>;
+type AutoNumberOption = 'auto' | number;
+type ParserOptions = NonNullable<Parameters<typeof parser>[1]>;
+type ParserCoerceMap = NonNullable<ParserOptions['coerce']>;
+
+function coerceAutoNumber(
+  value: string,
+  option: 'threads' | 'jobsPerThread',
+  minimum: number,
+): AutoNumberOption {
+  if (value === 'auto') {
+    return 'auto';
+  }
+
+  const numberValue = Number(value);
+  const minimumDescription = minimum === 0 ? 'non-negative' : 'positive';
+
+  if (
+    Number.isNaN(numberValue) ||
+    numberValue < minimum ||
+    !Number.isInteger(numberValue)
+  ) {
+    throw new Error(
+      `Invalid --${option} value "${value}": expected "auto" or a ${minimumDescription} integer`,
+    );
+  }
+
+  return numberValue;
+}
+
+const coerceThreads = (value: string) => coerceAutoNumber(value, 'threads', 0);
+const coerceJobsPerThread = (value: string) =>
+  coerceAutoNumber(value, 'jobsPerThread', 1);
+
+function resolveThreadOptions({
+  generatePolicy,
+  reactCompilerVerbose,
+  threads,
+  jobsPerThread,
+}: {
+  generatePolicy: boolean;
+  reactCompilerVerbose: boolean;
+  threads: AutoNumberOption;
+  jobsPerThread: AutoNumberOption | 0;
+}) {
+  const resolvedThreads = resolveEffectiveThreads({
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  });
+
+  if (resolvedThreads === 0) {
+    return {
+      threads: 0,
+      jobsPerThread:
+        jobsPerThread === 'auto' || jobsPerThread === 0 ? 0 : jobsPerThread,
+    };
+  }
+
+  return {
+    threads: resolvedThreads,
+    jobsPerThread:
+      jobsPerThread === 'auto'
+        ? resolveAutoJobs(resolvedThreads)
+        : jobsPerThread,
+  };
+}
+
+function resolveEffectiveThreads({
+  generatePolicy,
+  reactCompilerVerbose,
+  threads,
+}: {
+  generatePolicy: boolean;
+  reactCompilerVerbose: boolean;
+  threads: AutoNumberOption;
+}) {
+  if (generatePolicy || reactCompilerVerbose) {
+    return 0;
+  }
+
+  if (threads === 'auto') {
+    return resolveAutoThreads();
+  }
+
+  if (!Number.isInteger(threads) || threads < 0) {
+    throw new Error(
+      `Invalid --threads value "${threads}": expected "auto" or a non-negative integer`,
+    );
+  }
+
+  return threads;
+}
 
 /**
- * Some options affect the default values of other options.
+ * Some options are parsed twice: once early to compute dynamic defaults for the
+ * rest of the CLI, and once as part of the full yargs schema.
  */
 const prerequisites = {
-  env: {
-    alias: 'e',
+  mode: {
     array: false,
-    default: 'development' as const,
+    default: MODES.DEVELOPMENT,
     description: 'Enables/disables production optimizations/development hints',
-    choices: ['development', 'production'] as const,
+    choices: Object.values(MODES),
     group: toOrange('Build options:'),
     type: 'string',
+  },
+  test: {
+    array: false,
+    default: false,
+    description: 'Enables/disables testing mode',
+    group: toOrange('Developer assistance:'),
+    type: 'boolean',
+  },
+  reactCompilerVerbose: {
+    array: false,
+    default: false,
+    description: 'Enables/disables React Compiler verbose mode and statistics',
+    group: toOrange('Developer assistance:'),
+    type: 'boolean',
+  },
+  threads: {
+    array: false,
+    default: 'auto' as AutoNumberOption,
+    description:
+      'Number of thread-loader worker threads. ' +
+      '`auto` adapts to core count and available memory. ' +
+      '`0` disables thread-loader entirely.',
+    group: toOrange('Developer assistance:'),
+    type: 'string',
+    coerce: coerceThreads,
+  },
+  generatePolicy: {
+    alias: 'g',
+    array: false,
+    default: false,
+    description: 'Generate the LavaMoat policy',
+    group: toOrange('Security:'),
+    type: 'boolean',
   },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
@@ -44,34 +172,117 @@ const prerequisites = {
 } as const satisfies YargsOptionsMap;
 
 /**
- * Parses the given args from `argv` and returns whether or not the requested
- * build is a production build or not.
+ * Parses the given args from `argv` and returns values needed to compute
+ * dynamic defaults for other options.
  *
- * @param argv
- * @param opts
- * @returns `true` if this is a production build, otherwise `false`
+ * @param argv - The command line arguments to parse, typically `process.argv.slice(2)`
+ * @returns Parsed prerequisite values for dynamic CLI defaults
  */
-function preParse(
-  argv: string[],
-  opts: typeof prerequisites,
-): { env: 'production' | 'development' } {
-  const options: { [k: string]: { [k: string]: unknown } } = {
-    configuration: {
-      envPrefix: ENV_PREFIX,
-    },
-  };
-  // convert the `opts` object into a format that `yargs-parser` can understand
-  for (const [arg, val] of Object.entries(opts)) {
-    for (const [key, valEntry] of Object.entries(val)) {
-      if (!options[key]) {
-        options[key] = {};
-      }
-      options[key][arg] = valEntry;
+function preParse(argv: string[]) {
+  const aliases: Record<string, string[]> = {};
+  const coerces: ParserCoerceMap = {};
+  const defaults: Record<string, unknown> = {};
+  const booleanOptions: string[] = [];
+  const stringOptions: string[] = [];
+
+  for (const [arg, config] of Object.entries(prerequisites)) {
+    if ('alias' in config) {
+      aliases[arg] = Array.isArray(config.alias)
+        ? config.alias
+        : [config.alias];
+    }
+    if ('coerce' in config) {
+      coerces[arg] = config.coerce;
+    }
+    defaults[arg] = config.default;
+    if (config.type === 'boolean') {
+      booleanOptions.push(arg);
+    }
+    if (config.type === 'string') {
+      stringOptions.push(arg);
     }
   }
 
-  const { env } = parser(argv, options);
-  return { env };
+  const parsed = parser(argv, {
+    alias: aliases,
+    coerce: coerces,
+    envPrefix: ENV_PREFIX,
+    boolean: booleanOptions,
+    string: stringOptions,
+    default: defaults,
+  });
+  const mode = parsed.mode === 'production' ? 'production' : 'development';
+  const test = parsed.test === true;
+  const generatePolicy = parsed.generatePolicy === true;
+  const reactCompilerVerbose = parsed.reactCompilerVerbose === true;
+  const threads = parsed.threads as AutoNumberOption;
+
+  return {
+    mode,
+    test,
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  } as const;
+}
+
+/**
+ * Resolves the MetaMask build environment.
+ *
+ * The environment determines which Sentry project events are sent to,
+ * feature flag detection, and other build-specific behaviors.
+ *
+ * Resolution order:
+ * 1. If `--test` is set, returns 'testing'
+ * 2. If `--mode development`, returns 'development'
+ * 3. Otherwise, auto-detects from git context (release branch, main, PR, or other)
+ *
+ * NOTE: 'production' environment is NEVER returned as a default. It must be
+ * explicitly set via `--env` to prevent accidental pollution of production
+ * Sentry with events from local or CI test builds.
+ *
+ * @param args - The parsed CLI arguments
+ * @param args.test - Whether this is a test build
+ * @param args.mode - The webpack mode ('development' or 'production')
+ * @returns The resolved environment string
+ */
+export function resolveDefaultBuildEnvironment(args: {
+  test: boolean;
+  mode: (typeof MODES)[keyof typeof MODES];
+}): (typeof ENVIRONMENTS)[keyof typeof ENVIRONMENTS] {
+  // Test builds always use 'testing' environment by default.
+  if (args.test) {
+    return ENVIRONMENTS.TESTING;
+  }
+
+  // Development builds use 'development' environment
+  if (args.mode === MODES.DEVELOPMENT) {
+    return ENVIRONMENTS.DEVELOPMENT;
+  }
+
+  // For production-like builds (--mode production), auto-detect from git
+  // context. GITHUB_HEAD_REF is only used in pull_requests, while
+  // `GITHUB_REF_NAME` is the name of the branch that triggered the workflow.
+  const branch =
+    process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
+
+  // staging builds always come from the `main` branch
+  if (branch === 'main') {
+    return ENVIRONMENTS.STAGING;
+  }
+
+  // release branches are like "release/1.2.0", "release/13.2.1", etc.
+  if (/^release\/\d+\.\d+\.\d+$/u.test(branch)) {
+    return ENVIRONMENTS.RELEASE_CANDIDATE;
+  }
+
+  const eventName = process.env.GITHUB_EVENT_NAME;
+  if (eventName === 'pull_request') {
+    return ENVIRONMENTS.PULL_REQUEST;
+  }
+
+  // Default: local builds or any other source
+  return ENVIRONMENTS.OTHER;
 }
 
 /**
@@ -99,7 +310,7 @@ export function parseArgv(
   const allFeatureNames = Object.keys(features);
 
   // args like `production` may change our CLI defaults, so we pre-parse them
-  const preconditions = preParse(argv, prerequisites);
+  const preconditions = preParse(argv);
   const options = getOptions(preconditions, allBuildTypeNames, allFeatureNames);
   const args = getCli(options, 'yarn webpack').parseSync(argv);
   // the properties `$0` and `_` are added by yargs, but we don't need them. We
@@ -112,13 +323,20 @@ export function parseArgv(
   const setActive = (f: string) => omit.includes(f) || active.add(f);
   [defaultFeaturesForBuildType, add].forEach((feat) => feat.forEach(setActive));
 
-  const ignore = new Set(['$0', 'conf', 'progress', 'stats', 'watch']);
+  const ignore = new Set([
+    '$0',
+    'conf',
+    'progress',
+    'stats',
+    'watch',
+    'threads',
+    'jobsPerThread',
+  ]);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
     .sort(([x], [y]) => x.localeCompare(y));
   return {
-    // narrow the `config` type to only the options we're returning
-    args: config as { [key in OptionsKeys]: (typeof config)[key] },
+    args: config,
     cacheKey: JSON.stringify(cacheKey),
     features: {
       active,
@@ -133,8 +351,6 @@ export function parseArgv(
  * @param options
  * @param name
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
@@ -163,7 +379,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     //   'Enable bash/zsh completions; concat the script generated by running this command to your .bashrc or .bash_profile',
     // )
     .example(
-      '$0 --env development --browser firefox --browser chrome --zip',
+      '$0 --mode development --browser firefox --browser chrome --zip',
       'Builds the extension for development for Chrome & Firefox; generate zip files for both',
     )
     // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
@@ -175,6 +391,28 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
       'Options:': toOrange('Options:'),
       'Examples:': toOrange('Examples:'),
     })
+    .check((args) => {
+      // TODO: LavaMoat doesn't support watch mode yet, so disallow this
+      // combination until that support is implemented.
+      // Tracking issue: https://github.com/MetaMask/metamask-extension/issues/40677
+      if (args.watch === true && args.lavamoat === true) {
+        const message =
+          'LavaMoat does not currently support watch mode. See https://github.com/MetaMask/metamask-extension/issues/40677 for details.';
+        if (args.mode === 'production') {
+          throw new Error(
+            `${message} LavaMoat is enabled automatically when mode is "production"; you can disable it with \`--no-lavamoat\`.`,
+          );
+        } else {
+          throw new Error(message);
+        }
+      }
+      if (args.threads === 0 && args.jobsPerThread !== 0) {
+        throw new Error(
+          'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
+        );
+      }
+      return true;
+    })
     .options(options);
   return cli;
 }
@@ -182,12 +420,25 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
 type Options = ReturnType<typeof getOptions>;
 
 function getOptions(
-  { env }: ReturnType<typeof preParse>,
+  {
+    mode,
+    test,
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
 ) {
-  const isProduction = env === 'production';
-  const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
+  const isProduction = mode === 'production';
+  const prodDefaultDesc =
+    "If `mode` is 'production', `true`, otherwise `false`";
+  const defaultThreadOptions = resolveThreadOptions({
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+    jobsPerThread: 'auto',
+  });
   return {
     watch: {
       alias: 'w',
@@ -218,7 +469,7 @@ function getOptions(
       array: false,
       default: isProduction ? 'hidden-source-map' : 'source-map',
       defaultDescription:
-        "If `env` is 'production', 'hidden-source-map', otherwise 'source-map'",
+        "If `mode` is 'production', 'hidden-source-map', otherwise 'source-map'",
       description: 'Sourcemap type to generate',
       choices: ['none', 'source-map', 'hidden-source-map'] as const,
       group: toOrange('Developer assistance:'),
@@ -232,21 +483,7 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
-    test: {
-      array: false,
-      default: false,
-      description: 'Enables/disables testing mode',
-      group: toOrange('Developer assistance:'),
-      type: 'boolean',
-    },
-    reactCompilerVerbose: {
-      array: false,
-      default: false,
-      description:
-        'Enables/disables React Compiler verbose mode and statistics',
-      group: toOrange('Developer assistance:'),
-      type: 'boolean',
-    },
+    reactCompilerVerbose: prerequisites.reactCompilerVerbose,
     reactCompilerDebug: {
       array: false,
       choices: ['all', 'critical', 'none'] as const,
@@ -256,8 +493,38 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'string',
     },
+    threads: {
+      ...prerequisites.threads,
+      default: defaultThreadOptions.threads,
+      coerce: (value: string) => {
+        return resolveThreadOptions({
+          generatePolicy,
+          reactCompilerVerbose,
+          threads: coerceThreads(value),
+          jobsPerThread: 'auto',
+        }).threads;
+      },
+    },
+    jobsPerThread: {
+      array: false,
+      default: defaultThreadOptions.jobsPerThread,
+      description:
+        'Number of parallel jobs per thread-loader worker. ' +
+        '`auto` derives from thread count. Ignored when `threads` is `0`.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+      coerce: (value: string | number) => {
+        return resolveThreadOptions({
+          generatePolicy,
+          reactCompilerVerbose,
+          threads,
+          jobsPerThread: value === 0 ? 0 : coerceJobsPerThread(String(value)),
+        }).jobsPerThread;
+      },
+    },
 
-    ...prerequisites,
+    mode: prerequisites.mode,
+    test: prerequisites.test,
     zip: {
       alias: 'z',
       array: false,
@@ -270,7 +537,8 @@ function getOptions(
       alias: 'm',
       array: false,
       default: isProduction,
-      defaultDescription: "If `env` is 'production', `true`, otherwise `false`",
+      defaultDescription:
+        "If `mode` is 'production', `true`, otherwise `false`",
       description: 'Minify the output',
       group: toOrange('Build options:'),
       type: 'boolean',
@@ -290,8 +558,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       alias: 'v',
       array: false,
@@ -339,6 +605,29 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+    env: {
+      alias: 'e',
+      array: false,
+      choices: Object.values(ENVIRONMENTS),
+      default: resolveDefaultBuildEnvironment({ mode, test }),
+      defaultDescription:
+        'Auto-detected from git context (branch name, CI environment), or set to "testing" when --test is used, or "development" when --mode development is used',
+      description:
+        'The build environment (production, development, testing, staging, release-candidate, pull-request, other). ' +
+        'Controls Sentry project targeting and feature flag detection. ' +
+        'If not specified, auto-detected from git context or derived from --test / --mode development.',
+      group: toOrange('Build options:'),
+      type: 'string',
+    },
+    validateEnv: {
+      array: false,
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description:
+        'Validate environment variables against builds.yml declarations',
+      group: toOrange('Build options:'),
+      type: 'boolean',
+    },
 
     lavamoat: {
       alias: 'l',
@@ -358,14 +647,7 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    generatePolicy: {
-      alias: 'g',
-      array: false,
-      default: false,
-      description: 'Generate the LavaMoat policy',
-      group: toOrange('Security:'),
-      type: 'boolean',
-    },
+    generatePolicy: prerequisites.generatePolicy,
     snow: {
       alias: 's',
       array: false,
@@ -374,19 +656,6 @@ function getOptions(
       description: 'Apply Snow to the build assets',
       group: toOrange('Security:'),
       type: 'boolean',
-    },
-
-    targetEnvironment: {
-      array: false,
-      choices: environmentOptions,
-      defaultDescription:
-        'Auto-detected from git context (branch name, CI environment)',
-      description:
-        'The build environment (production, staging, release-candidate, pull-request, other). ' +
-        'Controls Sentry project targeting and feature flag detection. ' +
-        'If not specified, auto-detected from git context.',
-      group: toOrange('Build options:'),
-      type: 'string',
     },
 
     dryRun: {
@@ -403,6 +672,13 @@ function getOptions(
       group: toOrange('Options:'),
       type: 'boolean',
     },
+    bundleAnalyzer: {
+      array: false,
+      default: false,
+      description: 'Generate a bundle analyzer report',
+      group: toOrange('Options:'),
+      type: 'boolean',
+    },
   } as const satisfies YargsOptionsMap;
 }
 
@@ -411,17 +687,12 @@ function getOptions(
  *
  * @param args - The parsed CLI arguments
  * @param features - The active and available features
- * @param resolvedEnvironment - The resolved MetaMask environment
  */
-export function getDryRunMessage(
-  args: Args,
-  features: Features,
-  resolvedEnvironment: string,
-) {
+export function getDryRunMessage(args: Args, features: Features) {
   return `🦊 Build Config 🦊
 
-Environment (--env): ${args.env}
-Target Environment: ${resolvedEnvironment}${resolvedEnvironment === args.targetEnvironment ? '' : ' (auto-detected)'}
+Mode: ${args.mode}
+Environment: ${args.env}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
@@ -434,6 +705,10 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
+Threads: ${args.threads}
+Jobs per thread: ${args.jobsPerThread}
+Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
+Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

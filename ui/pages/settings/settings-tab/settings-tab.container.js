@@ -4,6 +4,8 @@ import {
   setAvatarType,
   updateCurrentLocale,
   setHideZeroBalanceTokens,
+  setShowDefaultAddress,
+  setDefaultAddressScope,
   setParticipateInMetaMetrics,
   setTheme,
   setShowNativeTokenAsMainBalancePreference,
@@ -13,17 +15,23 @@ import {
   getPreferences,
   getTheme,
   getSelectedInternalAccount,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
-  const { currentCurrency, useBlockie, currentLocale } = metamask;
+  const { currentCurrency, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance, avatarType } =
-    getPreferences(state);
+  const {
+    hideZeroBalanceTokens,
+    showDefaultAddress,
+    defaultAddressScope,
+    showNativeTokenAsMainBalance,
+    avatarType,
+  } = getPreferences(state);
 
   const tokenList = getTokenList(state);
 
@@ -31,13 +39,15 @@ const mapStateToProps = (state) => {
     currentLocale,
     currentCurrency,
     nativeCurrency,
-    useBlockie,
     avatarType,
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
+    showDefaultAddress,
+    defaultAddressScope,
     selectedAddress,
     tokenList,
     theme: getTheme(state),
+    isDefaultAddressEnabled: getIsDefaultAddressEnabled(state),
   };
 };
 
@@ -53,6 +63,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
+    setShowDefaultAddress: (value) => dispatch(setShowDefaultAddress(value)),
+    setDefaultAddressScope: (value) => dispatch(setDefaultAddressScope(value)),
     setTheme: (val) => dispatch(setTheme(val)),
   };
 };

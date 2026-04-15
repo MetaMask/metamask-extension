@@ -87,30 +87,6 @@ export function getIsQuicknodeEndpointUrl(endpointUrl: string): boolean {
 }
 
 /**
- * Some URLs that users add as networks refer to private servers, and we do not
- * want to report these in Segment (or any other data collection service). This
- * function returns whether the given RPC endpoint is safe to share.
- *
- * @param endpointUrl - The URL of the endpoint.
- * @param infuraProjectId - Our Infura project ID.
- * @returns True if the endpoint URL is safe to share with external data
- * collection services, false otherwise.
+ * The list of known unofficial endpoint URLs.
  */
-export function isPublicEndpointUrl(
-  endpointUrl: string,
-  infuraProjectId: string,
-) {
-  const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
-    endpointUrl,
-    infuraProjectId,
-  );
-  const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
-  const isKnownCustomEndpointUrl =
-    KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
-
-  return (
-    isMetaMaskInfuraEndpointUrl ||
-    isQuicknodeEndpointUrl ||
-    isKnownCustomEndpointUrl
-  );
-}
+export { KNOWN_CUSTOM_ENDPOINT_URLS };

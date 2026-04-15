@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
-import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockState from 'redux-mock-store';
@@ -10,20 +9,18 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getParticipateInMetaMetrics } from '../../selectors';
 import { getMessage } from '../../helpers/utils/i18n-helper';
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import mockState from '../../../test/data/mock-state.json';
+import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
-jest.mock('webextension-polyfill', () => ({
-  runtime: {
-    reload: jest.fn(),
-  },
+jest.mock('../../helpers/utils/reload-extension-from-ui', () => ({
+  reloadExtensionFromUi: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('react-redux', () => ({
@@ -34,6 +31,12 @@ jest.mock('react-redux', () => ({
 describe('ErrorPage', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const MockError = new Error(
     "Cannot read properties of undefined (reading 'message')",
   ) as Error & { code?: string };
@@ -69,7 +72,7 @@ describe('ErrorPage', () => {
 
   it('should render the error message, code, and name if provided', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -91,7 +94,7 @@ describe('ErrorPage', () => {
     const error = {};
 
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={error} />
       </MetaMetricsContext.Provider>,
     );
@@ -104,7 +107,7 @@ describe('ErrorPage', () => {
 
   it('should render sentry user feedback form and submit sentry report successfully when metrics is opted in', () => {
     const { getByTestId, queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -143,7 +146,7 @@ describe('ErrorPage', () => {
       return undefined;
     });
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -154,15 +157,15 @@ describe('ErrorPage', () => {
     expect(describeButton).toBeNull();
   });
 
-  it('should reload the extension when the "Try Again" button is clicked', () => {
+  it('reloads the extension when the "Try Again" button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
-    expect(browser.runtime.reload).toHaveBeenCalled();
+    expect(reloadExtensionFromUi).toHaveBeenCalledTimes(1);
   });
 
   it('should open the support consent modal when the "Contact Support" button is clicked', () => {
@@ -170,7 +173,7 @@ describe('ErrorPage', () => {
     const store = configureMockState([thunk])(mockState);
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
       store,

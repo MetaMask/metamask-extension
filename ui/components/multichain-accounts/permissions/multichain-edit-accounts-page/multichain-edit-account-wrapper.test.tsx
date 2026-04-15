@@ -72,6 +72,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -96,6 +97,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -110,7 +112,6 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 
 const createMockState = (overrides = {}) => {
   const accountTreeState = {
-    selectedAccountGroup: MOCK_GROUP_ID_1,
     wallets: {
       [MOCK_WALLET_ID]: {
         id: MOCK_WALLET_ID,
@@ -132,6 +133,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 0,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount1.id, mockSolAccount1.id],
           },
@@ -145,6 +147,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 1,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount2.id],
           },
@@ -174,6 +177,8 @@ const createMockState = (overrides = {}) => {
   const mockMultichainState = createMockMultichainAccountsState(
     accountTreeState as unknown as AccountTreeState,
     internalAccountsState as unknown as InternalAccountsState,
+    undefined,
+    MOCK_GROUP_ID_1,
   );
 
   return {
@@ -263,7 +268,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
-        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: expect.any(Function),
         onClose: expect.any(Function),
@@ -304,7 +309,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: mockTitle,
-        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: mockOnSubmit,
         onClose: mockOnClose,
@@ -313,7 +318,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     );
   });
 
-  it('passes empty defaultSelectedAccountGroups when no connected account groups', () => {
+  it('uses selectedAndRequestedAccountGroups when no additional connected account groups', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: [],
       supportedAccountGroups: createMockAccountGroups(),
@@ -328,7 +333,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
-        defaultSelectedAccountGroups: [],
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: expect.any(Function),
         onClose: expect.any(Function),
@@ -337,7 +342,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     );
   });
 
-  it('passes empty supportedAccountGroups when no supported account groups', () => {
+  it('uses connectedAccountGroups when no selectedAndRequestedAccountGroups', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: [createMockAccountGroups()[0]],
       supportedAccountGroups: [],
@@ -367,7 +372,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
-        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: expect.any(Function),
         onClose: expect.any(Function),
@@ -382,7 +387,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
     expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
-        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: expect.any(Function),
         onClose: expect.any(Function),
@@ -391,14 +396,14 @@ describe('MultichainEditAccountsPageWrapper', () => {
     );
   });
 
-  it('passes multiple connected account groups as defaultSelectedAccountGroups', () => {
+  it('removes duplicates between selectedAndRequestedAccountGroups and connectedAccountGroups', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: createMockAccountGroups(), // Both groups connected
       supportedAccountGroups: createMockAccountGroups(),
       existingConnectedCaipAccountIds: [],
       connectedAccountGroupWithRequested: createMockAccountGroups(),
       caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
-      selectedAndRequestedAccountGroups: createMockAccountGroups(),
+      selectedAndRequestedAccountGroups: createMockAccountGroups(), // Both groups selected
     });
 
     renderComponent();
@@ -407,6 +412,54 @@ describe('MultichainEditAccountsPageWrapper', () => {
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
+        supportedAccountGroups: createMockAccountGroups(),
+        onSubmit: expect.any(Function),
+        onClose: expect.any(Function),
+      }),
+      expect.any(Object), // React ref
+    );
+  });
+
+  it('appends non-duplicate connected account groups after selectedAndRequestedAccountGroups', () => {
+    mockUseAccountGroupsForPermissions.mockReturnValue({
+      connectedAccountGroups: createMockAccountGroups(), // Both GROUP_ID_1 and GROUP_ID_2
+      supportedAccountGroups: createMockAccountGroups(),
+      existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: createMockAccountGroups(),
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: [createMockAccountGroups()[0]], // Only GROUP_ID_1
+    });
+
+    renderComponent();
+
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Edit Accounts',
+        defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],
+        supportedAccountGroups: createMockAccountGroups(),
+        onSubmit: expect.any(Function),
+        onClose: expect.any(Function),
+      }),
+      expect.any(Object), // React ref
+    );
+  });
+
+  it('passes empty defaultSelectedAccountGroups when both arrays are empty', () => {
+    mockUseAccountGroupsForPermissions.mockReturnValue({
+      connectedAccountGroups: [],
+      supportedAccountGroups: createMockAccountGroups(),
+      existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: [],
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: [],
+    });
+
+    renderComponent();
+
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Edit Accounts',
+        defaultSelectedAccountGroups: [],
         supportedAccountGroups: createMockAccountGroups(),
         onSubmit: expect.any(Function),
         onClose: expect.any(Function),

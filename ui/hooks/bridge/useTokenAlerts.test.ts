@@ -1,8 +1,9 @@
-import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { useTokenAlerts } from './useTokenAlerts';
 
 const renderUseSolanaAlerts = (mockStoreState: object) =>
@@ -18,21 +19,11 @@ const mockResponse = {
   titleId: 'unstableTokenPriceTitle',
   descriptionId: 'unstableTokenPriceDescription',
 };
-jest.mock(
-  '../../../shared/modules/bridge-utils/security-alerts-api.util',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/modules/bridge-utils/security-alerts-api.util',
-    ),
-    fetchTokenAlert: () => mockResponse,
-  }),
-);
-
-// For now we have to mock toChain Solana, remove once it is truly implemented
-const mockGetToChain = { chainId: MultichainNetworks.SOLANA };
-jest.mock('../../ducks/bridge/selectors', () => ({
-  ...jest.requireActual('../../ducks/bridge/selectors'),
-  getToChain: () => mockGetToChain,
+jest.mock('../../../shared/lib/bridge-utils/security-alerts-api.util', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/bridge-utils/security-alerts-api.util',
+  ),
+  fetchTokenAlert: () => mockResponse,
 }));
 
 describe('useTokenAlerts', () => {
@@ -40,24 +31,32 @@ describe('useTokenAlerts', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [formatChainIdToCaip(ChainId.SOLANA)]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: MultichainNetworks.SOLANA,
             },
-          },
+            {
+              chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromToken: {
           address: '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
-        },
-        fromChain: {
-          chainId: CHAIN_IDS.MAINNET,
+          chainId: 'eip155:1',
+          assetId: toAssetId(
+            '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
+            'eip155:1',
+          ),
         },
         toToken: {
           address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
           chainId: MultichainNetworks.SOLANA,
+          assetId: toAssetId(
+            '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+            MultichainNetworks.SOLANA,
+          ),
         },
       },
     });

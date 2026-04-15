@@ -10,6 +10,14 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
+; Set to `true` to include PerpsController and perps features.
+; main and experimental builds have this enabled by default; beta and flask do not.
+PERPS_ENABLED='true'
+
+; Set to `true` to enable AssetsController unified state population.
+; When false, AssetsController is still instantiated but state remains empty.
+ASSETS_UNIFIED_STATE_ENABLED='false'
+
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
@@ -78,3 +86,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
 ; FORCE_AUTH_MATCH_BUILD='false'
+
+; This variable is required to run performance tests
+TEST_SRP_2=

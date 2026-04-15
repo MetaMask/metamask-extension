@@ -2,6 +2,7 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
 /**
@@ -24,6 +25,49 @@ export function isWebUsbAvailable(): boolean {
     typeof window.navigator !== 'undefined' &&
     'usb' in window.navigator
   );
+}
+
+/**
+ * Check if camera APIs are available in the current browser.
+ */
+export function isCameraAvailable(): boolean {
+  if (globalThis.window === undefined) {
+    return false;
+  }
+  const { navigator } = globalThis;
+  return (
+    navigator.mediaDevices !== undefined &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
+  );
+}
+
+/** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
+const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
+  'Unable to determine camera permission state';
+
+/**
+ * Shared probe for the browser camera permission. Returns `null` when
+ * `permissions.query` throws so callers can map to `Unknown` vs surface an error.
+ */
+async function queryCameraPermissionDomState(): Promise<PermissionState | null> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const { permissions } = navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -84,8 +128,29 @@ export async function checkHardwareWalletPermission(
       return await checkWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return await checkWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return await checkCameraPermissionState();
     default:
       return HardwareConnectionPermissionState.Denied;
+  }
+}
+
+/**
+ * Check camera permission state for hardware-wallet permission UI.
+ */
+export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+
+  switch (domState) {
+    case CameraPermissionState.Granted:
+      return HardwareConnectionPermissionState.Granted;
+    case CameraPermissionState.Denied:
+      return HardwareConnectionPermissionState.Denied;
+    default:
+      return HardwareConnectionPermissionState.Prompt;
   }
 }
 
@@ -165,9 +230,46 @@ export async function requestHardwareWalletPermission(
       return requestWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return requestWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return requestCameraPermission();
     default:
       return false;
   }
+}
+
+/**
+ * Request camera permission from the user.
+ */
+export async function requestCameraPermission(): Promise<boolean> {
+  if (!isCameraAvailable()) {
+    return false;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
+
+    stream.getTracks().forEach((track) => track.stop());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Return browser camera permission state for adapter readiness checks.
+ *
+ * @throws {Error} When the permission probe fails (equivalent to
+ * `HardwareConnectionPermissionState.Unknown` from `checkCameraPermissionState`).
+ */
+export async function checkCameraPermission(): Promise<PermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    throw new Error(CAMERA_PERMISSION_PROBE_FAILED_MESSAGE);
+  }
+  return domState;
 }
 
 /**
@@ -278,78 +380,6 @@ export async function getConnectedDevices(
     default:
       return [];
   }
-}
-
-/**
- * Check if a specific device is connected (Ledger-specific, for backward compatibility)
- *
- * @param deviceId - Optional device ID to check for a specific device
- * @returns true if the device is connected
- */
-export async function isDeviceConnected(deviceId?: string): Promise<boolean> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (!deviceId) {
-    // If no specific device ID, just check if any Ledger is connected
-    return devices.length > 0;
-  }
-
-  // Check for specific device
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Check if a hardware wallet is connected
- *
- * @param walletType - The type of hardware wallet to check
- * @param deviceId - Optional specific device ID to check
- * @returns true if the device is connected
- */
-export async function isHardwareWalletConnected(
-  walletType: HardwareWalletType,
-  deviceId?: string,
-): Promise<boolean> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (!deviceId) {
-    return devices.length > 0;
-  }
-
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Get a device ID from a connected device (returns product ID)
- * Ledger-specific for backward compatibility
- */
-export async function getDeviceId(): Promise<string | null> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
-}
-
-/**
- * Get a device ID for a specific hardware wallet type
- *
- * @param walletType - The type of hardware wallet
- * @returns Device ID (product ID as string) or null if no device found
- */
-export async function getHardwareWalletDeviceId(
-  walletType: HardwareWalletType,
-): Promise<string | null> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
 }
 
 /**

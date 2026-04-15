@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   assertInAnyOrder,
   getEventPayloads,
@@ -8,14 +7,15 @@ import {
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import {
-  bridgeTransaction,
   getBridgeFixtures,
   EventTypes,
   EXPECTED_EVENT_TYPES,
+  checkInputChangedEvents,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const quote = {
   amount: '25',
@@ -29,17 +29,19 @@ describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        false,
-        true,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await login(driver, { expectedBalance: '0' });
 
         const homePage = new HomePage(driver);
+        const bridgePage = new BridgeQuotePage(driver);
 
+        // QUOTE REQUEST #1
+        console.log('Starting 1st Swap flow');
         await bridgeTransaction({
           driver,
           quote,
@@ -47,13 +49,37 @@ describe('Bridge tests', function (this: Suite) {
           expectedDestAmount: '0.0157',
         });
 
-        // Start the flow again
+        const inputChangesCount1 = await checkInputChangedEvents(
+          'quoteRequest1',
+          driver,
+          mockedEndpoints,
+        );
+
+        // QUOTE REQUEST #2 - Start the flow again
+        console.log('Starting 2nd Swap flow');
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
+        const inputChangesCount2 = await checkInputChangedEvents(
+          'resetPage',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1,
+        );
+
+        console.log('Entering 2nd Swap quote');
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+
+        const inputChangesCount3 = await checkInputChangedEvents(
+          'quoteRequest2',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1 + inputChangesCount2,
+        );
+
+        // QUOTE REQUEST #3
+        console.log('Switching tokens');
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -72,12 +98,6 @@ describe('Bridge tests', function (this: Suite) {
             `Missing expected event types: ${missingEventTypes.join(', ')}`,
           );
         }
-
-        const bridgeLinkClicked = findEventsByName(
-          EventTypes.BridgeLinkClicked,
-        );
-        // The flow above navigates twice to the bridge page, so we expect 2 events
-        assert.ok(bridgeLinkClicked.length === 2);
 
         const swapBridgeButtonClicked = findEventsByName(
           EventTypes.SwapBridgeButtonClicked,
@@ -104,45 +124,30 @@ describe('Bridge tests', function (this: Suite) {
               'Unified SwapBridge',
         );
 
+        const inputChangesCount4 = await checkInputChangedEvents(
+          'switchTokens',
+          driver,
+          mockedEndpoints,
+          inputChangesCount3 + inputChangesCount2 + inputChangesCount1,
+        );
+
+        // Check total input change events
         const swapBridgeInputChanged = findEventsByName(
           EventTypes.SwapBridgeInputChanged,
         );
-        /**
-         * token_source
-         * chain_source
-         * slippage
-         * token_destination
-         * chain_destination
-         */
-
-        assert(
-          swapBridgeInputChanged.length === 18,
-          `Should have 18 input change events, but got ${swapBridgeInputChanged.length}`,
+        const expectedInputChangeLength =
+          inputChangesCount1 +
+          inputChangesCount2 +
+          inputChangesCount3 +
+          inputChangesCount4;
+        assert.equal(
+          swapBridgeInputChanged.length,
+          expectedInputChangeLength,
+          `Should have ${expectedInputChangeLength} total input change events, but got ${swapBridgeInputChanged.length}`,
         );
-
-        const swapBridgeInputChangedKeys = new Set(
-          swapBridgeInputChanged.map((event) => event.properties.input),
+        console.log(
+          `${expectedInputChangeLength} expected Input Change events found`,
         );
-
-        const inputTypes = [
-          'token_source',
-          'chain_source',
-          'slippage',
-          'token_destination',
-          'chain_destination',
-        ];
-
-        assert.ok(
-          swapBridgeInputChangedKeys.size === 5,
-          'Should have 5 input types',
-        );
-
-        inputTypes.forEach((inputType) => {
-          assert.ok(
-            swapBridgeInputChangedKeys.has(inputType),
-            `Missing input type: ${inputType}`,
-          );
-        });
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
@@ -154,9 +159,9 @@ describe('Bridge tests', function (this: Suite) {
           return (
             event.properties.chain_id_source === 'eip155:1' &&
             event.properties.chain_id_destination === 'eip155:59144' &&
-            event.properties.token_address_source ===
-              `eip155:1/erc20:${toChecksumHexAddress('0x6b175474e89094c44da98b954eedeac495271d0f')}` &&
-            event.properties.token_address_destination ===
+            event.properties.token_address_source.toLowerCase() ===
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase() &&
+            event.properties.token_address_destination.toLowerCase() ===
               'eip155:59144/slip44:60' &&
             event.properties.swap_type === 'crosschain' &&
             event.properties.token_symbol_source === 'DAI' &&
@@ -168,15 +173,16 @@ describe('Bridge tests', function (this: Suite) {
         const crossChainQuotesReceived = findEventsByName(
           EventTypes.UnifiedSwapBridgeQuotesReceived,
         );
-        // The flow receives 2 quotes, so we expect 2 events
-        assert.ok(crossChainQuotesReceived.length === 2);
+        // The flow request quotes 3 times, but the 2nd response may be cancelled
+        // before QuotesReceived is emitted
+        assert.ok(crossChainQuotesReceived.length >= 2);
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&
             crossChainQuotesReceived[0].properties.chain_id_destination ===
               'eip155:59144' &&
-            crossChainQuotesReceived[0].properties.token_address_source ===
-              `eip155:1/erc20:${toChecksumHexAddress('0x6b175474e89094c44da98b954eedeac495271d0f')}` &&
+            crossChainQuotesReceived[0].properties.token_address_source.toLowerCase() ===
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase() &&
             crossChainQuotesReceived[0].properties.token_address_destination ===
               'eip155:59144/slip44:60' &&
             crossChainQuotesReceived[0].properties.swap_type === 'crosschain',

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getErrorMessage } from '../../../../shared/modules/error';
+import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
   MetaMetricsEventAccountType,
@@ -31,7 +31,7 @@ import PrivateKeyImportView from './private-key';
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
@@ -53,10 +53,12 @@ export const ImportAccount = ({ onActionComplete }) => {
         }
       }
 
-      const { selectedAddress } = await dispatch(
+      const {
+        internalAccounts: { selectedAccount },
+      } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
-      if (selectedAddress) {
+      if (selectedAccount) {
         trackImportEvent(strategy, true);
         setImportErrorMessage();
         onActionComplete(true);

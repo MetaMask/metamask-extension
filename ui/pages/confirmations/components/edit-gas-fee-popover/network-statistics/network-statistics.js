@@ -8,14 +8,17 @@ import {
 import { isNullish } from '../../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
 import { Text } from '../../../../../components/component-library';
+import { useConfirmContext } from '../../../context/confirm';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = ({ useRedesigned }) => {
   const t = useContext(I18nContext);
-  const { gasFeeEstimates } = useGasFeeContext();
+  const { networkClientId } = useConfirmContext()?.currentConfirmation ?? {};
+  const { gasFeeEstimates } = useGasFeeEstimates(networkClientId);
+
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(
     gasFeeEstimates?.estimatedBaseFee,
     {
@@ -84,7 +87,7 @@ const NetworkStatistics = ({ useRedesigned }) => {
         )}
         {isNullish(networkCongestion) ? null : (
           <div className="network-statistics__field">
-            <StatusSlider />
+            <StatusSlider gasFeeEstimates={gasFeeEstimates} />
           </div>
         )}
       </div>

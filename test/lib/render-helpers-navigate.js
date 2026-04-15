@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
@@ -21,17 +22,14 @@ import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 export const en = enLocaleMessages;
 
 // Mock MetaMetrics context for tests
-const createMockTrackEvent = (
+const createMockMetaMetricsContext = (
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-) => {
-  const mockTrackEvent = getMockTrackEvent();
-  Object.assign(mockTrackEvent, {
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  return mockTrackEvent;
-};
+) => ({
+  trackEvent: getMockTrackEvent(),
+  bufferedTrace: jest.fn().mockResolvedValue(undefined),
+  bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+  onboardingParentContext: { current: null },
+});
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -58,28 +56,71 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-function createProviderWrapper(
+export function createMemoryRouterWrapper(options = {}) {
+  const { initialEntries = ['/'], store, routePath = '*' } = options;
+
+  function Wrapper({ children }) {
+    const router = createMemoryRouter(
+      [
+        {
+          path: routePath,
+          element: children,
+        },
+      ],
+      { initialEntries },
+    );
+
+    const container = (
+      <RouterProvider
+        router={router}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      />
+    );
+
+    return store ? <Provider store={store}>{container}</Provider> : container;
+  }
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return Wrapper;
+}
+
+export function createProviderWrapper(
   store,
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
-  const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
+  const mockMetaMetricsContext =
+    createMockMetaMetricsContext(getMockTrackEvent);
 
-  const Wrapper = ({ children }) => {
-    const container = (
-      <MemoryRouter initialEntries={[pathname]}>
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  const MemoryRouter = createMemoryRouterWrapper({
+    initialEntries: [pathname],
+    store,
+  });
+
+  function Wrapper({ children }) {
+    return (
+      <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockTrackEvent}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+              <LegacyMetaMetricsProvider>
+                <QueryClientProvider client={queryClient}>
+                  {children}
+                </QueryClientProvider>
+              </LegacyMetaMetricsProvider>
             </MetaMetricsContext.Provider>
           </LegacyI18nProvider>
         </I18nProvider>
       </MemoryRouter>
     );
-
-    return store ? <Provider store={store}>{container}</Provider> : container;
-  };
+  }
 
   Wrapper.propTypes = {
     children: PropTypes.node,
@@ -92,8 +133,13 @@ export function renderWithProvider(
   store,
   pathname = '/',
   renderer = render,
+  getMockTrackEvent,
 ) {
-  const wrapper = createProviderWrapper(store, pathname);
+  const wrapper = createProviderWrapper(
+    store,
+    pathname,
+    getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
+  );
 
   return renderer(component, { wrapper });
 }

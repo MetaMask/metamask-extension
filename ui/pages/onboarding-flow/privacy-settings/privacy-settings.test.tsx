@@ -8,6 +8,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -165,8 +166,10 @@ describe('Privacy Settings Onboarding View', () => {
         updatedMockStore,
       );
 
-      // Default Settings - Security & privacy category
-      const itemCategorySecurityPrivacy = getByText('Security & privacy');
+      // Default Settings - Security & privacy category (social login copy)
+      const itemCategorySecurityPrivacy = getByText(
+        messages.securityDefaultSettingsSocialLogin.message,
+      );
       expect(itemCategorySecurityPrivacy).toBeInTheDocument();
     });
   });
@@ -190,7 +193,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const validIpfsUrl = queryByText('IPFS gateway URL is valid');
+      const validIpfsUrl = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSValid.message,
+      );
       expect(validIpfsUrl).toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
@@ -217,7 +222,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const invalidErrorMsg = queryByText('Please enter a valid URL');
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
 
       expect(invalidErrorMsg).toBeInTheDocument();
     });
@@ -240,7 +247,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const invalidErrorMsg = queryByText('Please enter a valid URL');
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
 
       expect(invalidErrorMsg).toBeInTheDocument();
     });

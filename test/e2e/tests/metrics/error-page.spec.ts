@@ -2,10 +2,10 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 /**
  * Mocks the segment API for events tracked from the error page.
@@ -32,7 +32,7 @@ describe('Error Page', function () {
   it('sends "Support Link Click" event with metrics ID when user consents', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -45,7 +45,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
@@ -72,7 +72,7 @@ describe('Error Page', function () {
   it('sends "Support Link Click" event without metrics ID when user does not consent', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -85,7 +85,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);

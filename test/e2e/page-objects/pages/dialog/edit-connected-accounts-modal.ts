@@ -9,6 +9,11 @@ class EditConnectedAccountsModal {
     testId: 'add-multichain-account-button',
   };
 
+  private readonly addNewAccountButtonReadyState = {
+    testId: 'add-multichain-account-button',
+    text: 'Add account',
+  };
+
   private readonly disconnectButton = {
     testId: 'disconnect-accounts-button',
   };
@@ -59,9 +64,32 @@ class EditConnectedAccountsModal {
   }
 
   async addNewAccount(): Promise<void> {
-    console.log('Add  account');
+    console.log('Add new account');
+    const initialCheckboxes = await this.driver.findElements(
+      this.accountCheckbox,
+    );
+    const initialCheckboxCount = initialCheckboxes.length;
+
+    await this.driver.waitForSelector(this.addNewAccountButtonReadyState, {
+      timeout: 10000,
+    });
     await this.driver.clickElement(this.addNewAccountButton);
-    await this.driver.waitForSelector(this.newlyCreateAccount);
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkboxes = await this.driver.findElements(
+            this.accountCheckbox,
+          );
+          return checkboxes.length > initialCheckboxCount;
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: 10000 },
+    );
+    await this.driver.waitForSelector(this.newlyCreateAccount, {
+      timeout: 10000,
+    });
     await this.driver.clickElement(this.newlyCreateAccount);
     await this.clickOnConnect();
   }
@@ -86,16 +114,33 @@ class EditConnectedAccountsModal {
   }
 
   /**
-   * Checks if an account at the specified index is selected
+   * Waits until the account checkbox at the given index reaches the expected selected state.
    *
-   * @param accountIndex - The index of the account to check (1-based)
-   * @returns boolean indicating if the account is selected
+   * @param options - The options object.
+   * @param options.accountIndex - The 1-based index of the account to check.
+   * @param options.status - Whether the checkbox should be 'selected' or 'unselected'.
    */
-  async checkIsAccountSelected(accountIndex: number): Promise<boolean> {
-    console.log(`Checking if account number ${accountIndex} is selected`);
-    const checkboxes = await this.driver.findElements(this.accountCheckbox);
-    const accountCheckbox = checkboxes[accountIndex - 1];
-    return await accountCheckbox.isSelected();
+  async waitForAccountSelectedStatus({
+    accountIndex,
+    status,
+  }: {
+    accountIndex: number;
+    status: 'selected' | 'unselected';
+  }): Promise<void> {
+    console.log(`Waiting for account ${accountIndex} to be ${status}`);
+    await this.driver.waitUntil(
+      async () => {
+        const checkboxes = await this.driver.findElements(this.accountCheckbox);
+
+        if (checkboxes.length < accountIndex) {
+          return false;
+        }
+
+        const isSelected = await checkboxes[accountIndex - 1].isSelected();
+        return status === 'selected' ? isSelected : !isSelected;
+      },
+      { interval: 500, timeout: 5000 },
+    );
   }
 }
 

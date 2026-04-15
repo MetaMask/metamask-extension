@@ -108,6 +108,7 @@ const snapConfigurations: Record<string, string> = {
   mockWasmSnap: 'wasm-example-snap',
   mockWebpackPluginSnap: 'webpack-plugin-example-snap',
   mockBackgroundEventsSnap: 'background-events-example-snap',
+  mockMultichainProviderSnap: 'multichain-provider-example-snap',
 };
 
 export async function mockAccountAbstractionKeyringSnap(mockServer: Mockttp) {
@@ -325,5 +326,12 @@ export async function mockBackgroundEventsSnap(mockServer: Mockttp) {
   return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockBackgroundEventsSnap,
+  });
+}
+
+export async function mockMultichainProviderSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockMultichainProviderSnap,
   });
 }

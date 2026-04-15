@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -17,24 +16,24 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { logErrorWithMessage } from '../../../shared/modules/error';
+import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
@@ -162,6 +161,79 @@ export function isValidDomainName(address) {
   return match !== null;
 }
 
+/**
+ * Checks if a name could potentially be resolved by name resolution services or Snaps.
+ * This is more permissive than isValidDomainName to allow resolver Snaps to handle
+ * various name formats like email-like names (yulia@beast), scheme-based names (ens:vitalik),
+ * or other custom formats.
+ *
+ * @param {string} name - The name to check
+ * @returns {boolean} True if the name could potentially be resolved
+ */
+export function isResolvableName(name) {
+  // Must be a non-empty string
+  if (!name || typeof name !== 'string') {
+    return false;
+  }
+
+  const trimmed = name.trim();
+
+  // Minimum length of 2 characters
+  if (trimmed.length < 2) {
+    return false;
+  }
+
+  // Reject if it looks like an Ethereum address (0x followed by 40 hex chars)
+  if (/^0x[a-fA-F0-9]{40}$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject pure numbers
+  if (/^\d+$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject URLs - check for common URL schemes early to avoid false positives
+  const URL_SCHEMES = [
+    'http',
+    'https',
+    'ftp',
+    'ftps',
+    'file',
+    'mailto',
+    'tel',
+    'sms',
+    'data',
+    'blob',
+    'javascript',
+    'ws',
+    'wss',
+  ];
+  if (trimmed.includes(':')) {
+    const scheme = trimmed.split(':')[0].toLowerCase();
+    if (URL_SCHEMES.includes(scheme)) {
+      return false;
+    }
+  }
+
+  // Accept if it matches traditional domain name format
+  if (isValidDomainName(trimmed)) {
+    return true;
+  }
+
+  // Accept email-like formats (contains @ with text on both sides)
+  if (/^[^\s@]+@[^\s@]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  // Accept scheme-based formats (e.g., ens:vitalik, lens:username)
+  if (/^[a-zA-Z][a-zA-Z0-9]*:[^\s]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  return false;
+}
+
 export function isOriginContractAddress(to, sendTokenAddress) {
   if (!to || !sendTokenAddress) {
     return false;
@@ -169,13 +241,18 @@ export function isOriginContractAddress(to, sendTokenAddress) {
   return to.toLowerCase() === sendTokenAddress.toLowerCase();
 }
 
-// Takes wei Hex, returns wei BN, even if input is null
+// Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new BN(0, 16);
+    return 0n;
   }
+
   const stripped = stripHexPrefix(balance);
-  return new BN(stripped, 16);
+  if (!stripped) {
+    return 0n;
+  }
+
+  return BigInt(`0x${stripped}`);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -471,6 +548,12 @@ export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);
@@ -668,7 +751,7 @@ export const getSnapName = (snapsMetadata) => {
 };
 
 export const getSnapRoute = (snapId) => {
-  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+  return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {

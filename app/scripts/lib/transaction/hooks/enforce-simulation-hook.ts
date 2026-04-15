@@ -1,117 +1,72 @@
 import {
-  AfterSimulateHook,
   BeforeSignHook,
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 
 const log = createProjectLogger('enforce-simulation-hook');
 
 export class EnforceSimulationHook {
-  #messenger: TransactionControllerInitMessenger;
+  readonly #messenger: TransactionControllerInitMessenger;
+
+  readonly #isEligible: (transactionMeta: TransactionMeta) => boolean;
 
   constructor({
     messenger,
+    isEligible,
   }: {
     messenger: TransactionControllerInitMessenger;
+    isEligible: (transactionMeta: TransactionMeta) => boolean;
   }) {
     this.#messenger = messenger;
-  }
-
-  getAfterSimulateHook(): AfterSimulateHook {
-    return this.#hook.bind(this, {});
+    this.#isEligible = isEligible;
   }
 
   getBeforeSignHook(): BeforeSignHook {
-    return this.#hook.bind(this, { isFinal: true });
+    return this.#hook.bind(this);
   }
 
-  async #hook(
-    options: { isFinal?: boolean },
-    request: {
-      transactionMeta: TransactionMeta;
-    },
-  ) {
+  async #hook(request: {
+    transactionMeta: TransactionMeta;
+  }): Promise<Awaited<ReturnType<BeforeSignHook>>> {
     const { transactionMeta } = request;
-    const { isFinal } = options;
+    const { containerTypes, txParamsOriginal } = transactionMeta;
 
-    const {
-      containerTypes,
-      delegationAddress,
-      id: transactionId,
-      origin,
-      simulationData,
-      txParamsOriginal,
-    } = transactionMeta;
-
-    const appState = this.#messenger.call('AppStateController:getState');
-
-    const isUserEnabled =
-      appState?.enableEnforcedSimulationsForTransactions[transactionId] ??
-      appState?.enableEnforcedSimulations;
-
-    if (!process.env.ENABLE_ENFORCED_SIMULATIONS || !isUserEnabled) {
-      log('Skipping as enforced simulations are disabled');
-      return {
-        skipSimulation: false,
-      };
-    }
-
-    if (
-      containerTypes?.includes(TransactionContainerType.EnforcedSimulations) &&
-      !isFinal
-    ) {
-      log('Skipping as simulation already enforced');
+    if (!this.#isEligible(transactionMeta)) {
+      log('Skipping as not eligible');
       return {};
     }
 
-    if (!origin || origin === ORIGIN_METAMASK) {
-      log('Skipping as internal transaction');
-      return {
-        skipSimulation: false,
-      };
+    if (!containerTypes) {
+      log('Skipping as no container types set');
+      return {};
     }
 
-    if (!delegationAddress) {
-      log('Skipping as not upgraded account');
-      return {
-        skipSimulation: false,
-      };
+    const hasEnforcedSimulations = containerTypes.includes(
+      TransactionContainerType.EnforcedSimulations,
+    );
+
+    if (!hasEnforcedSimulations) {
+      log('Skipping as user has not enabled enforced simulations');
+      return {};
     }
 
-    if (
-      !simulationData?.nativeBalanceChange &&
-      !simulationData?.tokenBalanceChanges?.length
-    ) {
-      log('Skipping as no simulation changes');
-      return {
-        skipSimulation: false,
-      };
-    }
-
-    if (isFinal && !txParamsOriginal) {
+    if (!txParamsOriginal) {
       log('Cannot find original transaction parameters');
       throw new Error('Original transaction parameters not found');
     }
 
-    const newContainerTypes = [
-      ...(containerTypes ?? []),
-      TransactionContainerType.EnforcedSimulations,
-    ];
-
     const { updateTransaction } = await applyTransactionContainers({
-      isApproved: isFinal ?? false,
+      isApproved: true,
       messenger: this.#messenger,
       transactionMeta,
-      types: newContainerTypes,
+      types: containerTypes,
     });
 
     return {
-      skipSimulation: true,
       updateTransaction,
     };
   }

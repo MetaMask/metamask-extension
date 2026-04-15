@@ -19,9 +19,7 @@ interface WrapperProps {
 
 // Wrapper component to provide necessary providers
 const Wrapper: React.FC<WrapperProps> = ({ children }) => (
-  <Provider store={store}>
-    {children}
-  </Provider>
+  <Provider store={store}>{children}</Provider>
 );
 
 const meta: Meta<typeof Home> = {
@@ -45,7 +43,6 @@ const meta: Meta<typeof Home> = {
     showTermsOfUsePopup: false,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
-    showWhatsNewPopup: false,
     announcementsToShow: false,
     onboardedInThisUISession: false,
     showMultiRpcModal: false,

@@ -1,5 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
+import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
@@ -141,6 +142,31 @@ class AccountListPage {
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
 
+  private readonly multichainAccountMenuAddresses = {
+    tag: 'p',
+    text: 'Addresses',
+  };
+
+  private readonly multichainAccountMenuDetails = {
+    tag: 'p',
+    text: 'Account details',
+  };
+
+  private readonly multichainAccountMenuHide = {
+    tag: 'p',
+    text: 'Hide account',
+  };
+
+  private readonly multichainAccountMenuPin = {
+    tag: 'p',
+    text: 'Pin to top',
+  };
+
+  private readonly multichainAccountMenuRename = {
+    tag: 'p',
+    text: 'Rename',
+  };
+
   private readonly pinUnpinAccountButton =
     '[data-testid="account-list-menu-pin"]';
 
@@ -192,7 +218,7 @@ class AccountListPage {
 
   private readonly importSrpConfirmButton = {
     text: 'Continue',
-    tag: 'button',
+    tag: 'span',
   };
 
   private readonly exportSrpButton = {
@@ -224,7 +250,7 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
         [
@@ -232,9 +258,9 @@ class AccountListPage {
             css: this.addMultichainAccountButton,
             text: 'Add account',
           },
-          this.multichainAccountOptionsMenuButton,
+          this.addMultichainWalletButton,
         ],
-        { timeout: 15000 },
+        { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
@@ -404,10 +430,20 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
-    const createMultichainAccountButtons = await this.driver.findElements(
-      this.addMultichainAccountButton,
-    );
     const buttonIndex = options?.srpIndex ?? 0;
+    const expectedCount = buttonIndex + 1;
+    let createMultichainAccountButtons: Awaited<
+      ReturnType<typeof this.driver.findElements>
+    > = [];
+    await this.driver.waitUntil(
+      async () => {
+        createMultichainAccountButtons = await this.driver.findElements(
+          this.addMultichainAccountButton,
+        );
+        return createMultichainAccountButtons.length >= expectedCount;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await createMultichainAccountButtons[buttonIndex].click();
 
     // Wait for the account creation to complete by waiting for loading state to finish
@@ -786,20 +822,50 @@ class AccountListPage {
   }
 
   /**
-   * Checks that the account balance is displayed on the multichain account list page.
+   * Checks that the account balance is displayed on the multichain account list page
+   * for a specific account, optionally scoped under a specific wallet.
    *
-   * @param expectedBalance - The expected balance to check.
+   * When only one wallet exists the wallet header is not rendered, so omit
+   * the `wallet` param and the lookup falls back to finding the account cell
+   * directly by account name.
+   *
+   * @param options - The wallet, account, and balance to check.
+   * @param options.balance - The expected balance to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
    */
-  async checkMultichainAccountBalanceDisplayed(
-    expectedBalance: string,
-  ): Promise<void> {
+  async checkMultichainAccountBalanceDisplayed({
+    balance,
+    wallet,
+    account = 'Account 1',
+  }: {
+    balance: string;
+    wallet?: string;
+    account?: string;
+  }): Promise<void> {
     console.log(
-      `Check that multichain account balance ${expectedBalance} is displayed in account list on accounts page`,
+      `Check that multichain account balance ${balance} is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountPageBalance,
-      text: expectedBalance,
-    });
+
+    if (wallet) {
+      // Multiple wallets: scope the search to accounts under the specified wallet header.
+      const walletHeader = await this.driver.waitForSelector({
+        css: this.walletHeader,
+        text: wallet,
+      });
+      await this.driver.findNestedElement(walletHeader, {
+        xpath: `../following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    } else {
+      // Single wallet (no wallet header rendered): find the account cell directly.
+      const accountCell = await this.driver.waitForSelector({
+        css: this.multichainAccountListItem,
+        text: account,
+      });
+      await this.driver.findNestedElement(accountCell, {
+        xpath: `.//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    }
   }
 
   async checkAccountDisplayedInAccountList(
@@ -953,6 +1019,17 @@ class AccountListPage {
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
+  async checkMultiChainAccountMenuIsDisplayed(): Promise<void> {
+    console.log(`Check that multichain account menu is displayed`);
+    await this.driver.waitForMultipleSelectors([
+      this.multichainAccountMenuAddresses,
+      this.multichainAccountMenuDetails,
+      this.multichainAccountMenuHide,
+      this.multichainAccountMenuRename,
+      this.multichainAccountMenuPin,
+    ]);
+  }
+
   /**
    * Verifies number of accounts currently showing in the accounts menu.
    *
@@ -1061,17 +1138,20 @@ class AccountListPage {
     await new HeaderNavbar(this.driver).openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
     await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToPrivacySettings();
+    await settingsPage.goToSecurityAndPasswordSettings();
 
     const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
     await privacySettings.openSrpList();
 
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');
     }
 
-    const srps = await this.driver.findElements('.select-srp__container');
-    const selectedSrp = srps[srpIndex - 1];
+    const selectedSrp = await this.driver.waitForSelector({
+      css: '.select-srp__container',
+      text: `Secret Recovery Phrase ${srpIndex}`,
+    });
     const showAccountsButton = await this.driver.waitForSelector(
       `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
     );
@@ -1088,6 +1168,26 @@ class AccountListPage {
     await this.driver.waitForSelector({
       text: accountName,
       tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayedUnderWallet(
+    accountName: string,
+    walletName: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account name ${accountName} is displayed under wallet ${walletName}`,
+    );
+    const walletHeader = await this.driver.waitForSelector({
+      css: this.walletHeader,
+      text: walletName,
+    });
+    // VirtualizedList wraps each item in a div, so the header and account rows are not direct
+    // siblings—each is the only child of its wrapper div. Go to the header's parent (the wrapper),
+    // then to that parent's first following sibling (the next item's wrapper), and find the account name inside it.
+    // Use . (string value) instead of text() so we match the element that contains the text in any descendant.
+    await this.driver.findNestedElement(walletHeader, {
+      xpath: `../following-sibling::*[1]//*[contains(., ${quoteXPathText(accountName)})]`,
     });
   }
 }

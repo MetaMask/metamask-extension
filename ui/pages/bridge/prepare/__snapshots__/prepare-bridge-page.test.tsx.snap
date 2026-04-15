@@ -27,52 +27,57 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           />
         </div>
         <button
-          class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           data-testid="bridge-source-button"
           style="padding: 8px 11px 8px 8px; min-width: fit-content;"
         >
           <div
-            class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+            class="flex items-center gap-2"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
-            >
-              <img
-                alt="ETH logo"
-                class="mm-avatar-token__token-image"
-                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
-              />
-            </div>
-            <div
-              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+              class="relative inline-flex self-start"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex"
               >
-                <img
-                  alt="Ethereum logo"
-                  class="mm-avatar-network__network-image"
-                  src="./images/eth_logo.svg"
-                />
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                >
+                  <img
+                    alt="ETH"
+                    class="size-full object-contain"
+                    src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
+                  />
+                </div>
+              </div>
+              <div
+                class="absolute"
+                style="bottom: 0px; right: 0px;"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                  style="border-width: 1px; border-radius: 6px;"
+                >
+                  <img
+                    alt="Ethereum"
+                    class="size-full object-contain"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
               </div>
             </div>
+            <label
+              class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              ETH
+            </label>
           </div>
           <span
             class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-          >
-            <label
-              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
-              >
-                ETH
-              </p>
-            </label>
-          </span>
+          />
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+            style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
           />
         </button>
       </div>
@@ -86,7 +91,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
       style="position: relative;"
     >
       <div
@@ -134,52 +139,57 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             />
           </div>
           <button
-            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
             data-testid="bridge-destination-button"
             style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
             <div
-              class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+              class="flex items-center gap-2"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
-              >
-                <img
-                  alt="mUSD logo"
-                  class="mm-avatar-token__token-image"
-                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
-                />
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                class="relative inline-flex self-start"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex"
                 >
-                  <img
-                    alt="Ethereum logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/eth_logo.svg"
-                  />
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="mUSD"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                    style="border-width: 1px; border-radius: 6px;"
+                  >
+                    <img
+                      alt="Ethereum"
+                      class="size-full object-contain"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
                 </div>
               </div>
+              <label
+                class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                mUSD
+              </label>
             </div>
             <span
               class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            >
-              <label
-                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
-                >
-                  mUSD
-                </p>
-              </label>
-            </span>
+            />
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+              style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
             />
           </button>
         </div>
@@ -194,26 +204,22 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
             style="cursor: pointer; text-decoration: underline;"
           >
-            0xac...35da
+            0xac...35DA
           </a>
         </div>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+        style="display: contents;"
       >
-        <div
-          style="display: contents;"
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
-            >
-              Select amount
-            </p>
-          </div>
-        </div>
+          Select amount
+        </p>
       </div>
     </div>
   </div>
@@ -252,52 +258,57 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           />
         </div>
         <button
-          class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           data-testid="bridge-source-button"
           style="padding: 8px 11px 8px 8px; min-width: fit-content;"
         >
           <div
-            class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+            class="flex items-center gap-2"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
-            >
-              <img
-                alt="ETH logo"
-                class="mm-avatar-token__token-image"
-                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
-              />
-            </div>
-            <div
-              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+              class="relative inline-flex self-start"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex"
               >
-                <img
-                  alt="Ethereum logo"
-                  class="mm-avatar-network__network-image"
-                  src="./images/eth_logo.svg"
-                />
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                >
+                  <span
+                    class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                  >
+                    U
+                  </span>
+                </div>
+              </div>
+              <div
+                class="absolute"
+                style="bottom: 0px; right: 0px;"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                  style="border-width: 1px; border-radius: 6px;"
+                >
+                  <img
+                    alt="Ethereum"
+                    class="size-full object-contain"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
               </div>
             </div>
+            <label
+              class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              USDC
+            </label>
           </div>
           <span
             class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-          >
-            <label
-              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
-              >
-                ETH
-              </p>
-            </label>
-          </span>
+          />
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+            style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
           />
         </button>
       </div>
@@ -307,11 +318,13 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
-        />
+        >
+          $5,805.78
+        </p>
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
       style="position: relative;"
     >
       <div
@@ -359,52 +372,57 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             />
           </div>
           <button
-            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
             data-testid="bridge-destination-button"
             style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
             <div
-              class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+              class="flex items-center gap-2"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
-              >
-                <img
-                  alt="mUSD logo"
-                  class="mm-avatar-token__token-image"
-                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
-                />
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                class="relative inline-flex self-start"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex"
                 >
-                  <img
-                    alt="Ethereum logo"
-                    class="mm-avatar-network__network-image"
-                    src="./images/eth_logo.svg"
-                  />
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="UNI"
+                      class="size-full object-contain"
+                      src="http://url"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                    style="border-width: 1px; border-radius: 6px;"
+                  >
+                    <img
+                      alt="Linea"
+                      class="size-full object-contain"
+                      src="./images/linea-logo-mainnet.svg"
+                    />
+                  </div>
                 </div>
               </div>
+              <label
+                class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                UNI
+              </label>
             </div>
             <span
               class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            >
-              <label
-                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
-                >
-                  mUSD
-                </p>
-              </label>
-            </span>
+            />
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+              style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
             />
           </button>
         </div>
@@ -419,26 +437,22 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
             style="cursor: pointer; text-decoration: underline;"
           >
-            0xac...35da
+            0x1f...F984
           </a>
         </div>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+        style="display: contents;"
       >
-        <div
-          style="display: contents;"
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
-            >
-              Select amount
-            </p>
-          </div>
-        </div>
+          Select token
+        </p>
       </div>
     </div>
   </div>

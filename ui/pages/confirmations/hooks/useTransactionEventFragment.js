@@ -1,24 +1,11 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import {
-  createTransactionEventFragment,
-  updateEventFragment,
-} from '../../../store/actions';
-import { selectMatchingFragment } from '../../../selectors';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
+import { useConfirmContext } from '../context/confirm';
 
 export const useTransactionEventFragment = () => {
-  const { transaction } = useGasFeeContext();
-  const fragment = useSelector((state) =>
-    selectMatchingFragment(state, {
-      fragmentOptions: {},
-      existingId: `transaction-added-${transaction?.id}`,
-    }),
-  );
-
-  const fragmentExists = Boolean(fragment);
-  const gasTransactionId = transaction?.id;
+  const { currentConfirmation } = useConfirmContext();
+  const gasTransactionId = currentConfirmation?.id;
 
   const updateTransactionEventFragment = useCallback(
     async (params, _transactionId) => {
@@ -27,13 +14,9 @@ export const useTransactionEventFragment = () => {
       if (!transactionId) {
         return;
       }
-      if (!fragmentExists) {
-        await createTransactionEventFragment(transactionId);
-      }
-      updateEventFragment(`transaction-added-${transactionId}`, params);
-      updateEventFragment(`transaction-submitted-${transactionId}`, params);
+      await upsertTransactionUIMetricsFragment(transactionId, params);
     },
-    [fragmentExists, gasTransactionId],
+    [gasTransactionId],
   );
 
   return { updateTransactionEventFragment };

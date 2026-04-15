@@ -21,7 +21,6 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {
@@ -64,7 +63,7 @@ describe('Notifications List', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   it('should show the correct number of unread notifications on the badge', async () => {

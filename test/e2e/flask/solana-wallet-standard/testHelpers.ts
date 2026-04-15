@@ -1,8 +1,6 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
-import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
@@ -16,15 +14,6 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
-
-/**
- * Default options for setting up Solana E2E test environment
- */
-export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappOptions: {
-    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
-  },
-};
 
 /**
  * Selects the Devnet checkbox in the permissions tab.
@@ -71,14 +60,9 @@ export const connectSolanaTestDapp = async (
 
   await header.connect();
 
-  // wait to display wallet connect modal
-  await driver.delay(regularDelayMs);
-
   const modal = await testDapp.getWalletModal();
   await modal.connectToMetaMaskWallet();
 
-  // Get to extension modal, and click on the "Connect" button
-  await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   if (options?.includeDevnet) {
@@ -92,34 +76,6 @@ export const connectSolanaTestDapp = async (
   // Go back to the test dapp window
   await testDapp.switchTo();
   console.log('solana test dapp connected');
-};
-
-/**
- * Waits for the Confirm button in the footer of a Solana-specific modal to be clickable then clicks it.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
-export const clickConfirmButton = async (driver: Driver): Promise<void> => {
-  const footerButtons = await driver.findClickableElements(
-    By.css('button.snap-ui-renderer__footer-button'),
-  );
-  const confirmButton = footerButtons[1];
-  await confirmButton.click();
-};
-
-/**
- * Clicks the Cancel button in the footer in a Solana-specific modal.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
-export const clickCancelButton = async (driver: Driver): Promise<void> => {
-  const footerButtons = await driver.findClickableElements(
-    By.css('button.snap-ui-renderer__footer-button'),
-  );
-  const cancelButton = footerButtons[0];
-  await cancelButton.click();
 };
 
 /**

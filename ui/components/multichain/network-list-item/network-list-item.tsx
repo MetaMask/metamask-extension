@@ -5,20 +5,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { CaipChainId } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   IconColor,
-  FlexDirection,
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -31,14 +28,14 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -88,6 +85,7 @@ export const NetworkListItem = ({
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -96,47 +94,27 @@ export const NetworkListItem = ({
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setNetworkListItemMenuRef = (ref: any) => {
+  const setNetworkListItemMenuRef = useCallback((ref: any) => {
     setNetworkListItemMenuElement(ref);
-  };
+    // Store ref for finalFocusRef
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (menuButtonRef as any).current = ref;
+  }, []);
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+  // Tracks when menu is transitioning from open to closed.
+  // When true, menu renders without ModalFocus to prevent focus management
+  // from briefly focusing the first menu item during the closing animation.
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
 
-  // This selector provides the indication if the "Gas sponsored" label
-  // is enabled based on the remote feature flag.
-  const isGasFeesSponsoredNetworkEnabled = useSelector(
-    getGasFeesSponsoredNetworkEnabled,
-  );
+  // Prepares menu for closing: focuses button and marks menu as closing
+  const prepareMenuClose = useCallback(() => {
+    if (menuButtonRef.current) {
+      menuButtonRef.current.focus();
+    }
+    setIsMenuClosing(true);
+  }, []);
 
-  // Check if a network has gas sponsorship enabled
-  const isNetworkGasSponsored = useCallback(
-    (networkChainId: string | undefined): boolean => {
-      if (!networkChainId) {
-        return false;
-      }
-
-      // Convert chainId to hex if it's in CAIP format, otherwise use as-is
-      let hexChainId: string;
-      try {
-        // Check if it's in CAIP format (contains ':')
-        if (networkChainId.includes(':')) {
-          hexChainId = convertCaipToHexChainId(networkChainId as CaipChainId);
-        } else {
-          // Already in hex format
-          hexChainId = networkChainId;
-        }
-      } catch (error) {
-        // If conversion fails, use the original chainId
-        hexChainId = networkChainId;
-      }
-
-      return Boolean(
-        isGasFeesSponsoredNetworkEnabled?.[
-          hexChainId as keyof typeof isGasFeesSponsoredNetworkEnabled
-        ],
-      );
-    },
-    [isGasFeesSponsoredNetworkEnabled],
-  );
+  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
   const renderButton = useCallback(() => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -147,9 +125,22 @@ export const NetworkListItem = ({
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
+        onMouseDown={(e: React.MouseEvent) => {
+          // When closing: prevent button from losing focus and mark menu as closing
+          // This must happen before onClick toggles the state
+          if (networkOptionsMenuOpen) {
+            e.preventDefault();
+            prepareMenuClose();
+          }
+        }}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
-          setNetworkOptionsMenuOpen(true);
+          const willBeOpen = !networkOptionsMenuOpen;
+          setNetworkOptionsMenuOpen(willBeOpen);
+          // When opening, ensure closing flag is reset
+          if (willBeOpen) {
+            setIsMenuClosing(false);
+          }
         }}
         size={ButtonIconSize.Sm}
       />
@@ -162,7 +153,17 @@ export const NetworkListItem = ({
     t,
     setNetworkListItemMenuRef,
     setNetworkOptionsMenuOpen,
+    networkOptionsMenuOpen,
+    prepareMenuClose,
   ]);
+
+  // Safety: Reset closing flag whenever menu opens
+  // (handles edge cases like rapid toggling)
+  useEffect(() => {
+    if (networkOptionsMenuOpen) {
+      setIsMenuClosing(false);
+    }
+  }, [networkOptionsMenuOpen]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -185,7 +186,7 @@ export const NetworkListItem = ({
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
@@ -200,13 +201,6 @@ export const NetworkListItem = ({
       onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
-      {selected && (
-        <Box
-          className="multichain-network-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
       {isIconSrc(iconSrc) ? (
         <Icon name={iconSrc} size={iconSize as IconSize} />
       ) : (
@@ -229,7 +223,9 @@ export const NetworkListItem = ({
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
+          gap={2}
           data-testid={name}
         >
           <Tooltip
@@ -250,12 +246,13 @@ export const NetworkListItem = ({
               {name}
             </Text>
           </Tooltip>
+          {isNetworkGasSponsored && (
+            <SuccessPill
+              label={t('noNetworkFee')}
+              display={Display.InlineFlex}
+            />
+          )}
         </Box>
-        {isNetworkGasSponsored(chainId) && (
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('noNetworkFee')}
-          </Text>
-        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"
@@ -296,7 +293,15 @@ export const NetworkListItem = ({
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
               onDiscoverClick={onDiscoverClick}
-              onClose={() => setNetworkOptionsMenuOpen(false)}
+              onClose={() => {
+                // When closing via click-outside: prepare close and update state
+                prepareMenuClose();
+                setNetworkOptionsMenuOpen(false);
+                // Reset flag after menu closes (prevents stale state if menu doesn't reopen)
+                setTimeout(() => setIsMenuClosing(false), 0);
+              }}
+              finalFocusRef={menuButtonRef}
+              isClosing={isMenuClosing}
             />
           ))
         : null}

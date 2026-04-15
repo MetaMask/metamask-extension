@@ -2,12 +2,18 @@ import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { act } from 'react-dom/test-utils';
 
+import { Hex } from '@metamask/utils';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
@@ -15,7 +21,7 @@ import { Severity } from '../../../../../../../helpers/constants/design-system';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
-jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../../../../shared/lib/selectors');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
@@ -23,11 +29,24 @@ jest.mock(
 function getStore({
   gasFeeTokens,
   noSelectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
+  excludeNativeTokenForFee,
+  chainId,
+  selectedNetworkClientId,
+  networkConfigurationsByChainId,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  noSelectedGasFeeToken?: boolean;
+  excludeNativeTokenForFee?: boolean;
+  chainId?: Hex;
+  selectedNetworkClientId?: string;
+  networkConfigurationsByChainId?: Record<Hex, NetworkConfiguration>;
+} = {}) {
   return configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
+        chainId,
         gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee,
         selectedGasFeeToken: noSelectedGasFeeToken
           ? undefined
           : GAS_FEE_TOKEN_MOCK.tokenAddress,
@@ -38,6 +57,10 @@ function getStore({
             showFiatInTestnets: true,
             smartTransactionsOptInStatus: true,
           },
+          ...(selectedNetworkClientId ? { selectedNetworkClientId } : {}),
+          ...(networkConfigurationsByChainId
+            ? { networkConfigurationsByChainId }
+            : {}),
         },
       },
     ),
@@ -104,6 +127,62 @@ describe('SelectedGasFeeToken', () => {
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if only one gas fee token and `excludeNativeTokenForFee` is set', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee: true,
+      }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('still renders arrow icon if two non-native gas fee token and `excludeNativeTokenForFee` is set', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_MOCK],
+        excludeNativeTokenForFee: true,
+      }),
+    );
+    expect(
+      result.getByTestId('selected-gas-fee-token-arrow'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders local native symbol if `gasFeeTokens` is empty and `excludeNativeTokenForFee` is set (Tempo)', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        chainId: '0x1079',
+        noSelectedGasFeeToken: true,
+        gasFeeTokens: [],
+        excludeNativeTokenForFee: true,
+        selectedNetworkClientId: 'foo',
+        networkConfigurationsByChainId: {
+          '0x1079': {
+            chainId: '0x1079',
+            name: 'Tempo',
+            defaultBlockExplorerUrlIndex: 0,
+            blockExplorerUrls: ['https://explore.tempo.xyz'],
+            rpcEndpoints: [
+              {
+                networkClientId: 'foo',
+                type: RpcEndpointType.Custom,
+                url: 'https://rpc.tempo.xyz',
+              },
+            ],
+            nativeCurrency: 'USD',
+            defaultRpcEndpointIndex: 0,
+          },
+        },
+      }),
+    );
+    expect(result.getByText('pathUSD')).toBeInTheDocument();
   });
 
   it('does not render arrow icon if gasless not supported', () => {
@@ -181,6 +260,8 @@ describe('SelectedGasFeeToken', () => {
       result.getByText(GAS_FEE_TOKEN_MOCK.symbol).click();
     });
 
-    expect(result.getByText('Select a token')).toBeInTheDocument();
+    expect(
+      result.getByText(messages.confirmGasFeeTokenModalTitle.message),
+    ).toBeInTheDocument();
   });
 });

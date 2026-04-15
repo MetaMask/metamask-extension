@@ -1,13 +1,13 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
@@ -166,21 +166,6 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('account-list-item-selected-indicator'),
-    ).toBeInTheDocument();
-  });
-
-  it('does not render selection indicator if showSelectionIndicator is false', async () => {
-    render({ selected: true, showSelectionIndicator: false });
-    expect(
-      document.querySelector('.multichain-account-list-item--selected'),
-    ).toBeInTheDocument();
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId('account-list-item-selected-indicator'),
-      ).not.toBeInTheDocument();
-    });
   });
 
   it('renders the account name tooltip for long names', () => {

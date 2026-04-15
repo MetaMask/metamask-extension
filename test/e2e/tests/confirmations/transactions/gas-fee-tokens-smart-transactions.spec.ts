@@ -1,10 +1,9 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
@@ -16,8 +15,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { mockSmartTransactionsRemoteFlags } from '../../smart-transactions/remote-flags';
+import { login } from '../../../page-objects/flows/login.flow';
 
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
@@ -30,25 +28,11 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                '0x1': {
-                  '0x0000000000000000000000000000000000000000':
-                    '0x15af1d78b58c40000', // 25 ETH
-                },
-              },
-            },
-          })
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSmartTransactionsRemoteFlags(mockServer);
           await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
           mockSmartTransactionBatchRequests(mockServer, {
@@ -64,14 +48,13 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           });
         },
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '20 ETH',
-        );
+        await login(driver, { expectedBalance: '20 ETH' });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -113,15 +96,11 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSmartTransactionsRemoteFlags(mockServer);
           await mockSimulationResponse(mockServer);
           await mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
@@ -132,12 +111,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '20 ETH',
-        );
+        await login(driver, { expectedBalance: '20 ETH' });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

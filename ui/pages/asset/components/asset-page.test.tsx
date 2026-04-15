@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -19,6 +20,19 @@ import {
 } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
+
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -46,6 +60,19 @@ jest.mock('../../../../shared/constants/network', () => ({
       network: 'polygon',
     },
   },
+}));
+
+jest.mock('../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -139,6 +166,7 @@ describe('AssetPage', () => {
       enabledNetworkMap: {
         eip155: {},
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       accountTree: {
         wallets: {
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -156,6 +184,7 @@ describe('AssetPage', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
@@ -167,7 +196,6 @@ describe('AssetPage', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {
@@ -217,11 +245,18 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
+      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 
   beforeEach(() => {
     openTabSpy.mockClear();
+
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v3\/historical-prices\//u)
+      .query(true)
+      .reply(200, {})
+      .persist();
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -256,6 +291,7 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
+    nock.cleanAll();
   });
 
   const native = {
@@ -416,12 +452,6 @@ describe('AssetPage', () => {
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    // Mock no price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
-      .query(true)
-      .reply(200, {});
-
     const { container, queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -439,9 +469,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
+      const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
 
@@ -461,9 +491,11 @@ describe('AssetPage', () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
     const marketCap = 456;
 
-    // Mock price history
+    // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(
+        `/v3/historical-prices/eip155:1/erc20:${toChecksumHexAddress(address)}`,
+      )
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 

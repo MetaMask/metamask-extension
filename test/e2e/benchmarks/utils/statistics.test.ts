@@ -1,0 +1,661 @@
+import type {
+  ThresholdConfig,
+  TimerStatistics,
+  WebVitalsMetrics,
+} from '../../../../shared/constants/benchmarks';
+import {
+  calculateMean,
+  calculateStdDev,
+  calculatePercentile,
+  calculateZScore,
+  detectOutliersZScore,
+  detectOutliersIQR,
+  detectOutliers,
+  assessDataQuality,
+  validateMetricValue,
+  filterBySanityChecks,
+  calculateTimerStatistics,
+  checkExclusionRate,
+  validateTimerThreshold,
+  validateThresholds,
+  getEffectiveThreshold,
+  calculateWebVitalsStatistics,
+  aggregateWebVitals,
+  MAX_METRIC_DURATION_MS,
+} from './statistics';
+
+function createMockStats(
+  overrides: Partial<TimerStatistics> = {},
+): TimerStatistics {
+  return {
+    id: 'testMetric',
+    mean: 1000,
+    min: 800,
+    max: 1200,
+    stdDev: 100,
+    cv: 10,
+    p50: 1000,
+    p75: 1100,
+    p95: 1180,
+    p99: 1195,
+    samples: 10,
+    outliers: 0,
+    dataQuality: 'good',
+    ...overrides,
+  };
+}
+
+describe('Statistics Utils', () => {
+  describe('calculateMean', () => {
+    it('returns 0 for empty array', () => {
+      expect(calculateMean([])).toBe(0);
+    });
+
+    it('calculates mean correctly', () => {
+      expect(calculateMean([1, 2, 3, 4, 5])).toBe(3);
+      expect(calculateMean([10, 20, 30])).toBe(20);
+      expect(calculateMean([100])).toBe(100);
+    });
+  });
+
+  describe('calculateStdDev', () => {
+    it('returns 0 for empty array', () => {
+      expect(calculateStdDev([])).toBe(0);
+    });
+
+    it('returns 0 for single value', () => {
+      expect(calculateStdDev([100])).toBe(0);
+    });
+
+    it('calculates standard deviation correctly', () => {
+      const stdDev = calculateStdDev([2, 4, 6, 8, 10]);
+      expect(stdDev).toBeCloseTo(2.83, 1);
+    });
+
+    it('returns 0 for identical values', () => {
+      expect(calculateStdDev([5, 5, 5, 5])).toBe(0);
+    });
+  });
+
+  describe('calculatePercentile', () => {
+    it('returns 0 for empty array', () => {
+      expect(calculatePercentile([], 50)).toBe(0);
+    });
+
+    it('returns first element for p <= 0', () => {
+      expect(calculatePercentile([10, 20, 30, 40], 0)).toBe(10);
+      expect(calculatePercentile([10, 20, 30, 40], -10)).toBe(10);
+    });
+
+    it('returns last element for p >= 100', () => {
+      expect(calculatePercentile([10, 20, 30, 40], 100)).toBe(40);
+      expect(calculatePercentile([10, 20, 30, 40], 150)).toBe(40);
+    });
+
+    it('calculates p50 (median) correctly', () => {
+      expect(calculatePercentile([10, 20, 30, 40], 50)).toBe(20);
+      expect(calculatePercentile([10, 20, 30, 40, 50], 50)).toBe(30);
+    });
+
+    it('calculates p75 correctly using nearest-rank', () => {
+      expect(calculatePercentile([100, 200, 300, 400], 75)).toBe(300);
+    });
+
+    it('calculates p95 correctly', () => {
+      const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      expect(calculatePercentile(values, 95)).toBe(10);
+    });
+  });
+
+  describe('calculateZScore', () => {
+    it('returns 0 when stdDev is 0', () => {
+      expect(calculateZScore(100, 100, 0)).toBe(0);
+    });
+
+    it('calculates z-score correctly', () => {
+      expect(calculateZScore(110, 100, 10)).toBe(1);
+      expect(calculateZScore(90, 100, 10)).toBe(-1);
+      expect(calculateZScore(130, 100, 10)).toBe(3);
+    });
+  });
+
+  describe('detectOutliersZScore', () => {
+    it('returns original array for less than 3 values', () => {
+      const result = detectOutliersZScore([100, 200]);
+      expect(result.filtered).toEqual([100, 200]);
+      expect(result.outlierCount).toBe(0);
+    });
+
+    it('returns correct structure with outlier count', () => {
+      const values = [100, 102, 104, 106, 108];
+      const result = detectOutliersZScore(values);
+      expect(result).toHaveProperty('filtered');
+      expect(result).toHaveProperty('outlierCount');
+      expect(result).toHaveProperty('outliers');
+      expect(Array.isArray(result.filtered)).toBe(true);
+      expect(Array.isArray(result.outliers)).toBe(true);
+    });
+
+    it('keeps all values when no outliers', () => {
+      const values = [100, 102, 98, 101, 99];
+      const result = detectOutliersZScore(values);
+      expect(result.filtered).toEqual(values);
+      expect(result.outlierCount).toBe(0);
+    });
+  });
+
+  describe('detectOutliersIQR', () => {
+    it('returns original array for less than 4 values', () => {
+      const result = detectOutliersIQR([100, 200, 300]);
+      expect(result.filtered).toEqual([100, 200, 300]);
+      expect(result.outlierCount).toBe(0);
+    });
+
+    it('detects outliers outside IQR bounds', () => {
+      // Values with clear outlier
+      const values = [10, 12, 11, 13, 12, 11, 100];
+      const result = detectOutliersIQR(values);
+      expect(result.outliers).toContain(100);
+      expect(result.outlierCount).toBe(1);
+    });
+  });
+
+  describe('detectOutliers (combined)', () => {
+    it('combines IQR and z-score detection', () => {
+      const values = [100, 101, 99, 102, 98, 100, 1000];
+      const result = detectOutliers(values);
+      expect(result.filtered).not.toContain(1000);
+      expect(result.outlierCount).toBeGreaterThan(0);
+    });
+  });
+
+  describe('assessDataQuality', () => {
+    it('returns good for CV < 30', () => {
+      expect(assessDataQuality(10)).toBe('good');
+      expect(assessDataQuality(29)).toBe('good');
+    });
+
+    it('returns poor for CV between 30 and 50', () => {
+      expect(assessDataQuality(30)).toBe('poor');
+      expect(assessDataQuality(49)).toBe('poor');
+    });
+
+    it('returns unreliable for CV >= 50', () => {
+      expect(assessDataQuality(50)).toBe('unreliable');
+      expect(assessDataQuality(100)).toBe('unreliable');
+    });
+  });
+
+  describe('validateMetricValue', () => {
+    it('rejects zero or negative values', () => {
+      expect(validateMetricValue(0).valid).toBe(false);
+      expect(validateMetricValue(-1).valid).toBe(false);
+    });
+
+    it('rejects values below minimum', () => {
+      expect(validateMetricValue(0.5).valid).toBe(false);
+    });
+
+    it('rejects values above maximum', () => {
+      expect(validateMetricValue(MAX_METRIC_DURATION_MS + 1).valid).toBe(false);
+    });
+
+    it('accepts valid values', () => {
+      expect(validateMetricValue(100).valid).toBe(true);
+      expect(validateMetricValue(1000).valid).toBe(true);
+    });
+
+    it('respects custom thresholds', () => {
+      expect(validateMetricValue(50, 100, 10).valid).toBe(true);
+      expect(validateMetricValue(5, 100, 10).valid).toBe(false);
+      expect(validateMetricValue(150, 100, 10).valid).toBe(false);
+    });
+  });
+
+  describe('filterBySanityChecks', () => {
+    it('filters out invalid values', () => {
+      const values = [100, 0, 200, -5, 300, MAX_METRIC_DURATION_MS + 1];
+      const result = filterBySanityChecks(values);
+      expect(result.filtered).toEqual([100, 200, 300]);
+      expect(result.excludedCount).toBe(3);
+    });
+
+    it('keeps all valid values', () => {
+      const values = [100, 200, 300];
+      const result = filterBySanityChecks(values);
+      expect(result.filtered).toEqual(values);
+      expect(result.excludedCount).toBe(0);
+    });
+  });
+
+  describe('calculateTimerStatistics', () => {
+    it('calculates complete statistics', () => {
+      const durations = [100, 110, 105, 108, 102, 107, 103, 109, 104, 106];
+      const stats = calculateTimerStatistics('testTimer', durations);
+
+      expect(stats.id).toBe('testTimer');
+      expect(stats.mean).toBeCloseTo(105.4, 1);
+      expect(stats.min).toBeLessThanOrEqual(stats.mean);
+      expect(stats.max).toBeGreaterThanOrEqual(stats.mean);
+      expect(stats.samples).toBe(10);
+      expect(stats.dataQuality).toBe('good');
+    });
+
+    it('handles empty array', () => {
+      const stats = calculateTimerStatistics('emptyTimer', []);
+      expect(stats.mean).toBe(0);
+      expect(stats.min).toBe(0);
+      expect(stats.max).toBe(0);
+      expect(stats.samples).toBe(0);
+    });
+
+    it('excludes invalid values and outliers', () => {
+      const durations = [100, 105, 102, 0, -5, 10000000];
+      const stats = calculateTimerStatistics('mixedTimer', durations);
+      expect(stats.samples).toBeLessThan(durations.length);
+      expect(stats.outliers).toBeGreaterThan(0);
+    });
+  });
+
+  describe('checkExclusionRate', () => {
+    it('passes when exclusion rate is within limit', () => {
+      const result = checkExclusionRate(10, 3); // 30%
+      expect(result.passed).toBe(true);
+      expect(result.rate).toBeCloseTo(0.3, 2);
+    });
+
+    it('fails when exclusion rate exceeds limit', () => {
+      const result = checkExclusionRate(10, 6); // 60%
+      expect(result.passed).toBe(false);
+      expect(result.rate).toBeCloseTo(0.6, 2);
+    });
+
+    it('handles zero total runs', () => {
+      const result = checkExclusionRate(0, 0);
+      expect(result.passed).toBe(true);
+      expect(result.rate).toBe(0);
+    });
+  });
+
+  describe('getEffectiveThreshold', () => {
+    const originalCI = process.env.CI;
+
+    afterEach(() => {
+      process.env.CI = originalCI;
+    });
+
+    it('returns base threshold when not in CI', () => {
+      delete process.env.CI;
+      expect(getEffectiveThreshold(1000, 1.5)).toBe(1000);
+    });
+
+    it('applies multiplier in CI environment', () => {
+      process.env.CI = 'true';
+      expect(getEffectiveThreshold(1000, 1.5)).toBe(1500);
+    });
+
+    it('returns base threshold when no multiplier provided', () => {
+      process.env.CI = 'true';
+      expect(getEffectiveThreshold(1000)).toBe(1000);
+    });
+  });
+
+  describe('validateTimerThreshold', () => {
+    it('returns no violations when within thresholds', () => {
+      const stats = createMockStats();
+      const thresholds = {
+        p75: { warn: 1200, fail: 1500 },
+        p95: { warn: 1300, fail: 1600 },
+      };
+      const violations = validateTimerThreshold(stats, thresholds);
+      expect(violations).toHaveLength(0);
+    });
+
+    it('returns warn violation when exceeds warn threshold', () => {
+      const stats = createMockStats();
+      const thresholds = {
+        p75: { warn: 1000, fail: 1500 },
+      };
+      const violations = validateTimerThreshold(stats, thresholds);
+      expect(violations).toHaveLength(1);
+      expect(violations[0].severity).toBe('warn');
+    });
+
+    it('returns fail violation when exceeds fail threshold', () => {
+      const stats = createMockStats();
+      const thresholds = {
+        p75: { warn: 500, fail: 1000 },
+      };
+      const violations = validateTimerThreshold(stats, thresholds);
+      expect(violations).toHaveLength(1);
+      expect(violations[0].severity).toBe('fail');
+    });
+  });
+
+  describe('validateThresholds', () => {
+    it('skips metrics without configured thresholds', () => {
+      const stats: TimerStatistics[] = [
+        {
+          id: 'unconfiguredMetric',
+          mean: 10000,
+          min: 9000,
+          max: 11000,
+          stdDev: 500,
+          cv: 5,
+          p50: 10000,
+          p75: 10500,
+          p95: 10900,
+          p99: 10950,
+          samples: 10,
+          outliers: 0,
+          dataQuality: 'good',
+        },
+      ];
+      const config: ThresholdConfig = {};
+      const result = validateThresholds(stats, config);
+      expect(result.violations).toHaveLength(0);
+      expect(result.passed).toBe(true);
+    });
+
+    it('skips unreliable data', () => {
+      const stats: TimerStatistics[] = [
+        {
+          id: 'unreliableMetric',
+          mean: 10000,
+          min: 1000,
+          max: 50000,
+          stdDev: 15000,
+          cv: 150,
+          p50: 8000,
+          p75: 20000,
+          p95: 45000,
+          p99: 49000,
+          samples: 10,
+          outliers: 0,
+          dataQuality: 'unreliable',
+        },
+      ];
+      const config: ThresholdConfig = {
+        unreliableMetric: {
+          p75: { warn: 1000, fail: 2000 },
+        },
+      };
+      const result = validateThresholds(stats, config);
+      expect(result.violations).toHaveLength(0);
+    });
+
+    it('returns passed=false only for fail violations', () => {
+      const stats: TimerStatistics[] = [
+        {
+          id: 'warnMetric',
+          mean: 1000,
+          min: 800,
+          max: 1200,
+          stdDev: 100,
+          cv: 10,
+          p50: 1000,
+          p75: 1100,
+          p95: 1180,
+          p99: 1195,
+          samples: 10,
+          outliers: 0,
+          dataQuality: 'good',
+        },
+      ];
+      const config: ThresholdConfig = {
+        warnMetric: {
+          p75: { warn: 1000, fail: 2000 },
+        },
+      };
+      const result = validateThresholds(stats, config);
+      expect(result.violations).toHaveLength(1);
+      expect(result.violations[0].severity).toBe('warn');
+      expect(result.passed).toBe(true); // Only warn, not fail
+    });
+  });
+
+  describe('calculateWebVitalsStatistics', () => {
+    it('calculates statistics for INP values', () => {
+      const values = [80, 120, 100, 90, 110];
+      const stats = calculateWebVitalsStatistics('inp', values);
+
+      expect(stats.id).toBe('inp');
+      expect(stats.mean).toBeCloseTo(100, 0);
+      expect(stats.min).toBeLessThanOrEqual(stats.mean);
+      expect(stats.max).toBeGreaterThanOrEqual(stats.mean);
+      expect(stats.samples).toBe(5);
+    });
+
+    it('calculates statistics for LCP values', () => {
+      const values = [2000, 2200, 2100, 2500, 2300];
+      const stats = calculateWebVitalsStatistics('lcp', values);
+
+      expect(stats.id).toBe('lcp');
+      expect(stats.samples).toBe(5);
+      expect(stats.p75).toBeGreaterThan(0);
+    });
+
+    it('calculates statistics for CLS values (unitless)', () => {
+      const values = [0.01, 0.05, 0.02, 0.08, 0.03];
+      const stats = calculateWebVitalsStatistics('cls', values);
+
+      expect(stats.id).toBe('cls');
+      expect(stats.samples).toBe(5);
+      expect(stats.mean).toBeLessThan(1);
+    });
+
+    it('allows CLS of 0 (perfect stability)', () => {
+      const values = [0, 0, 0, 0.01, 0];
+      const stats = calculateWebVitalsStatistics('cls', values);
+
+      expect(stats.samples).toBeGreaterThanOrEqual(4);
+    });
+
+    it('excludes values outside metric-specific bounds', () => {
+      const values = [100, 50000]; // 50000ms exceeds INP max of 30000ms
+      const stats = calculateWebVitalsStatistics('inp', values);
+
+      expect(stats.samples).toBe(1);
+    });
+
+    it('includes INP values of 0ms (sub-frame interactions)', () => {
+      const values = [0, 100, 120];
+      const stats = calculateWebVitalsStatistics('inp', values);
+
+      expect(stats.samples).toBe(3);
+    });
+
+    it('excludes negative INP values', () => {
+      const values = [-1, 100, 120];
+      const stats = calculateWebVitalsStatistics('inp', values);
+
+      expect(stats.samples).toBe(2);
+    });
+
+    it('returns zero statistics for empty input', () => {
+      const stats = calculateWebVitalsStatistics('inp', []);
+
+      expect(stats.mean).toBe(0);
+      expect(stats.samples).toBe(0);
+    });
+  });
+
+  describe('aggregateWebVitals', () => {
+    it('aggregates runs with data', () => {
+      const runs: WebVitalsMetrics[] = [
+        {
+          inp: 100,
+          fcp: 200,
+          lcp: 2000,
+          cls: 0.05,
+          inpRating: 'good',
+          fcpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 120,
+          fcp: 250,
+          lcp: 2200,
+          cls: 0.08,
+          inpRating: 'good',
+          fcpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 150,
+          fcp: 300,
+          lcp: 2500,
+          cls: 0.03,
+          inpRating: 'good',
+          fcpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+      ];
+
+      const result = aggregateWebVitals(runs);
+
+      expect(result.inp).not.toBeNull();
+      expect(result.inp?.samples).toBe(3);
+      expect(result.lcp).not.toBeNull();
+      expect(result.lcp?.samples).toBe(3);
+      expect(result.cls).not.toBeNull();
+      expect(result.cls?.samples).toBe(3);
+    });
+
+    it('tallies rating distribution correctly', () => {
+      const runs: WebVitalsMetrics[] = [
+        {
+          inp: 100,
+          fcp: 200,
+          lcp: 2000,
+          cls: 0.05,
+          inpRating: 'good',
+          fcpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 300,
+          fcp: 2000,
+          lcp: 3000,
+          cls: 0.15,
+          inpRating: 'needs-improvement',
+          fcpRating: 'needs-improvement',
+          lcpRating: 'needs-improvement',
+          clsRating: 'needs-improvement',
+        },
+        {
+          inp: 600,
+          fcp: 4000,
+          lcp: 5000,
+          cls: 0.3,
+          inpRating: 'poor',
+          fcpRating: 'poor',
+          lcpRating: 'poor',
+          clsRating: 'poor',
+        },
+      ];
+
+      const result = aggregateWebVitals(runs);
+
+      expect(result.ratings.inp.good).toBe(1);
+      expect(result.ratings.inp['needs-improvement']).toBe(1);
+      expect(result.ratings.inp.poor).toBe(1);
+      expect(result.ratings.inp.null).toBe(0);
+    });
+
+    it('handles all-null runs', () => {
+      const runs: WebVitalsMetrics[] = [
+        {
+          inp: null,
+          fcp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          fcpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
+        {
+          inp: null,
+          fcp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          fcpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
+      ];
+
+      const result = aggregateWebVitals(runs);
+
+      expect(result.inp).toBeNull();
+      expect(result.lcp).toBeNull();
+      expect(result.cls).toBeNull();
+      expect(result.ratings.inp.null).toBe(2);
+      expect(result.ratings.lcp.null).toBe(2);
+      expect(result.ratings.cls.null).toBe(2);
+    });
+
+    it('handles mixed null and non-null values', () => {
+      const runs: WebVitalsMetrics[] = [
+        {
+          inp: 100,
+          fcp: 180,
+          lcp: null,
+          cls: null,
+          inpRating: 'good',
+          fcpRating: 'good',
+          lcpRating: null,
+          clsRating: null,
+        },
+        {
+          inp: 120,
+          fcp: null,
+          lcp: null,
+          cls: 0.01,
+          inpRating: 'good',
+          fcpRating: null,
+          lcpRating: null,
+          clsRating: 'good',
+        },
+        {
+          inp: null,
+          fcp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          fcpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
+      ];
+
+      const result = aggregateWebVitals(runs);
+
+      expect(result.inp).not.toBeNull();
+      expect(result.inp?.samples).toBe(2);
+      expect(result.lcp).toBeNull();
+      expect(result.cls).not.toBeNull();
+      expect(result.cls?.samples).toBe(1);
+      expect(result.ratings.inp.good).toBe(2);
+      expect(result.ratings.inp.null).toBe(1);
+    });
+
+    it('initializes rating distributions to zero', () => {
+      const runs: WebVitalsMetrics[] = [];
+      const result = aggregateWebVitals(runs);
+
+      for (const metric of ['inp', 'lcp', 'cls'] as const) {
+        expect(result.ratings[metric].good).toBe(0);
+        expect(result.ratings[metric]['needs-improvement']).toBe(0);
+        expect(result.ratings[metric].poor).toBe(0);
+        expect(result.ratings[metric].null).toBe(0);
+      }
+    });
+  });
+});

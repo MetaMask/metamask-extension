@@ -4,8 +4,8 @@ import {
   createSentryError,
   isUserCancelledLoginError,
   OAuthErrorMessages,
-} from '../../../../shared/modules/error';
-import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
+} from '../../../../shared/lib/error';
+import { checkForLastError } from '../../../../shared/lib/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   MetaMetricsEventName,
@@ -33,7 +33,16 @@ import { loadOAuthConfig } from './config';
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
 
-export default class OAuthService {
+const MESSENGER_EXPOSED_METHODS = [
+  'startOAuthLogin',
+  'getNewRefreshToken',
+  'revokeRefreshToken',
+  'renewRefreshToken',
+  'getMarketingConsent',
+  'setMarketingConsent',
+] as const;
+
+export class OAuthService {
   // Required for modular initialisation.
   name: ServiceName = SERVICE_NAME;
 
@@ -79,24 +88,9 @@ export default class OAuthService {
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:startOAuthLogin`,
-      this.startOAuthLogin.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getNewRefreshToken`,
-      this.getNewRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:revokeRefreshToken`,
-      this.revokeRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:renewRefreshToken`,
-      this.renewRefreshToken.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -424,7 +418,7 @@ export default class OAuthService {
     if (process.env.IN_TEST) {
       const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
         // Use `require` to make it easier to exclude this test code from the Browserify build.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
@@ -471,10 +465,9 @@ export default class OAuthService {
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -503,7 +496,6 @@ export default class OAuthService {
 
       return res.ok;
     } catch (error) {
-      log.error('Failed to post marketing opt in status', error);
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to post marketing opt in status',
@@ -518,10 +510,9 @@ export default class OAuthService {
 
   async getMarketingConsent(): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -545,8 +536,6 @@ export default class OAuthService {
 
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
-      log.error('Failed to get marketing opt in status', error);
-
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to get marketing opt in status',
