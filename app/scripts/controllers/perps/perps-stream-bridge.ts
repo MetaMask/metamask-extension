@@ -1,11 +1,8 @@
-import {
-  WebSocketConnectionState,
-  type PerpsController,
-  type PerpsControllerState,
-  type CandlePeriod,
-  type TimeDuration,
+import type {
+  PerpsController,
+  CandlePeriod,
+  TimeDuration,
 } from '@metamask/perps-controller';
-import type { Patch } from 'immer';
 
 type EmitFn = (
   channel: string,
@@ -20,26 +17,14 @@ type ActivateStreamingParams = {
   candle?: { symbol: string; interval: CandlePeriod; duration?: TimeDuration };
 };
 
-type StateChangeListener = (
-  callback: (state: PerpsControllerState, patches: Patch[]) => void,
-) => () => void;
-
-type ConnectivityChangeListener = (
-  callback: (state: { connectivityStatus: string }) => void,
-) => () => void;
-
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
-  onControllerStateChange: StateChangeListener;
-  onConnectivityChange: ConnectivityChangeListener;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   emit: EmitFn;
 };
-
-const REST_HYDRATION_STAGGER_MS = 200;
 
 /**
  * Per-connection bridge between the background PerpsController's WebSocket
@@ -65,10 +50,6 @@ export class PerpsStreamBridge {
 
   readonly #controller: PerpsController;
 
-  readonly #onControllerStateChange: StateChangeListener;
-
-  readonly #onConnectivityChange: ConnectivityChangeListener;
-
   readonly #perpsInit: PerpsStreamBridgeOptions['perpsInit'];
 
   readonly #perpsDisconnect: PerpsStreamBridgeOptions['perpsDisconnect'];
@@ -85,18 +66,8 @@ export class PerpsStreamBridge {
 
   #activated = false;
 
-  #wasDisconnected = false;
-
-  #isHydrating = false;
-
-  #lastMarketCacheKey: string | null = null;
-
-  #wasDeviceOffline = false;
-
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
-    this.#onControllerStateChange = options.onControllerStateChange;
-    this.#onConnectivityChange = options.onConnectivityChange;
     this.#perpsInit = options.perpsInit;
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
@@ -192,20 +163,6 @@ export class PerpsStreamBridge {
         }
         this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
       },
-      perpsCheckHealth: () => {
-        if (!this.#activated) {
-          return;
-        }
-        const state = this.#controller.getWebSocketConnectionState();
-        if (state === WebSocketConnectionState.Disconnected) {
-          this.#controller.reconnect().catch((err) => {
-            console.debug(
-              '[PerpsStreamBridge] health-check reconnect failed',
-              err,
-            );
-          });
-        }
-      },
     };
   }
 
@@ -223,10 +180,6 @@ export class PerpsStreamBridge {
 
     this.#activated = false;
     this.#viewActive = false;
-    this.#wasDisconnected = false;
-    this.#isHydrating = false;
-    this.#lastMarketCacheKey = null;
-    this.#wasDeviceOffline = false;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -265,28 +218,6 @@ export class PerpsStreamBridge {
           callback: (data: unknown) => this.#emit('fills', data),
         }),
       );
-
-      this.#staticUnsubs.push(
-        this.#controller.subscribeToConnectionState(
-          (state: WebSocketConnectionState) => {
-            this.#handleConnectionStateChange(state);
-          },
-        ),
-      );
-
-      this.#staticUnsubs.push(
-        this.#onControllerStateChange(
-          (state: PerpsControllerState, _patches: Patch[]) => {
-            this.#handleMarketDataPreload(state);
-          },
-        ),
-      );
-
-      this.#staticUnsubs.push(
-        this.#onConnectivityChange((state: { connectivityStatus: string }) => {
-          this.#handleConnectivityChange(state.connectivityStatus);
-        }),
-      );
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -294,115 +225,6 @@ export class PerpsStreamBridge {
       }
       this.#staticUnsubs.length = 0;
       throw error;
-    }
-  }
-
-  #handleConnectionStateChange(state: WebSocketConnectionState): void {
-    this.#emit('connectionState', { state });
-
-    if (state === WebSocketConnectionState.Disconnected) {
-      this.#wasDisconnected = true;
-      return;
-    }
-
-    if (state === WebSocketConnectionState.Connected && this.#wasDisconnected) {
-      this.#wasDisconnected = false;
-      this.#hydrateAfterReconnect();
-    }
-  }
-
-  /**
-   * Triggers a health check when the device transitions from offline to online.
-   * @param status
-   */
-  #handleConnectivityChange(status: string): void {
-    const isOffline = status === 'offline';
-    const wasOffline = this.#wasDeviceOffline;
-    this.#wasDeviceOffline = isOffline;
-
-    if (wasOffline && !isOffline) {
-      const wsState = this.#controller.getWebSocketConnectionState();
-      if (wsState === WebSocketConnectionState.Disconnected) {
-        this.#controller.reconnect().catch((err) => {
-          console.debug(
-            '[PerpsStreamBridge] connectivity-change reconnect failed',
-            err,
-          );
-        });
-      }
-    }
-  }
-
-  /**
-   * Reacts to controller state changes by checking if the cached market data
-   * has been updated (e.g. by the background preloader after HIP-3 config
-   * arrives from LaunchDarkly). Pushes updated data to the UI via the
-   * existing 'markets' channel so the stream manager stays in sync.
-   * @param state
-   */
-  #handleMarketDataPreload(state: PerpsControllerState): void {
-    const provider = state.activeProvider ?? 'hyperliquid';
-    const isTestnet = state.isTestnet ?? false;
-    const cacheKey = `${provider}:${isTestnet ? 'testnet' : 'mainnet'}`;
-    const entry = state.cachedMarketDataByProvider?.[cacheKey];
-
-    if (!entry?.data || entry.data.length === 0) {
-      return;
-    }
-
-    const snapshotKey = `${cacheKey}:${entry.timestamp}`;
-    if (snapshotKey === this.#lastMarketCacheKey) {
-      return;
-    }
-    this.#lastMarketCacheKey = snapshotKey;
-    this.#emit('markets', entry.data);
-  }
-
-  /**
-   * Fetches fresh data via REST after a WebSocket reconnection so the UI
-   * doesn't show stale values while waiting for the first stream push.
-   * Market data is fetched first (highest UI priority), then user data
-   * after a short stagger to reduce burst pressure on the rate limiter.
-   */
-  async #hydrateAfterReconnect(): Promise<void> {
-    if (this.#isHydrating || !this.#isConnectionAlive()) {
-      return;
-    }
-    this.#isHydrating = true;
-
-    try {
-      const marketsResult = await this.#controller
-        .getMarketDataWithPrices()
-        .catch(() => null);
-
-      if (marketsResult) {
-        this.#emit('markets', marketsResult);
-      }
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, REST_HYDRATION_STAGGER_MS),
-      );
-
-      const [positionsResult, ordersResult, accountResult] =
-        await Promise.allSettled([
-          this.#controller.getPositions({ skipCache: true }),
-          this.#controller.getOpenOrders(),
-          this.#controller.getAccountState(),
-        ]);
-
-      if (positionsResult.status === 'fulfilled' && positionsResult.value) {
-        this.#emit('positions', positionsResult.value);
-      }
-      if (ordersResult.status === 'fulfilled' && ordersResult.value) {
-        this.#emit('orders', ordersResult.value);
-      }
-      if (accountResult.status === 'fulfilled') {
-        this.#emit('account', accountResult.value ?? null);
-      }
-    } catch (err) {
-      console.debug('[PerpsStreamBridge] post-reconnect hydration failed', err);
-    } finally {
-      this.#isHydrating = false;
     }
   }
 
