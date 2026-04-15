@@ -1,4 +1,31 @@
-import { computeTotalExposure } from './compute-total-exposure';
+import {
+  computeStreamTotalExposureForPermission,
+  computeTotalExposure,
+} from './compute-total-exposure';
+
+describe('computeStreamTotalExposureForPermission', () => {
+  it('delegates to computeTotalExposure using permission data', () => {
+    const permission = {
+      data: {
+        initialAmount: '0x0',
+        maxAmount: '0x32',
+        amountPerSecond: '0x1',
+        startTime: 1000,
+      },
+    };
+    expect(
+      computeStreamTotalExposureForPermission(permission, 1100)?.toNumber(),
+    ).toBe(
+      computeTotalExposure({
+        initialAmount: '0x0',
+        maxAmount: '0x32',
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 1100,
+      })?.toNumber(),
+    );
+  });
+});
 
 describe('computeTotalExposure', () => {
   it('returns maxAmount when less than accrued exposure', () => {

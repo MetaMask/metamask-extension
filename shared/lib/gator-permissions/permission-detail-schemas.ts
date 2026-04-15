@@ -4,7 +4,6 @@ import type { Hex } from '@metamask/utils';
 import { DAY } from '../../constants/time';
 import { formatPermissionPeriodDuration } from './format-permission-period-duration';
 import { MAX_UINT256 } from './permission-constants';
-import { computeTotalExposure } from './compute-total-exposure';
 import type {
   PermissionRenderContext,
   PermissionSchemaEntry,
@@ -25,29 +24,15 @@ const getData = <TReturn = unknown>(
   key: string,
 ): TReturn => ctx.permission.data[key] as TReturn;
 
-/** One {@link computeTotalExposure} result per `ctx` instance (one UI render pass). */
-const streamTotalExposureByContext = new WeakMap<
-  PermissionRenderContext,
-  { value: BigNumber | null }
->();
-
-function getStreamTotalExposureForContext(
+function getStreamTotalExposure(
   ctx: PermissionRenderContext,
 ): BigNumber | null {
-  let entry = streamTotalExposureByContext.get(ctx);
-  if (entry === undefined) {
-    entry = {
-      value: computeTotalExposure({
-        initialAmount: getData<Hex>(ctx, 'initialAmount'),
-        maxAmount: getData<Hex>(ctx, 'maxAmount'),
-        amountPerSecond: getData<Hex>(ctx, 'amountPerSecond'),
-        startTime: getData<number>(ctx, 'startTime'),
-        expiry: ctx.expiry,
-      }),
-    };
-    streamTotalExposureByContext.set(ctx, entry);
+  if (ctx.streamTotalExposure === undefined) {
+    throw new Error(
+      'PermissionRenderContext.streamTotalExposure must be set when rendering stream permission fields',
+    );
   }
-  return entry.value;
+  return ctx.streamTotalExposure;
 }
 
 const requireStartTime = (permission: {
@@ -318,9 +303,8 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure',
-          getValue: (ctx) =>
-            getStreamTotalExposureForContext(ctx) ?? new BigNumber(0),
-          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) !== null,
+          getValue: (ctx) => getStreamTotalExposure(ctx) ?? new BigNumber(0),
+          isVisible: (ctx) => getStreamTotalExposure(ctx) !== null,
           includeInViews: ['confirmation'],
         },
         {
@@ -328,7 +312,7 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure-unlimited',
           getValue: () => ({ key: 'unlimited' }),
-          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) === null,
+          isVisible: (ctx) => getStreamTotalExposure(ctx) === null,
           includeInViews: ['confirmation'],
         },
       ],
@@ -536,10 +520,9 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           type: 'amount',
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure',
-          getValue: (ctx) =>
-            getStreamTotalExposureForContext(ctx) ?? new BigNumber(0),
+          getValue: (ctx) => getStreamTotalExposure(ctx) ?? new BigNumber(0),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
-          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) !== null,
+          isVisible: (ctx) => getStreamTotalExposure(ctx) !== null,
           includeInViews: ['confirmation'],
         },
         {
@@ -547,7 +530,7 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
           labelKey: 'confirmFieldTotalExposure',
           testId: 'confirmation-total-exposure-unlimited',
           getValue: () => ({ key: 'unlimited' }),
-          isVisible: (ctx) => getStreamTotalExposureForContext(ctx) === null,
+          isVisible: (ctx) => getStreamTotalExposure(ctx) === null,
           includeInViews: ['confirmation'],
         },
       ],

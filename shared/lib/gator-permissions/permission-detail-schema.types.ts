@@ -45,6 +45,11 @@ export type PermissionRenderContext = {
     decimals: number | undefined;
     imageUrl?: string;
   };
+  /**
+   * Total exposure for `native-token-stream` / `erc20-token-stream`, computed once when
+   * the context is built. Omitted for other permission types.
+   */
+  streamTotalExposure?: BigNumber | null;
 };
 
 // ---------------------------------------------------------------------------

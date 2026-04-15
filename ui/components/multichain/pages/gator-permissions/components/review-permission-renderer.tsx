@@ -13,6 +13,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
+import { computeStreamTotalExposureForPermission } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import {
   PERMISSION_SCHEMAS,
   assertPermissionSchemaEntry,
@@ -475,6 +476,10 @@ export const ReviewPermissionRenderer: React.FC<
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];
   assertPermissionSchemaEntry(permissionType, schemaEntry);
 
+  const isStreamPermission =
+    permissionType === 'native-token-stream' ||
+    permissionType === 'erc20-token-stream';
+
   const ctx: PermissionRenderContext = {
     permission: {
       type: permissionType,
@@ -488,6 +493,14 @@ export const ReviewPermissionRenderer: React.FC<
       symbol: tokenInfo.symbol,
       decimals: tokenInfo.decimals,
     },
+    ...(isStreamPermission
+      ? {
+          streamTotalExposure: computeStreamTotalExposureForPermission(
+            { data: permissionData },
+            expiry,
+          ),
+        }
+      : {}),
   };
 
   const extraProps = { permissionAccount, networkName };

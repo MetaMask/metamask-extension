@@ -24,6 +24,7 @@ import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
+import { computeStreamTotalExposureForPermission } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import {
   PERMISSION_SCHEMAS,
   assertPermissionSchemaEntry,
@@ -35,7 +36,6 @@ import type {
   DeepNonNullable,
   I18nFunction,
   PermissionRenderContext,
-  PermissionSchemaEntry,
   SchemaElement,
   SchemaSection,
   TokenResolution,
@@ -140,7 +140,6 @@ function renderElement(
   element: SchemaElement,
   ctx: PermissionRenderContext,
   t: I18nFunction,
-  schemaEntry: PermissionSchemaEntry,
   ownerId: string,
   index: number,
 ): React.ReactNode {
@@ -259,11 +258,10 @@ function renderSection(
   section: SchemaSection,
   ctx: PermissionRenderContext,
   t: I18nFunction,
-  schemaEntry: PermissionSchemaEntry,
   ownerId: string,
 ): React.ReactNode {
   const children = section.elements.map((element, index) =>
-    renderElement(element, ctx, t, schemaEntry, ownerId, index),
+    renderElement(element, ctx, t, ownerId, index),
   );
 
   const hasContent = children.some(
@@ -330,6 +328,10 @@ export const PermissionDetailRenderer: React.FC<{
     tokenInfo = { symbol: '', decimals: erc20Decimals };
   }
 
+  const isStreamPermission =
+    permission.type === 'native-token-stream' ||
+    permission.type === 'erc20-token-stream';
+
   const ctx: PermissionRenderContext = {
     permission,
     expiry,
@@ -337,12 +339,20 @@ export const PermissionDetailRenderer: React.FC<{
     origin,
     to,
     tokenInfo,
+    ...(isStreamPermission
+      ? {
+          streamTotalExposure: computeStreamTotalExposureForPermission(
+            permission,
+            expiry,
+          ),
+        }
+      : {}),
   };
 
   return (
     <>
       {schemaEntry.sections.map((section) =>
-        renderSection(section, ctx, t, schemaEntry, ownerId),
+        renderSection(section, ctx, t, ownerId),
       )}
     </>
   );
