@@ -1,6 +1,4 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
@@ -58,11 +56,19 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
   describe('REST Polling Fallback', function () {
     it('balance updates continue via REST polling when WebSocket disconnects', async function () {
       this.timeout(180_000);
+
+      // Mutable object passed to the global mock in mock-e2e.js.
+      // The mock reads defaultNativeEthHuman on every poll, so flipping it
+      // mid-test changes what the next Accounts API response returns.
+      const balanceOverride: { nativeBalance: string } = {
+        nativeBalance: '25',
+      };
+
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          // testSpecificMock: mockAccountsApiV5With50Eth,
+          unifiedEvmAccountsApiBalances: balanceOverride,
         },
         async ({
           driver,
@@ -90,6 +96,9 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
             FIFTY_ETH_WEI,
           );
 
+          // Switch the Accounts API response so the next REST poll returns 50 ETH
+          balanceOverride.nativeBalance = '50';
+
           await waitForBalanceUpdate(homepage, driver, '50');
         },
       );
@@ -103,7 +112,6 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          // testSpecificMock: mockAccountsApiV5With35Eth,
         },
         async ({
           driver,
@@ -153,7 +161,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
               {
                 asset: {
                   fungible: true,
-                  type: 'eip155:1337/slip44:60',
+                  type: 'eip155:1337/slip44:1',
                   unit: 'ETH',
                   decimals: 18,
                 },

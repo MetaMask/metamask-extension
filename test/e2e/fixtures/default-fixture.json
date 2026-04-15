@@ -229,7 +229,7 @@
           "eip155:1/slip44:60": {
             "amount": "25"
           },
-          "eip155:1337/slip44:60": {
+          "eip155:1337/slip44:1": {
             "amount": "25"
           },
           "eip155:42161/slip44:60": {
@@ -249,11 +249,19 @@
           "symbol": "ETH",
           "type": "native"
         },
-        "eip155:1337/slip44:60": {
+        "eip155:1337/slip44:1": {
           "aggregators": [],
           "decimals": 18,
           "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
           "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:10/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png",
+          "name": "Ether",
           "symbol": "ETH",
           "type": "native"
         },
@@ -288,7 +296,7 @@
           "price": 2047.51,
           "usdPrice": 2047.51
         },
-        "eip155:1337/slip44:60": {
+        "eip155:1337/slip44:1": {
           "assetPriceType": "fungible",
           "id": "ethereum",
           "price": 2047.51,
