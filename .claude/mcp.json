@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "metamask": {
+      "command": "node",
+      "args": [
+        "node_modules/.bin/tsx",
+        "test/e2e/playwright/llm-workflow/mcp-server/server.ts"
+      ]
+    }
+  }
+}

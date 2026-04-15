@@ -1,0 +1,38 @@
+diff --git a/dist/services/HyperLiquidClientService.cjs b/dist/services/HyperLiquidClientService.cjs
+index 7c1fba49609813208d06d941344edcc5b75a5d65..be16455458c0d906b7bf507ffa5d0e13051cd7bb 100644
+--- a/dist/services/HyperLiquidClientService.cjs
++++ b/dist/services/HyperLiquidClientService.cjs
+@@ -315,9 +315,11 @@ class HyperLiquidClientService {
+             const now = endTime ?? Date.now();
+             const intervalMs = __classPrivateFieldGet(this, _HyperLiquidClientService_instances, "m", _HyperLiquidClientService_getIntervalMilliseconds).call(this, interval);
+             const startTime = now - limit * intervalMs;
+-            // Use the SDK's InfoClient to fetch candle data
+-            // HyperLiquid SDK uses 'coin' terminology
+-            const infoClient = this.getInfoClient();
++            // Use the HTTP InfoClient for candle snapshots.
++            // This avoids routing request/response chart fetches over the
++            // WebSocket transport, which is prone to extension-side abort races.
++            // HyperLiquid SDK uses 'coin' terminology.
++            const infoClient = this.getInfoClient({ useHttp: true });
+             const data = await infoClient.candleSnapshot({
+                 coin: symbol, // Map to HyperLiquid SDK's 'coin' parameter
+                 interval,
+diff --git a/dist/services/HyperLiquidClientService.mjs b/dist/services/HyperLiquidClientService.mjs
+index 81ab7b3838cbbbb76b70d0bf5689e7031158c246..ceb3109437adcacb6fed0b945b36efb13537af27 100644
+--- a/dist/services/HyperLiquidClientService.mjs
++++ b/dist/services/HyperLiquidClientService.mjs
+@@ -311,9 +311,11 @@ export class HyperLiquidClientService {
+             const now = endTime ?? Date.now();
+             const intervalMs = __classPrivateFieldGet(this, _HyperLiquidClientService_instances, "m", _HyperLiquidClientService_getIntervalMilliseconds).call(this, interval);
+             const startTime = now - limit * intervalMs;
+-            // Use the SDK's InfoClient to fetch candle data
+-            // HyperLiquid SDK uses 'coin' terminology
+-            const infoClient = this.getInfoClient();
++            // Use the HTTP InfoClient for candle snapshots.
++            // This avoids routing request/response chart fetches over the
++            // WebSocket transport, which is prone to extension-side abort races.
++            // HyperLiquid SDK uses 'coin' terminology.
++            const infoClient = this.getInfoClient({ useHttp: true });
+             const data = await infoClient.candleSnapshot({
+                 coin: symbol, // Map to HyperLiquid SDK's 'coin' parameter
+                 interval,
