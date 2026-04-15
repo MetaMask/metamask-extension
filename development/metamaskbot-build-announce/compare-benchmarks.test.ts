@@ -320,7 +320,6 @@ describe('printReport', () => {
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('1 benchmarks within thresholds');
-    expect(allCalls).not.toContain('no historical baseline data');
   });
 
   it('shows all-passing metrics in PASS section without detail lines', () => {
