@@ -176,7 +176,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('Comparison unavailable.');
   });
 
-  it('treats missing new baseline fields as zero during the cutover', async () => {
+  it('renders n/a for missing new baseline fields during the cutover', async () => {
     mockSuccessfulFetches({
       storedData: {
         [MERGE_BASE]: {
@@ -190,13 +190,9 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain(
-      'auxiliary pages: total 100 Bytes, diff +100 Bytes (100%)',
-    );
-    expect(result).toContain(
-      'content scripts: total 60 Bytes, diff +60 Bytes (100%)',
-    );
-    expect(result).toContain('zip: total 4.1 KiB, diff +4.1 KiB (100%)');
+    expect(result).toContain('auxiliary pages: total 100 Bytes, diff n/a');
+    expect(result).toContain('content scripts: total 60 Bytes, diff n/a');
+    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
   });
 
   it('renders bundle size unavailable when the current summary fetch fails', async () => {

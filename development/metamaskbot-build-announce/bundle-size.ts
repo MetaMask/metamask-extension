@@ -247,13 +247,13 @@ function buildBundleSizeSection({
     buildBundlePartRow({
       part,
       currentSize: currentSizes[part],
-      baselineSize: baselineSizes[part],
+      baselineSize: baselineSummary[part],
     }),
   );
   sizeDiffRows.push(
     buildZipRow({
       currentSize: currentZipSize,
-      baselineSize: baselineZipSize,
+      baselineSize: baselineSummary.zip,
     }),
   );
 
