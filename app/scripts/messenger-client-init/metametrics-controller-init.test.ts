@@ -3,7 +3,7 @@ import {
   MetaMetricsControllerMessenger,
 } from '../controllers/metametrics-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getMetaMetricsControllerMessenger } from './messengers';
 import { MetaMetricsControllerInit } from './metametrics-controller-init';
@@ -11,7 +11,7 @@ import { MetaMetricsControllerInit } from './metametrics-controller-init';
 jest.mock('../controllers/metametrics-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MetaMetricsControllerMessenger>
+  MessengerClientInitRequest<MetaMetricsControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 

@@ -246,6 +246,21 @@ export function selectStorageWriteErrorType(
 }
 
 /**
+ * Whether to show the one-time side panel migration toast.
+ * The flag is set by migration 204 for users migrated from popup to side panel.
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowSidePanelMigrationToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return Boolean(
+    (state.metamask as Record<string, unknown>)?.showSidePanelMigrationToast,
+  );
+}
+
+/**
  * Determines if the PNA25 banner should be shown based on:
  * - User has completed onboarding (completedOnboarding === true)
  * - LaunchDarkly feature flag (extensionUxPna25) is enabled

@@ -10,7 +10,7 @@ import {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   AssetsContractControllerInitMessenger,
   AssetsContractControllerMessenger,
@@ -22,7 +22,7 @@ import { AssetsContractControllerInit } from './assets-contract-controller-init'
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     AssetsContractControllerMessenger,
     AssetsContractControllerInitMessenger
   >

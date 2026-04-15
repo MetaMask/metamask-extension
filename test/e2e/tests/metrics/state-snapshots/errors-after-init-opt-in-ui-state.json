@@ -367,6 +367,7 @@
     "showNetworkBanner": true,
     "showPermissionsTour": true,
     "showShieldEntryModalOnce": null,
+    "showSidePanelMigrationToast": "boolean",
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signature": "string",

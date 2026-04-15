@@ -194,9 +194,6 @@ export function usePerpsOrderForm({
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
-  // Close percentage state (for 'close' mode, defaults to 100%)
-  const [closePercent, setClosePercent] = useState<number>(100);
-
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
    * Amount is left empty so the user enters the size INCREASE (additional margin
@@ -295,8 +292,6 @@ export function usePerpsOrderForm({
       initialLeverage,
     };
 
-    setClosePercent(100);
-
     const pos = existingPositionRef.current;
     const typeForReset = orderTypeRef.current;
     if (mode === 'modify' && pos) {
@@ -328,7 +323,7 @@ export function usePerpsOrderForm({
     // For close mode, calculate based on close amount
     if (mode === 'close' && existingPosition) {
       const positionSize = Math.abs(parseFloat(existingPosition.size)) || 0;
-      const closeAmount = (positionSize * closePercent) / 100;
+      const closeAmount = (positionSize * formState.closePercent) / 100;
       const closeValueUsd = closeAmount * currentPrice;
 
       const estimatedFees = closeValueUsd * (feeRate ?? 0);
@@ -426,7 +421,7 @@ export function usePerpsOrderForm({
     currentPrice,
     mode,
     existingPosition,
-    closePercent,
+    formState.closePercent,
     asset,
     maxLeverage,
     szDecimals,
@@ -473,7 +468,7 @@ export function usePerpsOrderForm({
 
   // Close percent change handler (for close mode)
   const handleClosePercentChange = useCallback((percent: number) => {
-    setClosePercent(percent);
+    setFormState((prev) => ({ ...prev, closePercent: percent }));
   }, []);
 
   // Limit price change handler (for limit order mode)
@@ -492,7 +487,7 @@ export function usePerpsOrderForm({
 
   return {
     formState,
-    closePercent,
+    closePercent: formState.closePercent,
     calculations,
     handleAmountChange,
     handleBalancePercentChange,

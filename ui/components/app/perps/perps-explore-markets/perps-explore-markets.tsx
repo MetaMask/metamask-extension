@@ -48,7 +48,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
       data-testid="perps-explore-section"
     >
       <ButtonBase
-        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent hover:bg-hover active:bg-pressed"
+        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
         onClick={handleSeeAllPerps}
         data-testid="perps-explore-markets-row"
       >

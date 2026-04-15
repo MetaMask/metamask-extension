@@ -13,7 +13,7 @@ import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   NetworkControllerInitMessenger,
@@ -51,7 +51,7 @@ function getInitRequestMock(
     >
   >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     NetworkControllerMessenger,
     NetworkControllerInitMessenger
   >

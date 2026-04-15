@@ -7,9 +7,14 @@ import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-perm
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
@@ -40,6 +45,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  toggleDefaultView,
 } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
@@ -97,6 +103,7 @@ import {
   selectShowStorageErrorToast,
   selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
+  selectShowSidePanelMigrationToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -109,6 +116,7 @@ import {
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
+  dismissSidePanelMigrationToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -144,6 +152,7 @@ export function ToastMaster() {
         <PerpsWithdrawToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
+        <SidePanelMigrationToast />
       </ToastContainer>
     );
   }
@@ -840,6 +849,53 @@ function StorageErrorToast() {
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}
+      />
+    )
+  );
+}
+
+function SidePanelMigrationToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showSidePanelMigrationToast = useSelector(
+    selectShowSidePanelMigrationToast,
+  );
+
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const handleSwitchBackToPopup = async () => {
+    try {
+      await dispatch(toggleDefaultView());
+    } finally {
+      dismissSidePanelMigrationToast();
+    }
+  };
+
+  return (
+    showSidePanelMigrationToast &&
+    isSidePanel && (
+      <Toast
+        key="side-panel-migration-toast"
+        dataTestId="side-panel-migration-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('sidePanelMigrationToast', [
+          <TextButton
+            key="side-panel-migration-switch-back"
+            size={TextButtonSize.BodyMd}
+            onClick={handleSwitchBackToPopup}
+            className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+          >
+            <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
+              {t('switchBackToPopup')}
+            </span>
+          </TextButton>,
+        ])}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={() => dismissSidePanelMigrationToast()}
       />
     )
   );

@@ -20,6 +20,7 @@ export type TransactionCardProps = {
   transaction: PerpsTransaction;
   onClick?: (transaction: PerpsTransaction) => void;
   variant?: 'default' | 'muted';
+  showTopBorder?: boolean;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -39,11 +40,13 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.transaction - The transaction data to display
  * @param options0.onClick - Optional click handler
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
+ * @param options0.showTopBorder
  */
 export const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClick,
   variant = 'default',
+  showTopBorder = false,
 }) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
@@ -169,8 +172,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   );
 
   const sharedClassName = twMerge(
-    'gap-4 pt-2 pb-2 px-4 h-[62px]',
+    'gap-4 px-4 py-3',
     variantStyles,
+    showTopBorder && 'border-t border-background-default',
   );
 
   if (isClickable) {

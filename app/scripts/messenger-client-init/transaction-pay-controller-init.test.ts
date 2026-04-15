@@ -3,7 +3,7 @@ import {
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTransactionPayControllerMessenger,
@@ -15,7 +15,7 @@ import { TransactionPayControllerInit } from './transaction-pay-controller-init'
 jest.mock('@metamask/transaction-pay-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TransactionPayControllerMessenger,
     TransactionPayControllerInitMessenger
   >

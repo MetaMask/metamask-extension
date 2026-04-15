@@ -2,7 +2,7 @@ import {
   ClaimsController,
   ClaimsControllerMessenger,
 } from '@metamask/claims-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   ClaimsControllerInitMessenger,
   getClaimsControllerInitMessenger,
@@ -15,7 +15,7 @@ import { ClaimsControllerInit } from './claims-controller-init';
 jest.mock('@metamask/claims-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     ClaimsControllerMessenger,
     ClaimsControllerInitMessenger
   >

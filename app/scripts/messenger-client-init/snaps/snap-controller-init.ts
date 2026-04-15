@@ -3,7 +3,7 @@ import {
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
 import { createDeferredPromise, Json } from '@metamask/utils';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
@@ -37,7 +37,7 @@ type TrackEventHook = (event: TrackingEventPayload) => void;
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
  * @returns The initialized controller.
  */
-export const SnapControllerInit: ControllerInitFunction<
+export const SnapControllerInit: MessengerClientInitFunction<
   SnapController,
   SnapControllerMessenger,
   SnapControllerInitMessenger

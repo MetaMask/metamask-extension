@@ -1,10 +1,10 @@
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';
 
-export const OAuthServiceInit: ControllerInitFunction<
+export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
   OAuthServiceMessenger
 > = (request) => {

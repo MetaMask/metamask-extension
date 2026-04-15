@@ -4,11 +4,11 @@ import {
 } from '@metamask/ppom-validator';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';
 import { getGlobalChainId } from '../init-utils';
 
-export const PPOMControllerInit: ControllerInitFunction<
+export const PPOMControllerInit: MessengerClientInitFunction<
   PPOMController,
   PPOMControllerMessenger,
   PPOMControllerInitMessenger

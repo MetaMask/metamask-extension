@@ -1,5 +1,5 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { DecryptMessageManagerMessenger } from '../messengers';
 
 /**
@@ -9,7 +9,7 @@ import { DecryptMessageManagerMessenger } from '../messengers';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @returns The initialized controller.
  */
-export const DecryptMessageManagerInit: ControllerInitFunction<
+export const DecryptMessageManagerInit: MessengerClientInitFunction<
   DecryptMessageManager,
   DecryptMessageManagerMessenger
 > = ({ controllerMessenger }) => {

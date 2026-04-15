@@ -1,5 +1,5 @@
 import { UserOperationController } from '@metamask/user-operation-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger,
@@ -15,7 +15,7 @@ import {
  * @param request.getController - Function to get other controllers.
  * @returns The initialized controller.
  */
-export const UserOperationControllerInit: ControllerInitFunction<
+export const UserOperationControllerInit: MessengerClientInitFunction<
   UserOperationController,
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger

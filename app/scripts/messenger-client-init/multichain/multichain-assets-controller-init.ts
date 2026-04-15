@@ -2,7 +2,7 @@ import {
   MultichainAssetsController,
   MultichainAssetsControllerMessenger,
 } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the Multichain Assets controller.
@@ -12,7 +12,7 @@ import { ControllerInitFunction } from '../types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const MultichainAssetsControllerInit: ControllerInitFunction<
+export const MultichainAssetsControllerInit: MessengerClientInitFunction<
   MultichainAssetsController,
   MultichainAssetsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

@@ -10,7 +10,7 @@ import {
   type AssetsUnifyStateFeatureFlag,
   ASSETS_UNIFY_STATE_FLAG,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { type ControllerInitFunction } from '../types';
+import { type MessengerClientInitFunction } from '../types';
 import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
@@ -107,7 +107,7 @@ function getApiClient(
  * @param request.getController - Function to get a controller by name.
  * @returns The initialized controller.
  */
-export const AssetsControllerInit: ControllerInitFunction<
+export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger

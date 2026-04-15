@@ -122,8 +122,45 @@ export const formatChangePercent = (value: string): string => {
 };
 
 /**
+ * Normalizes a 24h percentage change string for UI display.
+ * Positive numeric values are always shown with an explicit '+' prefix,
+ * matching mobile behavior. Negative values and zero keep their natural sign.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' or '+' (e.g., "2.84", "+2.84%", "-1.23%")
+ * @returns The normalized percentage string for display
+ * @example
+ * formatSignedChangePercent('2.84') => '+2.84%'
+ * formatSignedChangePercent('2.84%') => '+2.84%'
+ * formatSignedChangePercent('+2.84%') => '+2.84%'
+ * formatSignedChangePercent('-1.23%') => '-1.23%'
+ * formatSignedChangePercent('0.00%') => '0.00%'
+ */
+export const formatSignedChangePercent = (value: string): string => {
+  const formattedValue = formatChangePercent(value);
+
+  if (!formattedValue || !/\d/u.test(formattedValue)) {
+    return formattedValue;
+  }
+
+  if (
+    formattedValue.startsWith('+') ||
+    formattedValue.startsWith('-') ||
+    Number.parseFloat(formattedValue.replace('%', '')) <= 0
+  ) {
+    return formattedValue;
+  }
+
+  return `+${formattedValue}`;
+};
+
+/**
  * Get the appropriate text color for a percentage change value
- * Non-negative values (≥ 0) → green, negative → red
+ * Non-negative values (≥ 0) → green, negative → red,
+ * non-numeric / fallback values → alternative text color
  *
  * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
  * @returns The appropriate text color
@@ -132,9 +169,13 @@ export const formatChangePercent = (value: string): string => {
  * getChangeColor('2.84%') => TextColor.SuccessDefault
  * getChangeColor('0.00%') => TextColor.SuccessDefault
  * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ * getChangeColor('N/A') => TextColor.TextAlternative
  */
 export const getChangeColor = (percentString: string): TextColor => {
-  const value = parseFloat(percentString.replace('%', ''));
+  const value = Number.parseFloat(percentString.replace('%', ''));
+  if (Number.isNaN(value)) {
+    return TextColor.TextAlternative;
+  }
   if (value < 0) {
     return TextColor.ErrorDefault;
   }

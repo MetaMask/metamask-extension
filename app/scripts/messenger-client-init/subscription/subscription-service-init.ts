@@ -1,9 +1,9 @@
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { SubscriptionService } from '../../services/subscription/subscription-service';
 import { SubscriptionServiceMessenger } from '../../services/subscription/types';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 
-export const SubscriptionServiceInit: ControllerInitFunction<
+export const SubscriptionServiceInit: MessengerClientInitFunction<
   SubscriptionService,
   SubscriptionServiceMessenger
 > = (request) => {

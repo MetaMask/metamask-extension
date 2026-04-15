@@ -1,5 +1,5 @@
 import { AccountsController } from '@metamask/accounts-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { AccountsControllerMessenger } from './messengers';
 
 /**
@@ -11,7 +11,7 @@ import { AccountsControllerMessenger } from './messengers';
  * controller.
  * @returns The initialized controller.
  */
-export const AccountsControllerInit: ControllerInitFunction<
+export const AccountsControllerInit: MessengerClientInitFunction<
   AccountsController,
   AccountsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

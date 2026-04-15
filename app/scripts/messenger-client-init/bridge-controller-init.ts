@@ -11,7 +11,7 @@ import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
 /**
@@ -23,7 +23,7 @@ import { BridgeControllerInitMessenger } from './messengers';
  * @param request.getController
  * @returns The initialized controller.
  */
-export const BridgeControllerInit: ControllerInitFunction<
+export const BridgeControllerInit: MessengerClientInitFunction<
   BridgeController,
   BridgeControllerMessenger,
   BridgeControllerInitMessenger
