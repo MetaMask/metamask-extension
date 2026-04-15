@@ -185,7 +185,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       );
       return Number.isFinite(parsed) ? parsed : undefined;
     }
-    const amount = Number.parseFloat(formState.amount) || 0;
+    const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
     if (amount === 0 || currentPrice === 0) {
       return undefined;
     }
