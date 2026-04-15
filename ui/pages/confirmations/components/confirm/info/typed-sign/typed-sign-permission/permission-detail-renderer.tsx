@@ -183,7 +183,7 @@ function renderElement(
     }
 
     case 'expiry': {
-      return <Expiry key={index} expiry={ctx.expiry} />;
+      return <Expiry key={index} expiry={element.getValue(ctx)} />;
     }
 
     case 'divider': {

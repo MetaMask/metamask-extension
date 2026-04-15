@@ -22,10 +22,13 @@ import {
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
+  AddressField,
   AmountField,
+  DividerElement,
   ExpiryField,
   FieldView,
   I18nFunction,
+  OriginField,
   PermissionRenderContext,
   SchemaElement,
   SchemaSection,
@@ -36,13 +39,13 @@ import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useG
 import {
   convertTimestampToReadableDate,
   extractExpiryTimestampFromRules,
-  extractExpiryToReadableDate,
   formatDecimalShiftedValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getInternalAccountByAddress } from '../../../../../selectors';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
+import { ConfirmInfoRowDivider } from '../../../../app/confirm/info/row';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import {
   GatorPermissionDetailRow,
@@ -194,6 +197,45 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
+// Confirmation-only schema elements (divider / origin / address). Review views must not
+// use these without adding explicit rendering below; otherwise renderElement throws.
+function renderConfirmationDividerOriginAddressElement(
+  rowKey: string,
+  element: DividerElement | OriginField | AddressField,
+  ctx: PermissionRenderContext,
+  t: I18nFunction,
+): React.ReactNode {
+  switch (element.type) {
+    case 'divider':
+      return <ConfirmInfoRowDivider key={rowKey} />;
+    case 'origin':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t('requestFrom')}
+          value={ctx.origin}
+          testId={element.testId}
+        />
+      );
+    case 'address': {
+      const address = element.getValue(ctx);
+      if (!address) {
+        return null;
+      }
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={shortenAddress(address)}
+          testId={element.testId}
+        />
+      );
+    }
+    default:
+      return throwUnhandledPermissionSchemaElement(element);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Element renderer
 // ---------------------------------------------------------------------------
@@ -212,7 +254,6 @@ type RenderElementOptions = {
     permissionAccount?: string;
     networkName?: string;
   };
-  rules?: Rule[] | null;
 };
 
 function renderElement({
@@ -226,7 +267,6 @@ function renderElement({
   index,
   viewMode,
   extraProps,
-  rules,
 }: RenderElementOptions): React.ReactNode {
   // Skip elements not intended for the current view
   if (!element.includeInViews.includes(viewMode)) {
@@ -272,7 +312,7 @@ function renderElement({
       );
 
     case 'expiry':
-      return renderExpiryElement(rowKey, element, ctx, t, rules);
+      return renderExpiryElement(rowKey, element, ctx, t);
 
     case 'justification': {
       const justificationValue = element.getValue(ctx);
@@ -307,7 +347,15 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-      return null;
+      if (viewMode !== 'confirmation') {
+        return throwUnhandledPermissionSchemaElement(element as never);
+      }
+      return renderConfirmationDividerOriginAddressElement(
+        rowKey,
+        element,
+        ctx,
+        t,
+      );
 
     default:
       return throwUnhandledPermissionSchemaElement(element);
@@ -343,9 +391,9 @@ function renderAmountElement(
 }
 
 /**
- * Expiry timestamp used for schema context and stream exposure, aligned with
- * {@link renderExpiryElement}: when `rules` is non-empty, expiry comes only from rules
- * (same as the expiry row), not from the `expiry` prop.
+ * Expiry timestamp used for schema context and stream exposure. When `rules` is non-empty,
+ * expiry comes only from rules (same value as the schema expiry field's `getValue(ctx)` via `ctx.expiry`),
+ * not from the `expiry` prop.
  * @param expiry
  * @param rules
  */
@@ -364,19 +412,12 @@ function renderExpiryElement(
   element: ExpiryField,
   ctx: PermissionRenderContext,
   t: I18nFunction,
-  rules?: Rule[] | null,
 ): React.ReactNode {
-  let displayValue: string;
-  if (rules?.length) {
-    const expiryDate = extractExpiryToReadableDate(rules);
-    displayValue = expiryDate || t('gatorPermissionNoExpiration');
-  } else {
-    const expiry = element.getValue(ctx);
-    displayValue =
-      expiry === null
-        ? t('gatorPermissionNoExpiration')
-        : convertTimestampToReadableDate(expiry);
-  }
+  const expiry = element.getValue(ctx);
+  const displayValue =
+    expiry === null
+      ? t('gatorPermissionNoExpiration')
+      : convertTimestampToReadableDate(expiry);
 
   return (
     <GatorPermissionDetailRow
@@ -404,7 +445,6 @@ type RenderSectionOptions = {
     permissionAccount?: string;
     networkName?: string;
   };
-  rules?: Rule[] | null;
 };
 
 function renderSection({
@@ -416,7 +456,6 @@ function renderSection({
   isLoading,
   viewMode,
   extraProps,
-  rules,
 }: RenderSectionOptions): React.ReactNode {
   return (
     <React.Fragment key={section.testId}>
@@ -432,7 +471,6 @@ function renderSection({
           index,
           viewMode,
           extraProps,
-          rules,
         }),
       )}
     </React.Fragment>
@@ -537,7 +575,6 @@ export const ReviewPermissionRenderer: React.FC<
           isLoading: loading,
           viewMode,
           extraProps,
-          rules,
         }),
       )}
     </>
