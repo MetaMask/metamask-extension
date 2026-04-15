@@ -84,13 +84,7 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (
-      suppressNavigation(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-      )
-    ) {
+    if (suppressNavigation(pendingApprovals?.[0]?.id, pendingApprovals)) {
       return;
     }
 

@@ -7,6 +7,8 @@ import { isInteractiveUI } from '../../shared/lib/environment-type';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { selectSmartTransactions } from '../selectors/toast';
 
+// Suppress navigation for smart transaction status page confirmations
+// when transaction toasts are enabled
 export function useSuppressNavigation() {
   const transactionToastsEnabled = useSelector(
     getExtensionSkipTransactionStatusPage,

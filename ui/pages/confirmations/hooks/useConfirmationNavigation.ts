@@ -64,9 +64,7 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      const hasApprovals = Boolean(approvalFlows?.length);
-
-      if (suppressNavigation(confirmationId, confirmations, hasApprovals)) {
+      if (suppressNavigation(confirmationId, confirmations)) {
         return;
       }
 
