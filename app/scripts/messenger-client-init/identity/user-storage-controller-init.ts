@@ -3,7 +3,7 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,7 +21,7 @@ import { loadAuthenticationConfig } from '../../../../shared/lib/authentication'
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const UserStorageControllerInit: ControllerInitFunction<
+export const UserStorageControllerInit: MessengerClientInitFunction<
   UserStorageController,
   UserStorageControllerMessenger,
   UserStorageControllerInitMessenger

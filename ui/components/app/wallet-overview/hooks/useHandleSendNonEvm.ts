@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sendMultichainTransaction } from '../../../../store/actions';
 import {
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
@@ -30,7 +30,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   const navigate = useNavigate();
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
 
   useEffect(() => {

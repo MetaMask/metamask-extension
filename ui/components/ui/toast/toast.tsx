@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
@@ -11,9 +10,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../icon/status-icon';
+
+export { toast } from 'react-hot-toast';
 
 const statusMap = {
   loading: 'loading',
@@ -23,20 +23,15 @@ const statusMap = {
 
 export function Toaster() {
   const t = useI18nContext();
-  const { pathname } = useLocation();
 
   if (!isInteractiveUI() || process.env.IN_TEST) {
     return null;
   }
 
-  // Only show toast on the default (home) route
-  const style = pathname === DEFAULT_ROUTE ? undefined : { display: 'none' };
-
   return (
     <ToasterBase
       position="bottom-center"
       containerClassName="toast-container"
-      containerStyle={style}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',
         style: {

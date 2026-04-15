@@ -68,7 +68,7 @@ export const MultichainAccountCellDefaultAddress = ({
           size={ButtonIconSize.Sm}
           variant={ButtonIconVariant.Filled}
           iconProps={{
-            size: IconSize.Sm,
+            size: IconSize.Xs,
           }}
           ariaLabel={t('openMultichainAccountAddressMenu')}
           className="text-icon-alternative rounded-lg"
@@ -94,7 +94,7 @@ export const MultichainAccountCellDefaultAddress = ({
           <Text
             ellipsis
             variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
+            fontWeight={FontWeight.Regular}
             color={
               addressCopied
                 ? TextColor.SuccessDefault
@@ -108,7 +108,7 @@ export const MultichainAccountCellDefaultAddress = ({
           </Text>
           <Icon
             name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-            size={IconSize.Sm}
+            size={IconSize.Xs}
             color={
               addressCopied
                 ? IconColor.SuccessDefault

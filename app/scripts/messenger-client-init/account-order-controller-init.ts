@@ -1,6 +1,8 @@
-import { AccountOrderController } from '../controllers/account-order';
-import { ControllerInitFunction } from './types';
-import { AccountOrderControllerMessenger } from './messengers';
+import {
+  AccountOrderController,
+  AccountOrderControllerMessenger,
+} from '../controllers/account-order';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the accountOrder controller.
@@ -11,7 +13,7 @@ import { AccountOrderControllerMessenger } from './messengers';
  * controller.
  * @returns The initialized controller.
  */
-export const AccountOrderControllerInit: ControllerInitFunction<
+export const AccountOrderControllerInit: MessengerClientInitFunction<
   AccountOrderController,
   AccountOrderControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

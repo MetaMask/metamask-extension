@@ -35,7 +35,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
@@ -234,9 +234,7 @@ export default function ConfirmationPage({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const pendingConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
+  const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);

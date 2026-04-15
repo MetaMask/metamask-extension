@@ -1,5 +1,5 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getDecryptMessageManagerMessenger,
@@ -11,7 +11,7 @@ import { DecryptMessageManagerInit } from './decrypt-message-manager-init';
 jest.mock('@metamask/message-manager');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<DecryptMessageManagerMessenger>
+  MessengerClientInitRequest<DecryptMessageManagerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

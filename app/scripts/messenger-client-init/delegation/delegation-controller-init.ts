@@ -14,7 +14,7 @@ import {
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import type { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
-import type { ControllerInitFunction } from '../types';
+import type { MessengerClientInitFunction } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(Number(chainId));
@@ -29,7 +29,7 @@ const getDelegationEnvironment = (chainId: Hex) => {
  * @param request.initMessenger - The initialization messenger for the controller.
  * @returns The initialized controller.
  */
-export const DelegationControllerInit: ControllerInitFunction<
+export const DelegationControllerInit: MessengerClientInitFunction<
   DelegationController,
   DelegationControllerMessenger,
   DelegationControllerInitMessenger

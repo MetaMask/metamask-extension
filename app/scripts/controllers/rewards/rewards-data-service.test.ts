@@ -6,7 +6,6 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import { RewardsDataServiceMessenger } from '../../messenger-client-init/messengers/reward-data-service-messenger';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,
@@ -28,6 +27,7 @@ import type {
   SiweJoinDto,
   ChallengeDto,
 } from './rewards-controller.types';
+import { RewardsDataServiceMessenger } from './rewards-data-service-types';
 
 // Mock ExtensionPlatform
 jest.mock('../../platforms/extension', () => {

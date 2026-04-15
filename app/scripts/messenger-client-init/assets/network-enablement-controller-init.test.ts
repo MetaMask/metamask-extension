@@ -12,7 +12,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getNetworkEnablementControllerInitMessenger,
@@ -28,7 +28,7 @@ jest.mock('@metamask/network-enablement-controller');
 function getInitRequestMock(
   baseMessenger = getRootMessenger<never, never>(),
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     NetworkEnablementControllerMessenger,
     NetworkEnablementControllerInitMessenger
   >

@@ -12,8 +12,8 @@ import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notifi
 import log from 'loglevel';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AssetsControllerGetStateAction } from '@metamask/assets-controller';
-import type { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller';
-import type { AppStateControllerSetCanTrackWalletFundsObtainedAction } from '../controllers/app-state-controller';
+import type { AppStateControllerSetCanTrackWalletFundsObtainedAction } from '../controllers/app-state-controller-method-action-types';
+import type { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller-method-action-types';
 import type { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   hasNonZeroTokenBalance,

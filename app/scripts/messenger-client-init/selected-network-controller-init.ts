@@ -1,7 +1,7 @@
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { SelectedNetworkControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the selected network controller.
@@ -11,7 +11,7 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SelectedNetworkControllerInit: ControllerInitFunction<
+export const SelectedNetworkControllerInit: MessengerClientInitFunction<
   SelectedNetworkController,
   SelectedNetworkControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

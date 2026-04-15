@@ -53,7 +53,7 @@
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
-    "newPrivacyPolicyToastClickedOrClosed": null,
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
@@ -220,9 +220,7 @@
     },
     "nativeAssetIdentifiers": "object"
   },
-  "NetworkOrderController": {
-    "orderedNetworkList": "object"
-  },
+  "NetworkOrderController": { "orderedNetworkList": "object" },
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
@@ -303,6 +301,7 @@
     },
     "referrals": "object",
     "securityAlertsEnabled": "boolean",
+    "showSidePanelMigrationToast": "boolean",
     "snapRegistryList": "object",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "theme": "os",

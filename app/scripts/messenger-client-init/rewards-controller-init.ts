@@ -7,11 +7,9 @@ import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
-import {
-  RewardsControllerInitMessenger,
-  RewardsControllerMessenger,
-} from './messengers/rewards-controller-messenger';
-import { ControllerInitFunction } from './types';
+import { RewardsControllerMessenger } from '../controllers/rewards/rewards-controller.types';
+import { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Helper function to resolve a feature flag value.
@@ -34,7 +32,7 @@ const resolveFlag = (flag: unknown) => {
  * @param request - The request object.
  * @returns The RewardsController.
  */
-export const RewardsControllerInit: ControllerInitFunction<
+export const RewardsControllerInit: MessengerClientInitFunction<
   RewardsController,
   RewardsControllerMessenger,
   RewardsControllerInitMessenger

@@ -21,7 +21,7 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   KeyringControllerMessenger,
   KeyringControllerInitMessenger,
@@ -42,7 +42,7 @@ import {
  * @param request.getController - Function to get other controllers.
  * @returns The initialized controller.
  */
-export const KeyringControllerInit: ControllerInitFunction<
+export const KeyringControllerInit: MessengerClientInitFunction<
   KeyringController,
   KeyringControllerMessenger,
   KeyringControllerInitMessenger

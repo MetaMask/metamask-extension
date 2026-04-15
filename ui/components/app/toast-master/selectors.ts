@@ -16,7 +16,6 @@ import {
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
@@ -145,25 +144,15 @@ export function selectShowConnectAccountGroupToast(
 }
 
 /**
- * Retrieves user preference to see the "New SRP Added" toast
+ * Retrieves the wallet number for the "New SRP Added" toast, or false if hidden.
  *
  * @param state - Redux state object.
- * @returns Boolean preference value
+ * @returns The new wallet number to display, or false if the toast should be hidden.
  */
-export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
-  return Boolean(state.appState.showNewSrpAddedToast);
-}
-
-/**
- * Retrieves user preference to see the "Password Change Error" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectPasswordChangeToast(
+export function selectNewSrpAdded(
   state: Pick<State, 'appState'>,
-): PasswordChangeToastType | null {
-  return state.appState.showPasswordChangeToast || null;
+): number | false {
+  return state.appState.showNewSrpAddedToast || false;
 }
 
 /**
@@ -256,6 +245,21 @@ export function selectStorageWriteErrorType(
   state: Pick<State, 'metamask'>,
 ): StorageWriteErrorType | null {
   return state.metamask?.storageWriteErrorType ?? null;
+}
+
+/**
+ * Whether to show the one-time side panel migration toast.
+ * The flag is set by migration 204 for users migrated from popup to side panel.
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowSidePanelMigrationToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return Boolean(
+    (state.metamask as Record<string, unknown>)?.showSidePanelMigrationToast,
+  );
 }
 
 /**

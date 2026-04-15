@@ -21,7 +21,7 @@ import {
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
 } from '../messengers/assets';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -133,7 +133,7 @@ const generateDefaultNetworkEnablementControllerState = (
   };
 };
 
-export const NetworkEnablementControllerInit: ControllerInitFunction<
+export const NetworkEnablementControllerInit: MessengerClientInitFunction<
   NetworkEnablementController,
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger

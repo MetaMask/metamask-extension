@@ -122,7 +122,7 @@ const ToastHarness = () => {
         onClick={() => {
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS,
-            messageParams: ['100', 'ETH'],
+            messageParams: ['$100', 'ETH'],
           });
         }}
       >
@@ -144,7 +144,7 @@ const ToastHarness = () => {
         onClick={() => {
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
-            messageParams: ['50', 'ETH'],
+            messageParams: ['$50', 'ETH'],
           });
         }}
       >
@@ -580,14 +580,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Add Success' }),
     );
-    expect(screen.getByText('Added 100 ETH margin')).toBeInTheDocument();
+    expect(
+      screen.getByText('Added $100 margin to ETH position'),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Added 100 ETH margin')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Added $100 margin to ETH position'),
+    ).not.toBeInTheDocument();
   });
 
   it('maps margin remove success key to success variant with auto-hide', () => {
@@ -603,14 +607,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Remove Success' }),
     );
-    expect(screen.getByText('Removed 50 ETH margin')).toBeInTheDocument();
+    expect(
+      screen.getByText('Removed $50 margin from ETH position'),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Removed 50 ETH margin')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Removed $50 margin from ETH position'),
+    ).not.toBeInTheDocument();
   });
 
   it('maps margin adjustment failed key to error variant with auto-hide', () => {

@@ -1,5 +1,5 @@
 import { GasFeeController } from '@metamask/gas-fee-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getGasFeeControllerMessenger,
@@ -13,7 +13,7 @@ import { GasFeeControllerInit } from './gas-fee-controller-init';
 jest.mock('@metamask/gas-fee-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     GasFeeControllerMessenger,
     GasFeeControllerInitMessenger
   >

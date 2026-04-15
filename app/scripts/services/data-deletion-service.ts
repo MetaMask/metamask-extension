@@ -9,8 +9,14 @@ import {
   wrap,
   CircuitState,
 } from 'cockatiel';
+import { Messenger } from '@metamask/messenger';
 import getFetchWithTimeout from '../../../shared/lib/fetch-with-timeout';
 import { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
+import { DataDeletionServiceMethodActions } from './data-deletion-service-method-action-types';
+
+export const SERVICE_NAME = 'DataDeletionService';
+
+type ServiceName = typeof SERVICE_NAME;
 
 const inTest = process.env.IN_TEST;
 const fallbackSourceId = 'test';
@@ -47,6 +53,15 @@ const DEFAULT_CIRCUIT_BREAK_DURATION = 30 * 60 * 1000;
  * The threshold (in milliseconds) for when a successful request is considered "degraded".
  */
 const DEFAULT_DEGRADED_THRESHOLD = 5_000;
+
+/**
+ * The messenger for the DataDeletionService.
+ */
+export type DataDeletionServiceMessenger = Messenger<
+  ServiceName,
+  DataDeletionServiceMethodActions,
+  never
+>;
 
 /**
  * Type guard for Fetch network responses with a `statusCode` property.
@@ -139,10 +154,19 @@ function createRetryPolicy({
   return wrap(retryPolicy, circuitBreakerPolicy);
 }
 
+const MESSENGER_EXPOSED_METHODS = [
+  'createDataDeletionRegulationTask',
+  'fetchDeletionRegulationStatus',
+] as const;
+
 /**
  * A serivce for requesting the deletion of analytics data.
  */
 export class DataDeletionService {
+  name: ServiceName = SERVICE_NAME;
+
+  #messenger: DataDeletionServiceMessenger;
+
   #analyticsDataDeletionEndpoint: string;
 
   #analyticsDataDeletionSourceId: string;
@@ -168,8 +192,10 @@ export class DataDeletionService {
    * @param options.onDegraded - An event handler for when the circuit remains closed, but requests
    * are failing or resolving too slowly (i.e. resolving more slowly than the `degradedThreshold`).
    * @param options.timeout - The timeout allowed for network calls before they are aborted.
+   * @param options.messenger - The service messenger.
    */
   constructor({
+    messenger,
     analyticsDataDeletionEndpoint = DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT,
     analyticsDataDeletionSourceId = DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID,
     circuitBreakDuration = DEFAULT_CIRCUIT_BREAK_DURATION,
@@ -178,6 +204,7 @@ export class DataDeletionService {
     onDegraded,
     timeout,
   }: {
+    messenger: DataDeletionServiceMessenger;
     analyticsDataDeletionEndpoint?: string;
     analyticsDataDeletionSourceId?: string;
     circuitBreakDuration?: number;
@@ -185,12 +212,13 @@ export class DataDeletionService {
     onBreak?: () => void;
     onDegraded?: () => void;
     timeout?: number;
-  } = {}) {
+  }) {
     if (!analyticsDataDeletionEndpoint) {
       throw new Error('Missing ANALYTICS_DATA_DELETION_ENDPOINT');
     } else if (!analyticsDataDeletionSourceId) {
       throw new Error('Missing ANALYTICS_DATA_DELETION_SOURCE_ID');
     }
+    this.#messenger = messenger;
     this.#fetchWithTimeout = getFetchWithTimeout(timeout);
     this.#analyticsDataDeletionEndpoint = analyticsDataDeletionEndpoint;
     this.#analyticsDataDeletionSourceId = analyticsDataDeletionSourceId;
@@ -210,6 +238,11 @@ export class DataDeletionService {
       onDegraded,
       retries: RETRIES,
     });
+
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**

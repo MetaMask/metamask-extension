@@ -11,10 +11,13 @@ import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
-import type { ControllerInitFunction, ControllerInitResult } from './types';
+import type {
+  MessengerClientInitFunction,
+  MessengerClientInitResult,
+} from './types';
 import type { TransactionPayControllerInitMessenger } from './messengers';
 
-export const TransactionPayControllerInit: ControllerInitFunction<
+export const TransactionPayControllerInit: MessengerClientInitFunction<
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayControllerInitMessenger
@@ -52,7 +55,7 @@ export const TransactionPayControllerInit: ControllerInitFunction<
 
 function getApi(
   controller: TransactionPayController,
-): ControllerInitResult<TransactionPayController>['api'] {
+): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
     setTransactionPayIsMaxAmount: (
       transactionId: string,

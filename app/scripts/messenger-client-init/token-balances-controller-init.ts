@@ -1,12 +1,12 @@
 import { TokenBalancesController } from '@metamask/assets-controllers';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './messengers';
 
-export const TokenBalancesControllerInit: ControllerInitFunction<
+export const TokenBalancesControllerInit: MessengerClientInitFunction<
   TokenBalancesController,
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger

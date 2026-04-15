@@ -1,17 +1,17 @@
-import { AccountOrderController } from '../controllers/account-order';
-import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getAccountOrderControllerMessenger,
+  AccountOrderController,
   AccountOrderControllerMessenger,
-} from './messengers';
+} from '../controllers/account-order';
+import { getRootMessenger } from '../lib/messenger';
+import { MessengerClientInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
+import { getAccountOrderControllerMessenger } from './messengers';
 import { AccountOrderControllerInit } from './account-order-controller-init';
 
 jest.mock('../controllers/account-order');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AccountOrderControllerMessenger>
+  MessengerClientInitRequest<AccountOrderControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 

@@ -4,7 +4,7 @@ import {
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
@@ -21,7 +21,7 @@ import { trace } from '../../../../shared/lib/trace';
  * @param request.ensureOnboardingComplete - Ensure onboarding is complete before initializing.
  * @returns The initialized service.
  */
-export const MultichainAccountServiceInit: ControllerInitFunction<
+export const MultichainAccountServiceInit: MessengerClientInitFunction<
   MultichainAccountService,
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger

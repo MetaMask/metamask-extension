@@ -357,6 +357,139 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
+    it('uses markPrice (oracle) for margin calculation when provided', () => {
+      // Simulates the HYPE example from mobile:
+      // amount=$15, leverage=3x, oracle price=$25.65, szDecimals=1
+      // positionSize = round(15/25.65, 1) = 0.6
+      // notional = 0.6 × 25.65 = $15.39
+      // margin   = $15.39 / 3 = $5.13
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 24.95, // mid/candle price — different from oracle
+            markPrice: 25.65, // oracle price — what mobile uses for margin
+            szDecimals: 1,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('15');
+        result.current.handleLeverageChange(3);
+      });
+
+      // positionSize = trunc(15 / 25.65, szDecimals=1) = 0.5
+      // notional = 0.5 * 25.65 = 12.825, margin = 12.825 / 3 = 4.275 → $4.28
+      // This differs from currentPrice-based margin ($5.00) because the oracle
+      // price is used, confirming markPrice is wired through.
+      expect(result.current.calculations.marginRequired).toContain('4.2');
+    });
+
+    it('falls back to currentPrice for margin when markPrice is not provided', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            // markPrice omitted — should fall back
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using currentPrice as fallback
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('uses limit price (not markPrice) for margin on limit orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            markPrice: 44000, // oracle — should be ignored for limit orders
+            orderType: 'limit',
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLimitPriceChange('45000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using the limit price, not markPrice
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('calculates margin as notional divided by leverage (no fee included)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('10000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size = $10,000, leverage = 10x → margin = $10,000 / 10 = $1,000
+      // Fees are a separate line item and are NOT included in margin
+      expect(result.current.calculations.marginRequired).not.toBeNull();
+      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).not.toContain(
+        '10,000',
+      );
+    });
+
+    it('sets orderValue equal to size (not size × leverage)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(5);
+      });
+
+      // orderValue should be $5000 (the size), not $25000 (size × leverage)
+      expect(result.current.calculations.orderValue).toContain('5,000');
+      expect(result.current.calculations.orderValue).not.toContain('25,000');
+    });
+
+    it('recalculates balancePercent when leverage changes', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size $5000, available $1000, leverage 10x → maxSize $10000 → 50%
+      expect(result.current.formState.balancePercent).toBe(50);
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+      });
+
+      // Same size $5000, now leverage 5x → maxSize $5000 → 100%
+      expect(result.current.formState.balancePercent).toBe(100);
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',
@@ -405,7 +538,9 @@ describe('usePerpsOrderForm', () => {
       });
 
       expect(result.current.calculations.positionSize).toContain('BTC');
-      expect(result.current.calculations.orderValue).toBe('$3,000.00');
+      // Amount is treated as notional position size (TAT-2684 fix), so
+      // orderValue equals the entered amount ($1000) regardless of leverage.
+      expect(result.current.calculations.orderValue).toBe('$1,000.00');
     });
   });
 

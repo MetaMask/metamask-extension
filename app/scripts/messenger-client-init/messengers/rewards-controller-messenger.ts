@@ -1,137 +1,24 @@
-import { ControllerGetStateAction } from '@metamask/base-controller';
 import {
   Messenger,
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
 
-import {
-  AccountsControllerGetSelectedMultichainAccountAction,
-  AccountsControllerListMultichainAccountsAction,
-} from '@metamask/accounts-controller';
-import {
-  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-  AccountTreeControllerSelectedAccountGroupChangeEvent,
-} from '@metamask/account-tree-controller';
-import {
-  KeyringControllerSignPersonalMessageAction,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
+
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import {
-  RewardsDataServiceGetOptInStatusAction,
-  RewardsDataServiceEstimatePointsAction,
-  RewardsDataServiceGetSeasonStatusAction,
-  RewardsDataServiceLoginAction,
-  RewardsDataServiceSiweLoginAction,
-  RewardsDataServiceMobileJoinAction,
-  RewardsDataServiceSiweJoinAction,
-  RewardsDataServiceMobileOptinAction,
-  RewardsDataServiceValidateReferralCodeAction,
-  RewardsDataServiceFetchGeoLocationAction,
-  RewardsDataServiceGetSeasonMetadataAction,
-  RewardsDataServiceGetDiscoverSeasonsAction,
-  RewardsDataServiceGenerateChallengeAction,
-} from '../../controllers/rewards/rewards-data-service-types';
-import {
-  RewardsControllerState,
-  Patch,
-  RewardsControllerAccountLinkedEvent,
-  RewardsControllerOptInAction,
-  RewardsControllerGetOptInStatusAction,
-  RewardsControllerEstimatePointsAction,
-  RewardsControllerIsRewardsFeatureEnabledAction,
-  RewardsControllerValidateReferralCodeAction,
-  RewardsControllerIsOptInSupportedAction,
-  RewardsControllerLinkAccountToSubscriptionAction,
-  RewardsControllerLinkAccountsToSubscriptionCandidateAction,
-  RewardsControllerGetGeoRewardsMetadataAction,
-  RewardsControllerGetCandidateSubscriptionIdAction,
-  RewardsControllerGetHasAccountOptedInAction,
-  RewardsControllerGetActualSubscriptionIdAction,
-  RewardsControllerGetSeasonMetadataAction,
-  RewardsControllerGetSeasonStatusAction,
-} from '../../controllers/rewards/rewards-controller.types';
+
 import { RootMessenger } from '../../lib/messenger';
-
-const name = 'RewardsController';
-
-/**
- * Events that can be emitted by the RewardsController
- */
-export type RewardsControllerEvents =
-  | {
-      type: 'RewardsController:stateChange';
-      payload: [RewardsControllerState, Patch[]];
-    }
-  | RewardsControllerAccountLinkedEvent;
-
-/**
- * Actions that can be performed by the RewardsController
- */
-export type RewardsControllerActions =
-  | ControllerGetStateAction<'RewardsController', RewardsControllerState>
-  | RewardsControllerGetOptInStatusAction
-  | RewardsControllerEstimatePointsAction
-  | RewardsControllerIsRewardsFeatureEnabledAction
-  | RewardsControllerOptInAction
-  | RewardsControllerGetGeoRewardsMetadataAction
-  | RewardsControllerValidateReferralCodeAction
-  | RewardsControllerIsOptInSupportedAction
-  | RewardsControllerLinkAccountToSubscriptionAction
-  | RewardsControllerLinkAccountsToSubscriptionCandidateAction
-  | RewardsControllerGetCandidateSubscriptionIdAction
-  | RewardsControllerGetHasAccountOptedInAction
-  | RewardsControllerGetActualSubscriptionIdAction
-  | RewardsControllerGetSeasonMetadataAction
-  | RewardsControllerGetSeasonStatusAction;
-
-// Don't reexport as per guidelines
-type AllowedActions =
-  | AccountsControllerGetSelectedMultichainAccountAction
-  | AccountsControllerListMultichainAccountsAction
-  | KeyringControllerSignPersonalMessageAction
-  | RewardsDataServiceLoginAction
-  | RewardsDataServiceSiweLoginAction
-  | RewardsDataServiceEstimatePointsAction
-  | RewardsDataServiceGetSeasonStatusAction
-  | RewardsDataServiceFetchGeoLocationAction
-  | RewardsDataServiceMobileOptinAction
-  | RewardsDataServiceValidateReferralCodeAction
-  | RewardsDataServiceMobileJoinAction
-  | RewardsDataServiceSiweJoinAction
-  | RewardsDataServiceGetOptInStatusAction
-  | RewardsDataServiceGetSeasonMetadataAction
-  | RewardsDataServiceGetDiscoverSeasonsAction
-  | RewardsDataServiceGenerateChallengeAction
-  | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | SnapControllerHandleRequestAction;
-
-type AllowedEvents =
-  | KeyringControllerUnlockEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
-
-export type RewardsControllerMessenger = Messenger<
-  typeof name,
-  RewardsControllerActions | AllowedActions,
-  RewardsControllerEvents | AllowedEvents
->;
+import { RewardsControllerMessenger } from '../../controllers/rewards/rewards-controller.types';
 
 export function getRewardsControllerMessenger(
   messenger: RootMessenger<
-    RewardsControllerActions | AllowedActions,
-    RewardsControllerEvents | AllowedEvents
+    MessengerActions<RewardsControllerMessenger>,
+    MessengerEvents<RewardsControllerMessenger>
   >,
 ): RewardsControllerMessenger {
-  const controllerMessenger = new Messenger<
-    typeof name,
-    MessengerActions<RewardsControllerMessenger>,
-    MessengerEvents<RewardsControllerMessenger>,
-    typeof messenger
-  >({
-    namespace: name,
+  const controllerMessenger: RewardsControllerMessenger = new Messenger({
+    namespace: 'RewardsController',
     parent: messenger,
   });
   messenger.delegate({

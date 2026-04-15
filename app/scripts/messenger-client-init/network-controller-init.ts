@@ -24,7 +24,7 @@ import {
   getFailoverUrlsForInfuraNetwork,
 } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { NetworkControllerInitMessenger } from './messengers';
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
@@ -160,7 +160,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const NetworkControllerInit: ControllerInitFunction<
+export const NetworkControllerInit: MessengerClientInitFunction<
   NetworkController,
   NetworkControllerMessenger,
   NetworkControllerInitMessenger

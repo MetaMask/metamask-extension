@@ -7,7 +7,7 @@ import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the bridge status controller.
@@ -18,7 +18,7 @@ import { ControllerInitFunction } from './types';
  * @param request.persistedState - The persisted state for the controller.
  * @returns The initialized controller.
  */
-export const BridgeStatusControllerInit: ControllerInitFunction<
+export const BridgeStatusControllerInit: MessengerClientInitFunction<
   BridgeStatusController,
   BridgeStatusControllerMessenger
 > = ({ controllerMessenger, persistedState, getController }) => {

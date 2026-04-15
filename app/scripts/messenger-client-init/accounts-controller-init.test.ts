@@ -1,6 +1,6 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAccountsControllerMessenger,
@@ -11,7 +11,7 @@ import { AccountsControllerInit } from './accounts-controller-init';
 jest.mock('@metamask/accounts-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AccountsControllerMessenger>
+  MessengerClientInitRequest<AccountsControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

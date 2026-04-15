@@ -73,6 +73,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
+import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -287,6 +288,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       (accountsById ?? {}) as Parameters<
         typeof getAggregatedBalanceForAccount
       >[5],
+      traceAsControllerCallback,
     );
   },
 );

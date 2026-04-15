@@ -1,14 +1,14 @@
 import ExtensionPlatform from '../../platforms/extension';
 import {
   BaseRestrictedControllerMessenger,
-  ControllerInitRequest,
+  MessengerClientInitRequest,
 } from '../types';
 
 export const CHAIN_ID_MOCK = '0x123';
 
 export function buildControllerInitRequestMock(): jest.Mocked<
   Omit<
-    ControllerInitRequest<
+    MessengerClientInitRequest<
       BaseRestrictedControllerMessenger,
       BaseRestrictedControllerMessenger
     >,

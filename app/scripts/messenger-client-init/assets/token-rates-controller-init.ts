@@ -2,7 +2,7 @@ import {
   CodefiTokenPricesServiceV2,
   TokenRatesController,
 } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   TokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger,
@@ -17,7 +17,7 @@ import { previousValueComparator } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const TokenRatesControllerInit: ControllerInitFunction<
+export const TokenRatesControllerInit: MessengerClientInitFunction<
   TokenRatesController,
   TokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger

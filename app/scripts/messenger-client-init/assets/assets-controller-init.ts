@@ -10,12 +10,12 @@ import {
   type AssetsUnifyStateFeatureFlag,
   ASSETS_UNIFY_STATE_FLAG,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { type ControllerInitFunction } from '../types';
+import { type MessengerClientInitFunction } from '../types';
 import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import { trace } from '../../../../shared/lib/trace';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 
 /**
  * Cached API client instance.
@@ -107,7 +107,7 @@ function getApiClient(
  * @param request.getController - Function to get a controller by name.
  * @returns The initialized controller.
  */
-export const AssetsControllerInit: ControllerInitFunction<
+export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
@@ -178,8 +178,7 @@ export const AssetsControllerInit: ControllerInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    // @ts-expect-error: Type of `TraceRequest` is different.
-    trace,
+    trace: traceAsControllerCallback,
   });
 
   return { controller };

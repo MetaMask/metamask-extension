@@ -22,6 +22,7 @@ import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
+import { isEnforcedSimulationsEligible } from '../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -44,12 +45,12 @@ import {
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
 import { accountSupports7702 } from '../../lib/account-supports-7702';
-import { ControllerFlatState } from '../controller-list';
+import { MessengerClientFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
-  ControllerInitFunction,
-  ControllerInitRequest,
-  ControllerInitResult,
+  MessengerClientInitFunction,
+  MessengerClientInitRequest,
+  MessengerClientInitResult,
 } from '../types';
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
@@ -62,7 +63,15 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.predictRelayDeposit,
 ];
 
-export const TransactionControllerInit: ControllerInitFunction<
+const TRANSACTION_SUBMISSION_METHOD_METRIC_NAME =
+  'transaction_submission_method';
+
+const TRANSACTION_SUBMISSION_METHOD = {
+  SENTINEL_STX: 'sentinel_stx',
+  SENTINEL_RELAY: 'sentinel_relay',
+};
+
+export const TransactionControllerInit: MessengerClientInitFunction<
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerInitMessenger
@@ -180,9 +189,6 @@ export const TransactionControllerInit: ControllerInitFunction<
           },
         };
       },
-      afterSimulate: new EnforceSimulationHook({
-        messenger: initMessenger,
-      }).getAfterSimulateHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -192,6 +198,11 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
+        isEligible: (transactionMeta) =>
+          isEnforcedSimulationsEligible(
+            transactionMeta,
+            initMessenger.call('AppStateController:getState'),
+          ),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -205,6 +216,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       publish: (transactionMeta, signedTx) =>
         publishHook({
           flatState: getFlatState(),
+          getTransactionMetricsRequest,
           initMessenger,
           keyringController,
           signedTx,
@@ -212,15 +224,39 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionController: controller,
           transactionMeta,
         }),
-      publishBatch: async (_request: PublishBatchHookRequest) =>
-        await publishBatchHook({
+      publishBatch: async (_request: PublishBatchHookRequest) => {
+        const result = await publishBatchHook({
           transactionController: controller,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
           flatState: getFlatState(),
           transactions: _request.transactions as PublishBatchHookTransaction[],
-        }),
+        });
+        if (result) {
+          for (const batchTx of _request.transactions) {
+            if (batchTx.id) {
+              try {
+                getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+                  batchTx.id,
+                  {
+                    properties: {
+                      [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                        TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+                    },
+                  },
+                );
+              } catch (e) {
+                console.error(
+                  'Failed to record sentinel_stx metrics fragment for batch tx',
+                  e,
+                );
+              }
+            }
+          }
+        }
+        return result;
+      },
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
@@ -239,7 +275,7 @@ export const TransactionControllerInit: ControllerInitFunction<
 
 function getApi(
   controller: TransactionController,
-): ControllerInitResult<TransactionController>['api'] {
+): MessengerClientInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
       controller.abortTransactionSigning.bind(controller),
@@ -264,7 +300,7 @@ function getApi(
 }
 
 function getControllers(
-  request: ControllerInitRequest<
+  request: MessengerClientInitRequest<
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >,
@@ -357,12 +393,13 @@ function addTransactionControllerListeners(
   );
 }
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
 export async function publishHook({
   flatState,
+  getTransactionMetricsRequest,
   initMessenger,
   keyringController,
   signedTx,
@@ -370,7 +407,8 @@ export async function publishHook({
   transactionController,
   transactionMeta,
 }: {
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
+  getTransactionMetricsRequest: () => TransactionMetricsRequest;
   initMessenger: TransactionControllerInitMessenger;
   keyringController: Parameters<typeof accountSupports7702>[1];
   signedTx: string;
@@ -415,6 +453,19 @@ export async function publishHook({
 
     const result = await hook(transactionMeta, signedTx);
     if (result?.transactionHash) {
+      try {
+        getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+          transactionMeta.id,
+          {
+            properties: {
+              [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                TRANSACTION_SUBMISSION_METHOD.SENTINEL_RELAY,
+            },
+          },
+        );
+      } catch (e) {
+        console.error('Failed to record sentinel_relay metrics fragment', e);
+      }
       return result;
     }
     // else, fall back to regular regular transaction submission
@@ -435,6 +486,19 @@ export async function publishHook({
     });
 
     if (result?.transactionHash) {
+      try {
+        getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+          transactionMeta.id,
+          {
+            properties: {
+              [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+            },
+          },
+        );
+      } catch (e) {
+        console.error('Failed to record sentinel_stx metrics fragment', e);
+      }
       return result;
     }
     // else, fall back to regular regular transaction submission
@@ -454,7 +518,7 @@ export function publishBatchHook({
   transactionController: TransactionController;
   smartTransactionsController: SmartTransactionsController;
   hookControllerMessenger: SmartTransactionHookMessenger;
-  flatState: ControllerFlatState;
+  flatState: MessengerClientFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
   // Get transactionMeta based on the last transaction ID

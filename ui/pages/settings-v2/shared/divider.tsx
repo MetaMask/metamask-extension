@@ -4,6 +4,6 @@ import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 export const Divider = () => (
   <Box
     backgroundColor={BoxBackgroundColor.BackgroundMuted}
-    className="my-2 h-px w-full mx-4"
+    className="my-2 h-px w-auto mx-4"
   />
 );

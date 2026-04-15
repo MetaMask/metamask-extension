@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -19,11 +19,22 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../../component-library';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
+import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -68,6 +79,26 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { isEligible } = usePerpsEligibility();
+  const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsGeoBlockModalOpen(false);
+    }
+  }, [isOpen]);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.FLIP_POSITION,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
   const { replacePerpsToastByKey } = usePerpsToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +117,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   );
 
   const handleSave = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
 
@@ -113,103 +148,133 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     } catch (err) {
       const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
-      setError(raw);
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+      });
+      const message = handlePerpsError(err, t as (key: string) => string);
+      setError(message);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: raw,
+        description: message,
       });
     } finally {
       setIsSubmitting(false);
     }
-  }, [onClose, position.symbol, positionForFlip, replacePerpsToastByKey]);
+  }, [
+    isEligible,
+    onClose,
+    position.symbol,
+    positionForFlip,
+    replacePerpsToastByKey,
+    track,
+    t,
+  ]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      data-testid="perps-reverse-position-modal"
-    >
-      <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{t('perpsReversePosition')}</ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsDirection')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {directionLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsEstSize')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {estSizeLabel}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsFees')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                —
-              </Text>
-            </Box>
-            {error && (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        data-testid="perps-reverse-position-modal"
+      >
+        <ModalOverlay />
+        <ModalContent size={ModalContentSize.Sm}>
+          <ModalHeader onClose={onClose}>
+            {t('perpsReversePosition')}
+          </ModalHeader>
+          <ModalBody>
+            <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               <Box
-                className="bg-error-muted rounded-lg px-3 py-2"
                 flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
+                  color={TextColor.TextAlternative}
                 >
-                  {error}
+                  {t('perpsDirection')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {directionLabel}
                 </Text>
               </Box>
-            )}
-          </Box>
-        </ModalBody>
-        <ModalFooter
-          onCancel={onClose}
-          onSubmit={handleSave}
-          cancelButtonProps={{
-            'data-testid': 'perps-reverse-position-modal-cancel',
-            children: t('cancel'),
-            disabled: isSubmitting,
-          }}
-          submitButtonProps={{
-            'data-testid': 'perps-reverse-position-modal-save',
-            children: isSubmitting ? t('perpsSubmitting') : t('save'),
-            disabled: isSubmitting,
-          }}
-        />
-      </ModalContent>
-    </Modal>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstSize')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {estSizeLabel}
+                </Text>
+              </Box>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsFees')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  —
+                </Text>
+              </Box>
+              {error && (
+                <Box
+                  className="bg-error-muted rounded-lg px-3 py-2"
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                  >
+                    {error}
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          </ModalBody>
+          <ModalFooter
+            onCancel={onClose}
+            onSubmit={handleSave}
+            cancelButtonProps={{
+              'data-testid': 'perps-reverse-position-modal-cancel',
+              children: t('cancel'),
+              disabled: isSubmitting,
+            }}
+            submitButtonProps={{
+              'data-testid': 'perps-reverse-position-modal-save',
+              children: isSubmitting ? t('perpsSubmitting') : t('save'),
+              disabled: isSubmitting,
+            }}
+          />
+        </ModalContent>
+      </Modal>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
+    </>
   );
 };

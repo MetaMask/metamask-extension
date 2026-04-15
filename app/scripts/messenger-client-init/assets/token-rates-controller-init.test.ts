@@ -10,7 +10,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
@@ -50,7 +50,7 @@ function buildControllerMock(
  * stubbed PreferencesController.
  */
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokenRatesControllerMessenger,
     TokenRatesControllerInitMessenger
   >

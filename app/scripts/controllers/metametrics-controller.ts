@@ -23,6 +23,7 @@ import type {
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -84,12 +85,18 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import {
+  hasABTestAnalyticsMappingForEvent,
+  enrichWithABTests,
+  getRemoteFeatureFlagsWithManifestOverrides,
+} from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -311,53 +318,12 @@ export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
   MetaMetricsControllerState
 >;
 
-export type MetaMetricsControllerTrackEventAction = {
-  type: `${typeof controllerName}:trackEvent`;
-  handler: MetaMetricsController['trackEvent'];
-};
-
-export type MetaMetricsControllerGetMetaMetricsIdAction = {
-  type: `${typeof controllerName}:getMetaMetricsId`;
-  handler: MetaMetricsController['getMetaMetricsId'];
-};
-
-export type MetaMetricsControllerCreateEventFragmentAction = {
-  type: `${typeof controllerName}:createEventFragment`;
-  handler: MetaMetricsController['createEventFragment'];
-};
-
-export type MetaMetricsControllerGetEventFragmentByIdAction = {
-  type: `${typeof controllerName}:getEventFragmentById`;
-  handler: MetaMetricsController['getEventFragmentById'];
-};
-
-export type MetaMetricsControllerUpdateEventFragmentAction = {
-  type: `${typeof controllerName}:updateEventFragment`;
-  handler: MetaMetricsController['updateEventFragment'];
-};
-
-export type MetaMetricsControllerDeleteEventFragmentAction = {
-  type: `${typeof controllerName}:deleteEventFragment`;
-  handler: MetaMetricsController['deleteEventFragment'];
-};
-
-export type MetaMetricsControllerFinalizeEventFragmentAction = {
-  type: `${typeof controllerName}:finalizeEventFragment`;
-  handler: MetaMetricsController['finalizeEventFragment'];
-};
-
 /**
  * Actions exposed by the {@link MetaMetricsController}.
  */
 export type MetaMetricsControllerActions =
   | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction
-  | MetaMetricsControllerGetMetaMetricsIdAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerUpdateEventFragmentAction
-  | MetaMetricsControllerDeleteEventFragmentAction
-  | MetaMetricsControllerFinalizeEventFragmentAction;
+  | MetaMetricsControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link MetaMetricsController} changes.
@@ -375,7 +341,8 @@ export type MetaMetricsControllerEvents = MetaMetricsControllerStateChangeEvent;
 export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -422,7 +389,36 @@ export const getDefaultMetaMetricsControllerState =
     segmentApiCalls: {},
   });
 
-export default class MetaMetricsController extends BaseController<
+const MESSENGER_EXPOSED_METHODS = [
+  'addEventBeforeMetricsOptIn',
+  'addTraceBeforeMetricsOptIn',
+  'bufferedEndTrace',
+  'bufferedTrace',
+  'clearEventsAfterMetricsOptIn',
+  'clearTracesAfterMetricsOptIn',
+  'createEventFragment',
+  'deleteEventFragment',
+  'finalizeAbandonedFragments',
+  'finalizeEventFragment',
+  'generateMetaMetricsId',
+  'getEventFragmentById',
+  'getMetaMetricsId',
+  'handleMetaMaskStateUpdate',
+  'identify',
+  'processAbandonedFragment',
+  'setDataCollectionForMarketing',
+  'setMarketingCampaignCookieId',
+  'setParticipateInMetaMetrics',
+  'trackEvent',
+  'trackEventsAfterMetricsOptIn',
+  'trackPage',
+  'trackTracesAfterMetricsOptIn',
+  'updateEventFragment',
+  'updateExtensionUninstallUrl',
+  'updateTraits',
+] as const;
+
+export class MetaMetricsController extends BaseController<
   typeof controllerName,
   MetaMetricsControllerState,
   MetaMetricsControllerMessenger
@@ -491,39 +487,9 @@ export default class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:trackEvent',
-      this.trackEvent.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:getMetaMetricsId',
-      this.getMetaMetricsId.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:createEventFragment',
-      this.createEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:getEventFragmentById',
-      this.getEventFragmentById.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:updateEventFragment',
-      this.updateEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:deleteEventFragment',
-      this.deleteEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:finalizeEventFragment',
-      this.finalizeEventFragment.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
@@ -1076,6 +1042,19 @@ export default class MetaMetricsController extends BaseController<
       options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
+    let identifiedPayload = payload;
+
+    if (hasABTestAnalyticsMappingForEvent(payload.event)) {
+      try {
+        identifiedPayload = enrichWithABTests(
+          payload,
+          this.#getRemoteFeatureFlags(),
+        );
+      } catch {
+        identifiedPayload = payload;
+      }
+    }
+
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
     const events = [];
@@ -1116,7 +1095,9 @@ export default class MetaMetricsController extends BaseController<
       );
     }
 
-    events.push(this.#track(this.#buildEventPayload(payload), options));
+    events.push(
+      this.#track(this.#buildEventPayload(identifiedPayload), options),
+    );
 
     await Promise.all(events);
   }
@@ -1302,6 +1283,13 @@ export default class MetaMetricsController extends BaseController<
       referrer,
       marketingCampaignCookieId: this.state.marketingCampaignCookieId,
     };
+  }
+
+  #getRemoteFeatureFlags(): Record<string, unknown> {
+    return getRemoteFeatureFlagsWithManifestOverrides(
+      this.messenger.call('RemoteFeatureFlagController:getState')
+        ?.remoteFeatureFlags as Record<string, unknown> | undefined,
+    );
   }
 
   /**
