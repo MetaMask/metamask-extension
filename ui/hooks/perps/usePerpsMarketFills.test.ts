@@ -3,6 +3,7 @@ import type { OrderFill } from '@metamask/perps-controller';
 import {
   usePerpsMarketFills,
   _resetFillsCacheForTesting,
+  clearPerpsMarketFillsModuleCache,
 } from './usePerpsMarketFills';
 
 const mockSubmitRequestToBackground = jest.fn();
@@ -17,6 +18,8 @@ jest.mock('./stream/usePerpsLiveFills', () => ({
 }));
 
 const mockGetSelectedInternalAccount = jest.fn();
+const mockSelectPerpsActiveProvider = jest.fn();
+const mockSelectPerpsIsTestnet = jest.fn();
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector: (...args: unknown[]) => unknown) =>
     selector(),
@@ -24,6 +27,10 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: () => mockGetSelectedInternalAccount(),
+}));
+jest.mock('../../selectors/perps-controller', () => ({
+  selectPerpsActiveProvider: () => mockSelectPerpsActiveProvider(),
+  selectPerpsIsTestnet: () => mockSelectPerpsIsTestnet(),
 }));
 
 function makeFill(overrides: Partial<OrderFill> = {}): OrderFill {
@@ -56,6 +63,8 @@ describe('usePerpsMarketFills', () => {
     _resetFillsCacheForTesting();
     setLiveFills([]);
     mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
+    mockSelectPerpsActiveProvider.mockReturnValue('hyperliquid');
+    mockSelectPerpsIsTestnet.mockReturnValue(false);
     setRestFillsResponse([]);
   });
 
@@ -394,7 +403,7 @@ describe('usePerpsMarketFills', () => {
       await waitFirst();
       mockSubmitRequestToBackground.mockClear();
 
-      // Different address — cache is for 0xabc, not 0xdef
+      // Different address — cache scope includes address
       mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
       setRestFillsResponse([makeFill({ orderId: 'def-1', timestamp: 2000 })]);
 
@@ -405,6 +414,48 @@ describe('usePerpsMarketFills', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(result2.current.fills[0].orderId).toBe('def-1');
+    });
+
+    it('re-fetches when mainnet vs testnet scope changes even when cache is warm', async () => {
+      setRestFillsResponse([makeFill({ orderId: 'main-1', timestamp: 1000 })]);
+
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      mockSubmitRequestToBackground.mockClear();
+
+      mockSelectPerpsIsTestnet.mockReturnValue(true);
+      setRestFillsResponse([makeFill({ orderId: 'test-1', timestamp: 2000 })]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(result.current.fills[0].orderId).toBe('test-1');
+    });
+
+    it('re-fetches after clearPerpsMarketFillsModuleCache', async () => {
+      setRestFillsResponse([makeFill({ orderId: 'first', timestamp: 1000 })]);
+
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      clearPerpsMarketFillsModuleCache();
+      setRestFillsResponse([makeFill({ orderId: 'second', timestamp: 2000 })]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      expect(result.current.fills[0].orderId).toBe('second');
     });
   });
 });

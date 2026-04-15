@@ -3,6 +3,10 @@ import type { OrderFill } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  selectPerpsActiveProvider,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsLiveFills } from './stream';
 
@@ -22,14 +26,23 @@ const FILLS_CACHE_TTL_MS = 30_000;
 type FillsCache = {
   fills: OrderFill[];
   fetchedAt: number;
-  address: string;
+  cacheKey: string;
 };
 
 let fillsCache: FillsCache | null = null;
 
-/** @internal Exported only for testing — resets the module-level fills cache. */
-export function _resetFillsCacheForTesting(): void {
+/**
+ * Clears the module-level REST fills cache. Invoked when the Perps stream
+ * layer resets so UI never reads cross-account or cross-environment stale
+ * fills (mirrors `clearPerpsMarketInfoModuleCache` in usePerpsMarketInfo).
+ */
+export function clearPerpsMarketFillsModuleCache(): void {
   fillsCache = null;
+}
+
+/** @internal Alias for unit tests. */
+export function _resetFillsCacheForTesting(): void {
+  clearPerpsMarketFillsModuleCache();
 }
 
 /**
@@ -54,6 +67,14 @@ export function usePerpsMarketFills({
 }: UsePerpsMarketFillsParams): UsePerpsMarketFillsReturn {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const activeProvider = useSelector(selectPerpsActiveProvider);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+
+  const fillsCacheKey = useMemo(() => {
+    const net = isTestnet ? 'testnet' : 'mainnet';
+    const addressKey = (selectedAddress ?? '').toLowerCase();
+    return `${activeProvider}:${net}:${addressKey}`;
+  }, [activeProvider, isTestnet, selectedAddress]);
 
   const { fills: liveFills, isInitialLoading: wsLoading } = usePerpsLiveFills({
     throttleMs,
@@ -62,7 +83,7 @@ export function usePerpsMarketFills({
   // Initialise from cache so re-navigation renders immediately without a spinner
   const isCacheHit = Boolean(
     fillsCache &&
-      fillsCache.address === selectedAddress &&
+      fillsCache.cacheKey === fillsCacheKey &&
       Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS,
   );
 
@@ -81,10 +102,10 @@ export function usePerpsMarketFills({
   }, []);
 
   useEffect(() => {
-    // Skip fetch if the cache is still warm for this address.
+    // Skip fetch if the cache is still warm for this scope (provider, net, account).
     if (
       fillsCache &&
-      fillsCache.address === selectedAddress &&
+      fillsCache.cacheKey === fillsCacheKey &&
       Date.now() - fillsCache.fetchedAt < FILLS_CACHE_TTL_MS
     ) {
       setRestFills(fillsCache.fills);
@@ -102,7 +123,7 @@ export function usePerpsMarketFills({
           fillsCache = {
             fills: result,
             fetchedAt: Date.now(),
-            address: selectedAddress ?? '',
+            cacheKey: fillsCacheKey,
           };
           setRestFills(result);
         }
@@ -119,7 +140,7 @@ export function usePerpsMarketFills({
     return () => {
       cancelled = true;
     };
-  }, [fetchRestFills, selectedAddress]);
+  }, [fetchRestFills, fillsCacheKey]);
 
   const fills = useMemo(() => {
     const fillsMap = new Map<string, OrderFill>();
