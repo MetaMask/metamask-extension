@@ -20,6 +20,7 @@ export type AlertSeverity =
 export type Alert = {
   /**
    * Alternate actions the user can take, specific to the alert.
+   *  mariona
    */
   actions?: { key: string; label: string }[];
 

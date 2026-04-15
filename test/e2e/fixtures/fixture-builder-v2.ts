@@ -43,6 +43,7 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  ACCOUNT_2,
   ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
   DAPP_ONE_URL,
   DAPP_TWO_URL,
@@ -389,6 +390,80 @@ class FixtureBuilderV2 {
             metadata: {
               name: 'Account 3',
               importTime: 1724486724986,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withAccountsControllerAdditionalAccountVault(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
+            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
+            address: ACCOUNT_2,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 2',
+              importTime: 1724486724986,
+              lastSelected: 1665507800000,
               keyring: {
                 type: 'HD Key Tree',
               },

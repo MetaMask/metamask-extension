@@ -1,6 +1,5 @@
 /**
  * Benchmark: Confirm Transaction
- *
  * Measures time to confirm a transaction
  */
 
