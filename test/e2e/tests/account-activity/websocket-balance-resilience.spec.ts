@@ -108,10 +108,16 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
   describe('Reconnection', function () {
     it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
       this.timeout(180_000);
+
+      const balanceOverride: { nativeBalance: string } = {
+        nativeBalance: '25',
+      };
+
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          unifiedEvmAccountsApiBalances: balanceOverride,
         },
         async ({
           driver,
@@ -151,6 +157,8 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
             DEFAULT_FIXTURE_ACCOUNT,
             THIRTY_FIVE_ETH_WEI,
           );
+
+          balanceOverride.nativeBalance = '35';
 
           const notification = createBalanceUpdateNotification({
             subscriptionId: newSubId,
