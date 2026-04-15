@@ -235,6 +235,8 @@ describe('PermissionDetailRenderer', () => {
             permission={{ type: 'invalid', data: {} }}
             expiry={null}
             chainId="0x1"
+            origin="https://example.com"
+            ownerId="test-id"
           />,
           getMockStore(),
         ),
@@ -251,6 +253,8 @@ describe('PermissionDetailRenderer', () => {
             }}
             expiry={null}
             chainId="0x1"
+            origin="https://example.com"
+            ownerId="test-id"
           />,
           getMockStore(),
         ),
@@ -267,6 +271,8 @@ describe('PermissionDetailRenderer', () => {
             }}
             expiry={null}
             chainId="0x1"
+            origin="https://example.com"
+            ownerId="test-id"
           />,
           getMockStore(),
         ),
