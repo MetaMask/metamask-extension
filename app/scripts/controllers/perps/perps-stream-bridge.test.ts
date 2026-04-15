@@ -1,4 +1,20 @@
 import type { PerpsController } from '@metamask/perps-controller';
+
+// Provide the runtime enum that the source file imports. Jest cannot parse
+// the full @metamask/perps-controller bundle (Hyperliquid SDK uses ESM), so
+// we supply the enum value via a partial mock and re-export it for test use.
+const WebSocketConnectionState = {
+  Connected: 'connected',
+  Connecting: 'connecting',
+  Disconnected: 'disconnected',
+  Disconnecting: 'disconnecting',
+} as const;
+
+jest.mock('@metamask/perps-controller', () => ({
+  WebSocketConnectionState,
+}));
+
+// eslint-disable-next-line import-x/first
 import { PerpsStreamBridge } from './perps-stream-bridge';
 
 function createMockController(): jest.Mocked<
@@ -11,6 +27,13 @@ function createMockController(): jest.Mocked<
     | 'subscribeToPrices'
     | 'subscribeToOrderBook'
     | 'subscribeToCandles'
+    | 'subscribeToConnectionState'
+    | 'getWebSocketConnectionState'
+    | 'reconnect'
+    | 'getMarketDataWithPrices'
+    | 'getPositions'
+    | 'getOpenOrders'
+    | 'getAccountState'
   >
 > {
   return {
@@ -21,6 +44,15 @@ function createMockController(): jest.Mocked<
     subscribeToPrices: jest.fn().mockReturnValue(jest.fn()),
     subscribeToOrderBook: jest.fn().mockReturnValue(jest.fn()),
     subscribeToCandles: jest.fn().mockReturnValue(jest.fn()),
+    subscribeToConnectionState: jest.fn().mockReturnValue(jest.fn()),
+    getWebSocketConnectionState: jest
+      .fn()
+      .mockReturnValue(WebSocketConnectionState.Connected),
+    reconnect: jest.fn().mockResolvedValue(undefined),
+    getMarketDataWithPrices: jest.fn().mockResolvedValue([]),
+    getPositions: jest.fn().mockResolvedValue([]),
+    getOpenOrders: jest.fn().mockResolvedValue([]),
+    getAccountState: jest.fn().mockResolvedValue(null),
   };
 }
 
@@ -174,13 +206,27 @@ describe('PerpsStreamBridge', () => {
       expect(bridge.isActive).toBe(false);
     });
 
+    it('subscribes to connection state during activation', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      expect(controller.subscribeToConnectionState).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+    });
+
     it('tears down previous static subscriptions on re-activation after destroy', async () => {
       const controller = createMockController();
-      const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn()];
+      const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
       controller.subscribeToAccount.mockReturnValue(unsubs[2]);
       controller.subscribeToOrderFills.mockReturnValue(unsubs[3]);
+      controller.subscribeToConnectionState.mockReturnValue(unsubs[4]);
 
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -725,11 +771,12 @@ describe('PerpsStreamBridge', () => {
   describe('destroy', () => {
     it('tears down all static subscriptions', async () => {
       const controller = createMockController();
-      const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn()];
+      const unsubs = [jest.fn(), jest.fn(), jest.fn(), jest.fn(), jest.fn()];
       controller.subscribeToPositions.mockReturnValue(unsubs[0]);
       controller.subscribeToOrders.mockReturnValue(unsubs[1]);
       controller.subscribeToAccount.mockReturnValue(unsubs[2]);
       controller.subscribeToOrderFills.mockReturnValue(unsubs[3]);
+      controller.subscribeToConnectionState.mockReturnValue(unsubs[4]);
 
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -839,6 +886,206 @@ describe('PerpsStreamBridge', () => {
         bridge.destroy();
         bridge.destroy();
       }).not.toThrow();
+    });
+  });
+
+  describe('perpsCheckHealth', () => {
+    it('calls reconnect when connection state is disconnected', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Disconnected,
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+
+      (api.perpsCheckHealth as () => void)();
+
+      expect(controller.reconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call reconnect when connection state is connected', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Connected,
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+
+      (api.perpsCheckHealth as () => void)();
+
+      expect(controller.reconnect).not.toHaveBeenCalled();
+    });
+
+    it('is a no-op when bridge is not activated', () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Disconnected,
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+
+      (bridge.bridgeApi().perpsCheckHealth as () => void)();
+
+      expect(controller.getWebSocketConnectionState).not.toHaveBeenCalled();
+      expect(controller.reconnect).not.toHaveBeenCalled();
+    });
+
+    it('swallows reconnect errors', async () => {
+      const controller = createMockController();
+      controller.getWebSocketConnectionState.mockReturnValue(
+        WebSocketConnectionState.Disconnected,
+      );
+      controller.reconnect.mockRejectedValue(new Error('reconnect failed'));
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      await api.perpsInit();
+
+      expect(() =>
+        (api.perpsCheckHealth as () => void)(),
+      ).not.toThrow();
+    });
+  });
+
+  describe('connection state handling', () => {
+    function getConnectionStateListener(
+      controller: ReturnType<typeof createMockController>,
+    ): (state: string) => void {
+      return controller.subscribeToConnectionState.mock
+        .calls[0][0] as (state: string) => void;
+    }
+
+    it('emits connectionState updates to UI', async () => {
+      const controller = createMockController();
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+
+      expect(emit).toHaveBeenCalledWith('connectionState', {
+        state: WebSocketConnectionState.Disconnected,
+      });
+    });
+
+    it('hydrates via REST when connection transitions from disconnected to connected', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const mockMarkets = [{ symbol: 'ETH' }];
+      const mockPositions = [{ symbol: 'BTC', size: '1' }];
+      const mockOrders = [{ orderId: '1' }];
+      const mockAccount = { equity: '100' };
+      controller.getMarketDataWithPrices.mockResolvedValue(
+        mockMarkets as never,
+      );
+      controller.getPositions.mockResolvedValue(mockPositions as never);
+      controller.getOpenOrders.mockResolvedValue(mockOrders as never);
+      controller.getAccountState.mockResolvedValue(mockAccount as never);
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const listener = getConnectionStateListener(controller);
+
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      // Let hydration promises settle
+      await jest.advanceTimersByTimeAsync(300);
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+      expect(controller.getPositions).toHaveBeenCalledWith({
+        skipCache: true,
+      });
+      expect(controller.getOpenOrders).toHaveBeenCalledTimes(1);
+      expect(controller.getAccountState).toHaveBeenCalledTimes(1);
+
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+      expect(emit).toHaveBeenCalledWith('positions', mockPositions);
+      expect(emit).toHaveBeenCalledWith('orders', mockOrders);
+      expect(emit).toHaveBeenCalledWith('account', mockAccount);
+
+      jest.useRealTimers();
+    });
+
+    it('does not hydrate on initial connected state (no prior disconnect)', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Connected);
+
+      await jest.advanceTimersByTimeAsync(300);
+
+      expect(controller.getMarketDataWithPrices).not.toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+
+    it('does not hydrate when connection is dead', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      let connectionAlive = true;
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        isConnectionAlive: () => connectionAlive,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const listener = getConnectionStateListener(controller);
+
+      // UI stream dies after activation
+      connectionAlive = false;
+
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      await jest.advanceTimersByTimeAsync(300);
+
+      expect(controller.getMarketDataWithPrices).not.toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+
+    it('swallows REST hydration errors', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      controller.getMarketDataWithPrices.mockRejectedValue(
+        new Error('network error'),
+      );
+      controller.getPositions.mockRejectedValue(
+        new Error('network error'),
+      );
+
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+
+      await expect(async () => {
+        listener(WebSocketConnectionState.Connected);
+        await jest.advanceTimersByTimeAsync(300);
+      }).not.toThrow();
+
+      jest.useRealTimers();
     });
   });
 });

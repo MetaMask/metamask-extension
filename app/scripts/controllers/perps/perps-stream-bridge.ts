@@ -1,7 +1,8 @@
-import type {
-  PerpsController,
-  CandlePeriod,
-  TimeDuration,
+import {
+  WebSocketConnectionState,
+  type PerpsController,
+  type CandlePeriod,
+  type TimeDuration,
 } from '@metamask/perps-controller';
 
 type EmitFn = (
@@ -25,6 +26,8 @@ type PerpsStreamBridgeOptions = {
   isConnectionAlive: () => boolean;
   emit: EmitFn;
 };
+
+const REST_HYDRATION_STAGGER_MS = 200;
 
 /**
  * Per-connection bridge between the background PerpsController's WebSocket
@@ -65,6 +68,10 @@ export class PerpsStreamBridge {
   readonly #dynamicUnsubs: Record<string, () => void> = {};
 
   #activated = false;
+
+  #wasDisconnected = false;
+
+  #isHydrating = false;
 
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
@@ -163,6 +170,20 @@ export class PerpsStreamBridge {
         }
         this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
       },
+      perpsCheckHealth: () => {
+        if (!this.#activated) {
+          return;
+        }
+        const state = this.#controller.getWebSocketConnectionState();
+        if (state === WebSocketConnectionState.Disconnected) {
+          this.#controller.reconnect().catch((err) => {
+            console.debug(
+              '[PerpsStreamBridge] health-check reconnect failed',
+              err,
+            );
+          });
+        }
+      },
     };
   }
 
@@ -180,6 +201,8 @@ export class PerpsStreamBridge {
 
     this.#activated = false;
     this.#viewActive = false;
+    this.#wasDisconnected = false;
+    this.#isHydrating = false;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -218,6 +241,14 @@ export class PerpsStreamBridge {
           callback: (data: unknown) => this.#emit('fills', data),
         }),
       );
+
+      this.#staticUnsubs.push(
+        this.#controller.subscribeToConnectionState(
+          (state: WebSocketConnectionState) => {
+            this.#handleConnectionStateChange(state);
+          },
+        ),
+      );
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -225,6 +256,71 @@ export class PerpsStreamBridge {
       }
       this.#staticUnsubs.length = 0;
       throw error;
+    }
+  }
+
+  #handleConnectionStateChange(state: WebSocketConnectionState): void {
+    this.#emit('connectionState', { state });
+
+    if (state === WebSocketConnectionState.Disconnected) {
+      this.#wasDisconnected = true;
+      return;
+    }
+
+    if (
+      state === WebSocketConnectionState.Connected &&
+      this.#wasDisconnected
+    ) {
+      this.#wasDisconnected = false;
+      this.#hydrateAfterReconnect();
+    }
+  }
+
+  /**
+   * Fetches fresh data via REST after a WebSocket reconnection so the UI
+   * doesn't show stale values while waiting for the first stream push.
+   * Market data is fetched first (highest UI priority), then user data
+   * after a short stagger to reduce burst pressure on the rate limiter.
+   */
+  async #hydrateAfterReconnect(): Promise<void> {
+    if (this.#isHydrating || !this.#isConnectionAlive()) {
+      return;
+    }
+    this.#isHydrating = true;
+
+    try {
+      const marketsResult = await this.#controller
+        .getMarketDataWithPrices()
+        .catch(() => null);
+
+      if (marketsResult) {
+        this.#emit('markets', marketsResult);
+      }
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, REST_HYDRATION_STAGGER_MS),
+      );
+
+      const [positionsResult, ordersResult, accountResult] =
+        await Promise.allSettled([
+          this.#controller.getPositions({ skipCache: true }),
+          this.#controller.getOpenOrders(),
+          this.#controller.getAccountState(),
+        ]);
+
+      if (positionsResult.status === 'fulfilled' && positionsResult.value) {
+        this.#emit('positions', positionsResult.value);
+      }
+      if (ordersResult.status === 'fulfilled' && ordersResult.value) {
+        this.#emit('orders', ordersResult.value);
+      }
+      if (accountResult.status === 'fulfilled') {
+        this.#emit('account', accountResult.value ?? null);
+      }
+    } catch (err) {
+      console.debug('[PerpsStreamBridge] post-reconnect hydration failed', err);
+    } finally {
+      this.#isHydrating = false;
     }
   }
 
