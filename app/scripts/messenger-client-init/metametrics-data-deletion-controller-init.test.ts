@@ -24,14 +24,16 @@ function getInitRequestMock(): jest.Mocked<
     initMessenger: undefined,
   };
 
-  // @ts-expect-error: Partial implementation.
-  requestMock.getController.mockImplementation((controllerName: string) => {
-    if (controllerName === 'DataDeletionService') {
-      return new DataDeletionService({
-        messenger: getDataDeletionServiceMessenger(baseMessenger),
-      });
-    }
-  });
+  requestMock.getMessengerClient.mockImplementation(
+    // @ts-expect-error: Partial implementation.
+    (controllerName: string) => {
+      if (controllerName === 'DataDeletionService') {
+        return new DataDeletionService({
+          messenger: getDataDeletionServiceMessenger(baseMessenger),
+        });
+      }
+    },
+  );
 
   return requestMock;
 }
