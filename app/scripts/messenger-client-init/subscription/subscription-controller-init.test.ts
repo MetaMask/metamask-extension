@@ -10,7 +10,7 @@ import {
 } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { SubscriptionControllerMessenger } from '../messengers/subscription/subscription-controller-messenger';
 import { SubscriptionControllerInit } from './subscription-controller-init';
 

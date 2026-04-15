@@ -5,7 +5,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,

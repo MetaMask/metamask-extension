@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 import {
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,

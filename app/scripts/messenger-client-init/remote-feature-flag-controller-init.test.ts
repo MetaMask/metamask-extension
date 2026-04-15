@@ -8,7 +8,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {

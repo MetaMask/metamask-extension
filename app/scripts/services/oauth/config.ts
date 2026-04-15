@@ -1,5 +1,5 @@
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { OAuthConfig } from './types';
 
 export enum BuildTypeEnv {

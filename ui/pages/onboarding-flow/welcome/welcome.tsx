@@ -33,7 +33,7 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,

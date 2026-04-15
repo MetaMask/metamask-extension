@@ -1,0 +1,9 @@
+{
+  "DEVELOPMENT": "development",
+  "PRODUCTION": "production",
+  "OTHER": "other",
+  "PULL_REQUEST": "pull-request",
+  "RELEASE_CANDIDATE": "release-candidate",
+  "STAGING": "staging",
+  "TESTING": "testing"
+}

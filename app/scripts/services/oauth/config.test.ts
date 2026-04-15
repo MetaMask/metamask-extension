@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { BuildTypeEnv, loadOAuthConfig, OauthConfigMap } from './config';
 
 describe('loadOAuthConfig', () => {

@@ -1,5 +1,5 @@
 import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 
 export const isProduction = (): boolean => {
   return (

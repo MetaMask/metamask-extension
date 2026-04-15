@@ -7,7 +7,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';

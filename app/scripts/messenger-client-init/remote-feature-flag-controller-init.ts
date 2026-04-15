@@ -6,7 +6,7 @@ import {
   EnvironmentType,
   RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { previousValueComparator } from '../lib/util';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
 import { MessengerClientInitFunction } from './types';
