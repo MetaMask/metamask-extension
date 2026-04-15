@@ -79,6 +79,11 @@ function classifyError(error: string): ErrorCategory {
   return 'Other';
 }
 
+function extractBuildType(runName: string): string {
+  const match = runName.match(/^test-e2e-\w+-(.+)$/);
+  return match ? match[1] : runName;
+}
+
 function extractShortError(error: string): string {
   const firstLine = error.split('\n')[0].trim();
   const maxLen = 200;
@@ -99,6 +104,7 @@ interface FailingTest {
 
 interface FileFailureSummary {
   filePath: string;
+  buildType: string;
   runName: string;
   totalTests: number;
   passed: number;
@@ -172,6 +178,7 @@ function main() {
 
       summaries.push({
         filePath: file.path,
+        buildType: extractBuildType(run.name),
         runName: run.name,
         totalTests: file.tests,
         passed: file.passed,
@@ -202,6 +209,7 @@ function main() {
 
   const headers = [
     'File Path',
+    'Build Type',
     'Fixed',
     'Assignee',
     'Run Name',
@@ -222,6 +230,7 @@ function main() {
     for (const ft of summary.failingTests) {
       rows.push([
         summary.filePath,
+        summary.buildType,
         '',
         '',
         summary.runName,
