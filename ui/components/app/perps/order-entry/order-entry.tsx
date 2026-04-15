@@ -186,16 +186,32 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       return Number.isFinite(parsed) ? parsed : undefined;
     }
     const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
-    if (amount === 0 || currentPrice === 0) {
+    if (amount === 0) {
       return undefined;
     }
-    const size = amount / currentPrice;
+
+    let fillPrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsed = Number.parseFloat(
+        formState.limitPrice.replaceAll(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsed) && parsed > 0) {
+        fillPrice = parsed;
+      }
+    }
+    if (fillPrice === 0) {
+      return undefined;
+    }
+
+    const size = amount / fillPrice;
     return formState.direction === 'long' ? size : -size;
   }, [
     mode,
     existingPosition,
     formState.amount,
     formState.direction,
+    formState.type,
+    formState.limitPrice,
     currentPrice,
   ]);
 
