@@ -22,10 +22,8 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { isInteractiveUI } from '../../../../shared/lib/environment-type';
-import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import { useSuppressNavigation } from '../../../hooks/useSuppressConfirmNavigate';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -48,9 +46,8 @@ export type ConfirmationNavigationOptions = {
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const skipStatusPage =
-    useSelector(getExtensionSkipTransactionStatusPage) && isInteractiveUI();
   const navigate = useNavigate();
+  const suppressNavigation = useSuppressNavigation();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
 
@@ -67,12 +64,17 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
+      const hasApprovals = Boolean(approvalFlows?.length);
+
+      if (suppressNavigation(confirmationId, confirmations, hasApprovals)) {
+        return;
+      }
+
       const url = getConfirmationRoute(
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
         queryString,
-        skipStatusPage,
       );
 
       if (url) {
@@ -84,7 +86,7 @@ export function useConfirmationNavigation() {
       confirmations,
       navigate,
       queryString,
-      skipStatusPage,
+      suppressNavigation,
     ],
   );
 
@@ -145,15 +147,10 @@ export function getConfirmationRoute(
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
   queryString: string = '',
-  skipStatusPage?: boolean,
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
-    if (skipStatusPage) {
-      return '';
-    }
-
     return CONFIRMATION_V_NEXT_ROUTE;
   }
 
@@ -170,13 +167,6 @@ export function getConfirmationRoute(
   }
 
   const type = nextConfirmation.type as ApprovalType;
-
-  if (
-    skipStatusPage &&
-    type === SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-  ) {
-    return '';
-  }
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;

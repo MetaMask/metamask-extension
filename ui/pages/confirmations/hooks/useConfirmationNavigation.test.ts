@@ -15,7 +15,6 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   ConfirmationLoader,
-  getConfirmationRoute,
   useConfirmationNavigation,
   useConfirmationNavigationOptions,
 } from './useConfirmationNavigation';
@@ -211,35 +210,6 @@ describe('useConfirmationNavigation', () => {
       result.navigateToId();
 
       expect(mockUseNavigate).toHaveBeenCalledTimes(0);
-    });
-
-    it('does not navigate to smart transaction status page when skip flag is true', () => {
-      const route = getConfirmationRoute(
-        APPROVAL_ID_MOCK,
-        [
-          {
-            id: APPROVAL_ID_MOCK,
-            type: 'smartTransaction:showSmartTransactionStatusPage',
-          } as never,
-        ],
-        true,
-        '',
-        true,
-      );
-
-      expect(route).toBe('');
-    });
-
-    it('does not navigate to confirmation fallback when skip flag is true and only hidden approval flow remains', () => {
-      const route = getConfirmationRoute(
-        undefined,
-        [],
-        true,
-        '',
-        true,
-      );
-
-      expect(route).toBe('');
     });
   });
 
