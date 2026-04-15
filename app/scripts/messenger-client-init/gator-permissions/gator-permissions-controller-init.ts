@@ -3,7 +3,7 @@ import {
   type GatorPermissionsControllerConfig,
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { getEnabledAdvancedPermissions } from '../../../../shared/lib/environment';
 import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
@@ -38,7 +38,7 @@ const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {
   return config;
 };
 
-export const GatorPermissionsControllerInit: ControllerInitFunction<
+export const GatorPermissionsControllerInit: MessengerClientInitFunction<
   GatorPermissionsController,
   GatorPermissionsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

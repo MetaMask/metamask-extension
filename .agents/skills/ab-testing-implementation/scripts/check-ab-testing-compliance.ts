@@ -16,7 +16,7 @@ const VALID_FLAG_KEY_REGEX =
   /^[a-z][A-Za-z0-9]*[A-Z]{2,}[0-9]+Abtest[A-Z][A-Za-z0-9]*$/u;
 const ABTEST_STRING_LITERAL_REGEX = /(['"])([A-Za-z0-9]*Abtest[A-Za-z0-9]*)\1/gu;
 const RISKY_CHANGE_REGEX =
-  /useABTest\(|active_ab_tests\s*:|ab_tests\s*:|trackEvent\(|createEventBuilder\(|MetaMetricsEvents\.|Experiment Viewed|ExperimentViewed/u;
+  /useABTest\(|resolveABTestAssignment\(|enrichWithABTests\(|AB_TEST_ANALYTICS_MAPPINGS|active_ab_tests\s*:|ab_tests\s*:|trackEvent\(|createEventBuilder\(|MetaMetricsEvents\.|Experiment Viewed|ExperimentViewed/u;
 
 function usage(): string {
   return `Usage:

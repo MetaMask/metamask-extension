@@ -1,5 +1,5 @@
 import { NftDetectionController } from '@metamask/assets-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { NftDetectionControllerMessenger } from '../messengers/assets';
 
 /**
@@ -10,7 +10,7 @@ import { NftDetectionControllerMessenger } from '../messengers/assets';
  * @param request.getController - The function to get the controller.
  * @returns The initialized controller.
  */
-export const NftDetectionControllerInit: ControllerInitFunction<
+export const NftDetectionControllerInit: MessengerClientInitFunction<
   NftDetectionController,
   NftDetectionControllerMessenger
 > = (request) => {

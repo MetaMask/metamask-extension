@@ -1,5 +1,5 @@
 import { ClientController } from '@metamask/client-controller';
-import { type ControllerInitFunction } from '../types';
+import { type MessengerClientInitFunction } from '../types';
 import type { ClientControllerMessenger } from '../messengers/assets';
 
 /**
@@ -10,7 +10,7 @@ import type { ClientControllerMessenger } from '../messengers/assets';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const ClientControllerInit: ControllerInitFunction<
+export const ClientControllerInit: MessengerClientInitFunction<
   ClientController,
   ClientControllerMessenger,
   void

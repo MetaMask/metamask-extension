@@ -5,7 +5,6 @@ import {
   createToggleItem,
   createDescriptionWithLearnMore,
 } from '../shared';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-utils';
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
@@ -22,13 +21,7 @@ const ShowConversionInTestnetsItem = createToggleItem({
   selector: getShowFiatInTestnets,
   action: setShowFiatConversionOnTestnetsPreference,
   dataTestId: 'developer-options-show-testnet-conversion-toggle',
-  trackEvent: {
-    event: MetaMetricsEventName.SettingsUpdated,
-    properties: (newValue) => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      show_fiat_in_testnets: newValue,
-    }),
-  },
+  trackEventProperty: 'show_fiat_in_testnets',
 });
 
 /** Registry of setting items for the Developer Options page. Add new items here */
