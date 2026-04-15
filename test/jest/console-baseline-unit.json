@@ -1592,9 +1592,6 @@
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
     },
-    "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/settings/security-tab/security-tab.test.js": {
       "MetaMask: Background connection not initialized": 36,
       "React: PropTypes validation failures": 3,
