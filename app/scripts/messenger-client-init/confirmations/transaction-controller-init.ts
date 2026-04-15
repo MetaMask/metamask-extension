@@ -51,7 +51,6 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import { EnvironmentType } from '../../../../shared/constants/app';
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.swap,

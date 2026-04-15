@@ -28,6 +28,7 @@ function mapToastStatus(status?: string): TransactionStatus | undefined {
   }
 }
 
+// Relies on pendingApprovals being managed via the SmartTransactionHook
 export function useSmartTransactionToasts() {
   const dispatch = useDispatch();
   const transactions = useSelector(selectSmartTransactions);

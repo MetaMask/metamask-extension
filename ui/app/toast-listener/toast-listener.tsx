@@ -14,8 +14,9 @@ export function ToastListener() {
   const transactionToastEnabled = useSelector(
     getExtensionSkipTransactionStatusPage,
   );
+  const isInteractive = isInteractiveUI();
 
-  if (!transactionToastEnabled || !isInteractiveUI()) {
+  if (!transactionToastEnabled || !isInteractive) {
     return null;
   }
 

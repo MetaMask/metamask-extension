@@ -26,8 +26,6 @@ import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
-  type EnvironmentType,
-  ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
@@ -73,7 +71,6 @@ export type SubmitSmartTransactionRequest = {
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
-  environmentType?: EnvironmentType;
   transactions?: PublishBatchHookTransaction[];
 };
 
@@ -107,11 +104,7 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
-  // Tracking for pending approval + rendering the status page
   #shouldShowStatusPage: boolean;
-
-  // Rendering the status page only
-  #shouldRenderStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -123,7 +116,6 @@ class SmartTransactionHook {
       controllerMessenger,
       featureFlags,
       transactions,
-      environmentType,
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
@@ -146,14 +138,6 @@ class SmartTransactionHook {
     );
 
     this.#shouldShowStatusPage = legacyShowStatusPage;
-
-    const skipStatusPage =
-      featureFlags?.extensionSkipTransactionStatusPage &&
-      environmentType !== undefined &&
-      environmentType !== ENVIRONMENT_TYPE_NOTIFICATION;
-
-    this.#shouldRenderStatusPage =
-      this.#shouldShowStatusPage && !skipStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -182,7 +166,7 @@ class SmartTransactionHook {
     }
 
     if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow(this.#shouldRenderStatusPage);
+      await this.#startApprovalFlow();
     }
 
     let getFeesResponse;
@@ -252,7 +236,7 @@ class SmartTransactionHook {
     }
 
     if (this.#shouldShowStatusPage) {
-      await this.#startApprovalFlow(this.#shouldRenderStatusPage);
+      await this.#startApprovalFlow();
     }
 
     try {
@@ -336,7 +320,7 @@ class SmartTransactionHook {
     }
   }
 
-  async #startApprovalFlow(show: boolean) {
+  async #startApprovalFlow() {
     if (SmartTransactionHook.#sharedApprovalFlowId) {
       await this.#endExistingApprovalFlow(
         SmartTransactionHook.#sharedApprovalFlowId,
@@ -346,7 +330,6 @@ class SmartTransactionHook {
     // Create a new approval flow
     const { id: approvalFlowId } = await this.#controllerMessenger.call(
       'ApprovalController:startFlow',
-      { show },
     );
 
     // Store the flow ID both in the instance and in the static property
@@ -400,7 +383,7 @@ class SmartTransactionHook {
             txId: this.#transactionMeta.id,
           },
         },
-        this.#shouldRenderStatusPage,
+        true,
       )
       .then(onApproveOrRejectWrapper, onApproveOrRejectWrapper);
   }
