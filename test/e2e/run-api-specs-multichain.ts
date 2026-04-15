@@ -168,7 +168,7 @@ async function main() {
     {
       dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilderV2()
-        .withPermissionControllerConnectedToTestDapp()
+        .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',

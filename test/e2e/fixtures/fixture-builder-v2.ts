@@ -904,6 +904,68 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
+  withPermissionControllerConnectedToMultichainTestDapp({
+    account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+    useLocalhostHostname = false,
+    chainIds = [1337],
+    scopes,
+  }: {
+    account?: string | string[];
+    useLocalhostHostname?: boolean;
+    chainIds?: number[];
+    scopes?: Record<string, Json>;
+  } = {}): this {
+    const resolvedAccounts = (Array.isArray(account) ? account : [account]).map(
+      (a) => a.toLowerCase(),
+    );
+
+    let scopeValue: Record<string, Json>;
+    if (scopes) {
+      scopeValue = scopes;
+    } else {
+      const optionalScopes: Record<string, { accounts: string[] }> = {};
+      for (const chainId of chainIds) {
+        const scopeKey = `eip155:${chainId}`;
+        optionalScopes[scopeKey] = {
+          accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+        };
+      }
+      optionalScopes['wallet:eip155'] = {
+        accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
+      };
+      optionalScopes.wallet = { accounts: [] };
+      scopeValue = {
+        isMultichainOrigin: true,
+        optionalScopes,
+        requiredScopes: {},
+        sessionProperties: {},
+      };
+    }
+
+    const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
+    return this.withPermissionController({
+      subjects: {
+        [dappUrl]: {
+          origin: dappUrl,
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: scopeValue,
+                },
+              ],
+              date: 1770296204693,
+              id: 'SFqk8nFLekiqC5O1cYCjT',
+              invoker: dappUrl,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    });
+  }
+
   withPreferencesControllerTxSimulationsDisabled(): this {
     return this.withPreferencesController({
       useTransactionSimulations: false,

@@ -127,6 +127,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNftControllerERC1155`
 - `withNftControllerERC721`
 - `withNoNames`
+- `withPermissionControllerConnectedToMultichainTestDapp`
 - `withPermissionControllerConnectedToTestDapp`
 - `withPreferencesControllerTxSimulationsDisabled`
 - `withSelectedNetwork`
