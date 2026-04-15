@@ -50,16 +50,21 @@ function buildCacheEntry(resultType: ResultType) {
   };
 }
 
-function buildState(resultType: ResultType): EnforcedSimulationsState {
+function buildState(
+  resultType: ResultType,
+  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
+): EnforcedSimulationsState {
   return {
     addressSecurityAlertResponses: {
       [CACHE_KEY]: buildCacheEntry(resultType),
     },
+    eip7702SupportedChains,
   };
 }
 
 function buildStateForAddresses(
   entries: Record<string, ResultType>,
+  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
 ): EnforcedSimulationsState {
   const responses: Record<string, CachedScanAddressResponse> = {};
 
@@ -68,7 +73,10 @@ function buildStateForAddresses(
     responses[key] = buildCacheEntry(resultType);
   }
 
-  return { addressSecurityAlertResponses: responses };
+  return {
+    addressSecurityAlertResponses: responses,
+    eip7702SupportedChains,
+  };
 }
 
 describe('enforced-simulations', () => {
@@ -87,8 +95,13 @@ describe('enforced-simulations', () => {
       delete process.env.ENABLE_ENFORCED_SIMULATIONS;
     });
 
-    it('returns true when all conditions are met and no state provided', () => {
-      expect(isEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(true);
+    it('returns true when all conditions are met', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          BASE_TRANSACTION_META,
+          buildState(ResultType.Benign),
+        ),
+      ).toBe(true);
     });
 
     it('returns false when env flag is not set', () => {
@@ -115,50 +128,65 @@ describe('enforced-simulations', () => {
       ).toBe(false);
     });
 
-    it('returns false when delegation address is missing', () => {
+    it('returns false when chain is not in eip7702 supported chains', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          delegationAddress: undefined,
-        }),
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, chainId: UNSUPPORTED_CHAIN_ID },
+          buildState(ResultType.Benign),
+        ),
       ).toBe(false);
+    });
+
+    it('returns true when delegation address is missing but chain is supported', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, delegationAddress: undefined },
+          buildState(ResultType.Benign),
+        ),
+      ).toBe(true);
     });
 
     it('returns false when simulation data is undefined', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          simulationData: undefined,
-        }),
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, simulationData: undefined },
+          buildState(ResultType.Benign),
+        ),
       ).toBe(false);
     });
 
     it('returns false when simulation data has no balance changes', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          simulationData: { tokenBalanceChanges: [] },
-        }),
+        isEnforcedSimulationsEligible(
+          {
+            ...BASE_TRANSACTION_META,
+            simulationData: { tokenBalanceChanges: [] },
+          },
+          buildState(ResultType.Benign),
+        ),
       ).toBe(false);
     });
 
     it('returns true when simulation data has only token balance changes', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          simulationData: {
-            tokenBalanceChanges: [
-              {
-                address: '0xabc' as const,
-                standard: SimulationTokenStandard.erc20,
-                difference: '0x1' as const,
-                isDecrease: true,
-                previousBalance: '0x2' as const,
-                newBalance: '0x1' as const,
-              },
-            ],
+        isEnforcedSimulationsEligible(
+          {
+            ...BASE_TRANSACTION_META,
+            simulationData: {
+              tokenBalanceChanges: [
+                {
+                  address: '0xabc' as const,
+                  standard: SimulationTokenStandard.erc20,
+                  difference: '0x1' as const,
+                  isDecrease: true,
+                  previousBalance: '0x2' as const,
+                  newBalance: '0x1' as const,
+                },
+              ],
+            },
           },
-        }),
+          buildState(ResultType.Benign),
+        ),
       ).toBe(true);
     });
 
@@ -203,6 +231,7 @@ describe('enforced-simulations', () => {
         expect(
           isEnforcedSimulationsEligible(BASE_TRANSACTION_META, {
             addressSecurityAlertResponses: {},
+            eip7702SupportedChains: [ETHEREUM_CHAIN_ID],
           }),
         ).toBe(false);
       });
@@ -210,19 +239,22 @@ describe('enforced-simulations', () => {
       it('returns true when chain is not supported by trust signals', () => {
         expect(
           isEnforcedSimulationsEligible(
-            { ...BASE_TRANSACTION_META, chainId: UNSUPPORTED_CHAIN_ID },
-            buildState(ResultType.Benign),
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNSUPPORTED_CHAIN_ID,
+            },
+            buildState(ResultType.Benign, [UNSUPPORTED_CHAIN_ID]),
           ),
         ).toBe(true);
       });
 
-      it('returns true when chainId is undefined', () => {
+      it('returns false when chainId is undefined', () => {
         expect(
           isEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, chainId: undefined as never },
             buildState(ResultType.Benign),
           ),
-        ).toBe(true);
+        ).toBe(false);
       });
 
       it('uses txParamsOriginal.to when container wrapping changed txParams.to', () => {
@@ -247,6 +279,7 @@ describe('enforced-simulations', () => {
                 [CACHE_KEY]: buildCacheEntry(ResultType.Benign),
                 [trustedCacheKey]: buildCacheEntry(ResultType.Trusted),
               },
+              eip7702SupportedChains: [ETHEREUM_CHAIN_ID],
             },
           ),
         ).toBe(true);
