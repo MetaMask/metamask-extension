@@ -111,7 +111,6 @@ interface FileFailureSummary {
   failed: number;
   skipped: number;
   totalTimeMs: number;
-  failureRate: string;
   failingTests: FailingTest[];
 }
 
@@ -171,11 +170,6 @@ function main() {
       const dedupedFailures = deduplicateFailures(allFailures);
       if (dedupedFailures.length === 0) continue;
 
-      const failureRate =
-        file.tests > 0
-          ? ((file.failed / file.tests) * 100).toFixed(1) + '%'
-          : 'N/A';
-
       summaries.push({
         filePath: file.path,
         buildType: extractBuildType(run.name),
@@ -185,7 +179,6 @@ function main() {
         failed: file.failed,
         skipped: file.skipped,
         totalTimeMs: file.time,
-        failureRate,
         failingTests: dedupedFailures,
       });
     }
@@ -217,7 +210,6 @@ function main() {
     'Passed',
     'Failed',
     'Skipped',
-    'Failure Rate',
     'Time (s)',
     'Failing Test Name',
     'Error Category',
@@ -238,7 +230,6 @@ function main() {
         String(summary.passed),
         String(summary.failed),
         String(summary.skipped),
-        summary.failureRate,
         (summary.totalTimeMs / 1000).toFixed(1),
         ft.testName,
         ft.errorCategory,
@@ -287,10 +278,10 @@ function main() {
     console.log(`  ${cat.padEnd(18)} ${count}`);
   }
 
-  console.log(`\nTop 10 worst files (by failure rate):`);
+  console.log(`\nTop 10 worst files (by failure count):`);
   for (const s of summaries.slice(0, 10)) {
     console.log(
-      `  ${s.failureRate.padStart(6)}  ${String(s.failed).padStart(2)}/${String(s.totalTests).padStart(2)} failed  ${s.filePath}`,
+      `  ${String(s.failed).padStart(2)}/${String(s.totalTests).padStart(2)} failed  ${s.filePath}`,
     );
   }
 
