@@ -7,7 +7,6 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
-      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
