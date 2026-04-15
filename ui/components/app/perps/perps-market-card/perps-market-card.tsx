@@ -17,6 +17,7 @@ import {
   getChangeColor,
   getDisplayName,
 } from '../utils';
+
 const CARD_STYLES =
   'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed';
 
