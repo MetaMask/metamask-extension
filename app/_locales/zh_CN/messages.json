@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "交易者之间为使价格与市场保持一致而支付的每小时费用。当费率为正时，多头向空头支付费用；为负时，空头向多头支付费用。"
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "您所在的地区不支持永续合约交易"
-  },
   "perpsGiveFeedback": {
     "message": "向我们提供反馈"
   },

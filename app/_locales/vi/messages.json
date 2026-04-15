@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Một khoản phí theo giờ giữa các nhà giao dịch để giữ giá phù hợp với thị trường. Nếu tỷ lệ dương, người mua khống sẽ trả cho người bán khống. Nếu tỷ lệ âm, người bán khống sẽ trả cho người mua khống."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Giao dịch hợp đồng vĩnh cửu không khả dụng tại khu vực của bạn"
-  },
   "perpsGiveFeedback": {
     "message": "Gửi phản hồi cho chúng tôi"
   },

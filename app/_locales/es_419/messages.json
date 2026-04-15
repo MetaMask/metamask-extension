@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Una tarifa por hora que se paga entre operadores para mantener los precios alineados con el mercado. Si la tasa es positiva, las posiciones largas pagan a las cortas. Si es negativa, las posiciones cortas pagan a las largas."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "El trading de contratos perpetuos no está disponible en tu región"
-  },
   "perpsGiveFeedback": {
     "message": "Envíanos tus comentarios"
   },

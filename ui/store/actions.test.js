@@ -4803,6 +4803,19 @@ describe('Actions', () => {
     });
   });
 
+  describe('#perpsToggleTestnet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsToggleTestnet in the background', async () => {
+      background.perpsToggleTestnet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+      await actions.perpsToggleTestnet();
+      expect(background.perpsToggleTestnet.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();

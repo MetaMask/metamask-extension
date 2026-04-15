@@ -8217,3 +8217,12 @@ export function removeDeferredDeepLink(): ThunkAction<
     }
   };
 }
+
+export async function perpsToggleTestnet(): Promise<void> {
+  log.debug(`background.perpsToggleTestnet`);
+  try {
+    await submitRequestToBackground<void>('perpsToggleTestnet');
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
