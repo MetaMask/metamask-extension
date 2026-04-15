@@ -23,8 +23,9 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
-      VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ steps.find-ci-run.outputs.NO_CI_RUN }}
+      VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
+      VALIDATION_SKIPPED: ${{ steps.find-ci-run.outputs.VALIDATION_SKIPPED }}
       VALIDATION_FAILED: ${{ steps.find-ci-run.outputs.VALIDATION_FAILED }}
       FAILED_JOBS: ${{ steps.find-ci-run.outputs.FAILED_JOBS }}
     steps:
@@ -65,17 +66,27 @@ jobs:
 
           echo "Found run ${RUN_ID}, checking validation job status..."
 
-          PENDING=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.status != "completed") | .id')
+          JOBS_JSON=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '[.jobs[] | select(.name | startswith("validate-lavamoat-policies"))]')
 
-          if [ -n "$PENDING" ]; then
+          JOB_COUNT=$(echo "$JOBS_JSON" | jq 'length')
+
+          if [ "$JOB_COUNT" -eq 0 ]; then
+            echo "No validation jobs found in CI run (validation may have been skipped)"
+            echo "VALIDATION_SKIPPED=true" >> "$GITHUB_OUTPUT"
+            echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PENDING=$(echo "$JOBS_JSON" | jq '[.[] | select(.status != "completed")] | length')
+
+          if [ "$PENDING" -gt 0 ]; then
             echo "LavaMoat validation still running"
             echo "VALIDATION_PENDING=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          FAILED_JOBS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '[.jobs[] | select(.name | startswith("validate-lavamoat-policies")) | select(.conclusion != "success") | "- [" + .name + "](" + .html_url + ") (" + .conclusion + ")"] | join("\n")')
+          FAILED_JOBS=$(echo "$JOBS_JSON" | jq -r '[.[] | select(.conclusion != "success") | "- [" + .name + "](" + .html_url + ") (" + .conclusion + ")"] | join("\n")')
 
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
           if [ -n "$FAILED_JOBS" ]; then
@@ -101,8 +112,9 @@ jobs:
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
-      VALIDATION_PENDING: ${{ needs.prepare.outputs.VALIDATION_PENDING }}
       NO_CI_RUN: ${{ needs.prepare.outputs.NO_CI_RUN }}
+      VALIDATION_PENDING: ${{ needs.prepare.outputs.VALIDATION_PENDING }}
+      VALIDATION_SKIPPED: ${{ needs.prepare.outputs.VALIDATION_SKIPPED }}
       VALIDATION_FAILED: ${{ needs.prepare.outputs.VALIDATION_FAILED }}
       FAILED_JOBS: ${{ needs.prepare.outputs.FAILED_JOBS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -198,8 +210,13 @@ jobs:
         run: |
           printf 'LavaMoat validation failed but no policy diffs were produced (the validation job may have crashed before generating diffs).\n\nFailed jobs:\n%s' "$FAILED_JOBS" | gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body-file -
 
+      - name: Post comment (validation skipped)
+        if: ${{ needs.prepare.result == 'success' && env.VALIDATION_SKIPPED == 'true' }}
+        run: |
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation was skipped in CI. Policies were not checked for this commit."
+
       - name: Post comment (no policy changes)
-        if: ${{ needs.prepare.result == 'success' && env.RUN_ID && env.VALIDATION_FAILED != 'true' && !env.VALIDATION_PENDING }}
+        if: ${{ needs.prepare.result == 'success' && env.RUN_ID && env.VALIDATION_FAILED != 'true' && !env.VALIDATION_PENDING && env.VALIDATION_SKIPPED != 'true' }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No policy changes"
 
