@@ -45,23 +45,25 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    if (!disableAutomaticToken) {
-      const automaticToken = getBestToken({
-        isHardwareWallet,
-        targetToken,
-        tokens: tokensWithBalance,
-        preferredToken,
-      });
-
-      if (!automaticToken) {
-        return;
-      }
-
-      setPayToken({
-        address: automaticToken.address,
-        chainId: automaticToken.chainId,
-      });
+    if (disableAutomaticToken) {
+      return;
     }
+
+    const automaticToken = getBestToken({
+      isHardwareWallet,
+      targetToken,
+      tokens: tokensWithBalance,
+      preferredToken,
+    });
+
+    if (!automaticToken) {
+      return;
+    }
+
+    setPayToken({
+      address: automaticToken.address,
+      chainId: automaticToken.chainId,
+    });
 
     isUpdated.current = true;
   }, [
