@@ -2,7 +2,12 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { DAPP_PATH, PRIVATE_KEY_TWO, WINDOW_TITLES } from '../../constants';
+import {
+  ACCOUNT_2,
+  DAPP_PATH,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+} from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
@@ -30,7 +35,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
           .withPermissionControllerConnectedToTestDapp({
-            account: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+            account: ACCOUNT_2,
           })
           .build(),
         smartContract,

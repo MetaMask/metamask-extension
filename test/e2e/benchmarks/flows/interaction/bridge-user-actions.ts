@@ -52,9 +52,9 @@ export async function run(): Promise<BenchmarkRunResult> {
     const steps: LongTaskStepResult[] = [];
     let webVitals;
 
-    const fixtureBuilder = new FixtureBuilderV2()
-      .withSelectedNetwork()
-      .withEnabledNetworks({ eip155: { '0x1': true } });
+    const fixtureBuilder = new FixtureBuilderV2().withEnabledNetworks({
+      eip155: { '0x1': true },
+    });
 
     await withFixtures(
       {
