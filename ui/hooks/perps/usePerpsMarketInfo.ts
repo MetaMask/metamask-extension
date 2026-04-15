@@ -1,27 +1,58 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  selectPerpsActiveProvider,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 
-let cachedMarketInfos: MarketInfo[] | null = null;
-let inflight: Promise<MarketInfo[]> | null = null;
+type EnvCacheEntry = {
+  cached: MarketInfo[] | null;
+  inflight: Promise<MarketInfo[]> | null;
+};
 
-function fetchMarketInfos(): Promise<MarketInfo[]> {
-  if (cachedMarketInfos) {
-    return Promise.resolve(cachedMarketInfos);
+const cacheByEnvKey = new Map<string, EnvCacheEntry>();
+
+function getEnvCacheEntry(envKey: string): EnvCacheEntry {
+  let entry = cacheByEnvKey.get(envKey);
+  if (!entry) {
+    entry = { cached: null, inflight: null };
+    cacheByEnvKey.set(envKey, entry);
   }
-  if (!inflight) {
-    inflight = submitRequestToBackground<MarketInfo[]>('perpsGetMarkets', [{}])
+  return entry;
+}
+
+function peekCachedMarketInfos(envKey: string): MarketInfo[] | undefined {
+  const cached = cacheByEnvKey.get(envKey)?.cached;
+  return cached ?? undefined;
+}
+
+function fetchMarketInfos(envKey: string): Promise<MarketInfo[]> {
+  const entry = getEnvCacheEntry(envKey);
+  if (entry.cached) {
+    return Promise.resolve(entry.cached);
+  }
+  if (!entry.inflight) {
+    entry.inflight = submitRequestToBackground<MarketInfo[]>('perpsGetMarkets', [{}])
       .then((infos) => {
-        cachedMarketInfos = infos;
-        inflight = null;
+        entry.cached = infos;
+        entry.inflight = null;
         return infos;
       })
       .catch(() => {
-        inflight = null;
+        entry.inflight = null;
         return [] as MarketInfo[];
       });
   }
-  return inflight;
+  return entry.inflight;
+}
+
+/**
+ * Clears the module-level market info cache. Intended for unit tests only.
+ */
+export function resetPerpsMarketInfoModuleCacheForTesting(): void {
+  cacheByEnvKey.clear();
 }
 
 /**
@@ -31,23 +62,38 @@ function fetchMarketInfos(): Promise<MarketInfo[]> {
  * (e.g. szDecimals, maxLeverage as a number, marginTableId), which are
  * required for accurate pre-trade calculations that mirror the mobile app.
  *
- * The market list is fetched once and cached at module level so that
- * navigating between detail pages does not trigger additional REST calls.
- * Until the fetch resolves the hook returns `undefined`, and callers
- * should fall back to safe defaults (e.g. szDecimals = 0).
+ * The market list is fetched once per Perps environment (active provider +
+ * mainnet/testnet) and cached at module level so navigating between detail
+ * pages does not trigger additional REST calls for the same environment.
+ * Until the fetch resolves the hook returns `undefined`, and callers should
+ * fall back to safe defaults (e.g. szDecimals = 0).
  *
  * @param symbol - Asset symbol to look up (e.g. 'HYPE', 'BTC', 'xyz:TSLA')
  * @returns The matching MarketInfo, or undefined while loading / on error
  */
 export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
+  const activeProvider = useSelector(selectPerpsActiveProvider);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const envKey = useMemo(
+    () => `${activeProvider}:${isTestnet ? 'testnet' : 'mainnet'}`,
+    [activeProvider, isTestnet],
+  );
+
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
-    cachedMarketInfos ?? [],
+    () => peekCachedMarketInfos(envKey) ?? [],
   );
 
   useEffect(() => {
     let cancelled = false;
 
-    fetchMarketInfos().then((infos) => {
+    const cached = peekCachedMarketInfos(envKey);
+    if (cached) {
+      setMarketInfos(cached);
+    } else {
+      setMarketInfos([]);
+    }
+
+    fetchMarketInfos(envKey).then((infos) => {
       if (!cancelled) {
         setMarketInfos(infos);
       }
@@ -56,7 +102,7 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [envKey]);
 
   return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());
 }
