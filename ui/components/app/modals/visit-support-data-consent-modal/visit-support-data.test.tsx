@@ -134,8 +134,7 @@ describe('VisitSupportDataConsentModal', () => {
     });
 
     // When user rejects, URL should preserve non-personal params (like utm_source)
-    // URL constructor normalizes the URL (adds / before ?)
-    const expectedUrl = new URL(SUPPORT_LINK as string).toString();
+    const expectedUrl = SUPPORT_LINK;
 
     expect(mockOnClose).toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
