@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { TokenFeatureType } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -20,16 +20,54 @@ const UNSTABLE_TOKEN_PRICE_TITLE = 'Malicious token';
 const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
   'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
 
+const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
+  const fixtures = getBridgeFixtures({
+    title,
+    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+    withErc20: false,
+  });
+
+  return {
+    ...fixtures,
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const baseMocks = fixtures.testSpecificMock
+        ? await fixtures.testSpecificMock(mockServer)
+        : [];
+
+      return [
+        ...baseMocks,
+        await mockServer
+          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
+          .always()
+          .thenJson(200, {
+            features: [
+              {
+                // This maps to "Unstable token price" in i18n.
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_id: 'UNSTABLE_TOKEN_PRICE',
+                type: 'Warning',
+                description: 'Unstable price warning',
+              },
+            ],
+          }),
+      ];
+    },
+  };
+};
+
 describe('Swaps - notifications', function () {
   it('shows token risk warning banner for unstable token price', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
-        false,
-        true,
-        true,
-        [
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: {
+          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          refreshRate: 30000,
+        },
+        // false,
+        // true,
+        // true,
+        tokenWarnings: [
           {
             type: TokenFeatureType.MALICIOUS,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -37,7 +75,7 @@ describe('Swaps - notifications', function () {
             description: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
           },
         ],
-      ),
+      }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
@@ -129,10 +167,10 @@ describe('Swaps - notifications', function () {
 
   it('shows low slippage warning in transaction settings', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);

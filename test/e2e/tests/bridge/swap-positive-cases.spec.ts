@@ -3,28 +3,28 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { TokenFeatureType } from '@metamask/bridge-controller';
 import { getEventPayloads, withFixtures } from '../../helpers';
+import {
+  bridgeTransaction,
+  verifySubmittedSwapTransaction,
+} from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
-import {
-  bridgeTransaction,
-  getBridgeFixtures,
-  verifySubmittedSwapTransaction,
-} from './bridge-test-utils';
+import { getBridgeFixtures } from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
-      {
-        ...getBridgeFixtures(
-          this.test?.fullTitle(),
-          { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
-          false,
-          true,
-        ),
-      },
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: {
+          ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          refreshRate: 30000,
+        },
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -98,12 +98,11 @@ describe('Swap tests', function (this: Suite) {
 
   it('submits trade before streaming is finished', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-        true,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        withErc20: false,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -123,6 +122,7 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '3.011',
+          skipStatusPage: true,
         });
 
         const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
@@ -164,20 +164,23 @@ describe('Swap tests', function (this: Suite) {
   it('submits swap with token alert', async function () {
     await withFixtures(
       {
-        ...getBridgeFixtures(
-          this.test?.fullTitle(),
-          { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
-          false,
-          true,
-          true,
-          [
+        ...getBridgeFixtures({
+          title: this.test?.fullTitle(),
+          featureFlags: {
+            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+            refreshRate: 30000,
+          },
+          // false,
+          // true,
+          // true,
+          tokenWarnings: [
             {
               type: TokenFeatureType.MALICIOUS,
               feature_id: 'HONEYPOT',
               description: 'Token alert 1',
             },
           ],
-        ),
+        }),
       },
       async ({ driver }) => {
         await login(driver);
@@ -219,9 +222,9 @@ describe('Swap tests', function (this: Suite) {
   it('submits swap with price impact error and multiple token alerts', async function () {
     await withFixtures(
       {
-        ...getBridgeFixtures(
-          this.test?.fullTitle(),
-          {
+        ...getBridgeFixtures({
+          title: this.test?.fullTitle(),
+          featureFlags: {
             ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
             refreshRate: 30000,
             priceImpactThreshold: {
@@ -232,10 +235,10 @@ describe('Swap tests', function (this: Suite) {
               error: 0.0001,
             },
           },
-          false,
-          true,
-          true,
-          [
+          // false,
+          // true,
+          // true,
+          tokenWarnings: [
             {
               type: TokenFeatureType.MALICIOUS,
               feature_id: 'HONEYPOT',
@@ -257,7 +260,7 @@ describe('Swap tests', function (this: Suite) {
               description: 'Token alert 4',
             },
           ],
-        ),
+        }),
       },
       async ({ driver }) => {
         await login(driver);
@@ -321,9 +324,9 @@ describe('Swap tests', function (this: Suite) {
   it('submits swap with price impact error', async function () {
     await withFixtures(
       {
-        ...getBridgeFixtures(
-          this.test?.fullTitle(),
-          {
+        ...getBridgeFixtures({
+          title: this.test?.fullTitle(),
+          featureFlags: {
             ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
             refreshRate: 30000,
             priceImpactThreshold: {
@@ -334,9 +337,16 @@ describe('Swap tests', function (this: Suite) {
               error: 0.0001,
             },
           },
-          false,
-          true,
-        ),
+          // false,
+          // true,
+          tokenWarnings: [
+            {
+              type: TokenFeatureType.MALICIOUS,
+              feature_id: 'HONEYPOT',
+              description: 'Token alert 1',
+            },
+          ],
+        }),
       },
       async ({ driver }) => {
         await login(driver);

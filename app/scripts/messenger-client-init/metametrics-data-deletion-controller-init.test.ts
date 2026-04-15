@@ -4,15 +4,16 @@ import {
 } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getMetaMetricsDataDeletionControllerMessenger } from './messengers';
 import { MetaMetricsDataDeletionControllerInit } from './metametrics-data-deletion-controller-init';
+import { getDataDeletionServiceMessenger } from './messengers/data-deletion-service-messenger';
 
 jest.mock('../controllers/metametrics-data-deletion/metametrics-data-deletion');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MetaMetricsDataDeletionControllerMessenger>
+  MessengerClientInitRequest<MetaMetricsDataDeletionControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -22,6 +23,15 @@ function getInitRequestMock(): jest.Mocked<
       getMetaMetricsDataDeletionControllerMessenger(baseMessenger),
     initMessenger: undefined,
   };
+
+  // @ts-expect-error: Partial implementation.
+  requestMock.getController.mockImplementation((controllerName: string) => {
+    if (controllerName === 'DataDeletionService') {
+      return new DataDeletionService({
+        messenger: getDataDeletionServiceMessenger(baseMessenger),
+      });
+    }
+  });
 
   return requestMock;
 }

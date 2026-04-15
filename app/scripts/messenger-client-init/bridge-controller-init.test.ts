@@ -4,7 +4,7 @@ import {
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getBridgeControllerMessenger,
@@ -21,7 +21,7 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     BridgeControllerMessenger,
     BridgeControllerInitMessenger
   >

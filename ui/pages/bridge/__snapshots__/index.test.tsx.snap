@@ -66,7 +66,7 @@ exports[`Bridge renders the component with initial props 1`] = `
             >
               <div
                 class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-                style="min-width: 96px; max-width: 190px;"
+                style="flex: 1; min-width: 0;"
               >
                 <input
                   autocomplete="off"
@@ -74,7 +74,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   data-testid="from-amount"
                   focused="true"
                   placeholder="0"
-                  style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+                  style="font-weight: 400; font-size: 40px; transition: font-size 0.1s; padding: 0px;"
                   type="text"
                   value=""
                 />
@@ -176,7 +176,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               >
                 <div
                   class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-                  style="min-width: 96px; max-width: 190px; opacity: 1;"
+                  style="flex: 1; min-width: 0; opacity: 1;"
                 >
                   <input
                     autocomplete="off"
@@ -186,7 +186,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                     focused="false"
                     placeholder="0"
                     readonly=""
-                    style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+                    style="font-weight: 400; font-size: 40px; transition: font-size 0.1s; padding: 0px;"
                     type="text"
                     value="0"
                   />

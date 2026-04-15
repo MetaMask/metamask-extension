@@ -1,7 +1,4 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings/settings-page';
-import DevelopOptionsPage from './developer-options-page';
 
 const FEEDBACK_MESSAGE =
   'Message: Unable to find value of key "developerOptions" for locale "en"';
@@ -53,18 +50,6 @@ class ErrorPage {
       throw e;
     }
     console.log('Error page is loaded');
-  }
-
-  async triggerPageCrash(): Promise<void> {
-    const headerNavbar = new HeaderNavbar(this.driver);
-    await headerNavbar.openSettingsPage();
-    const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToDebugSettings();
-
-    const developerOptionsPage = new DevelopOptionsPage(this.driver);
-    await developerOptionsPage.checkPageIsLoaded();
-    await developerOptionsPage.clickGenerateCrashButton();
   }
 
   async validateErrorMessage(): Promise<void> {

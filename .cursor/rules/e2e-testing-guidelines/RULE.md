@@ -120,6 +120,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNetworkRpcUrlOnLocalhost`
 - `withNftControllerERC1155`
 - `withNftControllerERC721`
 - `withNoNames`
@@ -132,6 +133,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withSmartTransactionsOptedOut`
 - `withSnapController`
 - `withSnapControllerOnStartLifecycleSnap`
+- `withSnapControllerStorageServiceSourceCode`
 - `withSnapsPrivacyWarningAlreadyShown`
 - `withStorageServiceData`
 - `withTokensControllerERC20`

@@ -158,7 +158,7 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns the fromChain if toToken is not set', () => {
+    it('returns the first toChain when toToken is not set', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -174,25 +174,14 @@ describe('Bridge selectors', () => {
       const result = getToChain(state as never);
 
       expect(result).toStrictEqual({
-        blockExplorerUrls: ['https://localhost/blockExplorer/0x1'],
         chainId: 'eip155:1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
         name: 'Test',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: expect.any(String),
-            type: 'custom',
-            url: 'https://localhost/rpc/0x1',
-          },
-        ],
       });
     });
   });
 
   describe('getFromChains', () => {
-    it('excludes disabled chains from options', () => {
+    it('includes all swap-supported networks from chain ranking including featured RPCs', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -212,7 +201,7 @@ describe('Bridge selectors', () => {
       });
       const result = getFromChains(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
       expect(
         result.map(({ chainId }) => ({
           chainId,
@@ -232,11 +221,15 @@ describe('Bridge selectors', () => {
             "chainId": "eip155:10",
             "name": "OP",
           },
+          {
+            "chainId": "eip155:137",
+            "name": "Polygon",
+          },
         ]
       `);
     });
 
-    it('returns all enabledchains when bridgeFeatureFlags are not set (uses fallback)', () => {
+    it('returns all swap-supported chains including featured RPCs when bridgeFeatureFlags are not set (uses fallback)', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -246,31 +239,25 @@ describe('Bridge selectors', () => {
       });
       const result = getFromChains(state as never);
 
-      expect(result).toHaveLength(5);
-      expect(result).toMatchInlineSnapshot(`
-        [
-          {
-            "chainId": "eip155:1",
-            "name": "Ethereum",
-          },
-          {
-            "chainId": "bip122:000000000019d6689c085ae165831e93",
-            "name": "BTC",
-          },
-          {
-            "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-            "name": "Solana",
-          },
-          {
-            "chainId": "eip155:59144",
-            "name": "Linea",
-          },
-          {
-            "chainId": "eip155:10",
-            "name": "Optimism",
-          },
-        ]
-      `);
+      expect(result.length).toBeGreaterThanOrEqual(15);
+      expect(result.map(({ chainId }) => chainId)).toEqual(
+        expect.arrayContaining([
+          'eip155:1',
+          'eip155:56',
+          'bip122:000000000019d6689c085ae165831e93',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          'eip155:8453',
+          'eip155:42161',
+          'eip155:59144',
+          'eip155:137',
+          'eip155:43114',
+          'eip155:10',
+          'eip155:143',
+          'eip155:1329',
+          'eip155:999',
+          'eip155:4326',
+        ]),
+      );
     });
 
     it('returns sorted fromChains list when chainRanking is set', () => {
@@ -320,19 +307,19 @@ describe('Bridge selectors', () => {
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
-      // Check that there are no duplicates
-      expect(resultsInCaip.length).toBe(7);
-      // Check that the results are in the correct order
+      expect(resultsInCaip.length).toBe(9);
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
         'eip155:56',
+        'eip155:8453',
+        'eip155:43114',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         'eip155:42161',
         'eip155:10',
         'eip155:59144',
-        'eip155:10',
+        'eip155:137',
       ]);
-      expect(result).toHaveLength(7);
+      expect(result).toHaveLength(9);
       expect(result).toMatchInlineSnapshot(`
         [
           {
@@ -342,6 +329,14 @@ describe('Bridge selectors', () => {
           {
             "chainId": "eip155:56",
             "name": "BNB Chain",
+          },
+          {
+            "chainId": "eip155:8453",
+            "name": "Base",
+          },
+          {
+            "chainId": "eip155:43114",
+            "name": "Avalanche",
           },
           {
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
@@ -360,8 +355,8 @@ describe('Bridge selectors', () => {
             "name": "Linea",
           },
           {
-            "chainId": "eip155:10",
-            "name": "OP",
+            "chainId": "eip155:137",
+            "name": "Polygon",
           },
         ]
       `);
@@ -548,9 +543,7 @@ describe('Bridge selectors', () => {
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
-      // Check that there are no duplicates
-      expect(resultsInCaip.length).toBe(10);
-      // Check that the results are in the correct order
+      expect(resultsInCaip.length).toBe(9);
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
         'eip155:56',
@@ -561,9 +554,8 @@ describe('Bridge selectors', () => {
         'eip155:10',
         'eip155:59144',
         'eip155:137',
-        'eip155:10',
       ]);
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(9);
       expect(result.map((r) => NETWORK_TO_SHORT_NETWORK_NAME_MAP[r.chainId]))
         .toMatchInlineSnapshot(`
         [
@@ -576,7 +568,6 @@ describe('Bridge selectors', () => {
           "OP",
           "Linea",
           "Polygon",
-          "OP",
         ]
       `);
       expect(result).not.toContain(undefined);

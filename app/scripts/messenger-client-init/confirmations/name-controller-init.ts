@@ -9,7 +9,7 @@ import {
   NameControllerInitMessenger,
   NameControllerMessenger,
 } from '../messengers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the name controller.
@@ -21,7 +21,7 @@ import { ControllerInitFunction } from '../types';
  * @param request.getController
  * @returns The initialized controller.
  */
-export const NameControllerInit: ControllerInitFunction<
+export const NameControllerInit: MessengerClientInitFunction<
   NameController,
   NameControllerMessenger,
   NameControllerInitMessenger

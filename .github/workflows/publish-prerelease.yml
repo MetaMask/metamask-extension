@@ -12,10 +12,14 @@ on:
       E2E_GEMINI_API_KEY:
         required: false
     inputs:
-      post-new-builds:
-        description: 'Whether to post new builds from CloudFront to the comment'
+      builds-from-run:
+        description: 'The run ID that produced build artifacts (used to resolve CloudFront HOST_URL)'
         required: true
-        type: boolean
+        type: string
+      builds-from-sha:
+        description: 'The HEAD commit SHA of the run that produced builds (for PR comment annotation)'
+        required: true
+        type: string
 
 jobs:
   generate-test-plan:
@@ -118,9 +122,10 @@ jobs:
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
       MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
-      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ inputs.builds-from-run }}
       BENCHMARK_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id || github.run_id }}
-      POST_NEW_BUILDS: ${{ inputs.post-new-builds }}
+      BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
+      BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       TEST_PLAN_VERSION: ${{ needs.generate-test-plan.outputs.test_plan_version }}
     steps:
       - name: Checkout and setup high risk environment

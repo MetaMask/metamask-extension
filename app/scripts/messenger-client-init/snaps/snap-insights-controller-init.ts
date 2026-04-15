@@ -2,7 +2,7 @@ import {
   SnapInsightsController,
   SnapInsightsControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the Snap insights controller.
@@ -12,7 +12,7 @@ import { ControllerInitFunction } from '../types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SnapInsightsControllerInit: ControllerInitFunction<
+export const SnapInsightsControllerInit: MessengerClientInitFunction<
   SnapInsightsController,
   SnapInsightsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {

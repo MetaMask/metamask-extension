@@ -3105,7 +3105,8 @@
     "message": "सुनिश्चित करते रहें कि:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "आपका लेजर अनलॉक है"
+    "message": "आपका $1 अनलॉक है",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "इथेरियम ऐप खुला है"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "एक घंटे का फीस जो ट्रेडर्स के बीच मार्केट प्राइस को संतुलित रखने के लिए लिया जाता है। अगर रेट सकारात्मक है, तो लॉन्ग्स शॉर्ट्स को भुगतान करते हैं; अगर नकारात्मक है, तो शॉर्ट्स लॉन्ग्स को भुगतान करते हैं।"
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "आपके इलाके में परपेचुअल ट्रेडिंग उपलब्ध नहीं है"
   },
   "perpsGiveFeedback": {
     "message": "हमें फीडबैक दें"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
-  },
-  "yourTransactionConfirmed": {
-    "message": "ट्रांसेक्शन पहले ही कन्फर्म हो चुका है"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "हम आपके ट्रांसेक्शन को रद्द नहीं कर सके क्योंकि ब्लॉकचेन पर यह पहले ही कन्फर्म हो चुका है।"
   },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"

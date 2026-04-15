@@ -10,7 +10,6 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -39,9 +38,12 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withShowFiatTestnetEnabled()
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -100,9 +102,12 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withShowFiatTestnetEnabled()
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {

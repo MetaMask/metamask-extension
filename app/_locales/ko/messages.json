@@ -3105,7 +3105,8 @@
     "message": "이어서 다음 사항을 확인하세요."
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ledger 잠금이 해제되었습니다"
+    "message": "$1 잠금이 해제되었습니다",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "이더리움 앱이 열려 있습니다"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "시장가와 균형을 맞추기 위해 트레이더 간에 매시간 부과되는 수수료입니다. 비율이 0보다 크면 롱 포지션 보유자가 숏 포지션 보유자에게, 0보다 작으면 숏 포지션 보유자가 롱 포지션 보유자에게 지불합니다."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "해당 지역에서는 무기한 선물 거래를 이용할 수 없습니다"
   },
   "perpsGiveFeedback": {
     "message": "피드백 보내기"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
-  },
-  "yourTransactionConfirmed": {
-    "message": "트랜잭션이 이미 확인되었습니다"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "블록체인에서 거래가 확인되기 전에는 거래를 취소할 수 없습니다."
   },
   "yourWalletIsReady": {
     "message": "지갑이 준비되었습니다"

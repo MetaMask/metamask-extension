@@ -16,13 +16,13 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import type {
   BaseRestrictedControllerMessenger,
-  ControllerInitRequest,
+  MessengerClientInitRequest,
 } from '../types';
 import {
   getSmartTransactionsControllerInitMessenger,
   SmartTransactionsControllerInitMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
+import { MessengerClientFlatState } from '../controller-list';
 import type {
   MetaMetricsEventPayload,
   MetaMetricsEventOptions,
@@ -38,7 +38,7 @@ type MockTransactionController = Pick<
   'getNonceLock' | 'getTransactions' | 'updateTransaction'
 >;
 
-type TestInitRequest = ControllerInitRequest<
+type TestInitRequest = MessengerClientInitRequest<
   SmartTransactionsControllerMessenger,
   SmartTransactionsControllerInitMessenger
 > & {
@@ -49,7 +49,7 @@ type TestInitRequest = ControllerInitRequest<
     | MessengerEvents<SmartTransactionsControllerMessenger>
     | MessengerEvents<SmartTransactionsControllerInitMessenger>
   >;
-  getStateUI: () => { metamask: ControllerFlatState };
+  getStateUI: () => { metamask: MessengerClientFlatState };
   getGlobalNetworkClientId: () => string;
   getAccountType: (address: string) => Promise<string>;
   getDeviceModel: (address: string) => Promise<string>;

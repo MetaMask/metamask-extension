@@ -20,6 +20,7 @@ jest.mock('react-router-dom', () => ({
 const mockUsePerpsLiveMarketData = jest.fn();
 jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
+  usePerpsLiveAccount: () => ({ account: null }),
 }));
 
 const mockStore = configureStore({
