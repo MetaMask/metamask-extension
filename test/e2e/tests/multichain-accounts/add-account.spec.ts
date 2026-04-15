@@ -1,6 +1,6 @@
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
-import { createInternalTransactionAndConfirm } from '../../page-objects/flows/transaction.flow';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -53,10 +53,11 @@ describe('Add account', function () {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await createInternalTransactionAndConfirm({
+        await createInternalTransaction({
           driver,
           recipientName: SECOND_ACCOUNT_NAME,
           amount: '2.8',
+          confirm: true,
         });
 
         const homePage = new HomePage(driver);

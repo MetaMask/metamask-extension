@@ -15,6 +15,7 @@ export const createInternalTransaction = async ({
   recipientAddress,
   recipientName,
   amount = '1',
+  confirm = false,
 }: {
   driver: Driver;
   chainId?: string;
@@ -22,6 +23,7 @@ export const createInternalTransaction = async ({
   recipientAddress?: string;
   recipientName?: string;
   amount?: string;
+  confirm?: boolean;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
@@ -39,6 +41,11 @@ export const createInternalTransaction = async ({
     recipientName,
     amount,
   });
+
+  if (confirm) {
+    const transactionConfirmationPage = new TransactionConfirmation(driver);
+    await transactionConfirmationPage.clickFooterConfirmButtonAndWaitToDisappear();
+  }
 };
 
 export const createInternalTransactionWithMaxAmount = async ({
@@ -91,26 +98,8 @@ export const createDappTransaction = async (
   ]);
 };
 
-type CreateInternalTransactionOptions = Parameters<
-  typeof createInternalTransaction
->[0];
-
 /**
- * Wallet send flow through {@link createInternalTransaction}, then confirms on the transaction confirmation screen.
- */
-export const createInternalTransactionAndConfirm = async (
-  params: CreateInternalTransactionOptions,
-): Promise<void> => {
-  await createInternalTransaction(params);
-
-  const transactionConfirmationPage = new TransactionConfirmation(
-    params.driver,
-  );
-  await transactionConfirmationPage.clickFooterConfirmButtonAndWaitToDisappear();
-};
-
-/**
- * {@link createInternalTransactionAndConfirm} for an address recipient, then optionally approves via the snap keyring when not using sync flow.
+ * {@link createInternalTransaction} with confirmation, then optionally approves via the snap keyring when not using sync flow.
  */
 export const sendRedesignedTransactionWithSnapAccount = async ({
   driver,
@@ -125,10 +114,11 @@ export const sendRedesignedTransactionWithSnapAccount = async ({
   isSyncFlow?: boolean;
   approveTransaction?: boolean;
 }): Promise<void> => {
-  await createInternalTransactionAndConfirm({
+  await createInternalTransaction({
     driver,
     recipientAddress,
     amount,
+    confirm: true,
   });
 
   if (!isSyncFlow) {

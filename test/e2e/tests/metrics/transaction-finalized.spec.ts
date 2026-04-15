@@ -9,7 +9,7 @@ import {
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import { createInternalTransactionAndConfirm } from '../../page-objects/flows/transaction.flow';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
@@ -174,10 +174,11 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await login(driver);
 
         // TODO: Update Test when Multichain Send Flow is added
-        await createInternalTransactionAndConfirm({
+        await createInternalTransaction({
           driver,
           recipientAddress: RECIPIENT,
           amount: '2',
+          confirm: true,
         });
 
         // Get the transaction hash from the activity list

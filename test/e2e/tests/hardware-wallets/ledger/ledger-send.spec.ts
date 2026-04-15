@@ -4,7 +4,7 @@ import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { createInternalTransactionAndConfirm } from '../../../page-objects/flows/transaction.flow';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
@@ -27,10 +27,11 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, { expectedBalance: '1.21M' });
         const homePage = new HomePage(driver);
-        await createInternalTransactionAndConfirm({
+        await createInternalTransaction({
           driver,
           recipientAddress: RECIPIENT,
           amount: '1',
+          confirm: true,
         });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -57,10 +58,11 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, { expectedBalance: '1.21M' });
         const homePage = new HomePage(driver);
-        await createInternalTransactionAndConfirm({
+        await createInternalTransaction({
           driver,
           recipientAddress: RECIPIENT,
           amount: '1',
+          confirm: true,
         });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
