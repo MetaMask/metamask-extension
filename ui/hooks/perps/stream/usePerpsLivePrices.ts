@@ -1,6 +1,8 @@
 import type { PriceUpdate } from '@metamask/perps-controller';
 import type { PerpsStreamManager } from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
+import { useEffect, useMemo } from 'react';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -10,6 +12,10 @@ export type UsePerpsLivePricesOptions = {
   symbols: string[];
   /** Throttle delay in milliseconds (default: 0 - no throttling) */
   throttleMs?: number;
+  /** Whether to activate the background price stream for these symbols */
+  activateStream?: boolean;
+  /** Optional passthrough for controller market data enrichment */
+  includeMarketData?: boolean;
 };
 
 /**
@@ -57,6 +63,34 @@ const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
 export function usePerpsLivePrices(
   options: UsePerpsLivePricesOptions,
 ): UsePerpsLivePricesReturn {
+  const {
+    symbols,
+    activateStream = false,
+    includeMarketData = false,
+  } = options;
+  const symbolsKey = useMemo(
+    () => Array.from(new Set(symbols)).sort().join('|'),
+    [symbols],
+  );
+
+  useEffect(() => {
+    if (!activateStream || !symbolsKey) {
+      return undefined;
+    }
+
+    const activeSymbols = symbolsKey.split('|');
+
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: activeSymbols, includeMarketData },
+    ]).catch(() => undefined);
+
+    return () => {
+      submitRequestToBackground('perpsDeactivatePriceStream', []).catch(
+        () => undefined,
+      );
+    };
+  }, [activateStream, symbolsKey, includeMarketData]);
+
   const { data: priceArray, isInitialLoading } = usePerpsChannel(
     getPricesChannel,
     EMPTY_PRICES,
@@ -67,15 +101,13 @@ export function usePerpsLivePrices(
   }
 
   // Convert array to record, filtered to requested symbols
-  const { symbols } = options;
   const priceRecord: Record<string, PriceUpdate> = {};
   priceArray.forEach((update) => {
     if (symbols.length === 0 || symbols.includes(update.symbol)) {
       const ts = (update as { timestamp?: number }).timestamp;
       const mark = (update as { markPrice?: string }).markPrice;
       priceRecord[update.symbol] = {
-        symbol: update.symbol,
-        price: update.price,
+        ...update,
         timestamp: ts ?? Date.now(),
         markPrice: mark,
       };

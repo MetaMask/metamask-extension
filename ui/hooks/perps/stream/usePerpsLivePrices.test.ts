@@ -2,14 +2,23 @@ import { renderHook } from '@testing-library/react-hooks';
 import type { PriceUpdate } from '@metamask/perps-controller';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 jest.mock('./usePerpsChannel', () => ({
   usePerpsChannel: jest.fn(),
 }));
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
 const mockUsePerpsChannel = usePerpsChannel as jest.MockedFunction<
   typeof usePerpsChannel
 >;
+const mockSubmitRequestToBackground =
+  submitRequestToBackground as jest.MockedFunction<
+    typeof submitRequestToBackground
+  >;
 
 describe('usePerpsLivePrices', () => {
   beforeEach(() => {
@@ -56,6 +65,7 @@ describe('usePerpsLivePrices', () => {
         price: '100',
         timestamp: 111,
         markPrice: '101',
+        percentChange24h: '+3.1%',
       },
       {
         symbol: 'ETH',
@@ -81,6 +91,7 @@ describe('usePerpsLivePrices', () => {
         price: '100',
         timestamp: 111,
         markPrice: '101',
+        percentChange24h: '+3.1%',
       },
     });
   });
@@ -104,5 +115,32 @@ describe('usePerpsLivePrices', () => {
     });
 
     nowSpy.mockRestore();
+  });
+
+  it('activates and deactivates the background price stream when requested', () => {
+    mockUsePerpsChannel.mockReturnValue({
+      data: [],
+      isInitialLoading: false,
+    });
+
+    const { unmount } = renderHook(() =>
+      usePerpsLivePrices({
+        symbols: ['ETH', 'BTC'],
+        activateStream: true,
+        includeMarketData: true,
+      }),
+    );
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsActivatePriceStream',
+      [{ symbols: ['BTC', 'ETH'], includeMarketData: true }],
+    );
+
+    unmount();
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsDeactivatePriceStream',
+      [],
+    );
   });
 });

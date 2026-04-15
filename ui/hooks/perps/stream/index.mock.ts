@@ -156,6 +156,18 @@ export function usePerpsLiveMarketData(
   };
 }
 
+export type UsePerpsLiveMarketListDataOptions = {
+  refreshIntervalMs?: number;
+};
+
+export type UsePerpsLiveMarketListDataReturn = UsePerpsLiveMarketDataReturn;
+
+export function usePerpsLiveMarketListData(
+  _options: UsePerpsLiveMarketListDataOptions = {},
+): UsePerpsLiveMarketListDataReturn {
+  return usePerpsLiveMarketData();
+}
+
 // ============================================================================
 // Candle Hook
 // ============================================================================
