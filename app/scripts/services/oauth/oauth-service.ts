@@ -33,7 +33,16 @@ import { loadOAuthConfig } from './config';
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
 
-export default class OAuthService {
+const MESSENGER_EXPOSED_METHODS = [
+  'startOAuthLogin',
+  'getNewRefreshToken',
+  'revokeRefreshToken',
+  'renewRefreshToken',
+  'getMarketingConsent',
+  'setMarketingConsent',
+] as const;
+
+export class OAuthService {
   // Required for modular initialisation.
   name: ServiceName = SERVICE_NAME;
 
@@ -79,24 +88,9 @@ export default class OAuthService {
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:startOAuthLogin`,
-      this.startOAuthLogin.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getNewRefreshToken`,
-      this.getNewRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:revokeRefreshToken`,
-      this.revokeRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:renewRefreshToken`,
-      this.renewRefreshToken.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

@@ -1,8 +1,10 @@
-import MetaMetricsController from '../controllers/metametrics-controller';
+import {
+  MetaMetricsController,
+  MetaMetricsControllerMessenger,
+} from '../controllers/metametrics-controller';
 import { segment } from '../lib/segment';
 import { captureException } from '../../../shared/lib/sentry';
-import { MetaMetricsControllerMessenger } from './messengers';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the MetaMetrics controller.
@@ -13,11 +15,11 @@ import { ControllerInitFunction } from './types';
  * @param request.extension
  * @returns The initialized controller.
  */
-export const MetaMetricsControllerInit: ControllerInitFunction<
+export const MetaMetricsControllerInit: MessengerClientInitFunction<
   MetaMetricsController,
   MetaMetricsControllerMessenger
 > = ({ controllerMessenger, extension, persistedState }) => {
-  const controller = new MetaMetricsController({
+  const messengerClient = new MetaMetricsController({
     state: persistedState.MetaMetricsController,
     messenger: controllerMessenger,
     version: process.env.METAMASK_VERSION as string,
@@ -28,6 +30,6 @@ export const MetaMetricsControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

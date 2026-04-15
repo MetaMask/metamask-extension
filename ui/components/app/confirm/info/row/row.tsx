@@ -51,12 +51,28 @@ export type ConfirmInfoRowProps = {
   onClick?: () => void;
   rowVariant?: ConfirmInfoRowSize;
   style?: React.CSSProperties;
-  tooltip?: string;
+  tooltip?: string | React.ReactNode;
   tooltipIcon?: IconName;
   tooltipIconColor?: IconColor;
   variant?: ConfirmInfoRowVariant;
   labelChildrenStyleOverride?: React.CSSProperties;
 };
+
+type TooltipDisplayProps = { html?: React.ReactNode; title?: string };
+
+function getConfirmInfoRowTooltipProps(
+  tooltip: string | React.ReactNode,
+): TooltipDisplayProps {
+  if (typeof tooltip !== 'string') {
+    return { html: tooltip };
+  }
+  if (tooltip.includes('\n')) {
+    return {
+      html: <span style={{ whiteSpace: 'pre-line' }}>{tooltip}</span>,
+    };
+  }
+  return { title: tooltip };
+}
 
 const BACKGROUND_COLORS = {
   [ConfirmInfoRowVariant.Default]: undefined,
@@ -194,34 +210,29 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               </Text>
             )}
             {labelChildren}
-            {!labelChildren && tooltip?.length && (
-              <Tooltip
-                position="bottom"
-                {...(tooltip.includes('\n')
-                  ? {
-                      html: (
-                        <span style={{ whiteSpace: 'pre-line' }}>
-                          {tooltip}
-                        </span>
-                      ),
+            {!labelChildren &&
+              tooltip !== undefined &&
+              tooltip !== null &&
+              (typeof tooltip !== 'string' || tooltip.length > 0) && (
+                <Tooltip
+                  position="bottom"
+                  {...getConfirmInfoRowTooltipProps(tooltip)}
+                  style={{ display: 'flex' }}
+                >
+                  <Icon
+                    name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
+                    marginLeft={1}
+                    color={
+                      tooltipIconColor ??
+                      (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
                     }
-                  : { title: tooltip })}
-                style={{ display: 'flex' }}
-              >
-                <Icon
-                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
-                  marginLeft={1}
-                  color={
-                    tooltipIconColor ??
-                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
-                  }
-                  size={IconSize.Sm}
-                  {...(dataTestId
-                    ? { 'data-testid': `${dataTestId}-tooltip` }
-                    : {})}
-                />
-              </Tooltip>
-            )}
+                    size={IconSize.Sm}
+                    {...(dataTestId
+                      ? { 'data-testid': `${dataTestId}-tooltip` }
+                      : {})}
+                  />
+                </Tooltip>
+              )}
           </Box>
         </Box>
         {expanded &&

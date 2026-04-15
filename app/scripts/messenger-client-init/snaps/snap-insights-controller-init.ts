@@ -2,7 +2,7 @@ import {
   SnapInsightsController,
   SnapInsightsControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the Snap insights controller.
@@ -12,11 +12,11 @@ import { ControllerInitFunction } from '../types';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SnapInsightsControllerInit: ControllerInitFunction<
+export const SnapInsightsControllerInit: MessengerClientInitFunction<
   SnapInsightsController,
   SnapInsightsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new SnapInsightsController({
+  const messengerClient = new SnapInsightsController({
     // @ts-expect-error: `persistedState.SnapInsightsController` is not
     // compatible with the expected type.
     // TODO: Look into the type mismatch.
@@ -25,6 +25,6 @@ export const SnapInsightsControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

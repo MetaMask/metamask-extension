@@ -51,7 +51,7 @@ describe('usePerpsDepositConfirmation', () => {
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
   });
 
-  it('includes returnTo param when triggered from a non-root route', async () => {
+  it('includes goBackTo param when triggered from a non-root route', async () => {
     mockCreatePerpsDepositTransaction.mockResolvedValue({
       transactionId: 'tx-return',
     });
@@ -68,7 +68,7 @@ describe('usePerpsDepositConfirmation', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&returnTo=%2Fperps%2Ftrade%2FBTC`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
     });
   });
 

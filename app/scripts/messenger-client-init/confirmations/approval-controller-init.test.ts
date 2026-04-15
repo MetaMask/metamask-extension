@@ -1,5 +1,5 @@
 import { ApprovalController } from '@metamask/approval-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getApprovalControllerMessenger,
@@ -11,7 +11,7 @@ import { ApprovalControllerInit } from './approval-controller-init';
 jest.mock('@metamask/approval-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<ApprovalControllerMessenger>
+  MessengerClientInitRequest<ApprovalControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('ApprovalControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = ApprovalControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(ApprovalController);
+    const { messengerClient } = ApprovalControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(ApprovalController);
   });
 
   it('passes the proper arguments to the controller', () => {

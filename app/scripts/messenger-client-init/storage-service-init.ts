@@ -1,6 +1,6 @@
 import { StorageService } from '@metamask/storage-service';
-import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
-import { ControllerInitFunction } from './types';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
+import { MessengerClientInitFunction } from './types';
 import { StorageServiceMessenger } from './messengers';
 
 /**
@@ -13,17 +13,17 @@ import { StorageServiceMessenger } from './messengers';
  * @param request.controllerMessenger - The messenger for the service
  * @returns The initialized service with null state keys (stateless)
  */
-export const StorageServiceInit: ControllerInitFunction<
+export const StorageServiceInit: MessengerClientInitFunction<
   StorageService,
   StorageServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new StorageService({
+  const messengerClient = new StorageService({
     messenger: controllerMessenger,
     storage: new BrowserStorageAdapter(),
   });
 
   return {
-    controller,
+    messengerClient,
     // StorageService is stateless - no persisted or mem state
     persistedStateKey: null,
     memStateKey: null,

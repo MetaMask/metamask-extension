@@ -2,7 +2,7 @@ import {
   MultichainRoutingService,
   MultichainRoutingServiceMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getMultichainRoutingServiceMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
@@ -11,7 +11,7 @@ import { MultichainRoutingServiceInit } from './multichain-routing-service-init'
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultichainRoutingServiceMessenger>
+  MessengerClientInitRequest<MultichainRoutingServiceMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('MultichainRoutingServiceInit', () => {
   it('initializes the multichain router', () => {
-    const { controller } = MultichainRoutingServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(MultichainRoutingService);
+    const { messengerClient } =
+      MultichainRoutingServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(MultichainRoutingService);
   });
 
   it('does not store state', () => {

@@ -225,10 +225,18 @@ export function matchesLocalTransaction(
       txType === TransactionType.incoming
     );
   }
-  return (
-    group.initialTransaction.txParams?.to?.toLowerCase() ===
-    scope.tokenAddress.toLowerCase()
-  );
+  const addr = scope.tokenAddress.toLowerCase();
+  if (group.initialTransaction.txParams?.to?.toLowerCase() === addr) {
+    return true;
+  }
+  // For batched/delegated transactions (EIP-7702),
+  // txParams.to points to the user's own address. Check nestedTransactions
+  // to see if any inner call targets the token contract.
+  const nested = group.initialTransaction.nestedTransactions;
+  if (nested?.length) {
+    return nested.some((call) => call.to?.toLowerCase() === addr);
+  }
+  return false;
 }
 
 /**

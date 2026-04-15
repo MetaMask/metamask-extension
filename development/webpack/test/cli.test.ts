@@ -21,8 +21,6 @@ describe('./utils/cli.ts', () => {
     test: false,
     reactCompilerVerbose: false,
     reactCompilerDebug: 'none',
-    threads: 'auto',
-    jobsPerThread: 'auto',
     zip: false,
     minify: false,
     browser: ['chrome'],
@@ -35,16 +33,17 @@ describe('./utils/cli.ts', () => {
     snow: false,
     dryRun: false,
     stats: false,
+    bundleAnalyzer: false,
   };
 
   it('should return defaults', () => {
     const { args, cacheKey, features } = parseArgv([], loadBuildTypesConfig());
-    const { resolvedThreads, resolvedJobs, ...rest } = args;
+    const { threads, jobsPerThread, ...rest } = args;
     assert.deepStrictEqual(rest, defaultArgs);
-    assert.strictEqual(typeof resolvedThreads, 'number');
-    assert.strictEqual(typeof resolvedJobs, 'number');
-    assert(resolvedThreads >= 0, 'resolvedThreads should be non-negative');
-    assert(resolvedJobs >= 0, 'resolvedJobs should be non-negative');
+    assert.strictEqual(typeof threads, 'number');
+    assert.strictEqual(typeof jobsPerThread, 'number');
+    assert(threads >= 0, 'threads should be non-negative');
+    assert(jobsPerThread >= 0, 'jobsPerThread should be non-negative');
     assert.strictEqual(
       typeof cacheKey,
       'string',
@@ -240,7 +239,7 @@ describe('./utils/cli.ts', () => {
     it('parses --threads with explicit number', () => {
       const { args } = parseArgv(['--threads', '4'], loadBuildTypesConfig());
       assert.strictEqual(args.threads, 4);
-      assert.strictEqual(args.jobsPerThread, 'auto');
+      assert.strictEqual(args.jobsPerThread, 15);
     });
 
     it('parses --jobsPerThread with explicit number when threads enabled', () => {
@@ -276,44 +275,62 @@ describe('./utils/cli.ts', () => {
 
   describe('thread-loader option validation', () => {
     it('throws when --jobsPerThread is used with --threads 0', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--threads', '0', '--jobsPerThread', '15'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--threads', '0', '--jobsPerThread', '15'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 
     it('throws when --jobsPerThread is used with --generatePolicy', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--generatePolicy', '--jobsPerThread', '20'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--generatePolicy', '--jobsPerThread', '20'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 
     it('throws when --jobsPerThread is used with --reactCompilerVerbose', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--reactCompilerVerbose', '--jobsPerThread', '10'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--reactCompilerVerbose', '--jobsPerThread', '10'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 
@@ -332,7 +349,7 @@ describe('./utils/cli.ts', () => {
         loadBuildTypesConfig(),
       );
       assert.strictEqual(args.threads, 0);
-      assert.strictEqual(args.jobsPerThread, 'auto');
+      assert.strictEqual(args.jobsPerThread, 0);
     });
   });
 });

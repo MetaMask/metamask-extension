@@ -1,5 +1,5 @@
 import { EnsController } from '@metamask/ens-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEnsControllerMessenger,
@@ -13,7 +13,7 @@ import { EnsControllerInit } from './ens-controller-init';
 jest.mock('@metamask/ens-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<EnsControllerMessenger, EnsControllerInitMessenger>
+  MessengerClientInitRequest<EnsControllerMessenger, EnsControllerInitMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -28,8 +28,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('EnsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = EnsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(EnsController);
+    const { messengerClient } = EnsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(EnsController);
   });
 
   it('passes the proper arguments to the controller', () => {

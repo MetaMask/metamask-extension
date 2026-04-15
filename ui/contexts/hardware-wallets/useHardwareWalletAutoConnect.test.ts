@@ -11,6 +11,7 @@ import {
   HardwareConnectionPermissionState,
   ConnectionStatus,
 } from './types';
+import { ConnectionState } from './connectionState';
 import {
   type HardwareWalletState,
   type HardwareWalletRefs,
@@ -42,6 +43,7 @@ const createMockRefs = (
   isConnectingRef: { current: false },
   hasAutoConnectedRef: { current: false },
   lastConnectedAccountRef: { current: null },
+  isEnsuringDeviceReadyRef: { current: false },
   currentConnectionIdRef: { current: null },
   connectRef: { current: null },
   walletTypeRef: { current: null },
@@ -307,6 +309,121 @@ describe('useHardwareWalletAutoConnect', () => {
       await disconnectCallback(mockDevice);
 
       expect(mockHandleDisconnect).not.toHaveBeenCalled();
+    });
+
+    it('ignores disconnect when there is no tracked adapter', async () => {
+      setupHook();
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      await disconnectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockHandleDisconnect).not.toHaveBeenCalled();
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
+    it('ignores native connect events while ensureDeviceReady is in flight', async () => {
+      setupHook(
+        {},
+        {
+          connectRef: { current: mockConnectRef },
+          isEnsuringDeviceReadyRef: { current: true },
+        },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      await connectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
+    it('ignores native disconnect events while ensureDeviceReady is in flight', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          isEnsuringDeviceReadyRef: { current: true },
+        },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      await disconnectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockHandleDisconnect).not.toHaveBeenCalled();
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
+    it('ignores native connect events if ensureDeviceReady starts during permission check', async () => {
+      let resolvePermission:
+        | ((value: HardwareConnectionPermissionState) => void)
+        | undefined;
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockImplementation(
+        () =>
+          new Promise<HardwareConnectionPermissionState>((resolve) => {
+            resolvePermission = resolve;
+          }),
+      );
+
+      const refs = createMockRefs({
+        connectRef: { current: mockConnectRef },
+      });
+
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState(),
+            refs,
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: true,
+            isWebUsbAvailable: false,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      const connectPromise = connectCallback({ productId: 123 } as HIDDevice);
+      refs.isEnsuringDeviceReadyRef.current = true;
+
+      resolvePermission?.(HardwareConnectionPermissionState.Granted);
+      await connectPromise;
+
+      expect(mockUpdateConnectionState).not.toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
 
     it('unsubscribes from events on cleanup', () => {

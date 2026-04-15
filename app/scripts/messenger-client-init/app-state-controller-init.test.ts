@@ -1,17 +1,17 @@
-import { AppStateController } from '../controllers/app-state-controller';
-import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getAppStateControllerMessenger,
+  AppStateController,
   AppStateControllerMessenger,
-} from './messengers';
+} from '../controllers/app-state-controller';
+import { getRootMessenger } from '../lib/messenger';
+import { MessengerClientInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
+import { getAppStateControllerMessenger } from './messengers';
 import { AppStateControllerInit } from './app-state-controller-init';
 
 jest.mock('../controllers/app-state-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AppStateControllerMessenger>
+  MessengerClientInitRequest<AppStateControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 
@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('AppStateControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = AppStateControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AppStateController);
+    const { messengerClient } = AppStateControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AppStateController);
   });
 
   it('passes the proper arguments to the controller', () => {

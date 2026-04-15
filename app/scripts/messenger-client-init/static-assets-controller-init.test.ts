@@ -1,6 +1,6 @@
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getStaticAssetsControllerInitMessenger,
@@ -13,7 +13,7 @@ import { StaticAssetsControllerInit } from './static-assets-controller-init';
 jest.mock('../controllers/static-assets-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     StaticAssetsControllerMessenger,
     StaticAssetsControllerInitMessenger
   >
@@ -31,8 +31,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('StaticAssetsControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = StaticAssetsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(StaticAssetsController);
+    const { messengerClient } =
+      StaticAssetsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(StaticAssetsController);
   });
 
   it('passes the proper arguments to the controller', () => {

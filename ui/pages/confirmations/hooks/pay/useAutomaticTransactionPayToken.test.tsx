@@ -66,7 +66,11 @@ function renderHookWithProvider({
   );
 
   return renderHook(
-    () => useAutomaticTransactionPayToken({ disable, preferredToken }),
+    () =>
+      useAutomaticTransactionPayToken({
+        disable,
+        preferredToken,
+      }),
     { wrapper },
   );
 }

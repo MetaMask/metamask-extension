@@ -15,7 +15,7 @@ import {
 } from '@metamask/network-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getPPOMControllerInitMessenger,
   getPPOMControllerMessenger,
@@ -49,7 +49,10 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
+  MessengerClientInitRequest<
+    PPOMControllerMessenger,
+    PPOMControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = new Messenger<
     MockAnyNamespace,
@@ -99,7 +102,7 @@ function buildInitRequestMock(): jest.Mocked<
     initMessenger: getPPOMControllerInitMessenger(baseControllerMessenger),
   };
 
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -122,7 +125,7 @@ describe('PPOM Controller Init', () => {
   ): PPOMControllerOptions[T] {
     const requestMock = buildInitRequestMock();
 
-    requestMock.getController.mockReturnValue(
+    requestMock.getMessengerClient.mockReturnValue(
       buildControllerMock(dependencyProperties),
     );
 
@@ -137,7 +140,7 @@ describe('PPOM Controller Init', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(PPOMControllerInit(requestMock).controller).toBeInstanceOf(
+    expect(PPOMControllerInit(requestMock).messengerClient).toBeInstanceOf(
       PPOMController,
     );
   });

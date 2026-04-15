@@ -27,6 +27,10 @@ import {
   setTutorialModalOpen,
 } from '../../../ducks/perps';
 
+import { usePerpsEligibility } from '../../../hooks/perps';
+import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+
+import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -60,10 +64,12 @@ export const PerpsView: React.FC = () => {
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
+  const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
@@ -74,11 +80,8 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const {
-    cryptoMarkets: allCryptoMarkets,
-    hip3Markets: allHip3Markets,
-    isInitialLoading: marketsLoading,
-  } = usePerpsLiveMarketData();
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
 
   const {
     transactions: allRecentActivityTransactions,
@@ -122,6 +125,10 @@ export const PerpsView: React.FC = () => {
   }, []);
 
   const handleCloseAllPositions = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (positions.length === 0) {
       return;
     }
@@ -146,9 +153,13 @@ export const PerpsView: React.FC = () => {
     } finally {
       setIsCloseAllPending(false);
     }
-  }, [applyPositionsSnapshot, positions.length, t]);
+  }, [isEligible, applyPositionsSnapshot, positions.length, t]);
 
   const handleCancelAllOrders = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (orders.length === 0) {
       return;
     }
@@ -176,10 +187,12 @@ export const PerpsView: React.FC = () => {
     } finally {
       setIsCancelAllPending(false);
     }
-  }, [applyOrdersSnapshot, orders.length, t]);
+  }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
+
+  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
@@ -196,15 +209,6 @@ export const PerpsView: React.FC = () => {
       dispatch(setTutorialModalOpen(true));
     }
   }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
-
-  // Limit markets to 5 for explore sections
-  const cryptoMarkets = useMemo(() => {
-    return allCryptoMarkets.slice(0, 5);
-  }, [allCryptoMarkets]);
-
-  const hip3Markets = useMemo(() => {
-    return allHip3Markets.slice(0, 5);
-  }, [allHip3Markets]);
 
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
@@ -259,10 +263,7 @@ export const PerpsView: React.FC = () => {
       <PerpsWatchlist />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+      <PerpsExploreMarkets markets={allMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity
@@ -276,6 +277,10 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };
