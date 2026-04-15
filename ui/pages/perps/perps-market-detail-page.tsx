@@ -1039,11 +1039,12 @@ const PerpsMarketDetailPage: React.FC = () => {
               {displayPrice}
             </Text>
             <Text
-              variant={TextVariant.BodyXs}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               color={getChangeColor(displayChange)}
               data-testid="perps-market-detail-change"
             >
-              {displayChange}
+              {displayChange && !displayChange.startsWith('+') && !displayChange.startsWith('-') ? `+${displayChange}` : displayChange}
             </Text>
           </Box>
         </Box>
