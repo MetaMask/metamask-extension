@@ -1,4 +1,4 @@
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { getSubscriptionServiceMessenger } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -7,7 +7,7 @@ import { SubscriptionService } from '../../services/subscription/subscription-se
 import { SubscriptionServiceInit } from './subscription-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SubscriptionServiceMessenger>
+  MessengerClientInitRequest<SubscriptionServiceMessenger>
 > {
   const baseControllerMessenger = getRootMessenger<never, never>();
 

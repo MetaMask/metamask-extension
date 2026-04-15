@@ -2958,6 +2958,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
           preferencesController,
         ),
+      dismissSidePanelMigrationToast:
+        preferencesController.dismissSidePanelMigrationToast.bind(
+          preferencesController,
+        ),
 
       setManageInstitutionalWallets:
         preferencesController.setManageInstitutionalWallets.bind(

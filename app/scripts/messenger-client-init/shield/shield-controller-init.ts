@@ -7,7 +7,7 @@ import {
 import { SignatureRequest } from '@metamask/signature-controller';
 import { JsonRpcRequest } from '@metamask/utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 import { normalizeSignatureRequest as ppomNormalizeSignatureRequest } from '../../lib/ppom/ppom-util';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
@@ -50,7 +50,7 @@ const normalizeSignatureRequest = (
 
 const shieldConfig = loadShieldConfig();
 
-export const ShieldControllerInit: ControllerInitFunction<
+export const ShieldControllerInit: MessengerClientInitFunction<
   ShieldController,
   ShieldControllerMessenger,
   ShieldControllerInitMessenger

@@ -1,7 +1,7 @@
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getSelectedNetworkControllerMessenger,
@@ -12,7 +12,7 @@ import { SelectedNetworkControllerInit } from './selected-network-controller-ini
 jest.mock('@metamask/selected-network-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SelectedNetworkControllerMessenger>
+  MessengerClientInitRequest<SelectedNetworkControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 

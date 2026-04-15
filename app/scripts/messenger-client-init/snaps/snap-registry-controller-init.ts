@@ -4,7 +4,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { SemVerVersion } from '@metamask/utils';
 import { parse } from 'semver';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { getBooleanFlag } from '../../lib/util';
 
 /**
@@ -15,7 +15,7 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SnapRegistryControllerInit: ControllerInitFunction<
+export const SnapRegistryControllerInit: MessengerClientInitFunction<
   SnapRegistryController,
   SnapRegistryControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
