@@ -33,12 +33,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('LoggingControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = LoggingControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(LoggingController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } = LoggingControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(LoggingController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     LoggingControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(LoggingController);
@@ -50,20 +50,20 @@ describe('LoggingControllerInit', () => {
 
   it('logs the previous and current version when the client is updated', () => {
     const request = getInitRequestMock();
-    const { controller } = LoggingControllerInit(request);
+    const { messengerClient } = LoggingControllerInit(request);
 
-    expect(controller.add).not.toHaveBeenCalled();
+    expect(messengerClient.add).not.toHaveBeenCalled();
 
     const listener = jest.mocked(
       request.extension.runtime.onInstalled.addListener,
     ).mock.calls[0][0];
 
     listener({ reason: 'install', temporary: false });
-    expect(controller.add).not.toHaveBeenCalled();
+    expect(messengerClient.add).not.toHaveBeenCalled();
 
     listener({ reason: 'update', previousVersion: '1.0.0', temporary: false });
 
-    expect(controller.add).toHaveBeenCalledWith({
+    expect(messengerClient.add).toHaveBeenCalledWith({
       type: LogType.GenericLog,
       data: {
         event: 'Extension version update',

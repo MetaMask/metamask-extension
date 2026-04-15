@@ -30,8 +30,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('ExecutionServiceInit', () => {
   it('initializes the iframe execution service if `chrome.offscreen` is not available', () => {
-    const { controller } = ExecutionServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(IframeExecutionService);
+    const { messengerClient } = ExecutionServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(IframeExecutionService);
   });
 
   it('does not store state', () => {
@@ -49,8 +49,8 @@ describe('ExecutionServiceInit', () => {
       },
     });
 
-    const { controller } = ExecutionServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(OffscreenExecutionService);
+    const { messengerClient } = ExecutionServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(OffscreenExecutionService);
   });
 
   it('passes the proper arguments to the service', () => {

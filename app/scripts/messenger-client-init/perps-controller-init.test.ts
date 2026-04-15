@@ -158,7 +158,7 @@ describe('PerpsControllerInit', () => {
       const request = getInitRequestMock();
       const result = PerpsControllerInit(request);
 
-      expect(result.controller).toBeDefined();
+      expect(result.messengerClient).toBeDefined();
       expect(result.api).toBeDefined();
     });
 
@@ -482,13 +482,13 @@ describe('PerpsControllerInit', () => {
     ];
 
     for (const [apiMethod, controllerMethod] of apiToController) {
-      it(`${apiMethod} delegates to controller.${controllerMethod}`, async () => {
-        const { api, controller } = initWithApi();
+      it(`${apiMethod} delegates to messengerClient.${controllerMethod}`, async () => {
+        const { api, messengerClient } = initWithApi();
 
         await (api as Record<string, CallableFunction>)[apiMethod]();
 
         expect(
-          (controller as unknown as Record<string, jest.Mock>)[
+          (messengerClient as unknown as Record<string, jest.Mock>)[
             controllerMethod
           ],
         ).toHaveBeenCalled();
@@ -496,40 +496,40 @@ describe('PerpsControllerInit', () => {
     }
 
     it('perpsDepositWithConfirmation returns lastDepositTransactionId', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       (
-        controller.state as unknown as Record<string, string>
+        messengerClient.state as unknown as Record<string, string>
       ).lastDepositTransactionId = 'tx-123';
 
       const result = await api.perpsDepositWithConfirmation(
         ...([] as unknown as Parameters<
-          typeof controller.depositWithConfirmation
+          typeof messengerClient.depositWithConfirmation
         >),
       );
 
-      expect(controller.depositWithConfirmation).toHaveBeenCalled();
+      expect(messengerClient.depositWithConfirmation).toHaveBeenCalled();
       expect(result).toBe('tx-123');
     });
 
     it('perpsGetUserHistory calls provider.getUserHistory', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       const params = { startTime: 0 };
 
       await api.perpsGetUserHistory(params);
 
       expect(
-        controller.getActiveProvider().getUserHistory,
+        messengerClient.getActiveProvider().getUserHistory,
       ).toHaveBeenCalledWith(params);
     });
 
     it('perpsGetUserNonFundingLedgerUpdates calls provider.getUserNonFundingLedgerUpdates', async () => {
-      const { api, controller } = initWithApi();
+      const { api, messengerClient } = initWithApi();
       const params = { startTime: 0 };
 
       await api.perpsGetUserNonFundingLedgerUpdates(params);
 
       expect(
-        controller.getActiveProvider().getUserNonFundingLedgerUpdates,
+        messengerClient.getActiveProvider().getUserNonFundingLedgerUpdates,
       ).toHaveBeenCalledWith(params);
     });
   });

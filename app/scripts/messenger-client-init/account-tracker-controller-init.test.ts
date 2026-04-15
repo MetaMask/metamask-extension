@@ -89,12 +89,13 @@ function getInitRequestMock(
 }
 
 describe('AccountTrackerControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = AccountTrackerControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AccountTrackerController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      AccountTrackerControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AccountTrackerController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     AccountTrackerControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(AccountTrackerController);

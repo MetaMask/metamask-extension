@@ -40,7 +40,7 @@ function getInitRequestMock(
   };
 
   // @ts-expect-error: Partial mock.
-  requestMock.getController.mockImplementation((controllerName) => {
+  requestMock.getMessengerClient.mockImplementation((controllerName) => {
     if (controllerName === 'MultichainNetworkController') {
       return {
         state: {
@@ -65,17 +65,17 @@ function getInitRequestMock(
       };
     }
 
-    throw new Error(`Unexpected controller name: ${controllerName}`);
+    throw new Error(`Unexpected messengerClient name: ${controllerName}`);
   });
 
   return requestMock;
 }
 
 describe('NetworkEnablementControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } =
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
       NetworkEnablementControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(NetworkEnablementController);
+    expect(messengerClient).toBeInstanceOf(NetworkEnablementController);
   });
 
   it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
@@ -87,16 +87,16 @@ describe('NetworkEnablementControllerInit', () => {
       namespace: MOCK_ANY_NAMESPACE,
     });
     const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    expect(controller.enableNetworkInNamespace).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetworkInNamespace).not.toHaveBeenCalled();
 
     // @ts-expect-error: Partial mock.
     messenger.publish('AccountsController:selectedAccountChange', {
       type: SolAccountType.DataAccount,
     });
 
-    expect(controller.enableNetworkInNamespace).toHaveBeenCalledWith(
+    expect(messengerClient.enableNetworkInNamespace).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       'solana',
     );
@@ -117,16 +117,16 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    controller.state = {
+    messengerClient.state = {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
     };
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -134,7 +134,7 @@ describe('NetworkEnablementControllerInit', () => {
       '',
     );
 
-    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
   it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Bitcoin mainnet, and there are no Bitcoin accounts', () => {
@@ -152,16 +152,16 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    controller.state = {
+    messengerClient.state = {
       enabledNetworkMap: {
         bitcoin: { [BtcScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
     };
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -169,7 +169,7 @@ describe('NetworkEnablementControllerInit', () => {
       '',
     );
 
-    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
@@ -186,16 +186,16 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    controller.state = {
+    messengerClient.state = {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
     };
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -203,7 +203,7 @@ describe('NetworkEnablementControllerInit', () => {
       '',
     );
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
   });
 
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
@@ -219,9 +219,9 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    controller.state = {
+    messengerClient.state = {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
         bitcoin: { [BtcScope.Mainnet]: true },
@@ -229,7 +229,7 @@ describe('NetworkEnablementControllerInit', () => {
       nativeAssetIdentifiers: {},
     };
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -237,10 +237,10 @@ describe('NetworkEnablementControllerInit', () => {
       '',
     );
 
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
   });
 
-  it('initialises the controller with the correct networks for prod environment', () => {
+  it('initialises the messengerClient with the correct networks for prod environment', () => {
     process.env.METAMASK_DEBUG = '';
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
@@ -270,7 +270,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for IN_TEST environment', () => {
+  it('initialises the messengerClient with the correct networks for IN_TEST environment', () => {
     process.env.IN_TEST = 'true';
 
     NetworkEnablementControllerInit(getInitRequestMock());
@@ -298,7 +298,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for DEBUG environment', () => {
+  it('initialises the messengerClient with the correct networks for DEBUG environment', () => {
     process.env.METAMASK_DEBUG = 'true';
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
@@ -328,7 +328,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for test environment', () => {
+  it('initialises the messengerClient with the correct networks for test environment', () => {
     process.env.METAMASK_DEBUG = '';
     process.env.METAMASK_ENVIRONMENT = 'test';
     process.env.IN_TEST = '';

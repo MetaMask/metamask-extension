@@ -42,20 +42,21 @@ export const GatorPermissionsControllerInit: MessengerClientInitFunction<
   GatorPermissionsController,
   GatorPermissionsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new GatorPermissionsController({
+  const messengerClient = new GatorPermissionsController({
     messenger: controllerMessenger,
     config: createGatorPermissionsConfig(),
     state: persistedState.GatorPermissionsController,
   });
 
   return {
-    controller,
+    messengerClient,
     api: {
       fetchAndUpdateGatorPermissions:
-        controller.fetchAndUpdateGatorPermissions.bind(controller),
-      addPendingRevocation: controller.addPendingRevocation.bind(controller),
+        messengerClient.fetchAndUpdateGatorPermissions.bind(messengerClient),
+      addPendingRevocation:
+        messengerClient.addPendingRevocation.bind(messengerClient),
       submitDirectRevocation:
-        controller.submitDirectRevocation.bind(controller),
+        messengerClient.submitDirectRevocation.bind(messengerClient),
     },
   };
 };

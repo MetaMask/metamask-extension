@@ -25,12 +25,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('ProfileMetricsControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = ProfileMetricsControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(ProfileMetricsController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      ProfileMetricsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(ProfileMetricsController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     ProfileMetricsControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(ProfileMetricsController);

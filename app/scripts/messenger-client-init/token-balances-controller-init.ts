@@ -18,7 +18,7 @@ export const TokenBalancesControllerInit: MessengerClientInitFunction<
     ) as unknown as PreferencesControllerState;
   const { useMultiAccountBalanceChecker } = getRetypedPrefState();
 
-  const controller = new TokenBalancesController({
+  const messengerClient = new TokenBalancesController({
     messenger: controllerMessenger,
     state: persistedState.TokenBalancesController,
     queryMultipleAccounts: Boolean(useMultiAccountBalanceChecker),
@@ -45,6 +45,6 @@ export const TokenBalancesControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -53,12 +53,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('KeyringControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = KeyringControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(KeyringController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } = KeyringControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(KeyringController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     KeyringControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(KeyringController);

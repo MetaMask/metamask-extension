@@ -34,12 +34,13 @@ describe('SnapRegistryControllerInit', () => {
     process.env.METAMASK_VERSION = metamaskVersion;
   });
 
-  it('initializes the controller', () => {
-    const { controller } = SnapRegistryControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SnapRegistryController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      SnapRegistryControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SnapRegistryController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     SnapRegistryControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(SnapRegistryController);

@@ -62,7 +62,7 @@ function getInitRequestMock(
   };
 
   // Mock getController for RemoteFeatureFlagController
-  requestMock.getController.mockImplementation((controllerName) => {
+  requestMock.getMessengerClient.mockImplementation((controllerName) => {
     if (controllerName === 'RemoteFeatureFlagController') {
       return {
         state: {
@@ -73,7 +73,7 @@ function getInitRequestMock(
             },
           },
         },
-      } as unknown as ReturnType<typeof requestMock.getController>;
+      } as unknown as ReturnType<typeof requestMock.getMessengerClient>;
     }
     throw new Error(`Unexpected controller name: ${controllerName}`);
   });
@@ -98,8 +98,8 @@ describe('AssetsControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = AssetsControllerInit(getInitRequestMock());
-    expect(controller).toBeDefined();
+    const { messengerClient } = AssetsControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeDefined();
   });
 
   it('creates AssetsController with correct parameters', () => {
@@ -261,13 +261,13 @@ describe('AssetsControllerInit', () => {
         initMessenger: getAssetsControllerInitMessenger(baseMessenger),
       };
 
-      requestMock.getController.mockImplementation((controllerName) => {
+      requestMock.getMessengerClient.mockImplementation((controllerName) => {
         if (controllerName === 'RemoteFeatureFlagController') {
           return {
             state: {
               remoteFeatureFlags: {},
             },
-          } as unknown as ReturnType<typeof requestMock.getController>;
+          } as unknown as ReturnType<typeof requestMock.getMessengerClient>;
         }
         throw new Error(`Unexpected controller name: ${controllerName}`);
       });
@@ -293,7 +293,7 @@ describe('AssetsControllerInit', () => {
       expect(isEnabled()).toBe(false);
     });
 
-    it('returns false when getController throws an error', () => {
+    it('returns false when getMessengerClient throws an error', () => {
       jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
 
       const baseMessenger = getRootMessenger<never, never>();
@@ -304,7 +304,7 @@ describe('AssetsControllerInit', () => {
         initMessenger: getAssetsControllerInitMessenger(baseMessenger),
       };
 
-      requestMock.getController.mockImplementation(() => {
+      requestMock.getMessengerClient.mockImplementation(() => {
         throw new Error('Controller not found');
       });
 

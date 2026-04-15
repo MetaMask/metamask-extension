@@ -13,7 +13,7 @@ export const DecryptMessageManagerInit: MessengerClientInitFunction<
   DecryptMessageManager,
   DecryptMessageManagerMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new DecryptMessageManager({
+  const messengerClient = new DecryptMessageManager({
     additionalFinishStatuses: ['decrypted'],
     messenger: controllerMessenger,
   });
@@ -21,6 +21,6 @@ export const DecryptMessageManagerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

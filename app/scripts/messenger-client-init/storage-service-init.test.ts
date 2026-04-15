@@ -32,8 +32,8 @@ describe('StorageServiceInit', () => {
   });
 
   it('initializes the service', () => {
-    const { controller } = StorageServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(StorageService);
+    const { messengerClient } = StorageServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(StorageService);
   });
 
   it('passes the proper arguments to the service', () => {

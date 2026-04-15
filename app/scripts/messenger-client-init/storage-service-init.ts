@@ -17,13 +17,13 @@ export const StorageServiceInit: MessengerClientInitFunction<
   StorageService,
   StorageServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new StorageService({
+  const messengerClient = new StorageService({
     messenger: controllerMessenger,
     storage: new BrowserStorageAdapter(),
   });
 
   return {
-    controller,
+    messengerClient,
     // StorageService is stateless - no persisted or mem state
     persistedStateKey: null,
     memStateKey: null,

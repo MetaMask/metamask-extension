@@ -25,12 +25,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SubjectMetadataControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = SubjectMetadataControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SubjectMetadataController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      SubjectMetadataControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SubjectMetadataController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     SubjectMetadataControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(SubjectMetadataController);

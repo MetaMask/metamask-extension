@@ -32,17 +32,18 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('DecryptMessageControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = DecryptMessageControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(DecryptMessageController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      DecryptMessageControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(DecryptMessageController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     const manager = {};
     const request = getInitRequestMock();
 
     // @ts-expect-error: Partial mock.
-    request.getController.mockReturnValue(manager);
+    request.getMessengerClient.mockReturnValue(manager);
 
     DecryptMessageControllerInit(request);
 

@@ -64,12 +64,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('TokenBalancesControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } = TokenBalancesControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(TokenBalancesController);
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
+      TokenBalancesControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(TokenBalancesController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     TokenBalancesControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(TokenBalancesController);

@@ -18,7 +18,7 @@ export const ClaimsServiceInit: MessengerClientInitFunction<
   });
 
   return {
-    controller: service,
+    messengerClient: service,
     memStateKey: null,
     persistedStateKey: null,
   };

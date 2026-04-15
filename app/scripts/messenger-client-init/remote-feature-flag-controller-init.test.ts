@@ -101,13 +101,13 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
 });
 
 describe('RemoteFeatureFlagControllerInit', () => {
-  it('initializes the controller', () => {
-    const { controller } =
+  it('initializes the messengerClient', () => {
+    const { messengerClient } =
       RemoteFeatureFlagControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(RemoteFeatureFlagController);
+    expect(messengerClient).toBeInstanceOf(RemoteFeatureFlagController);
   });
 
-  it('passes the proper arguments to the controller', () => {
+  it('passes the proper arguments to the messengerClient', () => {
     RemoteFeatureFlagControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(RemoteFeatureFlagController);
