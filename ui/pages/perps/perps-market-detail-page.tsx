@@ -1023,7 +1023,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content: symbol-USD, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+          <Text variant={TextVariant.HeadingMd}>
             {displayName}-USD
           </Text>
           <Box
