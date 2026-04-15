@@ -1300,9 +1300,8 @@ describe('PerpsStreamBridge', () => {
     function getConnectionStateListener(
       controller: ReturnType<typeof createMockController>,
     ): (state: string) => void {
-      return controller.subscribeToConnectionState.mock.calls[0][0] as unknown as (
-        state: string,
-      ) => void;
+      return controller.subscribeToConnectionState.mock
+        .calls[0][0] as unknown as (state: string) => void;
     }
 
     it('emits connectionState updates to UI', async () => {
