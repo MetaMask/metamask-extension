@@ -176,7 +176,7 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
     fi
     while IFS= read -r file; do
         renamed="${file%.zip}-webpack.zip"
-        cp "${file}" "${renamed}"
+        mv "${file}" "${renamed}"
         webpack_artifacts+=("${renamed}")
     done < <(compgen -G "${artifact}")
 done
