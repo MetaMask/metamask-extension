@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, PRIVATE_KEY_TWO, WINDOW_TITLES } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
@@ -27,12 +27,12 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerSnapAccountConnectedToTestDapp()
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .withPermissionControllerConnectedToTestDapp({
+            account: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+          })
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         smartContract,
         testSpecificMock: async (mockServer: Mockttp) => {
           const snapMocks = await mockSnapSimpleKeyringAndSite(

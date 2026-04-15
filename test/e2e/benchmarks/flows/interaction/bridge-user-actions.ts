@@ -4,7 +4,7 @@
  */
 
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
@@ -52,8 +52,8 @@ export async function run(): Promise<BenchmarkRunResult> {
     const steps: LongTaskStepResult[] = [];
     let webVitals;
 
-    const fixtureBuilder = new FixtureBuilder()
-      .withNetworkControllerOnMainnet()
+    const fixtureBuilder = new FixtureBuilderV2()
+      .withSelectedNetwork()
       .withEnabledNetworks({ eip155: { '0x1': true } });
 
     await withFixtures(

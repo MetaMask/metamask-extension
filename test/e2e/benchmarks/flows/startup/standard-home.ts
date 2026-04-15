@@ -3,7 +3,7 @@
  * Measures home page load time with standard wallet state
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
@@ -28,7 +28,7 @@ async function measurePageStandard(
   const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       disableServerMochaToBackground: true,
       title,
     },

@@ -3,7 +3,7 @@
  * Measures time to confirm a transaction
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
@@ -27,7 +27,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         disableServerMochaToBackground: true,
         title: testTitle,
       },
