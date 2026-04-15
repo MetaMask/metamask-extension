@@ -69,9 +69,6 @@
   "about": {
     "message": "情報"
   },
-  "aboutMetaMask": {
-    "message": "MetaMaskについて"
-  },
   "accept": {
     "message": "同意する"
   },
@@ -342,17 +339,8 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
-  "addedProtectionDescription": {
-    "message": "不明なアドレスとやり取りしています。これにより悪質なトランザクションを防ぐことができます。"
-  },
   "addedProtectionOptionalBadge": {
     "message": "オプション"
-  },
-  "addedProtectionTitle": {
-    "message": "保護機能が追加されました"
-  },
-  "addedProtectionTooltip": {
-    "message": "最終的なトランザクションがこのプレビューと一致しない場合、処理は実行されません。ネットワーク手数料のみを支払うことになります。"
   },
   "additionalNetworks": {
     "message": "他のネットワーク"
@@ -1089,9 +1077,6 @@
   "bridgeGasFeesSplit": {
     "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
   },
-  "bridgeGetNewQuote": {
-    "message": "新しい価格を取得"
-  },
   "bridgeLowestCost": {
     "message": "最低コスト"
   },
@@ -1147,9 +1132,6 @@
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
-  "bridgePriceImpactFiatAlert": {
-    "message": "この取引で$1を失います"
-  },
   "bridgePriceImpactHigh": {
     "message": "高プライスインパクト"
   },
@@ -1173,33 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "プライスインパクトに関する警告"
-  },
-  "bridgeQuoteStreamCompleteAmountTooHigh": {
-    "message": "利用可能なクォートがありません。より小さい額をお試しください。"
-  },
-  "bridgeQuoteStreamCompleteAmountTooLow": {
-    "message": "利用可能なクォートがありません。より大きい額をお試しください。"
-  },
-  "bridgeQuoteStreamCompleteRetry": {
-    "message": "現在クォートを取得できません。もう一度お試しください。"
-  },
-  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
-    "message": "このスワップはお客様の地域ではご利用いただけません。"
-  },
-  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
-    "message": "この資産の市場は現在利用できません。後ほどもう一度お試しください。"
-  },
-  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
-    "message": "このトークンと現実世界の資産とのスワップはまだサポートされていません。別のトークンの使用をお試しください。"
-  },
-  "bridgeQuoteStreamCompleteSlippageTooHigh": {
-    "message": "スリッページが大きすぎます。スリッページ設定を下げてみてください。"
-  },
-  "bridgeQuoteStreamCompleteSlippageTooLow": {
-    "message": "スリッページが小さすぎます。スリッページ設定を上げてみてください。"
-  },
-  "bridgeQuoteStreamCompleteTokenNotSupported": {
-    "message": "このトークンはサポートされていません。別のトークンの使用をお試しください。"
   },
   "bridgeQuotesSortedByCost": {
     "message": "クォートは、為替レートとネットワーク手数料を含む推定総コストで並べ替えられています。"
@@ -1450,7 +1405,7 @@
     "message": "アクティビティタブのデータを消去"
   },
   "clearActivityDescription": {
-    "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
+    "message": "これによりアカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
   },
   "clearFilters": {
     "message": "フィルターを消去"
@@ -1481,10 +1436,6 @@
   "comboNoOptions": {
     "message": "オプションが見つかりません",
     "description": "Default text shown in the combo field dropdown if no options."
-  },
-  "communityContributedLanguagesSectionTitle": {
-    "message": "コミュニティ貢献",
-    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "完了"
@@ -2072,12 +2023,6 @@
   "dappConnections": {
     "message": "DAppの接続"
   },
-  "dappScanMaliciousTitle": {
-    "message": "悪質なWebサイトが検出されました"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "このWebサイトは、危険な可能性があるとフラグ付けされています。シークレットリカバリーフレーズを明かした場合、資金が危険に晒される可能性があります。"
-  },
   "dappSuggested": {
     "message": "おすすめのサイト"
   },
@@ -2138,9 +2083,6 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "デビットカードまたはクレジットカードの購入オプション"
-  },
-  "debug": {
-    "message": "デバッグ"
   },
   "decimal": {
     "message": "トークンの小数桁数"
@@ -2238,12 +2180,6 @@
   "deepLink_theOnboardingPage": {
     "message": "オンボーディングページ"
   },
-  "deepLink_thePerpsMarketDetailPage": {
-    "message": "パーペチュアル市場ページ"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "パーペチュアル市場一覧ページ"
-  },
   "deepLink_thePerpsPage": {
     "message": "パーペチュアルのページ"
   },
@@ -2299,9 +2235,6 @@
   },
   "delete": {
     "message": "削除"
-  },
-  "deleteActivityAndNonceData": {
-    "message": "アクティビティとナンスデータを削除"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
@@ -2383,9 +2316,6 @@
   },
   "developerOptions": {
     "message": "開発者用オプション"
-  },
-  "developerTools": {
-    "message": "開発者ツール"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "「$1」は、元のガス代から最低10%の増加条件を満たしていないため、無効になっています。",
@@ -3171,15 +3101,11 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "デバイスを再起動してもう一度接続してみてください"
   },
-  "hardwareWalletErrorRecoveryConnection4": {
-    "message": "$1デバイスのロックが解除されています",
-    "description": "$1 is the hardware wallet type"
-  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "$1デバイスのロックが解除されています",
+    "message": "$1のロックが解除されていること",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
@@ -3215,10 +3141,6 @@
   "hardwareWalletLegacyDescription": {
     "message": "(レガシー)",
     "description": "Text representing the MEW path"
-  },
-  "hardwareWalletLookingForDevice": {
-    "message": "$1を探しています...",
-    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "$1が接続されていて、イーサリアムアプリを選択していることを確認してください。"
@@ -4044,9 +3966,6 @@
     "message": "+ $1個のアカウント",
     "description": "$1 is the number of accounts"
   },
-  "moreCapital": {
-    "message": "さらに表示"
-  },
   "moreNetworks": {
     "message": "+ $1個のネットワーク",
     "description": "$1 is the number of networks"
@@ -4114,32 +4033,12 @@
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBonusExplanation": {
-    "message": "お持ちのステーブルコインをmUSDに換えて、\n年換算で最大$1%のボーナスを獲得しましょう。\nこのボーナスは毎日請求できます。$2",
-    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
-  },
-  "musdBonusPoweredByRelay": {
-    "message": "Powered by Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
-  "musdBoostDescription": {
-    "message": "お持ちのステーブルコインをmUSDに換えて、年換算$1%のボーナスを獲得しましょう。",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "ステーブルコインで$1%をゲット",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBuyMusd": {
     "message": "mUSDを購入"
-  },
-  "musdClaimSendingTo": {
-    "message": "送金先: ",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "送金先: $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "ボーナスを請求する",
@@ -4153,21 +4052,9 @@
     "message": "mUSDを保有することで獲得した年換算のボーナスです。ボーナスはLineaで毎日請求できます。$1",
     "description": "$1 is the 'Terms apply' link"
   },
-  "musdClaimableBonusTooltipAria": {
-    "message": "請求可能なボーナスの詳細",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionActivityTitle": {
     "message": "$1をmUSDに変換",
     "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionBonusTooltipAria": {
-    "message": "ボーナスの詳細",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
-  "musdConversionFeeTooltipDescription": {
-    "message": "mUSD換算手数料にはネットワークコストが含まれるほか、プロバイダー手数料も含まれる場合があります。なお、mUSDへの換算時にMetaMaskの手数料は発生しません。",
-    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
   },
   "musdConversionTitle": {
     "message": "mUSDへの変換完了",
@@ -4180,12 +4067,6 @@
     "message": "$1 → mUSDに変換中",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "mUSDへの換算が完了しました"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "ボーナスは1日以内に請求できます。"
-  },
   "musdConvert": {
     "message": "変換"
   },
@@ -4193,15 +4074,11 @@
     "message": "換金して$1%獲得",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1%のボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "利用を開始する"
   },
   "musdEducationHeadline": {
-    "message": "ステーブルコインで\n$1%をゲット",
+    "message": "ステーブルコインで$1%をゲット",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -4213,10 +4090,6 @@
   },
   "musdGetMusd": {
     "message": "mUSDを入手"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdTermsApply": {
     "message": "諸条件が適用されます。"
@@ -4583,18 +4456,11 @@
   "nickname": {
     "message": "ニックネーム"
   },
-  "no": {
-    "message": "いいえ"
-  },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
   },
   "noConnectionDescription": {
     "message": "サイトに接続するには、「接続」ボタンを見つけて選択します。MetaMaskはWeb3のサイトにしか接続できないのでご注意ください"
-  },
-  "noDefaultAddress": {
-    "message": "$1アドレスがありません",
-    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
@@ -4978,9 +4844,6 @@
   },
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
-  },
-  "openMultichainAccountAddressMenu": {
-    "message": "マルチチェーンアカウントアドレスメニューを開く"
   },
   "openSettings": {
     "message": "設定を開く"
@@ -5443,45 +5306,15 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "使用可能なパーペチュアル残高: "
-  },
-  "perpsAvailableToAdd": {
-    "message": "追加可能"
-  },
   "perpsAvailableToClose": {
     "message": "クローズに利用可能"
-  },
-  "perpsAvailableToSubtract": {
-    "message": "引き出し可能"
   },
   "perpsAvailableToTrade": {
     "message": "取引に利用可能",
     "description": "Label for the available balance that can be used for trading"
   },
-  "perpsBatchCancelFailed": {
-    "message": "1つまたは複数の注文のキャンセルに失敗しました。もう一度お試しください。"
-  },
-  "perpsBatchCloseFailed": {
-    "message": "1つまたは複数のポジションのクローズに失敗しました。もう一度お試しください。"
-  },
   "perpsCancelAllOrders": {
     "message": "すべてキャンセル"
-  },
-  "perpsCancelOrder": {
-    "message": "注文取消"
-  },
-  "perpsCandleIntervals": {
-    "message": "ローソク足の間隔"
-  },
-  "perpsCandlePeriodDays": {
-    "message": "日"
-  },
-  "perpsCandlePeriodHours": {
-    "message": "時間"
-  },
-  "perpsCandlePeriodMinutes": {
-    "message": "分"
   },
   "perpsCloseAll": {
     "message": "すべてクローズ"
@@ -5491,9 +5324,6 @@
   },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、スライダーを100%に設定してください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
@@ -5507,9 +5337,6 @@
   "perpsConfirmCloseShort": {
     "message": "ショートをクローズ"
   },
-  "perpsConnectionTimeout": {
-    "message": "接続がタイムアウトしました。もう一度お試しください。"
-  },
   "perpsContactSupport": {
     "message": "サポートへのお問い合わせ"
   },
@@ -5521,12 +5348,6 @@
   },
   "perpsDepositActivityTitle": {
     "message": "パーペチュアルに入金しました"
-  },
-  "perpsDepositFailed": {
-    "message": "デポジットを完了できませんでした。もう一度お試しください。"
-  },
-  "perpsDepositFundsTitle": {
-    "message": "パーペチュアルに資金をデポジット"
   },
   "perpsDepositTitle": {
     "message": "パーペチュアルアカウントに入金しました"
@@ -5541,7 +5362,7 @@
     "message": "方向"
   },
   "perpsDisclaimer": {
-    "message": "パーペチュアル契約は大きなリスクを伴い、予告なく突然、投資額全額を失う可能性があります。取引はすべてお客様の責任で行ってください。このサービスはHyperliquid、価格チャートはTradingViewにより提供されています。"
+    "message": "パーペチュアル取引には大きなリスクが伴い、最初の投資額を超える金額を失う可能性があります。これは投資助言ではありません。"
   },
   "perpsEmptyDescription": {
     "message": "レバレッジをかけたパーペチュアル取引が可能です。最初のポジションをオープンして始めましょう。"
@@ -5551,14 +5372,6 @@
   },
   "perpsEstSize": {
     "message": "推定サイズ"
-  },
-  "perpsEstimatedPnlAtStopLoss": {
-    "message": "ストップロスでの予想損益",
-    "description": "Label for estimated profit or loss when stop loss is hit"
-  },
-  "perpsEstimatedPnlAtTakeProfit": {
-    "message": "利益確定での予想損益",
-    "description": "Label for estimated profit or loss when take profit is hit"
   },
   "perpsExploreMarkets": {
     "message": "市場を探索"
@@ -5605,9 +5418,6 @@
   "perpsIncludesPnl": {
     "message": "損益込み $1"
   },
-  "perpsInsufficientMargin": {
-    "message": "この注文に十分な証拠金がありません。"
-  },
   "perpsLearnBasics": {
     "message": "パーペチュアルの基本"
   },
@@ -5622,15 +5432,6 @@
   },
   "perpsLimitPrice": {
     "message": "リミット価格"
-  },
-  "perpsLimitPriceAboveCurrentPrice": {
-    "message": "リミット価格が現在の価格を上回っています"
-  },
-  "perpsLimitPriceBelowCurrentPrice": {
-    "message": "リミット価格が現在の価格を下回っています"
-  },
-  "perpsLimitPriceNearLiquidation": {
-    "message": "現在の価格が予想清算価格に近づいています"
   },
   "perpsLiquidationDistance": {
     "message": "清算価格との距離"
@@ -5672,9 +5473,6 @@
   "perpsMore": {
     "message": "さらに表示"
   },
-  "perpsNetworkError": {
-    "message": "ネットワークエラーが発生しました。もう一度お試しください。"
-  },
   "perpsNoMarketsFound": {
     "message": "市場が見つかりませんでした"
   },
@@ -5704,24 +5502,6 @@
   "perpsOraclePriceTooltip": {
     "message": "バリデーターにより報告された外部価格の中央値で、資金調達率の計算に使用されます"
   },
-  "perpsOrderDate": {
-    "message": "日付"
-  },
-  "perpsOrderFailed": {
-    "message": "注文できませんでした。もう一度お試しください。"
-  },
-  "perpsOrderOriginalSize": {
-    "message": "元のサイズ"
-  },
-  "perpsOrderRejected": {
-    "message": "注文が拒否されました。もう一度お試しください。"
-  },
-  "perpsOrderStatus": {
-    "message": "ステータス"
-  },
-  "perpsOrderValue": {
-    "message": "注文額"
-  },
   "perpsOrders": {
     "message": "注文"
   },
@@ -5734,9 +5514,6 @@
   "perpsPositions": {
     "message": "ポジション"
   },
-  "perpsRateLimitExceeded": {
-    "message": "リクエストが多すぎます。時間をおいて、もう一度お試しください。"
-  },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
   },
@@ -5748,12 +5525,6 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "ショートポジションのサイズを減らします"
-  },
-  "perpsReduceOnly": {
-    "message": "リデュースオンリー"
-  },
-  "perpsRemoveFromFavorites": {
-    "message": "お気に入りから削除"
   },
   "perpsRemoveMargin": {
     "message": "証拠金を減額"
@@ -5783,41 +5554,11 @@
   "perpsSeeAll": {
     "message": "すべて表示"
   },
-  "perpsServiceUnavailable": {
-    "message": "現在サービスが一時的にご利用いただけません。後ほどもう一度お試しください。"
-  },
   "perpsShort": {
     "message": "ショート"
   },
   "perpsSize": {
     "message": "サイズ"
-  },
-  "perpsSlippageExceeded": {
-    "message": "スリッページが超過しました。スリッページ許容範囲を調整してもう一度お試しください。"
-  },
-  "perpsSortByFundingRate": {
-    "message": "資金調達率"
-  },
-  "perpsSortByHighToLow": {
-    "message": "高い順"
-  },
-  "perpsSortByLowToHigh": {
-    "message": "低い順"
-  },
-  "perpsSortByOpenInterest": {
-    "message": "取組高"
-  },
-  "perpsSortByPriceChange": {
-    "message": "価格変動"
-  },
-  "perpsSortBySection": {
-    "message": "並べ替え基準"
-  },
-  "perpsSortByTitle": {
-    "message": "並べ替え"
-  },
-  "perpsSortByVolume": {
-    "message": "取引量"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
@@ -5860,114 +5601,6 @@
   "perpsTakeProfit": {
     "message": "利益確定",
     "description": "Label for take profit price input"
-  },
-  "perpsToastCancelOrderFailed": {
-    "message": "注文を取り消すことができませんでした",
-    "description": "Error toast text shown when cancelling a perps limit order fails"
-  },
-  "perpsToastCancelOrderSuccess": {
-    "message": "注文がキャンセルされました",
-    "description": "Success toast text shown when a perps limit order is successfully cancelled"
-  },
-  "perpsToastCloseFailed": {
-    "message": "ポジションをクローズできませんでした",
-    "description": "Error toast text shown when closing a perps position fails"
-  },
-  "perpsToastCloseInProgress": {
-    "message": "ポジションをクローズ中",
-    "description": "In-progress toast text shown while closing a perps position"
-  },
-  "perpsToastClosePnlSubtitle": {
-    "message": "損益は$1です",
-    "description": "$1 is the formatted PnL percentage for a closed position"
-  },
-  "perpsToastMarginAddSuccess": {
-    "message": "$1の証拠金を$2のポジションに追加しました",
-    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
-  },
-  "perpsToastMarginAdjustmentFailed": {
-    "message": "証拠金の調整に失敗しました",
-    "description": "Error toast text shown when adding or removing margin fails"
-  },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "証拠金を調整できませんでした。もう一度お試しください。",
-    "description": "Fallback description shown when margin adjustment fails without a usable error message."
-  },
-  "perpsToastMarginRemoveSuccess": {
-    "message": "$1の証拠金を$2のポジションから引き出しました",
-    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
-  },
-  "perpsToastOrderFailed": {
-    "message": "注文に失敗しました",
-    "description": "Error toast text shown when placing a perps order fails"
-  },
-  "perpsToastOrderFailedDescriptionFallback": {
-    "message": "資金が返金されました",
-    "description": "Fallback order failure subtitle shown when no specific order error is available"
-  },
-  "perpsToastOrderFilled": {
-    "message": "注文が約定しました",
-    "description": "Success toast text shown when a perps market order is filled"
-  },
-  "perpsToastOrderPlaced": {
-    "message": "注文が発注されました",
-    "description": "Success toast text shown when a perps limit order is accepted"
-  },
-  "perpsToastOrderPlacementSubtitle": {
-    "message": "$3を$2$1",
-    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
-  },
-  "perpsToastOrderSubmitted": {
-    "message": "注文が送信されました",
-    "description": "In-progress toast text shown while a perps order is being submitted"
-  },
-  "perpsToastPartialCloseFailed": {
-    "message": "ポジションを部分的にクローズできませんでした",
-    "description": "Error toast text shown when a perps position is partially closed and fails"
-  },
-  "perpsToastPartialCloseInProgress": {
-    "message": "ポジションを一部クローズしています",
-    "description": "In-progress toast text shown while a perps position is being partially closed"
-  },
-  "perpsToastPartialCloseSuccess": {
-    "message": "ポジションが一部クローズされました",
-    "description": "Success toast text shown when a perps position is partially closed"
-  },
-  "perpsToastPositionStillActive": {
-    "message": "ポジションは引き続き有効です",
-    "description": "Subtitle shown in perps close failure toasts when the position remains open"
-  },
-  "perpsToastReverseFailed": {
-    "message": "ポジションの反転に失敗しました",
-    "description": "Error toast text shown when reversing a perps position fails"
-  },
-  "perpsToastReverseInProgress": {
-    "message": "ポジションを反転しています",
-    "description": "In-progress toast text shown while reversing a perps position"
-  },
-  "perpsToastReverseSuccess": {
-    "message": "ポジションが反転されました",
-    "description": "Success toast text shown when a perps position is reversed"
-  },
-  "perpsToastSubmitInProgress": {
-    "message": "取引を送信中",
-    "description": "In-progress toast text shown while a perps trade is being submitted"
-  },
-  "perpsToastTradeSuccess": {
-    "message": "ポジションがクローズされました",
-    "description": "Success toast text shown when a perps position is closed"
-  },
-  "perpsToastUpdateFailed": {
-    "message": "TP/SLを更新できませんでした",
-    "description": "Error toast text shown when updating TP/SL settings fails"
-  },
-  "perpsToastUpdateInProgress": {
-    "message": "TP/SLを更新中...",
-    "description": "In-progress toast text shown while updating TP/SL settings"
-  },
-  "perpsToastUpdateSuccess": {
-    "message": "TP/SLが更新されました",
-    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
     "message": "合計残高"
@@ -6037,57 +5670,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsWithdrawEstimatedTime": {
-    "message": "推定所要時間"
-  },
-  "perpsWithdrawFailed": {
-    "message": "出金を完了できませんでした。もう一度お試しください。"
-  },
-  "perpsWithdrawFee": {
-    "message": "プロバイダーの手数料"
-  },
-  "perpsWithdrawFundsTitle": {
-    "message": "出金"
-  },
-  "perpsWithdrawInsufficient": {
-    "message": "金額が利用可能なパーペチュアル残高を超えています。"
-  },
-  "perpsWithdrawInvalidAddress": {
-    "message": "有効な送金先アドレスを入力してください。"
-  },
-  "perpsWithdrawInvalidAmount": {
-    "message": "有効な金額を入力してください。"
-  },
-  "perpsWithdrawMinNotice": {
-    "message": "最低出金額: $1 USDC",
-    "description": "$1 is the minimum amount (e.g. 1.01)"
-  },
-  "perpsWithdrawMinutesApprox": {
-    "message": "~$1分",
-    "description": "$1 is the estimated number of minutes"
-  },
-  "perpsWithdrawNoAccount": {
-    "message": "アカウントが選択されていません。アカウントを選択してもう一度お試しください。"
-  },
-  "perpsWithdrawReceive": {
-    "message": "受取"
-  },
-  "perpsWithdrawRoutesError": {
-    "message": "出金限度額を読み込めませんでした。後ほどもう一度お試しください。"
-  },
-  "perpsWithdrawToastErrorTitle": {
-    "message": "出金失敗"
-  },
-  "perpsWithdrawToastSuccessDescription": {
-    "message": "$1を処理中です。資金は通常数分以内に着金します。",
-    "description": "$1 is the formatted withdrawal amount"
-  },
-  "perpsWithdrawToastSuccessTitle": {
-    "message": "出金が送信されました"
-  },
-  "perpsYouReceive": {
-    "message": "受け取る"
   },
   "perpsYouWillReceive": {
     "message": "受取額"
@@ -7073,15 +6655,8 @@
   "settings": {
     "message": "設定"
   },
-  "settingsSearchCantFindSetting": {
-    "message": "設定が見つかりませんか？$1",
-    "description": "$1 is a link to request a setting"
-  },
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
-  },
-  "settingsSearchRequestHere": {
-    "message": "ここでリクエスト"
   },
   "shieldClaim": {
     "message": "請求を送信"
@@ -8149,7 +7724,7 @@
     "message": "エラーが発生しました。ページを再度読み込んでみてください。"
   },
   "somethingWentWrong": {
-    "message": "このページを読み込めませんでした。"
+    "message": "申し訳ありません。問題が発生しました。"
   },
   "sortBy": {
     "message": "並べ替え基準"
@@ -8547,10 +8122,6 @@
   },
   "supportMultiRpcInformation": {
     "message": "1つのネットワークで複数のRPCがサポートされるようになりました。情報の矛盾を解決するため、最も最近のRPCがデフォルトのRPCとして選択されています."
-  },
-  "supportedLanguagesSectionTitle": {
-    "message": "サポートされている言語",
-    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "アンケートに回答する"
@@ -9033,9 +8604,6 @@
   "transaction": {
     "message": "トランザクション"
   },
-  "transactionConfirmed": {
-    "message": "トランザクションが確定しました"
-  },
   "transactionDataFunction": {
     "message": "関数"
   },
@@ -9047,9 +8615,6 @@
   },
   "transactionErrorNoContract": {
     "message": "コントラクトではないアドレスに対して関数の呼び出しを試みています。"
-  },
-  "transactionFailed": {
-    "message": "トランザクション失敗"
   },
   "transactionFee": {
     "message": "トランザクション手数料"
@@ -9091,18 +8656,12 @@
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "トランザクションが送信されました"
-  },
   "transactionTotalGasFee": {
     "message": "ガス代合計",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "トランザクション"
-  },
-  "transactionsAndAssets": {
-    "message": "トランザクションと資産"
   },
   "transfer": {
     "message": "送金"

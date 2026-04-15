@@ -69,9 +69,6 @@
   "about": {
     "message": "정보"
   },
-  "aboutMetaMask": {
-    "message": "MetaMask 소개"
-  },
   "accept": {
     "message": "동의"
   },
@@ -342,17 +339,8 @@
   "addWallet": {
     "message": "지갑 추가"
   },
-  "addedProtectionDescription": {
-    "message": "알 수 없는 주소에 접근하고 있습니다. 이는 악성 트랜잭션을 방지하는 데 도움이 됩니다."
-  },
   "addedProtectionOptionalBadge": {
     "message": "선택 사항"
-  },
-  "addedProtectionTitle": {
-    "message": "보안 강화"
-  },
-  "addedProtectionTooltip": {
-    "message": "최종 트랜잭션이 이 미리보기와 일치하지 않는다면 진행되지 않습니다. 이 경우 네트워크 수수료만 지불하게 됩니다."
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
@@ -1089,9 +1077,6 @@
   "bridgeGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료에는 두 트랜잭션이 모두 포함된 것입니다. 이는 각각의 트랜잭션으로 분할됩니다."
   },
-  "bridgeGetNewQuote": {
-    "message": "새 견적 받기"
-  },
   "bridgeLowestCost": {
     "message": "최저 비용"
   },
@@ -1147,9 +1132,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactFiatAlert": {
-    "message": "이 거래로 $1의 손실이 발생합니다"
-  },
   "bridgePriceImpactHigh": {
     "message": "높은 가격 영향"
   },
@@ -1173,33 +1155,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "가격 영향 경고"
-  },
-  "bridgeQuoteStreamCompleteAmountTooHigh": {
-    "message": "사용 가능한 견적이 없습니다. 더 적은 금액으로 시도해 보세요."
-  },
-  "bridgeQuoteStreamCompleteAmountTooLow": {
-    "message": "사용 가능한 견적이 없습니다. 더 큰 금액으로 시도해 보세요."
-  },
-  "bridgeQuoteStreamCompleteRetry": {
-    "message": "지금은 견적을 가져올 수 없습니다. 다시 시도해 주세요."
-  },
-  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
-    "message": "이 스왑은 현재 거주 지역에서 사용할 수 없습니다."
-  },
-  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
-    "message": "이 자산의 마켓은 현재 사용할 수 없습니다. 나중에 다시 시도하세요."
-  },
-  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
-    "message": "이 토큰과 실물자산 간 스왑은 아직 지원되지 않습니다. 다른 토큰을 사용해 보세요."
-  },
-  "bridgeQuoteStreamCompleteSlippageTooHigh": {
-    "message": "슬리피지가 너무 높습니다. 슬리피지 설정을 낮춰 보세요."
-  },
-  "bridgeQuoteStreamCompleteSlippageTooLow": {
-    "message": "슬리피지가 너무 낮습니다. 슬리피지 설정을 높여 보세요."
-  },
-  "bridgeQuoteStreamCompleteTokenNotSupported": {
-    "message": "이 토큰은 지원되지 않습니다. 다른 토큰을 사용해 보세요."
   },
   "bridgeQuotesSortedByCost": {
     "message": "견적은 환율과 네트워크 수수료가 포함된 예상 총비용 순으로 정렬됩니다."
@@ -1481,10 +1436,6 @@
   "comboNoOptions": {
     "message": "옵션을 찾을 수 없습니다",
     "description": "Default text shown in the combo field dropdown if no options."
-  },
-  "communityContributedLanguagesSectionTitle": {
-    "message": "커뮤니티 기여",
-    "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
   "completed": {
     "message": "완료"
@@ -2072,12 +2023,6 @@
   "dappConnections": {
     "message": "디앱 연결"
   },
-  "dappScanMaliciousTitle": {
-    "message": "악성 웹사이트 감지됨"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "이 사이트는 위험할 수 있는 사이트로 표시되었습니다. 비밀복구구문을 공개하면 자산이 탈취될 수 있습니다."
-  },
   "dappSuggested": {
     "message": "사이트 제안"
   },
@@ -2138,9 +2083,6 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "직불카드 또는 신용카드 매수 옵션"
-  },
-  "debug": {
-    "message": "디버그"
   },
   "decimal": {
     "message": "토큰 소수점"
@@ -2238,12 +2180,6 @@
   "deepLink_theOnboardingPage": {
     "message": "온보딩 페이지"
   },
-  "deepLink_thePerpsMarketDetailPage": {
-    "message": "무기한 선물 시장 페이지"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "무기한 선물 시장 목록 페이지"
-  },
   "deepLink_thePerpsPage": {
     "message": "무기한 선물 페이지"
   },
@@ -2299,9 +2235,6 @@
   },
   "delete": {
     "message": "삭제"
-  },
-  "deleteActivityAndNonceData": {
-    "message": "활동 및 논스 데이터 삭제"
   },
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
@@ -2383,9 +2316,6 @@
   },
   "developerOptions": {
     "message": "개발자 옵션"
-  },
-  "developerTools": {
-    "message": "개발자 도구"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
@@ -3171,15 +3101,11 @@
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "장치를 재시작한 후 다시 연결해 보세요"
   },
-  "hardwareWalletErrorRecoveryConnection4": {
-    "message": "$1 기기가 잠금 해제되었습니다",
-    "description": "$1 is the hardware wallet type"
-  },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "이어서 다음 사항을 확인하세요."
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "$1 기기가 잠금 해제되었습니다",
+    "message": "$1 잠금이 해제되었습니다",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
@@ -3215,10 +3141,6 @@
   "hardwareWalletLegacyDescription": {
     "message": "(레거시)",
     "description": "Text representing the MEW path"
-  },
-  "hardwareWalletLookingForDevice": {
-    "message": "$1 찾는 중...",
-    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "$1(이)가 연결되어 있고 이더리움 앱을 선택했는지 확인하세요."
@@ -4044,9 +3966,6 @@
     "message": "$1개의 계정 추가",
     "description": "$1 is the number of accounts"
   },
-  "moreCapital": {
-    "message": "더 보기"
-  },
   "moreNetworks": {
     "message": "$1개의 네트워크 추가",
     "description": "$1 is the number of networks"
@@ -4114,32 +4033,12 @@
     "message": "$1에서 $2 Snap 사용을 원합니다.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBonusExplanation": {
-    "message": "스테이블코인을 mUSD로 환전하면 최대 $1%의 연 환산 보너스를 벌 수 있고 이를 매일 수령할 수 있습니다. $2",
-    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
-  },
-  "musdBonusPoweredByRelay": {
-    "message": "제공자: Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
-  "musdBoostDescription": {
-    "message": "스테이블코인을 mUSD로 환전하고 $1%의 연 환산 보너스를 받으세요.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "스테이블코인의 $1% 받기",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBuyMusd": {
     "message": "mUSD 구매"
-  },
-  "musdClaimSendingTo": {
-    "message": "다음으로 전송 중:",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "$1(으)로 전송 중",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "보너스 수령",
@@ -4150,24 +4049,12 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "mUSD를 보유하여 받은 연 환산 보너스입니다. 보너스는 Linea에서 매일 수령할 수 있습니다. $1",
+    "message": "mUSD를 보유하여 받은 연환산 보너스입니다. 보너스는 Linea에서 매일 청구할 수 있습니다. $1",
     "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "수령 가능한 보너스 정보",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
   "musdConversionActivityTitle": {
     "message": "$1을(를) mUSD로 전환",
     "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionBonusTooltipAria": {
-    "message": "보너스 정보",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
-  "musdConversionFeeTooltipDescription": {
-    "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
-    "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
   },
   "musdConversionTitle": {
     "message": "mUSD로 전환 완료",
@@ -4180,12 +4067,6 @@
     "message": "$1 → mUSD 전환 중",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "mUSD 환전 성공"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "보너스는 하루 이내에 청구할 수 있습니다."
-  },
   "musdConvert": {
     "message": "전환"
   },
@@ -4193,15 +4074,11 @@
     "message": "전환하고 $1% 받기",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1% 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "시작하기"
   },
   "musdEducationHeadline": {
-    "message": "스테이블 코인의\n$1% 받기",
+    "message": "스테이블 코인의 $1% 받기",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -4213,10 +4090,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdTermsApply": {
     "message": "약관이 적용됩니다."
@@ -4583,18 +4456,11 @@
   "nickname": {
     "message": "닉네임"
   },
-  "no": {
-    "message": "아니요"
-  },
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
   "noConnectionDescription": {
     "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
-  },
-  "noDefaultAddress": {
-    "message": "$1 주소가 없음",
-    "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
@@ -4978,9 +4844,6 @@
   },
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
-  },
-  "openMultichainAccountAddressMenu": {
-    "message": "멀티체인 계정 주소 메뉴 열기"
   },
   "openSettings": {
     "message": "설정 열기"
@@ -5443,45 +5306,15 @@
     "message": "사용 가능",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "사용 가능한 잔액 잔액: "
-  },
-  "perpsAvailableToAdd": {
-    "message": "추가 가능"
-  },
   "perpsAvailableToClose": {
     "message": "청산 가능"
-  },
-  "perpsAvailableToSubtract": {
-    "message": "차감 가능"
   },
   "perpsAvailableToTrade": {
     "message": "거래 가능",
     "description": "Label for the available balance that can be used for trading"
   },
-  "perpsBatchCancelFailed": {
-    "message": "하나 이상의 주문을 취소하지 못했습니다. 다시 시도해 주세요."
-  },
-  "perpsBatchCloseFailed": {
-    "message": "하나 이상의 포지션을 종료하지 못했습니다. 다시 시도해 주세요."
-  },
   "perpsCancelAllOrders": {
     "message": "모두 취소"
-  },
-  "perpsCancelOrder": {
-    "message": "주문 취소"
-  },
-  "perpsCandleIntervals": {
-    "message": "캔들 간격"
-  },
-  "perpsCandlePeriodDays": {
-    "message": "일"
-  },
-  "perpsCandlePeriodHours": {
-    "message": "시간"
-  },
-  "perpsCandlePeriodMinutes": {
-    "message": "분"
   },
   "perpsCloseAll": {
     "message": "모두 종료"
@@ -5491,9 +5324,6 @@
   },
   "perpsCloseLong": {
     "message": "롱 청산"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 슬라이더를 100%로 설정하세요."
   },
   "perpsClosePosition": {
     "message": "포지션 종료"
@@ -5507,9 +5337,6 @@
   "perpsConfirmCloseShort": {
     "message": "숏 청산"
   },
-  "perpsConnectionTimeout": {
-    "message": "연결 시간이 초과되었습니다. 다시 시도하세요."
-  },
   "perpsContactSupport": {
     "message": "지원팀에 문의"
   },
@@ -5521,12 +5348,6 @@
   },
   "perpsDepositActivityTitle": {
     "message": "무기한 선물 입금 완료"
-  },
-  "perpsDepositFailed": {
-    "message": "예치를 완료할 수 없습니다. 다시 시도해 주세요."
-  },
-  "perpsDepositFundsTitle": {
-    "message": "무기한 선물에 자금 예치"
   },
   "perpsDepositTitle": {
     "message": "입금 완료된 무기한 선물 계정"
@@ -5541,7 +5362,7 @@
     "message": "방향"
   },
   "perpsDisclaimer": {
-    "message": "무기한 선물 계약은 매우 위험하며, 예고 없이 투자금 전액을 갑자기 잃을 수 있습니다. 모든 거래는 전적으로 본인의 책임입니다. Hyperliquid에서 제공하는 서비스입니다. 가격 차트는 TradingView에서 제공합니다."
+    "message": "무기한 선물 거래에는 상당한 위험이 따르며, 초기 투자금보다 더 큰 손실이 발생할 수 있습니다. 본 내용은 투자 자문이 아닙니다."
   },
   "perpsEmptyDescription": {
     "message": "레버리지를 이용해 무기한 선물 거래하세요. 첫 번째 포지션을 열고 시작하세요."
@@ -5551,14 +5372,6 @@
   },
   "perpsEstSize": {
     "message": "예상 규모"
-  },
-  "perpsEstimatedPnlAtStopLoss": {
-    "message": "손절 시 예상 손익",
-    "description": "Label for estimated profit or loss when stop loss is hit"
-  },
-  "perpsEstimatedPnlAtTakeProfit": {
-    "message": "익절 시 예상 손익",
-    "description": "Label for estimated profit or loss when take profit is hit"
   },
   "perpsExploreMarkets": {
     "message": "시장 살펴보기"
@@ -5605,9 +5418,6 @@
   "perpsIncludesPnl": {
     "message": "손익 $1 포함"
   },
-  "perpsInsufficientMargin": {
-    "message": "이 주문을 제출하기에 마진이 부족합니다."
-  },
   "perpsLearnBasics": {
     "message": "무기한 선물 기초 배우기"
   },
@@ -5623,17 +5433,8 @@
   "perpsLimitPrice": {
     "message": "지정가"
   },
-  "perpsLimitPriceAboveCurrentPrice": {
-    "message": "지정가가 현재 가격보다 높습니다"
-  },
-  "perpsLimitPriceBelowCurrentPrice": {
-    "message": "지정가가 현재 가격보다 낮습니다"
-  },
-  "perpsLimitPriceNearLiquidation": {
-    "message": "현재 가격이 예상 청산 가격에 가깝습니다"
-  },
   "perpsLiquidationDistance": {
-    "message": "청산 가격과의 차이"
+    "message": "청산가와의 차이"
   },
   "perpsLiquidationPrice": {
     "message": "청산 가격"
@@ -5672,9 +5473,6 @@
   "perpsMore": {
     "message": "더 보기"
   },
-  "perpsNetworkError": {
-    "message": "네트워크 오류가 발생했습니다. 다시 시도해 주세요."
-  },
   "perpsNoMarketsFound": {
     "message": "시장을 찾을 수 없음"
   },
@@ -5704,24 +5502,6 @@
   "perpsOraclePriceTooltip": {
     "message": "밸리데이터가 제공하는 외부 가격의 중앙값이며, 펀딩비를 산정하는 데 사용됩니다"
   },
-  "perpsOrderDate": {
-    "message": "날짜"
-  },
-  "perpsOrderFailed": {
-    "message": "주문을 제출하지 못했습니다. 다시 시도해 주세요."
-  },
-  "perpsOrderOriginalSize": {
-    "message": "원주문 규모"
-  },
-  "perpsOrderRejected": {
-    "message": "주문이 거부되었습니다. 다시 시도해 주세요."
-  },
-  "perpsOrderStatus": {
-    "message": "상태"
-  },
-  "perpsOrderValue": {
-    "message": "주문 금액"
-  },
   "perpsOrders": {
     "message": "주문"
   },
@@ -5734,9 +5514,6 @@
   "perpsPositions": {
     "message": "포지션"
   },
-  "perpsRateLimitExceeded": {
-    "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
-  },
   "perpsRecentActivity": {
     "message": "최근 내역"
   },
@@ -5748,12 +5525,6 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "숏 포지션 규모를 줄입니다"
-  },
-  "perpsReduceOnly": {
-    "message": "청산 전용"
-  },
-  "perpsRemoveFromFavorites": {
-    "message": "즐겨찾기에서 제거"
   },
   "perpsRemoveMargin": {
     "message": "마진 제거"
@@ -5783,41 +5554,11 @@
   "perpsSeeAll": {
     "message": "모두 보기"
   },
-  "perpsServiceUnavailable": {
-    "message": "서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
-  },
   "perpsShort": {
     "message": "숏"
   },
   "perpsSize": {
     "message": "규모"
-  },
-  "perpsSlippageExceeded": {
-    "message": "슬리피지 허용 범위를 초과했습니다. 슬리피지 허용 범위를 조정한 후 다시 시도해 주세요."
-  },
-  "perpsSortByFundingRate": {
-    "message": "펀딩 비율"
-  },
-  "perpsSortByHighToLow": {
-    "message": "높은 순"
-  },
-  "perpsSortByLowToHigh": {
-    "message": "낮은 순"
-  },
-  "perpsSortByOpenInterest": {
-    "message": "미결제 약정"
-  },
-  "perpsSortByPriceChange": {
-    "message": "가격 변동"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
-  },
-  "perpsSortByTitle": {
-    "message": "정렬"
-  },
-  "perpsSortByVolume": {
-    "message": "거래량"
   },
   "perpsStartNewTrade": {
     "message": "새 거래 시작"
@@ -5860,114 +5601,6 @@
   "perpsTakeProfit": {
     "message": "익절",
     "description": "Label for take profit price input"
-  },
-  "perpsToastCancelOrderFailed": {
-    "message": "주문 취소 실패",
-    "description": "Error toast text shown when cancelling a perps limit order fails"
-  },
-  "perpsToastCancelOrderSuccess": {
-    "message": "주문 취소됨",
-    "description": "Success toast text shown when a perps limit order is successfully cancelled"
-  },
-  "perpsToastCloseFailed": {
-    "message": "포지션 종료 실패",
-    "description": "Error toast text shown when closing a perps position fails"
-  },
-  "perpsToastCloseInProgress": {
-    "message": "포지션 종료 중",
-    "description": "In-progress toast text shown while closing a perps position"
-  },
-  "perpsToastClosePnlSubtitle": {
-    "message": "손익은 $1입니다",
-    "description": "$1 is the formatted PnL percentage for a closed position"
-  },
-  "perpsToastMarginAddSuccess": {
-    "message": "$2 포지션에 $1의 마진을 추가함",
-    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
-  },
-  "perpsToastMarginAdjustmentFailed": {
-    "message": "마진 조정 실패",
-    "description": "Error toast text shown when adding or removing margin fails"
-  },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "마진을 조정할 수 없습니다. 다시 시도하세요.",
-    "description": "Fallback description shown when margin adjustment fails without a usable error message."
-  },
-  "perpsToastMarginRemoveSuccess": {
-    "message": "$2 포지션에서 $1의 마진을 제거함",
-    "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
-  },
-  "perpsToastOrderFailed": {
-    "message": "주문 실패",
-    "description": "Error toast text shown when placing a perps order fails"
-  },
-  "perpsToastOrderFailedDescriptionFallback": {
-    "message": "자금이 반환되었습니다",
-    "description": "Fallback order failure subtitle shown when no specific order error is available"
-  },
-  "perpsToastOrderFilled": {
-    "message": "주문 체결 완료",
-    "description": "Success toast text shown when a perps market order is filled"
-  },
-  "perpsToastOrderPlaced": {
-    "message": "주문 접수 완료",
-    "description": "Success toast text shown when a perps limit order is accepted"
-  },
-  "perpsToastOrderPlacementSubtitle": {
-    "message": "$1 $2 $3",
-    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
-  },
-  "perpsToastOrderSubmitted": {
-    "message": "주문 제출됨",
-    "description": "In-progress toast text shown while a perps order is being submitted"
-  },
-  "perpsToastPartialCloseFailed": {
-    "message": "포지션 부분 종료 실패",
-    "description": "Error toast text shown when a perps position is partially closed and fails"
-  },
-  "perpsToastPartialCloseInProgress": {
-    "message": "포지션 부분 종료 중",
-    "description": "In-progress toast text shown while a perps position is being partially closed"
-  },
-  "perpsToastPartialCloseSuccess": {
-    "message": "포지션이 부분적으로 종료되었습니다",
-    "description": "Success toast text shown when a perps position is partially closed"
-  },
-  "perpsToastPositionStillActive": {
-    "message": "포지션이 여전히 유효합니다",
-    "description": "Subtitle shown in perps close failure toasts when the position remains open"
-  },
-  "perpsToastReverseFailed": {
-    "message": "포지션 반전 실패",
-    "description": "Error toast text shown when reversing a perps position fails"
-  },
-  "perpsToastReverseInProgress": {
-    "message": "포지션 반전 중",
-    "description": "In-progress toast text shown while reversing a perps position"
-  },
-  "perpsToastReverseSuccess": {
-    "message": "포지션 반전 완료",
-    "description": "Success toast text shown when a perps position is reversed"
-  },
-  "perpsToastSubmitInProgress": {
-    "message": "거래 제출 중",
-    "description": "In-progress toast text shown while a perps trade is being submitted"
-  },
-  "perpsToastTradeSuccess": {
-    "message": "포지션 종료 완료",
-    "description": "Success toast text shown when a perps position is closed"
-  },
-  "perpsToastUpdateFailed": {
-    "message": "익절/손절 업데이트 실패",
-    "description": "Error toast text shown when updating TP/SL settings fails"
-  },
-  "perpsToastUpdateInProgress": {
-    "message": "익절/손절 업데이트 중...",
-    "description": "In-progress toast text shown while updating TP/SL settings"
-  },
-  "perpsToastUpdateSuccess": {
-    "message": "익절/손절이 업데이트되었습니다",
-    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTotalBalance": {
     "message": "총 잔액"
@@ -6037,57 +5670,6 @@
   },
   "perpsWithdraw": {
     "message": "출금"
-  },
-  "perpsWithdrawEstimatedTime": {
-    "message": "예상 시간"
-  },
-  "perpsWithdrawFailed": {
-    "message": "출금을 완료하지 못했습니다. 다시 시도해 주세요."
-  },
-  "perpsWithdrawFee": {
-    "message": "공급자 수수료"
-  },
-  "perpsWithdrawFundsTitle": {
-    "message": "출금"
-  },
-  "perpsWithdrawInsufficient": {
-    "message": "금액이 사용 가능한 무기한 선물 잔액을 초과합니다."
-  },
-  "perpsWithdrawInvalidAddress": {
-    "message": "올바른 수신 주소를 입력하세요."
-  },
-  "perpsWithdrawInvalidAmount": {
-    "message": "올바른 금액을 입력해 주세요."
-  },
-  "perpsWithdrawMinNotice": {
-    "message": "최소 출금 금액: $1 USDC",
-    "description": "$1 is the minimum amount (e.g. 1.01)"
-  },
-  "perpsWithdrawMinutesApprox": {
-    "message": "~최소 $1",
-    "description": "$1 is the estimated number of minutes"
-  },
-  "perpsWithdrawNoAccount": {
-    "message": "선택한 계정이 없습니다 계정을 선택한 후 다시 시도해 주세요."
-  },
-  "perpsWithdrawReceive": {
-    "message": "받기"
-  },
-  "perpsWithdrawRoutesError": {
-    "message": "출금 한도를 불러오지 못했습니다. 나중에 다시 시도하세요."
-  },
-  "perpsWithdrawToastErrorTitle": {
-    "message": "출금 실패"
-  },
-  "perpsWithdrawToastSuccessDescription": {
-    "message": "$1 처리 중입니다. 자금은 일반적으로 몇 분 내로 처리됩니다.",
-    "description": "$1 is the formatted withdrawal amount"
-  },
-  "perpsWithdrawToastSuccessTitle": {
-    "message": "출금 제출 완료"
-  },
-  "perpsYouReceive": {
-    "message": "받음:"
   },
   "perpsYouWillReceive": {
     "message": "받을 금액:"
@@ -6889,7 +6471,7 @@
     "message": "보안 및 비밀번호"
   },
   "securityAndPrivacy": {
-    "message": "보안 및 개인정보 보호"
+    "message": "보안 및 프라이버시"
   },
   "securityChangePassword": {
     "message": "비밀번호 변경"
@@ -7073,15 +6655,8 @@
   "settings": {
     "message": "설정"
   },
-  "settingsSearchCantFindSetting": {
-    "message": "설정을 찾으세요? $1",
-    "description": "$1 is a link to request a setting"
-  },
   "settingsSearchMatchingNotFound": {
     "message": "검색 결과가 없습니다."
-  },
-  "settingsSearchRequestHere": {
-    "message": "여기에서 요청하세요"
   },
   "shieldClaim": {
     "message": "청구하기"
@@ -8149,7 +7724,7 @@
     "message": "문제가 발생했습니다. 페이지를 다시 로드하세요."
   },
   "somethingWentWrong": {
-    "message": "페이지를 로드할 수 없습니다."
+    "message": "죄송합니다! 문제가 생겼습니다."
   },
   "sortBy": {
     "message": "정렬 기준:"
@@ -8547,10 +8122,6 @@
   },
   "supportMultiRpcInformation": {
     "message": "이제 단일 네트워크에 대해 여러 개의 RPC를 지원합니다. 충돌하는 정보를 해결하기 위해 최근의 RPC를 기본값으로 선택했습니다."
-  },
-  "supportedLanguagesSectionTitle": {
-    "message": "지원 언어",
-    "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "surveyConversion": {
     "message": "설문조사에 참여하세요"
@@ -9033,9 +8604,6 @@
   "transaction": {
     "message": "트랜잭션"
   },
-  "transactionConfirmed": {
-    "message": "트랜잭션 컨펌 완료"
-  },
   "transactionDataFunction": {
     "message": "기능"
   },
@@ -9047,9 +8615,6 @@
   },
   "transactionErrorNoContract": {
     "message": "비계약 주소에서 함수를 호출하고 있습니다."
-  },
-  "transactionFailed": {
-    "message": "트랜잭션 실패"
   },
   "transactionFee": {
     "message": "트랜잭션 수수료"
@@ -9091,18 +8656,12 @@
   "transactionShield": {
     "message": "트랜잭션 실드"
   },
-  "transactionSubmitted": {
-    "message": "트랜잭션 제출 완료"
-  },
   "transactionTotalGasFee": {
     "message": "가스비 합계",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "트랜잭션"
-  },
-  "transactionsAndAssets": {
-    "message": "트랜잭션 및 자산"
   },
   "transfer": {
     "message": "송금"
