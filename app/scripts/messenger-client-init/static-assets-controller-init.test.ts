@@ -30,13 +30,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('StaticAssetsControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       StaticAssetsControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(StaticAssetsController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     StaticAssetsControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(StaticAssetsController);

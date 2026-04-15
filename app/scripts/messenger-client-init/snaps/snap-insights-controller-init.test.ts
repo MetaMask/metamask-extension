@@ -25,13 +25,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SnapInsightsControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       SnapInsightsControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(SnapInsightsController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     SnapInsightsControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(SnapInsightsController);

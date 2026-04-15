@@ -26,13 +26,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('AnnouncementControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       AnnouncementControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(AnnouncementController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     AnnouncementControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(AnnouncementController);

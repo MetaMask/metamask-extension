@@ -27,13 +27,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('BridgeStatusControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       BridgeStatusControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(BridgeStatusController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     BridgeStatusControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(BridgeStatusController);

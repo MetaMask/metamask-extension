@@ -30,7 +30,7 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('RateLimitController', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } = RateLimitControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(RateLimitController);
   });
@@ -43,7 +43,7 @@ describe('RateLimitController', () => {
     expect(persistedStateKey).toBeNull();
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     RateLimitControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(RateLimitController);

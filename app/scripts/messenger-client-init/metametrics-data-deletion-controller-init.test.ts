@@ -39,13 +39,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('MetaMetricsDataDeletionControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       MetaMetricsDataDeletionControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(MetaMetricsDataDeletionController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     MetaMetricsDataDeletionControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(MetaMetricsDataDeletionController);

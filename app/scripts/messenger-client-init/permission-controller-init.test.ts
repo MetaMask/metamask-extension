@@ -66,12 +66,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('PermissionControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } = PermissionControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(PermissionController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     PermissionControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(PermissionController);

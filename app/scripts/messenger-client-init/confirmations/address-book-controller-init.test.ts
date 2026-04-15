@@ -25,12 +25,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('AddressBookControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } = AddressBookControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(AddressBookController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     AddressBookControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(AddressBookController);

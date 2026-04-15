@@ -32,13 +32,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('TransactionPayControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     TransactionPayControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(TransactionPayController);

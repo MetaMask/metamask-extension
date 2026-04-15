@@ -48,7 +48,7 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('CurrencyRateControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       CurrencyRateControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(CurrencyRateController);

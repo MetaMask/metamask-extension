@@ -33,13 +33,13 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('EncryptionPublicKeyControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       EncryptionPublicKeyControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(EncryptionPublicKeyController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     const manager = {};
     const request = getInitRequestMock();
 

@@ -42,12 +42,12 @@ describe('BridgeControllerInit', () => {
     process.env.METAMASK_VERSION = 'MOCK_VERSION';
   });
 
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } = BridgeControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(BridgeController);
   });
 
-  it('passes the proper arguments to the messengerClient', () => {
+  it('passes the proper arguments to the controller', () => {
     BridgeControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(BridgeController);

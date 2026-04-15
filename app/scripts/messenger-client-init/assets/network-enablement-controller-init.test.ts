@@ -72,7 +72,7 @@ function getInitRequestMock(
 }
 
 describe('NetworkEnablementControllerInit', () => {
-  it('initializes the messengerClient', () => {
+  it('initializes the controller', () => {
     const { messengerClient } =
       NetworkEnablementControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(NetworkEnablementController);
@@ -240,7 +240,7 @@ describe('NetworkEnablementControllerInit', () => {
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
   });
 
-  it('initialises the messengerClient with the correct networks for prod environment', () => {
+  it('initialises the controller with the correct networks for prod environment', () => {
     process.env.METAMASK_DEBUG = '';
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
@@ -270,7 +270,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the messengerClient with the correct networks for IN_TEST environment', () => {
+  it('initialises the controller with the correct networks for IN_TEST environment', () => {
     process.env.IN_TEST = 'true';
 
     NetworkEnablementControllerInit(getInitRequestMock());
@@ -298,7 +298,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the messengerClient with the correct networks for DEBUG environment', () => {
+  it('initialises the controller with the correct networks for DEBUG environment', () => {
     process.env.METAMASK_DEBUG = 'true';
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
@@ -328,7 +328,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the messengerClient with the correct networks for test environment', () => {
+  it('initialises the controller with the correct networks for test environment', () => {
     process.env.METAMASK_DEBUG = '';
     process.env.METAMASK_ENVIRONMENT = 'test';
     process.env.IN_TEST = '';
