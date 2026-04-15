@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Frecuencia"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Asignación inicial"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Asignación máxima"
-  },
   "confirmFieldNeverExpires": {
     "message": "Nunca caduca"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Anual"
-  },
-  "confirmFieldStartDate": {
-    "message": "Fecha de inicio"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Tasa de flujo"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justificación de la solicitud proporcionada por el sitio web"

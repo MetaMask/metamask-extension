@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Dalas"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Panimulang allowance"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Max na allowance"
-  },
   "confirmFieldNeverExpires": {
     "message": "Hindi nag-e-expire"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Taunan"
-  },
-  "confirmFieldStartDate": {
-    "message": "Petsa ng pagsisimula"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Rate ng pag-stream"
   },
   "confirmFieldTooltipJustification": {
     "message": "Katwiran para sa kahilingan na ibinigay ng website"

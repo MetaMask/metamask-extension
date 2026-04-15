@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Sıklık"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Başlangıç izni"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Maksimum izin"
-  },
   "confirmFieldNeverExpires": {
     "message": "Asla süresi dolmaz"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yıllık"
-  },
-  "confirmFieldStartDate": {
-    "message": "Başlangıç tarihi"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Akış hızı"
   },
   "confirmFieldTooltipJustification": {
     "message": "Web sitesi tarafından taleple ilgili sağlanan gerekçe"

@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "आवृत्ति"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "शुरुआती भत्ता"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "अधिकतम भत्ता"
-  },
   "confirmFieldNeverExpires": {
     "message": "कभी एक्सपायर नहीं होता"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "वार्षिक"
-  },
-  "confirmFieldStartDate": {
-    "message": "शुरु करने की तारीख"
-  },
-  "confirmFieldStreamRate": {
-    "message": "स्ट्रीम रेट"
   },
   "confirmFieldTooltipJustification": {
     "message": "वेबसाइट द्वारा दिए गए अनुरोध का औचित्य"

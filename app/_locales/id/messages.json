@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Frekuensi"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Tunjangan awal"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Tunjangan maksimum"
-  },
   "confirmFieldNeverExpires": {
     "message": "Tidak pernah kedaluwarsa"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Tahunan"
-  },
-  "confirmFieldStartDate": {
-    "message": "Tanggal mulai"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Tarif streaming"
   },
   "confirmFieldTooltipJustification": {
     "message": "Pembenaran atas permintaan yang diberikan oleh situs web"

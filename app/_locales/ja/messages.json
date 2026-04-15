@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "頻度"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "初回割当"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "最大割当"
-  },
   "confirmFieldNeverExpires": {
     "message": "有効期限なし"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "年次"
-  },
-  "confirmFieldStartDate": {
-    "message": "開始日"
-  },
-  "confirmFieldStreamRate": {
-    "message": "流入量"
   },
   "confirmFieldTooltipJustification": {
     "message": "このウェブサイトが提供するリクエストの正当性"

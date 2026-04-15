@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Частота"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Первоначальная квота"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Максимальная квота"
-  },
   "confirmFieldNeverExpires": {
     "message": "Срок действия не истекает"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Годовой"
-  },
-  "confirmFieldStartDate": {
-    "message": "Дата начала"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Скорость потока"
   },
   "confirmFieldTooltipJustification": {
     "message": "Обоснование запроса, предоставленное веб-сайтом"

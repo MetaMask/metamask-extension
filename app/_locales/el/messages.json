@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Συχνότητα"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Αρχικό όριο"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Μέγιστο όριο"
-  },
   "confirmFieldNeverExpires": {
     "message": "Δεν λήγει ποτέ"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Ετήσια"
-  },
-  "confirmFieldStartDate": {
-    "message": "Ημερομηνία έναρξης"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Ρυθμός ροής"
   },
   "confirmFieldTooltipJustification": {
     "message": "Αιτιολόγηση του αιτήματος που παρέχεται από τον ιστότοπο"

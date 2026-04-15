@@ -1546,12 +1546,6 @@
   "confirmFieldFrequency": {
     "message": "Frequency"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Initial allowance"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Max allowance"
-  },
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
@@ -1579,12 +1573,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Yearly"
-  },
-  "confirmFieldStartDate": {
-    "message": "Start date"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Stream rate"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
@@ -3034,6 +3022,9 @@
   },
   "gasUsed": {
     "message": "Gas used"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "No justification was provided for the permission"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Yearly",

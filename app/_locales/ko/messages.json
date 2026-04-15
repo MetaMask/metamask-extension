@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "빈도"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "초기 허용량"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "최대 허용량"
-  },
   "confirmFieldNeverExpires": {
     "message": "만료 없음"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "연간"
-  },
-  "confirmFieldStartDate": {
-    "message": "시작 날짜"
-  },
-  "confirmFieldStreamRate": {
-    "message": "스트림 속도"
   },
   "confirmFieldTooltipJustification": {
     "message": "해당 요청에 대한 근거는 웹사이트에서 제시됩니다"

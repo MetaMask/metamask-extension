@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Tần suất"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Hạn mức ban đầu"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Hạn mức tối đa"
-  },
   "confirmFieldNeverExpires": {
     "message": "Không bao giờ hết hạn"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Hằng năm"
-  },
-  "confirmFieldStartDate": {
-    "message": "Ngày bắt đầu"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Tốc độ thanh toán liên tục"
   },
   "confirmFieldTooltipJustification": {
     "message": "Lý do chính đáng cho yêu cầu được trang web cung cấp"

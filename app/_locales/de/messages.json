@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Häufigkeit"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Anfänglicher Betrag"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Maximaler Betrag"
-  },
   "confirmFieldNeverExpires": {
     "message": "Keine Gültigkeitsdauer"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Jährlich"
-  },
-  "confirmFieldStartDate": {
-    "message": "Startdatum"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Stream-Rate"
   },
   "confirmFieldTooltipJustification": {
     "message": "Begründung für die Anfrage auf der Website"

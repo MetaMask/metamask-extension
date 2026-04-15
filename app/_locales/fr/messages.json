@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "Fréquence"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Octroi initial"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Octroi maximal"
-  },
   "confirmFieldNeverExpires": {
     "message": "N’expire jamais"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Annuelle"
-  },
-  "confirmFieldStartDate": {
-    "message": "Date de début"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Taux de transfert"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification de la demande fournie par le site web"

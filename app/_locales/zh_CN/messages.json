@@ -1537,12 +1537,6 @@
   "confirmFieldFrequency": {
     "message": "频率"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "初始授权额度"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "最高授权额度"
-  },
   "confirmFieldNeverExpires": {
     "message": "永不过期"
   },
@@ -1570,12 +1564,6 @@
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "每年"
-  },
-  "confirmFieldStartDate": {
-    "message": "开始日期"
-  },
-  "confirmFieldStreamRate": {
-    "message": "资金流速率"
   },
   "confirmFieldTooltipJustification": {
     "message": "网站提供的请求依据"
