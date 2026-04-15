@@ -313,7 +313,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, [position.unrealizedPnl, closePercent]);
 
   const estimatedFees = useMemo(
-    () => closeNotionalUsd * (feeRate ?? 0),
+    () => (feeRate === undefined ? 0 : closeNotionalUsd * feeRate),
     [closeNotionalUsd, feeRate],
   );
 
@@ -352,7 +352,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     closePercent <= 0 ||
     isSubmitting ||
     closeSize <= 0 ||
-    isPartialCloseBelowMinNotional;
+    isPartialCloseBelowMinNotional ||
+    feeRate === undefined;
 
   const handleClose = useCallback(async () => {
     if (isSubmitDisabled) {

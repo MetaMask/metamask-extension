@@ -290,7 +290,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     : entryPrice;
 
   const estimatedPnlAtTp = useMemo(() => {
-    if (!estimatedSize || !takeProfitPrice || !pnlEntryPrice) {
+    if (
+      !estimatedSize ||
+      !takeProfitPrice ||
+      !pnlEntryPrice ||
+      closingFeeRate === undefined
+    ) {
       return null;
     }
     const exitPrice = Number.parseFloat(takeProfitPrice);
@@ -298,13 +303,17 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       return null;
     }
     const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
-    const closingFee =
-      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    const closingFee = Math.abs(estimatedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
   }, [estimatedSize, takeProfitPrice, pnlEntryPrice, closingFeeRate]);
 
   const estimatedPnlAtSl = useMemo(() => {
-    if (!estimatedSize || !stopLossPrice || !pnlEntryPrice) {
+    if (
+      !estimatedSize ||
+      !stopLossPrice ||
+      !pnlEntryPrice ||
+      closingFeeRate === undefined
+    ) {
       return null;
     }
     const exitPrice = Number.parseFloat(stopLossPrice);
@@ -312,8 +321,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       return null;
     }
     const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
-    const closingFee =
-      Math.abs(estimatedSize) * exitPrice * (closingFeeRate ?? 0);
+    const closingFee = Math.abs(estimatedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
   }, [estimatedSize, stopLossPrice, pnlEntryPrice, closingFeeRate]);
 

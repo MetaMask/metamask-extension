@@ -204,6 +204,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const estimatedPnlAtTp = useMemo(() => {
+    if (closingFeeRate === undefined) {
+      return null;
+    }
     const clean = editingTpPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
@@ -213,11 +216,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee = Math.abs(signedSize) * exitPrice * (closingFeeRate ?? 0);
+    const closingFee = Math.abs(signedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
   }, [editingTpPrice, signedSize, entryPriceForEdit, closingFeeRate]);
 
   const estimatedPnlAtSl = useMemo(() => {
+    if (closingFeeRate === undefined) {
+      return null;
+    }
     const clean = editingSlPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
@@ -227,7 +233,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee = Math.abs(signedSize) * exitPrice * (closingFeeRate ?? 0);
+    const closingFee = Math.abs(signedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
   }, [editingSlPrice, signedSize, entryPriceForEdit, closingFeeRate]);
 
