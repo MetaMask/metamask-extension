@@ -72,6 +72,8 @@ export function PerpsDepositToast() {
           lastDepositResult.timestamp ?? lastDepositResult.error ?? 'result'
         }`}
         dataTestId="perps-deposit-toast"
+        className="perps-toast self-center w-full max-w-[408px]"
+        contentProps={{ className: 'items-center' }}
         text={
           isSuccess
             ? t('perpsDepositToastSuccessTitle')
@@ -114,6 +116,8 @@ export function PerpsDepositToast() {
         lastDepositTransactionId ?? 'pending'
       }`}
       dataTestId="perps-deposit-toast"
+      className="perps-toast self-center w-full max-w-[408px]"
+      contentProps={{ className: 'items-center' }}
       text={t('perpsDepositToastPendingTitle')}
       description={t('perpsDepositToastPendingDescription')}
       startAdornment={
