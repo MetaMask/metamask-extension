@@ -188,9 +188,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [BACKUPANDSYNC_ROUTE]: {
     labelKey: 'backupAndSync',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
-    ),
+    component: mmLazy(() => import('./backup-and-sync-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityTime,
   },
