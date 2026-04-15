@@ -24,58 +24,6 @@ const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
 const BALANCE_POLL_TIMEOUT = 150_000;
 const RECONNECT_TIMEOUT = 60_000;
 
-/**
- * Builds a testSpecificMock that mocks v2/supportedNetworks (including localhost
- * chain 1337) and v5/multiaccount/balances with a call-counter strategy:
- * - call 1  → 25 ETH (matches fixture initial state shown on login)
- * - call 2+ → `finalBalance` ETH (reflects the Anvil balance set during the test)
- *
- * @param finalBalance - The balance string to return after the first poll.
- * @returns A testSpecificMock function compatible with withFixtures.
- */
-function buildAccountsApiV5Mock(finalBalance: string) {
-  return async (mockServer: Mockttp) => {
-    let callCount = 0;
-
-    await mockServer
-      .forGet(
-        /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-      )
-      .always()
-      .thenJson(200, {
-        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
-        partialSupport: { balances: [42220, 43114] },
-      });
-
-    return mockServer
-      .forGet(
-        /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-      )
-      .always()
-      .thenCallback(() => {
-        callCount += 1;
-        const balance = callCount === 1 ? '25' : finalBalance;
-        return {
-          statusCode: 200,
-          json: {
-            count: 1,
-            unprocessedNetworks: [],
-            balances: [
-              {
-                accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-                assetId: 'eip155:1337/slip44:60',
-                balance,
-              },
-            ],
-          },
-        };
-      });
-  };
-}
-
-const mockAccountsApiV5With50Eth = buildAccountsApiV5Mock('50');
-const mockAccountsApiV5With35Eth = buildAccountsApiV5Mock('35');
-
 async function waitForAccountActivityWsConnections(
   driver: Driver,
   expectedCount: number,
@@ -107,119 +55,124 @@ async function waitForBalanceUpdate(
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
-  it('balance updates continue via REST polling when WebSocket disconnects', async function () {
-    this.timeout(180_000);
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApiV5With50Eth,
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const subPromise = waitForAccountActivitySubscription();
+  describe('REST Polling Fallback', function () {
+    it('balance updates continue via REST polling when WebSocket disconnects', async function () {
+      this.timeout(180_000);
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          // testSpecificMock: mockAccountsApiV5With50Eth,
+        },
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes: Anvil[];
+        }) => {
+          const subPromise = waitForAccountActivitySubscription();
 
-        await login(driver);
-        await waitForAccountActivityWsConnections(driver, 1);
-        await subPromise;
+          await login(driver);
+          await waitForAccountActivityWsConnections(driver, 1);
+          await subPromise;
 
-        const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
+          const homepage = new HomePage(driver);
+          await homepage.checkExpectedBalanceIsDisplayed('25');
 
-        const server = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        );
-        await server.stopAndCleanup();
+          const server = WebSocketRegistry.getServer(
+            WEBSOCKET_SERVICES.accountActivity,
+          );
+          await server.stopAndCleanup();
 
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          FIFTY_ETH_WEI,
-        );
+          await localNodes[0].setAccountBalance(
+            DEFAULT_FIXTURE_ACCOUNT,
+            FIFTY_ETH_WEI,
+          );
 
-        await waitForBalanceUpdate(homepage, driver, '50');
-      },
-    );
+          await waitForBalanceUpdate(homepage, driver, '50');
+        },
+      );
+    });
   });
 
-  it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
-    this.timeout(180_000);
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApiV5With35Eth,
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const subPromise = waitForAccountActivitySubscription();
-        await login(driver);
-        await waitForAccountActivityWsConnections(driver, 1);
-        await subPromise;
+  describe('Reconnection', function () {
+    it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
+      this.timeout(180_000);
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          // testSpecificMock: mockAccountsApiV5With35Eth,
+        },
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes: Anvil[];
+        }) => {
+          const subPromise = waitForAccountActivitySubscription();
+          await login(driver);
+          await waitForAccountActivityWsConnections(driver, 1);
+          await subPromise;
 
-        const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
+          const homepage = new HomePage(driver);
+          await homepage.checkExpectedBalanceIsDisplayed('25');
 
-        const server = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        );
-        await server.stopAndCleanup();
-        await waitForAccountActivityWsConnections(driver, 0);
+          const server = WebSocketRegistry.getServer(
+            WEBSOCKET_SERVICES.accountActivity,
+          );
+          await server.stopAndCleanup();
+          await waitForAccountActivityWsConnections(driver, 0);
 
-        server.start();
-        await accountActivityWebSocketConfig.setup(server, []);
+          server.start();
+          await accountActivityWebSocketConfig.setup(server, []);
 
-        // Waiter must be registered AFTER setup (which resets module state)
-        // but BEFORE the extension reconnects. Because setup is synchronous,
-        // no reconnection can slip in between these two calls.
-        const reconnectSubPromise =
-          waitForAccountActivitySubscription(RECONNECT_TIMEOUT);
+          const reconnectSubPromise =
+            waitForAccountActivitySubscription(RECONNECT_TIMEOUT);
 
-        await waitForAccountActivityWsConnections(driver, 1, RECONNECT_TIMEOUT);
-        const newSubId = await reconnectSubPromise;
+          await waitForAccountActivityWsConnections(
+            driver,
+            1,
+            RECONNECT_TIMEOUT,
+          );
+          const newSubId = await reconnectSubPromise;
 
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          THIRTY_FIVE_ETH_WEI,
-        );
+          await localNodes[0].setAccountBalance(
+            DEFAULT_FIXTURE_ACCOUNT,
+            THIRTY_FIVE_ETH_WEI,
+          );
 
-        const notification = createBalanceUpdateNotification({
-          subscriptionId: newSubId,
-          channel: `account-activity.v1.eip155:1337.${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-          address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-          chain: 'eip155:1337',
-          updates: [
-            {
-              asset: {
-                fungible: true,
-                type: 'eip155:1337/slip44:60',
-                unit: 'ETH',
-                decimals: 18,
-              },
-              postBalance: { amount: '35000000000000000000' },
-              transfers: [
-                {
-                  from: '0x0000000000000000000000000000000000000000',
-                  to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-                  amount: '10000000000000000000',
+          const notification = createBalanceUpdateNotification({
+            subscriptionId: newSubId,
+            channel: `account-activity.v1.eip155:1337.${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            chain: 'eip155:1337',
+            updates: [
+              {
+                asset: {
+                  fungible: true,
+                  type: 'eip155:1337/slip44:60',
+                  unit: 'ETH',
+                  decimals: 18,
                 },
-              ],
-            },
-          ],
-        });
-        server.sendMessage(JSON.stringify(notification));
+                postBalance: { amount: '35000000000000000000' },
+                transfers: [
+                  {
+                    from: '0x0000000000000000000000000000000000000000',
+                    to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+                    amount: '10000000000000000000',
+                  },
+                ],
+              },
+            ],
+          });
+          server.sendMessage(JSON.stringify(notification));
 
-        await waitForBalanceUpdate(homepage, driver, '35');
-      },
-    );
+          await waitForBalanceUpdate(homepage, driver, '35');
+        },
+      );
+    });
   });
 });
