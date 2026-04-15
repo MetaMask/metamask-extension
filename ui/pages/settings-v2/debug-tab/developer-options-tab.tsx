@@ -45,7 +45,7 @@ import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
 /**
- * Settings Page for Developer Options (internal-only)
+ * Debug Settings Page (internal-only)
  *
  * This page does not need i18n translation support because it's an internal settings page.
  * We only support the t('developerOptions') translation because the general settings architecture
