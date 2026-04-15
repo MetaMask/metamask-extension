@@ -5,11 +5,7 @@
 import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import {
-  PLATFORM_BRAVE,
-  PLATFORM_EDGE,
-  PLATFORM_FIREFOX,
-} from '../constants/app';
+import { PLATFORM_FIREFOX } from '../constants/app';
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
@@ -113,8 +109,10 @@ export function getBrowserName(
  * @returns Whether the host browser is Firefox (MV2 extension build).
  */
 export function isFirefoxBrowser(
-  bowser: Bowser.Parser.Parser = Bowser.getParser(window.navigator.userAgent),
-  nav: Navigator = window.navigator,
+  bowser: Bowser.Parser.Parser = Bowser.getParser(
+    globalThis.navigator.userAgent,
+  ),
+  nav: Navigator = globalThis.navigator,
 ): boolean {
   return getBrowserName(bowser, nav) === PLATFORM_FIREFOX;
 }
