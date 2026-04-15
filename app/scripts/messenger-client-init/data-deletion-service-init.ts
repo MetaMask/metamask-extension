@@ -13,7 +13,7 @@ export const DataDeletionServiceInit: MessengerClientInitFunction<
   });
 
   return {
-    controller: service,
+    messengerClient: service,
     memStateKey: null,
     persistedStateKey: null,
   };
