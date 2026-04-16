@@ -1261,12 +1261,18 @@ async function setupMocking(
         decimals: 18,
       });
 
-      pushIf(assetIds.includes('eip155:1337/slip44:60'), {
-        assetId: 'eip155:1337/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
+      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+      // Support both slip44:1 and slip44:60 requests for backward compat.
+      pushIf(
+        assetIds.includes('eip155:1337/slip44:1') ||
+          assetIds.includes('eip155:1337/slip44:60'),
+        {
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+      );
 
       const usdcMainnet =
         'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
@@ -1343,6 +1349,10 @@ async function setupMocking(
         typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
           ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
           : null;
+      const defaultNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
+          ? unifiedEvmAccountsApiBalances.nativeBalance
+          : null;
       const mainnetAdditional = Array.isArray(
         unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
       )
@@ -1359,11 +1369,15 @@ async function setupMocking(
         const nativeBalance =
           chainRef === '1' && mainnetNativeOverride !== null
             ? mainnetNativeOverride
-            : '25';
+            : defaultNativeOverride !== null
+              ? defaultNativeOverride
+              : '25';
 
+        // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
+        const slip44 = chainRef === '1337' ? '1' : '60';
         balances.push({
           accountId: id,
-          assetId: `eip155:${chainRef}/slip44:60`,
+          assetId: `eip155:${chainRef}/slip44:${slip44}`,
           balance: nativeBalance,
         });
 

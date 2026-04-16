@@ -105,7 +105,6 @@
   },
   "currentAppVersion": "11.14.4-flask.0",
   "currentCurrency": "usd",
-  "selectedCurrency": "usd",
   "currentExtensionPopupId": 1715943310719,
   "currentLocale": "en",
   "currentMigrationVersion": 119,
@@ -310,6 +309,7 @@
       }
     }
   },
+  "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,

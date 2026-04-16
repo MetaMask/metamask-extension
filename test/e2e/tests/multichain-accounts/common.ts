@@ -56,10 +56,13 @@ export async function withMultichainAccountsDesignEnabled(
           assetsBalance: {
             [DEFAULT_FIXTURE_ACCOUNT_ID]: {
               'eip155:1/slip44:60': { amount: '0' },
+              'eip155:1337/slip44:1': { amount: '0' },
+              'eip155:42161/slip44:60': { amount: '0' },
+              'eip155:59144/slip44:60': { amount: '0' },
             },
             [HARDWARE_WALLET_ACCOUNT_ID]: {
               'eip155:1/slip44:60': { amount: '0' },
-              'eip155:1337/slip44:60': { amount: '0' },
+              'eip155:1337/slip44:1': { amount: '0' },
             },
           },
         })
@@ -102,6 +105,9 @@ export async function withMultichainAccountsDesignEnabled(
       },
       title,
       dappOptions,
+      ...(accountType === AccountType.HardwareWallet && {
+        unifiedEvmAccountsApiBalances: { nativeBalance: '0' },
+      }),
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       if (accountType === AccountType.HardwareWallet) {

@@ -59,11 +59,11 @@ const ASSETS_PRICE_ETH_1700 = {
 const ASSETS_CONTROLLER_ETH_1700 = {
   assetsInfo: {
     'eip155:1/slip44:60': ETH_NATIVE_INFO,
-    'eip155:1337/slip44:60': ETH_NATIVE_INFO,
+    'eip155:1337/slip44:1': ETH_NATIVE_INFO,
   },
   assetsPrice: {
     'eip155:1/slip44:60': ASSETS_PRICE_ETH_1700,
-    'eip155:1337/slip44:60': ASSETS_PRICE_ETH_1700,
+    'eip155:1337/slip44:1': ASSETS_PRICE_ETH_1700,
   },
 };
 
