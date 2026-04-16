@@ -19,6 +19,7 @@ describe('Name lookup', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => [
