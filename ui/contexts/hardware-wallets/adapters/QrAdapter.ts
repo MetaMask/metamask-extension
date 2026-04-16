@@ -133,7 +133,10 @@ export class QrAdapter implements HardwareWalletAdapter {
             ),
           );
         }
-        if (nextState === CameraPermissionState.Denied || isFirefoxBrowser()) {
+        if (
+          nextState === CameraPermissionState.Denied ||
+          (nextState === CameraPermissionState.Prompt && isFirefoxBrowser())
+        ) {
           return this.failEnsureDeviceReady(
             createHardwareWalletError(
               ErrorCode.PermissionCameraDenied,
