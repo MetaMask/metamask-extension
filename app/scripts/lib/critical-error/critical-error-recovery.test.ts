@@ -41,6 +41,12 @@ function createMockPort(): chrome.runtime.Port {
       addListener: jest.fn((listener: () => void) => {
         disconnectListeners.push(listener);
       }),
+      removeListener: jest.fn((listener: () => void) => {
+        const i = disconnectListeners.indexOf(listener);
+        if (i !== -1) {
+          disconnectListeners.splice(i, 1);
+        }
+      }),
     },
     postMessage: jest.fn(),
     disconnect: jest.fn(),
@@ -90,6 +96,7 @@ describe('CriticalErrorHandler', () => {
 
       expect(handler.connectedPorts.has(config.port)).toBe(false);
       expect(config.port.onMessage.removeListener).toHaveBeenCalledTimes(2);
+      expect(config.port.onDisconnect.removeListener).toHaveBeenCalledTimes(1);
     });
 
     it('is idempotent when called twice', () => {

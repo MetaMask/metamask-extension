@@ -34,9 +34,10 @@ function getCriticalErrorType(
  * Per-port handler for critical error messages from the UI (timeout/init flow).
  * Listens for METHOD_REPAIR_DATABASE_TIMEOUT and CRITICAL_ERROR_SCREEN_VIEWED.
  * Same listener instances are added to every port (like state-corruption's
- * restoreVaultListener). Listeners are removed on port disconnect automatically;
- * the caller should also call removeListenersForPort(port) when the UI signals
- * readiness (e.g. on startSendingPatches).
+ * restoreVaultListener). On disconnect, the handler calls removeListenersForPort;
+ * the caller may also call removeListenersForPort(port) when the UI signals
+ * readiness (e.g. on startSendingPatches), which removes message and disconnect
+ * listeners.
  */
 export class CriticalErrorHandler {
   /**
@@ -47,6 +48,8 @@ export class CriticalErrorHandler {
   connectedPorts = new Set<chrome.runtime.Port>();
 
   #repairCallback: (() => Promise<boolean>) | null = null;
+
+  #portDisconnectHandlers = new WeakMap<chrome.runtime.Port, () => void>();
 
   #restoreListener = (message: Message): void => {
     this.#restoreVaultListener(message);
@@ -75,9 +78,11 @@ export class CriticalErrorHandler {
     this.connectedPorts.add(port);
     port.onMessage.addListener(this.#restoreListener);
     port.onMessage.addListener(this.#handleMessageListener);
-    port.onDisconnect.addListener(() => {
+    const disconnectHandler = (): void => {
       this.removeListenersForPort(port);
-    });
+    };
+    this.#portDisconnectHandlers.set(port, disconnectHandler);
+    port.onDisconnect.addListener(disconnectHandler);
   }
 
   /**
@@ -90,6 +95,11 @@ export class CriticalErrorHandler {
   removeListenersForPort(port: chrome.runtime.Port): void {
     port.onMessage.removeListener(this.#restoreListener);
     port.onMessage.removeListener(this.#handleMessageListener);
+    const disconnectHandler = this.#portDisconnectHandlers.get(port);
+    if (disconnectHandler) {
+      port.onDisconnect.removeListener(disconnectHandler);
+      this.#portDisconnectHandlers.delete(port);
+    }
     this.connectedPorts.delete(port);
   }
 
