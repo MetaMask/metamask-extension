@@ -24,7 +24,7 @@ export const StaticAssetsControllerInit: MessengerClientInitFunction<
   StaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new StaticAssetsController({
+  const messengerClient = new StaticAssetsController({
     messenger: controllerMessenger,
     getSupportedChains: (): Set<Hex> => {
       const supportedChains =
@@ -44,6 +44,6 @@ export const StaticAssetsControllerInit: MessengerClientInitFunction<
     },
   });
   return {
-    controller,
+    messengerClient,
   };
 };

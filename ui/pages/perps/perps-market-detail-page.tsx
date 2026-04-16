@@ -639,7 +639,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
-    (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
+    (direction: 'long' | 'short', mode: 'new' | 'modify') => {
       if (!decodedSymbol) {
         return '#';
       }
@@ -771,6 +771,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (!position || !decodedSymbol) {
       return;
     }
@@ -783,9 +787,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+    setIsCloseModalOpen(true);
+  }, [isEligible, position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -833,26 +836,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       console.warn('[Perps] Toggle watchlist failed:', e);
     });
   }, [decodedSymbol, track]);
-
-  // Refetch positions when tab becomes visible (catch changes made elsewhere)
-  useEffect(() => {
-    const handleVisibility = async () => {
-      if (document.visibilityState === 'visible' && selectedAddress) {
-        try {
-          const positions = await submitRequestToBackground<Position[]>(
-            'perpsGetPositions',
-            [{ skipCache: true }],
-          );
-          getPerpsStreamManager().pushPositionsWithOverrides(positions);
-        } catch (e) {
-          console.warn('[Perps] Visibility refetch failed:', e);
-        }
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () =>
-      document.removeEventListener('visibilitychange', handleVisibility);
-  }, [selectedAddress]);
 
   // Opens the cancel order modal for the selected order
   const handleOrderClick = useCallback((order: Order) => {

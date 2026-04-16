@@ -15,13 +15,13 @@ export const PermissionLogControllerInit: MessengerClientInitFunction<
   PermissionLogController,
   PermissionLogControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new PermissionLogController({
+  const messengerClient = new PermissionLogController({
     messenger: controllerMessenger,
     state: persistedState.PermissionLogController,
     restrictedMethods: new Set(Object.keys(RestrictedMethods)),
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

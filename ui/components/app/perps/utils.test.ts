@@ -17,6 +17,7 @@ import {
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  getPnlDisplayColor,
   parseVolume,
   hasVolume,
 } from './utils';
@@ -579,6 +580,22 @@ describe('Perps Utils', () => {
     it('returns TextDefault for amounts without prefix', () => {
       expect(getTransactionAmountColor('100.00')).toBe(TextColor.TextDefault);
       expect(getTransactionAmountColor('0')).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('getPnlDisplayColor', () => {
+    it('returns SuccessDefault for positive PnL', () => {
+      expect(getPnlDisplayColor(100)).toBe(TextColor.SuccessDefault);
+      expect(getPnlDisplayColor(0.01)).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns ErrorDefault for negative PnL', () => {
+      expect(getPnlDisplayColor(-50)).toBe(TextColor.ErrorDefault);
+      expect(getPnlDisplayColor(-0.01)).toBe(TextColor.ErrorDefault);
+    });
+
+    it('returns TextDefault for zero PnL', () => {
+      expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
     });
   });
 

@@ -19,7 +19,7 @@ import {
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixtures/fixture-builder';
+import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
 import { withFixtures } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -101,7 +101,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
     },
@@ -167,7 +167,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
       localNodeOptions: 'none',

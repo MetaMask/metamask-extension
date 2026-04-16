@@ -109,6 +109,6 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller: smartTransactionsController,
+    messengerClient: smartTransactionsController,
   };
 };

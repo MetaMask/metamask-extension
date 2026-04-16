@@ -43,9 +43,9 @@ describe('AuthenticationControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(AuthenticationControllerInit(requestMock).controller).toBeInstanceOf(
-      AuthenticationController,
-    );
+    expect(
+      AuthenticationControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(AuthenticationController);
   });
 
   it('initializes with correct messenger and state', () => {

@@ -30,7 +30,7 @@ export const SnapRegistryControllerInit: MessengerClientInitFunction<
       : originalVersion
   ) as SemVerVersion;
 
-  const controller = new SnapRegistryController({
+  const messengerClient = new SnapRegistryController({
     // @ts-expect-error: `persistedState.SnapRegistryController` is not
     // compatible with the expected type.
     // TODO: Look into the type mismatch.
@@ -44,6 +44,6 @@ export const SnapRegistryControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };
