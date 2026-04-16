@@ -1719,11 +1719,11 @@ export function setupController(
 
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(
-        portStream,
-        remotePort.sender,
-        removeCriticalErrorListeners,
-      );
+      controller
+        .setupTrustedCommunication(portStream, remotePort.sender)
+        .finally(() => {
+          removeCriticalErrorListeners?.();
+        });
       trackAppOpened(processName);
 
       // lazily update the remote feature flags every time the UI is opened.

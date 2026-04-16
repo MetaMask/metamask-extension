@@ -3684,8 +3684,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupPatchStoreConnection', () => {
-      it('invokes removeCriticalErrorListeners when the UI sends StartSendingPatches', async () => {
-        const removeCriticalErrorListeners = jest.fn();
+      it('resolves patchesPromise when the UI sends StartSendingPatches', async () => {
         // Duplex must not echo writes back or the handler can loop (methodNotFound, etc.).
         const stream = new Duplex({
           objectMode: true,
@@ -3697,10 +3696,8 @@ describe('MetaMaskController', () => {
           },
         });
 
-        metamaskController.setupPatchStoreConnection(
-          stream,
-          removeCriticalErrorListeners,
-        );
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
 
         stream.push({
           jsonrpc: '2.0',
@@ -3709,14 +3706,37 @@ describe('MetaMaskController', () => {
 
         await flushPromises();
 
-        expect(removeCriticalErrorListeners).toHaveBeenCalledTimes(1);
+        await expect(patchesPromise).resolves.toBeUndefined();
         stream.end();
+      });
+
+      it('resolves patchesPromise when the patch-store stream closes before StartSendingPatches', async () => {
+        const stream = new Duplex({
+          objectMode: true,
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
+
+        stream.end();
+        await flushPromises();
+
+        await expect(patchesPromise).resolves.toBeUndefined();
       });
     });
 
     describe('patch store connection', () => {
+      const activeMuxes = [];
+
       function setupPatchStoreConnection({ startUISync = true } = {}) {
         const mux = new ObjectMultiplex();
+        activeMuxes.push(mux);
         mux.createStream('controller');
 
         const patchStream = mux.createStream('patch-store');
@@ -3728,6 +3748,18 @@ describe('MetaMaskController', () => {
 
         return { mux, patchStream, messages };
       }
+
+      afterEach(async () => {
+        for (const mux of activeMuxes) {
+          try {
+            mux.end();
+          } catch {
+            // ignore double-close
+          }
+        }
+        activeMuxes.length = 0;
+        await flushPromises();
+      });
 
       // Wrap `flushPromises` to reframe why we are using this function
       async function flushBufferedWrites() {
