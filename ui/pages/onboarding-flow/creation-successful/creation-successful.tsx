@@ -39,7 +39,6 @@ import {
   getIsSocialLoginFlow,
   getSocialLoginType,
   getParticipateInMetaMetrics,
-  getPreferences,
   getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -92,8 +91,6 @@ export default function CreationSuccessful() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const preferences = useSelector(getPreferences);
-  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
