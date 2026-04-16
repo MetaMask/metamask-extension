@@ -23,7 +23,7 @@ describe('OAuthServiceInit', () => {
     const requestMock = buildInitRequestMock();
 
     // @ts-expect-error: Partial mock for testing.
-    requestMock.getController.mockImplementation(() => {
+    requestMock.getMessengerClient.mockImplementation(() => {
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
@@ -33,7 +33,7 @@ describe('OAuthServiceInit', () => {
       };
     });
 
-    expect(OAuthServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(OAuthServiceInit(requestMock).messengerClient).toBeInstanceOf(
       OAuthService,
     );
   });

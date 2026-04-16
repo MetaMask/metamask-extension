@@ -59,8 +59,9 @@ describe('BackendWebSocketServiceInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = BackendWebSocketServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(BackendWebSocketService);
+    const { messengerClient } =
+      BackendWebSocketServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(BackendWebSocketService);
   });
 
   it('passes the proper arguments to the controller', () => {

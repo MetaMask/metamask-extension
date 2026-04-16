@@ -18,7 +18,7 @@ export const TokensControllerInit: MessengerClientInitFunction<
 
   // TODO: Fix TokensControllerMessenger type - add TokensControllerActions & TokensControllerEvents
   // TODO: Bump @metamask/network-controller, @metamask/accounts-controller, @metamask/keyring-controller to match assets-controllers
-  const controller = new TokensController({
+  const messengerClient = new TokensController({
     messenger: controllerMessenger,
     state: persistedState.TokensController,
     provider,
@@ -26,6 +26,6 @@ export const TokensControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

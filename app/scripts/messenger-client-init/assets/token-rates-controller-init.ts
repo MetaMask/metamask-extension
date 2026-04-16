@@ -25,7 +25,7 @@ export const TokenRatesControllerInit: MessengerClientInitFunction<
   const { controllerMessenger, initMessenger, persistedState } = request;
   const preferencesState = initMessenger.call('PreferencesController:getState');
 
-  const controller = new TokenRatesController({
+  const messengerClient = new TokenRatesController({
     messenger: controllerMessenger,
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
@@ -38,9 +38,9 @@ export const TokenRatesControllerInit: MessengerClientInitFunction<
       const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
       const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
       if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-        controller.enable();
+        messengerClient.enable();
       } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-        controller.disable();
+        messengerClient.disable();
       }
 
       return true;
@@ -48,6 +48,6 @@ export const TokenRatesControllerInit: MessengerClientInitFunction<
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

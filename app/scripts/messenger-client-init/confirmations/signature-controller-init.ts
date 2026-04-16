@@ -20,7 +20,7 @@ export const SignatureControllerInit: MessengerClientInitFunction<
   SignatureControllerMessenger,
   SignatureControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new SignatureController({
+  const messengerClient = new SignatureController({
     messenger: controllerMessenger,
     decodingApiUrl: process.env.DECODING_API_URL,
     isDecodeSignatureRequestEnabled: () => {
@@ -32,20 +32,23 @@ export const SignatureControllerInit: MessengerClientInitFunction<
     trace,
   });
 
-  controller.hub.on('cancelWithReason', ({ metadata: message, reason }) => {
-    initMessenger.call('MetaMetricsController:trackEvent', {
-      event: reason,
-      category: MetaMetricsEventCategory.Transactions,
-      properties: {
-        action: 'Sign Request',
-        type: message.type,
-      },
-    });
-  });
+  messengerClient.hub.on(
+    'cancelWithReason',
+    ({ metadata: message, reason }) => {
+      initMessenger.call('MetaMetricsController:trackEvent', {
+        event: reason,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          action: 'Sign Request',
+          type: message.type,
+        },
+      });
+    },
+  );
 
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

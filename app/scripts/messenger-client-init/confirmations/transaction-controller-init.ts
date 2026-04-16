@@ -94,7 +94,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     smartTransactionsController,
   } = getControllers(request);
 
-  const controller: TransactionController = new TransactionController({
+  const messengerClient: TransactionController = new TransactionController({
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -221,12 +221,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
           keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
-          transactionController: controller,
+          transactionController: messengerClient,
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) => {
         const result = await publishBatchHook({
-          transactionController: controller,
+          transactionController: messengerClient,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
@@ -268,34 +268,37 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     getTransactionMetricsRequest,
   );
 
-  const api = getApi(controller);
+  const api = getApi(messengerClient);
 
-  return { controller, api, memStateKey: 'TxController' };
+  return { messengerClient, api, memStateKey: 'TxController' };
 };
 
 function getApi(
-  controller: TransactionController,
+  messengerClient: TransactionController,
 ): MessengerClientInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
-      controller.abortTransactionSigning.bind(controller),
-    getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
-    getTransactions: controller.getTransactions.bind(controller),
-    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
+      messengerClient.abortTransactionSigning.bind(messengerClient),
+    getLayer1GasFee: messengerClient.getLayer1GasFee.bind(messengerClient),
+    getTransactions: messengerClient.getTransactions.bind(messengerClient),
+    isAtomicBatchSupported:
+      messengerClient.isAtomicBatchSupported.bind(messengerClient),
     startIncomingTransactionPolling:
-      controller.startIncomingTransactionPolling.bind(controller),
+      messengerClient.startIncomingTransactionPolling.bind(messengerClient),
     stopIncomingTransactionPolling:
-      controller.stopIncomingTransactionPolling.bind(controller),
-    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
+      messengerClient.stopIncomingTransactionPolling.bind(messengerClient),
+    updateAtomicBatchData:
+      messengerClient.updateAtomicBatchData.bind(messengerClient),
     updateBatchTransactions:
-      controller.updateBatchTransactions.bind(controller),
-    updateEditableParams: controller.updateEditableParams.bind(controller),
+      messengerClient.updateBatchTransactions.bind(messengerClient),
+    updateEditableParams:
+      messengerClient.updateEditableParams.bind(messengerClient),
     updatePreviousGasParams:
-      controller.updatePreviousGasParams.bind(controller),
+      messengerClient.updatePreviousGasParams.bind(messengerClient),
     updateSelectedGasFeeToken:
-      controller.updateSelectedGasFeeToken.bind(controller),
+      messengerClient.updateSelectedGasFeeToken.bind(messengerClient),
     updateTransactionGasFees:
-      controller.updateTransactionGasFees.bind(controller),
+      messengerClient.updateTransactionGasFees.bind(messengerClient),
   };
 }
 
@@ -306,15 +309,17 @@ function getControllers(
   >,
 ) {
   return {
-    gasFeeController: () => request.getController('GasFeeController'),
-    keyringController: () => request.getController('KeyringController'),
-    networkController: () => request.getController('NetworkController'),
-    onboardingController: () => request.getController('OnboardingController'),
-    preferencesController: () => request.getController('PreferencesController'),
+    gasFeeController: () => request.getMessengerClient('GasFeeController'),
+    keyringController: () => request.getMessengerClient('KeyringController'),
+    networkController: () => request.getMessengerClient('NetworkController'),
+    onboardingController: () =>
+      request.getMessengerClient('OnboardingController'),
+    preferencesController: () =>
+      request.getMessengerClient('PreferencesController'),
     smartTransactionsController: () =>
-      request.getController('SmartTransactionsController'),
+      request.getMessengerClient('SmartTransactionsController'),
     institutionalSnapController: () =>
-      request.getController('InstitutionalSnapController'),
+      request.getMessengerClient('InstitutionalSnapController'),
   };
 }
 

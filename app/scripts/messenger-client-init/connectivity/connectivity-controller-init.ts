@@ -30,13 +30,13 @@ export const ConnectivityControllerInit: MessengerClientInitFunction<
   // - MV2: Background page directly (app/scripts/background.js)
   const connectivityAdapter = new ExtensionConnectivityAdapter();
 
-  const controller = new ConnectivityController({
+  const messengerClient = new ConnectivityController({
     messenger: controllerMessenger,
     connectivityAdapter,
   });
 
   return {
-    controller,
+    messengerClient,
     api: {
       setConnectivityStatus: (status: 'online' | 'offline') =>
         connectivityAdapter.setStatus(status),

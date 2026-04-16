@@ -36,7 +36,7 @@ describe('MultichainAssetsRatesControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      MultichainAssetsRatesControllerInit(requestMock).controller,
+      MultichainAssetsRatesControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(MultichainAssetsRatesController);
   });
 

@@ -69,7 +69,7 @@ describe('RewardsControllerInit', () => {
       const requestMock = buildInitRequestMock();
       const result = RewardsControllerInit(requestMock);
 
-      expect(result.controller).toBeInstanceOf(RewardsController);
+      expect(result.messengerClient).toBeInstanceOf(RewardsController);
     });
 
     it('initializes with correct messenger', () => {
