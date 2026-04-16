@@ -11,29 +11,23 @@ import type { DelegationControllerSignDelegationAction } from '@metamask/delegat
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
 import {
-  BATCH_DEFAULT_MODE,
-  Caveat,
   ExecutionMode,
-  ExecutionStruct,
-  SINGLE_DEFAULT_MODE,
-  createCaveatBuilder,
   getDeleGatorEnvironment,
-} from '../../../../shared/lib/delegation';
-import {
-  ANY_BENEFICIARY,
-  type Delegation,
   encodeRedeemDelegations,
-  createDelegation,
+  BATCH_DEFAULT_MODE,
+  SINGLE_DEFAULT_MODE,
+  type ExecutionStruct,
+  type Caveat,
+  type Delegation,
   type UnsignedDelegation,
-} from '../../../../shared/lib/delegation/delegation';
-import { limitedCalls } from '../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
-import { exactExecutionBatch } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBatchBuilder';
-import { exactExecution } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
+} from '../../../../shared/lib/delegation';
 import { stripSingleLeadingZero } from './util';
+import { createExactExecutionBatchTerms, createExactExecutionTerms, createLimitedCallsTerms, ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 
 const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
+const DELEGATION_SALT = "0x00";
 
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
@@ -260,31 +254,37 @@ function buildDefaultCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   executions: ExecutionStruct[],
 ): Caveat[] {
-  const caveatBuilder = createCaveatBuilder(environment);
+  const caveats: Caveat[] = [{
+    enforcer: environment.caveatEnforcers.limitedCalls,
+    terms: createLimitedCallsTerms({
+      limit: 1
+    }),
+    args: "0x"
+  }];
 
   if (executions.length > 1) {
-    caveatBuilder.addCaveat(
-      exactExecutionBatch,
-      executions.map((e) => ({
-        to: e.target as string,
-        value: `0x${e.value.toString(16)}`,
-        data: e.callData as string | undefined,
-      })),
-    );
+    caveats.push({
+      enforcer: environment.caveatEnforcers.exactExecutionBatch,
+      terms: createExactExecutionBatchTerms({
+        executions
+      }),
+      args: "0x"
+    });
   } else {
     const execution = executions[0];
 
-    caveatBuilder.addCaveat(
-      exactExecution,
-      execution.target as string,
-      `0x${execution.value.toString(16)}`,
-      execution.callData as string | undefined,
-    );
+    caveats.push({
+      enforcer: environment.caveatEnforcers.exactExecution,
+      terms: createExactExecutionTerms({
+        execution
+      }),
+      args: "0x"
+    });
+
   }
 
-  caveatBuilder.addCaveat(limitedCalls, 1);
 
-  return caveatBuilder.build();
+  return caveats;
 }
 
 async function signAndWrapDelegation({
@@ -300,11 +300,13 @@ async function signAndWrapDelegation({
   delegatee?: Hex;
   delegationSignature?: Hex;
 }): Promise<Delegation[][]> {
-  const unsignedDelegation: UnsignedDelegation = createDelegation({
-    from: transaction.txParams.from as Hex,
-    to: delegatee ?? ANY_BENEFICIARY,
-    caveats,
-  });
+  const unsignedDelegation: UnsignedDelegation = {
+    delegator: transaction.txParams.from as Hex,
+    delegate: delegatee ?? ANY_BENEFICIARY,
+    authority: ROOT_AUTHORITY,
+    salt: DELEGATION_SALT,
+    caveats
+  };
 
   log('Signing delegation', unsignedDelegation);
 

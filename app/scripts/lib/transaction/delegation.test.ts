@@ -13,7 +13,6 @@ import {
   BATCH_DEFAULT_MODE,
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
-  createCaveatBuilder,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import {
@@ -33,7 +32,6 @@ jest.mock('../../../../shared/lib/delegation', () => ({
   ...jest.requireActual('../../../../shared/lib/delegation'),
   encodeRedeemDelegations: jest.fn(),
   createDelegation: jest.fn(),
-  createCaveatBuilder: jest.fn(),
   getDeleGatorEnvironment: jest.fn(),
 }));
 
@@ -89,7 +87,6 @@ const TRANSACTION_META_MOCK = {
 } as unknown as TransactionMeta;
 
 describe('delegation', () => {
-  const createCaveatBuilderMock = jest.mocked(createCaveatBuilder);
   const getDeleGatorEnvironmentMock = jest.mocked(getDeleGatorEnvironment);
   const createDelegationMock = jest.mocked(createDelegation);
   const encodeRedeemDelegationsMock = jest.mocked(encodeRedeemDelegations);
@@ -108,7 +105,6 @@ describe('delegation', () => {
   > = jest.fn();
 
   let messenger: DelegationMessenger;
-  let addCaveatMock: jest.Mock;
   let buildCaveatMock: jest.Mock;
 
   beforeEach(() => {
@@ -161,17 +157,6 @@ describe('delegation', () => {
     );
 
     messenger = childMessenger as DelegationMessenger;
-
-    addCaveatMock = jest.fn();
-
-    buildCaveatMock = jest
-      .fn()
-      .mockReturnValue([{ enforcer: '0x', terms: '0x', args: '0x' }]);
-
-    createCaveatBuilderMock.mockReturnValue({
-      addCaveat: addCaveatMock,
-      build: buildCaveatMock,
-    } as never);
 
     getDeleGatorEnvironmentMock.mockReturnValue({
       DelegationManager: DELEGATION_MANAGER_ADDRESS_MOCK,
@@ -234,9 +219,6 @@ describe('delegation', () => {
           ],
         }),
       );
-
-      expect(addCaveatMock).toHaveBeenCalledTimes(2);
-      expect(buildCaveatMock).toHaveBeenCalledTimes(1);
     });
 
     it('normalizes nestedTransactions callData', async () => {
@@ -379,7 +361,6 @@ describe('delegation', () => {
         caveats: CAVEATS_OVERRIDE_MOCK as never,
       });
 
-      expect(createCaveatBuilderMock).not.toHaveBeenCalled();
       expect(createDelegationMock).toHaveBeenCalledWith(
         expect.objectContaining({
           caveats: CAVEATS_OVERRIDE_MOCK,

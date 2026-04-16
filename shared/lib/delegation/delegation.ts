@@ -6,7 +6,7 @@ import {
   ANY_BENEFICIARY,
   hashDelegation,
 } from '@metamask/delegation-core';
-import { resolveCaveats, type Caveats } from './caveatBuilder';
+import type { Caveat } from './';
 import { concat, toFunctionSelector, toHex } from './utils';
 import {
   encodeExecutionCalldatas,
@@ -135,7 +135,7 @@ export const getDelegationHashOffchain = (input: Delegation): Hex => {
 
 type BaseCreateDelegationOptions = {
   from: Hex;
-  caveats: Caveats;
+  caveats: Caveat[];
   parentDelegation?: Delegation | Hex;
 };
 
@@ -182,7 +182,7 @@ export const createDelegation = (
     delegate: options.to,
     delegator: options.from,
     authority: resolveAuthority(options.parentDelegation),
-    caveats: resolveCaveats(options.caveats),
+    caveats: options.caveats,
     salt: `0x${Math.random().toString(16).slice(2, 10)}`,
     signature: '0x',
   };
@@ -201,7 +201,7 @@ export const createOpenDelegation = (
     delegate: ANY_BENEFICIARY,
     delegator: options.from,
     authority: resolveAuthority(options.parentDelegation),
-    caveats: resolveCaveats(options.caveats),
+    caveats: options.caveats,
     salt: '0x',
     signature: '0x',
   };
