@@ -10,6 +10,10 @@ import { submitRequestToBackground } from '../../store/background-connection';
  * Builds the cache key used by both MarketInfo and OrderFills caches.
  * Centralised here so every consumer derives keys in the same format;
  * adding a new scope dimension only requires a change in one place.
+ * @param activeProvider
+ * @param isTestnet
+ * @param address
+ * @returns string
  */
 export function buildPerpsCacheKey(
   activeProvider: string,
