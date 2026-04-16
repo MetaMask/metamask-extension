@@ -4980,6 +4980,9 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
+      // Ensure the Snap keyring is initialized so it's available for
+      // subsequent operations (e.g. importing additional SRPs).
+      await this.getSnapKeyring();
 
       if (completedOnboarding) {
         // check if external services are enabled
