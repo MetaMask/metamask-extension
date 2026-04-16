@@ -138,14 +138,6 @@ describe('CustomAmount', () => {
     expect(amountElement).toHaveStyle({ fontSize: '64px' });
   });
 
-  it('aligns symbol and amount input to baseline', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    const amountRow = screen.getByTestId('custom-amount-input').parentElement;
-  });
-
   it('does not include decimal separators when calculating input width', () => {
     const store = mockStore(getMockState());
 

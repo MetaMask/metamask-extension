@@ -94,7 +94,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     const amountLength = amountFiat.length;
-    const amountCharacterLength = amountFiat.replace(/[.,]/gu, '').length;
+    const amountCharacterLength = amountFiat.replaceAll(/[.,]/gu, '').length;
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
