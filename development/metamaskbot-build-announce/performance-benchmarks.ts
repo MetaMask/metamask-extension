@@ -505,19 +505,30 @@ function countHealthEntries(
 }
 
 /**
- * Formats timer details from StatisticalResult into a readable HTML list with traffic lights.
- * Only returns timer breakdown if entry has multiple timers (user journey benchmarks).
+ * Converts a camelCase benchmark name to its snake_case metric-key form
+ * (e.g. `loadNewAccount` → `load_new_account`). Used to detect per-metric
+ * tags that would be redundant with the row label.
+ *
+ * @param name - camelCase benchmark name
+ * @returns snake_case metric key
+ */
+function toSnakeCase(name: string): string {
+  return name.replace(/([a-z0-9])([A-Z])/gu, '$1_$2').toLowerCase();
+}
+
+/**
+ * Returns a compact inline annotation listing per-metric threshold issues for
+ * a multi-timer benchmark entry (e.g. ` · 🟡 <code>cls</code>`). Returns an
+ * empty string when the entry has a single timer, no per-metric issues, or
+ * the only firing metric is the benchmark's primary timer (in which case the
+ * row-level icon already conveys the status).
+ *
+ * The result is meant to be appended to the row-level cell, not to replace it.
  *
  * @param entry - Benchmark entry with all stats (mean, p75, p95)
- * @param baselineMetrics - Historical baseline for comparison (optional)
- * @param logHref
- * @returns HTML string with timer breakdown, or empty string if single timer
+ * @returns HTML string with per-metric issue tags, or empty string
  */
-function formatTimerDetails(
-  entry: BenchmarkEntry,
-  baselineMetrics: HistoricalBaselineReference[string] | undefined,
-  logHref?: string,
-): string {
+function formatTimerIssueTags(entry: BenchmarkEntry): string {
   const timerCount = Object.keys(entry.mean).length;
 
   if (timerCount <= 1) {
@@ -525,53 +536,46 @@ function formatTimerDetails(
   }
 
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+  if (!thresholdConfig) {
+    return '';
+  }
 
-  const entries = Object.entries(entry.mean)
-    .map(([metricName]) => {
-      let icon = HEALTH_ICON[EntryHealth.Pass];
-      let hasIssue = false;
+  const primaryMetricKey = toSnakeCase(entry.benchmarkName);
 
-      if (thresholdConfig?.[metricName]) {
-        const metricResult = {
-          p75: { [metricName]: entry.p75[metricName] },
-          p95: { [metricName]: entry.p95[metricName] },
-        } as BenchmarkResults;
-
-        const { violations } = validateResultThresholds(metricResult, {
-          [metricName]: thresholdConfig[metricName],
-        });
-
-        const hasFail = violations.some(
-          (v) => v.severity === THRESHOLD_SEVERITY.Fail,
-        );
-        const hasWarn = violations.some(
-          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-        );
-
-        if (hasFail) {
-          icon = HEALTH_ICON[EntryHealth.Fail];
-          hasIssue = true;
-        } else if (hasWarn) {
-          icon = HEALTH_ICON[EntryHealth.Warn];
-          hasIssue = true;
-        }
-      }
-
-      if (!hasIssue) {
+  const tags = Object.keys(entry.mean)
+    .map((metricName) => {
+      if (!thresholdConfig[metricName] || metricName === primaryMetricKey) {
         return null;
       }
 
-      const logsLine = logHref
-        ? `<br><a href="${logHref}">[Show logs]</a>`
-        : '';
-      return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
-    })
-    .filter((item) => item !== null)
-    .join('');
+      const metricResult = {
+        p75: { [metricName]: entry.p75[metricName] },
+        p95: { [metricName]: entry.p95[metricName] },
+      } as BenchmarkResults;
 
-  return entries
-    ? `<div style="text-align: left; margin: 4px 0 8px 0; padding-left: 8px;">${entries}</div>`
-    : '';
+      const { violations } = validateResultThresholds(metricResult, {
+        [metricName]: thresholdConfig[metricName],
+      });
+
+      const hasFail = violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+      );
+      const hasWarn = violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      );
+
+      if (!hasFail && !hasWarn) {
+        return null;
+      }
+
+      const icon = hasFail
+        ? HEALTH_ICON[EntryHealth.Fail]
+        : HEALTH_ICON[EntryHealth.Warn];
+      return `${icon} <code>${metricName}</code>`;
+    })
+    .filter((tag): tag is string => tag !== null);
+
+  return tags.length > 0 ? ` · ${tags.join(' · ')}` : '';
 }
 
 /**
@@ -807,27 +811,14 @@ export function buildBenchmarkSection(
               const icon = HEALTH_ICON[health];
               const logHref = entry.artifactUrl ?? runUrl;
 
-              const timerDetails = formatTimerDetails(
-                entry,
-                baselineMetrics,
-                logHref,
-              );
-
+              const timerIssueTags = formatTimerIssueTags(entry);
               const logsLink = logHref
                 ? `<a href="${logHref}">[Show logs]</a>`
                 : '';
 
-              let cell: string;
-              switch (true) {
-                case Boolean(timerDetails):
-                  cell = timerDetails;
-                  break;
-                case Boolean(logHref):
-                  cell = `${icon} ${logsLink}`;
-                  break;
-                default:
-                  cell = icon;
-              }
+              const cell = logHref
+                ? `${icon} ${logsLink}${timerIssueTags}`
+                : `${icon}${timerIssueTags}`;
               return `<td align="left">${cell}</td>`;
             })
             .join('');
