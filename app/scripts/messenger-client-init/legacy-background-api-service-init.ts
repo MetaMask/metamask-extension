@@ -15,12 +15,12 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new LegacyBackgroundApiService({
+  const messengerClient = new LegacyBackgroundApiService({
     messenger: controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
     memStateKey: null,
   };

@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('LegacyBackgroundApiServiceInit', () => {
   it('initializes the service', () => {
-    const { controller } = LegacyBackgroundApiServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(LegacyBackgroundApiService);
+    const { messengerClient } =
+      LegacyBackgroundApiServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(LegacyBackgroundApiService);
   });
 
   it('passes the proper arguments to the service', () => {
