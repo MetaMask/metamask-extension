@@ -28,9 +28,19 @@ jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
   })),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates',
+  () => ({
+    useTokenFiatRate: jest.fn(() => 1.0),
+  }),
+);
+
 const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock(
   '../../../../hooks/musd/useMusdGeoBlocking',
+);
+const { useTokenFiatRate } = jest.requireMock(
+  '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates',
 );
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
@@ -135,6 +145,7 @@ describe('useMerklRewards', () => {
       userCountry: 'US',
       isLoading: false,
     });
+    useTokenFiatRate.mockReturnValue(1.0);
   });
 
   it('returns isEligible false and hasClaimableReward false for ineligible token', () => {
@@ -552,14 +563,16 @@ describe('useMerklRewards', () => {
     expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
-  it('returns null rewardAmountFiat when token price is null', async () => {
+  it('returns null rewardAmountFiat when fiat rate is unavailable', async () => {
+    useTokenFiatRate.mockReturnValue(undefined);
+
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
       token: {
         address: MUSD_TOKEN_ADDRESS,
         chainId: 59144,
         symbol: 'MUSD',
         decimals: 6,
-        price: null,
+        price: 1.0,
       },
       pending: '0',
       proofs: [],
@@ -585,6 +598,45 @@ describe('useMerklRewards', () => {
 
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBe('10.50');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
+  });
+
+  it('converts decimal amounts to user fiat currency using fiat rate', async () => {
+    useTokenFiatRate.mockReturnValue(1.55);
+
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const { result, waitFor } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
+    });
+
+    // 10.5 mUSD × 1.55 AUD/token = 16.275 AUD
+    expect(result.current.rewardAmountFiat).toBeCloseTo(16.275);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
     expect(result.current.lifetimeClaimedFiat).toBeNull();
   });

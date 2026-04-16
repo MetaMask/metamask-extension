@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Hex } from '@metamask/utils';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
+import { useTokenFiatRate } from '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates';
 import { ELIGIBLE_TOKENS } from '../constants';
 import {
   fetchMerklRewardsForAsset,
@@ -48,20 +49,21 @@ type UseMerklRewardsOptions = {
 
 type MerklRewardQueryResult = {
   hasClaimable: boolean;
-  unclaimedFiat: number | null;
+  /** Raw unclaimed amount in token-decimal units (e.g. 10.5 mUSD) */
+  unclaimedDecimal: number | null;
   hasClaimedBefore: boolean;
   /** Formatted unclaimed amount for analytics bucketing; null when not claimable */
   claimableRewardDisplay: string | null;
-  /** Total claimed amount in fiat (from on-chain/API claimed × token price) */
-  lifetimeClaimedFiat: number | null;
+  /** Raw lifetime claimed amount in token-decimal units */
+  claimedDecimal: number | null;
 };
 
 const EMPTY_RESULT: MerklRewardQueryResult = {
   hasClaimable: false,
-  unclaimedFiat: null,
+  unclaimedDecimal: null,
   hasClaimedBefore: false,
   claimableRewardDisplay: null,
-  lifetimeClaimedFiat: null,
+  claimedDecimal: null,
 };
 
 type UseMerklRewardsReturn = {
@@ -169,26 +171,20 @@ export const useMerklRewards = ({
         }
       }
 
-      let unclaimedFiat: number | null = null;
-      if (hasClaimable && matchingReward.token.price !== null) {
-        const divisor = 10 ** matchingReward.token.decimals;
-        unclaimedFiat =
-          (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
-      }
-
-      let lifetimeClaimedFiat: number | null = null;
-      if (hasClaimedBefore && matchingReward.token.price !== null) {
-        const divisor = 10 ** matchingReward.token.decimals;
-        lifetimeClaimedFiat =
-          (Number(claimedAmount) / divisor) * matchingReward.token.price;
-      }
+      const divisor = 10 ** matchingReward.token.decimals;
+      const unclaimedDecimal = hasClaimable
+        ? Number(unclaimedBaseUnits) / divisor
+        : null;
+      const claimedDecimal = hasClaimedBefore
+        ? Number(claimedAmount) / divisor
+        : null;
 
       return {
         hasClaimable,
-        unclaimedFiat,
+        unclaimedDecimal,
         hasClaimedBefore,
         claimableRewardDisplay,
-        lifetimeClaimedFiat,
+        claimedDecimal,
       };
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
@@ -196,10 +192,28 @@ export const useMerklRewards = ({
     cacheTime: MERKL_REWARDS_CACHE_TIME,
   });
 
+  const fiatRate = useTokenFiatRate((tokenAddress ?? '0x0') as Hex, chainId);
+
   // When `enabled` is false TanStack Query v4 still returns the last cached
   // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
   // leaks to callers that shouldn't show a badge.
   const hasClaimableRewardData = isEligible ? queryData : undefined;
+
+  const rewardAmountFiat = useMemo(() => {
+    const decimal = hasClaimableRewardData?.unclaimedDecimal;
+    if (decimal === null || decimal === undefined || fiatRate === undefined) {
+      return null;
+    }
+    return decimal * fiatRate;
+  }, [hasClaimableRewardData?.unclaimedDecimal, fiatRate]);
+
+  const lifetimeClaimedFiat = useMemo(() => {
+    const decimal = hasClaimableRewardData?.claimedDecimal;
+    if (decimal === null || decimal === undefined || fiatRate === undefined) {
+      return null;
+    }
+    return decimal * fiatRate;
+  }, [hasClaimableRewardData?.claimedDecimal, fiatRate]);
 
   const refetch = useCallback(() => {
     if (isEligible) {
@@ -210,11 +224,11 @@ export const useMerklRewards = ({
   return {
     isEligible,
     hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
-    rewardAmountFiat: hasClaimableRewardData?.unclaimedFiat ?? null,
+    rewardAmountFiat,
     hasClaimedBefore: hasClaimableRewardData?.hasClaimedBefore ?? false,
     claimableRewardDisplay:
       hasClaimableRewardData?.claimableRewardDisplay ?? null,
-    lifetimeClaimedFiat: hasClaimableRewardData?.lifetimeClaimedFiat ?? null,
+    lifetimeClaimedFiat,
     isLoading: isEligible && isQueryLoading,
     refetch,
   };
