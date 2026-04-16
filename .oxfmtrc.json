@@ -1,9 +1,5 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "printWidth": 80,
   "endOfLine": "lf",
-  "sortPackageJson": false,
   "ignorePatterns": [
     "*.scss",
     ".nyc_output/**/*",
@@ -32,5 +28,9 @@
     "/app/html/partials/partial-head.html",
     ".github/**",
     ".storybook/**"
-  ]
+  ],
+  "printWidth": 80,
+  "singleQuote": true,
+  "sortPackageJson": false,
+  "trailingComma": "all"
 }
