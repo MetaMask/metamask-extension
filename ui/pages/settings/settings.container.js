@@ -36,6 +36,7 @@ import {
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
   TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -89,6 +90,10 @@ const mapStateToProps = (state, ownProps) => {
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
+  );
+  const isWalletRecoveryBackupPage = Boolean(
+    pathname.match(ONBOARDING_REVEAL_SRP_ROUTE) &&
+    searchParams.get('isFromSettingsSecurity') === 'true',
   );
   const isTransactionShieldPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_ROUTE),
@@ -150,7 +155,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isRevealSrpListPage || isPasswordChangePage) {
+  } else if (isRevealSrpListPage || isPasswordChangePage || isWalletRecoveryBackupPage) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
