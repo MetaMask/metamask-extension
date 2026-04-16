@@ -124,25 +124,20 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
 /**
  * Checks if the state or backup object has a vault.
  *
- * @param stateOrBackup - The state or backup object to check for a vault. Omission is allowed.
+ * @param state - Full MetaMask state, a backup snapshot, or `null`. Omission is allowed.
  * @returns True if the vault exists, otherwise false.
  */
-export function hasVault(
-  stateOrBackup?: MetaMaskStateType | Backup | null,
-): stateOrBackup is {
+export function hasVault(state?: MetaMaskStateType | Backup | null): state is {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   KeyringController: RuntimeObject & Record<'vault', unknown>;
 } {
   // we're overly defensive here because we have no idea what happened to the
   // database, and we don't want to throw another error on some unexpected object.
-  if (
-    !isObject(stateOrBackup) ||
-    !hasProperty(stateOrBackup, 'KeyringController')
-  ) {
+  if (!isObject(state) || !hasProperty(state, 'KeyringController')) {
     return false;
   }
-  const keyringController = stateOrBackup.KeyringController;
+  const keyringController = state.KeyringController;
   return (
     isObject(keyringController) &&
     hasProperty(keyringController, 'vault') &&
