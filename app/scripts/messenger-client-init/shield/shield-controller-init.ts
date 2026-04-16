@@ -62,7 +62,7 @@ export const ShieldControllerInit: MessengerClientInitFunction<
   const getAccessToken = () =>
     initMessenger.call('AuthenticationController:getBearerToken');
 
-  const controller = new ShieldController({
+  const messengerClient = new ShieldController({
     messenger: controllerMessenger,
     state: persistedState.ShieldController,
     normalizeSignatureRequest,
@@ -80,6 +80,6 @@ export const ShieldControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

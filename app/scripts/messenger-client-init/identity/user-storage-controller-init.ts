@@ -29,7 +29,7 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
   // The environment must be the same used by AuthenticationController.
   const env = loadAuthenticationConfig();
   const { controllerMessenger, initMessenger, persistedState } = request;
-  const controller = new UserStorageController({
+  const messengerClient = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
     // @ts-expect-error Controller uses string for names rather than enum
@@ -98,6 +98,6 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

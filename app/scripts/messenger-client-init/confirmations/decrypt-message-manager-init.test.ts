@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('DecryptMessageManagerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = DecryptMessageManagerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(DecryptMessageManager);
+    const { messengerClient } = DecryptMessageManagerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(DecryptMessageManager);
   });
 
   it('passes the proper arguments to the controller', () => {

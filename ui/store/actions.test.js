@@ -39,7 +39,7 @@ jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
   () => ({
     PerpsControllerInit: jest.fn().mockReturnValue({
-      controller: {
+      messengerClient: {
         state: {},
         name: 'PerpsController',
       },
@@ -4602,7 +4602,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'HIDE_WARNING' },
-        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -4800,6 +4799,19 @@ describe('Actions', () => {
 
       await store.dispatch(actions.removeDeferredDeepLink());
       expect(background.removeDeferredDeepLink.callCount).toStrictEqual(1);
+    });
+  });
+
+  describe('#perpsToggleTestnet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsToggleTestnet in the background', async () => {
+      background.perpsToggleTestnet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+      await actions.perpsToggleTestnet();
+      expect(background.perpsToggleTestnet.callCount).toStrictEqual(1);
     });
   });
 

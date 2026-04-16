@@ -14,7 +14,7 @@ export const RatesControllerInit: MessengerClientInitFunction<
   RatesController,
   RatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new RatesController({
+  const messengerClient = new RatesController({
     // @ts-expect-error: `RatesController` is persisted as
     // `MultichainRatesController`, but the controller init pattern doesn't
     // allow this in the type of `persistedState`.
@@ -26,6 +26,6 @@ export const RatesControllerInit: MessengerClientInitFunction<
   return {
     memStateKey: 'MultichainRatesController',
     persistedStateKey: 'MultichainRatesController',
-    controller,
+    messengerClient,
   };
 };

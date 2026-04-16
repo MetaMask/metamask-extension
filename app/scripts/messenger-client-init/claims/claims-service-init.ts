@@ -11,14 +11,14 @@ export const ClaimsServiceInit: MessengerClientInitFunction<
 
   const { claimsEnv } = loadShieldConfig();
 
-  const service = new ClaimsService({
+  const messengerClient = new ClaimsService({
     messenger: controllerMessenger,
     env: claimsEnv,
     fetchFunction: fetch.bind(globalThis),
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 
 import { useCustomAmount } from '../../../../../hooks/musd/useCustomAmount';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
@@ -36,14 +37,47 @@ const mockUseTransactionPayAvailableTokens =
 const mockUseTransactionPayToken =
   useTransactionPayToken as jest.MockedFunction<typeof useTransactionPayToken>;
 
+const MOCK_PAY_TOKEN: TransactionPaymentToken = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  chainId: '0x1',
+  symbol: 'USDC',
+  decimals: 6,
+  balanceFiat: '100',
+  balanceHuman: '100',
+  balanceRaw: '100000000',
+  balanceUsd: '100',
+};
+
 describe('MusdOverrideContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseTransactionPayToken.mockReturnValue({
-      payToken: { address: '0xabc', chainId: '0x1' } as unknown as ReturnType<
-        typeof useTransactionPayToken
-      >['payToken'],
+      payToken: MOCK_PAY_TOKEN,
       setPayToken: jest.fn(),
+      isNative: false,
+    });
+  });
+
+  describe('when tokens are available but no pay token is pre-selected', () => {
+    it('renders PayWithRowSkeleton until controller pay token is set', () => {
+      mockUseCustomAmount.mockReturnValue({
+        shouldShowOutputAmountTag: false,
+        outputAmount: null,
+        outputSymbol: null,
+      });
+      mockUseTransactionPayAvailableTokens.mockReturnValue([
+        { symbol: 'USDC', chainId: '0x1' },
+      ] as ReturnType<typeof useTransactionPayAvailableTokens>);
+      mockUseTransactionPayToken.mockReturnValue({
+        payToken: undefined,
+        setPayToken: jest.fn(),
+        isNative: false,
+      });
+
+      render(<MusdOverrideContent amountHuman="0" />);
+
+      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
     });
   });
 

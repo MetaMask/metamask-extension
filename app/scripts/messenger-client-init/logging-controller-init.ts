@@ -17,14 +17,14 @@ export const LoggingControllerInit: MessengerClientInitFunction<
   LoggingController,
   LoggingControllerMessenger
 > = ({ controllerMessenger, persistedState, extension }) => {
-  const controller = new LoggingController({
+  const messengerClient = new LoggingController({
     messenger: controllerMessenger,
     state: persistedState.LoggingController,
   });
 
   extension.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'update') {
-      controller.add({
+      messengerClient.add({
         type: LogType.GenericLog,
         data: {
           event: LOG_EVENT.VERSION_UPDATE,
@@ -36,6 +36,6 @@ export const LoggingControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };
