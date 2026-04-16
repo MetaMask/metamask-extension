@@ -32,7 +32,7 @@ export function trackCriticalErrorEvent(
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       error_type: criticalErrorType,
-      ...(properties ?? {}),
+      ...properties,
     },
   });
 }
