@@ -789,8 +789,8 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
-        "@metamask/account-tree-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -814,18 +814,6 @@
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/keyring-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
         "uuid": true
       }
     },
@@ -863,7 +851,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controller>@metamask/assets-controllers": true,
-        "@metamask/assets-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
@@ -952,22 +940,6 @@
       }
     },
     "@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/base-controller": {
       "globals": {
         "console.error": true
       },
@@ -2639,11 +2611,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -4258,16 +4225,6 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {

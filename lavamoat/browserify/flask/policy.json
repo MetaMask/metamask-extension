@@ -796,8 +796,8 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
-        "@metamask/account-tree-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -820,23 +820,6 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/base-controller": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
         "uuid": true
       }
@@ -875,7 +858,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controller>@metamask/assets-controllers": true,
-        "@metamask/assets-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
@@ -956,7 +939,7 @@
         "@ethersproject/providers": true,
         "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/account-api": true,
-        "@metamask/assets-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -1007,30 +990,6 @@
       }
     },
     "@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/base-controller": {
       "globals": {
         "console.error": true
       },
@@ -1483,27 +1442,6 @@
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-internal-snap-client": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "mockttp>async-mutex": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -2953,12 +2891,6 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4453,15 +4385,6 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
@@ -6619,11 +6542,6 @@
       }
     },
     "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }
