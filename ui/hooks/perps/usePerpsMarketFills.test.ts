@@ -470,16 +470,16 @@ describe('usePerpsMarketFills', () => {
     it('excludes live fills while scope is transitioning to prevent mixing env data', async () => {
       let resolveNewEnvRest!: (fills: OrderFill[]) => void;
 
-      // Populate cache for mainnet
+      // Populate mainnet cache and mount the hook on mainnet
       setRestFillsResponse([
         makeFill({ orderId: 'main-rest', timestamp: 1000 }),
       ]);
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+      const { result, waitForNextUpdate, rerender } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitFirst();
+      await waitForNextUpdate();
 
-      // Switch to testnet; REST is in-flight, but stale mainnet live fills arrive
+      // Switch to testnet with an in-flight REST request
       mockSelectPerpsIsTestnet.mockReturnValue(true);
       mockSubmitRequestToBackground.mockReturnValue(
         new Promise<OrderFill[]>((resolve) => {
@@ -492,16 +492,15 @@ describe('usePerpsMarketFills', () => {
       });
       setLiveFills([mainnetLiveFill]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
+      // Trigger a re-render with the new env — currentScopeKey still on mainnet key
+      rerender();
 
       // Before testnet REST resolves, live fills from mainnet must not appear
       expect(
         result.current.fills.every((f) => f.orderId !== 'mainnet-live'),
       ).toBe(true);
 
-      // Testnet REST resolves — live fills are now accepted
+      // Testnet REST resolves — currentScopeKey advances, live fills are now accepted
       await act(async () => {
         resolveNewEnvRest([
           makeFill({ orderId: 'test-rest', timestamp: 2000 }),
