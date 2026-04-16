@@ -9,8 +9,9 @@ jest.mock('./usePerpsLivePrices');
 
 const mockUsePerpsLiveMarketData =
   usePerpsLiveMarketData as jest.MockedFunction<typeof usePerpsLiveMarketData>;
-const mockUsePerpsLivePrices =
-  usePerpsLivePrices as jest.MockedFunction<typeof usePerpsLivePrices>;
+const mockUsePerpsLivePrices = usePerpsLivePrices as jest.MockedFunction<
+  typeof usePerpsLivePrices
+>;
 
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
