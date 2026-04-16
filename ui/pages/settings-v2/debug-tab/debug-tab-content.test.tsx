@@ -100,10 +100,7 @@ describe('Debug tab', () => {
   });
 
   it('should toggle Service Worker Keep Alive', async () => {
-    const { getByTestId } = renderWithProvider(
-      <DebugTabContent />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<DebugTabContent />, mockStore);
     const triggerButton = getByTestId(
       'developer-options-service-worker-alive-toggle',
     );
