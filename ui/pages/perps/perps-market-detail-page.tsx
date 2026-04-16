@@ -298,6 +298,40 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
+
+  const orderFilledToastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (orderFilledToastShownRef.current) {
+      return;
+    }
+
+    const routeState = location.state as Record<string, unknown> | null;
+    const pendingSymbol =
+      typeof routeState?.pendingOrderSymbol === 'string'
+        ? routeState.pendingOrderSymbol
+        : null;
+
+    if (!pendingSymbol) {
+      return;
+    }
+
+    const hasPosition = allPositions.some((p) => p.symbol === pendingSymbol);
+    if (hasPosition) {
+      orderFilledToastShownRef.current = true;
+
+      const filledDescription =
+        typeof routeState?.pendingOrderFilledDescription === 'string'
+          ? routeState.pendingOrderFilledDescription
+          : undefined;
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.ORDER_FILLED,
+        ...(filledDescription ? { description: filledDescription } : {}),
+      });
+    }
+  }, [location.state, allPositions, replacePerpsToastByKey]);
+
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
