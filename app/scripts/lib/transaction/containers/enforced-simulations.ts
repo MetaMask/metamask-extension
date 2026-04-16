@@ -105,7 +105,7 @@ function generateCaveats(
     });
 
     caveats.push({
-      enforcer: environment.caveatEnforcers.nativeBalanceChange,
+      enforcer: environment.caveatEnforcers.NativeBalanceChangeEnforcer,
       terms: createNativeBalanceChangeTerms({
         recipient,
         balance: delta,
@@ -146,7 +146,7 @@ function generateCaveats(
     switch (standard) {
       case SimulationTokenStandard.erc20:
         caveats.push({
-          enforcer: environment.caveatEnforcers.erc20BalanceChange,
+          enforcer: environment.caveatEnforcers.ERC20BalanceChangeEnforcer,
           terms: createERC20BalanceChangeTerms({
             tokenAddress: token,
             recipient,
@@ -160,7 +160,7 @@ function generateCaveats(
 
       case SimulationTokenStandard.erc721:
         caveats.push({
-          enforcer: environment.caveatEnforcers.erc721BalanceChange,
+          enforcer: environment.caveatEnforcers.ERC721BalanceChangeEnforcer,
           terms: createERC721BalanceChangeTerms({
             tokenAddress: token,
             recipient,
@@ -173,7 +173,7 @@ function generateCaveats(
 
       case SimulationTokenStandard.erc1155:
         caveats.push({
-          enforcer: environment.caveatEnforcers.erc1155BalanceChange,
+          enforcer: environment.caveatEnforcers.ERC1155BalanceChangeEnforcer,
           terms: createERC1155BalanceChangeTerms({
             tokenAddress: token,
             recipient,

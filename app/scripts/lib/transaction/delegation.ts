@@ -178,7 +178,7 @@ export async function convertTransactionToRedeemDelegations(
   return {
     authorizationList,
     data,
-    to: environment.DelegationManager as Hex,
+    to: environment.DelegationManager,
   };
 }
 
@@ -262,7 +262,7 @@ function buildDefaultCaveats(
 ): Caveat[] {
   const caveats: Caveat[] = [
     {
-      enforcer: environment.caveatEnforcers.limitedCalls,
+      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
       terms: createLimitedCallsTerms({
         limit: 1,
       }),
@@ -272,7 +272,7 @@ function buildDefaultCaveats(
 
   if (executions.length > 1) {
     caveats.push({
-      enforcer: environment.caveatEnforcers.exactExecutionBatch,
+      enforcer: environment.caveatEnforcers.ExactExecutionBatchEnforcer,
       terms: createExactExecutionBatchTerms({
         executions,
       }),
@@ -282,7 +282,7 @@ function buildDefaultCaveats(
     const execution = executions[0];
 
     caveats.push({
-      enforcer: environment.caveatEnforcers.exactExecution,
+      enforcer: environment.caveatEnforcers.ExactExecutionEnforcer,
       terms: createExactExecutionTerms({
         execution,
       }),

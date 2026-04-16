@@ -171,9 +171,9 @@ describe('delegation', () => {
     getDeleGatorEnvironmentMock.mockReturnValue({
       DelegationManager: DELEGATION_MANAGER_ADDRESS_MOCK,
       caveatEnforcers: {
-        limitedCalls: LIMITED_CALLS_ENFORCER_MOCK,
-        exactExecution: EXACT_EXECUTION_ENFORCER_MOCK,
-        exactExecutionBatch: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
+        LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
+        ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
+        ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
       },
     } as never);
 
