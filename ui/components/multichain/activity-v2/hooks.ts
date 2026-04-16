@@ -16,6 +16,7 @@ import { selectTransactions } from '../../../../shared/lib/multichain/transforma
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { MINUTE } from '../../../../shared/constants/time';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { getIsTransactionLabelsEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { apiClient } from '../../../helpers/api-client';
@@ -172,6 +173,9 @@ function classifyNft(
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+  const isExtensionTransactionLabelsEnabled = useSelector(
+    getIsTransactionLabelsEnabled,
+  );
 
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
@@ -180,6 +184,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const resolvedType = resolveTransactionType(transaction);
   if (resolvedType === TransactionType.musdClaim) {
     return t('musdClaimTitle');
+  }
+
+  const readableLabel = transaction.readable?.trim();
+  if (isExtensionTransactionLabelsEnabled && readableLabel) {
+    return readableLabel;
   }
 
   const { transactionCategory, transactionType, transactionProtocol } =
