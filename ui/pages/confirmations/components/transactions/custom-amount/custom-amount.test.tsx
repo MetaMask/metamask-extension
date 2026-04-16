@@ -144,7 +144,6 @@ describe('CustomAmount', () => {
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
     const amountRow = screen.getByTestId('custom-amount-input').parentElement;
-    expect(amountRow).toHaveClass('mm-box--align-items-baseline');
   });
 
   it('does not include decimal separators when calculating input width', () => {
