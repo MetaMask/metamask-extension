@@ -2,6 +2,10 @@ import { act, waitFor } from '@testing-library/react';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';
 
 const mockUseNavigate = jest.fn();
@@ -95,7 +99,7 @@ describe('useNavigateOnQrScanComplete', () => {
     );
   });
 
-  it('does not navigate when QR scan is rejected/cancelled (lastQrScanCompletedSuccessfully false)', async () => {
+  it('navigates back to prepare when QR scan is rejected/cancelled (lastQrScanCompletedSuccessfully false)', async () => {
     const store = createBridgeMockStore();
 
     mockUseSelectorOverrides = {
@@ -121,7 +125,12 @@ describe('useNavigateOnQrScanComplete', () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+      {
+        replace: true,
+      },
+    );
   });
 
   it('does not navigate when QR scan request is always null', () => {

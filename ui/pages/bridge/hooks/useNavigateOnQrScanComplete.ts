@@ -1,12 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
 } from '../../../selectors/selectors';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.
@@ -17,6 +22,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
  */
 export function useNavigateOnQrScanComplete(): void {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,
@@ -38,8 +44,25 @@ export function useNavigateOnQrScanComplete(): void {
         replace: true,
         state: { stayOnHomePage: true },
       });
+      return;
+    }
+
+    if (
+      wasQrScanActive &&
+      isQrScanCleared &&
+      lastQrScanCompletedSuccessfully === false
+    ) {
+      dispatch(setWasTxDeclined(true));
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+        replace: true,
+      });
     }
 
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
-  }, [activeQrCodeScanRequest, lastQrScanCompletedSuccessfully, navigate]);
+  }, [
+    activeQrCodeScanRequest,
+    dispatch,
+    lastQrScanCompletedSuccessfully,
+    navigate,
+  ]);
 }

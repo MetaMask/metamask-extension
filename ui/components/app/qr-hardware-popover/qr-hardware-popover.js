@@ -46,13 +46,16 @@ const QRHardwarePopover = () => {
   );
 
   const signRequestCancel = useCallback(() => {
-    dispatch(
-      rejectPendingApproval(
-        _txData.id,
-        serializeError(providerErrors.userRejectedRequest()),
-      ),
-    );
-    dispatch(cancelTx(_txData));
+    if (_txData?.id) {
+      dispatch(
+        rejectPendingApproval(
+          _txData.id,
+          serializeError(providerErrors.userRejectedRequest()),
+        ),
+      );
+      dispatch(cancelTx(_txData));
+    }
+
     dispatch(cancelQrCodeScan());
   }, [dispatch, _txData]);
 
