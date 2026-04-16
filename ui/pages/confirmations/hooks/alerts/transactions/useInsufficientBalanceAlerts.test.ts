@@ -1,4 +1,8 @@
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  toChecksumHexAddress,
+  toHex,
+} from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
@@ -9,14 +13,34 @@ import { getMockConfirmState } from '../../../../../../test/data/confirmations/h
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
+import {
+  useTransactionPayPrimaryRequiredToken,
+  useTransactionPayRequiredTokens,
+} from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 jest.mock('../../gas/useIsGaslessSupported');
+jest.mock('../../pay/useTransactionPayHasSourceAmount');
+jest.mock('../../pay/useTransactionPayData');
+jest.mock('../../pay/useTransactionPayToken');
 
 const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+const useTransactionPayHasSourceAmountMock = jest.mocked(
+  useTransactionPayHasSourceAmount,
+);
+const useTransactionPayPrimaryRequiredTokenMock = jest.mocked(
+  useTransactionPayPrimaryRequiredToken,
+);
+const useTransactionPayRequiredTokensMock = jest.mocked(
+  useTransactionPayRequiredTokens,
+);
+const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const TRANSACTION_MOCK = {
   ...genUnapprovedContractInteractionConfirmation({
@@ -24,7 +48,7 @@ const TRANSACTION_MOCK = {
   }),
   id: TRANSACTION_ID_MOCK,
   txParams: {
-    from: '0x123',
+    from: ACCOUNT_ADDRESS,
     value: '0x2',
     maxFeePerGas: '0x2',
     gas: '0x3',
@@ -80,7 +104,9 @@ function buildState({
       pendingApprovals,
       accountsByChainId: {
         [chainId ?? '0x5']: {
-          [accountAddress]: { balance: toHex(balance ?? 0) },
+          [toChecksumHexAddress(accountAddress)]: {
+            balance: toHex(balance ?? 0),
+          },
         },
       },
       transactions: transaction ? [transaction] : [],
@@ -109,6 +135,12 @@ describe('useInsufficientBalanceAlerts', () => {
       isSupported: false,
       pending: false,
     });
+    useTransactionPayHasSourceAmountMock.mockReturnValue(false);
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -132,6 +164,18 @@ describe('useInsufficientBalanceAlerts', () => {
         ...TRANSACTION_MOCK,
         isGasFeeSponsored: true,
       },
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns no alerts if pay quote is being used', () => {
+    useTransactionPayHasSourceAmountMock.mockReturnValue(true);
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
     });
 
     expect(alerts).toEqual([]);
@@ -167,6 +211,72 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual(ALERT);
+  });
+
+  it('return alert when balance is insufficient, has `selectedGasFeeToken` but empty gasFeeTokens (Tempo)', () => {
+    const transactionFromTempoMock = {
+      ...genUnapprovedContractInteractionConfirmation({
+        chainId: '0x1079',
+        excludeNativeTokenForFee: true,
+        gasFeeTokens: [],
+        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+      }),
+      id: TRANSACTION_ID_MOCK,
+      txParams: {
+        from: ACCOUNT_ADDRESS,
+        value: '0x2',
+        maxFeePerGas: '0x2',
+        gas: '0x3',
+      } as TransactionParams,
+    } as TransactionMeta;
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+    const alerts = runHook({
+      balance: 0,
+      currentConfirmation: transactionFromTempoMock,
+      transaction: {
+        ...transactionFromTempoMock,
+      },
+    });
+
+    expect(alerts).toEqual([
+      {
+        actions: [
+          {
+            key: 'buy',
+            label: 'Buy pathUSD',
+          },
+        ],
+        field: 'estimatedFee',
+        isBlocking: true,
+        key: 'insufficientBalance',
+        message:
+          'You do not have enough pathUSD in your account to pay for network fees.',
+        reason: 'Insufficient funds',
+        severity: 'danger',
+      },
+    ]);
+  });
+
+  it('returns no alerts when pay is active but required token amount is zero', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { address: '0xabc', chainId: '0x1' } as never,
+      setPayToken: jest.fn(),
+    });
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountRaw: '0',
+    } as never);
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual([]);
   });
 
   it('returns no alerts if no transaction matching confirmation', () => {
@@ -208,16 +318,18 @@ describe('useInsufficientBalanceAlerts', () => {
         },
       ],
     };
+    // Balance of 1500000005 is sufficient for a single send (value=0x2, gas=0x6)
+    // but insufficient for the batch total (value + nested values + gas = 1500000008)
     expect(
       runHook({
-        balance: 210000000002,
+        balance: 1500000005,
         currentConfirmation: TRANSACTION_MOCK as Partial<TransactionMeta>,
         transaction: TRANSACTION_MOCK as Partial<TransactionMeta>,
       }),
     ).toEqual([]);
     expect(
       runHook({
-        balance: 210000000002,
+        balance: 1500000005,
         currentConfirmation: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
         transaction: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
       }),

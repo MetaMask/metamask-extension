@@ -1,22 +1,26 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
-import { IconSize } from '@metamask/design-system-react';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import classnames from 'clsx';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Icon,
   IconColor,
-  JustifyContent,
-  TextAlign,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import SRPQuiz from '../../app/srp-quiz-modal';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export type MultichainSrpBackupProps = {
   shouldShowBackupReminder?: boolean;
@@ -31,20 +35,17 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
       navigate(backUpSRPRoute);
     } else {
-      setSrpQuizModalVisible(true);
+      navigate(
+        keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
+      );
     }
-  }, [shouldShowBackupReminder, navigate, setSrpQuizModalVisible]);
-
-  const handleQuizModalClose = useCallback(() => {
-    setSrpQuizModalVisible(false);
-  }, [setSrpQuizModalVisible]);
+  }, [shouldShowBackupReminder, navigate, keyringId]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 
@@ -53,27 +54,31 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
       <Box
         className={finalClassName}
         padding={4}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
         onClick={handleSrpBackupClick}
         data-testid="multichain-srp-backup"
       >
         <Box>
           <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {t('secretRecoveryPhrase')}
           </Text>
         </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
           <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
             {shouldShowBackupReminder
               ? t('accountDetailsSrpBackUpMessage')
@@ -82,19 +87,10 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         </Box>
       </Box>
-      {srpQuizModalVisible && keyringId && (
-        <SRPQuiz
-          keyringId={keyringId}
-          isOpen={srpQuizModalVisible}
-          onClose={handleQuizModalClose}
-          closeAfterCompleting
-          navigate={navigate}
-        />
-      )}
     </>
   );
 };

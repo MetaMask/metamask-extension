@@ -8,7 +8,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
 import { Skeleton } from '../../../../components/component-library/skeleton';

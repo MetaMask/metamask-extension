@@ -9,6 +9,7 @@ import {
 import { fireEvent, waitFor } from '@testing-library/react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import * as backgroundConnection from '../../../../store/background-connection';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderInterface, MOCK_INTERFACE_ID, MOCK_SNAP_ID } from './test-utils';
 
 jest.mock('../../../../store/background-connection', () => ({
@@ -111,7 +112,7 @@ describe('SnapUIRenderer', () => {
       { useFooter: true, onCancel },
     );
 
-    const button = getByText('Cancel');
+    const button = getByText(messages.cancel.message);
     expect(button).toBeDefined();
     expect(container).toMatchSnapshot();
 

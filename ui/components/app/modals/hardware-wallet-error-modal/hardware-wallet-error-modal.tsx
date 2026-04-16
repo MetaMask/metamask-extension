@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Text,
@@ -29,13 +36,26 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
+import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardwareWalletRecoveryLocation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import {
+  buildHardwareWalletRecoverySegmentProperties,
+  getHardwareWalletMetricDeviceModel,
+  mapHardwareWalletRecoveryErrorType,
+  mapHardwareWalletTypeToMetricDeviceType,
+} from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
+  getHardwareWalletErrorCode,
+  isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-// HardwareWalletType is used as a default fallback when walletType cannot be extracted
 import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
@@ -46,6 +66,8 @@ type HardwareWalletErrorModalProps = {
   onRetry?: () => void;
 };
 
+const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
+
 /**
  * Modal component to display hardware wallet errors with recovery instructions
  *
@@ -54,35 +76,254 @@ type HardwareWalletErrorModalProps = {
 export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
   React.memo((props) => {
     const t = useI18nContext();
+    const { trackEvent } = useContext(MetaMetricsContext);
+    const recoveryLocation = useHardwareWalletRecoveryLocation();
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
+    const recoveredDismissTimeoutRef = useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
+    const errorTypeViewCountRef = useRef(0);
+    const lastTrackedErrorKeyRef = useRef<string | null>(null);
+    const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
+    const successModalMetricSentRef = useRef(false);
     const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
-    const { ensureDeviceReady, clearError } = useHardwareWalletActions();
+    const { ensureDeviceReady, clearError, setConnectionReady } =
+      useHardwareWalletActions();
+
+    // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
+    // account may differ from the selected account). Read both top-level `metadata` and RPC-style
+    // `data.metadata`. Then selected account, then Ledger so copy/icons still resolve if metadata is missing.
+    const errorMetadata =
+      error === undefined
+        ? undefined
+        : ((error as { metadata?: { walletType?: HardwareWalletType } })
+            .metadata ??
+          (
+            error as {
+              data?: { metadata?: { walletType?: HardwareWalletType } };
+            }
+          ).data?.metadata);
+    const errorWalletType = errorMetadata?.walletType;
+    const displayWalletType = useMemo(
+      () =>
+        errorWalletType ??
+        selectedAccountWalletType ??
+        HardwareWalletType.Ledger,
+      [errorWalletType, selectedAccountWalletType],
+    );
+    const trackableMetricDeviceType = useMemo(
+      () =>
+        mapHardwareWalletTypeToMetricDeviceType(
+          errorWalletType ?? selectedAccountWalletType,
+        ),
+      [errorWalletType, selectedAccountWalletType],
+    );
+
+    const isUserRejectedError =
+      error !== undefined && isUserRejectedHardwareWalletError(error);
+
+    const errorIdentityKey = useMemo(() => {
+      if (!error) {
+        return null;
+      }
+      const code = getHardwareWalletErrorCode(error);
+      return `${recoveryLocation}:${String(code)}:${mapHardwareWalletRecoveryErrorType(error)}`;
+    }, [error, recoveryLocation]);
+
+    useEffect(() => {
+      setRecovered(false);
+      successModalMetricSentRef.current = false;
+
+      if (errorIdentityKey === null) {
+        prevNonNullErrorIdentityKeyRef.current = null;
+        return;
+      }
+
+      if (
+        prevNonNullErrorIdentityKeyRef.current !== null &&
+        prevNonNullErrorIdentityKeyRef.current !== errorIdentityKey
+      ) {
+        errorTypeViewCountRef.current = 0;
+      }
+      prevNonNullErrorIdentityKeyRef.current = errorIdentityKey;
+    }, [errorIdentityKey]);
+
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = null;
+    }, [error]);
+
+    useEffect(() => {
+      if (!error || isUserRejectedError || !errorIdentityKey) {
+        return;
+      }
+      if (!trackableMetricDeviceType) {
+        return;
+      }
+      if (lastTrackedErrorKeyRef.current === errorIdentityKey) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = errorIdentityKey;
+      errorTypeViewCountRef.current += 1;
+      const deviceModel = getHardwareWalletMetricDeviceModel(error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType: trackableMetricDeviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount: errorTypeViewCountRef.current,
+          error,
+        }),
+      });
+    }, [
+      error,
+      errorIdentityKey,
+      isUserRejectedError,
+      recoveryLocation,
+      trackableMetricDeviceType,
+      trackEvent,
+    ]);
+
+    const handleRetry = async () => {
+      onRetry?.();
+      if (error && trackableMetricDeviceType) {
+        const deviceModel = getHardwareWalletMetricDeviceModel(error);
+        trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          properties: buildHardwareWalletRecoverySegmentProperties({
+            location: recoveryLocation,
+            deviceType: trackableMetricDeviceType,
+            deviceModel,
+            errorType: mapHardwareWalletRecoveryErrorType(error),
+            errorTypeViewCount: errorTypeViewCountRef.current,
+            error,
+          }),
+        });
+      }
+
+      setIsLoading(true);
+      try {
+        const result = await ensureDeviceReady();
+        if (result) {
+          setConnectionReady();
+          setRecovered(true);
+        } else if (error && trackableMetricDeviceType) {
+          errorTypeViewCountRef.current += 1;
+          const deviceModel = getHardwareWalletMetricDeviceModel(error);
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+            properties: buildHardwareWalletRecoverySegmentProperties({
+              location: recoveryLocation,
+              deviceType: trackableMetricDeviceType,
+              deviceModel,
+              errorType: mapHardwareWalletRecoveryErrorType(error),
+              errorTypeViewCount: errorTypeViewCountRef.current,
+              error,
+            }),
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleClose = useCallback(() => {
+      onCancel?.();
+      clearError();
+      hideModal();
+    }, [clearError, hideModal, onCancel]);
+
+    const handleRecoveredClose = useCallback(() => {
+      clearError();
+      setConnectionReady();
+      hideModal();
+    }, [clearError, hideModal, setConnectionReady]);
+
+    useEffect(() => {
+      if (!recovered) {
+        return;
+      }
+
+      recoveredDismissTimeoutRef.current = setTimeout(() => {
+        handleRecoveredClose();
+      }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
+
+      return () => {
+        if (recoveredDismissTimeoutRef.current) {
+          clearTimeout(recoveredDismissTimeoutRef.current);
+          recoveredDismissTimeoutRef.current = null;
+        }
+      };
+    }, [handleRecoveredClose, recovered]);
+
+    useEffect(() => {
+      if (!recovered || !error || successModalMetricSentRef.current) {
+        return;
+      }
+      if (!trackableMetricDeviceType) {
+        return;
+      }
+      successModalMetricSentRef.current = true;
+      const deviceModel = getHardwareWalletMetricDeviceModel(error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType: trackableMetricDeviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount: errorTypeViewCountRef.current,
+          error,
+        }),
+      });
+      lastTrackedErrorKeyRef.current = null;
+      errorTypeViewCountRef.current = 0;
+      prevNonNullErrorIdentityKeyRef.current = null;
+    }, [
+      error,
+      recovered,
+      recoveryLocation,
+      trackEvent,
+      trackableMetricDeviceType,
+    ]);
+
+    useEffect(() => {
+      if (!isUserRejectedError) {
+        return;
+      }
+
+      handleClose();
+    }, [handleClose, isUserRejectedError]);
+
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+
+      onClose?.();
+    }, [error, onClose]);
 
     // If no error, don't render anything
     if (!error) {
-      onClose?.();
       return null;
     }
 
-    // Get wallet type from error metadata first (for signature flows where
-    // the signing account may differ from the selected account), then fall
-    // back to the selected account's wallet type.
-    // Handle both direct metadata and RPC error format (data.metadata)
-    const errorMetadata =
-      (error as { metadata?: { walletType?: HardwareWalletType } }).metadata ??
-      (error as { data?: { metadata?: { walletType?: HardwareWalletType } } })
-        .data?.metadata;
-    const errorWalletType = errorMetadata?.walletType;
-
-    // Use errorWalletType, then selectedAccountWalletType, then default to Ledger
-    // as a fallback since most hardware wallet users are Ledger users.
-    // This ensures the modal always shows rather than silently closing.
-    const displayWalletType =
-      errorWalletType ?? selectedAccountWalletType ?? HardwareWalletType.Ledger;
+    // User intentionally rejected on device; this is a cancel path, not an error state.
+    if (isUserRejectedError) {
+      return null;
+    }
 
     const errorContent = buildErrorContent(
       error,
@@ -106,25 +347,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       </Text>
     );
 
-    const handleRetry = async () => {
-      onRetry?.();
-      setIsLoading(true);
-      try {
-        const result = await ensureDeviceReady();
-        if (result) {
-          setRecovered(true);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const handleClose = () => {
-      onCancel?.();
-      clearError();
-      hideModal();
-    };
-
     const retryButtonText =
       error.code === ErrorCode.DeviceDisconnected
         ? t('hardwareWalletErrorContinueButton')
@@ -142,13 +364,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       return (
         <Modal
           isOpen={true}
-          onClose={handleClose}
+          onClose={handleRecoveredClose}
           isClosedOnOutsideClick={false}
           isClosedOnEscapeKey
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={handleClose}>
+            <ModalHeader onClose={handleRecoveredClose}>
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}

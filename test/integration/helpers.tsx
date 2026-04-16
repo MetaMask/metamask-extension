@@ -26,7 +26,10 @@ type WidenDeep<Type> = Type extends string
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
-  return (method: string): Promise<T | undefined> => {
+  return (method: string): Promise<T | undefined | string> => {
+    if (method === 'getBearerToken') {
+      return Promise.resolve('mock-bearer-token-for-tests');
+    }
     if (method in requests) {
       return Promise.resolve(requests[method]);
     }
@@ -70,10 +73,10 @@ export const getSelectedAccountGroup = <
 >(
   state: State,
 ) => {
-  const groupId = state.accountTree.selectedAccountGroup;
+  const groupId = state.selectedAccountGroup;
   const {
     wallet: { id: walletId },
-  } = parseAccountGroupId(state.accountTree.selectedAccountGroup);
+  } = parseAccountGroupId(state.selectedAccountGroup);
   const wallet =
     state.accountTree.wallets[
       walletId as keyof typeof state.accountTree.wallets

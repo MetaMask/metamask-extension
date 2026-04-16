@@ -22,6 +22,16 @@ class GatorPermissionsPage {
   }
 
   /**
+   * Check if the Gator Permissions page is displayed.
+   * Useful for flow logic to detect whether we landed on this intermediate page.
+   */
+  async isPageDisplayed(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.gatorPermissionsPage,
+    );
+  }
+
+  /**
    * Check if the Gator Permissions page is loaded
    */
   async checkPageIsLoaded(): Promise<void> {

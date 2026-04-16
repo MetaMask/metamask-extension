@@ -9,14 +9,14 @@ import {
   getSwapsDefaultToken,
   getTokenList,
 } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import {
   getConversionRate,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { isSwapsDefaultTokenSymbol } from '../../shared/lib/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { TokenBucketPriority } from '../../shared/constants/swaps';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';

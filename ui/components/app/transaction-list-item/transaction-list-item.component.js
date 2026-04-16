@@ -1,7 +1,7 @@
-/* eslint-disable import/no-duplicates */
+/* eslint-disable import-x/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -12,7 +12,7 @@ import {
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CancelSpeedupPopover from '../cancel-speedup-popover';
+import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
@@ -41,16 +41,15 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
-import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../../../ducks/bridge-status/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -58,37 +57,46 @@ import {
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { ChainBadge } from '../chain-badge/chain-badge';
-import { mapTransactionTypeToCategory } from './helpers';
+import {
+  mapTransactionTypeToCategory,
+  resolveTransactionType,
+} from './helpers';
 
 function TransactionListItemInner({
   transactionGroup,
   setEditGasMode,
   isEarliestNonce = false,
   chainId,
-  supportsEIP1559,
 }) {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
-    useState(false);
-  const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
 
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-    isBridgeFailed,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-    isEarliestNonce,
-  });
+  const { isBridgeComplete, showBridgeTxDetails, isBridgeFailed } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
+  const bridgeTxHistoryItemByHash = useSelector((state) =>
+    selectBridgeHistoryItemByHash(
+      state,
+      transactionGroup.initialTransaction.hash,
+    ),
+  );
+  const bridgeTxHistoryItemByOriginalTxMetaId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(
+      state,
+      transactionGroup.initialTransaction.id,
+    ),
+  );
+  const bridgeTxHistoryItem =
+    bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
+  const isIntentBridgeActivity = Boolean(bridgeTxHistoryItem?.quote?.intent);
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
@@ -96,8 +104,10 @@ function TransactionListItemInner({
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
-    primaryTransaction: { error, status },
+    primaryTransaction: { error, status, selectedGasFeeToken },
   } = transactionGroup;
+
+  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
 
   const badgeChainId =
     type === TransactionType.perpsDeposit && metamaskPay?.chainId
@@ -119,14 +129,10 @@ function TransactionListItemInner({
           legacy_event: true,
         },
       });
-      if (supportsEIP1559) {
-        setEditGasMode(EditGasModes.speedUp);
-        openModal('cancelSpeedUpTransaction');
-      } else {
-        setShowRetryEditGasPopover(true);
-      }
+      setEditGasMode(EditGasModes.speedUp);
+      openModal('cancelSpeedUpTransaction');
     },
-    [openModal, setEditGasMode, trackEvent, supportsEIP1559],
+    [openModal, setEditGasMode, trackEvent],
   );
 
   const cancelTransaction = useCallback(
@@ -142,22 +148,12 @@ function TransactionListItemInner({
       });
       if (status === TransactionStatus.approved) {
         dispatch(abortTransactionSigning(id));
-      } else if (supportsEIP1559) {
+      } else {
         setEditGasMode(EditGasModes.cancel);
         openModal('cancelSpeedUpTransaction');
-      } else {
-        setShowCancelEditGasPopover(true);
       }
     },
-    [
-      trackEvent,
-      openModal,
-      setEditGasMode,
-      supportsEIP1559,
-      status,
-      dispatch,
-      id,
-    ],
+    [trackEvent, openModal, setEditGasMode, status, dispatch, id],
   );
 
   const shouldShowSpeedUp = useShouldShowSpeedUp(
@@ -165,9 +161,13 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
-  const category = mapTransactionTypeToCategory(
+  const resolvedType = resolveTransactionType(
     transactionGroup.initialTransaction.type,
+    transactionGroup.initialTransaction.txParams?.to,
+    transactionGroup.initialTransaction.txParams?.data,
   );
+
+  const category = mapTransactionTypeToCategory(resolvedType);
 
   const {
     title,
@@ -180,6 +180,11 @@ function TransactionListItemInner({
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
       : getStatusKey(transactionGroup.primaryTransaction);
+  const shouldShowPendingBridgeStatus =
+    Boolean(isUnifiedSwapTx) &&
+    displayedStatusKey === TransactionStatus.submitted &&
+    !isBridgeFailed &&
+    !isBridgeComplete;
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -239,13 +244,21 @@ function TransactionListItemInner({
       !isPending ||
       isUnapproved ||
       isSigning ||
-      isSubmitting
+      isSubmitting ||
+      hasGasFeeTokenSelected
     ) {
       return false;
     }
 
     return true;
-  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    isPending,
+    isSigning,
+    isSubmitting,
+    hasGasFeeTokenSelected,
+  ]);
 
   const speedUpButton = useMemo(() => {
     if (!isSpeedUpButtonVisible) {
@@ -269,7 +282,13 @@ function TransactionListItemInner({
     cancelTransaction,
   ]);
   const showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
+    !hasCancelled &&
+    isPending &&
+    !isUnapproved &&
+    !isSubmitting &&
+    !isBridgeTx &&
+    !isIntentBridgeActivity &&
+    !hasGasFeeTokenSelected;
 
   return (
     <>
@@ -300,7 +319,7 @@ function TransactionListItemInner({
             <TransactionStatusLabel
               statusOnly
               isPending={isPending}
-              isEarliestNonce={isEarliestNonce}
+              isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
               date={date}
               status={displayedStatusKey}
@@ -356,9 +375,7 @@ function TransactionListItemInner({
         )}
       </ActivityListItem>
       {showDetails &&
-        (PAY_TRANSACTION_TYPES.includes(
-          transactionGroup.initialTransaction.type,
-        ) ? (
+        (PAY_TRANSACTION_TYPES.includes(resolvedType) ? (
           <TransactionDetailsModal
             transactionMeta={transactionGroup.initialTransaction}
             onClose={toggleShowDetails}
@@ -374,12 +391,13 @@ function TransactionListItemInner({
             onRetry={retryTransaction}
             // showRetry={showRetry}
             showSpeedUp={isSpeedUpButtonVisible}
-            isEarliestNonce={isEarliestNonce}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
                 isPending={isPending}
-                isEarliestNonce={isEarliestNonce}
+                isEarliestNonce={
+                  isEarliestNonce || shouldShowPendingBridgeStatus
+                }
                 error={error}
                 date={date}
                 status={displayedStatusKey}
@@ -389,20 +407,6 @@ function TransactionListItemInner({
             chainId={chainId}
           />
         ))}
-      {!supportsEIP1559 && showRetryEditGasPopover && (
-        <EditGasPopover
-          onClose={() => setShowRetryEditGasPopover(false)}
-          mode={EditGasModes.speedUp}
-          transaction={transactionGroup.primaryTransaction}
-        />
-      )}
-      {!supportsEIP1559 && showCancelEditGasPopover && (
-        <EditGasPopover
-          onClose={() => setShowCancelEditGasPopover(false)}
-          mode={EditGasModes.cancel}
-          transaction={transactionGroup.primaryTransaction}
-        />
-      )}
     </>
   );
 }
@@ -412,7 +416,6 @@ TransactionListItemInner.propTypes = {
   isEarliestNonce: PropTypes.bool,
   setEditGasMode: PropTypes.func,
   chainId: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
 };
 
 const TransactionListItem = (props) => {
@@ -420,33 +423,10 @@ const TransactionListItem = (props) => {
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;
 
-  const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
-
   return (
     <TransactionModalContextProvider>
-      <TransactionListItemInner
-        {...props}
-        setEditGasMode={setEditGasMode}
-        supportsEIP1559={supportsEIP1559}
-      />
-      {supportsEIP1559 && (
-        <>
-          <CancelSpeedupPopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
-          <EditGasFeePopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
-          <AdvancedGasFeePopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
-        </>
-      )}
+      <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
+      <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
     </TransactionModalContextProvider>
   );
 };

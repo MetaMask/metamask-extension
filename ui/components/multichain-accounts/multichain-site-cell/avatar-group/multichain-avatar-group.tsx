@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   TextColor,

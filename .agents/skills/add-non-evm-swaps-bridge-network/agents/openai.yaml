@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Non-EVM Swaps/Bridge Network"
+  short_description: "Implement and validate extension non-EVM bridge/swaps support."
+  default_prompt: "Use $add-non-evm-swaps-bridge-network to implement or review non-EVM Swaps/Bridge support with the extension's canonical code-gate and LaunchDarkly rollout standard."

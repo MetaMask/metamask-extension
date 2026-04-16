@@ -27,8 +27,8 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { sanitizeMessageRecursively } from '../../../../shared/lib/typed-signature';
+import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { RootMessenger } from '../messenger';
 import {

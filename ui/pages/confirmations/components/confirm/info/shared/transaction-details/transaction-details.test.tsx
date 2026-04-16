@@ -9,6 +9,7 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -232,8 +233,8 @@ describe('Transaction Details', () => {
         <TransactionDetails />,
         mockStore,
       );
-      expect(getByText('Network')).toBeInTheDocument();
-      expect(getByText('Goerli')).toBeInTheDocument();
+      expect(getByText(messages.network.message)).toBeInTheDocument();
+      expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     });
 
     describe('RecipientRow', () => {

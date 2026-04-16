@@ -1,17 +1,17 @@
 import { createSelector } from 'reselect';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  PENDING_STATUS_HASH,
-  EXCLUDED_TRANSACTION_TYPES,
-} from '../helpers/constants/transactions';
+import { type TransactionMeta } from '@metamask/transaction-controller';
+import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import {
-  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from './transactions';
+import {
+  selectOrderedTransactions,
+  selectRequiredTransactionHashes,
+} from './transactionController';
 import { getMarketData, getCurrencyRates } from './selectors';
 import { getSelectedInternalAccount } from './accounts';
 import { EMPTY_ARRAY } from './shared';
@@ -29,10 +29,16 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
 }
 
 export const selectLocalTransactions = createSelector(
-  getTransactions,
+  selectOrderedTransactions,
   getSelectedInternalAccount,
   smartTransactionsListSelector,
-  (transactions, selectedAccount, smartTransactions): TransactionGroup[] => {
+  selectRequiredTransactionHashes,
+  (
+    transactions,
+    selectedAccount,
+    smartTransactions,
+    internalTxHashes,
+  ): TransactionGroup[] => {
     if (!selectedAccount?.address) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
@@ -40,28 +46,14 @@ export const selectLocalTransactions = createSelector(
     const selectedAddress = selectedAccount.address.toLowerCase();
 
     const filtered = (transactions ?? []).filter((tx) => {
-      const passesSenderAndTypeGate = isFromSelectedAccount(
-        tx,
-        selectedAddress,
-      );
-
-      if (!passesSenderAndTypeGate) {
+      if (!isFromSelectedAccount(tx, selectedAddress)) {
         return false;
       }
 
-      // Include pending transactions
-      // or locally submitted transactions (have actionId or origin=metamask)
-      const isPending = tx.status in PENDING_STATUS_HASH;
-      const unsafeTx = tx as TransactionMeta & {
-        actionId?: unknown;
-        origin?: unknown;
-      };
-      const hasActionId = unsafeTx.actionId !== undefined;
-      const origin =
-        typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
-      const isLocalOrigin = origin === 'metamask';
-
-      return isPending || hasActionId || isLocalOrigin;
+      if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
+        return false;
+      }
+      return true;
     });
 
     const combined = [...filtered, ...smartTransactions];

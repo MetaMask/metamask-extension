@@ -52,6 +52,7 @@ export const useHardwareWalletAutoConnect = ({
   const {
     adapterRef,
     isConnectingRef,
+    isEnsuringDeviceReadyRef,
     connectRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
@@ -88,11 +89,9 @@ export const useHardwareWalletAutoConnect = ({
       const effectAccountAddress = accountAddress;
 
       const handleNativeConnect = async () => {
-        if (abortSignal.aborted) {
+        if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
           return;
         }
-
-        updateConnectionState(ConnectionState.connected());
 
         const currentPermissionState =
           await checkHardwareWalletPermission(walletType);
@@ -102,6 +101,11 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
+        if (isEnsuringDeviceReadyRef.current) {
+          return;
+        }
+
+        updateConnectionState(ConnectionState.connected());
         setHardwareConnectionPermissionState(currentPermissionState);
 
         if (
@@ -138,7 +142,7 @@ export const useHardwareWalletAutoConnect = ({
       };
 
       const handleNativeDisconnect = async () => {
-        if (abortSignal.aborted) {
+        if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
           return;
         }
 
@@ -181,7 +185,11 @@ export const useHardwareWalletAutoConnect = ({
 
       getConnectedDevices(walletType)
         .then((devices) => {
-          if (abortSignal.aborted || devices.length === 0) {
+          if (
+            abortSignal.aborted ||
+            isEnsuringDeviceReadyRef.current ||
+            devices.length === 0
+          ) {
             return;
           }
 
@@ -243,7 +251,7 @@ export const useHardwareWalletAutoConnect = ({
 
       getConnectedDevices(walletType)
         .then(async (devices) => {
-          if (abortSignal.aborted) {
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
             return;
           }
 

@@ -14,6 +14,7 @@ import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
+  getSelectedInternalAccount,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
@@ -25,7 +26,7 @@ import {
 import {
   getAllNetworkConfigurationsByCaipChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -61,7 +62,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -71,6 +72,7 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   detectTokens,
+  refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
@@ -85,6 +87,7 @@ import {
 } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -114,6 +117,8 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
   const { collections } = useNftsCollections();
 
@@ -251,6 +256,14 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
+    if (isAssetsUnifyStateEnabled && selectedInternalAccount) {
+      dispatch(
+        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+          chainIds: allEnabledNetworksForAllNamespaces,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
+      );
+    }
     dispatch(
       updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
     );

@@ -4,7 +4,7 @@ import FormComboField from './form-combo-field';
 /**
  * A form field that supports free text entry or the selection of a value from an attached dropdown list.
  */
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line import-x/no-anonymous-default-export
 export default {
   title: 'Components/UI/FormComboField',
   component: FormComboField,

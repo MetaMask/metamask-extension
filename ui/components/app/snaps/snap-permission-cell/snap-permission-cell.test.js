@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import SnapPermissionCell from './snap-permission-cell';
 
@@ -52,9 +53,11 @@ describe('Snap Permission Cell', () => {
       mockStore,
     );
     expect(
-      screen.getByText('Display dialog windows in MetaMask.'),
+      screen.getByText(messages.permission_dialog.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Requested now')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRequested.message),
+    ).toBeInTheDocument();
   });
 
   it('renders permissions cell with connection', () => {
@@ -74,6 +77,8 @@ describe('Snap Permission Cell', () => {
     expect(
       screen.getByText('Connect to snaps.metamask.io'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Requested now')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRequested.message),
+    ).toBeInTheDocument();
   });
 });

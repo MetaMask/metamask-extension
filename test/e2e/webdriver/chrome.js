@@ -1,3 +1,6 @@
+const nodeCrypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -112,14 +115,50 @@ class ChromeDriver {
 
     builder.setChromeService(service);
     const driver = builder.build();
-    const chromeDriver = new ChromeDriver(driver);
-    const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+
+    // When the manifest has a `key`, the extension ID is deterministic and can
+    // be computed locally — skipping the chrome://extensions round-trip (~880ms).
+    let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
+    if (!extensionId) {
+      const chromeDriver = new ChromeDriver(driver);
+      extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+    }
 
     return {
       driver,
       extensionId,
       extensionUrl: `chrome-extension://${extensionId}`,
     };
+  }
+
+  /**
+   * Computes the deterministic Chrome extension ID from the manifest's `key` field.
+   * Returns null if the key is absent.
+   *
+   * @param {string} extensionDir - Path to the unpacked extension directory
+   * @returns {string|null} The 32-char extension ID, or null
+   */
+  static _computeExtensionId(extensionDir) {
+    try {
+      const manifest = JSON.parse(
+        fs.readFileSync(path.join(extensionDir, 'manifest.json'), 'utf8'),
+      );
+      if (!manifest.key) {
+        return null;
+      }
+      const keyBytes = Buffer.from(manifest.key, 'base64');
+      const hash = nodeCrypto
+        .createHash('sha256')
+        .update(keyBytes)
+        .digest('hex');
+      return hash
+        .slice(0, 32)
+        .replace(/[0-9a-f]/gu, (c) =>
+          String.fromCharCode(97 + parseInt(c, 16)),
+        );
+    } catch {
+      return null;
+    }
   }
 
   /**
@@ -137,21 +176,35 @@ class ChromeDriver {
    */
   async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions');
-    return await this._driver.executeScript(`
-      const extensions = document.querySelector("extensions-manager").shadowRoot
-        .querySelector("extensions-item-list").shadowRoot
-        .querySelectorAll("extensions-item")
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const id = await this._driver.executeScript(`
+        try {
+          const extensions = document.querySelector("extensions-manager").shadowRoot
+            .querySelector("extensions-item-list").shadowRoot
+            .querySelectorAll("extensions-item")
 
-      for (let i = 0; i < extensions.length; i++) {
-        const extension = extensions[i].shadowRoot
-        const name = extension.querySelector('#name').textContent
-        if (name.startsWith("${extensionName}")) {
-          return extensions[i].getAttribute("id")
+          for (let i = 0; i < extensions.length; i++) {
+            const extension = extensions[i].shadowRoot
+            const name = extension.querySelector('#name').textContent
+            if (name.startsWith("${extensionName}")) {
+              return extensions[i].getAttribute("id")
+            }
+          }
+        } catch (e) {
+          return undefined
         }
+        return undefined
+      `);
+      if (id) {
+        return id;
       }
-
-      return undefined
-    `);
+      await this._driver.sleep(1000);
+    }
+    console.error(
+      `Failed to find extension "${extensionName}" after ${maxAttempts} attempts`,
+    );
+    return undefined;
   }
 }
 

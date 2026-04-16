@@ -19,14 +19,14 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Asset } from '@metamask/assets-controllers';
-import getFetchWithTimeout from '../modules/fetch-with-timeout';
-import { decimalToPrefixedHex } from '../modules/conversion.utils';
+
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  TronResourceSymbol,
+  TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
+  type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
+import getFetchWithTimeout from './fetch-with-timeout';
+import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
@@ -262,22 +262,26 @@ export const isEvmChainId = (chainId: CaipChainId | Hex) => {
 };
 
 /**
- * Checks if the given assetId is a Tron resource
+ * Checks if the given CAIP asset ID represents a Tron special asset
+ * (resources, staking state, etc.) that should be filtered out from
+ * user-facing asset lists.
  *
- * @param asset - The assetId to check.
- * @returns `true` if the assetId is a Tron resource, `false` otherwise.
+ * @param assetId - The CAIP asset ID to check.
+ * @returns `true` if the asset is a Tron special asset, `false` otherwise.
  */
-export const isTronResource = (asset: Asset): boolean => {
-  if (!isCaipAssetType(asset.assetId)) {
+export const isTronSpecialAsset = (
+  assetId: CaipAssetType | string | undefined,
+): boolean => {
+  if (!assetId || !isCaipAssetType(assetId)) {
     return false;
   }
-  const { chain } = parseCaipAssetType(asset.assetId);
+  const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
 
   if (chain.namespace !== KnownCaipNamespace.Tron) {
     return false;
   }
 
-  return TRON_RESOURCE_SYMBOLS_SET.has(
-    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  return TRON_SPECIAL_ASSET_CAIP_TYPES_SET.has(
+    `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };

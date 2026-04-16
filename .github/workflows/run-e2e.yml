@@ -80,11 +80,10 @@ jobs:
       RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask
@@ -106,7 +105,7 @@ jobs:
         with:
           name: ${{ inputs.build-artifact }}
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+          run-id: ${{ inputs.builds-from-run }} # Download from the run that produced the builds.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}

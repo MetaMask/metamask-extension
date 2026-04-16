@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { createSwapsMockStore } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import LoadingSwapsQuotes from '.';
 
 const createProps = (customProps = {}) => {
@@ -32,7 +33,13 @@ describe('LoadingSwapsQuotes', () => {
       <LoadingSwapsQuotes {...createProps()} />,
       store,
     );
-    expect(getByText('Fetching quote 1 of 2')).toBeInTheDocument();
-    expect(getByText('Back')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.swapFetchingQuoteNofN.message
+          .replace('$1', '1')
+          .replace('$2', '2'),
+      ),
+    ).toBeInTheDocument();
+    expect(getByText(messages.back.message)).toBeInTheDocument();
   });
 });

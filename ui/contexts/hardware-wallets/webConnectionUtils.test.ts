@@ -2,21 +2,27 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
   isWebHidAvailable,
   isWebUsbAvailable,
+  isCameraAvailable,
   checkHardwareWalletPermission,
   checkWebHidPermission,
   checkWebUsbPermission,
+  checkCameraPermissionState,
+  checkCameraPermission,
   requestHardwareWalletPermission,
   requestWebHidPermission,
   requestWebUsbPermission,
+  requestCameraPermission,
   getConnectedLedgerDevices,
   getConnectedTrezorDevices,
   getConnectedDevices,
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
+  subscribeToHardwareWalletEvents,
 } from './webConnectionUtils';
 
 // Default device identifiers for testing
@@ -113,6 +119,20 @@ describe('webConnectionUtils', () => {
       },
       configurable: true,
     });
+
+    Object.defineProperty(window.navigator, 'mediaDevices', {
+      value: {
+        getUserMedia: jest.fn(),
+      },
+      configurable: true,
+    });
+
+    Object.defineProperty(window.navigator, 'permissions', {
+      value: {
+        query: jest.fn(),
+      },
+      configurable: true,
+    });
   };
 
   // Helper function to restore navigator
@@ -160,6 +180,20 @@ describe('webConnectionUtils', () => {
 
   const getMockedUsb = (): jest.Mocked<USB> => {
     return window.navigator.usb as jest.Mocked<USB>;
+  };
+
+  const getMockedMediaDevices = (): {
+    getUserMedia: jest.Mock;
+  } => {
+    return window.navigator.mediaDevices as unknown as {
+      getUserMedia: jest.Mock;
+    };
+  };
+
+  const getMockedPermissions = (): {
+    query: jest.Mock;
+  } => {
+    return window.navigator.permissions as unknown as { query: jest.Mock };
   };
 
   beforeEach(() => {
@@ -267,6 +301,40 @@ describe('webConnectionUtils', () => {
     });
   });
 
+  describe('isCameraAvailable', () => {
+    it('returns true when camera APIs are available', () => {
+      expect(isCameraAvailable()).toBe(true);
+    });
+
+    it('returns false when window is undefined', () => {
+      setupUndefinedWindow();
+
+      expect(isCameraAvailable()).toBe(false);
+
+      restoreWindow();
+    });
+
+    it('returns false when mediaDevices is not available', () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      expect(isCameraAvailable()).toBe(false);
+    });
+
+    it('returns false when getUserMedia is not a function', () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      expect(isCameraAvailable()).toBe(false);
+    });
+  });
+
   describe('checkHardwareWalletPermission', () => {
     it('returns Granted when Ledger devices are paired', async () => {
       (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
@@ -298,6 +366,127 @@ describe('webConnectionUtils', () => {
       );
 
       expect(result).toBe(HardwareConnectionPermissionState.Denied);
+    });
+
+    it('returns camera permission state for QR wallet type', async () => {
+      getMockedPermissions().query.mockResolvedValue({
+        state: CameraPermissionState.Granted,
+      });
+
+      const result = await checkHardwareWalletPermission(HardwareWalletType.Qr);
+
+      expect(result).toBe(HardwareConnectionPermissionState.Granted);
+    });
+  });
+
+  describe('camera permission helpers', () => {
+    it('checkCameraPermissionState returns Granted when camera permission is granted', async () => {
+      getMockedPermissions().query.mockResolvedValue({
+        state: CameraPermissionState.Granted,
+      });
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Granted,
+      );
+    });
+
+    it('checkCameraPermissionState returns Denied when camera permission is denied', async () => {
+      getMockedPermissions().query.mockResolvedValue({
+        state: CameraPermissionState.Denied,
+      });
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Denied,
+      );
+    });
+
+    it('checkCameraPermission returns prompt when permissions API is unavailable', async () => {
+      // Camera capture APIs must remain available; otherwise isCameraAvailable() short-circuits
+      // to denied and this test would not exercise the permissions branch.
+      expect(isCameraAvailable()).toBe(true);
+
+      Object.defineProperty(window.navigator, 'permissions', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(checkCameraPermission()).resolves.toBe(
+        CameraPermissionState.Prompt,
+      );
+    });
+
+    it('checkCameraPermission returns prompt when permissions.query is missing', async () => {
+      expect(isCameraAvailable()).toBe(true);
+
+      Object.defineProperty(window.navigator, 'permissions', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(checkCameraPermission()).resolves.toBe(
+        CameraPermissionState.Prompt,
+      );
+    });
+
+    it('checkCameraPermission returns denied when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      expect(isCameraAvailable()).toBe(false);
+
+      await expect(checkCameraPermission()).resolves.toBe(
+        CameraPermissionState.Denied,
+      );
+    });
+
+    it('checkCameraPermissionState returns Unknown when permissions.query rejects', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('query failed'));
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Unknown,
+      );
+    });
+
+    it('checkCameraPermission rejects when permissions.query rejects', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('query failed'));
+
+      await expect(checkCameraPermission()).rejects.toThrow(
+        'Unable to determine camera permission state',
+      );
+    });
+
+    it('requestCameraPermission returns true and closes stream tracks on success', async () => {
+      const stop = jest.fn();
+      const mockTrack = { stop } as unknown as MediaStreamTrack;
+      getMockedMediaDevices().getUserMedia.mockResolvedValue({
+        getTracks: () => [mockTrack],
+      });
+
+      await expect(requestCameraPermission()).resolves.toBe(true);
+      expect(stop).toHaveBeenCalledTimes(1);
+    });
+
+    it('requestCameraPermission returns false when user denies camera access', async () => {
+      getMockedMediaDevices().getUserMedia.mockRejectedValue(
+        new Error('Permission denied'),
+      );
+
+      await expect(requestCameraPermission()).resolves.toBe(false);
+    });
+
+    it('requestCameraPermission returns false when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(requestCameraPermission()).resolves.toBe(false);
     });
   });
 
@@ -448,6 +637,18 @@ describe('webConnectionUtils', () => {
       );
 
       expect(result).toBe(false);
+    });
+
+    it('returns true when camera permission is granted for QR wallet type', async () => {
+      getMockedMediaDevices().getUserMedia.mockResolvedValue({
+        getTracks: () => [],
+      });
+
+      const result = await requestHardwareWalletPermission(
+        HardwareWalletType.Qr,
+      );
+
+      expect(result).toBe(true);
     });
   });
 
@@ -1115,6 +1316,24 @@ describe('webConnectionUtils', () => {
         'disconnect',
         disconnectHandler,
       );
+    });
+  });
+
+  describe('subscribeToHardwareWalletEvents', () => {
+    it('returns a no-op unsubscribe for QR wallet type', () => {
+      const mockOnConnect = jest.fn();
+      const mockOnDisconnect = jest.fn();
+
+      const unsubscribe = subscribeToHardwareWalletEvents(
+        HardwareWalletType.Qr,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
+
+      expect(typeof unsubscribe).toBe('function');
+      expect(() => unsubscribe()).not.toThrow();
+      expect(getMockedHid().addEventListener).not.toHaveBeenCalled();
+      expect(getMockedUsb().addEventListener).not.toHaveBeenCalled();
     });
   });
 

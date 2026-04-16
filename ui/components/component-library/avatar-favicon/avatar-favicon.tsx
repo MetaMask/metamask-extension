@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import { IconName, Icon, IconSize } from '../icon';
 import {

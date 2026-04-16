@@ -1,14 +1,11 @@
-import { BaseUrl } from '../../../constants/urls';
-import { Route } from './route';
+import { DEFAULT_ROUTE, Route } from './route';
 
 export const perps = new Route({
   pathname: '/perps',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
-  handler: function handler(params: URLSearchParams) {
-    const perpsUrl = new URL('/perps', BaseUrl.MetaMask);
-    params.forEach((value, key) => perpsUrl.searchParams.append(key, value));
-    return {
-      redirectTo: perpsUrl,
-    };
+  handler: function handler(_params: URLSearchParams) {
+    const query = new URLSearchParams();
+    query.set('tab', 'perps');
+    return { path: DEFAULT_ROUTE, query };
   },
 });

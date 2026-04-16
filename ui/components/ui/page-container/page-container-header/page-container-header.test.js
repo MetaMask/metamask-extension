@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import PageContainerHeader from '.';
 
 describe('Page Container Header', () => {
@@ -27,7 +28,7 @@ describe('Page Container Header', () => {
       <PageContainerHeader {...props} />,
     );
 
-    const backButton = queryByText('Back');
+    const backButton = queryByText(messages.back.message);
 
     fireEvent.click(backButton);
 

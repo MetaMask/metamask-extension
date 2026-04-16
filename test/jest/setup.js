@@ -18,7 +18,7 @@ jest.mock('webextension-polyfill', () => {
  * Note: Tests that specifically need to test BrowserStorageAdapter itself should use
  * jest.unmock() or jest.requireActual() to access the real implementation.
  */
-jest.mock('../../app/scripts/lib/stores/browser-storage-adapter', () => {
+jest.mock('../../shared/lib/stores/browser-storage-adapter', () => {
   const { InMemoryStorageAdapter } = jest.requireActual(
     '@metamask/storage-service',
   );

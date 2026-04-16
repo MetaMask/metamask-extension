@@ -10,7 +10,8 @@ export default {
     severity: {
       control: 'select',
       options: [Severity.Info, Severity.Warning, Severity.Danger],
-      description: 'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
+      description:
+        'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
       defaultValue: Severity.Info,
     },
     onClick: {

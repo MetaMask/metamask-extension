@@ -1,7 +1,7 @@
 import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import * as networksModule from '../../../../shared/modules/selectors/networks';
+import * as networksModule from '../../../../shared/lib/selectors/networks';
 import {
   SupportedEVMChain,
   mapChainIdToSupportedEVMChain,
@@ -16,7 +16,7 @@ import {
   connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 
-jest.mock('../../../../shared/modules/selectors/networks');
+jest.mock('../../../../shared/lib/selectors/networks');
 
 describe('trust-signals-util', () => {
   describe('isEthSendTransaction', () => {

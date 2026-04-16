@@ -1,8 +1,6 @@
 import urlLib from 'url';
 import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
-import BN from 'bn.js';
-import { memoize } from 'lodash';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
@@ -13,11 +11,6 @@ import { MultichainAssetsRatesControllerState } from '@metamask/assets-controlle
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import {
   DEVICE_TYPE,
-  ENVIRONMENT_TYPE_BACKGROUND,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-  ENVIRONMENT_TYPE_POPUP,
   OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -45,7 +38,6 @@ import {
   type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
@@ -56,39 +48,7 @@ import {
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
-
-/**
- * @see {@link getEnvironmentType}
- */
-const getEnvironmentTypeMemo = memoize((url) => {
-  const parsedUrl = new URL(url);
-  if (parsedUrl.pathname === '/popup.html') {
-    return ENVIRONMENT_TYPE_POPUP;
-  } else if (['/home.html'].includes(parsedUrl.pathname)) {
-    return ENVIRONMENT_TYPE_FULLSCREEN;
-  } else if (parsedUrl.pathname === '/notification.html') {
-    return ENVIRONMENT_TYPE_NOTIFICATION;
-  } else if (parsedUrl.pathname === '/sidepanel.html') {
-    return ENVIRONMENT_TYPE_SIDEPANEL;
-  }
-  return ENVIRONMENT_TYPE_BACKGROUND;
-});
-
-/**
- * Returns the window type for the application
- *
- * - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
- * - `fullscreen` refers to the main browser window
- * - `notification` refers to the popup that appears in its own window when taking action outside of metamask
- * - `background` refers to the background page
- *
- * NOTE: This should only be called on internal URLs.
- *
- * @param [url] - the URL of the window
- * @returns the environment ENUM
- */
-const getEnvironmentType = (url = window.location.href) =>
-  getEnvironmentTypeMemo(url);
+export { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -373,36 +333,6 @@ export const getOs = (): Os => {
 };
 
 /**
- * Converts a hex string to a BN object
- *
- * @param inputHex - A number represented as a hex string
- * @returns A BN object
- */
-function hexToBn(inputHex: string) {
-  return new BN(stripHexPrefix(inputHex), 16);
-}
-
-/**
- * Used to multiply a BN by a fraction
- *
- * @param targetBN - The number to multiply by a fraction
- * @param numerator - The numerator of the fraction multiplier
- * @param denominator - The denominator of the fraction multiplier
- * @returns The product of the multiplication
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function BnMultiplyByFraction(
-  targetBN: BN,
-  numerator: number,
-  denominator: number,
-) {
-  const numBN = new BN(numerator);
-  const denomBN = new BN(denominator);
-  return targetBN.mul(numBN).div(denomBN);
-}
-
-/**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
  * @param str - The string to prefix.
@@ -444,15 +374,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export {
-  BnMultiplyByFraction,
-  addHexPrefix,
-  checkAlarmExists,
-  getChainType,
-  getEnvironmentType,
-  getPlatform,
-  hexToBn,
-};
+export { addHexPrefix, checkAlarmExists, getChainType, getPlatform };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =

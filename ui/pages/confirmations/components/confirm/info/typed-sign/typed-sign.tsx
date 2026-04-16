@@ -3,7 +3,7 @@ import { isValidAddress } from 'ethereumjs-util';
 
 import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../../../../shared/lib/transaction.utils';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
@@ -20,7 +20,6 @@ import {
   isPermitSignatureRequest,
 } from '../../../../utils';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
@@ -50,7 +49,6 @@ const useTokenContract = () => {
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-  const isBIP44 = useIsBIP44();
   const { tokenContract, verifyingContract, spender, isPermit, chainId } =
     useTokenContract();
   const { decimalsNumber } = useGetTokenStandardAndDetails(
@@ -84,7 +82,7 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
-        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+        <NetworkRow />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}

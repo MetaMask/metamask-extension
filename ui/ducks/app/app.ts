@@ -129,7 +129,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: boolean;
+  showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
@@ -737,7 +737,6 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -755,17 +754,10 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IF
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
-      return {
-        ...appState,
-        showPasswordChangeToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:

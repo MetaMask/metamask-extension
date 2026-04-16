@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react';
 
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 
 const middleware = [thunk];
@@ -55,7 +56,9 @@ describe('create-snap-account confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(`Create account`)).toBeInTheDocument();
+      expect(
+        getByText(messages.createSnapAccountTitle.message),
+      ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });

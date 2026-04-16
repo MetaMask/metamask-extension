@@ -1,8 +1,8 @@
 import { Mockttp } from 'mockttp';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { login } from '../../../page-objects/flows/login.flow';
 import { withFixtures } from '../../../helpers';
 import { WALLET_PASSWORD } from '../../../constants';
 import {
@@ -46,12 +46,12 @@ describe('Account syncing - Accounts with Balances', function () {
     // Phase 1: Create and sync accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -97,7 +97,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
       },

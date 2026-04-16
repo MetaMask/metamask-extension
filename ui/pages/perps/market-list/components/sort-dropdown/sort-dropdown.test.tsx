@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { SortDropdown, SORT_OPTIONS } from './sort-dropdown';
+import { SortDropdown, SORT_FIELD_OPTIONS } from './sort-dropdown';
 
 const mockStore = configureStore({
   metamask: {
@@ -13,8 +13,9 @@ const mockStore = configureStore({
 
 describe('SortDropdown', () => {
   const defaultProps = {
-    selectedOptionId: 'volumeHigh' as const,
-    onOptionChange: jest.fn(),
+    selectedField: 'volume' as const,
+    direction: 'desc' as const,
+    onChange: jest.fn(),
   };
 
   beforeEach(() => {
@@ -22,145 +23,154 @@ describe('SortDropdown', () => {
   });
 
   describe('rendering', () => {
-    it('renders the sort dropdown', () => {
+    it('renders the sort dropdown trigger button', () => {
       renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('sort-dropdown-button')).toBeInTheDocument();
     });
 
-    it('displays selected option with i18n label', () => {
+    it('displays current field label on trigger button', () => {
       renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
 
-      // Should show the translated label for volume
-      expect(screen.getByText(/volume/iu)).toBeInTheDocument();
+      // Should show the translated label for volume field
+      expect(screen.getByTestId('sort-dropdown-button').textContent).toContain(
+        'Volume',
+      );
     });
 
-    it('renders all sort options when open', () => {
+    it('opens sort modal when trigger button is clicked', () => {
       renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
 
       const button = screen.getByTestId('sort-dropdown-button');
       fireEvent.click(button);
 
-      // Check that all options are rendered
-      SORT_OPTIONS.forEach((option) => {
+      expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
+    });
+
+    it('renders all sort field options in modal', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      fireEvent.click(button);
+
+      SORT_FIELD_OPTIONS.forEach((option) => {
         expect(
-          screen.getByTestId(`sort-dropdown-option-${option.id}`),
+          screen.getByTestId(`sort-field-option-${option.id}`),
         ).toBeInTheDocument();
       });
+    });
+
+    it('renders direction options in modal', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      fireEvent.click(button);
+
+      expect(screen.getByTestId('sort-direction-desc')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-direction-asc')).toBeInTheDocument();
+    });
+
+    it('renders apply and cancel buttons', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      fireEvent.click(button);
+
+      expect(screen.getByTestId('sort-modal-apply')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-modal-cancel')).toBeInTheDocument();
     });
   });
 
   describe('selection', () => {
-    it('calls onOptionChange with correct params when option selected', () => {
-      const onOptionChange = jest.fn();
+    it('calls onChange with selected field and direction when Apply is clicked', () => {
+      const onChange = jest.fn();
       renderWithProvider(
-        <SortDropdown {...defaultProps} onOptionChange={onOptionChange} />,
+        <SortDropdown {...defaultProps} onChange={onChange} />,
         mockStore,
       );
 
       const button = screen.getByTestId('sort-dropdown-button');
       fireEvent.click(button);
 
-      const priceChangeOption = screen.getByTestId(
-        'sort-dropdown-option-priceChangeHigh',
-      );
-      fireEvent.click(priceChangeOption);
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-direction-asc'));
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
 
-      expect(onOptionChange).toHaveBeenCalledWith(
-        'priceChangeHigh',
-        'priceChange',
-        'desc',
-      );
+      expect(onChange).toHaveBeenCalledWith('priceChange', 'asc');
     });
 
-    it('calls onOptionChange with ascending direction for low to high', () => {
-      const onOptionChange = jest.fn();
+    it('does not call onChange when Cancel is clicked', () => {
+      const onChange = jest.fn();
       renderWithProvider(
-        <SortDropdown {...defaultProps} onOptionChange={onOptionChange} />,
+        <SortDropdown {...defaultProps} onChange={onChange} />,
         mockStore,
       );
 
       const button = screen.getByTestId('sort-dropdown-button');
       fireEvent.click(button);
 
-      const priceChangeLowOption = screen.getByTestId(
-        'sort-dropdown-option-priceChangeLow',
-      );
-      fireEvent.click(priceChangeLowOption);
+      fireEvent.click(screen.getByTestId('sort-field-option-openInterest'));
+      fireEvent.click(screen.getByTestId('sort-modal-cancel'));
 
-      expect(onOptionChange).toHaveBeenCalledWith(
-        'priceChangeLow',
-        'priceChange',
-        'asc',
-      );
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('closes modal after Apply', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      fireEvent.click(button);
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
+
+      expect(screen.queryByTestId('sort-field-modal')).not.toBeInTheDocument();
+    });
+
+    it('closes modal after Cancel', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      const button = screen.getByTestId('sort-dropdown-button');
+      fireEvent.click(button);
+      fireEvent.click(screen.getByTestId('sort-modal-cancel'));
+
+      expect(screen.queryByTestId('sort-field-modal')).not.toBeInTheDocument();
     });
   });
 
-  describe('SORT_OPTIONS configuration', () => {
-    it('has correct number of sort options', () => {
-      expect(SORT_OPTIONS).toHaveLength(8);
+  describe('SORT_FIELD_OPTIONS configuration', () => {
+    it('has 4 sort field options', () => {
+      expect(SORT_FIELD_OPTIONS).toHaveLength(4);
     });
 
-    it('includes volume high to low option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'volumeHigh');
+    it('includes volume option', () => {
+      const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'volume');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('volume');
-      expect(option?.direction).toBe('desc');
+      expect(option?.id).toBe('volume');
     });
 
-    it('includes volume low to high option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'volumeLow');
+    it('includes priceChange option', () => {
+      const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'priceChange');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('volume');
-      expect(option?.direction).toBe('asc');
+      expect(option?.id).toBe('priceChange');
     });
 
-    it('includes price change high to low option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'priceChangeHigh');
+    it('includes openInterest option', () => {
+      const option = SORT_FIELD_OPTIONS.find(
+        (opt) => opt.id === 'openInterest',
+      );
       expect(option).toBeDefined();
-      expect(option?.field).toBe('priceChange');
-      expect(option?.direction).toBe('desc');
+      expect(option?.id).toBe('openInterest');
     });
 
-    it('includes price change low to high option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'priceChangeLow');
+    it('includes fundingRate option', () => {
+      const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'fundingRate');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('priceChange');
-      expect(option?.direction).toBe('asc');
-    });
-
-    it('includes open interest high to low option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'openInterestHigh');
-      expect(option).toBeDefined();
-      expect(option?.field).toBe('openInterest');
-      expect(option?.direction).toBe('desc');
-    });
-
-    it('includes open interest low to high option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'openInterestLow');
-      expect(option).toBeDefined();
-      expect(option?.field).toBe('openInterest');
-      expect(option?.direction).toBe('asc');
-    });
-
-    it('includes funding rate high to low option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'fundingRateHigh');
-      expect(option).toBeDefined();
-      expect(option?.field).toBe('fundingRate');
-      expect(option?.direction).toBe('desc');
-    });
-
-    it('includes funding rate low to high option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'fundingRateLow');
-      expect(option).toBeDefined();
-      expect(option?.field).toBe('fundingRate');
-      expect(option?.direction).toBe('asc');
+      expect(option?.id).toBe('fundingRate');
     });
 
     it('all options have labelKey for i18n', () => {
-      SORT_OPTIONS.forEach((option) => {
+      SORT_FIELD_OPTIONS.forEach((option) => {
         expect(option.labelKey).toBeDefined();
-        expect(option.labelKey.startsWith('perpsSort')).toBe(true);
+        expect(option.labelKey.startsWith('perpsSortBy')).toBe(true);
       });
     });
   });

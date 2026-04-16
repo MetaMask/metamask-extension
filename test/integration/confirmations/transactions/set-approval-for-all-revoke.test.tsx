@@ -159,9 +159,7 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(
-        tEn('confirmTitleRevokeApproveTransaction') as string,
-      ),
+      await screen.findByText(tEn('confirmTitleRevokeApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -183,20 +181,16 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
     const withinSimulationSection = within(simulationSection);
 
     expect(
-      withinSimulationSection.getByText(
-        tEn('simulationDetailsTitle') as string,
-      ),
+      withinSimulationSection.getByText(tEn('simulationDetailsTitle')),
     ).toBeInTheDocument();
     expect(
       withinSimulationSection.getByText(
-        tEn('simulationDetailsRevokeSetApprovalForAllDesc') as string,
+        tEn('simulationDetailsRevokeSetApprovalForAllDesc'),
       ),
     ).toBeInTheDocument();
+    expect(withinSimulationSection.getByText(tEn('nfts'))).toBeInTheDocument();
     expect(
-      withinSimulationSection.getByText(tEn('nfts') as string),
-    ).toBeInTheDocument();
-    expect(
-      withinSimulationSection.getByText(tEn('permissionFrom') as string),
+      withinSimulationSection.getByText(tEn('permissionFrom')),
     ).toBeInTheDocument();
 
     expect(

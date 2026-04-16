@@ -25,7 +25,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -53,16 +53,12 @@ function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (!hasProperty(state, 'PermissionController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: PermissionController not found.`),
-    );
+    console.warn(`Migration ${version}: PermissionController not found.`);
     return state;
   }
 
   if (!hasProperty(state, 'NetworkController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: NetworkController not found.`),
-    );
+    console.warn(`Migration ${version}: NetworkController not found.`);
     return state;
   }
 

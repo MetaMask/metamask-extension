@@ -16,6 +16,7 @@ import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import { useFourByte } from '../../hooks/useFourByte';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { AsyncResult, RESULT_IDLE } from '../../../../../../../hooks/useAsync';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -98,7 +99,7 @@ describe('NestedTransaction', () => {
     });
 
     expect(getByText('0x12345...67890')).toBeInTheDocument();
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('<0.000001')).toBeInTheDocument();
     expect(getByText('ETH')).toBeInTheDocument();
   });
@@ -153,8 +154,8 @@ describe('NestedTransaction', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
   });

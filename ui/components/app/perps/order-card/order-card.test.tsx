@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import type { Order } from '../types';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderCard } from './order-card';
 
 const mockStore = configureStore({
@@ -53,21 +54,21 @@ describe('OrderCard', () => {
     const order = createMockOrder({ side: 'buy' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Long')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsLong.message)).toBeInTheDocument();
   });
 
   it('displays Short for sell side order', () => {
     const order = createMockOrder({ side: 'sell' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Short')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsShort.message)).toBeInTheDocument();
   });
 
   it('displays the order type', () => {
     const order = createMockOrder({ orderType: 'limit' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Limit')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsLimit.message)).toBeInTheDocument();
   });
 
   it('displays the order size with symbol', () => {
@@ -98,7 +99,7 @@ describe('OrderCard', () => {
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
     // "Market" appears in both the value slot and the order type slot
-    const marketElements = screen.getAllByText('Market');
+    const marketElements = screen.getAllByText(messages.perpsMarket.message);
     expect(marketElements.length).toBeGreaterThanOrEqual(1);
   });
 

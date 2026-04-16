@@ -19,7 +19,7 @@ import {
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
@@ -32,7 +32,7 @@ import {
   isExperimental,
   isFlask,
   isMain,
-} from '../../../helpers/utils/build-types';
+} from '../../../../shared/lib/build-types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

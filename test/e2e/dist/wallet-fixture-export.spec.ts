@@ -141,7 +141,7 @@ describe('Wallet State', function () {
   });
   it('export default fixture', async function () {
     const networkName = 'Localhost 8545';
-    const networkUrl = 'http://127.0.0.1:8545';
+    const networkUrl = 'http://localhost:8545';
     const currencySymbol = 'ETH';
     const chainId = 1337;
     await withFixtures(
@@ -184,7 +184,6 @@ describe('Wallet State', function () {
         // Set the settings to match the desired fixture state:
         // 1. enabled native balance and 2. enabled test networks
         await enableNativeTokenAsMainBalance(driver);
-        await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
         await switchToNetworkFromNetworkSelect(
@@ -192,6 +191,8 @@ describe('Wallet State', function () {
           'Popular',
           'All popular networks',
         );
+
+        await enableTestNetworks(driver);
 
         await switchToNetworkFromNetworkSelect(
           driver,

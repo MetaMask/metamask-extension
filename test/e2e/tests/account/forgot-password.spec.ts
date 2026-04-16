@@ -7,7 +7,10 @@ import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  login,
+} from '../../page-objects/flows/login.flow';
 
 const newPassword = 'this is the best password ever';
 
@@ -32,13 +35,13 @@ describe('Forgot password', function () {
         driver: Driver;
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         // Giving sometime for network calls to settle before locking metamask
         await driver.delay(3000);
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();
-        await homePage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
@@ -51,10 +54,13 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
-        await homePage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
 
         // Check user can log in with new password
-        await loginWithBalanceValidation(driver, localNodes[0], newPassword);
+        await login(driver, {
+          localNode: localNodes[0],
+          password: newPassword,
+        });
       },
     );
   });

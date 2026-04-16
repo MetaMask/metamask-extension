@@ -57,12 +57,11 @@ jobs:
 
       - name: Checkout and setup environment
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Get commit SHA
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
@@ -87,11 +86,10 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
@@ -121,11 +119,10 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore build policy
         uses: actions/cache/restore@v5
@@ -161,11 +158,10 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Update LavaMoat webpack build policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
@@ -195,11 +191,10 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore webpack build policy
         uses: actions/cache/restore@v5
@@ -236,11 +231,10 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore webpack build policy
         uses: actions/cache/restore@v5
@@ -404,7 +398,7 @@ jobs:
       - name: Post comment (policies updated)
         if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
-          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
+          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
         if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'false' }}

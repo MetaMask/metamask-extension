@@ -3,9 +3,13 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import SmartTransactionStatusPage from './smart-transaction-status-page';
 import { Meta, StoryObj } from '@storybook/react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import mockState from '../../../../test/data/mock-state.json';
+import { ConfirmContextProvider } from '../../confirmations/context/confirm';
 
 // Mock data
 const CHAIN_ID_MOCK = '0x1';
@@ -41,7 +45,17 @@ const storeMock = configureStore({
 const meta: Meta<typeof SmartTransactionStatusPage> = {
   title: 'Pages/SmartTransactions/SmartTransactionStatusPage',
   component: SmartTransactionStatusPage,
-  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
+  decorators: [
+    (story) => (
+      <Provider store={storeMock}>
+        <ConfirmContextProvider
+          currentConfirmationOverride={TX_MOCK as TransactionMeta}
+        >
+          {story()}
+        </ConfirmContextProvider>
+      </Provider>
+    ),
+  ],
 };
 
 export default meta;

@@ -1,8 +1,11 @@
 import React, { memo } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import classnames from 'classnames';
-import Identicon from '../../../ui/identicon';
+import {
+  AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
+import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
@@ -61,7 +64,9 @@ const NameDisplay = memo(
       }
 
       if (image) {
-        return <Identicon address={value} diameter={16} image={image} />;
+        return (
+          <AvatarToken src={image} name={value} size={AvatarTokenSize.Xs} />
+        );
       }
 
       return (

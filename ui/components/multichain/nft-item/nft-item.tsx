@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
@@ -29,7 +29,7 @@ import {
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 type NftItemProps = {
@@ -37,7 +37,6 @@ type NftItemProps = {
   alt: string;
   src: string | undefined;
   name?: string;
-  tokenId?: string;
   networkName: string;
   networkSrc?: string;
   onClick?: () => void;

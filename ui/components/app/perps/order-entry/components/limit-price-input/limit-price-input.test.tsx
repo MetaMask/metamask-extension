@@ -3,9 +3,9 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { LimitPriceInput } from './limit-price-input';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
@@ -35,10 +35,8 @@ describe('LimitPriceInput', () => {
     limitPrice: '',
     onLimitPriceChange: jest.fn(),
     currentPrice: 45250.0,
-    direction: 'long' as const,
     midPrice: 45050.0,
-    bidPrice: 45000.0,
-    askPrice: 45100.0,
+    direction: 'long' as const,
   };
 
   beforeEach(() => {
@@ -55,31 +53,16 @@ describe('LimitPriceInput', () => {
     it('displays the Limit Price label', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
-    it('displays long presets (Mid, Bid, -1%, -2%)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
-        mockStore,
-      );
+    it('displays Mid button as end accessory', () => {
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Bid')).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
-    });
-
-    it('displays short presets (Mid, Ask, +1%, +2%)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="short" />,
-        mockStore,
-      );
-
-      expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Ask')).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
     });
   });
 
@@ -130,47 +113,220 @@ describe('LimitPriceInput', () => {
     });
   });
 
-  describe('preset buttons', () => {
-    it('sets mid price when Mid preset is clicked (long)', () => {
+  describe('Mid button', () => {
+    it('sets mid price when Mid button is clicked', () => {
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('limit-price-mid-button'));
+
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
+    });
+  });
+
+  describe('locale handling', () => {
+    it('keeps raw dot-decimal value in de locale', () => {
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
       renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
-        mockStore,
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice="45050.00"
+          onLimitPriceChange={defaultProps.onLimitPriceChange}
+        />,
+        deStore,
       );
 
-      fireEvent.click(screen.getByTestId('limit-price-preset-Mid'));
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      expect(input).toHaveValue('45050.00');
+      fireEvent.blur(input as HTMLInputElement);
 
-      // Mid price from mock is 45050.00
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,050'),
-      );
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
     });
 
-    it('sets bid price when Bid preset is clicked (long)', () => {
+    it('rejects non-en-US locale-formatted input while typing', () => {
+      const onLimitPriceChange = jest.fn();
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
       renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="long" />,
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice=""
+          onLimitPriceChange={onLimitPriceChange}
+        />,
+        deStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+
+      expect(onLimitPriceChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('limit price warnings', () => {
+    it('shows warning when long limit price is above current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="46000"
+        />,
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('limit-price-preset-Bid'));
-
-      // Bid price from mock is 45000.00
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,000'),
-      );
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceAboveCurrentPrice.message),
+      ).toBeInTheDocument();
     });
 
-    it('sets ask price when Ask preset is clicked (short)', () => {
+    it('shows warning when short limit price is below current price', () => {
       renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="short" />,
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="44000"
+        />,
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('limit-price-preset-Ask'));
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceBelowCurrentPrice.message),
+      ).toBeInTheDocument();
+    });
 
-      // Ask price from mock is 45100.00
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,100'),
+    it('does not show warning when long limit price is below current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+        />,
+        mockStore,
       );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show warning when short limit price is above current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="46000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show warning when limit price is empty', () => {
+      renderWithProvider(
+        <LimitPriceInput {...defaultProps} limitPrice="" />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('liquidation price warnings', () => {
+    it('shows liquidation warning when current price is at or below liquidation price for long', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+          currentPrice={100}
+          liquidationPrice={200}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceNearLiquidation.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows liquidation warning when current price is at or above liquidation price for short', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="46000"
+          currentPrice={500}
+          liquidationPrice={400}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceNearLiquidation.message),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show liquidation warning when liquidation price is not provided', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show liquidation warning when current price is safely above liquidation for long', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+          currentPrice={45250}
+          liquidationPrice={40000}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
     });
   });
 });

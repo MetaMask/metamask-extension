@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { NetworkCongestionThresholds } from '../../../../../../../shared/constants/gas';
-import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { NetworkStabilityTooltip } from '../tooltips';
 
@@ -139,10 +139,9 @@ const determineStatusInfo = (givenNetworkCongestion) => {
   };
 };
 
-const StatusSlider = () => {
+const StatusSlider = ({ gasFeeEstimates }) => {
   const t = useI18nContext();
-  const { gasFeeEstimates } = useGasFeeContext();
-  const statusInfo = determineStatusInfo(gasFeeEstimates.networkCongestion);
+  const statusInfo = determineStatusInfo(gasFeeEstimates?.networkCongestion);
 
   return (
     <NetworkStabilityTooltip
@@ -178,6 +177,11 @@ const StatusSlider = () => {
       </div>
     </NetworkStabilityTooltip>
   );
+};
+
+StatusSlider.propTypes = {
+  /** When provided (e.g. from NetworkStatistics fallback), used instead of context. */
+  gasFeeEstimates: PropTypes.object,
 };
 
 export default StatusSlider;

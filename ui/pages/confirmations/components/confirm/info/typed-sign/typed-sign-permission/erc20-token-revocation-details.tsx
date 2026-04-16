@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { DateAndTimeRow } from './date-and-time-row';
+import { Expiry } from './expiry';
 
 /**
  * Displays details for the ERC20 token revocation permission.
@@ -15,15 +14,9 @@ import { DateAndTimeRow } from './date-and-time-row';
 export const Erc20TokenRevocationDetails: React.FC<{
   expiry: number | null;
 }> = ({ expiry }) => {
-  const t = useI18nContext();
-
-  if (expiry === null) {
-    return null;
-  }
-
   return (
     <ConfirmInfoSection data-testid="erc20-token-revocation-details-section">
-      <DateAndTimeRow timestamp={expiry} label={t('confirmFieldExpiration')} />
+      <Expiry expiry={expiry} />
     </ConfirmInfoSection>
   );
 };

@@ -38,10 +38,12 @@ export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
+  disableUpdate,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
+  disableUpdate?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -83,7 +85,10 @@ export const EditGasFeesRow = ({
   }
 
   const isGasFeeEditable =
-    !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
+    !disableUpdate &&
+    !isQuotedSwapDisplayedInInfo &&
+    !gasFeeToken &&
+    !isGasFeeSponsored;
   const shouldShowPrimaryFiatValue =
     showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
 

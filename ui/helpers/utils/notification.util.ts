@@ -25,7 +25,7 @@ import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 
 /**
  * Checks if 2 date objects are on the same day

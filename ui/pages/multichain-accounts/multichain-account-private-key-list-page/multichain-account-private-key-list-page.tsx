@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  type Location as RouterLocation,
+} from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -31,17 +35,19 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 type MultichainAccountPrivateKeyListPageProps = {
-  params?: { accountGroupId: string };
+  location?: RouterLocation;
 };
 
 export const MultichainAccountPrivateKeyListPage = ({
-  params: propsParams,
+  location: propsLocation,
 }: MultichainAccountPrivateKeyListPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const hookParams = useParams<{ accountGroupId: string }>();
+  const hookLocation = useLocation();
 
-  const { accountGroupId } = propsParams || hookParams;
+  const location = propsLocation || hookLocation;
+  const searchParams = new URLSearchParams(location.search);
+  const accountGroupId = searchParams.get('accountGroupId');
 
   const decodedAccountGroupId: AccountGroupId | null = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)

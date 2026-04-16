@@ -23,7 +23,7 @@ import {
   forceUpdateMetamaskState,
   setCurrentLocale,
 } from '../../../store/actions';
-import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/modules/i18n';
+import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/lib/i18n';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 function sleep(ms: number) {
@@ -204,7 +204,7 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
       description={
         <span>
           Trigger the crash on extension to send user feedback to sentry. You
-          can click "Try again" to reload extension
+          can click &quot;Try again&quot; to reload extension
         </span>
       }
       onClick={handleClick}

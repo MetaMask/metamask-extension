@@ -3,23 +3,23 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
-  AvatarAccountSize,
-  Icon as DsIcon,
-  IconColor as DsIconColor,
-  IconName as DsIconName,
-  IconSize as DsIconSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
-  BorderColor,
   BorderRadius,
   IconColor,
   TextVariant,
@@ -36,7 +36,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
   getUseNftDetection,
@@ -45,22 +44,19 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  toggleDefaultView,
 } from '../../../store/actions';
-import {
-  AvatarNetwork,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import {
-  PasswordChangeToastType,
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
-import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
+import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -99,7 +95,6 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
@@ -108,6 +103,7 @@ import {
   selectShowStorageErrorToast,
   selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
+  selectShowSidePanelMigrationToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -115,12 +111,12 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
+  dismissSidePanelMigrationToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -151,9 +147,13 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <PerpsDepositToast />
         <MerklClaimToast />
+        <MusdConversionToast />
+        <PerpsWithdrawToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
+        <SidePanelMigrationToast />
       </ToastContainer>
     );
   }
@@ -162,7 +162,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
@@ -400,8 +399,8 @@ function PermittedNetworkToast() {
         key="switched-permitted-network-toast"
         startAdornment={
           <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
+            size={AvatarNetworkSize.Md}
+            className="border-transparent"
             src={getNetworkImageUrl()}
             name={displayNetwork?.name || displayNetwork?.nickname}
           />
@@ -413,7 +412,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />
@@ -425,11 +424,8 @@ function NewSrpAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
+  const walletNumber = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
-
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const latestHdKeyringNumber = hdKeyrings.length;
 
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
@@ -449,10 +445,10 @@ function NewSrpAddedToast() {
   }, [dispatch]);
 
   return (
-    showNewSrpAddedToast && (
+    walletNumber && (
       <Toast
         key="new-srp-added-toast"
-        text={t('importWalletSuccess', [latestHdKeyringNumber])}
+        text={t('importWalletSuccess', [walletNumber])}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
@@ -487,51 +483,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const PasswordChangeToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPasswordChangeToast = useSelector(selectPasswordChangeToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showPasswordChangeToast !== null && (
-      <Toast
-        dataTestId={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? 'password-change-toast-success'
-            : 'password-change-toast-error'
-        }
-        className={classnames({
-          'toasts-container--password-change-toast--error':
-            showPasswordChangeToast === PasswordChangeToastType.Errored,
-        })}
-        key="password-change-toast"
-        text={
-          showPasswordChangeToast === PasswordChangeToastType.Success
-            ? t('securityChangePasswordToastSuccess')
-            : t('securityChangePasswordToastError')
-        }
-        startAdornment={
-          showPasswordChangeToast ===
-          PasswordChangeToastType.Success ? undefined : (
-            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
-          )
-        }
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowPasswordChangeToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function CopyAddressToast() {
   const t = useI18nContext();
@@ -688,77 +639,6 @@ const ClaimSubmitToast = () => {
     )
   );
 };
-
-function MerklClaimToast() {
-  const t = useI18nContext();
-  const { toastState, dismissToast } = useMerklClaimStatus();
-
-  const autoHideDelay = 5 * SECOND;
-
-  if (!toastState) {
-    return null;
-  }
-
-  const isInProgress = toastState === 'in-progress';
-  const isSuccess = toastState === 'success';
-
-  const toastText = (() => {
-    switch (toastState) {
-      case 'in-progress':
-        return t('merklRewardsToastInProgress');
-      case 'success':
-        return t('merklRewardsToastSuccess');
-      case 'failed':
-        return t('merklRewardsToastFailed');
-      default:
-        return '';
-    }
-  })();
-
-  const startAdornment = (() => {
-    if (isInProgress) {
-      return (
-        <DsIcon
-          name={DsIconName.Loading}
-          color={DsIconColor.IconDefault}
-          size={DsIconSize.Lg}
-          style={{ animation: 'spin 1.2s linear infinite' }}
-        />
-      );
-    }
-    if (isSuccess) {
-      return (
-        <DsIcon
-          name={DsIconName.Confirmation}
-          color={DsIconColor.SuccessDefault}
-          size={DsIconSize.Lg}
-        />
-      );
-    }
-    return (
-      <DsIcon
-        name={DsIconName.CircleX}
-        color={DsIconColor.ErrorDefault}
-        size={DsIconSize.Lg}
-      />
-    );
-  })();
-
-  return (
-    <Toast
-      key="merkl-claim-toast"
-      dataTestId="merkl-claim-toast"
-      text={toastText}
-      startAdornment={startAdornment}
-      onClose={dismissToast}
-      // In-progress toast stays until transaction completes; success/failed auto-hide
-      {...(!isInProgress && {
-        autoHideTime: autoHideDelay,
-        onAutoHideToast: dismissToast,
-      })}
-    />
-  );
-}
 
 function ShieldPausedToast() {
   const t = useI18nContext();
@@ -930,7 +810,7 @@ function StorageErrorToast() {
       category: MetaMetricsEventCategory.Error,
     });
     setIsDismissed(true);
-    navigate(REVEAL_SEED_ROUTE);
+    navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {
@@ -967,6 +847,53 @@ function StorageErrorToast() {
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}
+      />
+    )
+  );
+}
+
+function SidePanelMigrationToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showSidePanelMigrationToast = useSelector(
+    selectShowSidePanelMigrationToast,
+  );
+
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const handleSwitchBackToPopup = async () => {
+    try {
+      await dispatch(toggleDefaultView());
+    } finally {
+      dismissSidePanelMigrationToast();
+    }
+  };
+
+  return (
+    showSidePanelMigrationToast &&
+    isSidePanel && (
+      <Toast
+        key="side-panel-migration-toast"
+        dataTestId="side-panel-migration-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('sidePanelMigrationToast', [
+          <TextButton
+            key="side-panel-migration-switch-back"
+            size={TextButtonSize.BodyMd}
+            onClick={handleSwitchBackToPopup}
+            className="inline h-auto min-h-0 p-0 align-baseline text-inherit no-underline bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+          >
+            <span className="text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none]">
+              {t('switchBackToPopup')}
+            </span>
+          </TextButton>,
+        ])}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={() => dismissSidePanelMigrationToast()}
       />
     )
   );

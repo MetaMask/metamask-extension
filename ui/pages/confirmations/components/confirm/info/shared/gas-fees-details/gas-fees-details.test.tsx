@@ -11,6 +11,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -115,7 +116,7 @@ describe('<GasFeesDetails />', () => {
       // Intentionally empty
     });
 
-    expect(queryByText('Speed')).not.toBeInTheDocument();
+    expect(queryByText(messages.speed.message)).not.toBeInTheDocument();
   });
 
   describe('when estimation failed', () => {

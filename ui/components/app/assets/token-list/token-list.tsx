@@ -29,10 +29,11 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   isEvmChainId,
-  isTronResource,
+  isTronSpecialAsset,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -69,7 +70,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
-          if (isTronResource(asset)) {
+          if (isTronSpecialAsset(asset.assetId)) {
             return false;
           }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {
@@ -167,6 +168,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               privacyMode={privacyMode}
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
+              musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
             />
           );
         })}
@@ -193,6 +195,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             privacyMode={privacyMode}
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
+            musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
           />
         );
       }}

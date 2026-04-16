@@ -5,8 +5,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockState from '../../../../../test/data/mock-state.json';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import GasTiming from '.';
 
@@ -14,17 +14,10 @@ jest.mock('../../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-jest.mock('../../../../contexts/gasFee.js', () => ({
-  useGasFeeContext: jest.fn().mockImplementation(() => ({
-    estimateUsed: 'medium',
-  })),
-}));
-
 describe('Gas timing', () => {
   afterEach(jest.clearAllMocks);
 
   it('renders nothing when gas is loading', () => {
-    // Fails the networkAndAccountSupports1559 check
     const nullGasState = {
       metamask: {
         gasFeeEstimates: null,
@@ -48,33 +41,86 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('Market')).toBeTruthy();
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
       expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
     });
   });
 
-  it('renders "⬆ 10% increase" when the estimate is tenPercentIncreased', async () => {
-    useGasFeeContext.mockReturnValue({
-      estimateUsed: 'tenPercentIncreased',
-    });
-
+  it('renders "10% increase" when the estimate is tenPercentIncreased', async () => {
     const mockStore = configureMockStore()(mockState);
     const props = {
       maxPriorityFeePerGas: '1000000',
+      userFeeLevelOverride: 'tenPercentIncreased',
     };
 
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('10% increase')).toBeTruthy();
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
+    });
+  });
+
+  it('renders "Site suggested" when the estimate is dappSuggested', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const props = {
+      maxPriorityFeePerGas: '1000000',
+      userFeeLevelOverride: 'dappSuggested',
+    };
+
+    const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.dappSuggested.message)).toBeTruthy();
+    });
+  });
+
+  it('uses userFeeLevelOverride when passed', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming
+        maxPriorityFeePerGas="1000000"
+        userFeeLevelOverride="tenPercentIncreased"
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
+    });
+  });
+
+  it('uses userFeeLevelOverride for medium when passed', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming
+        maxPriorityFeePerGas="1000000"
+        userFeeLevelOverride="medium"
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
+    });
+  });
+
+  it('defaults to medium when no userFeeLevelOverride is given', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming maxPriorityFeePerGas="1000000" />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
     });
   });
 
   it('renders "<1 sec" when the chain is fast and estimate time is low', async () => {
-    useGasFeeContext.mockReturnValue({
-      estimateUsed: 'high',
-    });
-
     const fastChainState = {
       ...mockState,
       metamask: {
@@ -95,6 +141,7 @@ describe('Gas timing', () => {
       <GasTiming
         chainId={CHAIN_IDS.MEGAETH_MAINNET}
         maxPriorityFeePerGas="10"
+        userFeeLevelOverride="high"
       />,
       mockStore,
     );
@@ -105,10 +152,6 @@ describe('Gas timing', () => {
   });
 
   it('renders "~0 sec" instead of "<0 sec" when minWaitTimeEstimate is 0', async () => {
-    useGasFeeContext.mockReturnValue({
-      estimateUsed: 'high',
-    });
-
     const zeroTimeState = {
       ...mockState,
       metamask: {
@@ -136,10 +179,6 @@ describe('Gas timing', () => {
   });
 
   it('renders "<1 sec" for Ethereum mainnet', async () => {
-    useGasFeeContext.mockReturnValue({
-      estimateUsed: 'high',
-    });
-
     const ethereumState = {
       ...mockState,
       metamask: {
@@ -157,7 +196,11 @@ describe('Gas timing', () => {
 
     const mockStore = configureMockStore()(ethereumState);
     const screen = renderWithProvider(
-      <GasTiming chainId={CHAIN_IDS.MAINNET} maxPriorityFeePerGas="10" />,
+      <GasTiming
+        chainId={CHAIN_IDS.MAINNET}
+        maxPriorityFeePerGas="10"
+        userFeeLevelOverride="high"
+      />,
       mockStore,
     );
 

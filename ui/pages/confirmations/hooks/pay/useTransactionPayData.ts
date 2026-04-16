@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -35,6 +36,15 @@ export function useTransactionPayTotals() {
 
 export function useTransactionPayIsMaxAmount() {
   return useTransactionPayData(selectTransactionPayIsMaxAmountByTransactionId);
+}
+
+export function useTransactionPayPrimaryRequiredToken() {
+  const requiredTokens = useTransactionPayRequiredTokens();
+
+  return useMemo(
+    () => requiredTokens?.find((t) => !t.skipIfBalance),
+    [requiredTokens],
+  );
 }
 
 function useTransactionPayData<ReturnType>(

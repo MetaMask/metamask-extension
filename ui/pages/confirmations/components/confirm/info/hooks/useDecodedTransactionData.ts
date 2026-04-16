@@ -6,7 +6,7 @@ import { AsyncResult, useAsyncResult } from '../../../../../../hooks/useAsync';
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
-import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
 import { getUse4ByteResolution } from '../../../../../../selectors';
 
 export function useDecodedTransactionData({
