@@ -240,6 +240,174 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('positions channel', () => {
+    it('fetches positions via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockPositions = [makePosition('BTC')];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetPositions',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockPositions);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes positions before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        const wsPositions = [makePosition('ETH')];
+        manager.positions.pushData(wsPositions);
+        expect(cb).toHaveBeenCalledWith(wsPositions);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetPositions',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty positions when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetPositions') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch positions',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
+  describe('orders channel', () => {
+    it('fetches orders via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockOrders = [{ id: 'order-1' }];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetOpenOrders') {
+          return Promise.resolve(mockOrders);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockOrders);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes orders before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        const wsOrders = [{ id: 'ws-order-1' }] as never[];
+        manager.orders.pushData(wsOrders);
+        expect(cb).toHaveBeenCalledWith(wsOrders);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty orders when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetOpenOrders') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch orders',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
   describe('markets channel', () => {
     beforeEach(() => {
       jest.useRealTimers();
@@ -1398,6 +1566,23 @@ describe('PerpsStreamManager', () => {
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
       expect(manager.userHistory.getCachedData()).toEqual([]);
+    });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.clearAllCaches();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('preserves the initialized address (unlike reset)', () => {
+      manager.init('0xabc');
+      manager.clearAllCaches();
+
+      expect(manager.isInitialized('0xabc')).toBe(true);
+      expect(manager.getCurrentAddress()).toBe('0xabc');
     });
 
     it('resets lastStreamUpdateAt to 0', () => {
