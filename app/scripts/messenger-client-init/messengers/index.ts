@@ -208,6 +208,8 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
+import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 
@@ -315,6 +317,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
+export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
@@ -519,6 +523,14 @@ export const MESSENGER_FACTORIES = {
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  GeolocationApiService: {
+    getMessenger: getGeolocationApiServiceMessenger,
+    getInitMessenger: noop,
+  },
+  GeolocationController: {
+    getMessenger: getGeolocationControllerMessenger,
     getInitMessenger: noop,
   },
   InstitutionalSnapController: {

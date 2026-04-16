@@ -27,6 +27,8 @@ export type { PerpsToastKey, PerpsToastVariant };
 export type PerpsToastRouteState = {
   perpsToastKey?: PerpsToastKey;
   perpsToastDescription?: string;
+  pendingOrderSymbol?: string;
+  pendingOrderFilledDescription?: string;
 };
 
 export type PerpsToastConfig = {
