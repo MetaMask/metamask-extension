@@ -20,6 +20,7 @@ import {
   getIsSocialLoginFlow,
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
+  getIsPasskeyFeatureAvailable,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -72,6 +73,7 @@ export default function CreatePassword({
   } = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
@@ -205,7 +207,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isFirefox || isSocialLoginFlow) {
+    if (isFirefox || isSocialLoginFlow || !isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
@@ -271,8 +273,10 @@ export default function CreatePassword({
         dispatch(setDataCollectionForMarketing(true));
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
-    } else {
+    } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
+    } else {
+      navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
   };
 

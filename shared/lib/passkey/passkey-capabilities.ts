@@ -1,60 +1,36 @@
-import {
-  browserSupportsWebAuthn,
-  platformAuthenticatorIsAvailable,
-} from '@simplewebauthn/browser';
-
-export type PasskeyCapabilities = {
-  webAuthnSupported: boolean;
-  /**
-   * Whether a built-in authenticator (Touch ID, Windows Hello, Android
-   * biometrics, etc.) is available on the device.
-   */
-  platformAuthenticatorAvailable: boolean;
-  /**
-   * `true` when the client confirms PRF support, `false` when it
-   * confirms PRF is *not* supported, `undefined` when the check is
-   * unavailable (include PRF optimistically in that case).
-   */
-  prfSupported: boolean | undefined;
-};
+import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 
 /**
- * Probes the current browser/platform for WebAuthn support, platform
- * authenticator availability, and PRF extension support.
+ * Synchronous check: does this browser support WebAuthn?
+ * Use for feature gating (show/hide UI). For full capability
+ * detection (PRF support), use {@link isPasskeyPRFSupported}.
  *
- * PRF detection uses `PublicKeyCredential.getClientCapabilities()`
- * (Baseline 2025). When that API is unavailable, `prfSupported` is
- * returned as `undefined` -- callers should include PRF optimistically
- * and let the post-ceremony fallback in `key-derivation.ts` handle the
- * result.
- *
- * @returns Resolved capabilities for the current environment.
+ * @returns Whether the browser supports the WebAuthn API.
  */
-export async function checkPasskeyCapabilities(): Promise<PasskeyCapabilities> {
-  if (!browserSupportsWebAuthn()) {
-    return {
-      webAuthnSupported: false,
-      platformAuthenticatorAvailable: false,
-      prfSupported: false,
-    };
-  }
+export function isWebAuthnSupported(): boolean {
+  return browserSupportsWebAuthn();
+}
 
-  const platformAuthenticatorAvailable =
-    await platformAuthenticatorIsAvailable();
+/**
+ * Checks whether the browser/platform supports the WebAuthn PRF extension.
+ *
+ * Uses `PublicKeyCredential.getClientCapabilities()` (Baseline 2025).
+ * When that API is unavailable, returns `undefined` -- callers should
+ * include PRF optimistically and let the post-ceremony fallback in
+ * `key-derivation.ts` handle the result.
+ *
+ * @returns `true` when PRF is confirmed available, `false` when confirmed
+ * unavailable, `undefined` when detection is not possible.
+ */
+export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
+  if (!browserSupportsWebAuthn()) {
+    return false;
+  }
 
   if (typeof PublicKeyCredential.getClientCapabilities === 'function') {
     const caps = await PublicKeyCredential.getClientCapabilities();
-    const prfSupported = caps['extension:prf'] === true;
-    return {
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable,
-      prfSupported,
-    };
+    return caps['extension:prf'] === true;
   }
 
-  return {
-    webAuthnSupported: true,
-    platformAuthenticatorAvailable,
-    prfSupported: undefined,
-  };
+  return undefined;
 }

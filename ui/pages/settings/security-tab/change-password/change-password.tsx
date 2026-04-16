@@ -47,6 +47,7 @@ import { PasswordChangeToastType } from '../../../../../shared/constants/app-sta
 import {
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getIsPasskeyFeatureAvailable,
 } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -70,15 +71,14 @@ const ChangePassword = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const animationEventEmitter = useRef(new EventEmitter());
   const autoPasskeyPromptStartedRef = useRef(false);
   /** After first passkey auth or password verify, do not show the full-screen passkey gate again (e.g. checkbox toggles). */
   const initialPasskeyGateDoneRef = useRef(false);
 
-  const shouldSkipCurrentPasswordStep = useMemo(
-    () => !isSocialLoginFlow && isPasskeyRegistered,
-    [isSocialLoginFlow, isPasskeyRegistered],
-  );
+  const shouldSkipCurrentPasswordStep = isPasskeyActive;
 
   const [step, setStep] = useState(() =>
     shouldSkipCurrentPasswordStep
@@ -98,7 +98,7 @@ const ChangePassword = () => {
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
     useState(false);
   const [enableBiometrics, setEnableBiometrics] = useState(
-    () => !isSocialLoginFlow && isPasskeyRegistered,
+    () => isPasskeyActive,
   );
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
@@ -179,8 +179,7 @@ const ChangePassword = () => {
 
         // register passkey
         const regOptions = await generatePasskeyRegistrationOptions();
-        const registrationResponse =
-          await startPasskeyRegistration(regOptions);
+        const registrationResponse = await startPasskeyRegistration(regOptions);
         await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState(dispatch);
       } else {
@@ -248,8 +247,7 @@ const ChangePassword = () => {
   // When a passkey is already enrolled, verify with WebAuthn first — no "current password" step.
   useEffect(() => {
     if (
-      isSocialLoginFlow ||
-      !isPasskeyRegistered ||
+      !isPasskeyActive ||
       !enableBiometrics ||
       step !== ChangePasswordSteps.ChangePassword ||
       Boolean(currentPassword) ||
@@ -294,8 +292,7 @@ const ChangePassword = () => {
       setIsAwaitingPasskeyVerification(false);
     };
   }, [
-    isSocialLoginFlow,
-    isPasskeyRegistered,
+    isPasskeyActive,
     enableBiometrics,
     step,
     currentPassword,
@@ -311,8 +308,7 @@ const ChangePassword = () => {
   /** Passkey-first flow: hide new-password UI until WebAuthn succeeds (or user falls back). */
   const isPasskeyFirstGateActive =
     !initialPasskeyGateDoneRef.current &&
-    !isSocialLoginFlow &&
-    isPasskeyRegistered &&
+    isPasskeyActive &&
     !currentPassword &&
     enableBiometrics &&
     passkeyAuthenticationResponse === null;
@@ -473,17 +469,21 @@ const ChangePassword = () => {
                       />
                     </Box>
                   ) : null}
-                  {isSocialLoginFlow ? null : (
+                  {isSocialLoginFlow || !isPasskeyFeatureAvailable ? null : (
                     <Box marginTop={6}>
                       <Checkbox
                         id="change-password-enable-biometrics"
                         data-testid="change-password-enable-biometrics"
                         isSelected={enableBiometrics}
-                        onChange={(nextChecked: boolean) => {
-                          applyChangePasswordBiometricsToggle({
-                            nextChecked,
-                            setEnableBiometrics,
-                          });
+                        onChange={(
+                          next: boolean | React.FormEvent<HTMLLabelElement>,
+                        ) => {
+                          if (typeof next === 'boolean') {
+                            applyChangePasswordBiometricsToggle({
+                              nextChecked: next,
+                              setEnableBiometrics,
+                            });
+                          }
                         }}
                         label={
                           <Text

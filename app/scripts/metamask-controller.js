@@ -138,6 +138,13 @@ import {
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
 import {
+  getIsPasskeyFeatureEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
+  getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
+  getIsAssetsUnifiedStateIncludedInBuild,
+} from '../../shared/lib/environment';
+import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
   NetworkStatus,
@@ -203,12 +210,6 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getEnabledAdvancedPermissions,
-  getIsPerpsIncludedInBuild,
-  getIsAssetsUnifiedStateIncludedInBuild,
-} from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
@@ -4276,6 +4277,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
    */
   async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
+    if (!getIsPasskeyFeatureEnabled()) {
+      throw new Error('Passkey feature is not enabled');
+    }
     return this.passkeyController.generateRegistrationOptions({ prfAvailable });
   }
 
@@ -4285,6 +4289,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialRequestOptionsJSON>}
    */
   async generatePasskeyAuthenticationOptions() {
+    if (!getIsPasskeyFeatureEnabled()) {
+      throw new Error('Passkey feature is not enabled');
+    }
     return this.passkeyController.generateAuthenticationOptions();
   }
 
@@ -4297,6 +4304,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async protectVaultKeyWithPasskey(registrationResponse) {
+    if (!getIsPasskeyFeatureEnabled()) {
+      throw new Error('Passkey feature is not enabled');
+    }
     const vaultKey = await this.keyringController.exportEncryptionKey();
     await this.passkeyController.protectVaultKeyWithPasskey({
       registrationResponse,
@@ -4311,6 +4321,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async unlockWithPasskey(authenticationResponse) {
+    if (!getIsPasskeyFeatureEnabled()) {
+      throw new Error('Passkey feature is not enabled');
+    }
     const isEnrolled = this.passkeyController.isPasskeyEnrolled();
     if (!isEnrolled) {
       throw new Error('Passkey is not enrolled');
@@ -4362,6 +4375,9 @@ export default class MetamaskController extends EventEmitter {
     newPassword,
     authenticationResponse,
   ) {
+    if (!getIsPasskeyFeatureEnabled()) {
+      throw new Error('Passkey feature is not enabled');
+    }
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     if (isSocialLoginFlow) {
       throw new Error(

@@ -67,7 +67,6 @@ import {
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
-  checkPasskeyCapabilities,
 } from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
@@ -132,6 +131,7 @@ export default class SecurityTab extends PureComponent {
     getMarketingConsent: PropTypes.func,
     hasActiveShieldSubscription: PropTypes.bool,
     isPasskeyRegistered: PropTypes.bool,
+    isPasskeyFeatureAvailable: PropTypes.bool,
     forceUpdateMetamaskState: PropTypes.func.isRequired,
     setShowPasskeySettingsToast: PropTypes.func.isRequired,
   };
@@ -236,14 +236,7 @@ export default class SecurityTab extends PureComponent {
     if (wantsOn) {
       this.setState({ passkeyToggleBusy: true });
       try {
-        const { webAuthnSupported, prfSupported } =
-          await checkPasskeyCapabilities();
-        if (!webAuthnSupported) {
-          return;
-        }
-        const options = await generatePasskeyRegistrationOptions({
-          prfAvailable: prfSupported !== false,
-        });
+        const options = await generatePasskeyRegistrationOptions();
         const registrationResponse = await startPasskeyRegistration(options);
         await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState();
@@ -1442,7 +1435,9 @@ export default class SecurityTab extends PureComponent {
 
         {this.renderSecurityAlertsToggle()}
 
-        {this.renderPasskeySettingsToggle()}
+        {this.props.isPasskeyFeatureAvailable &&
+          !this.props.socialLoginEnabled &&
+          this.renderPasskeySettingsToggle()}
 
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

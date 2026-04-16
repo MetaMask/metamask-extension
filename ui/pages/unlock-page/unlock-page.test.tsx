@@ -45,6 +45,12 @@ jest.mock('../../../shared/lib/passkey', () => ({
       signature: 'AQ',
     },
   }),
+  isWebAuthnSupported: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
 const mockTryUnlockMetamask = jest.fn(() => {

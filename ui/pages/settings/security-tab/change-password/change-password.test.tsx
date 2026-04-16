@@ -61,6 +61,12 @@ jest.mock('../../../../../shared/lib/passkey', () => ({
       attestationObject: 'AAEC',
     },
   }),
+  isWebAuthnSupported: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment'),
+  getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock('react-redux', () => {

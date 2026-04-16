@@ -796,6 +796,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
+  passkeyEnabled: {
+    name: 'PASSKEY_ENABLED',
+    type: FeatureFlagType.Build,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   perpsEnabled: {
     name: 'perpsEnabled',
     type: FeatureFlagType.Remote,

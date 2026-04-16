@@ -27,6 +27,7 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getIsPasskeyRegistered,
+  getIsPasskeyFeatureAvailable,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
   getPreferences,
@@ -81,6 +82,7 @@ const mapStateToProps = (state) => {
     useExternalServices,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     isPasskeyRegistered: getIsPasskeyRegistered(state),
+    isPasskeyFeatureAvailable: getIsPasskeyFeatureAvailable(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),

@@ -16,6 +16,15 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
 import CreatePassword from './create-password';
 
+jest.mock('../../../../shared/lib/passkey', () => ({
+  isWebAuthnSupported: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
+}));
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {

@@ -89,6 +89,7 @@ type UnlockPageProps = {
   isPopup: boolean;
   isWalletResetInProgress: boolean;
   isPasskeyRegistered: boolean;
+  isPasskeyFeatureAvailable: boolean;
   skipPasskeyAutoOnNextUnlock: boolean;
   setSkipPasskeyAutoOnNextUnlock: (skip: boolean) => void;
 };
@@ -211,6 +212,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      */
     isPasskeyRegistered: PropTypes.bool,
     /**
+     * Whether the passkey feature is available on this platform
+     */
+    isPasskeyFeatureAvailable: PropTypes.bool,
+    /**
      * When true, do not auto-start WebAuthn once (after UI-initiated lock).
      */
     skipPasskeyAutoOnNextUnlock: PropTypes.bool,
@@ -273,13 +278,27 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.isUnlockViewMounted = false;
   }
 
+  get isPasskeyActive(): boolean {
+    const {
+      isPasskeyRegistered,
+      isPasskeyFeatureAvailable,
+      isSocialLoginFlow,
+    } = this.props;
+    return (
+      isPasskeyRegistered && isPasskeyFeatureAvailable && !isSocialLoginFlow
+    );
+  }
+
   componentDidUpdate(prevProps: UnlockPageProps) {
-    if (prevProps.isPasskeyRegistered && !this.props.isPasskeyRegistered) {
+    const wasActive =
+      prevProps.isPasskeyRegistered &&
+      prevProps.isPasskeyFeatureAvailable &&
+      !prevProps.isSocialLoginFlow;
+    const isActive = this.isPasskeyActive;
+
+    if (wasActive && !isActive) {
       this.setState({ showPasswordForm: true });
-    } else if (
-      !prevProps.isPasskeyRegistered &&
-      this.props.isPasskeyRegistered
-    ) {
+    } else if (!wasActive && isActive) {
       this.maybeAutoPasskeyUnlock();
     }
   }
@@ -289,13 +308,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
    * after a UI-initiated lock (skipPasskeyAutoOnNextUnlock) in this session.
    */
   maybeAutoPasskeyUnlock() {
-    const {
-      isPasskeyRegistered,
-      skipPasskeyAutoOnNextUnlock,
-      setSkipPasskeyAutoOnNextUnlock,
-    } = this.props;
+    const { skipPasskeyAutoOnNextUnlock, setSkipPasskeyAutoOnNextUnlock } =
+      this.props;
 
-    if (!isPasskeyRegistered) {
+    if (!this.isPasskeyActive) {
       return;
     }
     if (skipPasskeyAutoOnNextUnlock) {
@@ -306,14 +322,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   }
 
   async componentDidMount() {
-    const {
-      isOnboardingCompleted,
-      isSocialLoginFlow,
-      isPasskeyRegistered: passkeyRegistered,
-    } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
 
     this.setState((prev) => ({
-      showPasswordForm: passkeyRegistered ? prev.showPasswordForm : true,
+      showPasswordForm: this.isPasskeyActive ? prev.showPasswordForm : true,
     }));
 
     if (isOnboardingCompleted) {
@@ -339,7 +351,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     // Auto WebAuthn when the unlock screen loads and a passkey is registered,
     // unless the user just locked from this UI (one shot; new popup clears Redux).
-    if (passkeyRegistered) {
+    if (this.isPasskeyActive) {
       this.maybeAutoPasskeyUnlock();
     }
   }
@@ -620,7 +632,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     const { t } = this.context as UnlockPageContext;
     try {
-      if (!this.props.isPasskeyRegistered) {
+      if (!this.isPasskeyActive) {
         this.setState({
           error: t('passkeyUnlockFailed'),
           passkeyInProgress: false,
@@ -631,11 +643,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       const authOptions = await generatePasskeyAuthenticationOptions();
       const authenticationResponse = await startPasskeyAuthentication(
         authOptions,
-      )
-        .catch((error) => {
-          // TODO: handle error message correctly
-          throw new Error(t('passkeyUnlockFailed'));
-        });
+      ).catch((error) => {
+        // TODO: handle error message correctly
+        throw new Error(t('passkeyUnlockFailed'));
+      });
 
       await unlockWithPasskey(authenticationResponse);
       await this.props.forceUpdateMetamaskState();
@@ -867,7 +878,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                     width={BlockSize.Full}
                     marginBottom={4}
                   />
-                  {this.props.isPasskeyRegistered ? (
+                  {this.isPasskeyActive ? (
                     <ButtonIcon
                       variant={ButtonIconVariant.Filled}
                       ariaLabel={

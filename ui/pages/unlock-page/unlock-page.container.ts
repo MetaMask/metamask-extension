@@ -19,7 +19,11 @@ import {
   resetWallet,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
-import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
+  getIsPasskeyFeatureAvailable,
+} from '../../selectors';
 import {
   getCompletedOnboarding,
   getIsPasskeyRegistered,
@@ -48,6 +52,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     isPasskeyRegistered: getIsPasskeyRegistered(state),
+    isPasskeyFeatureAvailable: getIsPasskeyFeatureAvailable(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     skipPasskeyAutoOnNextUnlock: getSkipPasskeyAutoOnNextUnlock(state),

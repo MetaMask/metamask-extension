@@ -25,11 +25,6 @@ jest.mock('../../../../shared/lib/passkey', () => ({
       attestationObject: 'e30',
     },
   }),
-  checkPasskeyCapabilities: jest.fn().mockResolvedValue({
-    webAuthnSupported: true,
-    platformAuthenticatorAvailable: true,
-    prfSupported: true,
-  }),
 }));
 
 jest.mock('../../../store/actions', () => {

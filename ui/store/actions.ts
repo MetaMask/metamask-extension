@@ -98,6 +98,7 @@ import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtil
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
+import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -1159,11 +1160,10 @@ export function submitEncryptionKey(
   ]);
 }
 
-export function generatePasskeyRegistrationOptions(opts?: {
-  prfAvailable?: boolean;
-}): Promise<PasskeyRegistrationOptions> {
+export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
+  const prfSupported = await isPasskeyPRFSupported();
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    opts,
+    { prfAvailable: prfSupported !== false },
   ]);
 }
 

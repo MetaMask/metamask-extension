@@ -1,22 +1,32 @@
+import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 import {
-  browserSupportsWebAuthn,
-  platformAuthenticatorIsAvailable,
-} from '@simplewebauthn/browser';
-import { checkPasskeyCapabilities } from './passkey-capabilities';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+  isPasskeyPRFSupported,
+  isWebAuthnSupported,
+} from './passkey-capabilities';
 
 jest.mock('@simplewebauthn/browser', () => ({
   browserSupportsWebAuthn: jest.fn(),
-  platformAuthenticatorIsAvailable: jest.fn(),
 }));
 
 const mockBrowserSupportsWebAuthn = jest.mocked(browserSupportsWebAuthn);
-const mockPlatformAuthenticatorIsAvailable = jest.mocked(
-  platformAuthenticatorIsAvailable,
-);
 
-describe('checkPasskeyCapabilities', () => {
+describe('isWebAuthnSupported', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('returns true when browserSupportsWebAuthn returns true', () => {
+    mockBrowserSupportsWebAuthn.mockReturnValue(true);
+    expect(isWebAuthnSupported()).toBe(true);
+  });
+
+  it('returns false when browserSupportsWebAuthn returns false', () => {
+    mockBrowserSupportsWebAuthn.mockReturnValue(false);
+    expect(isWebAuthnSupported()).toBe(false);
+  });
+});
+
+describe('isPasskeyPRFSupported', () => {
   const originalPublicKeyCredential = globalThis.PublicKeyCredential;
 
   afterEach(() => {
@@ -28,97 +38,58 @@ describe('checkPasskeyCapabilities', () => {
     }
   });
 
-  it('returns all false when WebAuthn is not supported', async () => {
+  it('returns false when WebAuthn is not supported', async () => {
     mockBrowserSupportsWebAuthn.mockReturnValue(false);
 
-    const result = await checkPasskeyCapabilities();
+    const result = await isPasskeyPRFSupported();
 
-    expect(result).toStrictEqual({
-      webAuthnSupported: false,
-      platformAuthenticatorAvailable: false,
-      prfSupported: false,
-    });
+    expect(result).toBe(false);
   });
 
-  it('returns prfSupported=true when getClientCapabilities reports extension:prf', async () => {
+  it('returns true when getClientCapabilities reports extension:prf', async () => {
     mockBrowserSupportsWebAuthn.mockReturnValue(true);
-    mockPlatformAuthenticatorIsAvailable.mockResolvedValue(true);
     globalThis.PublicKeyCredential = {
       getClientCapabilities: jest
         .fn()
         .mockResolvedValue({ 'extension:prf': true }),
     } as unknown as typeof PublicKeyCredential;
 
-    const result = await checkPasskeyCapabilities();
+    const result = await isPasskeyPRFSupported();
 
-    expect(result).toStrictEqual({
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable: true,
-      prfSupported: true,
-    });
+    expect(result).toBe(true);
   });
 
-  it('returns prfSupported=false when getClientCapabilities omits extension:prf', async () => {
+  it('returns false when getClientCapabilities omits extension:prf', async () => {
     mockBrowserSupportsWebAuthn.mockReturnValue(true);
-    mockPlatformAuthenticatorIsAvailable.mockResolvedValue(true);
     globalThis.PublicKeyCredential = {
       getClientCapabilities: jest.fn().mockResolvedValue({}),
     } as unknown as typeof PublicKeyCredential;
 
-    const result = await checkPasskeyCapabilities();
+    const result = await isPasskeyPRFSupported();
 
-    expect(result).toStrictEqual({
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable: true,
-      prfSupported: false,
-    });
+    expect(result).toBe(false);
   });
 
-  it('returns prfSupported=false when extension:prf is explicitly false', async () => {
+  it('returns false when extension:prf is explicitly false', async () => {
     mockBrowserSupportsWebAuthn.mockReturnValue(true);
-    mockPlatformAuthenticatorIsAvailable.mockResolvedValue(true);
     globalThis.PublicKeyCredential = {
       getClientCapabilities: jest
         .fn()
         .mockResolvedValue({ 'extension:prf': false }),
     } as unknown as typeof PublicKeyCredential;
 
-    const result = await checkPasskeyCapabilities();
+    const result = await isPasskeyPRFSupported();
 
-    expect(result).toStrictEqual({
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable: true,
-      prfSupported: false,
-    });
+    expect(result).toBe(false);
   });
 
-  it('returns prfSupported=undefined when getClientCapabilities is not available', async () => {
+  it('returns undefined when getClientCapabilities is not available', async () => {
     mockBrowserSupportsWebAuthn.mockReturnValue(true);
-    mockPlatformAuthenticatorIsAvailable.mockResolvedValue(true);
     globalThis.PublicKeyCredential =
       {} as unknown as typeof PublicKeyCredential;
 
-    const result = await checkPasskeyCapabilities();
+    const result = await isPasskeyPRFSupported();
 
-    expect(result).toStrictEqual({
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable: true,
-      prfSupported: undefined,
-    });
-  });
-
-  it('returns platformAuthenticatorAvailable=false when no platform authenticator', async () => {
-    mockBrowserSupportsWebAuthn.mockReturnValue(true);
-    mockPlatformAuthenticatorIsAvailable.mockResolvedValue(false);
-    globalThis.PublicKeyCredential =
-      {} as unknown as typeof PublicKeyCredential;
-
-    const result = await checkPasskeyCapabilities();
-
-    expect(result).toStrictEqual({
-      webAuthnSupported: true,
-      platformAuthenticatorAvailable: false,
-      prfSupported: undefined,
-    });
+    expect(result).toBeUndefined();
   });
 });
