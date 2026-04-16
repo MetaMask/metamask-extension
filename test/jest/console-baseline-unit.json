@@ -1382,7 +1382,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
-      "MetaMask: Background connection not initialized": 30,
+      "MetaMask: Background connection not initialized": 54,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useIsEnforcedSimulationsEligible.test.ts": {

@@ -8,7 +8,7 @@ import {
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { GetSubjectMetadataState } from '@metamask/permission-controller';
-import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
+import { NotificationServicesControllerUpdateMetamaskNotificationsListAction } from '@metamask/notification-services-controller/notification-services';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type RateLimitControllerMessenger =
@@ -42,7 +42,7 @@ export function getRateLimitControllerMessenger(
 
 type InitActions =
   | GetSubjectMetadataState
-  | NotificationServicesControllerUpdateMetamaskNotificationsList;
+  | NotificationServicesControllerUpdateMetamaskNotificationsListAction;
 
 export type RateLimitControllerInitMessenger = ReturnType<
   typeof getRateLimitControllerInitMessenger

@@ -60,11 +60,10 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
-  const unrealizedPnl = account?.unrealizedPnl ?? '0';
   const availableBalance = account?.availableBalance ?? '0';
 
-  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
-  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
+  const accountValue = parseFloat(totalBalance);
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
