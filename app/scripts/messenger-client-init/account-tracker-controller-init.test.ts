@@ -17,7 +17,7 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesState,
 } from '@metamask/preferences-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAccountTrackerControllerMessenger,
@@ -40,7 +40,7 @@ function getInitRequestMock(
     never
   >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     AccountTrackerControllerMessenger,
     AccountTrackerControllerInitMessenger
   >
@@ -90,8 +90,9 @@ function getInitRequestMock(
 
 describe('AccountTrackerControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = AccountTrackerControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AccountTrackerController);
+    const { messengerClient } =
+      AccountTrackerControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AccountTrackerController);
   });
 
   it('passes the proper arguments to the controller', () => {

@@ -10,7 +10,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
@@ -50,7 +50,7 @@ function buildControllerMock(
  * stubbed PreferencesController.
  */
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokenRatesControllerMessenger,
     TokenRatesControllerInitMessenger
   >
@@ -79,7 +79,7 @@ function buildInitRequestMock(): jest.Mocked<
   };
 
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -93,9 +93,9 @@ describe('TokenRatesControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(TokenRatesControllerInit(requestMock).controller).toBeInstanceOf(
-      TokenRatesController,
-    );
+    expect(
+      TokenRatesControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(TokenRatesController);
   });
 
   it('initializes with correct messenger and state', () => {

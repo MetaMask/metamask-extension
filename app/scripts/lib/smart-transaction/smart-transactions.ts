@@ -32,13 +32,14 @@ import {
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
 import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
+  getExtensionSkipTransactionStatusPage,
   getIsSmartTransaction,
   isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/lib/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
-import { ControllerFlatState } from '../../messenger-client-init/controller-list';
+import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
 import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 
@@ -58,7 +59,9 @@ export type SmartTransactionHookMessenger = Messenger<
   AllowedEvents
 >;
 
-export type FeatureFlags = SmartTransactionsNetworkConfig;
+export type FeatureFlags = SmartTransactionsNetworkConfig & {
+  extensionSkipTransactionStatusPage?: boolean;
+};
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
@@ -127,17 +130,14 @@ class SmartTransactionHook {
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
-    const extensionSkipSmartTransactionStatusPage =
-      featureFlags?.extensionSkipSmartTransactionStatusPage;
 
-    this.#shouldShowStatusPage = extensionSkipSmartTransactionStatusPage
-      ? false
-      : Boolean(
-          (transactionMeta.type !== TransactionType.bridge &&
-            transactionMeta.type !==
-              TransactionType.shieldSubscriptionApprove) ||
-            (this.#transactions && this.#transactions.length > 0),
-        );
+    const legacyShowStatusPage = Boolean(
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
+        (this.#transactions && this.#transactions.length > 0),
+    );
+
+    this.#shouldShowStatusPage = legacyShowStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
@@ -587,12 +587,12 @@ export const submitBatchSmartTransactionHook = (
   return smartTransactionHook.submitBatch();
 };
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
 
 export function getSmartTransactionCommonParams(
-  flatState: ControllerFlatState,
+  flatState: MessengerClientFlatState,
   chainId?: Hex,
 ) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
@@ -606,12 +606,18 @@ export function getSmartTransactionCommonParams(
     uiState,
     effectiveChainId,
   );
+  const extensionSkipTransactionStatusPage =
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    getExtensionSkipTransactionStatusPage(uiState);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
   return {
     isSmartTransaction,
-    featureFlags,
+    featureFlags: {
+      ...featureFlags,
+      extensionSkipTransactionStatusPage,
+    },
     isHardwareWalletAccount,
   };
 }

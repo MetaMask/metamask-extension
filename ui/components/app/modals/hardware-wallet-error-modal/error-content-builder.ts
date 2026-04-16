@@ -39,6 +39,22 @@ export type ErrorContent =
   | ErrorContentWithDescription;
 
 /**
+ * Conditionally append a recovery instruction to the list.
+ *
+ * @param instructions - Existing recovery instruction strings
+ * @param shouldAdd - Whether to append the new instruction
+ * @param instruction - The instruction to append when `shouldAdd` is true
+ * @returns A new array with the instruction appended, or the original array unchanged
+ */
+function addRecoveryInstruction(
+  instructions: string[],
+  shouldAdd: boolean,
+  instruction: string,
+): string[] {
+  return shouldAdd ? [...instructions, instruction] : instructions;
+}
+
+/**
  * Build error content based on error code
  *
  * @param error - The hardware wallet error object
@@ -61,10 +77,11 @@ export function buildErrorContent(
         icon: IconName.Lock,
         iconColor: IconColor.iconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1'),
+        recoveryInstructions: addRecoveryInstruction(
+          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
+          walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
-        ],
+        ),
       };
 
     // Device state - Wrong app
@@ -90,11 +107,15 @@ export function buildErrorContent(
       return {
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
-        ],
+        recoveryInstructions: addRecoveryInstruction(
+          [
+            t('hardwareWalletErrorRecoveryConnection1'),
+            t('hardwareWalletErrorRecoveryConnection2'),
+            t('hardwareWalletErrorRecoveryConnection3'),
+          ],
+          walletType === HardwareWalletType.Trezor,
+          t('hardwareWalletErrorRecoveryConnection4', [t(walletType)]),
+        ),
       };
 
     // Usually bolos will yield this result
@@ -102,10 +123,11 @@ export function buildErrorContent(
       return {
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryUnlock1'),
+        recoveryInstructions: addRecoveryInstruction(
+          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
+          walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
-        ],
+        ),
       };
 
     // Unknown/default

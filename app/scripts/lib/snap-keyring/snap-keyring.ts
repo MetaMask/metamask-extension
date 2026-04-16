@@ -17,7 +17,7 @@ import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
-import MetaMetricsController from '../../controllers/metametrics-controller';
+import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,

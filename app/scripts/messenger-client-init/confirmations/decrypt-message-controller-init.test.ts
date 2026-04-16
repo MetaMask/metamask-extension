@@ -1,9 +1,11 @@
-import DecryptMessageController from '../../controllers/decrypt-message';
-import { ControllerInitRequest } from '../types';
+import {
+  DecryptMessageController,
+  DecryptMessageControllerMessenger,
+} from '../../controllers/decrypt-message';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getDecryptMessageControllerMessenger,
-  DecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
 } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';
@@ -13,7 +15,7 @@ import { DecryptMessageControllerInit } from './decrypt-message-controller-init'
 jest.mock('../../controllers/decrypt-message');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     DecryptMessageControllerMessenger,
     DecryptMessageControllerInitMessenger
   >
@@ -31,8 +33,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('DecryptMessageControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = DecryptMessageControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(DecryptMessageController);
+    const { messengerClient } =
+      DecryptMessageControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(DecryptMessageController);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -40,7 +43,7 @@ describe('DecryptMessageControllerInit', () => {
     const request = getInitRequestMock();
 
     // @ts-expect-error: Partial mock.
-    request.getController.mockReturnValue(manager);
+    request.getMessengerClient.mockReturnValue(manager);
 
     DecryptMessageControllerInit(request);
 

@@ -1,6 +1,6 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
@@ -23,6 +23,7 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import {
+  type NetworkMetadata,
   type NetworkState,
   NetworkStatus,
   RpcEndpointType,
@@ -42,6 +43,7 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  ACCOUNT_2,
   ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
   DAPP_ONE_URL,
   DAPP_TWO_URL,
@@ -69,6 +71,33 @@ const STORAGE_SERVICE_NAMESPACE = Object.freeze({
   SNAP_CONTROLLER: 'SnapController',
   TOKEN_LIST_CONTROLLER: 'TokenListController',
 } as const);
+
+const LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID =
+  'npm:@metamask/lifecycle-hooks-example-snap';
+
+/** `methods` for HD / imported EOA rows in AccountsController fixtures. */
+const FIXTURE_HD_EOA_ACCOUNT_METHODS = [
+  'personal_sign',
+  'eth_signTransaction',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+] as const;
+
+/** `methods` for hardware wallet rows (and paired HD row) where `eth_sign` is supported. */
+const FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS = [
+  'personal_sign',
+  'eth_sign',
+  'eth_signTransaction',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+] as const;
+
+/* eslint-disable no-template-curly-in-string -- minified bundle embeds template-like `${` sequences */
+const LIFECYCLE_HOOKS_EXAMPLE_SNAP_SOURCE_CODE =
+  '(()=>{var e={d:(n,t)=>{for(var a in t)e.o(t,a)&&!e.o(n,a)&&Object.defineProperty(n,a,{enumerable:!0,get:t[a]})},o:(e,n)=>Object.prototype.hasOwnProperty.call(e,n),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},n={};(()=>{"use strict";function t(e,n,t){if("string"==typeof e)throw new Error(`An HTML element ("${String(e)}") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.`);if(!e)throw new Error("A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.");return e({...n,key:t})}function a(e){return Object.fromEntries(Object.entries(e).filter((([,e])=>void 0!==e)))}function r(e){return n=>{const{key:t=null,...r}=n;return{type:e,props:a(r),key:t}}}e.r(n),e.d(n,{onInstall:()=>p,onStart:()=>l,onUpdate:()=>d});const o=r("Box"),s=r("Text"),l=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The client was started successfully, and the "onStart" handler was called.\'})})}}),p=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was installed successfully, and the "onInstall" handler was called.\'})})}}),d=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was updated successfully, and the "onUpdate" handler was called.\'})})}})})(),module.exports=n})();';
+/* eslint-enable no-template-curly-in-string */
 
 function defaultFixture() {
   return cloneDeep(defaultFixtureJson);
@@ -286,6 +315,68 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withAccountsControllerAdditionalAccountVault(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [...FIXTURE_HD_EOA_ACCOUNT_METHODS],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
+            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
+            address: ACCOUNT_2,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
+            methods: [...FIXTURE_HD_EOA_ACCOUNT_METHODS],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 2',
+              importTime: 1724486724986,
+              lastSelected: 1665507800000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   withAccountsControllerImportedAccount(): this {
     return this.withAccountsController({
       internalAccounts: {
@@ -305,13 +396,7 @@ class FixtureBuilderV2 {
                 groupIndex: 0,
               },
             },
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HD_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -337,13 +422,7 @@ class FixtureBuilderV2 {
                 groupIndex: 1,
               },
             },
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HD_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -368,13 +447,7 @@ class FixtureBuilderV2 {
                 groupIndex: 2,
               },
             },
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HD_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -417,6 +490,11 @@ class FixtureBuilderV2 {
     });
   }
 
+  // NOTE: consider this when using this fixture:
+  //   - Multiple chains enabled → homepage shows "Popular networks" filter.
+  //   - Single chain enabled → homepage shows "Current network" single-chain filter.
+  // This is a full assignment, not a merge — only the networks listed here will be enabled.
+  // The reason for not using a merge is because if we do, then localhost will also be enabled (default) and we end up mixing Custom networks with Popular networks, a Frankenstein state not possible in production.
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
@@ -472,14 +550,7 @@ class FixtureBuilderV2 {
                 groupIndex: 0,
               },
             },
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -495,14 +566,7 @@ class FixtureBuilderV2 {
             id: HARDWARE_WALLET_ACCOUNT_ID,
             address: ledgerAddressLower,
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -549,6 +613,46 @@ class FixtureBuilderV2 {
         },
       },
     });
+  }
+
+  withNetworkRpcUrlOnLocalhost(chainId: Hex): this {
+    const networkController = this.fixture.data.NetworkController as {
+      selectedNetworkClientId: string;
+      networkConfigurationsByChainId: Record<
+        string,
+        {
+          defaultRpcEndpointIndex: number;
+          rpcEndpoints: {
+            networkClientId: string;
+            url: string;
+            type: string;
+          }[];
+        }
+      >;
+      networksMetadata: Record<string, NetworkMetadata>;
+    };
+    const chainConfig =
+      networkController.networkConfigurationsByChainId[chainId];
+    if (!chainConfig) {
+      throw new Error(
+        `withNetworkRpcUrlOnLocalhost: no network configuration found for chain ${chainId}`,
+      );
+    }
+    {
+      const localClientId = `${chainId}-local`;
+      chainConfig.rpcEndpoints.push({
+        networkClientId: localClientId,
+        url: 'http://localhost:8545',
+        type: RpcEndpointType.Custom,
+      });
+      chainConfig.defaultRpcEndpointIndex = chainConfig.rpcEndpoints.length - 1;
+      networkController.selectedNetworkClientId = localClientId;
+      networkController.networksMetadata[localClientId] = {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      };
+    }
+    return this;
   }
 
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
@@ -695,11 +799,13 @@ class FixtureBuilderV2 {
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
+    scopes,
   }: {
     account?: string | string[];
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
     chainIds?: number[];
+    scopes?: Record<string, Json>;
   } = {}): this {
     const MAX_DAPPS = 3;
     if (numberOfDapps < 1 || numberOfDapps > MAX_DAPPS) {
@@ -718,17 +824,28 @@ class FixtureBuilderV2 {
       DAPP_TWO_URL,
     ].slice(0, numberOfDapps);
 
-    // Build optionalScopes from the provided chainIds (default: localhost 1337)
-    const optionalScopes: Record<string, { accounts: string[] }> = {};
-    for (const chainId of chainIds) {
-      const scopeKey = `eip155:${chainId}`;
-      optionalScopes[scopeKey] = {
-        accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+    // Use custom scopes if provided, otherwise build EVM scopes from chainIds
+    let scopeValue: Record<string, Json>;
+    if (scopes) {
+      scopeValue = scopes;
+    } else {
+      const optionalScopes: Record<string, { accounts: string[] }> = {};
+      for (const chainId of chainIds) {
+        const scopeKey = `eip155:${chainId}`;
+        optionalScopes[scopeKey] = {
+          accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+        };
+      }
+      optionalScopes['wallet:eip155'] = {
+        accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
+      };
+      scopeValue = {
+        isMultichainOrigin: true,
+        optionalScopes,
+        requiredScopes: {},
+        sessionProperties: {},
       };
     }
-    optionalScopes['wallet:eip155'] = {
-      accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
-    };
 
     // Unique random IDs for each dapp subject's permission
     const permissionIds = [
@@ -747,12 +864,7 @@ class FixtureBuilderV2 {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
-                  isMultichainOrigin: true,
-                  optionalScopes,
-                  requiredScopes: {},
-                  sessionProperties: {},
-                },
+                value: scopeValue,
               },
             ],
             date: 1770296204693,
@@ -765,6 +877,68 @@ class FixtureBuilderV2 {
     }
 
     return this.withPermissionController({ subjects });
+  }
+
+  withPermissionControllerConnectedToMultichainTestDapp({
+    account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+    useLocalhostHostname = false,
+    chainIds = [1337],
+    scopes,
+  }: {
+    account?: string | string[];
+    useLocalhostHostname?: boolean;
+    chainIds?: number[];
+    scopes?: Record<string, Json>;
+  } = {}): this {
+    const resolvedAccounts = (Array.isArray(account) ? account : [account]).map(
+      (a) => a.toLowerCase(),
+    );
+
+    let scopeValue: Record<string, Json>;
+    if (scopes) {
+      scopeValue = scopes;
+    } else {
+      const optionalScopes: Record<string, { accounts: string[] }> = {};
+      for (const chainId of chainIds) {
+        const scopeKey = `eip155:${chainId}`;
+        optionalScopes[scopeKey] = {
+          accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
+        };
+      }
+      optionalScopes['wallet:eip155'] = {
+        accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
+      };
+      optionalScopes.wallet = { accounts: [] };
+      scopeValue = {
+        isMultichainOrigin: true,
+        optionalScopes,
+        requiredScopes: {},
+        sessionProperties: {},
+      };
+    }
+
+    const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
+    return this.withPermissionController({
+      subjects: {
+        [dappUrl]: {
+          origin: dappUrl,
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: scopeValue,
+                },
+              ],
+              date: 1770296204693,
+              id: 'SFqk8nFLekiqC5O1cYCjT',
+              invoker: dappUrl,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    });
   }
 
   withPreferencesControllerTxSimulationsDisabled(): this {
@@ -815,6 +989,90 @@ class FixtureBuilderV2 {
     });
   }
 
+  withSnapControllerOnStartLifecycleSnap(): this {
+    /* eslint-disable @typescript-eslint/naming-convention -- MetaMask Snap / RPC permission keys */
+    const result = this.withPermissionController({
+      subjects: {
+        [LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID]: {
+          origin: LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID,
+          permissions: {
+            'endowment:lifecycle-hooks': {
+              caveats: null,
+              date: 1750244440562,
+              id: '0eKn8SjGEH6o_6Mhcq3Lw',
+              invoker: LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID,
+              parentCapability: 'endowment:lifecycle-hooks',
+            },
+            snap_dialog: {
+              caveats: null,
+              date: 1750244440562,
+              id: 'Fbme_UWcuSK92JqfrT4G2',
+              invoker: LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID,
+              parentCapability: 'snap_dialog',
+            },
+          },
+        },
+      },
+    })
+      .withSnapController({
+        snaps: {
+          [LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID]: {
+            auxiliaryFiles: [],
+            blocked: false,
+            enabled: true,
+            id: LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID,
+            initialPermissions: {
+              'endowment:lifecycle-hooks': {},
+              snap_dialog: {},
+            },
+            localizationFiles: [],
+            manifest: {
+              description:
+                'MetaMask example snap demonstrating the use of the `onStart`, `onInstall`, and `onUpdate` lifecycle hooks.',
+              initialPermissions: {
+                'endowment:lifecycle-hooks': {},
+                snap_dialog: {},
+              },
+              manifestVersion: '0.1',
+              platformVersion: '8.1.0',
+              proposedName: 'Lifecycle Hooks Example Snap',
+              repository: {
+                type: 'git',
+                url: 'https://github.com/MetaMask/snaps.git',
+              },
+              source: {
+                location: {
+                  npm: {
+                    filePath: 'dist/bundle.js',
+                    packageName: '@metamask/lifecycle-hooks-example-snap',
+                    registry: 'https://registry.npmjs.org',
+                  },
+                },
+                shasum: '5tlM5E71Fbeid7I3F0oQURWL7/+0620wplybtklBCHQ=',
+              },
+              version: '2.2.0',
+            },
+            sourceCode: LIFECYCLE_HOOKS_EXAMPLE_SNAP_SOURCE_CODE,
+            status: 'stopped',
+            version: '2.2.0',
+            versionHistory: [
+              {
+                date: 1750244439310,
+                origin: 'https://metamask.github.io',
+                version: '2.2.0',
+              },
+            ],
+          },
+        },
+      } as Partial<PersistedSnapControllerState>)
+      .withSnapControllerStorageServiceSourceCode(
+        LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID,
+        LIFECYCLE_HOOKS_EXAMPLE_SNAP_SOURCE_CODE,
+      );
+    /* eslint-enable @typescript-eslint/naming-convention */
+    return result;
+  }
+
   withSmartTransactionsOptedOut(): this {
     return this.withPreferencesController({
       preferences: {
@@ -862,14 +1120,7 @@ class FixtureBuilderV2 {
                 groupIndex: 0,
               },
             },
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -885,14 +1136,7 @@ class FixtureBuilderV2 {
             id: HARDWARE_WALLET_ACCOUNT_ID,
             address: TREZOR_ADDRESS,
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
             type: 'eip155:eoa',
             scopes: ['eip155:0'],
             metadata: {
@@ -1009,6 +1253,17 @@ class FixtureBuilderV2 {
   }): this {
     this.storageServiceData[`storageService:${namespace}:${key}`] = value;
     return this;
+  }
+
+  withSnapControllerStorageServiceSourceCode(
+    snapId: string,
+    sourceCode: string,
+  ): this {
+    return this.withStorageServiceData({
+      namespace: STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER,
+      key: snapId,
+      value: { sourceCode },
+    });
   }
 
   withTokenListControllerStorageServiceData(

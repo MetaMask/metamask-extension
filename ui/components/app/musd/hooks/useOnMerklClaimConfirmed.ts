@@ -5,7 +5,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getTransactions } from '../../../../selectors/transactions';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
+import { isMerklClaimTransaction } from '../utils';
 
 /**
  * Transaction statuses that indicate a claim is "in flight":
@@ -26,15 +26,6 @@ const IN_FLIGHT_STATUSES: string[] = [
  * flow), so the pending→confirmed transition was never observed.
  */
 const RECENT_CLAIM_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
-
-/**
- * Check if a transaction is a Merkl claim by matching the distributor address.
- *
- * @param tx - The transaction metadata
- * @returns Whether the transaction is a Merkl claim
- */
-const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
-  tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 /**
  * Watches Merkl claim transactions and fires a callback when one confirms.

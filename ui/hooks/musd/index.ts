@@ -61,4 +61,4 @@ export {
   type UseMusdPaymentTokenResult,
 } from './useMusdPaymentToken';
 
-export { isMerklClaimTransaction } from './useMerklClaimStatus';
+export { isMerklClaimTransaction } from '../../components/app/musd/utils';

@@ -1,6 +1,6 @@
 import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getMultichainAssetsRatesControllerMessenger,
   MultichainAssetsRatesControllerMessenger,
@@ -11,7 +11,7 @@ import { MultichainAssetsRatesControllerInit } from './multichain-rates-assets-c
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultichainAssetsRatesControllerMessenger>
+  MessengerClientInitRequest<MultichainAssetsRatesControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -36,7 +36,7 @@ describe('MultichainAssetsRatesControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      MultichainAssetsRatesControllerInit(requestMock).controller,
+      MultichainAssetsRatesControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(MultichainAssetsRatesController);
   });
 

@@ -17,7 +17,8 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
-    POST_NEW_BUILDS,
+    BUILDS_FROM_SHA,
+    BUILDS_FROM_RUN,
     TEST_PLAN_VERSION,
   } = process.env;
 
@@ -42,14 +43,21 @@ async function start(): Promise<void> {
     );
   }
 
-  const artifacts = getArtifactLinks(HOST_URL, OWNER, REPOSITORY, RUN_ID);
+  const artifacts = getArtifactLinks(
+    HOST_URL,
+    OWNER,
+    REPOSITORY,
+    BUILDS_FROM_RUN || RUN_ID,
+  );
 
   const artifactsBody = buildArtifactsBody({
     hostUrl: HOST_URL,
     version: VERSION,
     shortSha: HEAD_COMMIT_HASH.slice(0, 7),
     artifacts,
-    postNewBuilds: POST_NEW_BUILDS === 'true',
+    buildsFromSha: BUILDS_FROM_SHA
+      ? BUILDS_FROM_SHA.slice(0, 7)
+      : HEAD_COMMIT_HASH.slice(0, 7),
   });
 
   let commentBody = artifactsBody;

@@ -7,25 +7,25 @@ import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the bridge status controller.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.getController - Function to get other initialized controllers.
+ * @param request.getMessengerClient - Function to get other initialized controllers.
  * @param request.persistedState - The persisted state for the controller.
  * @returns The initialized controller.
  */
-export const BridgeStatusControllerInit: ControllerInitFunction<
+export const BridgeStatusControllerInit: MessengerClientInitFunction<
   BridgeStatusController,
   BridgeStatusControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
-  const transactionController = getController('TransactionController');
-  const keyringController = getController('KeyringController');
+> = ({ controllerMessenger, persistedState, getMessengerClient }) => {
+  const transactionController = getMessengerClient('TransactionController');
+  const keyringController = getMessengerClient('KeyringController');
 
-  const controller = new BridgeStatusController({
+  const messengerClient = new BridgeStatusController({
     messenger: controllerMessenger,
     state: persistedState.BridgeStatusController,
     clientId: BridgeClientId.EXTENSION,
@@ -64,6 +64,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

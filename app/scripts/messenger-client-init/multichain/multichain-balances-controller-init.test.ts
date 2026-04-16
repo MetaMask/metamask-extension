@@ -1,6 +1,6 @@
 import { MultichainBalancesController } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getMultichainBalancesControllerMessenger,
   MultichainBalancesControllerMessenger,
@@ -11,7 +11,7 @@ import { MultichainBalancesControllerInit } from './multichain-balances-controll
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultichainBalancesControllerMessenger>
+  MessengerClientInitRequest<MultichainBalancesControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -36,7 +36,7 @@ describe('MultichainBalancesControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      MultichainBalancesControllerInit(requestMock).controller,
+      MultichainBalancesControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(MultichainBalancesController);
   });
 

@@ -3105,7 +3105,8 @@
     "message": "Tiếp tục để đảm bảo:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Thiết bị Ledger của bạn đã được mở khóa"
+    "message": "Thiết bị $1 của bạn đã được mở khóa",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Ứng dụng Ethereum đang mở"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Một khoản phí theo giờ giữa các nhà giao dịch để giữ giá phù hợp với thị trường. Nếu tỷ lệ dương, người mua khống sẽ trả cho người bán khống. Nếu tỷ lệ âm, người bán khống sẽ trả cho người mua khống."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Giao dịch hợp đồng vĩnh cửu không khả dụng tại khu vực của bạn"
   },
   "perpsGiveFeedback": {
     "message": "Gửi phản hồi cho chúng tôi"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Giao dịch đã được xác nhận"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Chúng tôi không thể hủy giao dịch của bạn trước khi nó được xác nhận trên chuỗi khối."
   },
   "yourWalletIsReady": {
     "message": "Ví của bạn đã sẵn sàng!"

@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { OrderEntry } from './order-entry';
 
-// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
     userHistory: [],
@@ -24,6 +23,14 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
     error: null,
     refetch: jest.fn(),
   }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
+  usePerpsMarketInfo: () => undefined,
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 
 const mockStore = configureStore({
@@ -69,7 +76,7 @@ describe('OrderEntry', () => {
     it('displays available balance', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText(/\$10,000\.00.*USDC/u)).toBeInTheDocument();
+      expect(screen.getByText(/10,000\.00.*USDC/u)).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {
@@ -89,6 +96,20 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
         'Open Short BTC',
       );
+    });
+
+    it('strips the dex prefix from HIP-3 symbols in the submit button label', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open Long BRENTOIL',
+      );
+      expect(
+        screen.getByTestId('order-entry-submit-button'),
+      ).not.toHaveTextContent('xyz:BRENTOIL');
     });
   });
 
@@ -165,10 +186,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Margin = size / leverage = $1,000 / 3 = $333.33
+      // Margin = notional / leverage = $1,000 / 3 = $333.33 (fees are a separate line item)
       expect(screen.getByText('$333.33')).toBeInTheDocument();
-      // Fees = 0.05% of position size = $1,000 * 0.0005 = $0.50
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+      // Fees = HyperLiquid taker (0.045%) + MetaMask builder (0.1%) = 0.145% of $1,000 = $1.45
+      expect(screen.getByText('$1.45')).toBeInTheDocument();
     });
   });
 
@@ -274,7 +295,7 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
     });
 
-    it('auto-expands auto-close section when TP/SL exists', () => {
+    it('does not show auto-close section when TP/SL exists in modify mode', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -284,9 +305,10 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show TP/SL inputs because existing position has TP/SL
-      expect(screen.getByTestId('tp-price-input')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
+      // Auto-close is hidden in modify mode — existing TP/SL carries over untouched
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
     });
   });
 
@@ -378,6 +400,19 @@ describe('OrderEntry', () => {
         <OrderEntry
           {...defaultProps}
           mode="close"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
+
+    it('hides auto-close section in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
           existingPosition={existingPosition}
         />,
         mockStore,

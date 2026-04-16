@@ -3105,7 +3105,8 @@
     "message": "Продолжите, чтобы убедиться в следующем:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ваш Ledger разблокирован"
+    "message": "Ваш $1 разблокирован",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Приложение Ethereum открыто"
@@ -5407,9 +5408,6 @@
   },
   "perpsFundingRateTooltip": {
     "message": "Почасовая комиссия, выплачиваемая трейдерам за поддержание цен на уровне рынка. Если ставка положительная, держатели длинных позиций платят держателям коротких позиций. Если отрицательная, держатели коротких позиций платят держателям коротких позиций."
-  },
-  "perpsGeoBlockedTooltip": {
-    "message": "Торговля бессрочными фьючерсами недоступна в вашем регионе"
   },
   "perpsGiveFeedback": {
     "message": "Оставьте нам отзыв"
@@ -9146,12 +9144,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourTransactionConfirmed": {
-    "message": "Транзакция уже подтверждена"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Нам не удалось отменить вашу транзакцию до ее подтверждения в блокчейне."
   },
   "yourWalletIsReady": {
     "message": "Ваш кошелек готов"
