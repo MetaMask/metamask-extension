@@ -43,9 +43,7 @@ export default function ChangePasswordWarning({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span className="text-primary-default">
-        {t('learnMoreUpperCase')}
-      </span>
+      <span className="text-primary-default">{t('learnMoreUpperCase')}</span>
     </a>
   );
 

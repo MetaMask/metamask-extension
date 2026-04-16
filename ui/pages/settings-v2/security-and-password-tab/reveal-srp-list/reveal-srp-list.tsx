@@ -99,10 +99,7 @@ export const RevealSrpList = () => {
                     size={IconSize.Lg}
                   />
                 ) : (
-                  <img
-                    src={`images/icons/google.svg`}
-                    alt="Google icon"
-                  />
+                  <img src={`images/icons/google.svg`} alt="Google icon" />
                 )}
               </Box>
               <Box flexDirection={FlexDirection.Column}>
