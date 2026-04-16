@@ -19,7 +19,6 @@ import {
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useMusdConversionTokens } from '../../../../../hooks/musd';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
@@ -27,7 +26,6 @@ import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversi
 import { MusdOverrideContent } from './musd-override-content';
 
 const MusdBottomContent = () => {
-  const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
@@ -40,10 +38,7 @@ const MusdBottomContent = () => {
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      <BridgeFeeRow
-        variant={ConfirmInfoRowSize.Small}
-        tooltipDescription={t('musdConversionFeeTooltipDescription')}
-      />
+      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
       <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
       <TotalRow variant={ConfirmInfoRowSize.Small} />
     </Box>
@@ -124,7 +119,6 @@ export const MusdConversionInfo = () => {
     <CustomAmountInfo
       disableAutomaticToken={true}
       preferredToken={preferredToken}
-      hasMax={true}
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}
     />

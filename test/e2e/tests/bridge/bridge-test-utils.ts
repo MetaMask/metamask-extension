@@ -5,12 +5,16 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import { getRegistryEntry } from '../../feature-flags/feature-flag-registry';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-
+import BridgeQuotePage, {
+  BridgeQuote,
+} from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
@@ -89,6 +93,120 @@ export class BridgePage {
     });
   };
 }
+
+/**
+ * Execute a bridge transaction and checks the activity list
+ *
+ * @param testParams - The test parameters
+ * @param testParams.driver - The driver instance
+ * @param testParams.quote - The quote input parameters
+ * @param testParams.expectedTransactionsCount - The number of transactions to expect in the activity list
+ * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
+ * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
+ * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
+ * @param testParams.expectedStatus - The expected state of the transaction
+ * @param testParams.dismissStatusPage - Whether to dismiss the smart-tx status page after submitting
+ */
+export const bridgeTransaction = async ({
+  driver,
+  quote,
+  expectedTransactionsCount = 1,
+  expectedStatus = 'success',
+  expectedWalletBalance,
+  expectedSwapTokens,
+  expectedDestAmount,
+  submitDelay,
+  dismissStatusPage = false,
+}: {
+  driver: Driver;
+  quote: BridgeQuote;
+  expectedTransactionsCount: number;
+  expectedStatus?: 'success' | 'failed' | 'pending';
+  expectedWalletBalance?: string;
+  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
+  expectedDestAmount: string;
+  submitDelay?: number;
+  dismissStatusPage?: boolean;
+}) => {
+  // Navigate to Bridge page
+  const homePage = new HomePage(driver);
+  await homePage.startSwapFlow();
+
+  const bridgePage = new BridgeQuotePage(driver);
+
+  await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+  await bridgePage.enterBridgeQuote(quote);
+  await bridgePage.waitForQuote();
+  await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+  submitDelay && (await driver.delay(submitDelay));
+  if (expectedDestAmount) {
+    await bridgePage.checkDestAmount(expectedDestAmount);
+  }
+  await bridgePage.submitQuote({ dismissStatusPage });
+
+  await homePage.goToActivityList();
+
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkCompletedBridgeTransactionActivity(
+    expectedTransactionsCount,
+  );
+
+  const isBridge =
+    quote.fromChain && quote.toChain
+      ? quote.fromChain !== quote.toChain
+      : false;
+
+  let action = '';
+  const expectedSrcToken = quote.tokenFrom ?? expectedSwapTokens?.tokenFrom;
+  const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
+
+  if (quote.unapproved) {
+    action = isBridge
+      ? `Bridged to ${quote.toChain}`
+      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
+    await activityList.checkTxAction({
+      action,
+      confirmedTx: expectedTransactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
+      confirmedTx: expectedTransactionsCount,
+      txIndex: 2,
+    });
+  } else {
+    action = isBridge
+      ? `Bridged to ${quote.toChain}`
+      : `Swap ${expectedSrcToken} to ${expectedDestToken}`;
+    await activityList.checkTxAction({
+      action,
+      confirmedTx: expectedTransactionsCount,
+    });
+  }
+  // Check the amount of ETH deducted in the activity is correct
+  await activityList.checkTxAmountInActivity(
+    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
+  );
+
+  await activityList.checkBridgeTransactionDetails(
+    action,
+    isBridge,
+    expectedStatus,
+    quote.amount,
+    expectedSrcToken,
+    expectedDestAmount,
+    expectedDestToken,
+  );
+
+  // Check the wallet ETH balance is correct
+  const accountListPage = new AccountListPage(driver);
+  if (expectedWalletBalance) {
+    await accountListPage.checkAccountValueAndSuffixDisplayed(
+      expectedWalletBalance,
+    );
+  }
+};
+
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://app.metamask.io/bridge`)
@@ -453,10 +571,6 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionSkipTransactionStatusPage =
-    additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryEntry('extensionSkipTransactionStatusPage')?.productionDefault;
-
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -467,7 +581,6 @@ async function mockFeatureFlags(
           {
             bridgeConfig: featureFlags,
             extensionUxPna25: true,
-            extensionSkipTransactionStatusPage,
             ...additionalFlags,
           },
         ],
@@ -1130,22 +1243,25 @@ async function mockSmartTransactionsForBridge(
     });
 }
 
-export const getBridgeFixtures = ({
-  title,
-  featureFlags = {},
-  withErc20 = true,
-}: {
-  title?: string;
-  featureFlags?: Partial<FeatureFlagResponse>;
-  withErc20?: boolean;
-} = {}) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+export const getBridgeFixtures = (
+  title?: string,
+  featureFlags: Partial<FeatureFlagResponse> = {},
+  withErc20: boolean = true,
+  withMockedSegment: boolean = true,
+  withSmartTransactions: boolean = true,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withMetaMetricsController({
       metaMetricsId: MOCK_META_METRICS_ID,
       participateInMetaMetrics: true,
     })
+    .withAppStateController({
+      pna25Acknowledged: true,
+    })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -1164,25 +1280,16 @@ export const getBridgeFixtures = ({
     .withTokenListController({
       tokensChainsCache: {
         '0xa4b1': {
-          timestamp: Date.now(),
           data: {
             '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
               name: 'USD Coin',
               symbol: 'USDC',
-              decimals: 6,
               address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
             },
             '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
               name: 'Dai Stablecoin',
               symbol: 'DAI',
-              decimals: 18,
               address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
             },
           },
         },
@@ -1221,7 +1328,7 @@ export const getBridgeFixtures = ({
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          STX_MAINNET_NETWORK_CONFIG,
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
@@ -1239,40 +1346,49 @@ export const getBridgeFixtures = ({
 
       standardMocks.push(...(await mockSearchTokens(mockServer)));
 
-      await mockSmartTransactionsForBridge(mockServer);
+      if (withSmartTransactions) {
+        await mockSmartTransactionsForBridge(mockServer);
+      }
 
-      const segmentMocks = await mockSegment(
-        mockServer,
-        [
-          EventTypes.SwapBridgeButtonClicked,
-          EventTypes.SwapBridgePageViewed,
-          EventTypes.SwapBridgeInputChanged,
-          EventTypes.SwapBridgeQuotesRequested,
-          EventTypes.UnifiedSwapBridgeQuotesReceived,
-          EventTypes.TransactionAddedAnon,
-          EventTypes.TransactionAdded,
-          EventTypes.TransactionSubmittedAnon,
-          EventTypes.TransactionSubmitted,
-          EventTypes.TransactionApprovedAnon,
-          EventTypes.TransactionApproved,
-          EventTypes.TransactionFinalizedAnon,
-          EventTypes.TransactionFinalized,
-          EventTypes.SwapBridgeCompleted,
-          EventTypes.UnifiedSwapBridgeSubmitted,
-          EventTypes.SwapBridgeInputChanged,
-          EventTypes.SwapBridgeTokenSwitched,
-        ],
-        { shouldAlwaysMatch: true },
-      );
-      standardMocks.push(...segmentMocks);
+      if (withMockedSegment) {
+        const segmentMocks = await mockSegment(
+          mockServer,
+          [
+            EventTypes.SwapBridgeButtonClicked,
+            EventTypes.SwapBridgePageViewed,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeQuotesRequested,
+            EventTypes.UnifiedSwapBridgeQuotesReceived,
+            EventTypes.TransactionAddedAnon,
+            EventTypes.TransactionAdded,
+            EventTypes.TransactionSubmittedAnon,
+            EventTypes.TransactionSubmitted,
+            EventTypes.TransactionApprovedAnon,
+            EventTypes.TransactionApproved,
+            EventTypes.TransactionFinalizedAnon,
+            EventTypes.TransactionFinalized,
+            EventTypes.SwapBridgeCompleted,
+            EventTypes.UnifiedSwapBridgeSubmitted,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeTokenSwitched,
+          ],
+          { shouldAlwaysMatch: true },
+        );
+        standardMocks.push(...segmentMocks);
+      } else {
+        console.log('No custom segment mock provided');
+      }
 
       return standardMocks.filter(Boolean);
     },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...STX_MAINNET_NETWORK_CONFIG,
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
+      ...(withSmartTransactions
+        ? {}
+        : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -1295,16 +1411,23 @@ export const getQuoteNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
+  withSmartTransactions: boolean = true,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     });
+
+  if (!withSmartTransactions) {
+    fixtureBuilder.withPreferencesControllerSmartTransactionsOptedOut();
+  }
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1322,19 +1445,24 @@ export const getQuoteNegativeCasesFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          STX_MAINNET_NETWORK_CONFIG,
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
-      await mockSmartTransactionsForBridge(mockServer);
+      if (withSmartTransactions) {
+        await mockSmartTransactionsForBridge(mockServer);
+      }
 
       return mocks;
     },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...STX_MAINNET_NETWORK_CONFIG,
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
+      ...(withSmartTransactions
+        ? {}
+        : { testing: { disableSmartTransactionsOverride: true } }),
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -1354,17 +1482,24 @@ export const getBridgeNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
+  withSmartTransactions: boolean = true,
   batchStatusOverride?: Record<string, unknown>,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     });
+
+  if (!withSmartTransactions) {
+    fixtureBuilder.withPreferencesControllerSmartTransactionsOptedOut();
+  }
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1379,24 +1514,29 @@ export const getBridgeNegativeCasesFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          STX_MAINNET_NETWORK_CONFIG,
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
-      await mockSmartTransactionsForBridge(
-        mockServer,
-        1,
-        STX_MAINNET_SENTINEL_URL,
-        batchStatusOverride,
-      );
+      if (withSmartTransactions) {
+        await mockSmartTransactionsForBridge(
+          mockServer,
+          1,
+          STX_MAINNET_SENTINEL_URL,
+          batchStatusOverride,
+        );
+      }
 
       return mocks;
     },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...STX_MAINNET_NETWORK_CONFIG,
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
+      ...(withSmartTransactions
+        ? {}
+        : { testing: { disableSmartTransactionsOverride: true } }),
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -1415,16 +1555,23 @@ export const getBridgeNegativeCasesFixtures = (
 export const getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
+  withSmartTransactions: boolean = true,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     });
+
+  if (!withSmartTransactions) {
+    fixtureBuilder.withPreferencesControllerSmartTransactionsOptedOut();
+  }
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1438,19 +1585,24 @@ export const getInsufficientFundsFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          STX_MAINNET_NETWORK_CONFIG,
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
-      await mockSmartTransactionsForBridge(mockServer);
+      if (withSmartTransactions) {
+        await mockSmartTransactionsForBridge(mockServer);
+      }
 
       return mocks;
     },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...STX_MAINNET_NETWORK_CONFIG,
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
+      ...(withSmartTransactions
+        ? {}
+        : { testing: { disableSmartTransactionsOverride: true } }),
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -1469,58 +1621,57 @@ export const getInsufficientFundsFixtures = (
 export const getBridgeL2Fixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
+  withSmartTransactions: boolean = false,
 ) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0xe708')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.LINEA_MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withNetworkControllerOnLineaLocahost()
+    .withBridgeControllerDefaultState()
     .withTokenListController({
       tokensChainsCache: {
         '0xa4b1': {
-          timestamp: Date.now(),
           data: {
             '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
               name: 'USD Coin',
               symbol: 'USDC',
               address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
             },
             '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
               name: 'Dai Stablecoin',
               symbol: 'DAI',
               address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
               decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
             },
           },
         },
         '0xe708': {
-          timestamp: Date.now(),
+          // Add Linea tokens
           data: {
             '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
               name: 'Bridged Dai Stablecoin Linea',
               symbol: 'DAI',
               address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
               decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
             },
+            // Add other Linea tokens as needed
           },
         },
       },
     })
     .withEnabledNetworks({
       eip155: {
-        '0x1': true,
-        '0xe708': true,
-        '0xa4b1': true,
+        '0x1': true, // Mainnet
+        '0xe708': true, // Linea (source chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
+
+  if (!withSmartTransactions) {
+    fixtureBuilder.withPreferencesControllerSmartTransactionsOptedOut();
+  }
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1544,7 +1695,7 @@ export const getBridgeL2Fixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          STX_LINEA_NETWORK_CONFIG,
+          withSmartTransactions ? STX_LINEA_NETWORK_CONFIG : {},
         ),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
@@ -1557,19 +1708,24 @@ export const getBridgeL2Fixtures = (
 
       mocks.push(...(await mockSearchTokens(mockServer)));
 
-      await mockSmartTransactionsForBridge(
-        mockServer,
-        59144,
-        STX_LINEA_SENTINEL_URL,
-      );
+      if (withSmartTransactions) {
+        await mockSmartTransactionsForBridge(
+          mockServer,
+          59144,
+          STX_LINEA_SENTINEL_URL,
+        );
+      }
 
       return mocks.filter(Boolean);
     },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...STX_LINEA_NETWORK_CONFIG,
+        ...(withSmartTransactions ? STX_LINEA_NETWORK_CONFIG : {}),
       },
+      ...(withSmartTransactions
+        ? {}
+        : { testing: { disableSmartTransactionsOverride: true } }),
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -1678,9 +1834,11 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
 }
 
 export const getGasIncludedSwapFixtures = (title?: string) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
@@ -1767,9 +1925,11 @@ async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
 }
 
 export const getGasless7702SwapFixtures = (title?: string) => {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withNetworkRpcUrlOnLocalhost('0x1')
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {

@@ -30,7 +30,6 @@ import {
   MESSAGE_TYPE,
   POPUP_FILE,
   POPUP_INIT_FILE,
-  SIDEPANEL_FILE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -58,11 +57,11 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -106,7 +105,7 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
- * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
+ * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
@@ -245,23 +244,6 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
-
-/**
- * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
- */
-function applyEarlySidePanelToolbarBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  browser.sidePanel
-    .setPanelBehavior({ openPanelOnActionClick: true })
-    .catch(() => {
-      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
-    });
-}
-applyEarlySidePanelToolbarBehavior();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -739,12 +721,9 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (
-        connectivityReady &&
-        controller.messengerClientApi.setConnectivityStatus
-      ) {
+      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
         const status = isOnline ? 'online' : 'offline';
-        controller.messengerClientApi.setConnectivityStatus(status);
+        controller.controllerApi.setConnectivityStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -836,13 +815,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.controllerApi.setConnectivityStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.controllerApi.setConnectivityStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -984,7 +963,7 @@ export async function loadStateFromPersistence(backup) {
   // read from disk
   // first from preferred, async API:
   /**
-   * @type {import("../../shared/lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
    */
   let preMigrationVersionedData;
   if (backup) {
@@ -1867,12 +1846,10 @@ export function setupController(
 
   function setClientOpenOptions(tab) {
     const popup = tab ? `${POPUP_LAUNCH_FILE}?tab=${tab}` : POPUP_LAUNCH_FILE;
-    const sidepanelPath = tab ? `${SIDEPANEL_FILE}?tab=${tab}` : SIDEPANEL_FILE;
 
     try {
       if (isManifestV3) {
         browser.action.setPopup({ popup });
-        browser.sidePanel?.setOptions?.({ path: sidepanelPath });
       } else {
         browser.browserAction.setPopup({ popup });
       }
@@ -2144,34 +2121,52 @@ function onNavigateToTab() {
 }
 
 // Sidepanel-specific functionality
-async function applyToolbarSidePanelBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
     return;
   }
-  const useSidePanelAsDefault =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  await browser.sidePanel.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
-}
 
-/**
- * Sets initial side panel toolbar behavior after startup, then subscribes only to
- * `useSidePanelAsDefault` changes (not every PreferencesController update).
- */
-const setupSidePanelToolbarBehavior = async () => {
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to false for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? false;
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
   if (!browser?.sidePanel) {
     return;
   }
 
   try {
     await isInitialized;
-    await applyToolbarSidePanelBehavior();
 
+    // Listen for preference changes using the controller messenger
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -2182,15 +2177,13 @@ const setupSidePanelToolbarBehavior = async () => {
             );
         }
       },
-      (preferencesControllerState) =>
-        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
+    console.error('Error setting up preference listener:', error);
   }
 };
 
-setupSidePanelToolbarBehavior();
+setupPreferenceListener();
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {
