@@ -205,6 +205,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     if (!Number.isFinite(distance)) {
       return '-';
     }
+    // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
     return `${distance.toFixed(0)}%`;
   }, []);
 

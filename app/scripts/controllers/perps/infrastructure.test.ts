@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -548,16 +549,72 @@ describe('createPerpsInfrastructure', () => {
   describe('diskCache', () => {
     it('supports sync and async cache access', async () => {
       const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeDefined();
+      const getItemSync = diskCache.getItemSync as NonNullable<
+        typeof diskCache.getItemSync
+      >;
 
-      expect(diskCache.getItemSync('missing-key')).toBeNull();
+      expect(getItemSync('missing-key')).toBeNull();
 
       await diskCache.setItem('perps-test-key', 'value');
 
-      expect(diskCache.getItemSync('perps-test-key')).toBe('value');
+      expect(getItemSync('perps-test-key')).toBe('value');
       await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
 
       await diskCache.removeItem('perps-test-key');
-      expect(diskCache.getItemSync('perps-test-key')).toBeNull();
+      expect(getItemSync('perps-test-key')).toBeNull();
+    });
+
+    it('prefixes persisted storage keys while keeping raw cache keys public', async () => {
+      const originalStorage = browser.storage;
+      const getMock = jest
+        .fn()
+        .mockResolvedValue({ 'perps:perps-storage-key': 'persisted-value' });
+      const setMock = jest.fn().mockResolvedValue(undefined);
+      const removeMock = jest.fn().mockResolvedValue(undefined);
+
+      Object.defineProperty(browser, 'storage', {
+        configurable: true,
+        value: {
+          local: {
+            get: getMock,
+            set: setMock,
+            remove: removeMock,
+          },
+        },
+      });
+
+      try {
+        const { diskCache } = createPerpsInfrastructure(getDeps());
+        expect(diskCache.getItemSync).toBeDefined();
+        const getItemSync = diskCache.getItemSync as NonNullable<
+          typeof diskCache.getItemSync
+        >;
+        await diskCache.setItem('perps-storage-key', 'persisted-value');
+
+        expect(setMock).toHaveBeenCalledWith({
+          'perps:perps-storage-key': 'persisted-value',
+        });
+        expect(getItemSync('perps-storage-key')).toBe('persisted-value');
+
+        const { diskCache: hydratedDiskCache } =
+          createPerpsInfrastructure(getDeps());
+        await expect(
+          hydratedDiskCache.getItem('perps-storage-key'),
+        ).resolves.toBe('persisted-value');
+        expect(getMock).toHaveBeenCalledWith([
+          'perps:perps-storage-key',
+          'perps-storage-key',
+        ]);
+
+        await hydratedDiskCache.removeItem('perps-storage-key');
+        expect(removeMock).toHaveBeenCalledWith('perps:perps-storage-key');
+      } finally {
+        Object.defineProperty(browser, 'storage', {
+          configurable: true,
+          value: originalStorage,
+        });
+      }
     });
   });
 });

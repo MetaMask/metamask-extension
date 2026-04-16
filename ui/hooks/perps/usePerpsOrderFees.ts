@@ -36,6 +36,15 @@ type UsePerpsOrderFeesReturn = {
   hasError: boolean;
 };
 
+const FALLBACK_FEE_RATES: Pick<
+  FeeCalculationResult,
+  'feeRate' | 'protocolFeeRate' | 'metamaskFeeRate'
+> = {
+  feeRate: 0.00145,
+  protocolFeeRate: 0.00045,
+  metamaskFeeRate: 0.001,
+};
+
 /**
  * Fetches dynamic fee rates from the controller's calculateFees pipeline.
  *
@@ -79,11 +88,7 @@ export function usePerpsOrderFees({
     let cancelled = false;
     const fallbackTimeout = window.setTimeout(() => {
       if (!cancelled && currentRequestId === requestIdRef.current) {
-        setFeeResult({
-          feeRate: 0.00145,
-          protocolFeeRate: 0.00045,
-          metamaskFeeRate: 0.001,
-        });
+        setFeeResult(FALLBACK_FEE_RATES);
         setIsLoading(false);
       }
     }, 1500);
@@ -105,11 +110,7 @@ export function usePerpsOrderFees({
       .catch(() => {
         if (!cancelled && currentRequestId === requestIdRef.current) {
           window.clearTimeout(fallbackTimeout);
-          setFeeResult({
-            feeRate: 0.00145,
-            protocolFeeRate: 0.00045,
-            metamaskFeeRate: 0.001,
-          });
+          setFeeResult(FALLBACK_FEE_RATES);
           setHasError(true);
           setIsLoading(false);
         }

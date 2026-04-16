@@ -251,6 +251,12 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
   };
 }
 
+const PERPS_DISK_CACHE_KEY_PREFIX = 'perps:';
+
+function getDiskCacheStorageKey(key: string): string {
+  return `${PERPS_DISK_CACHE_KEY_PREFIX}${key}`;
+}
+
 function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
   const memoryCache = new Map<string, string>();
   const storageLocal = browser?.storage?.local;
@@ -266,12 +272,13 @@ function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
         return null;
       }
 
-      const result = await storageLocal.get(key);
-      if (!(key in result)) {
+      const storageKey = getDiskCacheStorageKey(key);
+      const result = await storageLocal.get([storageKey, key]);
+      if (!(storageKey in result) && !(key in result)) {
         return null;
       }
 
-      const value = result[key];
+      const value = result[storageKey] ?? result[key];
       if (typeof value !== 'string') {
         return null;
       }
@@ -282,13 +289,13 @@ function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
     setItem: async (key: string, value: string) => {
       memoryCache.set(key, value);
       if (storageLocal) {
-        await storageLocal.set({ [key]: value });
+        await storageLocal.set({ [getDiskCacheStorageKey(key)]: value });
       }
     },
     removeItem: async (key: string) => {
       memoryCache.delete(key);
       if (storageLocal) {
-        await storageLocal.remove(key);
+        await storageLocal.remove(getDiskCacheStorageKey(key));
       }
     },
   };

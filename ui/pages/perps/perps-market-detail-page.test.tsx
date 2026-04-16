@@ -652,7 +652,7 @@ describe('PerpsMarketDetailPage', () => {
         expect(screen.getAllByText('$2,400').length).toBeGreaterThan(0);
         expect(screen.getByText('$3,200')).toBeInTheDocument();
         expect(screen.getByText('$2,600')).toBeInTheDocument();
-        expect(screen.getByText('$8.3')).toBeInTheDocument();
+        expect(screen.getByText('-$8.3')).toBeInTheDocument();
       } finally {
         Object.assign(originalPosition, {
           entryPrice: originalEntryPrice,
