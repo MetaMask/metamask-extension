@@ -40,7 +40,9 @@ describe('usePerpsTabExploreData', () => {
     );
     expect(result.current.exploreMarkets[0].symbol).toBe('BTC');
     expect(
-      result.current.watchlistMarkets.map((market: PerpsMarketData) => market.symbol),
+      result.current.watchlistMarkets.map(
+        (market: PerpsMarketData) => market.symbol,
+      ),
     ).toEqual(['BTC', 'ETH']);
   });
 
@@ -91,7 +93,9 @@ describe('usePerpsTabExploreData', () => {
     });
 
     expect(
-      result.current.watchlistMarkets.map((market: PerpsMarketData) => market.symbol),
+      result.current.watchlistMarkets.map(
+        (market: PerpsMarketData) => market.symbol,
+      ),
     ).toEqual(['ETH', 'BTC']);
   });
 });
