@@ -548,7 +548,7 @@ describe('transaction-details', () => {
         getMockStore({}, mockBridgeTxData.srcTxMetaId),
       );
       const expectedRows = [
-        'Statuscomplete',
+        'Statusconfirmed',
         'Time stampJun 21, 2025 at 12:43 AM',
         'You sent onPolygon',
         'Total gas fee0.00446 POL',

@@ -143,17 +143,15 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const bridgeStatus = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status
-    : srcChainTxMeta?.status === TransactionStatus.confirmed ||
-        transaction?.status === TransactionStatus.confirmed
-      ? StatusTypes.COMPLETE
-      : srcChainTxMeta?.status === TransactionStatus.failed ||
-          transaction?.status === TransactionStatus.failed
-        ? StatusTypes.FAILED
-        : StatusTypes.PENDING;
-  // Show src tx status for swaps
-  const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
+  // Either the local tx or the transaction from accounts-api
+  const transactionStatus = srcChainTxMeta?.status || transaction?.status;
+  // Use txHistory status for bridge txs, fallback to src tx status if not a local bridge tx
+  const bridgeStatus =
+    (bridgeHistoryItem ? bridgeHistoryItem.status.status : transactionStatus) ??
+    StatusTypes.PENDING;
+
+  // Show src tx status for swaps, but use txHistory status for bridge txs
+  const status = isBridgeTx ? bridgeStatus : transactionStatus;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
