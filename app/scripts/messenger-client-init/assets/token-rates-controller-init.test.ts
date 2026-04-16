@@ -79,7 +79,7 @@ function buildInitRequestMock(): jest.Mocked<
   };
 
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -93,9 +93,9 @@ describe('TokenRatesControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(TokenRatesControllerInit(requestMock).controller).toBeInstanceOf(
-      TokenRatesController,
-    );
+    expect(
+      TokenRatesControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(TokenRatesController);
   });
 
   it('initializes with correct messenger and state', () => {

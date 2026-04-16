@@ -90,6 +90,10 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import {
+  GeolocationApiService,
+  GeolocationController,
+} from '@metamask/geolocation-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -144,6 +148,8 @@ export type MessengerClient =
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
+  | GeolocationApiService
+  | GeolocationController
   | KeyringController
   | LoggingController
   | MetaMetricsController
@@ -241,6 +247,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
+  GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &

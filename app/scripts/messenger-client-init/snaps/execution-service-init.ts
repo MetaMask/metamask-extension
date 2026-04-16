@@ -69,7 +69,7 @@ export const ExecutionServiceInit: MessengerClientInitFunction<
     return {
       memStateKey: null,
       persistedStateKey: null,
-      controller: new OffscreenExecutionService({
+      messengerClient: new OffscreenExecutionService({
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
@@ -83,7 +83,7 @@ export const ExecutionServiceInit: MessengerClientInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller: new IframeExecutionService({
+    messengerClient: new IframeExecutionService({
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,

@@ -75,6 +75,8 @@ export function PerpsWithdrawToast() {
     <Toast
       key={`perps-withdraw-toast-${lastWithdrawResult.timestamp}`}
       dataTestId="perps-withdraw-toast"
+      className="perps-toast self-center w-full max-w-[408px]"
+      contentProps={{ className: 'items-center' }}
       text={toastText}
       description={description}
       startAdornment={startAdornment}

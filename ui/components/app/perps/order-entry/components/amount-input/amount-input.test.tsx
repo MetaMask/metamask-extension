@@ -226,6 +226,18 @@ describe('AmountInput', () => {
     });
   });
 
+  describe('HIP-3 symbol display', () => {
+    it('strips the dex prefix from HIP-3 asset symbols in the token input label', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} asset="xyz:BRENTOIL" />,
+        mockStore,
+      );
+
+      expect(screen.getByText('BRENTOIL')).toBeInTheDocument();
+      expect(screen.queryByText('xyz:BRENTOIL')).not.toBeInTheDocument();
+    });
+  });
+
   describe('token display', () => {
     it('displays token amount as size divided by price (not multiplied by leverage)', () => {
       renderWithProvider(

@@ -11,8 +11,8 @@ const getNormalisedLocale = (locale: string): string =>
 export const NotificationServicesControllerInit: MessengerClientInitFunction<
   NotificationServicesController,
   NotificationServicesControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
-  const controller = new NotificationServicesController({
+> = ({ controllerMessenger, persistedState, getMessengerClient }) => {
+  const messengerClient = new NotificationServicesController({
     messenger: controllerMessenger,
     state: persistedState.NotificationServicesController,
     env: {
@@ -24,12 +24,12 @@ export const NotificationServicesControllerInit: MessengerClientInitFunction<
       },
       locale: () =>
         getNormalisedLocale(
-          getController('PreferencesController').state.currentLocale,
+          getMessengerClient('PreferencesController').state.currentLocale,
         ),
     },
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

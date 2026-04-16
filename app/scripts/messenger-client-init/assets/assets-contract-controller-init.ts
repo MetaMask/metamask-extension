@@ -21,13 +21,13 @@ export const AssetsContractControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, initMessenger }) => {
   // TODO: Fix AssetsContractControllerMessenger type - add AssetsContractControllerActions
   // TODO: Bump @metamask/network-controller to match assets-controllers
-  const controller = new AssetsContractController({
+  const messengerClient = new AssetsContractController({
     messenger: controllerMessenger,
     chainId: getGlobalChainId(initMessenger),
   });
 
   return {
-    controller,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

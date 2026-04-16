@@ -16,12 +16,12 @@ export const OnboardingControllerInit: MessengerClientInitFunction<
   OnboardingController,
   OnboardingControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new OnboardingController({
+  const messengerClient = new OnboardingController({
     state: persistedState.OnboardingController,
     messenger: controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

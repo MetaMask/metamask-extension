@@ -27,8 +27,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('PreferencesControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = PreferencesControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(PreferencesController);
+    const { messengerClient } = PreferencesControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(PreferencesController);
   });
 
   it('passes the proper arguments to the controller', () => {

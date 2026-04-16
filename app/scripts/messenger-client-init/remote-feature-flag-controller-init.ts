@@ -85,7 +85,7 @@ export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
   const getIsDisabled = () =>
     !hasCompletedOnboarding || !canUseExternalServices;
 
-  const controller = new RemoteFeatureFlagController({
+  const messengerClient = new RemoteFeatureFlagController({
     state: persistedState.RemoteFeatureFlagController,
     messenger: controllerMessenger,
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
@@ -111,10 +111,10 @@ export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
   function toggle() {
     const shouldBeDisabled = getIsDisabled();
     if (shouldBeDisabled) {
-      controller.disable();
+      messengerClient.disable();
     } else {
-      controller.enable();
-      controller.updateRemoteFeatureFlags().catch((error) => {
+      messengerClient.enable();
+      messengerClient.updateRemoteFeatureFlags().catch((error) => {
         console.error('Failed to update remote feature flags:', error);
       });
     }
@@ -161,6 +161,6 @@ export const RemoteFeatureFlagControllerInit: MessengerClientInitFunction<
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

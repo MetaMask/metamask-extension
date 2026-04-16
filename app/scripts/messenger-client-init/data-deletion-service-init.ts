@@ -8,12 +8,12 @@ export const DataDeletionServiceInit: MessengerClientInitFunction<
   DataDeletionService,
   DataDeletionServiceMessenger
 > = ({ controllerMessenger }) => {
-  const service = new DataDeletionService({
+  const messengerClient = new DataDeletionService({
     messenger: controllerMessenger,
   });
 
   return {
-    controller: service,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };
