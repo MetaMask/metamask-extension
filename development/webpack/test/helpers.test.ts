@@ -20,7 +20,7 @@ describe('./utils/helpers.ts', () => {
 
   describe('logStats', () => {
     const getStatsMock = (
-      stats: 'normal' | 'none' | { preset: 'normal' | 'none' },
+      stats: { preset: 'normal' | 'none' },
       mode: 'development' | 'production',
       hasError: boolean,
       hasWarning: boolean,
@@ -52,7 +52,12 @@ describe('./utils/helpers.ts', () => {
     });
 
     it('should log only the error when error and stats are provided', () => {
-      const stats = getStatsMock('normal', 'production', false, false);
+      const stats = getStatsMock(
+        { preset: 'normal' },
+        'production',
+        false,
+        false,
+      );
       const { mock: error } = mock.method(console, 'error', helpers.noop);
       const errorToLog = new Error('test error');
 
@@ -74,7 +79,7 @@ describe('./utils/helpers.ts', () => {
 
     const matrix = {
       colorDepth: [undefined, 1, 4, 8, 24] as const,
-      level: ['normal', 'none'] as const,
+      preset: ['normal', 'none'] as const,
       env: ['development', 'production'] as const,
       hasErrors: [true, false] as const,
       hasWarnings: [true, false] as const,
@@ -82,26 +87,8 @@ describe('./utils/helpers.ts', () => {
 
     generateCases(matrix).forEach(runTest);
 
-    it('logs verbose stats when webpack normalizes the stats option to an object preset', () => {
-      const stats = getStatsMock(
-        { preset: 'normal' },
-        'development',
-        false,
-        false,
-      );
-      const { mock: error } = mock.method(console, 'error', helpers.noop);
-
-      helpers.logStats(null, stats);
-
-      assert.strictEqual(stats.toString.mock.callCount(), 1);
-      assert.deepStrictEqual(stats.toString.mock.calls[0].arguments, [
-        { colors: helpers.colors },
-      ]);
-      assert.deepStrictEqual(error.calls[0].arguments, ['test-stats']);
-    });
-
     function runTest(settings: Combination<typeof matrix>) {
-      const { colorDepth, level, env, hasErrors, hasWarnings } = settings;
+      const { colorDepth, preset, env, hasErrors, hasWarnings } = settings;
 
       let testHelpers: typeof import('../utils/helpers');
       const originalGetColorDepth = process.stderr.getColorDepth;
@@ -121,8 +108,8 @@ describe('./utils/helpers.ts', () => {
         process.stderr.getColorDepth = originalGetColorDepth;
       });
 
-      it(`should log message when stats is "${level}" and env is "${env}", with errors: \`${hasErrors}\` and warnings: \`${hasWarnings}\``, () => {
-        const stats = getStatsMock(level, env, hasErrors, hasWarnings);
+      it(`should log message when stats preset is "${preset}" and env is "${env}", with errors: \`${hasErrors}\` and warnings: \`${hasWarnings}\``, () => {
+        const stats = getStatsMock({ preset }, env, hasErrors, hasWarnings);
         const { mock: error } = mock.method(console, 'error', testHelpers.noop);
 
         testHelpers.logStats(null, stats); // <- this is what we are testing
@@ -130,7 +117,7 @@ describe('./utils/helpers.ts', () => {
         assert.strictEqual(error.callCount(), 1, 'error should be called once');
 
         let toStringOptions: StatsOptions | undefined;
-        if (level === 'normal') {
+        if (preset === 'normal') {
           toStringOptions = { colors: testHelpers.colors };
         } else if (hasErrors || hasWarnings) {
           toStringOptions = {

@@ -668,8 +668,7 @@ function getOptions(
     stats: {
       array: false,
       default: false,
-      description:
-        'Display full webpack stats after building and generate bundle analyzer and bundle-size stats artifacts',
+      description: 'Generate the webpack bundle-size stats artifact',
       group: toOrange('Options:'),
       type: 'boolean',
     },

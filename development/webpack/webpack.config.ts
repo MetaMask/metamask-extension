@@ -270,7 +270,7 @@ const config = {
   plugins,
   context,
   mode: args.mode,
-  stats: args.stats ? 'normal' : 'none',
+  stats: 'none',
   name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,

@@ -282,7 +282,7 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.cache.type, 'memory');
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
-    assert.strictEqual(stats.preset, 'normal');
+    assert.strictEqual(stats.preset, 'none');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
     assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
