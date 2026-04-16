@@ -6,8 +6,11 @@ import { submitRequestToBackground } from '../../store/background-connection';
 // MarketInfo cache (perpsGetMarkets)
 // ---------------------------------------------------------------------------
 
+const MARKET_INFO_CACHE_TTL_MS = 5 * 60_000; // 5 minutes
+
 type MarketInfoCacheEntry = {
   cached: MarketInfo[] | null;
+  fetchedAt: number;
   inflight: Promise<MarketInfo[]> | null;
 };
 
@@ -16,23 +19,33 @@ const marketInfoCacheByKey = new Map<string, MarketInfoCacheEntry>();
 function getMarketInfoCacheEntry(cacheKey: string): MarketInfoCacheEntry {
   let entry = marketInfoCacheByKey.get(cacheKey);
   if (!entry) {
-    entry = { cached: null, inflight: null };
+    entry = { cached: null, fetchedAt: 0, inflight: null };
     marketInfoCacheByKey.set(cacheKey, entry);
   }
   return entry;
 }
 
+function isMarketInfoCacheWarm(entry: MarketInfoCacheEntry): boolean {
+  return (
+    entry.cached !== null &&
+    Date.now() - entry.fetchedAt < MARKET_INFO_CACHE_TTL_MS
+  );
+}
+
 export function peekCachedMarketInfos(
   cacheKey: string,
 ): MarketInfo[] | undefined {
-  const cached = marketInfoCacheByKey.get(cacheKey)?.cached;
-  return cached ?? undefined;
+  const entry = marketInfoCacheByKey.get(cacheKey);
+  if (entry && isMarketInfoCacheWarm(entry)) {
+    return entry.cached ?? undefined;
+  }
+  return undefined;
 }
 
 export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
   const entry = getMarketInfoCacheEntry(cacheKey);
-  if (entry.cached) {
-    return Promise.resolve(entry.cached);
+  if (isMarketInfoCacheWarm(entry)) {
+    return Promise.resolve(entry.cached as MarketInfo[]);
   }
   if (!entry.inflight) {
     entry.inflight = submitRequestToBackground<MarketInfo[]>(
@@ -42,6 +55,7 @@ export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
       .then((infos) => {
         const validated = Array.isArray(infos) ? infos : [];
         entry.cached = validated;
+        entry.fetchedAt = Date.now();
         entry.inflight = null;
         return validated;
       })
