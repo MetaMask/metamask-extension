@@ -83,12 +83,13 @@ export class QrAdapter implements HardwareWalletAdapter {
    * Ensures the browser allows camera access for QR scanning.
    *
    * Uses `permissions.query` first: if `denied`, fails without calling `getUserMedia`.
-   * For `prompt` or `granted`, calls `openCameraVideoStream` (`getUserMedia`);
-   * `NotAllowedError` maps to dismissed vs blocked
-   * after re-querying permission state.
+   * If already `granted`, returns immediately — the actual camera stream will be
+   * opened later by `EnhancedReader` in the QR scanner popover.
+   * For `prompt`, calls `openCameraVideoStream` to trigger the browser permission
+   * dialog; `NotAllowedError` maps to dismissed vs blocked after re-querying.
    *
    * @param _options - Reserved for parity with other hardware adapters; ignored for QR.
-   * @returns True when a video stream can be acquired.
+   * @returns True when camera access is permitted.
    */
   async ensureDeviceReady(
     _options?: EnsureDeviceReadyOptions,
@@ -113,6 +114,12 @@ export class QrAdapter implements HardwareWalletAdapter {
           HardwareWalletType.Qr,
         ),
       );
+    }
+
+    // Skip getUserMedia when already granted — no need to open/close the camera
+    // just to prove access. The QR scanner will open it when it renders.
+    if (permissionState === CameraPermissionState.Granted) {
+      return true;
     }
 
     try {
