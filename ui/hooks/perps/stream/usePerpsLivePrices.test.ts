@@ -120,6 +120,34 @@ describe('usePerpsLivePrices', () => {
     nowSpy.mockRestore();
   });
 
+  it('returns a stable prices reference when inputs are unchanged', () => {
+    const priceUpdates: StreamPriceUpdate[] = [
+      {
+        symbol: 'BTC',
+        price: '100',
+        timestamp: 111,
+      },
+    ];
+
+    mockUsePerpsChannel.mockReturnValue({
+      data: priceUpdates,
+      isInitialLoading: false,
+    });
+
+    const { result, rerender } = renderHook(
+      ({ symbols }) => usePerpsLivePrices({ symbols }),
+      {
+        initialProps: { symbols: ['BTC'] },
+      },
+    );
+
+    const firstPrices = result.current.prices;
+
+    rerender({ symbols: ['BTC'] });
+
+    expect(result.current.prices).toBe(firstPrices);
+  });
+
   it('activates and deactivates the background price stream when requested', () => {
     mockUsePerpsChannel.mockReturnValue({
       data: [],

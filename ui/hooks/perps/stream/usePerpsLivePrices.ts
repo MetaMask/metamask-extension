@@ -97,20 +97,29 @@ export function usePerpsLivePrices(
     StreamPriceUpdate[]
   >(getPricesChannel, EMPTY_PRICES);
 
-  if (isInitialLoading || priceArray.length === 0) {
-    return { prices: EMPTY_PRICES_RECORD, isInitialLoading };
-  }
+  const requestedSymbols = useMemo(
+    () => (symbolsKey ? new Set(symbolsKey.split('|')) : new Set<string>()),
+    [symbolsKey],
+  );
 
-  const priceRecord: Record<string, PriceUpdate> = {};
-  priceArray.forEach((update) => {
-    if (symbols.length === 0 || symbols.includes(update.symbol)) {
-      priceRecord[update.symbol] = {
-        ...update,
-        timestamp: update.timestamp ?? Date.now(),
-        markPrice: update.markPrice,
-      };
+  const prices = useMemo(() => {
+    if (isInitialLoading || priceArray.length === 0) {
+      return EMPTY_PRICES_RECORD;
     }
-  });
 
-  return { prices: priceRecord, isInitialLoading };
+    const priceRecord: Record<string, PriceUpdate> = {};
+    priceArray.forEach((update) => {
+      if (requestedSymbols.size === 0 || requestedSymbols.has(update.symbol)) {
+        priceRecord[update.symbol] = {
+          ...update,
+          timestamp: update.timestamp ?? Date.now(),
+          markPrice: update.markPrice,
+        };
+      }
+    });
+
+    return priceRecord;
+  }, [isInitialLoading, priceArray, requestedSymbols]);
+
+  return { prices, isInitialLoading };
 }
