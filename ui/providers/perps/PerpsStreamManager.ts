@@ -491,6 +491,11 @@ class PerpsStreamManager {
         }
         break;
       }
+      case 'markets':
+        this.markets.pushData(data as PerpsMarketData[]);
+        break;
+      case 'connectionState':
+        break;
       default:
         console.warn('[PerpsStreamManager] Unknown channel:', channel);
     }
