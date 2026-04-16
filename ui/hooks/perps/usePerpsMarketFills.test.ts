@@ -471,7 +471,9 @@ describe('usePerpsMarketFills', () => {
       let resolveNewEnvRest!: (fills: OrderFill[]) => void;
 
       // Populate cache for mainnet
-      setRestFillsResponse([makeFill({ orderId: 'main-rest', timestamp: 1000 })]);
+      setRestFillsResponse([
+        makeFill({ orderId: 'main-rest', timestamp: 1000 }),
+      ]);
       const { waitForNextUpdate: waitFirst } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
@@ -495,9 +497,9 @@ describe('usePerpsMarketFills', () => {
       );
 
       // Before testnet REST resolves, live fills from mainnet must not appear
-      expect(result.current.fills.every((f) => f.orderId !== 'mainnet-live')).toBe(
-        true,
-      );
+      expect(
+        result.current.fills.every((f) => f.orderId !== 'mainnet-live'),
+      ).toBe(true);
 
       // Testnet REST resolves — live fills are now accepted
       await act(async () => {
@@ -507,9 +509,9 @@ describe('usePerpsMarketFills', () => {
       });
       await waitForNextUpdate();
 
-      expect(result.current.fills.some((f) => f.orderId === 'mainnet-live')).toBe(
-        true,
-      );
+      expect(
+        result.current.fills.some((f) => f.orderId === 'mainnet-live'),
+      ).toBe(true);
     });
 
     it('re-fetches after clearPerpsMarketFillsModuleCache', async () => {

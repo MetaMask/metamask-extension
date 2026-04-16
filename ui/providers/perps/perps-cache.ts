@@ -40,9 +40,10 @@ export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
       [{}],
     )
       .then((infos) => {
-        entry.cached = infos;
+        const validated = Array.isArray(infos) ? infos : [];
+        entry.cached = validated;
         entry.inflight = null;
-        return infos;
+        return validated;
       })
       .catch(() => {
         entry.inflight = null;
@@ -102,6 +103,8 @@ export function peekWarmFills(cacheKey: string): OrderFill[] | undefined {
  * Ensures REST fills for `cacheKey` are loading or loaded, writing to module
  * cache on completion regardless of component mount state (same idea as
  * `fetchMarketInfos`).
+ * @param cacheKey
+ * @returns Promise<OrderFill[]>
  */
 export function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
   const warm = peekWarmFills(cacheKey);

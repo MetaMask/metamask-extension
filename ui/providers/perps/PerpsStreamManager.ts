@@ -442,6 +442,7 @@ class PerpsStreamManager {
       this.orderBook.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
+      this._lastStreamUpdateAt = 0;
       clearPerpsMarketInfoModuleCache();
       clearPerpsMarketFillsModuleCache();
     }
