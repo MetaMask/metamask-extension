@@ -356,11 +356,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: MANAGE_WALLET_RECOVERY_ROUTE,
-    label: 'Reveal Secret Recovery Phrase List Page',
-    trackInAnalytics: true,
-  },
-  {
     path: SECURITY_PASSWORD_CHANGE_ROUTE,
     label: 'Change Password',
     trackInAnalytics: true,
