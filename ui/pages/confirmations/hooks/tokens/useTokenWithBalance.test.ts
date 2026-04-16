@@ -4,8 +4,12 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import { useTokenWithBalance } from './useTokenWithBalance';
 
 const CHAIN_ID = '0x1' as Hex;
+const ACCOUNT_ID = 'account-id-1';
 const ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
 const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222' as Hex;
+
+const NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+const TOKEN_ASSET_ID = `eip155:1/erc20:${TOKEN_ADDRESS}`;
 
 function createMockState() {
   return {
@@ -16,56 +20,51 @@ function createMockState() {
     },
     metamask: {
       currentCurrency: 'usd',
+      selectedCurrency: 'usd',
       internalAccounts: {
-        selectedAccount: 'account-id-1',
+        selectedAccount: ACCOUNT_ID,
         accounts: {
-          'account-id-1': {
-            id: 'account-id-1',
+          [ACCOUNT_ID]: {
+            id: ACCOUNT_ID,
             address: ACCOUNT_ADDRESS,
             type: 'eip155:eoa',
           },
         },
       },
-      allTokens: {
-        [CHAIN_ID]: {
-          [ACCOUNT_ADDRESS]: [
-            {
-              address: TOKEN_ADDRESS,
-              symbol: 'T1',
-              decimals: 4,
-              image: '',
-              isNative: false,
-            },
-          ],
+      assetsBalance: {
+        [ACCOUNT_ID]: {
+          [NATIVE_ASSET_ID]: { amount: '2' },
+          [TOKEN_ASSET_ID]: { amount: '0.01' },
         },
       },
-      tokenBalances: {
-        [ACCOUNT_ADDRESS]: {
-          [CHAIN_ID]: {
-            [TOKEN_ADDRESS]: '0x64',
-          },
+      assetsInfo: {
+        [NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ether',
+          image: '',
+        },
+        [TOKEN_ASSET_ID]: {
+          type: 'erc20',
+          decimals: 4,
+          symbol: 'T1',
+          name: 'T1',
+          image: '',
         },
       },
-      accountsByChainId: {
-        [CHAIN_ID]: {
-          [ACCOUNT_ADDRESS]: {
-            address: ACCOUNT_ADDRESS,
-            balance: '0x1bc16d674ec80000',
-          },
+      assetsPrice: {
+        [NATIVE_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          price: 10000,
+          usdPrice: 10000,
+          lastUpdated: 1000000,
         },
-      },
-      marketData: {
-        [CHAIN_ID]: {
-          [TOKEN_ADDRESS]: {
-            tokenAddress: TOKEN_ADDRESS,
-            price: 1,
-          },
-        },
-      },
-      currencyRates: {
-        ETH: {
-          conversionRate: 10000,
-          usdConversionRate: 10000,
+        [TOKEN_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          price: 10000,
+          usdPrice: 10000,
+          lastUpdated: 1000000,
         },
       },
       networkConfigurationsByChainId: {
