@@ -38,7 +38,6 @@ import {
   formatPnl,
   formatPositionSize,
   PRICE_RANGES_MINIMAL_VIEW,
-  PRICE_RANGES_UNIVERSAL,
   type Position,
   type PriceUpdate,
 } from '@metamask/perps-controller';
@@ -89,6 +88,9 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+  parsePerpsDisplayPrice,
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
@@ -166,28 +168,6 @@ function useFundingCountdown(): string {
   return countdown;
 }
 
-function parsePerpsDisplayPrice(
-  value: string | number | null | undefined,
-): number {
-  return Number.parseFloat(String(value ?? '').replace(/[$,]/gu, ''));
-}
-
-function normalizePerpsDisplayPrice(value: string | number): number {
-  return typeof value === 'number' ? value : parsePerpsDisplayPrice(value);
-}
-
-function formatPerpsFiatMinimal(value: string | number): string {
-  return formatPerpsFiat(normalizePerpsDisplayPrice(value), {
-    ranges: PRICE_RANGES_MINIMAL_VIEW,
-  });
-}
-
-function formatPerpsFiatUniversal(value: string | number): string {
-  return formatPerpsFiat(normalizePerpsDisplayPrice(value), {
-    ranges: PRICE_RANGES_UNIVERSAL,
-  });
-}
-
 type PopoverMenuItemProps = {
   icon: IconName;
   label: string;
@@ -221,10 +201,7 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
       gap={0}
       className="min-w-0 flex-1"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-      >
+      <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
         {label}
       </Text>
       <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
