@@ -431,6 +431,26 @@ describe('createPerpsInfrastructure', () => {
           'millisecond',
         );
       });
+
+      it('forwards breadcrumbs to sentry', () => {
+        const addBreadcrumb = jest.fn();
+        (globalThis as Record<string, unknown>).sentry = { addBreadcrumb };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.addBreadcrumb({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+
+        expect(addBreadcrumb).toHaveBeenCalledWith({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+      });
     });
   });
 

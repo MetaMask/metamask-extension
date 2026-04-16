@@ -186,13 +186,13 @@ function createTracer(): PerpsTracer {
     setMeasurement: (name: string, value: number, unit: string) => {
       globalThis.sentry?.setMeasurement?.(name, value, unit);
     },
-    addBreadcrumb: (_breadcrumb: {
+    addBreadcrumb: (breadcrumb: {
       category: string;
       message: string;
       level: 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
       data?: Record<string, unknown>;
     }) => {
-      // TODO: Integrate with Sentry breadcrumbs when ready
+      globalThis.sentry?.addBreadcrumb?.(breadcrumb);
     },
   };
 }

@@ -7445,9 +7445,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@metamask/perps-controller@npm:3.1.0"
+"@metamask/perps-controller@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@metamask/perps-controller@npm:3.1.1"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7462,28 +7462,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/ba137b734c84b0f01dddf125f7f926ba7732d7748d3d8888bb887de7a4cab8592e87cbd2118adfd59eaad97fd0b5b270b3268eb54342037d984abf491ae7bf26
-  languageName: node
-  linkType: hard
-
-"@metamask/perps-controller@patch:@metamask/perps-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-perps-controller-npm-3.1.0-feb23dcf48.patch":
-  version: 3.1.0
-  resolution: "@metamask/perps-controller@patch:@metamask/perps-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-perps-controller-npm-3.1.0-feb23dcf48.patch::version=3.1.0&hash=57388c"
-  dependencies:
-    "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/messenger": "npm:^1.1.1"
-    "@metamask/utils": "npm:^11.9.0"
-    "@myx-trade/sdk": "npm:^0.1.265"
-    "@nktkas/hyperliquid": "npm:^0.30.2"
-    bignumber.js: "npm:^9.1.2"
-    reselect: "npm:^5.1.1"
-    uuid: "npm:^8.3.2"
-  dependenciesMeta:
-    "@myx-trade/sdk":
-      optional: true
-  checksum: 10/fe2088c4b55944a67fc9f25468a5bed36f4e69a643890ad2bc8722b9e32daffb8e6c8103eda02e930871682e87491625177c70486c91801e34e9ce453366be15
+  checksum: 10/685208f69c92e953163e686d2d03d4f1ebfdfdfdfd6e166a37012c409bffc9b41a2733103fd98556e5c213ca2b425deeecc610b00ea97527506a12daea19d4b0
   languageName: node
   linkType: hard
 
@@ -34205,7 +34184,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^12.2.1"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.1.0"
-    "@metamask/perps-controller": "patch:@metamask/perps-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-perps-controller-npm-3.1.0-feb23dcf48.patch"
+    "@metamask/perps-controller": "npm:^3.1.1"
     "@metamask/phishing-controller": "npm:^17.1.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.2"
