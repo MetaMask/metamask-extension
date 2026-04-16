@@ -84,7 +84,7 @@ function mockGetBackupStateNoVault(): () => void {
   const previous = globalThis.stateHooks?.getBackupState;
   globalThis.stateHooks = {
     ...(globalThis.stateHooks ?? {}),
-    getBackupState: async () => undefined,
+    getBackupState: async () => null,
   };
   return () => {
     if (previous) {

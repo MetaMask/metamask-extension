@@ -35,9 +35,7 @@ async function safeGetVaultBackup(
   const timeoutPromise = new Promise<Backup | null>((resolve) => {
     setTimeout(() => resolve(null), timeoutMs);
   });
-  const backupPromise = getBackupState()
-    .then((b) => (b ?? null) as Backup | null)
-    .catch(() => null);
+  const backupPromise = getBackupState().catch(() => null);
   return Promise.race([backupPromise, timeoutPromise]);
 }
 
