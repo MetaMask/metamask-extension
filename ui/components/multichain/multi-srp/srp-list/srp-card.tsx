@@ -4,6 +4,7 @@ import type { AccountWalletId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
@@ -17,6 +18,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  BackgroundColor,
+  BorderColor,
+} from '../../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -89,6 +94,12 @@ export const SrpCard = ({
       }}
       className="select-srp__container"
       marginBottom={3}
+      borderColor={isSettingsPage ? BorderColor.transparent : undefined}
+      backgroundColor={
+        isSettingsPage
+          ? BackgroundColor.backgroundMuted
+          : BackgroundColor.backgroundDefault
+      }
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -156,7 +167,12 @@ export const SrpCard = ({
       </Box>
       {showAccounts && (
         <Box>
-          <Box marginTop={2} marginBottom={2} />
+          <Box
+            marginTop={2}
+            marginBottom={2}
+            backgroundColor={BoxBackgroundColor.BackgroundMuted}
+            className="h-px"
+          />
           {multichainAccounts.map((group) => {
             return (
               <SrpListItem

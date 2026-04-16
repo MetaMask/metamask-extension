@@ -159,7 +159,7 @@ const ChangePassword = ({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span className="change-password__link-text">
+      <span className="text-primary-default">
         {t('learnMoreUpperCaseWithDot')}
       </span>
     </a>
@@ -175,7 +175,7 @@ const ChangePassword = ({
   }, [dispatch, isSocialLoginFlow]);
 
   return (
-    <Box padding={4} className="change-password">
+    <Box padding={4} className="sm:h-auto h-full">
       {step === ChangePasswordSteps.VerifyCurrentPassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -304,7 +304,7 @@ const ChangePassword = ({
           marginTop={12}
         >
           <Box>{renderMascot()}</Box>
-          <Spinner className="change-password__spinner" />
+          <Spinner className="w-6 h-6 mb-4" />
           <Text
             variant={TextVariant.BodyLg}
             fontWeight={FontWeight.Medium}
