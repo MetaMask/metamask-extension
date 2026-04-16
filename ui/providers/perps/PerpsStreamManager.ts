@@ -45,6 +45,10 @@ import {
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
 
+// Throttle intervals for high-frequency WS channels (ms)
+const PRICE_THROTTLE_MS = 3_000;
+const ACCOUNT_THROTTLE_MS = 15_000;
+
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
@@ -128,6 +132,19 @@ class PerpsStreamManager {
 
   // When we last set an optimistic update - used to block WebSocket overwrites
   private lastOptimisticUpdateTime = 0;
+
+  // Throttle state for high-frequency WS channels
+  private priceThrottleLastPush = 0;
+
+  private priceThrottlePending: PriceUpdate[] | null = null;
+
+  private priceThrottleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private accountThrottleLastPush = 0;
+
+  private accountThrottlePending: AccountState | null | undefined = undefined;
+
+  private accountThrottleTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
@@ -585,15 +602,61 @@ class PerpsStreamManager {
         break;
       case 'account': {
         const acc = data as AccountState | null;
-        this.account.pushData(acc);
+        const nowAcct = Date.now();
+        const elapsedAcct = nowAcct - this.accountThrottleLastPush;
+        if (elapsedAcct >= ACCOUNT_THROTTLE_MS) {
+          this.account.pushData(acc);
+          this.accountThrottleLastPush = nowAcct;
+          this.accountThrottlePending = undefined;
+          if (this.accountThrottleTimer) {
+            clearTimeout(this.accountThrottleTimer);
+            this.accountThrottleTimer = null;
+          }
+        } else {
+          this.accountThrottlePending = acc;
+          if (!this.accountThrottleTimer) {
+            this.accountThrottleTimer = setTimeout(() => {
+              this.accountThrottleTimer = null;
+              if (this.accountThrottlePending !== undefined) {
+                this.account.pushData(this.accountThrottlePending);
+                this.accountThrottleLastPush = Date.now();
+                this.accountThrottlePending = undefined;
+              }
+            }, ACCOUNT_THROTTLE_MS - elapsedAcct);
+          }
+        }
         break;
       }
       case 'fills':
         this.fills.pushData(data as OrderFill[]);
         break;
-      case 'prices':
-        this.prices.pushData(data as PriceUpdate[]);
+      case 'prices': {
+        const prices = data as PriceUpdate[];
+        const nowPrice = Date.now();
+        const elapsedPrice = nowPrice - this.priceThrottleLastPush;
+        if (elapsedPrice >= PRICE_THROTTLE_MS) {
+          this.prices.pushData(prices);
+          this.priceThrottleLastPush = nowPrice;
+          this.priceThrottlePending = null;
+          if (this.priceThrottleTimer) {
+            clearTimeout(this.priceThrottleTimer);
+            this.priceThrottleTimer = null;
+          }
+        } else {
+          this.priceThrottlePending = prices;
+          if (!this.priceThrottleTimer) {
+            this.priceThrottleTimer = setTimeout(() => {
+              this.priceThrottleTimer = null;
+              if (this.priceThrottlePending) {
+                this.prices.pushData(this.priceThrottlePending);
+                this.priceThrottleLastPush = Date.now();
+                this.priceThrottlePending = null;
+              }
+            }, PRICE_THROTTLE_MS - elapsedPrice);
+          }
+        }
         break;
+      }
       case 'orderBook':
         this.orderBook.pushData(data as OrderBookData);
         break;
@@ -693,6 +756,7 @@ class PerpsStreamManager {
     this.userHistory.clearCache();
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
+    this.#resetThrottleState();
     clearPerpsMarketInfoModuleCache();
     clearPerpsMarketFillsModuleCache();
   }
@@ -716,8 +780,24 @@ class PerpsStreamManager {
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
     this._lastStreamUpdateAt = 0;
+    this.#resetThrottleState();
     clearPerpsMarketInfoModuleCache();
     clearPerpsMarketFillsModuleCache();
+  }
+
+  #resetThrottleState(): void {
+    this.priceThrottleLastPush = 0;
+    this.priceThrottlePending = null;
+    if (this.priceThrottleTimer) {
+      clearTimeout(this.priceThrottleTimer);
+      this.priceThrottleTimer = null;
+    }
+    this.accountThrottleLastPush = 0;
+    this.accountThrottlePending = undefined;
+    if (this.accountThrottleTimer) {
+      clearTimeout(this.accountThrottleTimer);
+      this.accountThrottleTimer = null;
+    }
   }
 }
 

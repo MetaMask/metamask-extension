@@ -1113,6 +1113,174 @@ describe('PerpsStreamManager', () => {
       expect(consoleSpy).not.toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
+
+    describe('prices throttle (3s)', () => {
+      it('pushes the first price update immediately', () => {
+        const cb = jest.fn();
+        manager.prices.subscribe(cb);
+
+        const prices = [{ symbol: 'BTC', price: '50000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+
+        expect(cb).toHaveBeenCalledWith(prices);
+      });
+
+      it('suppresses a second price update within 3s', () => {
+        const cb = jest.fn();
+        manager.prices.subscribe(cb);
+
+        const p1 = [{ symbol: 'BTC', price: '50000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p1 });
+
+        cb.mockClear();
+
+        const p2 = [{ symbol: 'BTC', price: '51000' }];
+        jest.advanceTimersByTime(1000);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p2 });
+
+        expect(cb).not.toHaveBeenCalled();
+      });
+
+      it('flushes the latest pending price update after 3s', () => {
+        const cb = jest.fn();
+        manager.prices.subscribe(cb);
+
+        const p1 = [{ symbol: 'BTC', price: '50000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p1 });
+        cb.mockClear();
+
+        const p2 = [{ symbol: 'BTC', price: '51000' }];
+        jest.advanceTimersByTime(1000);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p2 });
+
+        const p3 = [{ symbol: 'BTC', price: '52000' }];
+        jest.advanceTimersByTime(500);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p3 });
+
+        expect(cb).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(1500);
+        expect(cb).toHaveBeenCalledTimes(1);
+        expect(cb).toHaveBeenCalledWith(p3);
+      });
+
+      it('allows an immediate push after the throttle window passes', () => {
+        const cb = jest.fn();
+        manager.prices.subscribe(cb);
+
+        const p1 = [{ symbol: 'BTC', price: '50000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p1 });
+        cb.mockClear();
+
+        jest.advanceTimersByTime(3000);
+
+        const p2 = [{ symbol: 'BTC', price: '55000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p2 });
+
+        expect(cb).toHaveBeenCalledWith(p2);
+      });
+
+      it('resets throttle state on clearAllCaches', () => {
+        const cb = jest.fn();
+        manager.prices.subscribe(cb);
+
+        const p1 = [{ symbol: 'BTC', price: '50000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p1 });
+        cb.mockClear();
+
+        manager.clearAllCaches();
+
+        manager.prices.subscribe(cb);
+        const p2 = [{ symbol: 'BTC', price: '60000' }];
+        manager.handleBackgroundUpdate({ channel: 'prices', data: p2 });
+
+        expect(cb).toHaveBeenCalledWith(p2);
+      });
+    });
+
+    describe('account throttle (15s)', () => {
+      it('pushes the first account update immediately', () => {
+        const cb = jest.fn();
+        manager.account.subscribe(cb);
+
+        const account = { totalBalance: '1000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: account });
+
+        expect(cb).toHaveBeenCalledWith(account);
+      });
+
+      it('suppresses a second account update within 15s', () => {
+        const cb = jest.fn();
+        manager.account.subscribe(cb);
+
+        const a1 = { totalBalance: '1000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a1 });
+        cb.mockClear();
+
+        const a2 = { totalBalance: '2000' };
+        jest.advanceTimersByTime(5000);
+        manager.handleBackgroundUpdate({ channel: 'account', data: a2 });
+
+        expect(cb).not.toHaveBeenCalled();
+      });
+
+      it('flushes the latest pending account update after 15s', () => {
+        const cb = jest.fn();
+        manager.account.subscribe(cb);
+
+        const a1 = { totalBalance: '1000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a1 });
+        cb.mockClear();
+
+        const a2 = { totalBalance: '2000' };
+        jest.advanceTimersByTime(5000);
+        manager.handleBackgroundUpdate({ channel: 'account', data: a2 });
+
+        const a3 = { totalBalance: '3000' };
+        jest.advanceTimersByTime(3000);
+        manager.handleBackgroundUpdate({ channel: 'account', data: a3 });
+
+        expect(cb).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(7000);
+        expect(cb).toHaveBeenCalledTimes(1);
+        expect(cb).toHaveBeenCalledWith(a3);
+      });
+
+      it('allows an immediate push after the throttle window passes', () => {
+        const cb = jest.fn();
+        manager.account.subscribe(cb);
+
+        const a1 = { totalBalance: '1000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a1 });
+        cb.mockClear();
+
+        jest.advanceTimersByTime(15000);
+
+        const a2 = { totalBalance: '5000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a2 });
+
+        expect(cb).toHaveBeenCalledWith(a2);
+      });
+
+      it('resets throttle state on reset()', () => {
+        const cb = jest.fn();
+        manager.account.subscribe(cb);
+
+        const a1 = { totalBalance: '1000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a1 });
+        cb.mockClear();
+
+        manager.reset();
+        manager = new PerpsStreamManager();
+
+        manager.account.subscribe(cb);
+        const a2 = { totalBalance: '9000' };
+        manager.handleBackgroundUpdate({ channel: 'account', data: a2 });
+
+        expect(cb).toHaveBeenCalledWith(a2);
+      });
+    });
   });
 
   describe('setOptimisticTPSL / applyOptimisticOverrides', () => {
