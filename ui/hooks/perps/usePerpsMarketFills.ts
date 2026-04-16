@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
-import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   selectPerpsActiveProvider,
   selectPerpsIsTestnet,
 } from '../../selectors/perps-controller';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  clearPerpsMarketFillsModuleCache,
+  fetchFillsForCacheKey,
+  peekWarmFills,
+} from './cache-utils';
 import { usePerpsLiveFills } from './stream';
+
+export { clearPerpsMarketFillsModuleCache };
 
 type UsePerpsMarketFillsParams = {
   symbol: string;
@@ -19,81 +24,6 @@ type UsePerpsMarketFillsReturn = {
   fills: OrderFill[];
   isInitialLoading: boolean;
 };
-
-/** Cache TTL: re-use fills REST result for 30 seconds across re-navigations */
-const FILLS_CACHE_TTL_MS = 30_000;
-
-type FillsCacheEntry = {
-  cached: OrderFill[] | null;
-  fetchedAt: number;
-  inflight: Promise<OrderFill[]> | null;
-};
-
-const fillsCacheByKey = new Map<string, FillsCacheEntry>();
-
-function getFillsCacheEntry(cacheKey: string): FillsCacheEntry {
-  let entry = fillsCacheByKey.get(cacheKey);
-  if (!entry) {
-    entry = { cached: null, fetchedAt: 0, inflight: null };
-    fillsCacheByKey.set(cacheKey, entry);
-  }
-  return entry;
-}
-
-function peekWarmFills(cacheKey: string): OrderFill[] | undefined {
-  const entry = fillsCacheByKey.get(cacheKey);
-  if (
-    entry &&
-    entry.cached !== null &&
-    Date.now() - entry.fetchedAt < FILLS_CACHE_TTL_MS
-  ) {
-    return entry.cached;
-  }
-  return undefined;
-}
-
-/**
- * Ensures REST fills for `cacheKey` are loading or loaded; updates module cache
- * when the request completes even if no component is still mounted (same idea
- * as `fetchMarketInfos` in usePerpsMarketInfo).
- * @param cacheKey
- */
-function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
-  const warm = peekWarmFills(cacheKey);
-  if (warm !== undefined) {
-    return Promise.resolve(warm);
-  }
-
-  const entry = getFillsCacheEntry(cacheKey);
-  if (!entry.inflight) {
-    const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
-    entry.inflight = submitRequestToBackground<OrderFill[]>(
-      'perpsGetOrderFills',
-      [{ aggregateByTime: false, startTime }],
-    )
-      .then((result) => {
-        const fills = Array.isArray(result) ? result : [];
-        entry.cached = fills;
-        entry.fetchedAt = Date.now();
-        entry.inflight = null;
-        return fills;
-      })
-      .catch(() => {
-        entry.inflight = null;
-        return [] as OrderFill[];
-      });
-  }
-  return entry.inflight;
-}
-
-/**
- * Clears the module-level REST fills cache. Invoked when the Perps stream
- * layer resets so UI never reads cross-account or cross-environment stale
- * fills (mirrors `clearPerpsMarketInfoModuleCache` in usePerpsMarketInfo).
- */
-export function clearPerpsMarketFillsModuleCache(): void {
-  fillsCacheByKey.clear();
-}
 
 /**
  * Hook for fetching market-specific fills with combined WebSocket + REST data.
@@ -137,10 +67,18 @@ export function usePerpsMarketFills({
     () => peekWarmFills(fillsCacheKey) === undefined,
   );
 
+  // Tracks the scope for which we have confirmed REST fills. Starts equal to
+  // fillsCacheKey so initial live fills (before REST resolves) are always
+  // shown. When the env changes (testnet toggle, provider switch), this lags
+  // behind fillsCacheKey, suppressing stale-env live fills until REST confirms
+  // we're on the new scope.
+  const [currentScopeKey, setCurrentScopeKey] = useState(fillsCacheKey);
+
   useEffect(() => {
     const cached = peekWarmFills(fillsCacheKey);
     if (cached !== undefined) {
       setRestFills(cached);
+      setCurrentScopeKey(fillsCacheKey);
       setIsRestLoading(false);
       return undefined;
     }
@@ -153,6 +91,7 @@ export function usePerpsMarketFills({
       .then((result) => {
         if (!cancelled) {
           setRestFills(result);
+          setCurrentScopeKey(fillsCacheKey);
         }
       })
       .finally(() => {
@@ -176,7 +115,12 @@ export function usePerpsMarketFills({
       }
     }
 
-    for (const fill of liveFills) {
+    // Exclude live fills while the scope is transitioning (e.g. testnet/provider
+    // change with same address) to avoid merging fills from two environments.
+    const effectiveLiveFills =
+      currentScopeKey === fillsCacheKey ? liveFills : [];
+
+    for (const fill of effectiveLiveFills) {
       if (fill.symbol === symbol) {
         const key = `${fill.orderId}-${fill.timestamp}-${fill.size}-${fill.price}`;
         fillsMap.set(key, fill);
@@ -186,7 +130,7 @@ export function usePerpsMarketFills({
     return Array.from(fillsMap.values()).sort(
       (a, b) => b.timestamp - a.timestamp,
     );
-  }, [restFills, liveFills, symbol]);
+  }, [restFills, liveFills, currentScopeKey, fillsCacheKey, symbol]);
 
   const isInitialLoading = wsLoading || isRestLoading;
 

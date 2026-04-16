@@ -467,6 +467,51 @@ describe('usePerpsMarketFills', () => {
       expect(result.current.fills[0].orderId).toBe('test-1');
     });
 
+    it('excludes live fills while scope is transitioning to prevent mixing env data', async () => {
+      let resolveNewEnvRest!: (fills: OrderFill[]) => void;
+
+      // Populate cache for mainnet
+      setRestFillsResponse([makeFill({ orderId: 'main-rest', timestamp: 1000 })]);
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+
+      // Switch to testnet; REST is in-flight, but stale mainnet live fills arrive
+      mockSelectPerpsIsTestnet.mockReturnValue(true);
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise<OrderFill[]>((resolve) => {
+          resolveNewEnvRest = resolve;
+        }),
+      );
+      const mainnetLiveFill = makeFill({
+        orderId: 'mainnet-live',
+        timestamp: 5000,
+      });
+      setLiveFills([mainnetLiveFill]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+
+      // Before testnet REST resolves, live fills from mainnet must not appear
+      expect(result.current.fills.every((f) => f.orderId !== 'mainnet-live')).toBe(
+        true,
+      );
+
+      // Testnet REST resolves — live fills are now accepted
+      await act(async () => {
+        resolveNewEnvRest([
+          makeFill({ orderId: 'test-rest', timestamp: 2000 }),
+        ]);
+      });
+      await waitForNextUpdate();
+
+      expect(result.current.fills.some((f) => f.orderId === 'mainnet-live')).toBe(
+        true,
+      );
+    });
+
     it('re-fetches after clearPerpsMarketFillsModuleCache', async () => {
       setRestFillsResponse([makeFill({ orderId: 'first', timestamp: 1000 })]);
 
