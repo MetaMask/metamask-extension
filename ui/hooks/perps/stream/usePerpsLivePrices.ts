@@ -1,8 +1,8 @@
 import type { PriceUpdate } from '@metamask/perps-controller';
+import { useEffect, useMemo } from 'react';
 import type { PerpsStreamManager } from '../../../providers/perps';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
-import { useEffect, useMemo } from 'react';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -28,8 +28,13 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
+type StreamPriceUpdate = PriceUpdate & {
+  timestamp?: number;
+  markPrice?: string;
+};
+
 // Stable empty object reference to prevent re-renders
-const EMPTY_PRICES: PriceUpdate[] = [];
+const EMPTY_PRICES: StreamPriceUpdate[] = [];
 const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
 
 const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
@@ -85,7 +90,10 @@ export function usePerpsLivePrices(
     ]).catch((err) => {
       // Background may not be ready yet; keep this best-effort and rely on
       // later retries or future consumers to react to stream data.
-      console.debug('[usePerpsLivePrices] perpsActivatePriceStream failed:', err);
+      console.debug(
+        '[usePerpsLivePrices] perpsActivatePriceStream failed:',
+        err,
+      );
     });
 
     return () => {
@@ -101,10 +109,9 @@ export function usePerpsLivePrices(
     };
   }, [activateStream, symbolsKey, includeMarketData]);
 
-  const { data: priceArray, isInitialLoading } = usePerpsChannel(
-    getPricesChannel,
-    EMPTY_PRICES,
-  );
+  const { data: priceArray, isInitialLoading } = usePerpsChannel<
+    StreamPriceUpdate[]
+  >(getPricesChannel, EMPTY_PRICES);
 
   if (isInitialLoading || priceArray.length === 0) {
     return { prices: EMPTY_PRICES_RECORD, isInitialLoading };
@@ -114,12 +121,10 @@ export function usePerpsLivePrices(
   const priceRecord: Record<string, PriceUpdate> = {};
   priceArray.forEach((update) => {
     if (symbols.length === 0 || symbols.includes(update.symbol)) {
-      const ts = (update as { timestamp?: number }).timestamp;
-      const mark = (update as { markPrice?: string }).markPrice;
       priceRecord[update.symbol] = {
         ...update,
-        timestamp: ts ?? Date.now(),
-        markPrice: mark,
+        timestamp: update.timestamp ?? Date.now(),
+        markPrice: update.markPrice,
       };
     }
   });

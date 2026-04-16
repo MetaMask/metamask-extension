@@ -160,11 +160,9 @@ export type UsePerpsLiveMarketListDataOptions = {
   refreshIntervalMs?: number;
 };
 
-export type UsePerpsLiveMarketListDataReturn = UsePerpsLiveMarketDataReturn;
-
 export function usePerpsLiveMarketListData(
   _options: UsePerpsLiveMarketListDataOptions = {},
-): UsePerpsLiveMarketListDataReturn {
+): UsePerpsLiveMarketDataReturn {
   return usePerpsLiveMarketData();
 }
 

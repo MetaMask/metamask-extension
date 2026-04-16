@@ -1,8 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import type { PriceUpdate } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
-import { submitRequestToBackground } from '../../../store/background-connection';
+
+type StreamPriceUpdate = PriceUpdate & {
+  timestamp?: number;
+  markPrice?: string;
+};
 
 jest.mock('./usePerpsChannel', () => ({
   usePerpsChannel: jest.fn(),
@@ -26,7 +31,7 @@ describe('usePerpsLivePrices', () => {
   });
 
   it('returns empty prices while initial loading is true', () => {
-    const priceUpdates = [{ symbol: 'BTC', price: '100' }] as PriceUpdate[];
+    const priceUpdates: StreamPriceUpdate[] = [{ symbol: 'BTC', price: '100' }];
     mockUsePerpsChannel.mockReturnValue({
       data: priceUpdates,
       isInitialLoading: true,
@@ -59,7 +64,7 @@ describe('usePerpsLivePrices', () => {
   });
 
   it('filters by requested symbols and keeps provided timestamp/markPrice', () => {
-    const priceUpdates = [
+    const priceUpdates: StreamPriceUpdate[] = [
       {
         symbol: 'BTC',
         price: '100',
@@ -73,7 +78,7 @@ describe('usePerpsLivePrices', () => {
         timestamp: 222,
         markPrice: '201',
       },
-    ] as PriceUpdate[];
+    ];
 
     mockUsePerpsChannel.mockReturnValue({
       data: priceUpdates,
@@ -99,7 +104,7 @@ describe('usePerpsLivePrices', () => {
   it('uses fallback timestamp and preserves missing markPrice', () => {
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(999);
     mockUsePerpsChannel.mockReturnValue({
-      data: [{ symbol: 'BTC', price: '100' }] as PriceUpdate[],
+      data: [{ symbol: 'BTC', price: '100' }] as StreamPriceUpdate[],
       isInitialLoading: false,
     });
 
