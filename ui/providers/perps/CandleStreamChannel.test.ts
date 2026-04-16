@@ -21,6 +21,8 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const DEBOUNCE_MS = 500;
+
 function makeCandle(time: number): CandleData['candles'][number] {
   return {
     time,
@@ -51,13 +53,17 @@ describe('CandleStreamChannel', () => {
   });
 
   describe('subscribe', () => {
-    it('calls perpsActivateCandleStream on first subscriber', () => {
+    it('calls perpsActivateCandleStream after debounce on first subscriber', () => {
       const cb = jest.fn();
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(DEBOUNCE_MS);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateCandleStream',
@@ -76,11 +82,14 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
     });
@@ -97,6 +106,8 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
 
@@ -111,6 +122,8 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       unsubBtc();
@@ -119,6 +132,27 @@ describe('CandleStreamChannel', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
+      );
+    });
+
+    it('cancels debounce and skips deactivation on rapid subscribe/unsubscribe', () => {
+      const unsub = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      // Unsubscribe before debounce fires
+      unsub();
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        expect.anything(),
       );
     });
 
@@ -166,6 +200,8 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateCandleStream',
         [
@@ -187,6 +223,7 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       mockSubmitRequestToBackground.mockClear();
 
@@ -195,15 +232,16 @@ describe('CandleStreamChannel', () => {
         'perpsDeactivateCandleStream',
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
       );
+      mockSubmitRequestToBackground.mockClear();
 
-      // Re-subscribe — should activate streaming again (1 call)
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
     });
 
     it('does not re-activate when other subscribers remain', () => {
@@ -218,6 +256,7 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       mockSubmitRequestToBackground.mockClear();
 
@@ -232,6 +271,7 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       unsubscribe();
       expect(() => unsubscribe()).not.toThrow();
     });
@@ -310,7 +350,6 @@ describe('CandleStreamChannel', () => {
         data,
       });
 
-      // Subscribe after push — should get cached data
       const cb = jest.fn();
       channel.subscribe({
         symbol: 'BTC',
@@ -499,6 +538,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -526,6 +566,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -563,6 +604,44 @@ describe('CandleStreamChannel', () => {
       ]);
     });
 
+    it('discards result when key is disconnected during fetch', async () => {
+      const cb = jest.fn();
+      const unsub = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: cb,
+      });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+      mockSubmitRequestToBackground.mockClear();
+
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([500, 600, 700]),
+      });
+      cb.mockClear();
+
+      let resolveHistorical!: (value: CandleData) => void;
+      mockSubmitRequestToBackground.mockReturnValueOnce(
+        new Promise<CandleData>((resolve) => {
+          resolveHistorical = resolve;
+        }),
+      );
+
+      const fetchPromise = channel.fetchHistoricalCandles(
+        'BTC',
+        CandlePeriod.OneHour,
+        TimeDuration.OneDay,
+      );
+
+      unsub();
+
+      resolveHistorical(makeCandleData([200, 300, 400]));
+      await fetchPromise;
+
+      expect(cb).not.toHaveBeenCalled();
+    });
+
     it('deduplicates candles by timestamp', async () => {
       const cb = jest.fn();
       channel.subscribe({
@@ -570,6 +649,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -600,6 +680,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       const existingTimes = Array.from({ length: 800 }, (_, i) => 1000 + i);
@@ -633,6 +714,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -660,6 +742,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: cb,
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -690,6 +773,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -722,6 +806,7 @@ describe('CandleStreamChannel', () => {
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.pushFromBackground({
@@ -755,10 +840,12 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       mockSubmitRequestToBackground.mockClear();
 
       channel.reconnect();
+      jest.advanceTimersByTime(DEBOUNCE_MS);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateCandleStream',
@@ -773,12 +860,17 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       unsubscribe();
       mockSubmitRequestToBackground.mockClear();
 
       channel.reconnect();
+      jest.advanceTimersByTime(DEBOUNCE_MS);
 
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        expect.anything(),
+      );
     });
 
     it('does not throw when there are no channels', () => {
@@ -799,15 +891,16 @@ describe('CandleStreamChannel', () => {
         callback: jest.fn(),
       });
 
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       channel.clearAll();
 
-      // After clearAll, subscribe should re-activate for new entries
       mockSubmitRequestToBackground.mockClear();
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
         callback: jest.fn(),
       });
+      jest.advanceTimersByTime(DEBOUNCE_MS);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
     });
 

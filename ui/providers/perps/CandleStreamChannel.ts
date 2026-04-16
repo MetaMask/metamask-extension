@@ -30,6 +30,9 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
+/** Debounce delay before firing perpsActivateCandleStream */
+const CONNECT_DEBOUNCE_MS = 500;
+
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
@@ -46,6 +49,10 @@ type ChannelEntry = {
   isConnected: boolean;
   /** The duration used for the initial subscription */
   duration: TimeDuration | undefined;
+  /** Pending debounce timer for connect() */
+  connectTimer: ReturnType<typeof setTimeout> | null;
+  /** Monotonic sequence — incremented on connect/disconnect to invalidate stale fetches */
+  fetchSeq: number;
 };
 
 /**
@@ -122,6 +129,8 @@ export class CandleStreamChannel {
         unsubscribeFromSource: null,
         isConnected: false,
         duration,
+        connectTimer: null,
+        fetchSeq: 0,
       };
       this.channels.set(key, entry);
     }
@@ -142,7 +151,7 @@ export class CandleStreamChannel {
     }
 
     // Connect to background streaming if first subscriber and not already connected
-    if (!entry.isConnected) {
+    if (!entry.isConnected && !entry.connectTimer) {
       this.connect(key, entry, onError);
     }
 
@@ -193,6 +202,10 @@ export class CandleStreamChannel {
       return;
     }
 
+    // Capture sequence before the async call
+    entry.fetchSeq += 1;
+    const seqAtStart = entry.fetchSeq;
+
     // Get the oldest candle's time
     const oldestTime = entry.cache.candles[0].time;
     const endTime = oldestTime - 1;
@@ -207,12 +220,17 @@ export class CandleStreamChannel {
         [{ symbol, interval, limit, endTime }],
       );
 
+      // Discard result if user switched away (sequence advanced)
+      if (entry.fetchSeq !== seqAtStart) {
+        return;
+      }
+
       if (!olderData?.candles?.length) {
         return;
       }
 
       // Merge: prepend older candles + existing candles
-      const existingCandles = entry.cache.candles;
+      const existingCandles = entry.cache?.candles ?? [];
       const allCandles = [...olderData.candles, ...existingCandles];
 
       // Deduplicate by timestamp (keep first occurrence)
@@ -279,6 +297,8 @@ export class CandleStreamChannel {
         unsubscribeFromSource: null,
         isConnected: false,
         duration: undefined,
+        connectTimer: null,
+        fetchSeq: 0,
       };
       this.channels.set(key, entry);
     }
@@ -298,6 +318,10 @@ export class CandleStreamChannel {
         if (entry.unsubscribeFromSource) {
           entry.unsubscribeFromSource();
           entry.unsubscribeFromSource = null;
+        }
+        if (entry.connectTimer) {
+          clearTimeout(entry.connectTimer);
+          entry.connectTimer = null;
         }
         entry.isConnected = false;
 
@@ -321,6 +345,11 @@ export class CandleStreamChannel {
         }
       }
 
+      if (entry.connectTimer) {
+        clearTimeout(entry.connectTimer);
+        entry.connectTimer = null;
+      }
+
       this.disconnect(key, entry);
     }
     this.channels.clear();
@@ -328,6 +357,8 @@ export class CandleStreamChannel {
 
   /**
    * Connect a channel entry to the controller's candle subscription.
+   * Debounced by CONNECT_DEBOUNCE_MS to prevent rapid activate/deactivate
+   * churn when the user quickly switches markets.
    *
    * @param key - Cache key
    * @param entry - Channel entry
@@ -342,27 +373,37 @@ export class CandleStreamChannel {
       return;
     }
 
-    const { symbol, interval } = parseCacheKey(key);
+    // Cancel any pending debounce from a prior connect attempt
+    if (entry.connectTimer) {
+      clearTimeout(entry.connectTimer);
+    }
 
-    entry.isConnected = true;
+    entry.connectTimer = setTimeout(() => {
+      entry.connectTimer = null;
 
-    // Tell the background to start emitting candle updates for this key.
-    // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
-    // which is routed to CandleStreamChannel.pushFromBackground().
-    submitRequestToBackground('perpsActivateCandleStream', [
-      { symbol, interval, duration: entry.duration },
-    ]).catch((err) => {
-      console.warn(
-        '[CandleStreamChannel] Failed to activate streaming for key:',
-        key,
-        err,
-      );
-      entry.isConnected = false;
-    });
+      // Re-check after debounce: subscribers may have left
+      if (entry.subscribers.size === 0) {
+        return;
+      }
 
-    // Set a no-op unsubscribe (background handles cleanup on stream close)
-    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-    entry.unsubscribeFromSource = () => {};
+      const { symbol, interval } = parseCacheKey(key);
+      entry.isConnected = true;
+
+      submitRequestToBackground('perpsActivateCandleStream', [
+        { symbol, interval, duration: entry.duration },
+      ]).catch((err) => {
+        console.warn(
+          '[CandleStreamChannel] Failed to activate streaming for key:',
+          key,
+          err,
+        );
+        entry.isConnected = false;
+      });
+
+      // Set a no-op unsubscribe (background handles cleanup on stream close)
+      // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+      entry.unsubscribeFromSource = () => {};
+    }, CONNECT_DEBOUNCE_MS);
   }
 
   /**
@@ -373,10 +414,23 @@ export class CandleStreamChannel {
    * @param entry - Channel entry
    */
   private disconnect(key: string, entry: ChannelEntry): void {
+    // Cancel pending debounced connect — if the timer hasn't fired,
+    // no RPC was sent so no deactivation is needed either.
+    if (entry.connectTimer) {
+      clearTimeout(entry.connectTimer);
+      entry.connectTimer = null;
+      entry.isConnected = false;
+      return;
+    }
+
     if (entry.unsubscribeFromSource) {
       entry.unsubscribeFromSource();
       entry.unsubscribeFromSource = null;
     }
+
+    // Invalidate any in-flight fetchHistoricalCandles
+    entry.fetchSeq += 1;
+
     entry.isConnected = false;
     const { symbol, interval } = parseCacheKey(key);
     submitRequestToBackground('perpsDeactivateCandleStream', [
