@@ -72,7 +72,7 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
     trackMetaMetricsEvent: initMessenger.call.bind(
       initMessenger,
       'MetaMetricsController:trackEvent',
-    ) as ConstructorParameters<
+    ) as unknown as ConstructorParameters<
       typeof SmartTransactionsController
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
