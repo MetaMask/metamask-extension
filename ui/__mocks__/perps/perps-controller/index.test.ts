@@ -1,4 +1,4 @@
-import { SUPPORT_CONFIG, FEEDBACK_CONFIG } from './index';
+import { SUPPORT_CONFIG, FEEDBACK_CONFIG } from '.';
 
 describe('@metamask/perps-controller mock – SUPPORT_CONFIG and FEEDBACK_CONFIG', () => {
   it('exports SUPPORT_CONFIG with the expected URL and UI keys', () => {
