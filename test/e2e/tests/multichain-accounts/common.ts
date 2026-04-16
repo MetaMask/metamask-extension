@@ -83,7 +83,10 @@ export async function withMultichainAccountsDesignEnabled(
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       if (accountType === AccountType.HardwareWallet) {
-        await login(driver, { expectedBalance: '0' });
+        await login(driver, {
+          expectedBalance: '0',
+          waitForNonEvmAccounts: false,
+        });
       } else {
         await login(driver, { expectedBalance: '$85,025.00' });
       }
