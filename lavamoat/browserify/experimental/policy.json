@@ -1562,15 +1562,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/geolocation-controller": {
-      "globals": {
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -1908,10 +1899,10 @@
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/keyring-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
-        "lodash": true,
         "loglevel": true,
         "semver": true,
         "uuid": true
@@ -1962,6 +1953,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "WebSocket": true,
         "__import__": true,
         "clearInterval": true,

@@ -29,13 +29,24 @@ function setupSentryScope() {
 
 describe('createPerpsInfrastructure', () => {
   const mockTrackEvent = jest.fn();
+  const mockGetStorageItem = jest.fn();
+  const mockSetStorageItem = jest.fn();
+  const mockRemoveStorageItem = jest.fn();
 
   function getDeps(): InfrastructureDeps {
-    return { trackEvent: mockTrackEvent };
+    return {
+      trackEvent: mockTrackEvent,
+      getStorageItem: mockGetStorageItem,
+      setStorageItem: mockSetStorageItem,
+      removeStorageItem: mockRemoveStorageItem,
+    };
   }
 
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    mockGetStorageItem.mockReset().mockResolvedValue({});
+    mockSetStorageItem.mockReset().mockResolvedValue(undefined);
+    mockRemoveStorageItem.mockReset().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -55,6 +66,7 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.featureFlags).toBeDefined();
     expect(infrastructure.marketDataFormatters).toBeDefined();
     expect(infrastructure.cacheInvalidator).toBeDefined();
+    expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
   });
 
@@ -430,6 +442,26 @@ describe('createPerpsInfrastructure', () => {
           'millisecond',
         );
       });
+
+      it('forwards breadcrumbs to sentry', () => {
+        const addBreadcrumb = jest.fn();
+        (globalThis as Record<string, unknown>).sentry = { addBreadcrumb };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.addBreadcrumb({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+
+        expect(addBreadcrumb).toHaveBeenCalledWith({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+      });
     });
   });
 
@@ -474,18 +506,25 @@ describe('createPerpsInfrastructure', () => {
 
     it('formats fiat using adaptive significant-digit rules', () => {
       const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
-      // $10,000–$100,000 range: 5 sig figs, 0 decimals → "$50,000"
+      // The published controller formatter currently preserves this value at
+      // two decimals in the universal range configuration.
       const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
       expect(formatted).toContain('50,000');
-      // Verify it does NOT include the decimal portion (correct sig-fig truncation)
-      expect(formatted).not.toContain('50,000.1');
+      expect(formatted).toContain('50,000.12');
     });
 
     it('formats percentage', () => {
       const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       const formatted = marketDataFormatters.formatPercentage(2.5);
-      expect(formatted).toContain('2.50');
+      expect(formatted).toContain('+2.50');
       expect(formatted).toContain('%');
+    });
+
+    it('exposes shared universal price ranges', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      expect(marketDataFormatters.priceRangesUniversal.length).toBeGreaterThan(
+        0,
+      );
     });
   });
 
@@ -514,6 +553,71 @@ describe('createPerpsInfrastructure', () => {
       expect(() =>
         infrastructure.cacheInvalidator.invalidateAll(),
       ).not.toThrow();
+    });
+  });
+
+  describe('diskCache', () => {
+    it('supports async cache access without sync hydration support', async () => {
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await expect(diskCache.getItem('missing-key')).resolves.toBeNull();
+
+      await diskCache.setItem('perps-test-key', 'value');
+
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
+
+      await diskCache.removeItem('perps-test-key');
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBeNull();
+    });
+
+    it('stores perps disk cache through StorageService namespaced keys', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({ result: 'persisted-value' })
+        .mockResolvedValueOnce({ result: 'persisted-value' });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
+
+      expect(mockSetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'persisted-value',
+      );
+
+      const { diskCache: hydratedDiskCache } =
+        createPerpsInfrastructure(getDeps());
+      await expect(
+        hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBe('persisted-value');
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+
+      await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
+      expect(mockRemoveStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('returns null when StorageService misses or returns non-string values', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ result: { unexpected: true } });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
+      await expect(diskCache.getItem('anotherKey')).resolves.toBeNull();
+
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        1,
+        'diskCache:arbitraryKey',
+      );
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        2,
+        'diskCache:anotherKey',
+      );
     });
   });
 });
