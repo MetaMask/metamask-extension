@@ -40,9 +40,9 @@ export async function readCriticalErrorRestoreSession(
 }
 
 /**
- * Removes the restore session key. Rejects if `storage.local.remove` fails,
- * after reporting a wrapped error to Sentry so failures are visible in logs and
- * monitoring.
+ * Removes the restore session key. Best-effort: if `storage.local.remove` fails,
+ * the error is wrapped for context, reported to Sentry, and not rethrown so startup
+ * can continue (the key may already be absent or storage may be transiently broken).
  *
  * @param browserApi - WebExtension `browser` API (injected for tests).
  */
@@ -52,12 +52,16 @@ export async function clearCriticalErrorRestoreSession(
   try {
     await browserApi.storage.local.remove(CRITICAL_ERROR_RESTORE_KEY);
   } catch (error) {
-    const wrapped = new Error(
-      'critical-error-restore: failed to clear restore session from storage.local',
-      { cause: error },
+    // Do not rethrow: throwing would block the critical-error restore path and could
+    // keep the user from reaching their SRP. If remove keeps failing (non-transient),
+    // the session key may remain and they may repeat recovery after each restart until
+    // remove succeeds. We accept that trade-off so SRP remains accessible in case of storage failure.
+    captureException(
+      new Error(
+        'critical-error-restore: failed to clear restore session from storage.local',
+        { cause: error },
+      ),
     );
-    captureException(wrapped);
-    throw wrapped;
   }
 }
 
