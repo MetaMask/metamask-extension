@@ -508,6 +508,9 @@ function countHealthEntries(
  * Converts a camelCase benchmark name to its snake_case metric-key form
  * (e.g. `loadNewAccount` → `load_new_account`). Used to detect per-metric
  * tags that would be redundant with the row label.
+ *
+ * @param name - camelCase benchmark name
+ * @returns snake_case metric key
  */
 function toSnakeCase(name: string): string {
   return name.replace(/([a-z0-9])([A-Z])/gu, '$1_$2').toLowerCase();
