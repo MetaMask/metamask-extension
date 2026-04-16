@@ -435,7 +435,7 @@
     "cron-parser": "^4.5.0",
     "currency-formatter": "^1.4.2",
     "deep-freeze-strict": "1.1.1",
-    "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
+    "dompurify": "3.4.0",
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "^1.1.0",
