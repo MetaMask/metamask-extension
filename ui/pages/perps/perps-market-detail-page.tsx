@@ -306,6 +306,39 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
+  const orderFilledToastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (orderFilledToastShownRef.current) {
+      return;
+    }
+
+    const routeState = location.state as Record<string, unknown> | null;
+    const pendingSymbol =
+      typeof routeState?.pendingOrderSymbol === 'string'
+        ? routeState.pendingOrderSymbol
+        : null;
+
+    if (!pendingSymbol) {
+      return;
+    }
+
+    const hasPosition = allPositions.some((p) => p.symbol === pendingSymbol);
+    if (hasPosition) {
+      orderFilledToastShownRef.current = true;
+
+      const filledDescription =
+        typeof routeState?.pendingOrderFilledDescription === 'string'
+          ? routeState.pendingOrderFilledDescription
+          : undefined;
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.ORDER_FILLED,
+        ...(filledDescription ? { description: filledDescription } : {}),
+      });
+    }
+  }, [location.state, allPositions, replacePerpsToastByKey]);
+
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -352,71 +385,32 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
 
-    setLivePrice(undefined);
-
-    const toPriceUpdate = (update: PriceUpdate | undefined) => {
-      if (!update) {
-        return undefined;
-      }
-      const ts = (update as { timestamp?: number }).timestamp;
-      const mark = (update as { markPrice?: string }).markPrice;
-      return {
-        symbol: update.symbol,
-        price: update.price,
-        timestamp: ts ?? Date.now(),
-        percentChange24h: update.percentChange24h,
-        markPrice: mark,
-      };
-    };
-
-    const activatePriceStream = () => {
-      submitRequestToBackground('perpsActivatePriceStream', [
-        { symbols: [decodedSymbol], includeMarketData: true },
-      ]).catch(() => {
-        // Controller not ready yet, skip silently
-      });
-    };
-
-    // Activate background price stream for this symbol. Re-activate shortly
-    // after mount so navigation away from another perps screen cannot leave us
-    // with a stale deactivation tearing down the new subscription.
-    activatePriceStream();
-    const reactivateTimeoutId = window.setTimeout(activatePriceStream, 1000);
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol], includeMarketData: true },
+    ]).catch(() => {
+      // Controller not ready yet, skip silently
+    });
 
     // Subscribe to price updates from the stream manager
     const streamManager = getPerpsStreamManager();
-    const syncFromCache = () => {
-      const cachedUpdate = streamManager.prices
-        .getCachedData()
-        .find((p) => p.symbol === decodedSymbol);
-      const nextPrice = toPriceUpdate(cachedUpdate);
-      if (nextPrice) {
-        setLivePrice(nextPrice);
-      }
-      return nextPrice;
-    };
-    syncFromCache();
-
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        setLivePrice(toPriceUpdate(update));
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          percentChange24h: update.percentChange24h,
+          markPrice: mark,
+        });
       }
     });
 
-    const cachePollId = window.setInterval(() => {
-      const nextPrice = syncFromCache();
-      if (nextPrice?.markPrice) {
-        window.clearInterval(cachePollId);
-      }
-    }, 500);
-
     return () => {
-      window.clearTimeout(reactivateTimeoutId);
-      window.clearInterval(cachePollId);
-      if (!window.location.hash.startsWith('#/perps/')) {
-        submitRequestToBackground('perpsDeactivatePriceStream', []);
-      }
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);

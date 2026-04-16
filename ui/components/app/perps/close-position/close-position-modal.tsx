@@ -382,6 +382,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     );
 
     try {
+      onClose();
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
@@ -433,7 +434,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           formatPercentWithMinThreshold,
         }),
       );
-      onClose();
     } catch (err) {
       const errMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';

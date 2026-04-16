@@ -81,8 +81,20 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     orderType: 'market',
   });
 
-  // In modify mode use position's entry price; otherwise use current price
-  const entryPrice = entryPriceProp ?? currentPrice;
+  // Priority: explicit entry price (modify mode) > limit price (limit orders) > current price.
+  // This ensures % ↔ price conversions are anchored to the price the user will actually fill at.
+  const entryPrice = useMemo(() => {
+    if (entryPriceProp !== undefined) {
+      return entryPriceProp;
+    }
+    if (orderType === 'limit' && limitPrice?.trim()) {
+      const parsed = Number.parseFloat(limitPrice.replaceAll(/[$,]/gu, ''));
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+    return currentPrice;
+  }, [entryPriceProp, orderType, limitPrice, currentPrice]);
 
   // Raw percent strings preserved while the user is actively typing in percent fields.
   // When focused, these strings are shown verbatim to prevent mid-keystroke reformatting.
