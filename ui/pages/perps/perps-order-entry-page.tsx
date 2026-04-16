@@ -31,11 +31,14 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type {
-  ClosePositionParams,
-  OrderType,
-  OrderParams,
-  PriceUpdate,
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_UNIVERSAL,
+  PRICE_RANGES_MINIMAL_VIEW,
+  type ClosePositionParams,
+  type OrderType,
+  type OrderParams,
+  type PriceUpdate,
 } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
@@ -80,7 +83,7 @@ import {
   getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
-  formatChangePercent,
+  formatSignedChangePercent,
 } from '../../components/app/perps/utils';
 import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
@@ -583,17 +586,32 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
-    if (chartCurrentPrice > 0) {
-      return `$${formatNumber(chartCurrentPrice, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`;
+    if (market?.price) {
+      const parsedMarketPrice = Number.parseFloat(
+        market.price.replace(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsedMarketPrice) && parsedMarketPrice > 0) {
+        return formatPerpsFiat(parsedMarketPrice, {
+          ranges: PRICE_RANGES_UNIVERSAL,
+        });
+      }
     }
-    return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market?.price, formatNumber]);
+    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
+    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
+      return formatPerpsFiat(liveStreamPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      });
+    }
+    if (chartCurrentPrice > 0) {
+      return formatPerpsFiat(chartCurrentPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      });
+    }
+    return '$0.00';
+  }, [market?.price, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange = formatChangePercent(
+  const displayChange = formatSignedChangePercent(
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
@@ -780,10 +798,23 @@ const PerpsOrderEntryPage: React.FC = () => {
       orderMode === 'close' && closePercent < FULL_CLOSE_PERCENT;
 
     let inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+    let inProgressToastDescription: string | undefined;
+
     if (orderMode === 'close') {
       inProgressToastKey = isPartialClose
         ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS
         : PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS;
+      inProgressToastDescription = isPartialClose
+        ? closePartialToastDescription
+        : tradeActionToastDescription;
+    }
+    if (inProgressToastKey !== undefined) {
+      replacePerpsToastByKey({
+        key: inProgressToastKey,
+        ...(inProgressToastDescription
+          ? { description: inProgressToastDescription }
+          : {}),
+      });
     }
 
     const deriveTradeAction = (): string => {
@@ -847,7 +878,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
-
         handleBackClick(
           isPartialClose
             ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS
@@ -899,12 +929,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
-
           handleBackClick(
             PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
             tradeActionToastDescription,
           );
-
           const result = await submitRequestToBackground<{
             success: boolean;
             error?: string;
@@ -949,9 +977,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             ? orderFormState.stopLossPrice
             : undefined,
         });
-
         handleBackClick(PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS);
-
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdatePositionTPSL',
           [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
@@ -994,7 +1020,6 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-
       handleBackClick(
         PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
         tradeActionToastDescription,
@@ -1005,7 +1030,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             }
           : undefined,
       );
-
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
         'perpsPlaceOrder',
         [orderParams],
@@ -1035,6 +1059,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       ]).catch((e) => {
         console.warn('[Perps] Save trade configuration failed:', e);
       });
+
       replacePerpsToastByKey({
         key:
           orderFormState.type === 'limit'
@@ -1295,6 +1320,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
           initialLeverage={initialLeverage}
+          sizeDecimals={marketInfo?.szDecimals}
         />
       </Box>
 
