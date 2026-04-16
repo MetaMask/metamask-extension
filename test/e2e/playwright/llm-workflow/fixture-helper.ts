@@ -1,50 +1,23 @@
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import type { FixtureData } from './launcher-types';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const FixtureBuilderClass = require('../../fixtures/fixture-builder');
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('../../fixtures/default-fixture');
-/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;
-  inputChainId?: string;
-};
-
-export type FixtureBuilder = {
-  withAccountTracker(data: Record<string, unknown>): FixtureBuilder;
-  withAddressBookController(data: Record<string, unknown>): FixtureBuilder;
-  withPreferencesController(data: Record<string, unknown>): FixtureBuilder;
-  withNetworkController(data: Record<string, unknown>): FixtureBuilder;
-  withNetworkControllerOnMainnet(): FixtureBuilder;
-  withTokensController(data: Record<string, unknown>): FixtureBuilder;
-  withTokensControllerERC20(options?: { chainId?: number }): FixtureBuilder;
-  withTransactionController(data: Record<string, unknown>): FixtureBuilder;
-  withPermissionController(data: Record<string, unknown>): FixtureBuilder;
-  withPermissionControllerConnectedToTestDapp(options?: {
-    restrictReturnedAccounts?: boolean;
-    account?: string;
-  }): FixtureBuilder;
-  withKeyringController(data: Record<string, unknown>): FixtureBuilder;
-  withKeyringControllerAdditionalAccountVault(): FixtureBuilder;
-  withAccountsController(data: Record<string, unknown>): FixtureBuilder;
-  withAccountsControllerAdditionalAccountIdentities(): FixtureBuilder;
-  withConversionRateDisabled(): FixtureBuilder;
-  withShowFiatTestnetEnabled(): FixtureBuilder;
-  withPopularNetworks(): FixtureBuilder;
-  withNftController(data: Record<string, unknown>): FixtureBuilder;
-  withNftControllerERC721(): FixtureBuilder;
-  withNftControllerERC1155(): FixtureBuilder;
-  build(): FixtureData;
 };
 
 export function createFixtureBuilder(
   options: FixtureBuilderOptions = {},
-): FixtureBuilder {
-  return new FixtureBuilderClass(options) as FixtureBuilder;
+): FixtureBuilderV2 {
+  return new FixtureBuilderV2({
+    onboarding: options.onboarding === true,
+  });
 }
 
 export function buildDefaultFixture(chainId?: string): FixtureData {
@@ -67,7 +40,7 @@ export const FixturePresets = {
     const builder = createFixtureBuilder();
     return builder
       .withKeyringControllerAdditionalAccountVault()
-      .withAccountsControllerAdditionalAccountIdentities()
+      .withAccountsControllerAdditionalAccountVault()
       .build();
   },
 
@@ -81,14 +54,12 @@ export const FixturePresets = {
     return builder.withPermissionControllerConnectedToTestDapp().build();
   },
 
-  withPopularNetworks: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withPopularNetworks().build();
-  },
-
   withMainnet: (): FixtureData => {
     const builder = createFixtureBuilder();
-    return builder.withNetworkControllerOnMainnet().build();
+    return builder
+      .withEnabledNetworks({ eip155: { '0x1': true } })
+      .withSelectedNetwork()
+      .build();
   },
 
   withNFTs: (): FixtureData => {
