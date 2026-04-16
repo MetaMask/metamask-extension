@@ -90,7 +90,24 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                backgroundColor: 'var(--color-background-alternative)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                color: 'var(--color-text-default)',
+              }}
+            >
+              {collection?.name?.[0]?.toUpperCase() || name?.[0]?.toUpperCase() || '?'}
+            </Box>
+          )}
         </BadgeWrapper>
       </Box>
       <Box
