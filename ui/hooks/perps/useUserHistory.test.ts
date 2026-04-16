@@ -10,13 +10,32 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockSubscribe = jest.fn();
+const mockPushData = jest.fn();
+const mockGetCachedData = jest.fn();
+const mockHasCachedData = jest.fn();
+
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    userHistory: {
+      subscribe: mockSubscribe,
+      pushData: mockPushData,
+      getCachedData: mockGetCachedData,
+      hasCachedData: mockHasCachedData,
+    },
+  }),
+}));
+
 describe('useUserHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockResolvedValue([]);
+    mockSubscribe.mockReturnValue(jest.fn());
+    mockGetCachedData.mockReturnValue([]);
+    mockHasCachedData.mockReturnValue(false);
   });
 
-  it('initializes with empty state', () => {
+  it('initializes with empty state when no cached data', () => {
     const { result } = renderHook(() => useUserHistory());
 
     expect(result.current.userHistory).toEqual([]);
@@ -25,7 +44,76 @@ describe('useUserHistory', () => {
     expect(typeof result.current.refetch).toBe('function');
   });
 
-  it('fetches user history on refetch', async () => {
+  it('initializes with cached data when available', () => {
+    const cachedHistory: UserHistoryItem[] = [
+      {
+        id: 'cached-001',
+        timestamp: Date.now(),
+        type: 'deposit',
+        amount: '500.00',
+        asset: 'USDC',
+        txHash: '0xcached',
+        status: 'completed',
+        details: { source: '0xaaa' },
+      },
+    ];
+    mockHasCachedData.mockReturnValue(true);
+    mockGetCachedData.mockReturnValue(cachedHistory);
+
+    const { result } = renderHook(() => useUserHistory());
+
+    expect(result.current.userHistory).toEqual(cachedHistory);
+  });
+
+  it('subscribes to the userHistory channel on mount', () => {
+    renderHook(() => useUserHistory());
+
+    expect(mockSubscribe).toHaveBeenCalledTimes(1);
+    expect(mockSubscribe).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  it('unsubscribes from the channel on unmount', () => {
+    const unsubscribe = jest.fn();
+    mockSubscribe.mockReturnValue(unsubscribe);
+
+    const { unmount } = renderHook(() => useUserHistory());
+    unmount();
+
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates state when channel pushes new data', () => {
+    let channelCallback: ((data: UserHistoryItem[]) => void) | undefined;
+    mockSubscribe.mockImplementation(
+      (cb: (data: UserHistoryItem[]) => void) => {
+        channelCallback = cb;
+        return jest.fn();
+      },
+    );
+
+    const { result } = renderHook(() => useUserHistory());
+
+    const newHistory: UserHistoryItem[] = [
+      {
+        id: 'pushed-001',
+        timestamp: Date.now(),
+        type: 'withdrawal',
+        amount: '200.00',
+        asset: 'USDC',
+        txHash: '0xpushed',
+        status: 'completed',
+        details: { source: '0xbbb' },
+      },
+    ];
+
+    act(() => {
+      channelCallback?.(newHistory);
+    });
+
+    expect(result.current.userHistory).toEqual(newHistory);
+  });
+
+  it('fetches user history on refetch and pushes to channel', async () => {
     const mockHistory: UserHistoryItem[] = [
       {
         id: 'history-001',
@@ -46,7 +134,7 @@ describe('useUserHistory', () => {
       await result.current.refetch();
     });
 
-    expect(result.current.userHistory).toEqual(mockHistory);
+    expect(mockPushData).toHaveBeenCalledWith(mockHistory);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
   });
@@ -101,7 +189,6 @@ describe('useUserHistory', () => {
     });
 
     expect(result.current.error).toBe('Network error');
-    expect(result.current.userHistory).toEqual([]);
     expect(result.current.isLoading).toBe(false);
   });
 

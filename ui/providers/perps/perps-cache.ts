@@ -84,7 +84,7 @@ export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
       })
       .catch(() => {
         entry.inflight = null;
-        return [] as MarketInfo[];
+        return entry.cached ?? ([] as MarketInfo[]);
       });
   }
   return entry.inflight;
@@ -165,7 +165,7 @@ export function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
       })
       .catch(() => {
         entry.inflight = null;
-        return [] as OrderFill[];
+        return entry.cached ?? ([] as OrderFill[]);
       });
   }
   return entry.inflight;

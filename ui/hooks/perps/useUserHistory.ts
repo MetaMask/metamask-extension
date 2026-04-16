@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 
 /**
  * Parameters for the useUserHistory hook
@@ -32,7 +33,8 @@ export type UseUserHistoryResult = {
 /**
  * Hook to fetch and manage user transaction history including deposits and withdrawals.
  *
- * Uses the background PerpsController to fetch historical deposit/withdrawal data.
+ * Subscribes to the PerpsStreamManager's userHistory channel so data
+ * persists across component remounts (no redundant REST calls on tab switch).
  *
  * @param params - Optional parameters for filtering history
  * @param params.startTime - Optional start time for filtering history (Unix timestamp in ms)
@@ -45,11 +47,30 @@ export function useUserHistory({
   endTime,
   accountId,
 }: UseUserHistoryParams = {}): UseUserHistoryResult {
-  const [userHistory, setUserHistory] = useState<UserHistoryItem[]>([]);
+  const manager = getPerpsStreamManager();
+  const cachedData = manager.userHistory.getCachedData();
+
+  const [userHistory, setUserHistory] = useState<UserHistoryItem[]>(
+    manager.userHistory.hasCachedData() ? cachedData : [],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
 
-  const fetchUserHistory = useCallback(async (): Promise<UserHistoryItem[]> => {
+  useEffect(() => {
+    mountedRef.current = true;
+    const unsubscribe = manager.userHistory.subscribe((data) => {
+      if (mountedRef.current) {
+        setUserHistory(data);
+      }
+    });
+    return () => {
+      mountedRef.current = false;
+      unsubscribe();
+    };
+  }, [manager]);
+
+  const refetch = useCallback(async (): Promise<UserHistoryItem[]> => {
     try {
       setIsLoading(true);
       setError(null);
@@ -59,23 +80,26 @@ export function useUserHistory({
         [{ startTime, endTime, accountId }],
       );
 
-      setUserHistory(history);
+      manager.userHistory.pushData(history);
       return history;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to fetch user history';
-      setError(errorMessage);
-      setUserHistory([]);
+      if (mountedRef.current) {
+        setError(errorMessage);
+      }
       return [];
     } finally {
-      setIsLoading(false);
+      if (mountedRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, [startTime, endTime, accountId]);
+  }, [startTime, endTime, accountId, manager]);
 
   return {
     userHistory,
     isLoading,
     error,
-    refetch: fetchUserHistory,
+    refetch,
   };
 }

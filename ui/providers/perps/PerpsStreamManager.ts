@@ -35,6 +35,7 @@ import type {
   OrderBookData,
   CandleData,
   CandlePeriod,
+  UserHistoryItem,
 } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
@@ -50,6 +51,7 @@ const EMPTY_ORDERS: Order[] = [];
 const EMPTY_FILLS: OrderFill[] = [];
 const EMPTY_MARKETS: PerpsMarketData[] = [];
 const EMPTY_PRICES: PriceUpdate[] = [];
+const EMPTY_USER_HISTORY: UserHistoryItem[] = [];
 
 /**
  * Placeholder noop function for channel initialization.
@@ -98,6 +100,9 @@ class PerpsStreamManager {
   prices: PerpsDataChannel<PriceUpdate[]>;
 
   orderBook: PerpsDataChannel<OrderBookData | null>;
+
+  /** User deposit/withdrawal history — REST-only, no WS stream */
+  userHistory: PerpsDataChannel<UserHistoryItem[]>;
 
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
@@ -278,6 +283,40 @@ class PerpsStreamManager {
       name: 'fills',
     });
 
+    this.userHistory = new PerpsDataChannel<UserHistoryItem[]>({
+      connectFn: (push) => {
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.userHistory.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<UserHistoryItem[]>('perpsGetUserHistory', [
+            {},
+          ])
+            .then((data) => {
+              if (!cancelled && !this.userHistory.hasCachedData()) {
+                push(data ?? EMPTY_USER_HISTORY);
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[PerpsStreamManager] Failed to fetch user history',
+                err,
+              );
+              if (!cancelled && !this.userHistory.hasCachedData()) {
+                push(EMPTY_USER_HISTORY);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
+      },
+      initialValue: EMPTY_USER_HISTORY,
+      name: 'userHistory',
+    });
+
     this.candles = new CandleStreamChannel();
   }
 
@@ -440,6 +479,7 @@ class PerpsStreamManager {
       this.markets.reset();
       this.prices.reset();
       this.orderBook.reset();
+      this.userHistory.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
       this._lastStreamUpdateAt = 0;
@@ -650,6 +690,7 @@ class PerpsStreamManager {
     this.markets.clearCache();
     this.prices.clearCache();
     this.orderBook.clearCache();
+    this.userHistory.clearCache();
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
@@ -670,6 +711,7 @@ class PerpsStreamManager {
     this.markets.reset();
     this.prices.reset();
     this.orderBook.reset();
+    this.userHistory.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;

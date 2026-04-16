@@ -473,17 +473,17 @@ const PerpsMarketDetailPage: React.FC = () => {
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
   // Live candle data from CandleStreamChannel
-  const {
-    candleData,
-    isInitialLoading: isCandleLoading,
-    error: candleError,
-    fetchMoreHistory,
-  } = usePerpsLiveCandles({
-    symbol: decodedSymbol ?? '',
-    interval: selectedPeriod,
-    duration: TimeDuration.YearToDate,
-    throttleMs: 1000,
-  });
+  // const {
+  //   candleData,
+  //   isInitialLoading: isCandleLoading,
+  //   error: candleError,
+  //   fetchMoreHistory,
+  // } = usePerpsLiveCandles({
+  //   symbol: decodedSymbol ?? '',
+  //   interval: selectedPeriod,
+  //   duration: TimeDuration.YearToDate,
+  //   throttleMs: 1000,
+  // });
 
   // Fetch market-specific fills (WebSocket + REST) for Recent Activity
   const { fills: marketFills, isInitialLoading: fillsLoading } =
@@ -497,10 +497,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     return transactions.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
   }, [marketFills]);
 
-  usePerpsMeasurement(
-    'PerpsMarketDetailLoaded',
-    !marketsLoading && !isCandleLoading && !fillsLoading,
-  );
+  // usePerpsMeasurement(
+  //   'PerpsMarketDetailLoaded',
+  //   !marketsLoading && !isCandleLoading && !fillsLoading,
+  // );
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
@@ -533,13 +533,14 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Current price derived from the last candle's close price.
   // Updates on every live tick (~1000ms), keeping the price line in sync with the chart.
   // This is the single source of truth for price display on the detail page.
-  const chartCurrentPrice = useMemo(() => {
-    if (!candleData?.candles?.length) {
-      return 0;
-    }
-    const lastCandle = candleData.candles.at(-1);
-    return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
-  }, [candleData]);
+  // const chartCurrentPrice = useMemo(() => {
+  //   if (!candleData?.candles?.length) {
+  //     return 0;
+  //   }
+  //   const lastCandle = candleData.candles.at(-1);
+  //   return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
+  // }, [candleData]);
+  const chartCurrentPrice = 0;
 
   // Current price for calculations (orders, margin, slippage).
   // Prefers the live candle price, falls back to market data during initial load.
@@ -938,43 +939,44 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.
   const renderChartContent = () => {
-    if (isCandleLoading && !candleData) {
-      return (
-        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
-      );
-    }
+    // if (isCandleLoading && !candleData) {
+    //   return (
+    //     <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
+    //   );
+    // }
 
-    if (candleError && !candleData) {
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          className="h-[250px] w-full rounded-lg bg-muted"
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Lg}
-            color={IconColor.IconAlternative}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsChartLoadError') ?? 'Failed to load chart data'}
-          </Text>
-        </Box>
-      );
-    }
+    // if (candleError && !candleData) {
+    //   return (
+    //     <Box
+    //       flexDirection={BoxFlexDirection.Column}
+    //       alignItems={BoxAlignItems.Center}
+    //       justifyContent={BoxJustifyContent.Center}
+    //       className="h-[250px] w-full rounded-lg bg-muted"
+    //       gap={2}
+    //     >
+    //       <Icon
+    //         name={IconName.Warning}
+    //         size={IconSize.Lg}
+    //         color={IconColor.IconAlternative}
+    //       />
+    //       <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+    //         {t('perpsChartLoadError') ?? 'Failed to load chart data'}
+    //       </Text>
+    //     </Box>
+    //   );
+    // }
 
     return (
-      <PerpsCandlestickChart
-        ref={chartRef}
-        height={250}
-        selectedPeriod={selectedPeriod}
-        candleData={candleData}
-        priceLines={chartPriceLines}
-        onNeedMoreHistory={fetchMoreHistory}
-        // onCrosshairMove={setHoveredCandle}
-      />
+      // <PerpsCandlestickChart
+      //   ref={chartRef}
+      //   height={250}
+      //   selectedPeriod={selectedPeriod}
+      //   candleData={candleData}
+      //   priceLines={chartPriceLines}
+      //   onNeedMoreHistory={fetchMoreHistory}
+      //   // onCrosshairMove={setHoveredCandle}
+      // />
+      <></>
     );
   };
 
