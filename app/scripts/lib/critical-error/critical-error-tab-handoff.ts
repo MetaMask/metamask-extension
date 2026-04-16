@@ -6,11 +6,6 @@ import {
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-restore-session';
 
-export type CriticalErrorRestoreSession = {
-  tabId: number | undefined;
-  tabUrl: string;
-};
-
 export type RestoringTabHandoff = {
   tabId: number | undefined;
   tabUrl: string;
@@ -25,7 +20,7 @@ export type ExtensionPlatformLike = {
 
 export async function readCriticalErrorRestoreSession(
   browserApi: typeof browser,
-): Promise<CriticalErrorRestoreSession | null> {
+): Promise<RestoringTabHandoff | null> {
   try {
     // storage.local survives runtime.reload(); storage.session does not
     const data = await browserApi.storage.local.get(CRITICAL_ERROR_RESTORE_KEY);
