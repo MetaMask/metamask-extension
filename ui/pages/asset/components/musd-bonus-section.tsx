@@ -51,6 +51,12 @@ export type MusdBonusSectionProps = {
   /** Fiat value of mUSD position on this chain (for estimated annual bonus) */
   positionFiatValue: number | null;
   showFiat: boolean;
+  /**
+   * Whether the account holds a positive mUSD balance on this chain. Must reflect
+   * actual token balance (e.g. raw hex), not fiat prefs — `positionFiatValue` is
+   * omitted when `showFiat` is false.
+   */
+  hasPositiveBalance: boolean;
 };
 
 function formatSignedFiat(
@@ -72,12 +78,14 @@ function formatSignedFiat(
  * @param options0.tokenAddress
  * @param options0.positionFiatValue
  * @param options0.showFiat
+ * @param options0.hasPositiveBalance
  */
 export function MusdBonusSection({
   chainId,
   tokenAddress,
   positionFiatValue,
   showFiat,
+  hasPositiveBalance,
 }: MusdBonusSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
@@ -113,10 +121,7 @@ export function MusdBonusSection({
       ? (positionFiatValue * MUSD_CONVERSION_APY) / 100
       : null;
 
-  const hasMusd =
-    positionFiatValue !== null &&
-    positionFiatValue > 0 &&
-    Number.isFinite(positionFiatValue);
+  const hasMusd = hasPositiveBalance;
 
   const hasClaimable =
     hasClaimableReward && rewardAmountFiat !== null && rewardAmountFiat > 0;

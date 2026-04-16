@@ -38,7 +38,10 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
-import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import {
+  isEmptyHexString,
+  toChecksumHexAddress,
+} from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
@@ -53,6 +56,7 @@ import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
@@ -184,6 +188,10 @@ const AssetPage = ({
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
+  const hasPositiveMusdBalance =
+    typeof tokenHexBalance === 'string' && tokenHexBalance.length > 0
+      ? !isEmptyHexString(tokenHexBalance)
+      : !isZeroAmount(balance);
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -375,6 +383,7 @@ const AssetPage = ({
               tokenAddress={(asset as { address: Hex }).address}
               positionFiatValue={showFiat ? tokenFiatAmount : null}
               showFiat={showFiat}
+              hasPositiveBalance={hasPositiveMusdBalance}
             />
             <Box
               marginTop={5}

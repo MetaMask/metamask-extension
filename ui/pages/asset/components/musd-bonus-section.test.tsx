@@ -110,6 +110,7 @@ describe('MusdBonusSection', () => {
         tokenAddress={MUSD_TOKEN_ADDRESS}
         positionFiatValue={1000}
         showFiat
+        hasPositiveBalance
       />,
     );
 
@@ -132,6 +133,7 @@ describe('MusdBonusSection', () => {
         tokenAddress={MUSD_TOKEN_ADDRESS}
         positionFiatValue={1000}
         showFiat
+        hasPositiveBalance
       />,
     );
 
@@ -164,6 +166,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
         />,
       );
 
@@ -188,6 +191,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
         />,
       );
 
@@ -210,6 +214,31 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toHaveTextContent(messages.musdAssetBonusAccruing.message);
+      expect(button).toBeDisabled();
+    });
+
+    it('shows "Accruing next bonus" when fiat display is off but the user holds mUSD', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: false,
+        rewardAmountFiat: null,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={null}
+          showFiat={false}
+          hasPositiveBalance
         />,
       );
 
@@ -233,6 +262,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={0}
           showFiat
+          hasPositiveBalance={false}
         />,
       );
 
@@ -250,6 +280,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
         />,
       );
 
@@ -265,6 +296,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
         />,
       );
 
@@ -293,6 +325,7 @@ describe('MusdBonusSection', () => {
           tokenAddress={MUSD_TOKEN_ADDRESS}
           positionFiatValue={1000}
           showFiat
+          hasPositiveBalance
         />,
       );
 
