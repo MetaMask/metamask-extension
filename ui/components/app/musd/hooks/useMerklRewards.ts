@@ -176,19 +176,11 @@ export const useMerklRewards = ({
           (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
       }
 
-      console.log('merkl rewards hasClaimedBefore', hasClaimedBefore);
-      console.log(
-        'merkl rewards matchingReward.token.price',
-        matchingReward.token.price,
-      );
-      console.log('merkl rewards claimedAmount', claimedAmount);
-
       let lifetimeClaimedFiat: number | null = null;
       if (hasClaimedBefore && matchingReward.token.price !== null) {
         const divisor = 10 ** matchingReward.token.decimals;
         lifetimeClaimedFiat =
           (Number(claimedAmount) / divisor) * matchingReward.token.price;
-        console.log('merkl rewards lifetimeClaimedFiat', lifetimeClaimedFiat);
       }
 
       return {

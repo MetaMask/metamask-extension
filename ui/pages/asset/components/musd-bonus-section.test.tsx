@@ -1,5 +1,8 @@
+/**
+ * @jest-environment jsdom
+ */
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { I18nContext } from '../../../contexts/i18n';
@@ -83,7 +86,7 @@ describe('MusdBonusSection', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders Your bonus info control and opens tooltip content', () => {
+  it('renders Your bonus info control and opens tooltip content', async () => {
     renderWithProviders(
       <MusdBonusSection
         chainId="0x1"
@@ -97,7 +100,9 @@ describe('MusdBonusSection', () => {
       screen.getByTestId('musd-bonus-info-tooltip-button'),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('musd-bonus-info-tooltip-button'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('musd-bonus-info-tooltip-button'));
+    });
 
     expect(
       screen.getByText(messages.musdAssetBonusInfoLearnMore.message),

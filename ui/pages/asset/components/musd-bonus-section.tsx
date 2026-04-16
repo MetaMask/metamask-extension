@@ -39,7 +39,7 @@ import {
   selectIsMusdConversionFlowEnabled,
 } from '../../../selectors/musd';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
-import { InfoPopoverTooltip } from '../../confirmations/components/info-popover-tooltip/info-popover-tooltip';
+import { InfoPopover } from '../../../components/app/musd/info-popover';
 
 const MUSD_SUPPORT_ARTICLE_URL =
   'https://support.metamask.io/manage-crypto/tokens/musd';
@@ -109,16 +109,26 @@ export function MusdBonusSection({
       ? (positionFiatValue * MUSD_CONVERSION_APY) / 100
       : null;
 
-  const claimButtonVisible =
-    showMerklBadge &&
-    hasClaimableReward &&
-    rewardAmountFiat !== null &&
-    rewardAmountFiat > 0;
+  const hasMusd =
+    positionFiatValue !== null &&
+    positionFiatValue > 0 &&
+    Number.isFinite(positionFiatValue);
 
-  const claimButtonLabel =
-    rewardAmountFiat !== null && rewardAmountFiat > 0
-      ? t('musdAssetBonusClaimAmount', [formatFiat(rewardAmountFiat)])
-      : t('musdClaimTitle');
+  const hasClaimable =
+    hasClaimableReward && rewardAmountFiat !== null && rewardAmountFiat > 0;
+
+  let bonusButtonLabel: string;
+  if (hasClaimable && rewardAmountFiat !== null) {
+    bonusButtonLabel = t('musdAssetBonusClaimAmount', [
+      formatFiat(rewardAmountFiat),
+    ]);
+  } else if (hasMusd) {
+    bonusButtonLabel = t('musdAssetBonusAccruing');
+  } else {
+    bonusButtonLabel = t('musdAssetBonusNoAccruing');
+  }
+
+  const bonusButtonDisabled = !hasClaimable || isClaiming || isGeoBlocked;
 
   if (!isMusdFlowEnabled) {
     return null;
@@ -147,12 +157,11 @@ export function MusdBonusSection({
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Bold}>
             {t('musdAssetBonusTitle')}
           </Text>
-          <InfoPopoverTooltip
+          <InfoPopover
             position={PopoverPosition.TopStart}
-            plainIcon
             iconName={IconName.Info}
             iconColor={IconColor.IconAlternative}
-            iconVisualSize={IconSize.Sm}
+            iconSize={IconSize.Sm}
             ariaLabel={t('musdAssetBonusInfoAria') as string}
             data-testid="musd-bonus-info-tooltip"
             wrapperStyle={{
@@ -221,7 +230,7 @@ export function MusdBonusSection({
                 </TextButton>
               </Text>
             </Box>
-          </InfoPopoverTooltip>
+          </InfoPopover>
         </Box>
         <Tag
           label={t('musdAssetBonusRate', [String(MUSD_CONVERSION_APY)])}
@@ -280,17 +289,18 @@ export function MusdBonusSection({
         </Box>
       </Box>
 
-      {claimButtonVisible ? (
+      {showMerklBadge ? (
         <Box marginTop={4} marginBottom={3} style={{ width: '100%' }}>
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
-            onClick={() => claimRewards()}
-            disabled={isClaiming || isGeoBlocked}
+            onClick={hasClaimable ? () => claimRewards() : undefined}
+            disabled={bonusButtonDisabled}
+            isLoading={isClaiming}
             data-testid="musd-claim-bonus-button"
             style={{ width: '100%' }}
           >
-            {isClaiming ? '…' : claimButtonLabel}
+            {bonusButtonLabel}
           </Button>
         </Box>
       ) : null}

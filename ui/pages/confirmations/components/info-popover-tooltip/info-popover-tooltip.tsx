@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from 'react';
+import React, { useCallback, useRef, useState, type ReactNode } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -19,8 +14,7 @@ import {
 } from '../../../../components/component-library';
 
 const POPOVER_STYLE = {
-  /** Above extension chrome (see ui/css/design-system/_z-index.scss) */
-  zIndex: 1050,
+  zIndex: 3,
   backgroundColor: 'var(--color-text-default)',
   paddingTop: '6px',
   paddingBottom: '6px',
@@ -37,11 +31,6 @@ type InfoPopoverTooltipProps = {
   iconColor?: IconColor | string;
   iconMarginLeft?: number;
   /**
-   * Pixel size for the inline `Icon` when `plainIcon` is true (ignored for
-   * `ButtonIcon`).
-   */
-  iconVisualSize?: IconSize;
-  /**
    * When true, renders a plain Icon instead of a ButtonIcon so the trigger
    * matches the visual weight of inline row icons (e.g. the fee-row
    * question mark). The icon is still clickable.
@@ -49,14 +38,6 @@ type InfoPopoverTooltipProps = {
   plainIcon?: boolean;
   /** Accessible name for the popover trigger (prefer context-specific copy). */
   ariaLabel?: string;
-  /** Merged over default popover panel styles (e.g. maxWidth, padding). */
-  popoverStyle?: CSSProperties;
-  /**
-   * Optional styles for the root wrapper around the anchor + popover (e.g.
-   * `display: 'inline-flex'`, `alignItems: 'center'`, `alignSelf: 'center'`
-   * next to heading text). Omit to keep existing layout unchanged.
-   */
-  wrapperStyle?: CSSProperties;
   'data-testid'?: string;
 };
 
@@ -67,17 +48,12 @@ export function InfoPopoverTooltip({
   iconSize = ButtonIconSize.Md,
   iconColor,
   iconMarginLeft,
-  iconVisualSize = IconSize.Sm,
   plainIcon = false,
   ariaLabel,
-  popoverStyle,
-  wrapperStyle,
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverTooltipProps>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
-    null,
-  );
+  const triggerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
 
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -87,67 +63,55 @@ export function InfoPopoverTooltip({
     setIsOpen(false);
   }, []);
 
-  const setAnchorRef = useCallback((node: HTMLElement | null) => {
-    setReferenceElement(node);
-  }, []);
-
   const marginStyle = iconMarginLeft
     ? { marginLeft: `${iconMarginLeft * 4}px` }
     : undefined;
 
   return (
-    <Box style={wrapperStyle}>
-      <span
-        ref={setAnchorRef}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          ...marginStyle,
-        }}
-      >
-        {plainIcon ? (
-          <button
-            type="button"
-            aria-label={ariaLabel ?? 'info'}
-            onClick={handleToggle}
-            data-testid={dataTestId ? `${dataTestId}-button` : undefined}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Icon
-              name={iconName}
-              size={iconVisualSize}
-              color={iconColor as IconColor}
-            />
-          </button>
-        ) : (
-          <ButtonIcon
-            ariaLabel={ariaLabel ?? 'info'}
-            iconName={iconName}
-            size={iconSize}
-            onClick={handleToggle}
-            data-testid={dataTestId ? `${dataTestId}-button` : undefined}
-            iconProps={
-              iconColor ? { color: iconColor as IconColor } : undefined
-            }
+    <Box>
+      {plainIcon ? (
+        <button
+          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          type="button"
+          aria-label={ariaLabel ?? 'info'}
+          onClick={handleToggle}
+          data-testid={dataTestId ? `${dataTestId}-button` : undefined}
+          style={{
+            ...marginStyle,
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            display: 'flex',
+          }}
+        >
+          <Icon
+            name={iconName}
+            size={IconSize.Sm}
+            color={iconColor as IconColor}
           />
-        )}
-      </span>
+        </button>
+      ) : (
+        <ButtonIcon
+          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          ariaLabel={ariaLabel ?? 'info'}
+          iconName={iconName}
+          size={iconSize}
+          onClick={handleToggle}
+          data-testid={dataTestId ? `${dataTestId}-button` : undefined}
+          iconProps={iconColor ? { color: iconColor as IconColor } : undefined}
+          style={marginStyle}
+        />
+      )}
       <Popover
         isOpen={isOpen}
         position={position}
-        referenceElement={referenceElement}
+        referenceElement={triggerRef.current}
         hasArrow
         onPressEscKey={handleClose}
         onClickOutside={handleClose}
         isPortal
-        style={{ ...POPOVER_STYLE, ...popoverStyle }}
+        style={POPOVER_STYLE}
         data-testid={dataTestId}
       >
         {children}
