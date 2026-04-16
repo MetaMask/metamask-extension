@@ -40,7 +40,7 @@ describe('usePerpsOrderForm', () => {
             onFinally();
             return immediate(value);
           },
-        }) as Promise<T>;
+        }) as Promise<ResolvedValue>;
 
       if (method === 'perpsCalculateLiquidationPrice') {
         return immediate('40000') as Promise<never>;
