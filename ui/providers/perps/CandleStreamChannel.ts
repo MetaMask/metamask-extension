@@ -33,6 +33,12 @@ const LOAD_MORE_MAX = 500;
 /** Debounce delay before firing perpsActivateCandleStream */
 const CONNECT_DEBOUNCE_MS = 500;
 
+/** Grace period before actually tearing down a candle stream after the last
+ *  subscriber leaves. Covers brief navigation gaps (tab switch, route
+ *  transition) so we don't destroy and re-create the same subscription,
+ *  which would trigger a redundant fetchHistoricalCandles and risk 429s. */
+const DISCONNECT_GRACE_MS = 5_000;
+
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
@@ -51,6 +57,8 @@ type ChannelEntry = {
   duration: TimeDuration | undefined;
   /** Pending debounce timer for connect() */
   connectTimer: ReturnType<typeof setTimeout> | null;
+  /** Pending grace timer for deferred disconnect() */
+  disconnectTimer: ReturnType<typeof setTimeout> | null;
   /** Monotonic sequence — incremented on connect/disconnect to invalidate stale fetches */
   fetchSeq: number;
 };
@@ -130,9 +138,17 @@ export class CandleStreamChannel {
         isConnected: false,
         duration,
         connectTimer: null,
+        disconnectTimer: null,
         fetchSeq: 0,
       };
       this.channels.set(key, entry);
+    }
+
+    // Cancel any pending grace-period disconnect — a new subscriber arrived
+    // before the stream was torn down, so keep the connection alive.
+    if (entry.disconnectTimer) {
+      clearTimeout(entry.disconnectTimer);
+      entry.disconnectTimer = null;
     }
 
     // Register subscriber
@@ -170,9 +186,19 @@ export class CandleStreamChannel {
 
       currentEntry.subscribers.delete(subscriberId);
 
-      // Disconnect if no more subscribers (keep cache)
-      if (currentEntry.subscribers.size === 0) {
-        this.disconnect(key, currentEntry);
+      // Defer disconnect behind a grace timer so brief navigation gaps
+      // (tab switch, route transition) don't tear down + re-create the
+      // same stream, triggering a redundant fetchHistoricalCandles.
+      if (
+        currentEntry.subscribers.size === 0 &&
+        !currentEntry.disconnectTimer
+      ) {
+        currentEntry.disconnectTimer = setTimeout(() => {
+          currentEntry.disconnectTimer = null;
+          if (currentEntry.subscribers.size === 0) {
+            this.disconnect(key, currentEntry);
+          }
+        }, DISCONNECT_GRACE_MS);
       }
     };
   }
@@ -298,6 +324,7 @@ export class CandleStreamChannel {
         isConnected: false,
         duration: undefined,
         connectTimer: null,
+        disconnectTimer: null,
         fetchSeq: 0,
       };
       this.channels.set(key, entry);
@@ -348,6 +375,11 @@ export class CandleStreamChannel {
       if (entry.connectTimer) {
         clearTimeout(entry.connectTimer);
         entry.connectTimer = null;
+      }
+
+      if (entry.disconnectTimer) {
+        clearTimeout(entry.disconnectTimer);
+        entry.disconnectTimer = null;
       }
 
       this.disconnect(key, entry);
@@ -414,6 +446,12 @@ export class CandleStreamChannel {
    * @param entry - Channel entry
    */
   private disconnect(key: string, entry: ChannelEntry): void {
+    // Cancel any pending grace-period disconnect timer
+    if (entry.disconnectTimer) {
+      clearTimeout(entry.disconnectTimer);
+      entry.disconnectTimer = null;
+    }
+
     // Cancel pending debounced connect — if the timer hasn't fired,
     // no RPC was sent so no deactivation is needed either.
     if (entry.connectTimer) {

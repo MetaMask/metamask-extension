@@ -541,6 +541,14 @@ export class PerpsStreamBridge {
       return;
     }
     const key = this.#candleSubscriptionKey(params.symbol, params.interval);
+
+    // Skip if already streaming this exact symbol+interval — avoids tearing
+    // down and re-subscribing, which triggers a redundant
+    // fetchHistoricalCandles and risks 429 rate-limit errors.
+    if (this.#dynamicUnsubs[key]) {
+      return;
+    }
+
     this.#addDynamicSubscription(key, () =>
       this.#controller.subscribeToCandles({
         ...params,

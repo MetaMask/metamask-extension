@@ -22,6 +22,7 @@ jest.mock('../../store/background-connection', () => ({
 }));
 
 const DEBOUNCE_MS = 500;
+const DISCONNECT_GRACE_MS = 5_000;
 
 function makeCandle(time: number): CandleData['candles'][number] {
   return {
@@ -111,7 +112,7 @@ describe('CandleStreamChannel', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
 
-    it('deactivates only the key whose last subscriber left', () => {
+    it('deactivates only the key whose last subscriber left after grace period', () => {
       const unsubBtc = channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
@@ -127,6 +128,14 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubBtc();
+
+      // Deactivation is deferred behind the disconnect grace timer
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        expect.anything(),
+      );
+
+      jest.advanceTimersByTime(DISCONNECT_GRACE_MS);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -216,7 +225,7 @@ describe('CandleStreamChannel', () => {
   });
 
   describe('unsubscribe', () => {
-    it('re-activates streaming when last subscriber unsubscribes and re-subscribes', () => {
+    it('cancels disconnect grace timer and keeps stream alive on re-subscribe', () => {
       const unsubscribe = channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
@@ -228,6 +237,40 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubscribe();
+
+      // Deactivation should not fire immediately
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        expect.anything(),
+      );
+
+      // Re-subscribe before grace period expires — stream stays alive
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      jest.advanceTimersByTime(DISCONNECT_GRACE_MS);
+
+      // No deactivation or re-activation should have occurred
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('deactivates and re-activates when re-subscribe happens after grace period', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+      jest.advanceTimersByTime(DISCONNECT_GRACE_MS);
+
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsDeactivateCandleStream',
         [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
@@ -635,6 +678,8 @@ describe('CandleStreamChannel', () => {
       );
 
       unsub();
+      // Advance past the grace period to actually disconnect
+      jest.advanceTimersByTime(DISCONNECT_GRACE_MS);
 
       resolveHistorical(makeCandleData([200, 300, 400]));
       await fetchPromise;
@@ -862,6 +907,8 @@ describe('CandleStreamChannel', () => {
 
       jest.advanceTimersByTime(DEBOUNCE_MS);
       unsubscribe();
+      // Advance past the grace period so the channel fully disconnects
+      jest.advanceTimersByTime(DISCONNECT_GRACE_MS);
       mockSubmitRequestToBackground.mockClear();
 
       channel.reconnect();
