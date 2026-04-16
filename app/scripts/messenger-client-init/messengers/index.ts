@@ -286,7 +286,6 @@ export {
 } from './keyring-controller-messenger';
 export type { LoggingControllerMessenger } from './logging-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
-export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
@@ -397,7 +396,7 @@ export {
 export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
-export const CONTROLLER_MESSENGERS = {
+export const MESSENGER_FACTORIES = {
   AccountOrderController: {
     getMessenger: getAccountOrderControllerMessenger,
     getInitMessenger: noop,

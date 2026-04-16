@@ -239,7 +239,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
 
         // Submit the swap quote
-        await bridgePage.submitQuote({ dismissStatusPage: false });
+        await bridgePage.submitQuote();
 
         // Navigate to activity list and verify the bridge transaction
         await homePage.goToActivityList();

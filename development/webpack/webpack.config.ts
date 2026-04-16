@@ -557,9 +557,6 @@ const config = {
   },
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
-    // Optional perps-controller: dynamic optional provider not shipped in this build
-    // TODO: Remove this once the MYX provider is included in the published
-    /MYXProvider\.mjs/u,
   ],
 } as const satisfies Configuration;
 

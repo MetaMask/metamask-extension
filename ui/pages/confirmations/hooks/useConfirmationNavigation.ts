@@ -23,6 +23,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import { useSuppressNavigation } from '../../../hooks/useSuppressConfirmNavigate';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -39,13 +40,14 @@ const CONNECT_APPROVAL_TYPES = [
 
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
-  returnTo?: string;
+  goBackTo?: string;
 };
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const navigate = useNavigate();
+  const suppressNavigation = useSuppressNavigation();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
 
@@ -62,6 +64,10 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
+      if (suppressNavigation(confirmationId, confirmations)) {
+        return;
+      }
+
       const url = getConfirmationRoute(
         confirmationId,
         confirmations,
@@ -73,7 +79,13 @@ export function useConfirmationNavigation() {
         navigate(url, { replace: true });
       }
     },
-    [approvalFlows?.length, confirmations, navigate, queryString],
+    [
+      approvalFlows?.length,
+      confirmations,
+      navigate,
+      queryString,
+      suppressNavigation,
+    ],
   );
 
   const navigateToIndex = useCallback(
@@ -105,8 +117,8 @@ export function useConfirmationNavigation() {
         params.set('loader', options.loader);
       }
 
-      if (options.returnTo) {
-        params.set('returnTo', options.returnTo);
+      if (options.goBackTo) {
+        params.set('goBackTo', options.goBackTo);
       }
 
       navigate({
@@ -207,10 +219,10 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
-  const returnTo = sanitizeRedirectUrl(searchParams.get('returnTo'));
+  const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
 
   return {
     loader,
-    returnTo,
+    goBackTo,
   };
 }

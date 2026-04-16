@@ -1,13 +1,13 @@
 import { TokensController } from '@metamask/assets-controllers';
 import { assert } from '@metamask/utils';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   TokensControllerMessenger,
   TokensControllerInitMessenger,
 } from './messengers';
 import { getGlobalChainId } from './init-utils';
 
-export const TokensControllerInit: ControllerInitFunction<
+export const TokensControllerInit: MessengerClientInitFunction<
   TokensController,
   TokensControllerMessenger,
   TokensControllerInitMessenger
@@ -18,7 +18,7 @@ export const TokensControllerInit: ControllerInitFunction<
 
   // TODO: Fix TokensControllerMessenger type - add TokensControllerActions & TokensControllerEvents
   // TODO: Bump @metamask/network-controller, @metamask/accounts-controller, @metamask/keyring-controller to match assets-controllers
-  const controller = new TokensController({
+  const messengerClient = new TokensController({
     messenger: controllerMessenger,
     state: persistedState.TokensController,
     provider,
@@ -26,6 +26,6 @@ export const TokensControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

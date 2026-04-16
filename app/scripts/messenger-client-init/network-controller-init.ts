@@ -24,7 +24,7 @@ import {
   getFailoverUrlsForInfuraNetwork,
 } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { NetworkControllerInitMessenger } from './messengers';
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
@@ -160,7 +160,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
  * @param request.initMessenger
  * @returns The initialized controller.
  */
-export const NetworkControllerInit: ControllerInitFunction<
+export const NetworkControllerInit: MessengerClientInitFunction<
   NetworkController,
   NetworkControllerMessenger,
   NetworkControllerInitMessenger
@@ -254,7 +254,7 @@ export const NetworkControllerInit: ControllerInitFunction<
     };
   };
 
-  const controller = new NetworkController({
+  const messengerClient = new NetworkController({
     messenger: controllerMessenger,
     state: initialState,
     infuraProjectId,
@@ -319,10 +319,10 @@ export const NetworkControllerInit: ControllerInitFunction<
     (isRpcFailoverEnabled) => {
       if (isRpcFailoverEnabled) {
         console.log('Enabling RPC failover.');
-        controller.enableRpcFailover();
+        messengerClient.enableRpcFailover();
       } else {
         console.log('Disabling RPC failover.');
-        controller.disableRpcFailover();
+        messengerClient.disableRpcFailover();
       }
     },
     getIsRpcFailoverEnabled,
@@ -330,9 +330,9 @@ export const NetworkControllerInit: ControllerInitFunction<
 
   // Delay lookupNetwork until after onboarding to prevent network requests before the user can
   // update their RPC endpoints.
-  controller.initializeProvider({ lookupNetwork: false });
+  messengerClient.initializeProvider({ lookupNetwork: false });
 
   return {
-    controller,
+    messengerClient,
   };
 };
