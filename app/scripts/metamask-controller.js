@@ -4976,12 +4976,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await this.getSnapKeyring(),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
 
       if (completedOnboarding) {
         // check if external services are enabled
@@ -4991,6 +4985,15 @@ export default class MetamaskController extends EventEmitter {
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
+
+        // Forward selected accounts to the Snap keyring AFTER discovery,
+        // so Snap accounts exist and their IDs are in sync between the
+        // bridge and each Snap's internal state.
+        // BUG: https://github.com/MetaMask/metamask-extension/issues/39068
+        await this.forwardSelectedAccountGroupToSnapKeyring(
+          await this.getSnapKeyring(),
+          this.accountTreeController.getSelectedAccountGroup(),
+        );
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5199,19 +5202,8 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
     // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await this.getSnapKeyring(),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
-
-    const resyncAndAlignAccounts = async () => {
+    void (async () => {
       // READ THIS CAREFULLY:
       // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
       // automatically "fix" this corrupted state, we run this method which will re-sync
@@ -5221,13 +5213,17 @@ export default class MetamaskController extends EventEmitter {
 
       // This allows to create missing accounts if new account providers have been added.
       await this.multichainAccountService.alignWallets();
-    };
 
-    // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-    // for mobile.
-    // NOTE: We run this asynchronously on purpose, see FIXME^.
-    // eslint-disable-next-line no-void
-    void resyncAndAlignAccounts();
+      // Forward selected accounts to the Snap keyring AFTER resync, so that
+      // Snap account IDs are in sync between the bridge and each Snap's
+      // internal state. Previously this ran before resync, causing each Snap
+      // to receive stale account IDs that no longer existed in their stores.
+      // BUG: https://github.com/MetaMask/metamask-extension/issues/39068
+      await this.forwardSelectedAccountGroupToSnapKeyring(
+        await this.getSnapKeyring(),
+        this.accountTreeController.getSelectedAccountGroup(),
+      );
+    })();
   }
 
   async _loginUser(password) {
