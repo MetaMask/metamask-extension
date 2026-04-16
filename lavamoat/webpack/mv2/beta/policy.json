@@ -1511,6 +1511,15 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/geolocation-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
