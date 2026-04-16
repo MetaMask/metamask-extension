@@ -32,6 +32,7 @@ import {
 } from '../../../components/app/musd/constants';
 import { useMerklClaim } from '../../../components/app/musd/hooks/useMerklClaim';
 import { useMerklRewards } from '../../../components/app/musd/hooks/useMerklRewards';
+import { useOnMerklClaimConfirmed } from '../../../components/app/musd/hooks/useOnMerklClaimConfirmed';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import {
@@ -93,11 +94,14 @@ export function MusdBonusSection({
     lifetimeClaimedFiat,
     isLoading,
     isEligible,
+    refetch: refetchRewards,
   } = useMerklRewards({
     tokenAddress,
     chainId,
     showMerklBadge,
   });
+
+  useOnMerklClaimConfirmed(refetchRewards);
 
   const { claimRewards, isClaiming } = useMerklClaim({
     tokenAddress,

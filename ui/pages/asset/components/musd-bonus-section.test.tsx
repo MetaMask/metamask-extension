@@ -11,12 +11,14 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { MusdBonusSection } from './musd-bonus-section';
 
+const mockRefetchRewards = jest.fn();
 const mockUseMerklRewards = jest.fn().mockReturnValue({
   hasClaimableReward: false,
   rewardAmountFiat: null,
   lifetimeClaimedFiat: 5,
   isLoading: false,
   isEligible: true,
+  refetch: mockRefetchRewards,
 });
 
 const mockClaimRewards = jest.fn();
@@ -24,6 +26,11 @@ const mockUseMerklClaim = jest.fn().mockReturnValue({
   claimRewards: mockClaimRewards,
   isClaiming: false,
   error: null,
+});
+
+let capturedOnConfirmed: (() => void) | null = null;
+const mockUseOnMerklClaimConfirmed = jest.fn((cb: () => void) => {
+  capturedOnConfirmed = cb;
 });
 
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
@@ -44,6 +51,14 @@ jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
 jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
   useMerklClaim: (...args: unknown[]) => mockUseMerklClaim(...args),
 }));
+
+jest.mock(
+  '../../../components/app/musd/hooks/useOnMerklClaimConfirmed',
+  () => ({
+    useOnMerklClaimConfirmed: (cb: () => void) =>
+      mockUseOnMerklClaimConfirmed(cb),
+  }),
+);
 
 jest.mock('../../../selectors/musd', () => {
   const actual = jest.requireActual('../../../selectors/musd');
@@ -70,12 +85,15 @@ const renderWithProviders = (component: React.ReactElement) =>
 
 describe('MusdBonusSection', () => {
   beforeEach(() => {
+    capturedOnConfirmed = null;
+    mockRefetchRewards.mockClear();
     mockUseMerklRewards.mockReturnValue({
       hasClaimableReward: false,
       rewardAmountFiat: null,
       lifetimeClaimedFiat: 5,
       isLoading: false,
       isEligible: true,
+      refetch: mockRefetchRewards,
     });
     mockUseMerklClaim.mockReturnValue({
       claimRewards: mockClaimRewards,
@@ -196,9 +214,7 @@ describe('MusdBonusSection', () => {
       );
 
       const button = screen.getByTestId('musd-claim-bonus-button');
-      expect(button).toHaveTextContent(
-        messages.musdAssetBonusAccruing.message,
-      );
+      expect(button).toHaveTextContent(messages.musdAssetBonusAccruing.message);
       expect(button).toBeDisabled();
     });
 
@@ -225,6 +241,36 @@ describe('MusdBonusSection', () => {
         messages.musdAssetBonusNoAccruing.message,
       );
       expect(button).toBeDisabled();
+    });
+
+    it('registers refetchRewards with useOnMerklClaimConfirmed on mount', () => {
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      expect(mockUseOnMerklClaimConfirmed).toHaveBeenCalledWith(
+        mockRefetchRewards,
+      );
+    });
+
+    it('calls refetchRewards when the claim confirmation callback fires', () => {
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      expect(capturedOnConfirmed).not.toBeNull();
+      capturedOnConfirmed?.();
+      expect(mockRefetchRewards).toHaveBeenCalledTimes(1);
     });
 
     it('disables the button and shows loading when claim is in progress', () => {
