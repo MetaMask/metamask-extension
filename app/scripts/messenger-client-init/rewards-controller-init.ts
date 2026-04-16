@@ -9,7 +9,7 @@ import {
 } from '../../../shared/lib/feature-flags/version-gating';
 import { RewardsControllerMessenger } from '../controllers/rewards/rewards-controller.types';
 import { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Helper function to resolve a feature flag value.
@@ -32,7 +32,7 @@ const resolveFlag = (flag: unknown) => {
  * @param request - The request object.
  * @returns The RewardsController.
  */
-export const RewardsControllerInit: ControllerInitFunction<
+export const RewardsControllerInit: MessengerClientInitFunction<
   RewardsController,
   RewardsControllerMessenger,
   RewardsControllerInitMessenger
@@ -42,7 +42,7 @@ export const RewardsControllerInit: ControllerInitFunction<
   const rewardsControllerState =
     persistedState.RewardsController ?? defaultRewardsControllerState;
 
-  const controller = new RewardsController({
+  const messengerClient = new RewardsController({
     messenger: controllerMessenger,
     state: rewardsControllerState,
     isDisabled: () => {
@@ -107,5 +107,5 @@ export const RewardsControllerInit: ControllerInitFunction<
     },
   });
 
-  return { controller };
+  return { messengerClient };
 };

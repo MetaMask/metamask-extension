@@ -1,7 +1,7 @@
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import type { ConnectivityControllerMessenger } from '@metamask/connectivity-controller';
 
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
 
 /**
@@ -19,7 +19,7 @@ import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
  * @param request.controllerMessenger - The messenger for the controller.
  * @returns The controller init result.
  */
-export const ConnectivityControllerInit: ControllerInitFunction<
+export const ConnectivityControllerInit: MessengerClientInitFunction<
   ConnectivityController,
   ConnectivityControllerMessenger
 > = (request) => {
@@ -30,13 +30,13 @@ export const ConnectivityControllerInit: ControllerInitFunction<
   // - MV2: Background page directly (app/scripts/background.js)
   const connectivityAdapter = new ExtensionConnectivityAdapter();
 
-  const controller = new ConnectivityController({
+  const messengerClient = new ConnectivityController({
     messenger: controllerMessenger,
     connectivityAdapter,
   });
 
   return {
-    controller,
+    messengerClient,
     api: {
       setConnectivityStatus: (status: 'online' | 'offline') =>
         connectivityAdapter.setStatus(status),

@@ -16,11 +16,19 @@ import {
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
-import { formatRoePercent } from '../../../utils';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from '../../../utils/tpslValidation';
+import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -42,7 +50,11 @@ import { formatRoePercent } from '../../../utils';
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
  * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
+ * @param props.estimatedSize - Signed position size in asset units for estimated PnL
+ * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
+ * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
+ * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -54,9 +66,19 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   direction,
   currentPrice,
   entryPrice: entryPriceProp,
+  estimatedSize,
+  orderType,
+  limitPrice,
   leverage,
+  asset,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: 'market',
+  });
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
@@ -254,6 +276,103 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [priceToPercent, stopLossPrice],
   );
 
+  const isLimitWithPrice = orderType === 'limit' && Boolean(limitPrice?.trim());
+  const validationReferencePrice = useMemo(() => {
+    if (isLimitWithPrice && limitPrice) {
+      const parsed = Number.parseFloat(limitPrice.replaceAll(/[$,]/gu, ''));
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
+    }
+    return currentPrice;
+  }, [isLimitWithPrice, limitPrice, currentPrice]);
+
+  const pnlEntryPrice = isLimitWithPrice
+    ? validationReferencePrice
+    : entryPrice;
+
+  const estimatedPnlAtTp = useMemo(() => {
+    if (
+      !estimatedSize ||
+      !takeProfitPrice ||
+      !pnlEntryPrice ||
+      closingFeeRate === undefined
+    ) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(takeProfitPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
+    const closingFee = Math.abs(estimatedSize) * exitPrice * closingFeeRate;
+    return grossPnl - closingFee;
+  }, [estimatedSize, takeProfitPrice, pnlEntryPrice, closingFeeRate]);
+
+  const estimatedPnlAtSl = useMemo(() => {
+    if (
+      !estimatedSize ||
+      !stopLossPrice ||
+      !pnlEntryPrice ||
+      closingFeeRate === undefined
+    ) {
+      return null;
+    }
+    const exitPrice = Number.parseFloat(stopLossPrice);
+    if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
+      return null;
+    }
+    const grossPnl = estimatedSize * (exitPrice - pnlEntryPrice);
+    const closingFee = Math.abs(estimatedSize) * exitPrice * closingFeeRate;
+    return grossPnl - closingFee;
+  }, [estimatedSize, stopLossPrice, pnlEntryPrice, closingFeeRate]);
+
+  const priceLabel = isLimitWithPrice ? 'entry' : 'current';
+
+  const isTpInvalid = useMemo(
+    () =>
+      Boolean(
+        takeProfitPrice.trim() &&
+          validationReferencePrice > 0 &&
+          !isValidTakeProfitPrice(takeProfitPrice, {
+            currentPrice: validationReferencePrice,
+            direction,
+          }),
+      ),
+    [takeProfitPrice, validationReferencePrice, direction],
+  );
+
+  const isSlInvalid = useMemo(
+    () =>
+      Boolean(
+        stopLossPrice.trim() &&
+          validationReferencePrice > 0 &&
+          !isValidStopLossPrice(stopLossPrice, {
+            currentPrice: validationReferencePrice,
+            direction,
+          }),
+      ),
+    [stopLossPrice, validationReferencePrice, direction],
+  );
+
+  const tpErrorMessage = useMemo(() => {
+    if (!isTpInvalid) {
+      return null;
+    }
+    return t('perpsTakeProfitInvalidPrice', [
+      getTakeProfitErrorDirection(direction),
+      priceLabel,
+    ]);
+  }, [isTpInvalid, direction, priceLabel, t]);
+
+  const slErrorMessage = useMemo(() => {
+    if (!isSlInvalid) {
+      return null;
+    }
+    return t('perpsStopLossInvalidPrice', [
+      getStopLossErrorDirection(direction),
+      priceLabel,
+    ]);
+  }, [isSlInvalid, direction, priceLabel, t]);
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {/* Toggle Row */}
@@ -345,6 +464,41 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {estimatedPnlAtTp !== null && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                data-testid="auto-close-estimated-tp-pnl-row"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstimatedPnlAtTakeProfit')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={getPnlDisplayColor(estimatedPnlAtTp)}
+                >
+                  {estimatedPnlAtTp >= 0 ? '+' : '-'}
+                  {formatCurrencyWithMinThreshold(
+                    Math.abs(estimatedPnlAtTp),
+                    'USD',
+                  )}
+                </Text>
+              </Box>
+            )}
+            {tpErrorMessage && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.ErrorDefault}
+                data-testid="tp-validation-error"
+              >
+                {tpErrorMessage}
+              </Text>
+            )}
           </Box>
 
           {/* Stop Loss Section */}
@@ -417,6 +571,41 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
+            {estimatedPnlAtSl !== null && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                data-testid="auto-close-estimated-sl-pnl-row"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsEstimatedPnlAtStopLoss')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={getPnlDisplayColor(estimatedPnlAtSl)}
+                >
+                  {estimatedPnlAtSl >= 0 ? '+' : '-'}
+                  {formatCurrencyWithMinThreshold(
+                    Math.abs(estimatedPnlAtSl),
+                    'USD',
+                  )}
+                </Text>
+              </Box>
+            )}
+            {slErrorMessage && (
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.ErrorDefault}
+                data-testid="sl-validation-error"
+              >
+                {slErrorMessage}
+              </Text>
+            )}
           </Box>
         </Box>
       )}

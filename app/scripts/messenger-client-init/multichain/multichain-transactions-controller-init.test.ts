@@ -1,6 +1,6 @@
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getMultichainTransactionsControllerMessenger,
   MultichainTransactionsControllerMessenger,
@@ -11,7 +11,7 @@ import { MultichainTransactionsControllerInit } from './multichain-transactions-
 jest.mock('@metamask/multichain-transactions-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultichainTransactionsControllerMessenger>
+  MessengerClientInitRequest<MultichainTransactionsControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -36,7 +36,7 @@ describe('MultichainTransactionsControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      MultichainTransactionsControllerInit(requestMock).controller,
+      MultichainTransactionsControllerInit(requestMock).messengerClient,
     ).toBeInstanceOf(MultichainTransactionsController);
   });
 

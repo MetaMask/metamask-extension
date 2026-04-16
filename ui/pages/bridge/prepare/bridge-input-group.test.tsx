@@ -378,7 +378,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 5 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 7 },
     ],
     [
       'destination',

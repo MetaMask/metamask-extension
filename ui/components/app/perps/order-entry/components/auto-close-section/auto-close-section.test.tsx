@@ -6,6 +6,14 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
 
+jest.mock('../../../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -23,6 +31,7 @@ describe('AutoCloseSection', () => {
     direction: 'long' as const,
     currentPrice: 45000,
     leverage: 10,
+    asset: 'BTC',
   };
 
   beforeEach(() => {
@@ -482,6 +491,119 @@ describe('AutoCloseSection', () => {
       fireEvent.blur(input);
       // (45450 - 45000) / 45000 * 10 * 100 = 10 -> formats to "10"
       expect(input.value).toBe('10');
+    });
+  });
+
+  describe('validation errors', () => {
+    it('shows TP error when long TP is below current price (market order)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          takeProfitPrice="48000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('tp-validation-error')).toHaveTextContent(
+        /above.*current/iu,
+      );
+    });
+
+    it('does not show TP error when long TP is above current price', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          takeProfitPrice="55000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('tp-validation-error'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows SL error when long SL is above current price (market order)', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          stopLossPrice="55000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /below.*current/iu,
+      );
+    });
+
+    it('uses limit price as reference for limit orders', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          takeProfitPrice="48000"
+          orderType="limit"
+          limitPrice="45000"
+        />,
+        mockStore,
+      );
+
+      // TP $48k > limit $45k → valid for limit order, no error
+      expect(
+        screen.queryByTestId('tp-validation-error'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows error referencing entry price for limit orders', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          takeProfitPrice="44000"
+          orderType="limit"
+          limitPrice="45000"
+        />,
+        mockStore,
+      );
+
+      // TP $44k < limit $45k → invalid
+      expect(screen.getByTestId('tp-validation-error')).toHaveTextContent(
+        /above.*entry/iu,
+      );
+    });
+
+    it('falls back to currentPrice when limit price is empty', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={50000}
+          takeProfitPrice="48000"
+          orderType="limit"
+          limitPrice=""
+        />,
+        mockStore,
+      );
+
+      // No limit price → falls back to currentPrice ($50k), TP $48k < $50k → invalid
+      expect(screen.getByTestId('tp-validation-error')).toHaveTextContent(
+        /above.*current/iu,
+      );
     });
   });
 

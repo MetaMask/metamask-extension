@@ -2,7 +2,7 @@ import {
   SnapsNameProvider,
   SnapsNameProviderMessenger,
 } from '../../lib/SnapsNameProvider';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the Snaps name provider.
@@ -11,17 +11,17 @@ import { ControllerInitFunction } from '../types';
  * @param request.controllerMessenger - The messenger to use for the provider.
  * @returns The initialized provider.
  */
-export const SnapsNameProviderInit: ControllerInitFunction<
+export const SnapsNameProviderInit: MessengerClientInitFunction<
   SnapsNameProvider,
   SnapsNameProviderMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new SnapsNameProvider({
+  const messengerClient = new SnapsNameProvider({
     messenger: controllerMessenger,
   });
 
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

@@ -22,11 +22,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 type TrustSignalModalProps = {
   origin: string;
   onContinue: () => void;
+  onCancel?: () => void;
 };
 
 export function TrustSignalModal({
   origin,
   onContinue,
+  onCancel,
 }: TrustSignalModalProps) {
   const t = useI18nContext();
 
@@ -82,6 +84,17 @@ export function TrustSignalModal({
           {t('trustSignalBlockDescription')}
         </Text>
       </Box>
+      {onCancel && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          className="w-full"
+          onClick={onCancel}
+          data-testid="trust-signal-block-modal-cancel"
+        >
+          {t('cancel')}
+        </Button>
+      )}
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}

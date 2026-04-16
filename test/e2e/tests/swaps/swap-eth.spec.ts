@@ -1,19 +1,17 @@
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  bridgeTransaction,
-  getBridgeFixtures,
-} from '../bridge/bridge-test-utils';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and MUSD', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
@@ -30,6 +28,7 @@ describe('Swap Eth for another Token', function () {
           },
           // The expected amount in destination token can vary as upstream quote data changes.
           expectedDestAmount: '',
+          skipStatusPage: true,
         });
       },
     );

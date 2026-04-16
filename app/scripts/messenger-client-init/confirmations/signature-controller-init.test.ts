@@ -1,5 +1,5 @@
 import { SignatureController } from '@metamask/signature-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSignatureControllerInitMessenger,
@@ -19,7 +19,7 @@ jest.mock('@metamask/signature-controller', () => ({
 }));
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     SignatureControllerMessenger,
     SignatureControllerInitMessenger
   >
@@ -37,8 +37,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SignatureControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = SignatureControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(Object);
+    const { messengerClient } = SignatureControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(Object);
   });
 
   it('passes the proper arguments to the controller', () => {

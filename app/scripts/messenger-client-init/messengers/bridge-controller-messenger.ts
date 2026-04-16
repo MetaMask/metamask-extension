@@ -4,7 +4,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { BridgeControllerMessenger } from '@metamask/bridge-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
