@@ -6,7 +6,11 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isCrossChain,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -68,7 +72,7 @@ import {
 } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { formatTokenAmount } from '../utils/quote';
+import { resolveTransactionType } from '../../../components/multichain/activity-v2/helpers';
 import {
   getBlockExplorerUrl,
   getBridgeAmountReceivedFormatted,
@@ -122,7 +126,15 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
-  const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
+  const isBridgeTx =
+    srcChainTxMeta?.type === TransactionType.bridge ||
+    (transaction?.transactionCategory &&
+      resolveTransactionType(transaction) === TransactionType.bridge) ||
+    (bridgeHistoryItem &&
+      isCrossChain(
+        bridgeHistoryItem.status.srcChain?.chainId,
+        bridgeHistoryItem.status.destChain?.chainId,
+      ));
 
   const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
@@ -132,7 +144,13 @@ const CrossChainSwapTxDetails = () => {
 
   const bridgeStatus = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
-    : StatusTypes.PENDING;
+    : srcChainTxMeta?.status === TransactionStatus.confirmed ||
+        transaction?.status === TransactionStatus.confirmed
+      ? StatusTypes.COMPLETE
+      : srcChainTxMeta?.status === TransactionStatus.failed ||
+          transaction?.status === TransactionStatus.failed
+        ? StatusTypes.FAILED
+        : StatusTypes.PENDING;
   // Show src tx status for swaps
   const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
 
