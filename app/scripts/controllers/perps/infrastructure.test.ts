@@ -565,11 +565,16 @@ describe('createPerpsInfrastructure', () => {
       expect(getItemSync('perps-test-key')).toBeNull();
     });
 
-    it('prefixes persisted storage keys while keeping raw cache keys public', async () => {
+    it('prefixes persisted storage keys and migrates known legacy raw keys', async () => {
       const originalStorage = browser.storage;
       const getMock = jest
         .fn()
-        .mockResolvedValue({ 'perps:perps-storage-key': 'persisted-value' });
+        .mockResolvedValueOnce({
+          'perps:PERPS_DISK_CACHE_MARKETS': 'persisted-value',
+        })
+        .mockResolvedValueOnce({
+          PERPS_DISK_CACHE_USER_DATA: 'legacy-user-value',
+        });
       const setMock = jest.fn().mockResolvedValue(undefined);
       const removeMock = jest.fn().mockResolvedValue(undefined);
 
@@ -590,25 +595,70 @@ describe('createPerpsInfrastructure', () => {
         const getItemSync = diskCache.getItemSync as NonNullable<
           typeof diskCache.getItemSync
         >;
-        await diskCache.setItem('perps-storage-key', 'persisted-value');
+        await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
 
         expect(setMock).toHaveBeenCalledWith({
-          'perps:perps-storage-key': 'persisted-value',
+          'perps:PERPS_DISK_CACHE_MARKETS': 'persisted-value',
         });
-        expect(getItemSync('perps-storage-key')).toBe('persisted-value');
+        expect(removeMock).toHaveBeenCalledWith('PERPS_DISK_CACHE_MARKETS');
+        expect(getItemSync('PERPS_DISK_CACHE_MARKETS')).toBe('persisted-value');
 
         const { diskCache: hydratedDiskCache } =
           createPerpsInfrastructure(getDeps());
         await expect(
-          hydratedDiskCache.getItem('perps-storage-key'),
+          hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
         ).resolves.toBe('persisted-value');
         expect(getMock).toHaveBeenCalledWith([
-          'perps:perps-storage-key',
-          'perps-storage-key',
+          'perps:PERPS_DISK_CACHE_MARKETS',
+          'PERPS_DISK_CACHE_MARKETS',
         ]);
 
-        await hydratedDiskCache.removeItem('perps-storage-key');
-        expect(removeMock).toHaveBeenCalledWith('perps:perps-storage-key');
+        await expect(
+          hydratedDiskCache.getItem('PERPS_DISK_CACHE_USER_DATA'),
+        ).resolves.toBe('legacy-user-value');
+        expect(getMock).toHaveBeenCalledWith([
+          'perps:PERPS_DISK_CACHE_USER_DATA',
+          'PERPS_DISK_CACHE_USER_DATA',
+        ]);
+        expect(setMock).toHaveBeenCalledWith({
+          'perps:PERPS_DISK_CACHE_USER_DATA': 'legacy-user-value',
+        });
+        expect(removeMock).toHaveBeenCalledWith('PERPS_DISK_CACHE_USER_DATA');
+
+        await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
+        expect(removeMock).toHaveBeenCalledWith([
+          'perps:PERPS_DISK_CACHE_MARKETS',
+          'PERPS_DISK_CACHE_MARKETS',
+        ]);
+      } finally {
+        Object.defineProperty(browser, 'storage', {
+          configurable: true,
+          value: originalStorage,
+        });
+      }
+    });
+
+    it('does not read arbitrary unprefixed storage keys', async () => {
+      const originalStorage = browser.storage;
+      const getMock = jest.fn().mockResolvedValue({
+        arbitraryKey: 'unexpected-value',
+      });
+
+      Object.defineProperty(browser, 'storage', {
+        configurable: true,
+        value: {
+          local: {
+            get: getMock,
+            set: jest.fn().mockResolvedValue(undefined),
+            remove: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+      });
+
+      try {
+        const { diskCache } = createPerpsInfrastructure(getDeps());
+        await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
+        expect(getMock).toHaveBeenCalledWith('perps:arbitraryKey');
       } finally {
         Object.defineProperty(browser, 'storage', {
           configurable: true,

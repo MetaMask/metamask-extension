@@ -252,9 +252,17 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
 }
 
 const PERPS_DISK_CACHE_KEY_PREFIX = 'perps:';
+const LEGACY_RAW_PERPS_DISK_CACHE_KEYS = new Set([
+  'PERPS_DISK_CACHE_MARKETS',
+  'PERPS_DISK_CACHE_USER_DATA',
+]);
 
 function getDiskCacheStorageKey(key: string): string {
   return `${PERPS_DISK_CACHE_KEY_PREFIX}${key}`;
+}
+
+function isLegacyRawPerpsDiskCacheKey(key: string): boolean {
+  return LEGACY_RAW_PERPS_DISK_CACHE_KEYS.has(key);
 }
 
 function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
@@ -273,29 +281,44 @@ function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
       }
 
       const storageKey = getDiskCacheStorageKey(key);
-      const result = await storageLocal.get([storageKey, key]);
-      if (!(storageKey in result) && !(key in result)) {
+      const legacyFallbackEnabled = isLegacyRawPerpsDiskCacheKey(key);
+      const result = await storageLocal.get(
+        legacyFallbackEnabled ? [storageKey, key] : storageKey,
+      );
+      const prefixedValue = result[storageKey];
+      if (typeof prefixedValue === 'string') {
+        memoryCache.set(key, prefixedValue);
+        return prefixedValue;
+      }
+
+      if (!legacyFallbackEnabled || typeof result[key] !== 'string') {
         return null;
       }
 
-      const value = result[storageKey] ?? result[key];
-      if (typeof value !== 'string') {
-        return null;
-      }
+      const legacyValue = result[key];
 
-      memoryCache.set(key, value);
-      return value;
+      // Migrate known legacy raw keys into the prefixed namespace on read.
+      await storageLocal.set({ [storageKey]: legacyValue });
+      await storageLocal.remove(key);
+      memoryCache.set(key, legacyValue);
+      return legacyValue;
     },
     setItem: async (key: string, value: string) => {
       memoryCache.set(key, value);
       if (storageLocal) {
         await storageLocal.set({ [getDiskCacheStorageKey(key)]: value });
+        if (isLegacyRawPerpsDiskCacheKey(key)) {
+          await storageLocal.remove(key);
+        }
       }
     },
     removeItem: async (key: string) => {
       memoryCache.delete(key);
       if (storageLocal) {
-        await storageLocal.remove(getDiskCacheStorageKey(key));
+        const storageKey = getDiskCacheStorageKey(key);
+        await storageLocal.remove(
+          isLegacyRawPerpsDiskCacheKey(key) ? [storageKey, key] : storageKey,
+        );
       }
     },
   };
