@@ -273,6 +273,21 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
     });
 
+    it('renders percentage buttons for native pay token when hasMax is true', () => {
+      const { getByTestId } = render({
+        hasMax: true,
+        payTokenHookReturn: {
+          ...DEFAULT_PAY_TOKEN_HOOK_RETURN,
+          isNative: true,
+        },
+      });
+
+      expect(getByTestId('percentage-button-25')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-50')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-75')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-100')).toBeInTheDocument();
+    });
+
     it('calls updatePendingAmountPercentage when percentage button clicked', () => {
       const updatePendingAmountPercentage = jest.fn();
 

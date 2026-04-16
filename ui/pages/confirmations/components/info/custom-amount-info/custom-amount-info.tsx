@@ -40,7 +40,6 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
-import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useConfirmContext } from '../../../context/confirm';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -82,7 +81,6 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-    const { isNative: isNativePayToken } = useTransactionPayToken();
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
 
@@ -125,7 +123,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
-          hasMax={hasMax && !isNativePayToken}
+          hasMax={hasMax}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
