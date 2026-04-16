@@ -19,7 +19,7 @@ import { BannerBase } from '../banner-base';
 
 ### Title
 
-Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+Use the `title` prop to pass a string that is sentence case no period. By default, `title` uses `TextVariant.bodyMdMedium`. Use the `titleProps` prop to pass additional props to the `Text` component.
 
 <Canvas>
   <Story id="components-componentlibrary-bannerbase--title" />
@@ -36,6 +36,7 @@ import { BannerBase } from '../../component-library';
 ### Description
 
 The `description` is the content area of the `BannerBase` that must be a string. Description shouldn't repeat title and only 1-3 lines.
+By default, `description` uses `TextVariant.bodySm`. Use `descriptionProps` to customize it.
 
 If content requires more than a string, see `children` prop below.
 

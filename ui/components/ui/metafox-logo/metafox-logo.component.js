@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Box } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import MetaFoxHorizontalLogo from './horizontal-logo';
@@ -10,9 +10,7 @@ export default class MetaFoxLogo extends PureComponent {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
     isOnboarding: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
     theme: PropTypes.string,
   };
 
@@ -20,22 +18,12 @@ export default class MetaFoxLogo extends PureComponent {
     onClick: undefined,
     unsetIconHeight: false,
     isOnboarding: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: undefined,
-    ///: END:ONLY_INCLUDE_IF
     theme: undefined,
   };
 
   render() {
-    const {
-      onClick,
-      unsetIconHeight,
-      isOnboarding,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      src,
-      ///: END:ONLY_INCLUDE_IF
-      theme,
-    } = this.props;
+    const { onClick, unsetIconHeight, isOnboarding, src, theme } = this.props;
 
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
@@ -53,7 +41,6 @@ export default class MetaFoxLogo extends PureComponent {
 
     let imageSrc = './images/logo/metamask-fox.svg';
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     if (src) {
       renderHorizontalLogo = () => (
         <img
@@ -69,7 +56,6 @@ export default class MetaFoxLogo extends PureComponent {
 
       imageSrc = src;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return (
       <Box

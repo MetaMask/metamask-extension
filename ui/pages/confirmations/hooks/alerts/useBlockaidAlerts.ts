@@ -116,7 +116,7 @@ const useBlockaidAlerts = (): Alert[] => {
       return [];
     }
 
-    let reportUrl = ZENDESK_URLS.SUPPORT_URL;
+    let reportUrl: string = ZENDESK_URLS.SUPPORT_URL;
     if (stringifiedJSONData) {
       const encodedData =
         zlib?.gzipSync?.(stringifiedJSONData) ?? stringifiedJSONData;

@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Box,
   ButtonIcon,
@@ -55,10 +55,13 @@ export const WalletDetailsPage = ({
 }: WalletDetailsPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const hookParams = useParams();
+  const [searchParams] = useSearchParams();
 
-  const { id } = propsParams || hookParams;
-  const walletId = decodeURIComponent(id as string) as AccountWalletId;
+  const walletId = (
+    propsParams?.id
+      ? decodeURIComponent(propsParams.id)
+      : searchParams.get('id')
+  ) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =

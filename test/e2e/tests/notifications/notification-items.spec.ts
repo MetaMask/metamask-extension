@@ -1,9 +1,10 @@
 import { Mockttp } from 'mockttp';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   enableNotificationsThroughGlobalMenu,
   clickNotificationItemAndDetailsPage,
@@ -17,6 +18,27 @@ import {
   mockNotificationServices,
 } from './mocks';
 
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...prodFlags,
+        { assetsEnableNotificationsByDefault: false },
+        { assetsEnableNotificationsByDefaultV2: { value: false } },
+      ],
+    }));
+}
+
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
     if (process.env.IS_FORK === 'true') {
@@ -24,17 +46,18 @@ describe('Notification List - View Items and Details', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           await mockNotificationServices(
             server,
             new MockttpNotificationTriggerServer(),
           );
+          await mockFeatureFlagsWithoutAutoEnableNotifications(server);
         },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         await enableNotificationsThroughGlobalMenu(driver, false);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(

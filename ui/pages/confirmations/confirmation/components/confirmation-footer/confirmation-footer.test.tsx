@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as AlertContext from '../../alerts/TemplateAlertContext';
 import ConfirmationFooter from './confirmation-footer';
 
@@ -16,9 +17,12 @@ describe('ConfirmationFooter', () => {
   it('invoke prop onSubmit when confirm button is clicked if there are no alerts', () => {
     const mockSubmit = jest.fn();
     const { getByText } = render(
-      <ConfirmationFooter onSubmit={mockSubmit} submitText="Confirm" />,
+      <ConfirmationFooter
+        onSubmit={mockSubmit}
+        submitText={messages.confirm.message}
+      />,
     );
-    fireEvent.click(getByText('Confirm'));
+    fireEvent.click(getByText(messages.confirm.message));
     expect(mockSubmit).toHaveBeenCalledTimes(1);
   });
 
@@ -30,9 +34,12 @@ describe('ConfirmationFooter', () => {
     });
     const mockSubmit = jest.fn();
     const { getByText } = render(
-      <ConfirmationFooter onSubmit={mockSubmit} submitText="Confirm" />,
+      <ConfirmationFooter
+        onSubmit={mockSubmit}
+        submitText={messages.confirm.message}
+      />,
     );
-    fireEvent.click(getByText('Confirm'));
+    fireEvent.click(getByText(messages.confirm.message));
     expect(mockShowAlertsModal).toHaveBeenCalledTimes(1);
     expect(mockSubmit).toHaveBeenCalledTimes(0);
   });

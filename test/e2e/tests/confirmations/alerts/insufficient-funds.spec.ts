@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -6,7 +6,7 @@ import { TestSuiteArguments } from '../transactions/shared';
 import AlertModal from '../../../page-objects/pages/confirmations/alert-modal';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
@@ -17,7 +17,7 @@ describe('Alert for insufficient funds', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions,
@@ -31,7 +31,7 @@ describe('Alert for insufficient funds', function () {
         const contractAddress =
           await contractRegistry?.getContractAddress(nftSmartContract);
 
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.checkPageIsLoaded();

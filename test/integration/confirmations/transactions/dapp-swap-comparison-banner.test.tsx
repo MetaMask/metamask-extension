@@ -27,6 +27,8 @@ import {
   getUnapprovedDappSwapTransaction,
 } from './transactionDataHelpers';
 
+jest.setTimeout(30_000);
+
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
@@ -330,15 +332,15 @@ describe('DappSwapComparisonBanner', () => {
 
     expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('dappSwapAdvantageSaveOnly') as string),
+      await screen.findByText(tEn('dappSwapAdvantageSaveOnly')),
     ).toBeInTheDocument();
 
-    // Verify metrics: swap_mm_cta_displayed should be tracked via updateEventFragment
+    // Verify metrics: swap_mm_cta_displayed should be tracked via tx-ui fragment upsert
     await waitFor(() => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_cta_displayed === 'true',
         );
 
@@ -353,7 +355,7 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCallSwapOpened =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
       expect(metricsCallSwapOpened).toBeDefined();
@@ -445,7 +447,7 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
 
@@ -510,7 +512,7 @@ describe('DappSwapComparisonBanner', () => {
 
     // Verify standard confirmation UI is displayed instead
     expect(
-      await screen.findByText(tEn('confirmTitleTransaction') as string),
+      await screen.findByText(tEn('confirmTitleTransaction')),
     ).toBeInTheDocument();
   });
 

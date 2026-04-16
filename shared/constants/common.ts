@@ -35,8 +35,7 @@ const MONAD_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MonadScan';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_URL = 'https://hyperevmscan.io/';
 const HYPEREVM_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'HyperEVMScan';
 const MEGAETH_DEFAULT_BLOCK_EXPLORER_URL = 'https://megaeth.blockscout.com/';
-const MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL =
-  'MEGA Mainnet Explorer';
+const MEGAETH_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'MegaETH Explorer';
 
 type BlockExplorerUrlMap = {
   [key: string]: string;

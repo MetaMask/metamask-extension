@@ -7,7 +7,7 @@ import {
 import { addHexPrefix } from 'ethereumjs-util';
 import { NavigateFunction } from 'react-router-dom';
 
-import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
+import { Numeric, NumericBase } from '../../../../shared/lib/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
@@ -314,4 +314,18 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
     return `0.${fracPart}`;
   }
   return value;
+};
+
+export const normalizeAmount = (value?: string): string => {
+  if (!value) {
+    return '0';
+  }
+  const str = String(value);
+  if (str === '.') {
+    return '0';
+  }
+  if (str.endsWith('.')) {
+    return str.slice(0, -1);
+  }
+  return str;
 };

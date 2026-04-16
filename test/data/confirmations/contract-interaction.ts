@@ -5,11 +5,13 @@ import {
   GasFeeToken,
   SecurityAlertResponse,
   SimulationData,
+  SimulationError,
   TransactionContainerType,
   TransactionMeta,
   TransactionParams,
   TransactionStatus,
   TransactionType,
+  UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
@@ -42,6 +44,10 @@ export const genUnapprovedContractInteractionConfirmation = ({
   gasFeeTokens,
   selectedGasFeeToken,
   txParamsOriginal,
+  isGasFeeSponsored,
+  simulationFails,
+  userFeeLevel = UserFeeLevel.MEDIUM,
+  excludeNativeTokenForFee,
 }: {
   address?: Hex;
   authorizationList?: AuthorizationList;
@@ -55,6 +61,10 @@ export const genUnapprovedContractInteractionConfirmation = ({
   selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
   txParamsOriginal?: TransactionParams;
+  isGasFeeSponsored?: boolean;
+  simulationFails?: SimulationError;
+  userFeeLevel?: UserFeeLevel;
+  excludeNativeTokenForFee?: boolean;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
     actionId: String(400855682),
@@ -107,7 +117,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
         },
         type: TransactionType.contractInteraction,
         userEditedGasLimit: false,
-        userFeeLevel: 'medium',
+        userFeeLevel,
         verifiedOnBlockchain: false,
       },
       [
@@ -198,8 +208,11 @@ export const genUnapprovedContractInteractionConfirmation = ({
     txParamsOriginal,
     type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
-    userFeeLevel: 'medium',
+    userFeeLevel,
     verifiedOnBlockchain: false,
+    isGasFeeSponsored,
+    simulationFails,
+    excludeNativeTokenForFee,
   } as SignatureRequestType;
 
   // Overwrite simulation data if provided

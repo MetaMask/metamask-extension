@@ -1,4 +1,4 @@
-/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable import-x/no-anonymous-default-export */
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
@@ -126,7 +126,6 @@ export default {
  * No name has been saved for the value and type.
  */
 export const NoSavedName = {
-  name: 'No Saved Name',
   args: {
     value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,

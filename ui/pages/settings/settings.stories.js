@@ -18,11 +18,9 @@ const CURRENT_PATH = '/settings/general';
 export const SettingsPageComponent = () => (
   <SettingsPage
     addNewNetwork={false}
-    addressName=""
     backRoute={SETTINGS_ROUTE}
     conversionDate={Date.now()}
     currentPath={CURRENT_PATH} // Default to general settings page
-    isAddressEntryPage={false}
     isPasswordChangePage={false}
     isPopup={false}
     isRevealSrpListPage={false}

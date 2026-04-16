@@ -13,7 +13,7 @@ import {
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
+import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -127,7 +127,10 @@ describe('Vault Corruption', function () {
 
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -228,7 +231,10 @@ describe('Vault Corruption', function () {
 
   it('resets metamask state when both primary and backup databases are broken', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -263,7 +269,10 @@ describe('Vault Corruption', function () {
     // test verifies that not recovering, then trying to recovering again later
     // works too.
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -306,7 +315,10 @@ describe('Vault Corruption', function () {
   it('restores a backup that is missing its `meta` property successfully', async function () {
     // this test will run all migrations
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,

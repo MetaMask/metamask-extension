@@ -15,7 +15,10 @@ export const AssetChartEmptyState = () => {
       : '/images/empty-state-asset-details-light.png';
 
   return (
-    <Box className="asset-chart__empty-or-loading-state-container">
+    <Box
+      className="asset-chart__empty-or-loading-state-container"
+      data-testid="asset-chart-empty-state"
+    >
       <TabEmptyState
         icon={
           <img

@@ -3,13 +3,15 @@ const { brandColor } = require('@metamask/design-tokens');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   presets: [
-    // eslint-disable-next-line node/global-require
+    // eslint-disable-next-line n/global-require
     require('@metamask/design-system-tailwind-preset'),
   ],
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
     // Ensures tailwind classnames are generated for design system components
     './node_modules/@metamask/design-system-react/**/*.{mjs,cjs}',
+    // Required from @metamask/design-system-react@0.17.0+ (shared typography types)
+    './node_modules/@metamask/design-system-shared/**/*.{mjs,cjs}',
   ],
   theme: {
     // Keep essential semantic colors, remove default palette colors. We want to rely on the colors provided by @metamask-previews/design-system-tailwind-preset

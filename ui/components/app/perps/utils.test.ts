@@ -5,15 +5,21 @@ import {
   formatOrderType,
   formatStatus,
   getStatusColor,
+  formatChangePercent,
+  formatSignedChangePercent,
   getChangeColor,
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
+  normalizeTpslPrices,
   filterMarketsByQuery,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  getPnlDisplayColor,
+  parseVolume,
+  hasVolume,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
@@ -106,6 +112,30 @@ describe('Perps Utils', () => {
     });
   });
 
+  describe('formatChangePercent', () => {
+    it('returns the value unchanged when it already includes %', () => {
+      expect(formatChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('appends % when the value does not include it', () => {
+      expect(formatChangePercent('+2.84')).toBe('+2.84%');
+      expect(formatChangePercent('-1.23')).toBe('-1.23%');
+      expect(formatChangePercent('0.00')).toBe('0.00%');
+    });
+
+    it('returns empty string unchanged', () => {
+      expect(formatChangePercent('')).toBe('');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatChangePercent('—')).toBe('—');
+      expect(formatChangePercent('-')).toBe('-');
+      expect(formatChangePercent('N/A')).toBe('N/A');
+    });
+  });
+
   describe('getChangeColor', () => {
     it('returns SuccessDefault for positive percentages with + prefix', () => {
       expect(getChangeColor('+2.84%')).toBe(TextColor.SuccessDefault);
@@ -127,6 +157,41 @@ describe('Perps Utils', () => {
       expect(getChangeColor('0.00%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('+0%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('-0%')).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns TextAlternative for non-numeric fallback values', () => {
+      expect(getChangeColor('N/A')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('—')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('')).toBe(TextColor.TextAlternative);
+    });
+  });
+
+  describe('formatSignedChangePercent', () => {
+    it('preserves explicit positive prefixes', () => {
+      expect(formatSignedChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('+2.84')).toBe('+2.84%');
+    });
+
+    it('adds a plus prefix to unsigned positive values', () => {
+      expect(formatSignedChangePercent('2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('2.84')).toBe('+2.84%');
+    });
+
+    it('preserves negative values', () => {
+      expect(formatSignedChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatSignedChangePercent('-1.23')).toBe('-1.23%');
+    });
+
+    it('preserves zero values without adding a plus prefix', () => {
+      expect(formatSignedChangePercent('0%')).toBe('0%');
+      expect(formatSignedChangePercent('0.00')).toBe('0.00%');
+      expect(formatSignedChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatSignedChangePercent('—')).toBe('—');
+      expect(formatSignedChangePercent('N/A')).toBe('N/A');
+      expect(formatSignedChangePercent('')).toBe('');
     });
   });
 
@@ -198,6 +263,39 @@ describe('Perps Utils', () => {
 
     it('handles empty string', () => {
       expect(safeDecodeURIComponent('')).toBe('');
+    });
+  });
+
+  describe('normalizeTpslPrices', () => {
+    it('strips commas and whitespace from TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' 12,345.67 ',
+          stopLossPrice: ' 9,876.54 ',
+        }),
+      ).toEqual({
+        takeProfitPrice: '12345.67',
+        stopLossPrice: '9876.54',
+      });
+    });
+
+    it('returns undefined for empty TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' ',
+          stopLossPrice: '',
+        }),
+      ).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
+    });
+
+    it('handles missing TP/SL values', () => {
+      expect(normalizeTpslPrices({})).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
     });
   });
 
@@ -279,11 +377,11 @@ describe('Perps Utils', () => {
     ): PerpsTransaction => ({
       id: 'tx-001',
       type: 'trade',
+      category: 'position_open',
       symbol: 'ETH',
       title: 'Opened long',
       subtitle: '2.5 ETH @ $2,850.00',
       timestamp: Date.now(),
-      status: 'confirmed',
       ...overrides,
     });
 
@@ -366,17 +464,28 @@ describe('Perps Utils', () => {
   });
 
   describe('filterTransactionsByType', () => {
+    const categoryMap: Record<
+      PerpsTransaction['type'],
+      PerpsTransaction['category']
+    > = {
+      trade: 'position_open',
+      order: 'limit_order',
+      funding: 'funding_fee',
+      deposit: 'deposit',
+      withdrawal: 'withdrawal',
+    };
+
     const createMockTransaction = (
       type: PerpsTransaction['type'],
       id: string,
     ): PerpsTransaction => ({
       id,
       type,
+      category: categoryMap[type],
       symbol: 'ETH',
       title: 'Test transaction',
       subtitle: 'Test',
       timestamp: Date.now(),
-      status: 'confirmed',
     });
 
     const transactions: PerpsTransaction[] = [
@@ -471,6 +580,91 @@ describe('Perps Utils', () => {
     it('returns TextDefault for amounts without prefix', () => {
       expect(getTransactionAmountColor('100.00')).toBe(TextColor.TextDefault);
       expect(getTransactionAmountColor('0')).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('getPnlDisplayColor', () => {
+    it('returns SuccessDefault for positive PnL', () => {
+      expect(getPnlDisplayColor(100)).toBe(TextColor.SuccessDefault);
+      expect(getPnlDisplayColor(0.01)).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns ErrorDefault for negative PnL', () => {
+      expect(getPnlDisplayColor(-50)).toBe(TextColor.ErrorDefault);
+      expect(getPnlDisplayColor(-0.01)).toBe(TextColor.ErrorDefault);
+    });
+
+    it('returns TextDefault for zero PnL', () => {
+      expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('parseVolume', () => {
+    it('parses suffixed volume strings into numeric values', () => {
+      expect(parseVolume('$500K')).toBe(500_000);
+      expect(parseVolume('$1.2M')).toBe(1_200_000);
+      expect(parseVolume('$850M')).toBe(850_000_000);
+      expect(parseVolume('$2.3B')).toBe(2_300_000_000);
+      expect(parseVolume('$1.5T')).toBe(1_500_000_000_000);
+    });
+
+    it('parses plain numeric strings without suffix', () => {
+      expect(parseVolume('$100')).toBe(100);
+      expect(parseVolume('$0')).toBe(0);
+      expect(parseVolume('$0.5')).toBe(0.5);
+    });
+
+    it('strips commas from formatted numbers', () => {
+      expect(parseVolume('$1,234')).toBe(1234);
+      expect(parseVolume('$1,234,567')).toBe(1_234_567);
+    });
+
+    it('handles strings without $ prefix', () => {
+      expect(parseVolume('500K')).toBe(500_000);
+      expect(parseVolume('1.2M')).toBe(1_200_000);
+      expect(parseVolume('100')).toBe(100);
+    });
+
+    it('returns 0.5 for the "$<1" special case', () => {
+      expect(parseVolume('$<1')).toBe(0.5);
+    });
+
+    it('returns -1 for the fallback display "--"', () => {
+      expect(parseVolume('--')).toBe(-1);
+    });
+
+    it('returns -1 for undefined or empty input', () => {
+      expect(parseVolume(undefined)).toBe(-1);
+      expect(parseVolume('')).toBe(-1);
+    });
+
+    it('returns -1 for non-numeric strings', () => {
+      expect(parseVolume('abc')).toBe(-1);
+      expect(parseVolume('N/A')).toBe(-1);
+    });
+  });
+
+  describe('hasVolume', () => {
+    it('returns true for markets with non-zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$1.2B' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$850M' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$500K' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$<1' }))).toBe(true);
+      expect(hasVolume(createMockMarket({ volume: '$0.5' }))).toBe(true);
+    });
+
+    it('returns false for markets with zero volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '$0' }))).toBe(false);
+      expect(hasVolume(createMockMarket({ volume: '$0.00' }))).toBe(false);
+    });
+
+    it('returns false for markets with empty volume string', () => {
+      expect(hasVolume(createMockMarket({ volume: '' }))).toBe(false);
+    });
+
+    it('returns false for markets with unparseable volume', () => {
+      expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
     });
   });
 });

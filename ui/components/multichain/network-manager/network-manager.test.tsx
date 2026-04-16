@@ -4,6 +4,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
@@ -12,6 +13,7 @@ import { NetworkManager } from './network-manager';
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
   hideModal: jest.fn(),
+  setEditedNetwork: jest.fn(),
 }));
 
 // Mock useDispatch
@@ -100,7 +102,7 @@ const mockNetworkConfigurations = {
 };
 
 describe('NetworkManager Component', () => {
-  const renderNetworkManager = () => {
+  const renderNetworkManager = (pathname = '/') => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -124,7 +126,34 @@ describe('NetworkManager Component', () => {
         },
       },
     });
-    return renderWithProvider(<NetworkManager />, store);
+    return renderWithProvider(<NetworkManager />, store, pathname);
+  };
+
+  const renderNetworkManagerWithEditedNetwork = (pathname = '/') => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+          },
+        },
+      },
+      appState: {
+        ...mockState.appState,
+        editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      },
+    });
+    return renderWithProvider(<NetworkManager />, store, pathname);
   };
 
   const renderNetworkManagerWithNonEvmNetworkSelected = (stateOverrides?: {
@@ -177,11 +206,17 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify tabs are rendered
-    expect(screen.getByText('Popular')).toBeInTheDocument();
-    expect(screen.getByText('Custom')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabPopular.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabCustom.message),
+    ).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Arbitrum')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
@@ -190,7 +225,9 @@ describe('NetworkManager Component', () => {
 
   it('should render popular networks tab when non-EVM popular network is selected', () => {
     renderNetworkManagerWithNonEvmNetworkSelected();
-    expect(screen.queryByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
   });
 
   it('should render custom networks tab when non-EVM devnet is selected', () => {
@@ -202,21 +239,67 @@ describe('NetworkManager Component', () => {
       },
     });
 
-    expect(screen.queryByText('All popular networks')).not.toBeInTheDocument();
-    expect(screen.queryByText('Add custom network')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.addCustomNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('switches tab when tab is clicked', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
-    expect(screen.getByText('Popular')).toBeInTheDocument();
-    expect(screen.getByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabPopular.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
 
     // Click on Custom tab
-    fireEvent.click(screen.getByText('Custom'));
+    fireEvent.click(screen.getByText(messages.networkTabCustom.message));
 
     // Verify Custom tab content is rendered
-    expect(screen.getByText('Add custom network')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addCustomNetwork.message),
+    ).toBeInTheDocument();
+  });
+
+  it('submitting a new RPC URL from add-rpc view switches to add view', async () => {
+    renderNetworkManager('/?view=add-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a new RPC URL from edit-rpc view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from add-explorer-url view switches to add view', async () => {
+    renderNetworkManager('/?view=add-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from edit-explorer-url view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
   });
 });

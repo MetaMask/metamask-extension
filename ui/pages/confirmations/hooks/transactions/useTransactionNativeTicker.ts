@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 export const useTransactionNativeTicker = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

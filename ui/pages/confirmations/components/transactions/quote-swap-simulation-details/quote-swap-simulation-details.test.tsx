@@ -5,6 +5,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { Confirmation } from '../../../types/confirm';
 import { QuoteSwapSimulationDetails } from './quote-swap-simulation-details';
 
@@ -85,9 +86,13 @@ function render(args: Record<string, string> = {}) {
 describe('<QuoteSwapSimulationDetails />', () => {
   it('renders component without errors', () => {
     const { getByText } = render();
-    expect(getByText('Best quote')).toBeInTheDocument();
-    expect(getByText('You send')).toBeInTheDocument();
-    expect(getByText('You receive')).toBeInTheDocument();
+    expect(getByText(messages.bestQuote.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.simulationDetailsOutgoingHeading.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.simulationDetailsIncomingHeading.message),
+    ).toBeInTheDocument();
     expect(getByText('- 0.1')).toBeInTheDocument();
     expect(getByText('+ 0.0991')).toBeInTheDocument();
     expect(getByText('Get $0.25 more')).toBeInTheDocument();

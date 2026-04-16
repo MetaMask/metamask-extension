@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Mascot from '../../../components/ui/mascot';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 export default function MascotBackgroundAnimation({ height, width }) {
   const animationEventEmitter = useRef(new EventEmitter());

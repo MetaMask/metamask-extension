@@ -23,6 +23,6 @@ describe('ShieldFooterAgreement', () => {
       store,
     );
 
-    expect(getByText(tEn('snapsTermsOfUse') as string)).toBeInTheDocument();
+    expect(getByText(tEn('snapsTermsOfUse'))).toBeInTheDocument();
   });
 });

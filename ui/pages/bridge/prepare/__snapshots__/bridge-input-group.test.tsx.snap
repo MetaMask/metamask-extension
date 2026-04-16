@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgeInputGroup should render destination networks 2`] = `
+exports[`BridgeInputGroup should render destination networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -11,7 +11,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
   style="position: absolute; left: 0px; top: 0px; width: calc(100% - 24px); padding: 0px; height: 90%; max-height: 90%; display: flex; flex-direction: column; overflow: scroll; bottom: 0px; transform: translate(0px, -12px);"
 >
   <div
-    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-muted"
     data-testid="network-list-item-undefined"
   >
     <div
@@ -34,9 +34,6 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       </div>
     </div>
     <div
-      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
-    />
-    <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
       A
@@ -46,7 +43,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="All networks"
       >
         <div
@@ -87,7 +84,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Solana"
       >
         <div
@@ -128,7 +125,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Bitcoin"
       >
         <div
@@ -169,7 +166,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Ethereum"
       >
         <div
@@ -210,7 +207,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="OP"
       >
         <div
@@ -251,7 +248,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Polygon"
       >
         <div
@@ -292,7 +289,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="BNB Chain"
       >
         <div
@@ -333,7 +330,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Tron"
       >
         <div
@@ -359,56 +356,59 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render destination networks 3`] = `
+exports[`BridgeInputGroup should render popular tokens 2`] = `
 [
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:52d1392eaabba42428cc7ee8801c662237b8afbc5861e76be9fcfe81f7c0366f",
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:e92eb8d31dccb497e712b982d787222dae4d9f3503cca3569c7a96bbd5bb2f35",
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/search:f2b6768c8767172e7655a5129095d585b1cb3107c3a77a72b3f7285b8b51ccf5",
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+  },
 ]
 `;
 
-exports[`BridgeInputGroup should render destination networks 4`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA","symbol":"mUSD","name":"MetaMask USD","decimals":6},{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
-`;
-
-exports[`BridgeInputGroup should render source networks 2`] = `
+exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -419,7 +419,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
   style="position: absolute; left: 0px; top: 0px; width: calc(100% - 24px); padding: 0px; height: 90%; max-height: 90%; display: flex; flex-direction: column; overflow: scroll; bottom: 0px; transform: translate(0px, -12px);"
 >
   <div
-    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-muted"
     data-testid="network-list-item-undefined"
   >
     <div
@@ -442,9 +442,6 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       </div>
     </div>
     <div
-      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
-    />
-    <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
       A
@@ -454,7 +451,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="All networks"
       >
         <div
@@ -495,7 +492,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Solana"
       >
         <div
@@ -536,7 +533,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Bitcoin"
       >
         <div
@@ -577,7 +574,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Ethereum"
       >
         <div
@@ -618,7 +615,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="OP"
       >
         <div
@@ -641,56 +638,89 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       </div>
     </div>
   </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:137"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Polygon logo"
+        class="mm-avatar-network__network-image"
+        src="./images/pol-token.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+        data-testid="Polygon"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Polygon
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:56"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="BNB Chain logo"
+        class="mm-avatar-network__network-image"
+        src="./images/bnb.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+        data-testid="BNB Chain"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              BNB Chain
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-`;
-
-exports[`BridgeInputGroup should render source networks 3`] = `
-[
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:503dca807bc28c124ddd2340e17a335eb411cc81363589c7a73716053f469fd3",
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:52d1392eaabba42428cc7ee8801c662237b8afbc5861e76be9fcfe81f7c0366f",
-  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/search:f2b6768c8767172e7655a5129095d585b1cb3107c3a77a72b3f7285b8b51ccf5",
-]
-`;
-
-exports[`BridgeInputGroup should render source networks 4`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
 `;
 
 exports[`BridgeInputGroup should search for tokens 1`] = `
@@ -799,9 +829,9 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -840,7 +870,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -850,6 +880,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -874,11 +905,27 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -917,7 +964,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -927,6 +974,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -951,6 +999,22 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
@@ -988,7 +1052,60 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 6`] = `
+exports[`BridgeInputGroup should search for tokens 4`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
+`;
+
+exports[`BridgeInputGroup should search for tokens 5`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1094,9 +1211,9 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -1135,7 +1252,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1145,6 +1262,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -1169,11 +1287,27 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -1212,7 +1346,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1222,6 +1356,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDT
                     </p>
@@ -1246,11 +1381,27 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
             >
               <div
@@ -1289,7 +1440,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
               </div>
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                style="overflow: hidden;"
+                style="overflow: hidden; margin-left: 8px;"
               >
                 <div
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
@@ -1299,6 +1450,7 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                      data-testid="bridge-asset-symbol"
                     >
                       USDC
                     </p>
@@ -1323,6 +1475,22 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
                   />
                 </div>
               </div>
+              <button
+                aria-label="View token details"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
+              >
+                <svg
+                  class="inline-block w-4 h-4 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -1335,4 +1503,57 @@ exports[`BridgeInputGroup should search for tokens 6`] = `
     tabindex="0"
   />
 </div>
+`;
+
+exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
+[
+  {
+    "accountAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "assetsToInclude": [
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/slip44:60",
+        "balance": "0.01",
+        "chainId": "eip155:1",
+        "decimals": 18,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
+        "name": "Ether",
+        "rwaData": undefined,
+        "symbol": "ETH",
+        "tokenFiatAmount": 25.242128065034784,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "balance": "0.0000001848",
+        "chainId": "eip155:1",
+        "decimals": 10,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
+        "name": "Uniswap",
+        "rwaData": undefined,
+        "symbol": "UNI",
+        "tokenFiatAmount": 0.0010728914112762384,
+      },
+      {
+        "accountType": undefined,
+        "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "balance": "0.000000001",
+        "chainId": "eip155:1",
+        "decimals": 9,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
+        "name": "Link",
+        "rwaData": undefined,
+        "symbol": "LINK",
+        "tokenFiatAmount": 0.0000030290553678041743,
+      },
+    ],
+    "chainIds": Set {
+      "eip155:1",
+    },
+    "searchQuery": "USD",
+  },
+]
 `;

@@ -4,6 +4,8 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
 export const TRON_CHAIN_ID = 'tron:728126428';
+export const TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE =
+  '5472616e73616374696f6e2065787069726564';
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
 export const TRX_BALANCE = 6072392; // ~6.07 TRX
@@ -76,7 +78,7 @@ export async function mockBroadTransaction(
       json: {
         code: 'TRANSACTION_EXPIRATION_ERROR',
         txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
-        message: '5472616e73616374696f6e2065787069726564',
+        message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
       },
     }));
 }

@@ -19,14 +19,14 @@ import {
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixtures/fixture-builder';
+import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
 import { withFixtures } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 import HomePage from './page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from './page-objects/flows/login.flow';
+import { login } from './page-objects/flows/login.flow';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -101,7 +101,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
     },
@@ -112,7 +112,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await loginWithoutBalanceValidation(driver);
+      await login(driver, { validateBalance: false });
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       // We don't have balance so we expect to see Fund Your Wallet
@@ -167,7 +167,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
       localNodeOptions: 'none',
@@ -191,7 +191,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await loginWithoutBalanceValidation(driver);
+      await login(driver, { validateBalance: false });
 
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();

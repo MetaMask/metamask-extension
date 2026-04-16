@@ -1,10 +1,10 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';
@@ -13,20 +13,20 @@ describe('Reveal SRP through settings', function () {
   it('should not reveal SRP text with incorrect password', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        // navigate to security & privacy settings
+        // navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(
@@ -40,20 +40,20 @@ describe('Reveal SRP through settings', function () {
   it('completes quiz and reveals SRP text', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        // navigate to security & privacy settings
+        // navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP
         await privacySettings.openRevealSrpQuiz();
@@ -63,7 +63,7 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.checkDisplayedSrpCanBeCopied();
 
         // check that closing the reveal SRP dialog navigates user back to srp list page
-        await privacySettings.closeRevealSrpDialog();
+        await privacySettings.backToSrpList();
         await privacySettings.checkSrpListIsLoaded();
       },
     );
@@ -72,20 +72,20 @@ describe('Reveal SRP through settings', function () {
   it('completes quiz and reveals SRP QR after wrong answers in quiz', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        // Navigate to security & privacy settings
+        // Navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP QR code
         await privacySettings.openRevealSrpQuiz();
@@ -95,7 +95,7 @@ describe('Reveal SRP through settings', function () {
         await privacySettings.checkSrpQrCodeIsDisplayed();
 
         // check that closing the reveal SRP dialog navigates user back to srp list page
-        await privacySettings.closeRevealSrpDialog();
+        await privacySettings.backToSrpList();
         await privacySettings.checkSrpListIsLoaded();
       },
     );

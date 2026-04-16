@@ -50,7 +50,11 @@ export default function Pna25Modal() {
 
       // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
-        dispatch(setPna25Acknowledged(true));
+        const disableDelay = [
+          Pna25NoticeAction.Close,
+          Pna25NoticeAction.AcceptAndClose,
+        ].includes(action);
+        dispatch(setPna25Acknowledged(true, disableDelay));
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
@@ -68,7 +72,7 @@ export default function Pna25Modal() {
   }, [handleAction]);
 
   return (
-    <Modal isOpen onClose={() => dispatch(setPna25Acknowledged(true))}>
+    <Modal isOpen onClose={() => handleAction(Pna25NoticeAction.Close)}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>

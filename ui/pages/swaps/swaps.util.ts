@@ -27,12 +27,12 @@ import {
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
-} from '../../../shared/modules/swaps.utils';
+} from '../../../shared/lib/swaps.utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
@@ -49,7 +49,7 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   sumHexes,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { estimateGasFee } from './swaps.util.gas';
 

@@ -41,10 +41,6 @@ describe('confirm selectors', () => {
         },
       },
       approvalFlows: [],
-      enableEnforcedSimulations: false,
-      enableEnforcedSimulationsForTransactions: {},
-      enforcedSimulationsSlippage: 0,
-      enforcedSimulationsSlippageForTransactions: {},
       dappSwapComparisonData: {
         '1': {
           quotes: [{ test: 'dummyQuote' } as unknown as QuoteResponse],

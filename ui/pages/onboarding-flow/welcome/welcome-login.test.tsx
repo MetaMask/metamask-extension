@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import WelcomeLogin from './welcome-login';
 
@@ -14,10 +15,10 @@ describe('Welcome login', () => {
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
-    const importButton = getByText('I have an existing wallet');
+    const importButton = getByText(messages.onboardingImportWallet.message);
     expect(importButton).toBeInTheDocument();
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
     expect(createButton).toBeInTheDocument();
   });
 
@@ -31,7 +32,7 @@ describe('Welcome login', () => {
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
-    const importButton = getByText('I have an existing wallet');
+    const importButton = getByText(messages.onboardingImportWallet.message);
     expect(importButton).toBeInTheDocument();
 
     await act(async () => {

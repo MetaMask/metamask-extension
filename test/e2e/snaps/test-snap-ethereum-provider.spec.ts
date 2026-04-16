@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { login } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockEthereumProviderSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -19,7 +19,9 @@ describe('Test Snap ethereum_provider', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockEthereumProviderSnap(mockServer);
           await mockGenesisBlocks(mockServer);
@@ -27,7 +29,7 @@ describe('Test Snap ethereum_provider', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to test snaps page, connect Ethereum provider example Snap, complete installation and validate
         const testSnaps = new TestSnaps(driver);

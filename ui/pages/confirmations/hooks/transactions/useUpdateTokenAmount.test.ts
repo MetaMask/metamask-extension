@@ -79,6 +79,13 @@ function runHook({
         typeof useTransactionPayDataModule.useTransactionPayRequiredTokens
       >,
     );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue(
+      requiredTokens.find((t) => !t.skipIfBalance) as unknown as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+      >,
+    );
 
   const state = getMockConfirmStateForTransaction(transactionMeta);
 

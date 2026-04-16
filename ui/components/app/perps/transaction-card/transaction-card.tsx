@@ -13,13 +13,14 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getTransactionAmountColor } from '../utils';
+import { getDisplayName } from '../utils';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
   transaction: PerpsTransaction;
   onClick?: (transaction: PerpsTransaction) => void;
   variant?: 'default' | 'muted';
+  showTopBorder?: boolean;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -39,11 +40,13 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.transaction - The transaction data to display
  * @param options0.onClick - Optional click handler
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
+ * @param options0.showTopBorder
  */
 export const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClick,
   variant = 'default',
+  showTopBorder = false,
 }) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
@@ -61,25 +64,28 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
 
   // Determine the amount to display based on transaction type
   const getAmountDisplay = (): { text: string; color: TextColor } => {
-    if (transaction.fill?.realizedPnl) {
+    if (transaction.fill) {
       return {
-        text: `${transaction.fill.realizedPnl.startsWith('-') ? '-' : '+'}$${transaction.fill.realizedPnl.replace(/^[+-]/u, '')}`,
-        color: getTransactionAmountColor(transaction.fill.realizedPnl),
+        text: transaction.fill.amount,
+        color: transaction.fill.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
-    if (transaction.funding) {
-      const { amount } = transaction.funding;
-      const isNegative = amount.startsWith('-');
+    if (transaction.fundingAmount) {
       return {
-        text: `${isNegative ? '-' : '+'}$${amount.replace(/^[+-]/u, '')}`,
-        color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.fundingAmount.fee,
+        color: transaction.fundingAmount.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.depositWithdrawal) {
-      const isWithdrawal = transaction.type === 'withdrawal';
       return {
-        text: `${isWithdrawal ? '-' : '+'}$${transaction.depositWithdrawal.amount}`,
-        color: isWithdrawal ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.depositWithdrawal.amount,
+        color: transaction.depositWithdrawal.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     // For trades without realized PnL, return empty (don't show symbol)
@@ -88,11 +94,12 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const { status } = transaction.order;
-      const statusText = ORDER_STATUS_TO_I18N_KEY[status]
-        ? t(ORDER_STATUS_TO_I18N_KEY[status])
+      const { text: statusText } = transaction.order;
+      const statusKey = statusText?.toLowerCase() ?? '';
+      const translatedStatus = ORDER_STATUS_TO_I18N_KEY[statusKey]
+        ? t(ORDER_STATUS_TO_I18N_KEY[statusKey])
         : '';
-      return { text: statusText, color: TextColor.TextMuted };
+      return { text: translatedStatus, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };
   };
@@ -164,7 +171,11 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     </>
   );
 
-  const sharedClassName = twMerge('gap-3 px-4 py-3', variantStyles);
+  const sharedClassName = twMerge(
+    'gap-4 px-4 py-3',
+    variantStyles,
+    showTopBorder && 'border-t border-background-default',
+  );
 
   if (isClickable) {
     return (

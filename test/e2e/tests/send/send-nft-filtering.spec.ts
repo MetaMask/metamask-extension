@@ -7,13 +7,13 @@
 
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 
 import Homepage from '../../page-objects/pages/home/homepage';
 import NftListPage from '../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('Send NFT - Filtering', function () {
@@ -23,7 +23,7 @@ describe('Send NFT - Filtering', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilderV2().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -34,7 +34,7 @@ describe('Send NFT - Filtering', function () {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);

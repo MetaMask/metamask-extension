@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SelectSrp, SelectSrpProps } from './select-srp';
 
 const mockSrpName = 'Test Srp';
@@ -42,16 +43,16 @@ describe('SelectSrp', () => {
   it('displays correct label text', () => {
     const { getByText } = render();
 
-    expect(getByText('Select Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      getByText(messages.selectSecretRecoveryPhrase.message),
+    ).toBeInTheDocument();
   });
 
   it('displays description text', () => {
     const { getByText } = render();
 
     expect(
-      getByText(
-        'The Secret Recovery Phrase your new account will be generated from',
-      ),
+      getByText(messages.srpListSelectionDescription.message),
     ).toBeInTheDocument();
   });
 

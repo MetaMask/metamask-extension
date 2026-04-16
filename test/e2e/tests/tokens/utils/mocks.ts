@@ -1,7 +1,15 @@
 import { Mockttp } from 'mockttp';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
+
+/**
+ * The ETH-to-USD conversion rate used by {@link mockPriceApi}.
+ * Fixtures that rely on this mock must seed CurrencyController with the same
+ * value to avoid race conditions between the initial render and the mock
+ * response arriving.
+ */
+export const MOCK_ETH_CONVERSION_RATE = 3401;
 
 const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
   `${PRICE_API_URL}/${version}/chains/${chainId}/${endpoint}`;
@@ -46,7 +54,7 @@ export const mockSpotPrices = async (
 export async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -62,13 +70,14 @@ export async function mockPriceApi(mockServer: Mockttp) {
     }));
   const mockExchangeRates = await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         eth: {
           name: 'Ether',
           ticker: 'eth',
-          value: 1 / 3401,
+          value: 1 / MOCK_ETH_CONVERSION_RATE,
           currencyType: 'crypto',
         },
         usd: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';

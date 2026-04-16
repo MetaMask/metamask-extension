@@ -7,7 +7,9 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import type { BridgeToken } from '../../ducks/bridge/types';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
@@ -42,6 +44,10 @@ jest.mock('../../pages/swaps/swaps.util', () => ({
   fetchTopAssetsList: (c: string) => mockFetchTopAssetsList(c),
 }));
 
+setBackgroundConnection({
+  getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token-for-tests'),
+} as never);
+
 describe('useTokensWithFiltering', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -54,16 +60,6 @@ describe('useTokensWithFiltering', () => {
           selectedAccount: 'account-1',
         },
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0x1': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {
           [CHAIN_IDS.MAINNET]: {
             timestamp: Date.now(),
@@ -88,6 +84,7 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
@@ -101,16 +98,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0xa': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {
           [CHAIN_IDS.OPTIMISM]: {
             timestamp: Date.now() - 11 * MINUTE,
@@ -135,10 +122,11 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x1');
     // The first 10 tokens returned
     const first10Tokens = [...result.current(() => true)].slice(0, 10);
@@ -149,7 +137,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {},
         tokensChainsCache: {
           [CHAIN_IDS.MAINNET]: {
             timestamp: Date.now() - 11 * MINUTE,
@@ -181,12 +168,13 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
@@ -199,16 +187,6 @@ describe('useTokensWithFiltering', () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
-        allDetectedTokens: {
-          '0x1': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
-              {
-                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-                decimals: 6,
-              }, // USDC
-            ],
-          },
-        },
         tokensChainsCache: {},
         multichainNetworkConfigurationsByChainId:
           AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -224,10 +202,11 @@ describe('useTokensWithFiltering', () => {
       return filteredTokenListGenerator;
     }, mockStore);
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x89');
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x89');
     // The first 10 tokens returned
     const first10Tokens = [

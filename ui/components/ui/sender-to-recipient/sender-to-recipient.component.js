@@ -1,9 +1,9 @@
 import { NameType } from '@metamask/name-controller';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AvatarAccountSize, TextVariant } from '@metamask/design-system-react';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Name from '../../app/name/name';

@@ -282,6 +282,9 @@ export const APPROVAL_METHOD_NAMES = [
   'setApprovalForAll',
 ];
 
+// 4-byte selector for setApprovalForAll(address,bool) (ERC-721 + ERC-1155)
+export const SET_APPROVAL_FOR_ALL = '0xa22cb465' as const;
+
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 
 export const POLYGON_NATIVE_TOKEN_ADDRESS =

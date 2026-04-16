@@ -1,0 +1,1 @@
+export { getMerklRewardsEnabled } from './getMerklRewardsEnabled';

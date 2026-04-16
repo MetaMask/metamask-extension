@@ -39,6 +39,7 @@ import {
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
+  TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.predictDeposit,
@@ -342,7 +343,7 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    if (loader && loader !== ConfirmationLoader.Default) {
+    if (loader !== ConfirmationLoader.Default) {
       return null;
     }
 

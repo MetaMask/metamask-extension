@@ -8,7 +8,7 @@ import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import {
   METAMASK_COOKIE_HANDLER,
   CONTENT_SCRIPT,

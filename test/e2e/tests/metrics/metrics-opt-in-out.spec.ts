@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -31,6 +31,8 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt In',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
             },
           },
         ],
@@ -49,6 +51,8 @@ async function mockSegment(mockServer: Mockttp) {
             event: 'Metrics Opt Out',
             properties: {
               category: 'Onboarding',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
             },
           },
         ],
@@ -65,7 +69,7 @@ describe('Metrics Opt In/Out events', function () {
   it('should be tracked when the user opts in to metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -107,6 +111,7 @@ describe('Metrics Opt In/Out events', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.equal(events[0].event, 'Metrics Opt In');
+        assert.equal(events[0].properties.account_type, 'metamask');
       },
     );
   });
@@ -114,7 +119,7 @@ describe('Metrics Opt In/Out events', function () {
   it('should be tracked when the user opts out of metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -168,6 +173,7 @@ describe('Metrics Opt In/Out events', function () {
           const events = await getEventPayloads(driver, mockedEndpoints);
           assert.equal(events.length, 1);
           assert.equal(events[0].event, 'Metrics Opt Out');
+          assert.equal(events[0].properties.account_type, 'metamask');
         }
       },
     );

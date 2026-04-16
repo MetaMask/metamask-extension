@@ -4,7 +4,7 @@ export const SHIELD_QUERY_PARAMS = {
   showShieldEntryModal: 'showShieldEntryModal',
 };
 
-export default new Route({
+export const shield = new Route({
   pathname: '/shield',
   getTitle: (_: URLSearchParams) => 'deepLink_theTransactionShieldPage',
   handler: function handler(params: URLSearchParams) {

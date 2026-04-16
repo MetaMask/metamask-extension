@@ -1,23 +1,32 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef, useCallback } from 'react';
 import {
   twMerge,
   Box,
   BoxFlexDirection,
+  BoxAlignItems,
   Button,
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
+import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
-import type { OrderEntryProps } from './order-entry.types';
+import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import {
+  BackgroundColor,
+  BorderRadius,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
+import { getDisplaySymbol } from '../utils';
+import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
+import { LimitPriceInput } from './components/limit-price-input';
 import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
 import { CloseAmountSection } from './components/close-amount-section';
-
 /**
  * OrderEntry - Main component for creating perps orders
  *
@@ -41,9 +50,16 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onSubmit - Callback when order is submitted
  * @param props.onFormStateChange - Callback when form state changes
  * @param props.showSubmitButton - Whether to show the internal submit button
+ * @param props.showOrderSummary - Whether to show the order summary inside the form
  * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
+ * @param props.midPrice
+ * @param props.onOrderTypeChange
+ * @param props.onCalculationsChange
+ * @param props.onAddFunds
+ * @param props.initialLeverage
+ * @param props.markPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -53,12 +69,28 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onCalculationsChange,
   showSubmitButton = true,
+  showOrderSummary = true,
   mode = 'new',
   existingPosition,
   orderType = 'market',
+  midPrice,
+  onOrderTypeChange,
+  onAddFunds,
+  initialLeverage,
+  markPrice,
 }) => {
   const t = useI18nContext();
+
+  // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
+  const marketInfo = usePerpsMarketInfo(asset);
+
+  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
+  const { feeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: orderType ?? 'market',
+  });
 
   // Use custom hook for form state management
   const {
@@ -72,6 +104,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleTakeProfitPriceChange,
     handleStopLossPriceChange,
     handleClosePercentChange,
+    handleLimitPriceChange,
+    handleOrderTypeChange,
     handleSubmit,
   } = usePerpsOrderForm({
     asset,
@@ -79,12 +113,52 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     initialDirection,
     mode,
     existingPosition,
+    availableBalance,
     onFormStateChange,
     onSubmit,
     orderType,
+    initialLeverage,
+    maxLeverage,
+    szDecimals: marketInfo?.szDecimals,
+    markPrice,
+    feeRate,
   });
 
   const isLong = formState.direction === 'long';
+
+  const onCalculationsChangeRef = useRef(onCalculationsChange);
+  onCalculationsChangeRef.current = onCalculationsChange;
+
+  const prevCalculationsRef = useRef<OrderCalculations | null>(null);
+
+  const hasCalculationsChanged = useCallback(
+    (a: OrderCalculations | null, b: OrderCalculations): boolean => {
+      if (a === null) {
+        return true;
+      }
+      return (
+        a.positionSize !== b.positionSize ||
+        a.marginRequired !== b.marginRequired ||
+        a.liquidationPrice !== b.liquidationPrice ||
+        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
+        a.orderValue !== b.orderValue ||
+        a.estimatedFees !== b.estimatedFees
+      );
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (hasCalculationsChanged(prevCalculationsRef.current, calculations)) {
+      prevCalculationsRef.current = calculations;
+      onCalculationsChangeRef.current?.(calculations);
+    }
+  }, [calculations, hasCalculationsChanged]);
+
+  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+    handleOrderTypeChange(type);
+    onOrderTypeChange?.(type);
+  };
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -97,13 +171,50 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           : t('perpsConfirmCloseShort');
       default:
         return isLong
-          ? t('perpsOpenLong', [asset])
-          : t('perpsOpenShort', [asset]);
+          ? t('perpsOpenLong', [getDisplaySymbol(asset)])
+          : t('perpsOpenShort', [getDisplaySymbol(asset)]);
     }
   }, [mode, isLong, asset, t]);
 
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
+
+  const estimatedSize = useMemo(() => {
+    if (mode === 'modify' && existingPosition) {
+      const parsed = Number.parseFloat(
+        existingPosition.size.replaceAll(',', ''),
+      );
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    const amount = Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
+    if (amount === 0) {
+      return undefined;
+    }
+
+    let fillPrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsed = Number.parseFloat(
+        formState.limitPrice.replaceAll(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsed) && parsed > 0) {
+        fillPrice = parsed;
+      }
+    }
+    if (fillPrice === 0) {
+      return undefined;
+    }
+
+    const size = amount / fillPrice;
+    return formState.direction === 'long' ? size : -size;
+  }, [
+    mode,
+    existingPosition,
+    formState.amount,
+    formState.direction,
+    formState.type,
+    formState.limitPrice,
+    currentPrice,
+  ]);
 
   return (
     <Box
@@ -117,6 +228,67 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         gap={4}
         className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
+        {/* Order Type: Market and Limit as separate pills (Tag component) — hidden in close mode */}
+        {mode !== 'close' && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+            className="w-full"
+          >
+            <Tag
+              as="button"
+              type="button"
+              label={t('perpsMarket')}
+              onClick={() => handleOrderTypeClick('market')}
+              backgroundColor={
+                formState.type === 'market'
+                  ? BackgroundColor.backgroundMuted
+                  : BackgroundColor.backgroundDefault
+              }
+              borderWidth={0}
+              className={twMerge(
+                'cursor-pointer transition-colors',
+                formState.type !== 'market' && 'hover:opacity-80',
+              )}
+              borderRadius={BorderRadius.pill}
+              labelProps={{
+                color:
+                  formState.type === 'market'
+                    ? TextColor.textDefault
+                    : TextColor.textAlternative,
+              }}
+              padding={3}
+              data-testid="order-type-market"
+            />
+            <Tag
+              as="button"
+              type="button"
+              label={t('perpsLimit')}
+              onClick={() => handleOrderTypeClick('limit')}
+              backgroundColor={
+                formState.type === 'limit'
+                  ? BackgroundColor.backgroundMuted
+                  : BackgroundColor.backgroundDefault
+              }
+              borderWidth={0}
+              borderRadius={BorderRadius.pill}
+              className={twMerge(
+                'cursor-pointer transition-colors',
+                formState.type !== 'limit' && 'hover:opacity-80',
+              )}
+              labelProps={{
+                color:
+                  formState.type === 'limit'
+                    ? TextColor.textDefault
+                    : TextColor.textAlternative,
+              }}
+              padding={3}
+              data-testid="order-type-limit"
+            />
+          </Box>
+        )}
+
         {/* Close Mode: Show CloseAmountSection */}
         {mode === 'close' && existingPosition && (
           <CloseAmountSection
@@ -128,7 +300,19 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* New/Modify Modes: Show Amount Input Section */}
+        {/* Limit Orders: Show Limit Price Input before Size */}
+        {mode !== 'close' && formState.type === 'limit' && (
+          <LimitPriceInput
+            limitPrice={formState.limitPrice}
+            onLimitPriceChange={handleLimitPriceChange}
+            currentPrice={currentPrice}
+            midPrice={midPrice}
+            direction={formState.direction}
+            liquidationPrice={calculations.liquidationPriceRaw}
+          />
+        )}
+
+        {/* New/Modify Modes: Show Amount Input Section (Size) */}
         {mode !== 'close' && (
           <AmountInput
             amount={formState.amount}
@@ -139,6 +323,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            onAddFunds={onAddFunds}
           />
         )}
 
@@ -148,26 +333,16 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             onLeverageChange={handleLeverageChange}
             maxLeverage={maxLeverage}
+            minLeverage={
+              mode === 'modify' && existingPosition
+                ? existingPosition.leverage
+                : undefined
+            }
           />
         )}
 
-        {/* Order Summary Section - shown in all modes */}
-        <Box
-          className="bg-muted rounded-lg"
-          paddingLeft={3}
-          paddingRight={3}
-          paddingTop={3}
-          paddingBottom={3}
-        >
-          <OrderSummary
-            marginRequired={calculations.marginRequired}
-            estimatedFees={calculations.estimatedFees}
-            liquidationPrice={calculations.liquidationPrice}
-          />
-        </Box>
-
-        {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
-        {mode !== 'close' && (
+        {/* New Mode Only: Show Auto Close (TP/SL) Section */}
+        {mode === 'new' && (
           <AutoCloseSection
             enabled={formState.autoCloseEnabled}
             onEnabledChange={handleAutoCloseEnabledChange}
@@ -177,6 +352,21 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            leverage={formState.leverage}
+            entryPrice={undefined}
+            estimatedSize={estimatedSize}
+            orderType={formState.type}
+            limitPrice={formState.limitPrice}
+            asset={asset}
+          />
+        )}
+
+        {/* Order Summary Section */}
+        {showOrderSummary && (
+          <OrderSummary
+            marginRequired={calculations.marginRequired}
+            estimatedFees={calculations.estimatedFees}
+            liquidationPrice={calculations.liquidationPrice}
           />
         )}
       </Box>

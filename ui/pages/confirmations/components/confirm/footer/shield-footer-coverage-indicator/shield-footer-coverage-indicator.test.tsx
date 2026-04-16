@@ -46,6 +46,6 @@ describe('ShieldFooterCoverageIndicator', () => {
       store,
     );
 
-    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
+    expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
   });
 });
