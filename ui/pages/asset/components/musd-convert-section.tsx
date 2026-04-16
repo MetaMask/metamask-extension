@@ -257,7 +257,7 @@ export function MusdConvertSection() {
                   }}
                   backgroundColor={BackgroundColor.backgroundMuted}
                   startIconProps={{
-                    color: IconColor.SuccessDefault,
+                    className: IconColor.SuccessDefault,
                   }}
                   paddingLeft={0}
                   paddingRight={0}

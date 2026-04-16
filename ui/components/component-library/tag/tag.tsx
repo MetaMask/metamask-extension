@@ -49,18 +49,18 @@ export const Tag: TagComponent = React.forwardRef(
     const labelColor = labelColorProp as TextColorLegacyType | undefined;
 
     // Extract compatible props from startIconProps for new Icon component
+    // New Icon only accepts SVG-compatible props (className, style), not Box props
     const {
       size: startIconSize,
       className: startIconClassName,
       style: startIconStyle,
-      color: startIconColor,
       ...restStartIconProps
     } = startIconProps || {};
 
+    // For new Icon, only pass className and style (SVG-compatible props)
     const newIconProps = {
       ...(startIconClassName && { className: startIconClassName }),
       ...(startIconStyle && { style: startIconStyle }),
-      ...(startIconColor !== undefined && { color: startIconColor }),
     };
 
     return (
@@ -85,7 +85,7 @@ export const Tag: TagComponent = React.forwardRef(
               <IconLegacy
                 name={startIconName}
                 size={startIconSize || IconSizeLegacy.Xs}
-                color={iconColorLegacy || startIconColor}
+                color={iconColorLegacy || startIconProps?.color}
                 {...restStartIconProps}
               />
             )}
@@ -93,7 +93,7 @@ export const Tag: TagComponent = React.forwardRef(
               <IconLegacy
                 name={iconNameLegacy}
                 size={startIconSize || IconSizeLegacy.Xs}
-                color={iconColorLegacy || startIconColor}
+                color={iconColorLegacy || startIconProps?.color}
                 {...restStartIconProps}
               />
             )}
@@ -106,7 +106,6 @@ export const Tag: TagComponent = React.forwardRef(
               (labelProps?.color as TextColor | undefined) ||
               TextColor.TextAlternative
             }
-            {...restLabelProps}
           >
             {label}
           </Text>

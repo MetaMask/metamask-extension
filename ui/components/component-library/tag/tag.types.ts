@@ -1,8 +1,7 @@
-import {
-  IconColor as DsIconColor,
-  type IconName,
-  type IconSize,
-  type TextVariant,
+import type {
+  IconName,
+  IconSize,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { TextProps, ValidTagType } from '../text/text.types';
 import type {
@@ -48,12 +47,9 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
    */
   textVariantLegacy?: TextVariantLegacy;
   /**
-   * The icon props of the component. Most Icon component props can be used.
-   * `color` may be legacy `IconColor` or design-system `IconColor` when using `iconName`.
+   * The icon props of the component. Most Icon component props can be used
    */
-  startIconProps?: Omit<IconProps<'span'>, 'name' | 'color'> & {
-    color?: IconColorLegacy | DsIconColor;
-  };
+  startIconProps?: Omit<IconProps<'span'>, 'name'>;
   // New props from @metamask/design-system-react
   /**
    * The name of the icon to be used in the Tag component (from @metamask/design-system-react)
