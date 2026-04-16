@@ -418,5 +418,4 @@ describe('SmartTransactionsController Init', () => {
       expect(fullRequest.getDeviceModel).not.toHaveBeenCalled();
     });
   });
-
 });
