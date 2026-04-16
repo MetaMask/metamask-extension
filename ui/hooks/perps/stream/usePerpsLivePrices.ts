@@ -28,12 +28,7 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
-type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
-  timestamp?: number;
-  markPrice?: string;
-};
-
-const EMPTY_PRICES: StreamPriceUpdate[] = [];
+const EMPTY_PRICES: PriceUpdate[] = [];
 const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
 
 const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
@@ -93,9 +88,10 @@ export function usePerpsLivePrices(
     };
   }, [activateStream, includeMarketData, symbolsKey]);
 
-  const { data: priceArray, isInitialLoading } = usePerpsChannel<
-    StreamPriceUpdate[]
-  >(getPricesChannel, EMPTY_PRICES);
+  const { data: priceArray, isInitialLoading } = usePerpsChannel<PriceUpdate[]>(
+    getPricesChannel,
+    EMPTY_PRICES,
+  );
 
   const requestedSymbols = useMemo(
     () => (symbolsKey ? new Set(symbolsKey.split('|')) : new Set<string>()),
