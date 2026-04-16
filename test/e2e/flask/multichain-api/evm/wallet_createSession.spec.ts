@@ -430,7 +430,10 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await login(driver, { validateBalance: false });
+          await login(driver, {
+            validateBalance: false,
+            waitForNonEvmAccounts: false,
+          });
           new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
