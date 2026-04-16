@@ -22,7 +22,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences, isHardwareWallet } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
@@ -72,12 +72,10 @@ export const EditGasFeesRow = ({
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
 
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
-
   // This prevents the gas fee row from showing as sponsored if stx is disabled
   // by the user and 7702 is not supported in the chain.
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship && !isHardwareWalletAccount;
+  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
 
   let tooltip = t('estimatedFeeTooltip');
   if (isGasFeeSponsored) {
