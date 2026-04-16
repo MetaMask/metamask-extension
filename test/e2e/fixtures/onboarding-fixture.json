@@ -110,9 +110,6 @@
       },
       "currentCurrency": "usd"
     },
-    "DelegationController": {
-      "delegations": {}
-    },
     "EnsController": {
       "ensEntries": {
         "0x1": {
