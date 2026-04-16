@@ -224,7 +224,6 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
-        data-testid="perps-market-detail-oracle-price"
       >
         {label}
       </Text>
