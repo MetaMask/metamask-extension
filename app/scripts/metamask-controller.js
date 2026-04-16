@@ -3753,6 +3753,9 @@ export default class MetamaskController extends EventEmitter {
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.passkeyController.clearState();
+
     // stop subscription polling
     this.subscriptionController.stopAllPolling();
 
