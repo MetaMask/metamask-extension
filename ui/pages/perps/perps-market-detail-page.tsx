@@ -555,15 +555,15 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Formatted display price for the header — synced with the chart price line.
   // Falls back to market.price string during initial candle load.
   const displayPrice = useMemo(() => {
-    if (market?.price) {
-      return formatPerpsFiatUniversal(market.price);
+    if (chartCurrentPrice > 0) {
+      return formatPerpsFiatUniversal(chartCurrentPrice);
     }
     const streamPrice = Number.parseFloat(livePrice?.price ?? '');
     if (Number.isFinite(streamPrice) && streamPrice > 0) {
       return formatPerpsFiatUniversal(streamPrice);
     }
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiatUniversal(chartCurrentPrice);
+    if (market?.price) {
+      return formatPerpsFiatUniversal(market.price);
     }
     return '$0.00';
   }, [market?.price, livePrice?.price, chartCurrentPrice]);
