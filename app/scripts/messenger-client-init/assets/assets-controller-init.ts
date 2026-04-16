@@ -113,14 +113,19 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getController - Function to get a controller by name.
+ * @param request.getMessengerClient - Function to get a controller by name.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
   /**
    * Check if the AssetsController feature is enabled based on the remote feature flag.
    *
@@ -128,7 +133,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
    */
   const isEnabled = (): boolean => {
     try {
-      const remoteFeatureFlagController = getController(
+      const remoteFeatureFlagController = getMessengerClient(
         'RemoteFeatureFlagController',
       );
       const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
@@ -151,7 +156,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
-  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
@@ -165,7 +169,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         (state as PreferencesState & { useExternalServices?: boolean })
           .useExternalServices ?? true,
     );
-
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
     // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
