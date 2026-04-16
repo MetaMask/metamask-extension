@@ -14,8 +14,8 @@ import {
 type ArtifactLink = { url: string; label: string };
 
 type FlatArtifactLinkMap = {
-  bundleSizeStats: ArtifactLink;
   bundleSizeData: ArtifactLink;
+  bundleSizeStats: ArtifactLink;
   bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
   storybook: ArtifactLink;
