@@ -48,7 +48,9 @@ describe('NotificationServicesControllerInit', () => {
   it('returns controller instance', () => {
     const { requestMock } = arrange();
     const result = NotificationServicesControllerInit(requestMock);
-    expect(result.controller).toBeInstanceOf(NotificationServicesController);
+    expect(result.messengerClient).toBeInstanceOf(
+      NotificationServicesController,
+    );
   });
 
   it('initializes with correct messenger and state', () => {

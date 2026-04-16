@@ -26,7 +26,7 @@ export const NetworkOrderControllerInit: MessengerClientInitFunction<
   NetworkOrderController,
   NetworkOrderControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new NetworkOrderController({
+  const messengerClient = new NetworkOrderController({
     messenger: controllerMessenger,
     state: {
       ...generateDefaultNetworkOrderControllerState(),
@@ -35,6 +35,6 @@ export const NetworkOrderControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -18,21 +18,26 @@ import { MessengerClientInitFunction } from '../types';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger
- * @param request.getController
+ * @param request.getMessengerClient
  * @returns The initialized controller.
  */
 export const NameControllerInit: MessengerClientInitFunction<
   NameController,
   NameControllerMessenger,
   NameControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
-  const ensController = getController('EnsController');
-  const snapsNameProvider = getController('SnapsNameProvider');
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const ensController = getMessengerClient('EnsController');
+  const snapsNameProvider = getMessengerClient('SnapsNameProvider');
 
   const isExternalNameSourcesEnabled = () =>
     initMessenger.call('PreferencesController:getState').useExternalNameSources;
 
-  const controller = new NameController({
+  const messengerClient = new NameController({
     messenger: controllerMessenger,
     state: persistedState.NameController,
     providers: [
@@ -52,6 +57,6 @@ export const NameControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

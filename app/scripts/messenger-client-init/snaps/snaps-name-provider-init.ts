@@ -15,13 +15,13 @@ export const SnapsNameProviderInit: MessengerClientInitFunction<
   SnapsNameProvider,
   SnapsNameProviderMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new SnapsNameProvider({
+  const messengerClient = new SnapsNameProvider({
     messenger: controllerMessenger,
   });
 
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

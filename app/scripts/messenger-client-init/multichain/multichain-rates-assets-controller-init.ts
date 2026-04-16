@@ -14,13 +14,13 @@ export const MultichainAssetsRatesControllerInit: MessengerClientInitFunction<
   MultichainAssetsRatesController,
   MultichainAssetsRatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultichainAssetsRatesController({
+  const messengerClient = new MultichainAssetsRatesController({
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsRatesController,
     interval: 1000 * 60 * 3, // 3 mins
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

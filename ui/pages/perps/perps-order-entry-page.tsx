@@ -492,7 +492,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   const hasInvalidTPSL = useMemo(() => {
-    if (!orderFormState?.autoCloseEnabled) {
+    // In modify mode the TP/SL section is hidden and values carry over untouched,
+    // so stale prices that crossed the current market should not block submission.
+    if (!orderFormState?.autoCloseEnabled || orderMode === 'modify') {
       return false;
     }
 
@@ -526,7 +528,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
 
     return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice]);
+  }, [orderFormState, orderType, currentPrice, orderMode]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {
@@ -1293,10 +1295,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
-        <DirectionTabs
-          direction={orderDirection}
-          onDirectionChange={handleDirectionChange}
-        />
+        {orderMode === 'new' && (
+          <DirectionTabs
+            direction={orderDirection}
+            onDirectionChange={handleDirectionChange}
+          />
+        )}
         <OrderEntry
           asset={decodedSymbol}
           currentPrice={currentPrice}

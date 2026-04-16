@@ -48,9 +48,9 @@ describe('SubscriptionControllerInit', () => {
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(SubscriptionControllerInit(requestMock).controller).toBeInstanceOf(
-      SubscriptionController,
-    );
+    expect(
+      SubscriptionControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(SubscriptionController);
   });
 
   it('initializes with correct messenger and state', () => {

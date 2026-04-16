@@ -17,12 +17,12 @@ export const AlertControllerInit: MessengerClientInitFunction<
   AlertController,
   AlertControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new AlertController({
+  const messengerClient = new AlertController({
     state: persistedState.AlertController,
     messenger: controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

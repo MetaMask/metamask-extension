@@ -42,7 +42,7 @@ export const RewardsControllerInit: MessengerClientInitFunction<
   const rewardsControllerState =
     persistedState.RewardsController ?? defaultRewardsControllerState;
 
-  const controller = new RewardsController({
+  const messengerClient = new RewardsController({
     messenger: controllerMessenger,
     state: rewardsControllerState,
     isDisabled: () => {
@@ -107,5 +107,5 @@ export const RewardsControllerInit: MessengerClientInitFunction<
     },
   });
 
-  return { controller };
+  return { messengerClient };
 };

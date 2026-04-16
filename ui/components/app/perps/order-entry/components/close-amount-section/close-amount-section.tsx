@@ -17,6 +17,7 @@ import {
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { PerpsSlider } from '../../../perps-slider';
+import { getDisplaySymbol } from '../../../utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
 

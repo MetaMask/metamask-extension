@@ -13,7 +13,7 @@ export const EncryptionPublicKeyManagerInit: MessengerClientInitFunction<
   EncryptionPublicKeyManager,
   EncryptionPublicKeyManagerMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new EncryptionPublicKeyManager({
+  const messengerClient = new EncryptionPublicKeyManager({
     additionalFinishStatuses: ['received'],
     messenger: controllerMessenger,
   });
@@ -21,6 +21,6 @@ export const EncryptionPublicKeyManagerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

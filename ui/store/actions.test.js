@@ -39,7 +39,7 @@ jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
   () => ({
     PerpsControllerInit: jest.fn().mockReturnValue({
-      controller: {
+      messengerClient: {
         state: {},
         name: 'PerpsController',
       },

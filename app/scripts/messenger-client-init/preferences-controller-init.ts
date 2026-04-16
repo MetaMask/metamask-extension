@@ -17,7 +17,7 @@ export const PreferencesControllerInit: MessengerClientInitFunction<
   PreferencesController,
   PreferencesControllerMessenger
 > = ({ controllerMessenger, persistedState, initLangCode }) => {
-  const controller = new PreferencesController({
+  const messengerClient = new PreferencesController({
     state: {
       currentLocale: initLangCode ?? '',
       ...persistedState.PreferencesController,
@@ -26,6 +26,6 @@ export const PreferencesControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

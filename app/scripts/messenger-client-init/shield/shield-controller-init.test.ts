@@ -35,7 +35,9 @@ describe('ShieldControllerInit', () => {
     const request = buildInitRequestMock();
     const controllerInitResult = ShieldControllerInit(request);
     expect(controllerInitResult).toBeDefined();
-    expect(controllerInitResult.controller).toBeInstanceOf(ShieldController);
+    expect(controllerInitResult.messengerClient).toBeInstanceOf(
+      ShieldController,
+    );
   });
 
   it('initializes with correct messenger, state and normalizeSignatureRequest function', () => {

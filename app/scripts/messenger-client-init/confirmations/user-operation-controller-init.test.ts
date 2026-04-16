@@ -33,7 +33,7 @@ function getInitRequestMock(): jest.Mocked<
   };
 
   // @ts-expect-error: Partial mock.
-  requestMock.getController.mockImplementation((name: string) => {
+  requestMock.getMessengerClient.mockImplementation((name: string) => {
     if (name === 'GasFeeController') {
       return {
         fetchGasFeeEstimates: jest.fn(),
@@ -47,8 +47,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('UserOperationControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = UserOperationControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(Object);
+    const { messengerClient } =
+      UserOperationControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(Object);
   });
 
   it('passes the proper arguments to the controller', () => {

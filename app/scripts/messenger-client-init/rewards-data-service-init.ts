@@ -16,13 +16,13 @@ export const RewardsDataServiceInit: MessengerClientInitFunction<
   RewardsDataService,
   RewardsDataServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new RewardsDataService({
+  const messengerClient = new RewardsDataService({
     messenger: controllerMessenger,
     fetch: fetch.bind(globalThis),
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };

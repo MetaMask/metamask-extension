@@ -26,8 +26,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('MultichainRoutingServiceInit', () => {
   it('initializes the multichain router', () => {
-    const { controller } = MultichainRoutingServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(MultichainRoutingService);
+    const { messengerClient } =
+      MultichainRoutingServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(MultichainRoutingService);
   });
 
   it('does not store state', () => {
