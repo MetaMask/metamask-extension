@@ -547,22 +547,18 @@ describe('createPerpsInfrastructure', () => {
   });
 
   describe('diskCache', () => {
-    it('supports sync and async cache access', async () => {
+    it('supports async cache access without sync hydration support', async () => {
       const { diskCache } = createPerpsInfrastructure(getDeps());
-      expect(diskCache.getItemSync).toBeDefined();
-      const getItemSync = diskCache.getItemSync as NonNullable<
-        typeof diskCache.getItemSync
-      >;
+      expect(diskCache.getItemSync).toBeUndefined();
 
-      expect(getItemSync('missing-key')).toBeNull();
+      await expect(diskCache.getItem('missing-key')).resolves.toBeNull();
 
       await diskCache.setItem('perps-test-key', 'value');
 
-      expect(getItemSync('perps-test-key')).toBe('value');
       await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
 
       await diskCache.removeItem('perps-test-key');
-      expect(getItemSync('perps-test-key')).toBeNull();
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBeNull();
     });
 
     it('prefixes persisted storage keys and migrates known legacy raw keys', async () => {
@@ -591,17 +587,13 @@ describe('createPerpsInfrastructure', () => {
 
       try {
         const { diskCache } = createPerpsInfrastructure(getDeps());
-        expect(diskCache.getItemSync).toBeDefined();
-        const getItemSync = diskCache.getItemSync as NonNullable<
-          typeof diskCache.getItemSync
-        >;
+        expect(diskCache.getItemSync).toBeUndefined();
         await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
 
         expect(setMock).toHaveBeenCalledWith({
           'perps:PERPS_DISK_CACHE_MARKETS': 'persisted-value',
         });
         expect(removeMock).toHaveBeenCalledWith('PERPS_DISK_CACHE_MARKETS');
-        expect(getItemSync('PERPS_DISK_CACHE_MARKETS')).toBe('persisted-value');
 
         const { diskCache: hydratedDiskCache } =
           createPerpsInfrastructure(getDeps());

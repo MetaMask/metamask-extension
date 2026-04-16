@@ -270,14 +270,13 @@ function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
   const storageLocal = browser?.storage?.local;
 
   return {
-    getItemSync: (key: string) => memoryCache.get(key) ?? null,
     getItem: async (key: string) => {
-      if (memoryCache.has(key)) {
+      if (!storageLocal) {
         return memoryCache.get(key) ?? null;
       }
 
-      if (!storageLocal) {
-        return null;
+      if (memoryCache.has(key)) {
+        return memoryCache.get(key) ?? null;
       }
 
       const storageKey = getDiskCacheStorageKey(key);
