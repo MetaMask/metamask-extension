@@ -58,4 +58,19 @@ export type BalanceChange = Readonly<{
    * The amount of fiat currency that corresponds to the asset amount.
    */
   fiatAmount: FiatAmount;
+
+  /** Whether the balance change is a token approval. */
+  isApproval?: boolean;
+
+  /** Whether the balance change is an approval for all tokens. */
+  isAllApproval?: boolean;
+
+  /** Whether the balance change is an unlimited token approval. */
+  isUnlimitedApproval?: boolean;
+
+  /** Callback to support editing the value. */
+  onEdit?: () => void;
+
+  /** The amount of USD that corresponds to the asset amount. */
+  usdAmount: FiatAmount;
 }>;

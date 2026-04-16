@@ -14,15 +14,16 @@ jobs:
   test-unit:
     name: Unit tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -30,20 +31,26 @@ jobs:
       - name: Rename coverage
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
 
+      - uses: actions/upload-artifact@v6
+        with:
+          name: unit-test-results-${{matrix.shard}}
+          path: test/test-results/junit.xml
+
   test-webpack:
     name: Webpack tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -51,7 +58,7 @@ jobs:
       - name: Rename coverage
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-webpack
           path: coverage/webpack/coverage-webpack.json
@@ -59,12 +66,13 @@ jobs:
   test-integration:
     name: Integration tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -72,14 +80,21 @@ jobs:
       - name: Rename coverage
         run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-integration
           path: coverage/integration/coverage-integration.json
 
+      - uses: actions/upload-artifact@v6
+        with:
+          name: integration-test-results
+          path: test/test-results/integration/junit.xml
+
   report-coverage:
     name: Report coverage
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - test-unit
       - test-webpack
@@ -88,22 +103,23 @@ jobs:
       current-coverage: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
       stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: coverage
+          pattern: coverage-*
           merge-multiple: true
 
       - name: Merge coverage reports
         run: yarn nyc merge coverage .nyc_output/coverage-final.json && yarn nyc report --reporter lcov
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: lcov.info
           path: coverage/lcov.info

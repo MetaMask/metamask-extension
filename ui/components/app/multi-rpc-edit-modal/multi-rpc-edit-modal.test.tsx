@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MultiRpcEditModal from './multi-rpc-edit-modal';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockStore = configureStore([thunk]);
 
@@ -62,6 +62,7 @@ const initialState = {
   },
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setup = (props: any) => {
   const store = mockStore(initialState);

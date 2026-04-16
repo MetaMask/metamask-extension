@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon';
+import { AvatarBaseSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../preferred-avatar';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export default function AccountListItem({
@@ -12,9 +13,6 @@ export default function AccountListItem({
   displayAddress = false,
   handleClick,
   icon = null,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  hideDefaultMismatchWarning = false,
-  ///: END:ONLY_INCLUDE_IF
 }) {
   const {
     metadata: { name },
@@ -22,11 +20,7 @@ export default function AccountListItem({
     balance,
   } = account;
 
-  let showDefaultMismatchWarning = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  showDefaultMismatchWarning = !hideDefaultMismatchWarning;
-  ///: END:ONLY_INCLUDE_IF
+  const showDefaultMismatchWarning = true;
 
   return (
     <div
@@ -34,12 +28,9 @@ export default function AccountListItem({
       data-testid="account-list-item"
       onClick={() => handleClick?.({ name, address, balance })}
     >
-      <div className="account-list-item__top-row">
-        <Identicon
-          address={address}
-          className="account-list-item__identicon"
-          diameter={18}
-        />
+      <div className="account-list-item__top-row items-center gap-2">
+        <PreferredAvatar address={address} size={AvatarBaseSize.Sm} />
+
         <div className="account-list-item__account-name">{name || address}</div>
         {icon ? (
           <div
@@ -98,10 +89,4 @@ AccountListItem.propTypes = {
    * Pass icon component to be displayed. Currently not used
    */
   icon: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * MMI Prop, will hide the default AccountMismatchWarning when needed
-   */
-  hideDefaultMismatchWarning: PropTypes.bool,
-  ///: END:ONLY_INCLUDE_IF
 };

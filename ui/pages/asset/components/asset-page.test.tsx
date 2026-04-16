@@ -2,23 +2,45 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
+
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
+
+jest.mock('../../../store/controller-actions/transaction-controller');
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
@@ -40,19 +62,76 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: jest.fn().mockReturnValue({
+    '0x1': [
+      {
+        assetId: '0x0000000000000000000000000000000000000000',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0x309375769E79382beFDEc5bdab51063AeBDC4936',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+    ],
+  }),
+}));
+
 describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {
       currentLocale: 'en',
     },
+    appState: {
+      confirmationExchangeRates: {},
+    },
     metamask: {
+      ...mockMultichainNetworkState(),
+      txHistory: {},
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -84,6 +163,40 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
+      enabledNetworkMap: {
+        eip155: {},
+      },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      accountTree: {
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [selectedAccountAddress],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: 0,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
@@ -98,6 +211,7 @@ describe('AssetPage', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: selectedAccountAddress,
@@ -112,12 +226,8 @@ describe('AssetPage', () => {
           accounts: [],
         },
       ],
-      mmiConfiguration: {
-        portfolio: {
-          enabled: true,
-        },
-        url: 'https://metamask-institutional.io',
-      },
+      accountsAssets: {},
+      useExternalServices: true,
     },
   };
 
@@ -135,12 +245,18 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
-      setBridgeFeatureFlags: jest.fn(),
+      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 
   beforeEach(() => {
     openTabSpy.mockClear();
+
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v3\/historical-prices\//u)
+      .query(true)
+      .reply(200, {})
+      .persist();
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -175,6 +291,7 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
+    nock.cleanAll();
   });
 
   const native = {
@@ -281,26 +398,17 @@ describe('AssetPage', () => {
     );
   });
 
-  it('should show the Bridge button if chain id is supported', async () => {
+  it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       store,
     );
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).not.toBeDisabled();
-
-    fireEvent.click(bridgeButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      }),
-    );
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
-  it('should not show the Bridge button if chain id is not supported', async () => {
+  it('should render Swap button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -311,26 +419,28 @@ describe('AssetPage', () => {
         },
       }),
     );
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).not.toBeInTheDocument();
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
-  it('should show the MMI Portfolio and Stake buttons', () => {
+  it('should render the network name', async () => {
+    const mockedStore = configureMockStore([thunk])(mockStore);
+
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
-      store,
+      mockedStore,
     );
-    const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
-    const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
-
-    expect(mmiStakeButton).toBeInTheDocument();
-    expect(mmiPortfolioButton).toBeInTheDocument();
+    const networkNode = queryByTestId('asset-network');
+    expect(networkNode).toBeInTheDocument();
+    expect(networkNode?.textContent).toBe(MAINNET_DISPLAY_NAME);
   });
 
   it('should render a native asset', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
+      '/0x1',
     );
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
@@ -341,12 +451,6 @@ describe('AssetPage', () => {
 
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
-
-    // Mock no price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
-      .query(true)
-      .reply(200, {});
 
     const { container, queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
@@ -365,10 +469,10 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify no chart is rendered
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-price-chart');
-      expect(chart).toBeNull();
+      const chart = queryByTestId('asset-chart-empty-state');
+      expect(chart).toBeInTheDocument();
     });
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
@@ -387,9 +491,11 @@ describe('AssetPage', () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
     const marketCap = 456;
 
-    // Mock price history
+    // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .get(
+        `/v3/historical-prices/eip155:1/erc20:${toChecksumHexAddress(address)}`,
+      )
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 
@@ -410,19 +516,18 @@ describe('AssetPage', () => {
           },
         },
       }),
+      '/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
     );
 
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      expect(chart).toHaveClass('mm-box--background-color-transparent');
+      expect(chart).toBeInTheDocument();
     });
 
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
-    expect(marketCapElement).toHaveTextContent(
-      `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
-    );
+    expect(marketCapElement).toHaveTextContent('$56.09K');
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {

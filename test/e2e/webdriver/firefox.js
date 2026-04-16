@@ -10,6 +10,7 @@ const {
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
+const { getOrBuildXpi } = require('../helpers/xpi');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -67,17 +68,15 @@ class FirefoxDriver {
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
-      `${process.cwd()}/test-artifacts/downloads`,
+      path.join(process.cwd(), 'test-artifacts', 'downloads'),
     );
-    if (process.env.CI === 'true') {
-      options.setBinary('/opt/firefox/firefox');
-    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
-      options.headless();
+      options.addArguments('-headless');
     }
     const builder = new Builder()
       .forBrowser('firefox')
@@ -97,7 +96,11 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension('dist/firefox');
+    // Pre-build an XPI and cache it across test runs.
+    // Without this, installAddon() zips the 348MB unpacked dir on every call,
+    // adding ~10s of overhead per test.
+    const xpiPath = await getOrBuildXpi('dist/firefox');
+    const installedExtensionId = await fxDriver.installExtension(xpiPath);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive || constrainWindowSize) {
@@ -106,7 +109,7 @@ class FirefoxDriver {
 
     return {
       driver,
-      extensionId,
+      extensionId: installedExtensionId,
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
   }

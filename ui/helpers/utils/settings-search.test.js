@@ -52,10 +52,6 @@ const t = (key) => {
       return 'Show test networks';
     case 'showTestnetNetworksDescription':
       return 'Select this to show test networks in network list';
-    case 'nonceField':
-      return 'Customize transaction nonce';
-    case 'nonceFieldDesc':
-      return 'Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
@@ -74,12 +70,14 @@ const t = (key) => {
       return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
+    case 'contacts':
+      return 'Contacts';
+    case 'notifications':
+      return 'Notifications';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -93,7 +91,7 @@ const t = (key) => {
     case 'networks':
       return 'Networks';
     case 'mainnet':
-      return 'Ethereum Mainnet';
+      return 'Ethereum';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':
@@ -101,7 +99,7 @@ const t = (key) => {
     case 'localhost':
       return 'Localhost 8545';
     case 'developerOptions':
-      return 'Developer Options';
+      return 'Developer options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -125,9 +123,9 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy policy';
+      return 'Privacy Policy';
     case 'terms':
-      return 'Terms of use';
+      return 'Terms of Use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
@@ -142,6 +140,12 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
+    case 'backupAndSync':
+      return 'Backup and Sync';
     default:
       return '';
   }
@@ -150,8 +154,8 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
-      const NUM_OF_HIDDEN_SETTINGS = 1;
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
+      const NUM_OF_HIDDEN_SETTINGS = 3;
 
       expect(getSettingsRoutes()).toHaveLength(
         SETTINGS_CONSTANTS.length -
@@ -167,11 +171,13 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
-    it('returns "Contact" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
+    it('returns "Backup And Sync" section count', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
+      ).toStrictEqual(3);
     });
 
     it('returns "Security & privacy" section count', () => {
@@ -186,11 +192,11 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        5,
+        2,
       );
     });
 
-    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+    it('returns 0 "Developer options" section count when env flag is disabled', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);

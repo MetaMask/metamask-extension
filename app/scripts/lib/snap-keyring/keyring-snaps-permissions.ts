@@ -1,20 +1,24 @@
-import {
-  SubjectType,
-  SubjectMetadataController,
-} from '@metamask/permission-controller';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
+import {
+  SubjectMetadataController,
+  SubjectType,
+} from '@metamask/permission-controller';
+import { isFlask } from '../../../../shared/lib/build-types';
 
 /**
  * The origins of the Portfolio dapp.
  */
 const PORTFOLIO_ORIGINS: string[] = [
-  'https://portfolio.metamask.io',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  'https://dev.portfolio.metamask.io',
-  'https://stage.portfolio.metamask.io',
-  'https://ramps-dev.portfolio.metamask.io',
-  'https://portfolio-builds.metafi-dev.codefi.network',
-  ///: END:ONLY_INCLUDE_IF
+  'https://app.metamask.io',
+  // Add the following to the list only if the build is Flask
+  ...(isFlask()
+    ? [
+        'https://dev.app.metamask.io',
+        'https://stage.app.metamask.io',
+        'https://ramps-dev.app.metamask.io',
+        'https://portfolio-builds.metafi-dev.codefi.network',
+      ]
+    : []),
 ];
 
 /**
@@ -64,9 +68,8 @@ const PORTFOLIO_ALLOWED_METHODS: string[] = [
  */
 const ALLOWED_PROTOCOLS: string[] = [
   'https:',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  'http:',
-  ///: END:ONLY_INCLUDE_IF
+  // Add the following to the list only if the build is Flask
+  ...(isFlask() ? ['http:'] : []),
 ];
 
 /**

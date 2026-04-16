@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 const Preloader = ({ className, size }) => (
   <svg
@@ -19,6 +19,7 @@ const Preloader = ({ className, size }) => (
     />
     <mask
       id="mask0"
+      // eslint-disable-next-line react/no-unknown-property
       mask-type="alpha"
       maskUnits="userSpaceOnUse"
       x="0"

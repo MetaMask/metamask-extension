@@ -1,18 +1,21 @@
 import fs from 'node:fs';
+import { tmpdir } from 'node:os';
 import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert';
 import process from 'node:process';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import {
   type Configuration,
   webpack,
   Compiler,
   WebpackPluginInstance,
 } from 'webpack';
-import { noop } from '../utils/helpers';
+import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import { version as packageVersion } from '../../../package.json';
+import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -20,6 +23,55 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+async function withWatching<T>(
+  config: Configuration,
+  callback: (
+    waitForBuild: (trigger?: () => void) => Promise<void>,
+  ) => Promise<T>,
+) {
+  const compiler = webpack(config);
+  // @ts-expect-error - Node types need to be updated.
+  let build = Promise.withResolvers<void>();
+  const watchHandle = compiler.watch({}, (error, stats) => {
+    if (error) {
+      build.reject(error);
+      return;
+    }
+    if (!stats) {
+      build.reject(
+        new Error('Webpack finished watch build without returning stats.'),
+      );
+      return;
+    }
+    if (stats.hasErrors()) {
+      build.reject(new Error('Webpack watch build failed.'));
+      return;
+    }
+    build.resolve();
+  });
+  assert(watchHandle, 'Webpack did not return a watch handle.');
+  const watching = watchHandle;
+
+  const waitForBuild = (trigger?: () => void) => {
+    if (!trigger) {
+      return build.promise;
+    }
+    // @ts-expect-error - Node types need to be updated.
+    build = Promise.withResolvers<void>();
+    trigger();
+    watching.invalidate();
+    return build.promise;
+  };
+
+  try {
+    return await callback(waitForBuild);
+  } finally {
+    await new Promise<void>((resolveClose, rejectClose) =>
+      watching.close((error) => (error ? rejectClose(error) : resolveClose())),
+    );
+  }
 }
 
 /**
@@ -89,8 +141,8 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -137,39 +189,33 @@ ${Object.entries(env)
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
-      `development build from git id: ${getLatestCommit().hash()}`,
+      `main build for development from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
-    assert.deepStrictEqual(
-      manifestPlugin.options.transform(
-        {
-          manifest_version: 3,
-          name: 'name',
-          version: '1.2.3',
-          content_scripts: [
-            {
-              js: [
-                'ignored',
-                'scripts/contentscript.js',
-                'scripts/inpage.js',
-                'ignored',
-              ],
-            },
-          ],
-        },
-        'brave',
-      ),
+    const transformedManifest = manifestPlugin.options.transform(
       {
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
         content_scripts: [
-          {
-            js: ['scripts/contentscript.js', 'scripts/inpage.js'],
-          },
+          { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
+      'chrome',
     );
+    console.log('transformedManifest', transformedManifest);
+    assert.deepStrictEqual(transformedManifest, {
+      manifest_version: 3,
+      name: 'name',
+      version: '1.2.3',
+      content_scripts: [
+        {
+          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+        },
+      ],
+      key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
+    });
+    assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
@@ -184,8 +230,11 @@ ${Object.entries(env)
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
       [
+        '--mode',
+        'production',
         '--env',
         'production',
+        '--no-validateEnv',
         '--watch',
         '--stats',
         '--no-progress',
@@ -197,6 +246,9 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
+        GOOGLE_PROD_CLIENT_ID: '00000000000',
+        APPLE_PROD_CLIENT_ID: '00000000000',
+        METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
@@ -213,8 +265,8 @@ ${Object.entries(env)
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'normal');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(fallback['react-devtools'], false);
-    assert.strictEqual(fallback['remote-redux-devtools'], false);
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);
@@ -231,7 +283,11 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');
-    assert.strictEqual(manifestPlugin.options.transform, undefined);
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.outFilePath,
+      `../builds/metamask-[browser]-${packageVersion}.zip`,
+    );
+    assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -241,6 +297,24 @@ ${Object.entries(env)
       undefined,
       'Progress plugin should be absent',
     );
+
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
+    );
+    assert.strictEqual(
+      bundleAnalyzerPlugin,
+      undefined,
+      'BundleAnalyzerPlugin should be absent without --bundleAnalyzer',
+    );
+  });
+
+  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
+    const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
+    const instance = getWebpackInstance(config);
+    const bundleAnalyzerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
+    );
+    assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
   });
 
   it('should allow disabling source maps', () => {
@@ -248,6 +322,85 @@ ${Object.entries(env)
     // check that options are valid
     const instance = getWebpackInstance(config);
     assert.strictEqual(instance.options.devtool, false);
+  });
+
+  it('enables manifest build IDs for test builds', () => {
+    const config: Configuration = getWebpackConfig(['--test']);
+    const instance = getWebpackInstance(config);
+    const manifestPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<boolean>;
+
+    assert(manifestPlugin, 'Manifest plugin should be present');
+    assert.strictEqual(manifestPlugin.options.setBuildId, true);
+  });
+
+  it('keeps build_id stable for no-op watch rebuilds and changes it for real edits', async () => {
+    using tempDirectory = fs.mkdtempDisposableSync(
+      join(tmpdir(), 'manifest-plugin-watch-test-'),
+    );
+    const manifestDirectory = join(tempDirectory.path, 'manifest', 'v3');
+    const sourceFilePath = join(tempDirectory.path, 'index.js');
+    const outputPath = join(tempDirectory.path, 'dist');
+    const manifestPath = join(outputPath, 'chrome', 'manifest.json');
+
+    const readBuildId = () =>
+      (
+        JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as Manifest & {
+          build_id?: string;
+        }
+      ).build_id;
+
+    const manifest = { manifest_version: 3, name: 'test', version: '1.0.0' };
+    const baseManifestPath = join(manifestDirectory, '_base.json');
+    const writeSource = (source: string | NodeJS.ArrayBufferView) =>
+      fs.writeFileSync(sourceFilePath, source);
+    fs.mkdirSync(manifestDirectory, { recursive: true });
+    fs.writeFileSync(baseManifestPath, JSON.stringify(manifest));
+    writeSource('console.log("v1");\n');
+
+    await withWatching(
+      {
+        mode: 'development',
+        context: tempDirectory.path,
+        entry: { app: sourceFilePath },
+        output: { path: outputPath },
+        plugins: [
+          new ManifestPlugin({
+            browsers: ['chrome'],
+            manifest_version: 3,
+            version: '1.0.0.0',
+            versionName: '1.0.0',
+            description: null,
+            buildType: 'main',
+            zip: false,
+            setBuildId: true,
+          }),
+        ],
+      },
+      async (waitForBuild) => {
+        await waitForBuild();
+        const firstBuildId = readBuildId();
+        assert.ok(firstBuildId, 'expected initial build_id');
+
+        await waitForBuild(() => writeSource(fs.readFileSync(sourceFilePath)));
+        const secondBuildId = readBuildId();
+
+        await waitForBuild(() => writeSource('console.log("v2");\n'));
+        const thirdBuildId = readBuildId();
+
+        assert.strictEqual(
+          secondBuildId,
+          firstBuildId,
+          'expected no-op watch rebuild to keep the same build_id',
+        );
+        assert.notStrictEqual(
+          thirdBuildId,
+          secondBuildId,
+          'expected real file changes to produce a new build_id',
+        );
+      },
+    );
   });
 
   it('should write the `dry-run` message then call exit(0)', () => {
@@ -293,15 +446,4 @@ ${Object.entries(env)
     );
     assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
-
-  // these tests should be temporary until the below options are supported
-  const unsupportedOptions = [['--lavamoat'], ['--manifest_version', '3']];
-  for (const args of unsupportedOptions) {
-    it(`should throw on unsupported option \`${args.join('=')}\``, () => {
-      assert.throws(
-        () => getWebpackConfig(args),
-        `Unsupported option: ${args.join(' ')}`,
-      );
-    });
-  }
 });

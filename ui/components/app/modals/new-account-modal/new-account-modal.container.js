@@ -9,7 +9,7 @@ import NewAccountModal from './new-account-modal.component';
 
 function mapStateToProps(state) {
   return {
-    ...(state.appState.modal.modalState.props || {}),
+    ...state.appState.modal.modalState.props,
   };
 }
 
@@ -17,7 +17,7 @@ function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(hideModal()),
     createAccount: async (newAccountName) => {
-      const newAccountAddress = await dispatch(addNewAccount());
+      const { address: newAccountAddress } = await dispatch(addNewAccount());
       if (newAccountName) {
         dispatch(setAccountLabel(newAccountAddress, newAccountName));
       }

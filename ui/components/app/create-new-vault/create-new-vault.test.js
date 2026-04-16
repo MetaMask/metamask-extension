@@ -1,6 +1,7 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CreateNewVault from './create-new-vault';
@@ -14,13 +15,22 @@ const store = configureStore({
   },
 });
 
+const mockSignOut = jest.fn();
+jest.mock('../../../hooks/identity/useAuthentication', () => ({
+  useSignOut: () => ({
+    signOut: mockSignOut,
+  }),
+}));
+
 describe('CreateNewVault', () => {
   it('renders CreateNewVault component and shows Secret Recovery Phrase text', () => {
     renderWithProvider(
       <CreateNewVault submitText="Import" onSubmit={jest.fn()} />,
       store,
     );
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
   });
 
   it('renders CreateNewVault component and shows You can paste... text', () => {
@@ -28,11 +38,7 @@ describe('CreateNewVault', () => {
       <CreateNewVault submitText="Import" onSubmit={jest.fn()} includeTerms />,
       store,
     );
-    expect(
-      screen.getByText(
-        'You can paste your entire secret recovery phrase into any field',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(messages.srpPasteTip.message)).toBeInTheDocument();
   });
 
   it('should check terms', () => {
@@ -73,7 +79,7 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText('Password not long enough');
+    const passwordError = queryByText(messages.passwordNotLongEnough.message);
 
     expect(passwordError).toBeInTheDocument();
 
@@ -111,7 +117,7 @@ describe('CreateNewVault', () => {
     fireEvent.change(passwordInput, passwordEvent);
     fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
 
-    const passwordError = queryByText(`Passwords don't match`);
+    const passwordError = queryByText(messages.passwordsDontMatch.message);
 
     expect(passwordError).toBeInTheDocument();
 
@@ -120,7 +126,7 @@ describe('CreateNewVault', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('should valid', () => {
+  it('should sign out the user and submit successfully when password and confirm password match', () => {
     const props = {
       onSubmit: jest.fn(),
       submitText: 'Submit',
@@ -158,7 +164,10 @@ describe('CreateNewVault', () => {
 
     fireEvent.click(submitButton);
 
-    expect(props.onSubmit).toHaveBeenCalledWith(password, TEST_SEED);
+    waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled();
+      expect(props.onSubmit).toHaveBeenCalledWith(password, TEST_SEED);
+    });
   });
 });
 

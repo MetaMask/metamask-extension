@@ -1,0 +1,72 @@
+import { Suite } from 'mocha';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { login } from '../../page-objects/flows/login.flow';
+
+describe('Wallet Revoke Permissions', function (this: Suite) {
+  it('should revoke "eth_accounts" permissions via test dapp', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
+        const publicAddress = addresses[0].toLowerCase();
+        await login(driver);
+
+        // Get initial accounts permissions
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkGetPermissionsResult('eth_accounts');
+
+        // Revoke eth_accounts permissions and check that the permission is removed
+        await testDapp.disconnectAccount(publicAddress);
+        await testDapp.checkGetPermissionsResult('No permissions found.');
+      },
+    );
+  });
+
+  it('should revoke "endowment:permitted-chains" permissions', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        // Get initial accounts permissions
+        await testDapp.checkGetPermissionsResult('eth_accounts');
+
+        const revokeChainsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_revokePermissions',
+          params: [
+            {
+              'endowment:permitted-chains': {},
+            },
+          ],
+        });
+
+        await driver.executeScript(
+          `return window.ethereum.request(${revokeChainsRequest})`,
+        );
+
+        // Get new allowed permissions and check that the permission is removed
+        await testDapp.checkGetPermissionsResult('No permissions found.');
+      },
+    );
+  });
+});

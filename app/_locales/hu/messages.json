@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Ki kell választania egy fiókot!"
   },
-  "activityLog": {
-    "message": "tevékenységi napló"
-  },
   "addAcquiredTokens": {
     "message": "Adja hozzá MetaMask-kal a kapott érméket"
   },
@@ -229,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum nyilvános címe"
-  },
   "etherscanView": {
     "message": "Fiók megtekintése Etherscanen"
-  },
-  "expandView": {
-    "message": "Nézet nagyítása"
   },
   "failed": {
     "message": "Sikertelen"
@@ -254,26 +245,11 @@
   "from": {
     "message": "Feladó"
   },
-  "functionType": {
-    "message": "Függvénytípus"
-  },
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
-  },
   "gasLimitTooLow": {
     "message": "A gáz határértéke legyen legalább 21000"
-  },
-  "gasPrice": {
-    "message": "Gázár (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Üzemanyag ár Különösen alacsony"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "A gáz ára meghatározza, hogy ön mennyi Ethert hajlandó fizetni minden egyes gázegységért."
   },
   "gasUsed": {
     "message": "Használt gáz"
@@ -316,18 +292,12 @@
     "message": "Importálás",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Fiók importálása"
-  },
   "importAccountMsg": {
     "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott MetaMask-fiók seed mondatához. További információ az importált fiókokról"
   },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
   },
   "insufficientBalance": {
     "message": "Fedezethiány."
@@ -375,14 +345,8 @@
   "links": {
     "message": "Linkek"
   },
-  "loadMore": {
-    "message": "Továbbiak betöltése"
-  },
   "loading": {
     "message": "Betöltés..."
-  },
-  "loadingTokens": {
-    "message": "Tokenek betöltése..."
   },
   "lock": {
     "message": "Kilépés"
@@ -409,9 +373,6 @@
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nem lehet negatív mennyiségű ETH-t küldeni."
-  },
   "networkName": {
     "message": "Hálózat neve"
   },
@@ -428,9 +389,6 @@
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Új kapcsolat"
-  },
   "newContract": {
     "message": "Új szerződés"
   },
@@ -439,12 +397,6 @@
   },
   "next": {
     "message": "Következő"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nincs elérhető átváltási díj"
-  },
-  "noTransactions": {
-    "message": "Nincsenek tranzakciói"
   },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
@@ -469,9 +421,6 @@
   },
   "origin": {
     "message": "Eredet"
-  },
-  "parameters": {
-    "message": "Paraméterek"
   },
   "participateInMetaMetrics": {
     "message": "Vegyen részt a MetaMetrics-ben"
@@ -523,12 +472,6 @@
   "rejectAll": {
     "message": "Mindet elutasít"
   },
-  "rejectTxsDescription": {
-    "message": "Ezáltal kötegben utasítja el a(z) $1 tranzakciókat."
-  },
-  "rejectTxsN": {
-    "message": "$1 tranzakciók elutasítása"
-  },
   "rejected": {
     "message": "Elutasítva"
   },
@@ -537,12 +480,6 @@
   },
   "removeAccount": {
     "message": "Fiók eltávolítása"
-  },
-  "removeAccountDescription": {
-    "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "jóváhagyásra váró kérelmek"
   },
   "required": {
     "message": "Kötelező"
@@ -611,9 +548,6 @@
   "showHexDataDescription": {
     "message": "Válassza ezt, ha a hex adatmezőt a küldő képernyőn szeretné megnézni"
   },
-  "sigRequest": {
-    "message": "Aláírás kérése"
-  },
   "sign": {
     "message": "Aláír"
   },
@@ -632,9 +566,6 @@
   "speedUpCancellation": {
     "message": "Törlés felgyorsítása"
   },
-  "speedUpTransaction": {
-    "message": "Gyorsítsd fel ezt a tranzakciót"
-  },
   "stateLogError": {
     "message": "Hiba történt az állapotnaplók lekérésekor."
   },
@@ -650,9 +581,6 @@
   "supportCenter": {
     "message": "Vegye fel a kapcsolatot Támogató Központunkkal"
   },
-  "switchNetworks": {
-    "message": "Hálózátváltás"
-  },
   "symbol": {
     "message": "Szimbólum"
   },
@@ -661,9 +589,6 @@
   },
   "terms": {
     "message": "Használati feltételek"
-  },
-  "tips": {
-    "message": "Adományok"
   },
   "to": {
     "message": "Erre:"
@@ -683,41 +608,11 @@
   "transaction": {
     "message": "tranzakció"
   },
-  "transactionCancelAttempted": {
-    "message": "Tranzakció visszavonást próbáltak végrehajtani $1 üzemanyagköltséggel $2-kor"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tranzakció sikeresen törölve $2-nál"
-  },
-  "transactionConfirmed": {
-    "message": "Tranzakció megerősítve $2-on."
-  },
-  "transactionCreated": {
-    "message": "Egy $1 értékű tranzakció létrehozva $2-kor."
-  },
-  "transactionDropped": {
-    "message": "Tranzakció elvetve: $2."
-  },
   "transactionError": {
     "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
   },
   "transactionErrorNoContract": {
     "message": "Nem-szerződéses címen próbál egy funkciót meghívni."
-  },
-  "transactionErrored": {
-    "message": "Hiba történt a tranzakció során."
-  },
-  "transactionFee": {
-    "message": "Tranzakciós költség"
-  },
-  "transactionResubmitted": {
-    "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
-  },
-  "transactionUpdated": {
-    "message": "Tranzakció frissítve $2-nál"
   },
   "transfer": {
     "message": "Átutalás"
@@ -737,29 +632,17 @@
   "unknown": {
     "message": "Ismeretlen"
   },
-  "unknownNetwork": {
-    "message": "Ismeretlen magánhálózat"
-  },
   "unknownQrCode": {
     "message": "Hiba: nem tudtuk azonosítani a QR-kódot"
   },
   "unlock": {
     "message": "Feloldás"
   },
-  "unlockMessage": {
-    "message": "A decentralizált hálózat csak önre vár"
-  },
   "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
   },
   "usedByClients": {
     "message": "Számos különböző ügyfél használja"
-  },
-  "userName": {
-    "message": "Felhasználónév"
-  },
-  "viewContact": {
-    "message": "Névjegy megtekintése"
   },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
@@ -769,14 +652,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
-  },
-  "youSign": {
-    "message": "Aláírja"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Az ön privát seed mondata"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulla gázár a gyorsuláshoz"
   }
 }

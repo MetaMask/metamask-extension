@@ -1,0 +1,234 @@
+import { Mockttp } from 'mockttp';
+import { login } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
+import { DEFAULT_FIXTURE_ACCOUNT, NETWORK_CLIENT_ID } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+
+const TIMESTAMP_MOCK = 1234;
+
+const RESPONSE_STANDARD_MOCK = {
+  hash: '0x1',
+  timestamp: new Date(TIMESTAMP_MOCK).toISOString(),
+  chainId: 1,
+  blockNumber: 1,
+  blockHash: '0x2',
+  gas: 1,
+  gasUsed: 1,
+  gasPrice: '1',
+  effectiveGasPrice: '1',
+  nonce: 1,
+  cumulativeGasUsed: 1,
+  methodId: null,
+  value: '1230000000000000000',
+  to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+  from: '0x2',
+  isError: false,
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '1230000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  logs: [],
+  transactionCategory: 'TRANSFER',
+  transactionType: 'INCOMING',
+  readable: 'Received',
+};
+
+const RESPONSE_STANDARD_2_MOCK = {
+  ...RESPONSE_STANDARD_MOCK,
+  hash: '0x2',
+  value: '2340000000000000000',
+  timestamp: new Date(TIMESTAMP_MOCK - 1).toISOString(),
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '2340000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+};
+
+const RESPONSE_TOKEN_TRANSFER_MOCK = {
+  ...RESPONSE_STANDARD_MOCK,
+  to: '0x2',
+  valueTransfers: [
+    {
+      contractAddress: '0x123',
+      decimal: 18,
+      symbol: 'ABC',
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '4560000000000000000',
+    },
+  ],
+};
+
+const RESPONSE_OUTGOING_MOCK = {
+  ...RESPONSE_STANDARD_MOCK,
+  from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+  to: '0x2',
+  value: '4560000000000000000',
+  valueTransfers: [
+    {
+      from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      to: '0x2',
+      amount: '4560000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  transactionCategory: 'STANDARD',
+  transactionType: 'STANDARD',
+  readable: 'Send',
+};
+
+async function mockAccountsApi(
+  mockServer: Mockttp,
+  {
+    transactions,
+  }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
+) {
+  return [
+    await mockServer
+      .forGet(
+        `https://accounts.api.cx.metamask.io/v4/multiaccount/transactions`,
+      )
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          data: transactions ?? [
+            RESPONSE_STANDARD_MOCK,
+            RESPONSE_STANDARD_2_MOCK,
+          ],
+          pageInfo: { hasNextPage: false },
+        },
+      })),
+  ];
+}
+
+describe('Incoming Transactions', function () {
+  it('ignores incoming native transfer transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkNoTxInActivity();
+      },
+    );
+  });
+
+  it('ignores token transfer transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) =>
+          mockAccountsApi(server, {
+            transactions: [
+              RESPONSE_STANDARD_MOCK,
+              RESPONSE_TOKEN_TRANSFER_MOCK,
+            ],
+          }),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.checkNoTxInActivity();
+      },
+    );
+  });
+
+  it('adds outgoing transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) =>
+          mockAccountsApi(server, {
+            transactions: [RESPONSE_STANDARD_MOCK, RESPONSE_OUTGOING_MOCK],
+          }),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
+        await activityList.checkTxAction({
+          action: 'Sent ETH',
+          txIndex: 1,
+          confirmedTx: 1,
+        });
+        await activityList.checkTxAmountInActivity('-4.56 ETH', 1);
+      },
+    );
+  });
+
+  it('does nothing if preference disabled', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withUseBasicFunctionalityDisabled()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await driver.delay(2000);
+        await activityList.checkNoTxInActivity();
+      },
+    );
+  });
+});
+
+async function changeNetworkAndGoToActivity(driver: Driver) {
+  await login(driver, { validateBalance: false });
+
+  const homepage = new HomePage(driver);
+  await homepage.goToActivityList();
+
+  return new ActivityListPage(driver);
+}

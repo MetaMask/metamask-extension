@@ -1,0 +1,567 @@
+import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { Routes, Route } from 'react-router-dom';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import {
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+  DEFAULT_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ROUTE,
+} from '../../helpers/constants/routes';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  createNewVaultAndGetSeedPhrase,
+  restoreSocialBackupAndGetSeedPhrase,
+  setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
+  setUseSidePanelAsDefault,
+  unlockAndGetSeedPhrase,
+} from '../../store/actions';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
+import OnboardingFlow from './onboarding-flow';
+
+// Mock mmLazy to return a synchronous component instead of React.lazy.
+// React 17's lazy resolution fires a state update after test cleanup unmounts
+// the tree, producing a spurious "state update on unmounted component" warning.
+//
+// NOTE: This mock hardcodes the ExperimentalArea import. If a second mmLazy
+// call is added to onboarding-flow.tsx, this mock must be updated to dispatch
+// on the importFn (or replaced with a generic solution).
+jest.mock('../../helpers/utils/mm-lazy', () => ({
+  mmLazy: () =>
+    jest.requireActual('../../components/app/flask/experimental-area/index.js')
+      .default,
+}));
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
+}));
+
+jest.mock('../unlock-page', () => {
+  const reactModule = jest.requireActual('react');
+
+  return function mockUnlock({
+    onSubmit,
+  }: {
+    onSubmit: (password: string) => Promise<void>;
+  }) {
+    const [password, setPassword] = reactModule.useState('');
+
+    return (
+      <div data-testid="unlock-page">
+        <input
+          data-testid="unlock-password-input"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        <button data-testid="unlock-submit" onClick={() => onSubmit(password)}>
+          Unlock
+        </button>
+      </div>
+    );
+  };
+});
+
+// Wrapper component that provides proper route context for nested Routes
+// OnboardingFlow uses relative paths expecting to be mounted at /onboarding/*
+const OnboardingFlowWithRouteContext = () => (
+  <Routes>
+    <Route path={`${ONBOARDING_ROUTE}/*`} element={<OnboardingFlow />} />
+  </Routes>
+);
+
+// Mock Rive animation components
+jest.mock('./welcome/fox-appear-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="fox-appear-animation" />,
+}));
+
+jest.mock('./welcome/metamask-wordmark-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: ({
+    setIsAnimationComplete,
+  }: {
+    setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+  }) => {
+    // Simulate animation completion immediately using setTimeout
+    setTimeout(() => setIsAnimationComplete(true), 0);
+    return <div data-testid="metamask-wordmark-animation" />;
+  },
+}));
+
+jest.mock('./creation-successful/wallet-ready-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="wallet-ready-animation" />,
+}));
+
+// Mock the useBackupAndSync hook to avoid thunk dispatch issues
+jest.mock('../../hooks/identity/useBackupAndSync', () => ({
+  useBackupAndSync: () => ({
+    error: null,
+    setIsBackupAndSyncFeatureEnabled: jest.fn(() => Promise.resolve()),
+  }),
+}));
+
+jest.mock('../../components/app/toast-master/utils', () => ({
+  submitRequestToBackgroundAndCatch: jest.fn(),
+}));
+
+jest.mock('../../store/actions', () => ({
+  createNewVaultAndGetSeedPhrase: jest.fn(() => async () => null),
+  restoreSocialBackupAndGetSeedPhrase: jest.fn(() => async () => null),
+  setCompletedOnboarding: jest.fn(() => async () => null),
+  setCompletedOnboardingWithSidepanel: jest.fn(() => async () => null),
+  setUseSidePanelAsDefault: jest.fn(() => async () => null),
+  unlockAndGetSeedPhrase: jest.fn(() => async () => null),
+  createNewVaultAndRestore: jest.fn(),
+  setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
+  hideLoadingIndication: jest.fn(() => async () => ({
+    type: 'HIDE_LOADING_INDICATION',
+  })),
+  setIsBackupAndSyncFeatureEnabled: jest.fn(
+    () => async () => Promise.resolve(),
+  ),
+  checkIsSeedlessPasswordOutdated: jest.fn(() => async () => Promise.resolve()),
+  getIsSeedlessOnboardingUserAuthenticated: jest.fn(
+    () => async () => Promise.resolve(false),
+  ),
+}));
+
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsSeedlessOnboardingFeatureEnabled: jest.fn(() => false),
+}));
+
+jest.mock('../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
+}));
+
+function createDeferred<ResolvedValue = void>() {
+  let resolvePromise: (
+    value: ResolvedValue | PromiseLike<ResolvedValue>,
+  ) => void = () => undefined;
+
+  const promise = new Promise<ResolvedValue>((resolvedValue) => {
+    resolvePromise = resolvedValue;
+  });
+
+  return { promise, resolve: resolvePromise };
+}
+
+describe('Onboarding Flow', () => {
+  const mockState = {
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+            metadata: {
+              keyring: 'HD Key Tree',
+            },
+          },
+        },
+        selectedAccount: '',
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.GOERLI },
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
+      preferences: {},
+    },
+    localeMessages: {
+      currentLocale: 'en',
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
+    },
+  };
+
+  process.env.METAMASK_BUILD_TYPE = 'main';
+
+  const store = configureMockStore([thunk])(mockState);
+
+  const createStore = (metamaskState = {}) =>
+    configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...metamaskState,
+      },
+    });
+
+  const renderUnlockPage = (metamaskState = {}) =>
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore(metamaskState),
+      ONBOARDING_UNLOCK_ROUTE,
+    );
+
+  const submitUnlock = (getByTestId: (testId: string) => HTMLElement) => {
+    fireEvent.change(getByTestId('unlock-password-input'), {
+      target: { value: 'a-new-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+  };
+
+  beforeEach(() => {
+    (
+      getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+        typeof getIsSeedlessOnboardingFeatureEnabled
+      >
+    ).mockReturnValue(false);
+    (
+      useSidePanelEnabled as jest.MockedFunction<typeof useSidePanelEnabled>
+    ).mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {
+    const completedOnboardingState = {
+      metamask: {
+        completedOnboarding: true,
+        seedPhraseBackedUp: true,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: 'HD Key Tree',
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x0000000000000000000000000000000000000000'],
+          },
+        ],
+      },
+      localeMessages: {
+        currentLocale: 'en',
+      },
+    };
+
+    const completedOnboardingStore = configureMockStore([thunk])(
+      completedOnboardingState,
+    );
+
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      completedOnboardingStore,
+      ONBOARDING_ROUTE,
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
+  });
+
+  describe('Create Password', () => {
+    it('should render create password', () => {
+      const { queryByTestId } = renderWithProvider(
+        <OnboardingFlowWithRouteContext />,
+        store,
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
+
+      const createPassword = queryByTestId('create-password');
+      expect(createPassword).toBeInTheDocument();
+    });
+
+    it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <OnboardingFlowWithRouteContext />,
+        configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.create,
+          },
+        }),
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
+
+      const createPasswordText = queryByText(messages.createPassword.message);
+      expect(createPasswordText).toBeInTheDocument();
+
+      const password = 'a-new-password';
+      const checkTerms = queryByTestId('create-password-terms');
+      const createPassword = queryByTestId('create-password-new-input');
+      const confirmPassword = queryByTestId('create-password-confirm-input');
+      const createPasswordWallet = queryByTestId('create-password-submit');
+
+      fireEvent.click(checkTerms as HTMLElement);
+      fireEvent.change(createPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.change(confirmPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.click(createPasswordWallet as HTMLElement);
+
+      await waitFor(() =>
+        expect(createNewVaultAndGetSeedPhrase).toHaveBeenCalled(),
+      );
+    });
+  });
+
+  it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_REVIEW_SRP_ROUTE,
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      {
+        pathname: ONBOARDING_REVEAL_SRP_ROUTE,
+        search: '',
+      },
+      { replace: true },
+    );
+  });
+
+  it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_CONFIRM_SRP_ROUTE,
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}`,
+      { replace: true },
+    );
+  });
+
+  it('should render import seed phrase', () => {
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+    );
+
+    const importSrp = queryByTestId('import-srp');
+    expect(importSrp).toBeInTheDocument();
+  });
+
+  describe('Unlock Screen', () => {
+    it('should render unlock page', () => {
+      const { queryByTestId } = renderWithProvider(
+        <OnboardingFlowWithRouteContext />,
+        store,
+        ONBOARDING_UNLOCK_ROUTE,
+      );
+
+      const unlockPage = queryByTestId('unlock-page');
+      expect(unlockPage).toBeInTheDocument();
+    });
+
+    it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
+      const { getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.import,
+      });
+
+      submitUnlock(getByTestId);
+
+      await waitFor(() => expect(unlockAndGetSeedPhrase).toHaveBeenCalled());
+    });
+
+    it('keeps the loading overlay visible until social import sidepanel rehydration completes', async () => {
+      const sidepanelCompletion = createDeferred<void>();
+
+      (
+        getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+          typeof getIsSeedlessOnboardingFeatureEnabled
+        >
+      ).mockReturnValue(true);
+      (
+        useSidePanelEnabled as jest.MockedFunction<typeof useSidePanelEnabled>
+      ).mockReturnValue(true);
+      (
+        restoreSocialBackupAndGetSeedPhrase as jest.MockedFunction<
+          typeof restoreSocialBackupAndGetSeedPhrase
+        >
+      ).mockImplementation(() => async () => 'seed phrase');
+      (
+        setUseSidePanelAsDefault as jest.MockedFunction<
+          typeof setUseSidePanelAsDefault
+        >
+      ).mockImplementation(() => async () => ({ useSidePanelAsDefault: true }));
+      (
+        setCompletedOnboardingWithSidepanel as jest.MockedFunction<
+          typeof setCompletedOnboardingWithSidepanel
+        >
+      ).mockImplementation(() => async () => await sidepanelCompletion.promise);
+
+      const { container, getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
+
+      submitUnlock(getByTestId);
+
+      await waitFor(() => {
+        expect(restoreSocialBackupAndGetSeedPhrase).toHaveBeenCalled();
+        expect(setUseSidePanelAsDefault).toHaveBeenCalledWith(true);
+        expect(setCompletedOnboardingWithSidepanel).toHaveBeenCalled();
+      });
+
+      expect(container.querySelector('.loading-overlay')).toBeInTheDocument();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      sidepanelCompletion.resolve();
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
+      });
+      await waitFor(() => {
+        expect(
+          container.querySelector('.loading-overlay'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('keeps the loading overlay visible until social import rehydration completes without sidepanel', async () => {
+      const onboardingCompletion = createDeferred<void>();
+
+      (
+        getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+          typeof getIsSeedlessOnboardingFeatureEnabled
+        >
+      ).mockReturnValue(true);
+      (
+        restoreSocialBackupAndGetSeedPhrase as jest.MockedFunction<
+          typeof restoreSocialBackupAndGetSeedPhrase
+        >
+      ).mockImplementation(() => async () => 'seed phrase');
+      (
+        setCompletedOnboarding as jest.MockedFunction<
+          typeof setCompletedOnboarding
+        >
+      ).mockImplementation(
+        () => async () => await onboardingCompletion.promise,
+      );
+
+      const { container, getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
+
+      submitUnlock(getByTestId);
+
+      await waitFor(() => {
+        expect(restoreSocialBackupAndGetSeedPhrase).toHaveBeenCalled();
+        expect(setCompletedOnboarding).toHaveBeenCalled();
+      });
+
+      expect(container.querySelector('.loading-overlay')).toBeInTheDocument();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      onboardingCompletion.resolve();
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('.loading-overlay'),
+        ).not.toBeInTheDocument();
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should render privacy settings', () => {
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+    );
+
+    const privacySettings = queryByTestId('privacy-settings');
+    expect(privacySettings).toBeInTheDocument();
+  });
+
+  it('should render onboarding creation/completion successful', async () => {
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_COMPLETION_ROUTE,
+    );
+
+    await waitFor(() => {
+      const creationSuccessful = queryByTestId('wallet-ready');
+      expect(creationSuccessful).toBeInTheDocument();
+    });
+  });
+
+  it('should render onboarding Login page screen', async () => {
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    await waitFor(() => {
+      expect(queryByTestId('get-started')).toBeInTheDocument();
+    });
+  });
+
+  it('should render onboarding metametrics screen', () => {
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_METAMETRICS,
+    );
+
+    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    expect(onboardingMetametrics).toBeInTheDocument();
+  });
+
+  it('should render onboarding experimental screen', () => {
+    // Enable Flask mode for this test only
+    process.env.METAMASK_BUILD_TYPE = 'flask';
+
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_EXPERIMENTAL_AREA,
+    );
+
+    expect(queryByTestId('experimental-area')).toBeInTheDocument();
+
+    // Restore build type
+    process.env.METAMASK_BUILD_TYPE = 'main';
+  });
+});

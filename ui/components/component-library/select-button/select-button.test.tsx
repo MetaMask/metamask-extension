@@ -1,7 +1,12 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { AvatarAccount, AvatarAccountSize, SelectWrapper } from '..';
-import { SelectButton, SelectButtonSize } from '.';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
+import { SelectWrapper } from '../select-wrapper';
+import { SelectButton } from './select-button';
+import { SelectButtonSize } from './select-button.types';
 
 describe('SelectButton', () => {
   it('renders without crashing', () => {

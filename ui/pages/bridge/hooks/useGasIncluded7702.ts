@@ -1,0 +1,127 @@
+import {
+  formatChainIdToHex,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  getGaslessBridgeWith7702EnabledForChain,
+  SmartTransactionsState,
+} from '../../../../shared/lib/selectors';
+import { isRelaySupported } from '../../../store/actions';
+import { isHardwareWallet } from '../../../selectors';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
+
+type Chain = {
+  chainId: string;
+};
+
+type Account = {
+  address: string;
+};
+
+type UseGasIncluded7702Params = {
+  isSwap: boolean;
+  selectedAccount: Account | null | undefined;
+  fromChain: Chain | null | undefined;
+  isSendBundleSupportedForChain: boolean;
+};
+
+/**
+ * Custom hook to check if gasless 7702 is supported for Smart Accounts.
+ *
+ * This hook serves as the **request-time HW wallet gate** for 7702 gas
+ * sponsorship, matching the mobile `useIsGasIncluded7702Supported` pattern.
+ * When the active account is a hardware wallet the hook returns `false`,
+ * which causes the quote request to be sent with `gasIncluded7702=false`.
+ * The backend then returns `gasSponsored=false` directly, so no post-quote
+ * normalization is necessary.
+ *
+ * @param params - Configuration object
+ * @param params.isSwap - Whether this is a swap transaction
+ * @param params.selectedAccount - The selected account
+ * @param params.fromChain - The source chain
+ * @param params.isSendBundleSupportedForChain - Whether send bundle is supported for the chain
+ * @returns Whether gasless 7702 is supported (always `false` for HW wallets)
+ */
+export function useGasIncluded7702({
+  isSwap,
+  selectedAccount,
+  fromChain,
+  isSendBundleSupportedForChain,
+}: UseGasIncluded7702Params): boolean {
+  const isGaslessBridgeWith7702Enabled = useSelector(
+    (state: SmartTransactionsState) => {
+      const hexChainId = fromChain?.chainId
+        ? getMaybeHexChainId(fromChain.chainId)
+        : undefined;
+      return hexChainId
+        ? getGaslessBridgeWith7702EnabledForChain(state, hexChainId)
+        : false;
+    },
+  );
+
+  const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
+    useState(false);
+  const isSmartTransaction = useSelector(getIsStxEnabled);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const checkGasIncluded7702Support = async () => {
+      if (
+        isHardwareWalletAccount ||
+        (isSendBundleSupportedForChain && isSmartTransaction) ||
+        (!isSwap && !isGaslessBridgeWith7702Enabled) ||
+        !selectedAccount?.address ||
+        !fromChain?.chainId
+      ) {
+        if (!isCancelled) {
+          setIsGasIncluded7702Supported(false);
+        }
+        return;
+      }
+
+      if (isNonEvmChainId(fromChain.chainId)) {
+        setIsGasIncluded7702Supported(false);
+        return;
+      }
+
+      try {
+        const chainIdInHex = formatChainIdToHex(fromChain.chainId);
+        const is7702Supported = await isRelaySupported(chainIdInHex);
+
+        if (!isCancelled) {
+          setIsGasIncluded7702Supported(is7702Supported);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('Error checking gasless 7702 support:', error);
+          setIsGasIncluded7702Supported(false);
+        }
+      }
+    };
+
+    checkGasIncluded7702Support();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    fromChain?.chainId,
+    isHardwareWalletAccount,
+    isSendBundleSupportedForChain,
+    isSmartTransaction,
+    isGaslessBridgeWith7702Enabled,
+    isSwap,
+    selectedAccount?.address,
+  ]);
+
+  // Hardware wallets cannot use EIP-7702 gasless; do not request 7702 quotes.
+  if (isHardwareWalletAccount) {
+    return false;
+  }
+  return isGasIncluded7702Supported;
+}

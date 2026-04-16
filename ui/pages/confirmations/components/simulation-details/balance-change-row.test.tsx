@@ -74,4 +74,17 @@ describe('BalanceChangeRow', () => {
     render(<BalanceChangeRow showFiat={false} balanceChange={balanceChange} />);
     expect(IndividualFiatDisplay).not.toHaveBeenCalled();
   });
+
+  it('renders edit icon if onEdit is provided', () => {
+    const onEdit = jest.fn();
+
+    const { getByTestId } = render(
+      <BalanceChangeRow
+        showFiat={false}
+        balanceChange={{ ...balanceChange, onEdit }}
+      />,
+    );
+
+    expect(getByTestId('balance-change-edit')).toBeInTheDocument();
+  });
 });

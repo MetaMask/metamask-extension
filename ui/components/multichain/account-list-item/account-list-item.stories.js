@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Provider } from 'react-redux';
 
+import { Checkbox } from '@metamask/design-system-react';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { Checkbox } from '../../component-library';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
@@ -64,7 +64,7 @@ const SNAP_ACCOUNT = {
     },
     snap: {
       name: 'Test Snap Name',
-      id: 'snap-id',
+      id: 'npm:snap-id',
       enabled: true,
     },
   },

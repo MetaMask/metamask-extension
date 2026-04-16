@@ -3,41 +3,47 @@ name: Remove labels after issue (or PR) closed
 on:
   issues:
     types: [closed]
-  pull_request:
+  # Use pull_request_target so closed-PR cleanup always runs with the
+  # workflow definition from the default branch (not the PR head SHA).
+  # This ensures newly added cleanup labels are applied consistently.
+  pull_request_target:
     types: [closed]
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       issues: write
       pull-requests: write
 
     steps:
-    - name: Remove labels
-      env:
-        REPO: ${{ github.repository }}
-        ISSUE_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove labels
+        env:
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      run: |
-        LABELS=(
-          "product-backlog"
-          "needs-design"
-          "design-in-progress"
-          "ready-for-dev"
-          "sprint-backlog"
-          "in-progress"
-          "blocked"
-          "needs-dev-review"
-          "needs-qa"
-          "issues-found"
-          "ready-for-release"
-        )
-        for LABEL in "${LABELS[@]}"; do
-          curl \
-          -X DELETE \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/labels/$LABEL"
-        done
+        run: |
+          LABELS=(
+            "product-backlog"
+            "needs-design"
+            "design-in-progress"
+            "ready-for-dev"
+            "sprint-backlog"
+            "in-progress"
+            "blocked"
+            "needs-dev-review"
+            "needs-qa"
+            "issues-found"
+            "ready-for-release"
+            "retry-ci"
+          )
+
+          for LABEL in "${LABELS[@]}"; do
+            curl \
+            -X DELETE \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/labels/$LABEL"
+          done

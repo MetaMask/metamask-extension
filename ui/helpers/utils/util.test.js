@@ -1,11 +1,12 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import * as util from './util';
 
 describe('util', () => {
@@ -112,6 +113,80 @@ describe('util', () => {
     });
   });
 
+  describe('isResolvableName', () => {
+    // Traditional domain names (should match isValidDomainName behavior)
+    it('should return true for valid domain names', () => {
+      expect(util.isResolvableName('vitalik.eth')).toStrictEqual(true);
+      expect(util.isResolvableName('foo.bar')).toStrictEqual(true);
+      expect(util.isResolvableName('wallet.crypto')).toStrictEqual(true);
+    });
+
+    // Email-like formats (0xName, Clusters, etc.)
+    it('should return true for email-like names', () => {
+      expect(util.isResolvableName('yulia@beast')).toStrictEqual(true);
+      expect(util.isResolvableName('user@domain')).toStrictEqual(true);
+      expect(util.isResolvableName('test@example')).toStrictEqual(true);
+    });
+
+    // Scheme-based formats
+    it('should return true for scheme-based names', () => {
+      expect(util.isResolvableName('ens:vitalik')).toStrictEqual(true);
+      expect(util.isResolvableName('lens:username')).toStrictEqual(true);
+      expect(util.isResolvableName('cb:example')).toStrictEqual(true);
+    });
+
+    // Invalid inputs
+    it('should return false for empty or invalid inputs', () => {
+      expect(util.isResolvableName('')).toStrictEqual(false);
+      expect(util.isResolvableName(null)).toStrictEqual(false);
+      expect(util.isResolvableName(undefined)).toStrictEqual(false);
+      expect(util.isResolvableName('a')).toStrictEqual(false); // Too short
+    });
+
+    it('should return false for Ethereum addresses', () => {
+      expect(
+        util.isResolvableName('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('0xAbCdEf1234567890123456789012345678901234'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for pure numbers', () => {
+      expect(util.isResolvableName('12345')).toStrictEqual(false);
+      expect(util.isResolvableName('0')).toStrictEqual(false);
+    });
+
+    it('should return false for invalid email-like formats', () => {
+      expect(util.isResolvableName('@domain')).toStrictEqual(false);
+      expect(util.isResolvableName('user@')).toStrictEqual(false);
+    });
+
+    it('should return false for names without recognizable format', () => {
+      expect(util.isResolvableName('simpleword')).toStrictEqual(false);
+      expect(util.isResolvableName('no-special-chars')).toStrictEqual(false);
+    });
+
+    it('should return false for URLs', () => {
+      expect(util.isResolvableName('http://localhost:3000')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('https://metamask.io')).toStrictEqual(false);
+      expect(util.isResolvableName('ftp://files.example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('mailto:test@example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('file:///path/to/file')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('wss://socket.example.com')).toStrictEqual(
+        false,
+      );
+    });
+  });
+
   describe('isOriginContractAddress', () => {
     it('should return true when the send address is the same as the selected tokens contract address', () => {
       expect(
@@ -142,7 +217,7 @@ describe('util', () => {
   });
 
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });
@@ -165,13 +240,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -207,56 +282,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 OPR/95.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 OPR/109.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36 OPR/108.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edg/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.2420.81 Safari/537.36 Edg/123.0.2420.81',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 Edge/89.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.2365.92 Safari/537.36 Edg/122.0.2365.92',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -414,6 +489,9 @@ describe('util', () => {
     });
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
     });
   });
   describe('sanitizeMessage', () => {
@@ -911,12 +989,56 @@ describe('util', () => {
       ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
     });
 
-    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+    it('escapes RIGHT-TO-LEFT OVERRIDE (U+202E)', () => {
+      expect(util.sanitizeString('Send \u202E1000 ETH')).toStrictEqual(
+        'Send \\u202E1000 ETH',
+      );
+    });
+
+    it('escapes LEFT-TO-RIGHT OVERRIDE (U+202D)', () => {
+      expect(util.sanitizeString('Amount: \u202D1000')).toStrictEqual(
+        'Amount: \\u202D1000',
+      );
+    });
+
+    it('escapes RIGHT-TO-LEFT MARK (U+200F)', () => {
+      expect(util.sanitizeString('Send 100\u200F0 ETH')).toStrictEqual(
+        'Send 100\\u200F0 ETH',
+      );
+    });
+
+    it('escapes multiple bidi control characters', () => {
+      expect(util.sanitizeString('Send\u200F\u202E\u202D1000')).toStrictEqual(
+        'Send\\u200F\\u202E\\u202D1000',
+      );
+    });
+
+    it('escapes LTR/RTL isolates (U+2066–U+2069)', () => {
+      expect(util.sanitizeString('Check\u20661000\u2069')).toStrictEqual(
+        'Check\\u20661000\\u2069',
+      );
+    });
+
+    it('displays hidden bidi marks as escaped sequences in text containing numbers', () => {
       expect(
         util.sanitizeString(
-          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+          'Pay ‏11‏1.1 USDC to 0x3333333333333333333333333333333333333333',
         ),
-      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+      ).toStrictEqual(
+        'Pay \\u200F11\\u200F1.1 USDC to 0x3333333333333333333333333333333333333333',
+      );
+    });
+
+    it('keeps clean text unchanged', () => {
+      expect(util.sanitizeString('Send 1000 ETH')).toStrictEqual(
+        'Send 1000 ETH',
+      );
+    });
+
+    it('keeps legitimate Unicode (emojis, non-Latin scripts)', () => {
+      expect(util.sanitizeString('Hello 👋 مرحبا')).toStrictEqual(
+        'Hello 👋 مرحبا',
+      );
     });
   });
 
@@ -927,17 +1049,6 @@ describe('util', () => {
 
     it('should return false if the provided chainId is a not default MetaMask chain', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
-    });
-  });
-
-  describe('getNetworkNameFromProviderType()', () => {
-    it('should return providerConfig.type if the type is not rpc', () => {
-      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
-        'mainnet',
-      );
-    });
-    it('should return empty string if teh providerConfig.type is rpc', () => {
-      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
     });
   });
 
@@ -1307,6 +1418,255 @@ describe('util', () => {
     it('succeed with no accounts', () => {
       const sortedAccount = util.sortSelectedInternalAccounts([]);
       expect(sortedAccount).toStrictEqual([]);
+    });
+  });
+
+  describe('isAbleToRevealSrp', () => {
+    const mockHDKeyring = {
+      accounts: [],
+      type: KeyringTypes.hd,
+      metadata: {
+        id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
+        name: '',
+      },
+    };
+
+    const mockSnapKeyring = {
+      accounts: [],
+      type: KeyringTypes.snap,
+      metadata: {
+        id: '01JKDQSPB36DENHN7HWF8XED78',
+        name: '',
+      },
+    };
+
+    const mockLedgerKeyring = {
+      accounts: [],
+      type: KeyringTypes.ledger,
+      metadata: {
+        id: '01JKDQSWKN9AHG8DKX29QE3PGA',
+        name: '',
+      },
+    };
+
+    it('should return true for HD Key Tree accounts', () => {
+      const hdAccount = createMockInternalAccount();
+
+      expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
+    });
+
+    it('should return true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns false for third-party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: 'third-party-snap-id',
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('returns false for Snap accounts not derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: 'some-other-id',
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('should return false for hardware wallet accounts', () => {
+      const ledgerAccount = {
+        type: 'Ledger Hardware',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: mockLedgerKeyring.metadata.id,
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(ledgerAccount, [mockLedgerKeyring])).toBe(
+        false,
+      );
+    });
+
+    it('should return false for any other account type', () => {
+      const otherAccount = {
+        type: 'Simple Key Pair',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'simple-keyring-id',
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(otherAccount, [mockHDKeyring])).toBe(false);
+    });
+  });
+
+  describe('isIpAddress', () => {
+    it('should return true for the IPv4 address', () => {
+      expect(util.isIpAddress('127.0.0.1')).toBe(true);
+    });
+
+    it('should return true for the IPv6 address', () => {
+      expect(util.isIpAddress('[fe80::1]')).toBe(true);
+    });
+
+    it('should return true for the invalid IP address', () => {
+      expect(util.isIpAddress('metamask')).toBe(false);
+    });
+
+    it('should return true for the invalid type of argument', () => {
+      expect(util.isIpAddress(1024)).toBe(false);
+    });
+  });
+
+  describe('transformOriginToTitle', () => {
+    it('should return the correct title for origin with domain', () => {
+      expect(util.transformOriginToTitle('https://metamask.io')).toBe(
+        'metamask.io',
+      );
+    });
+
+    it('should return the correct title for origin with subdomain', () => {
+      expect(
+        util.transformOriginToTitle('https://metamask.github.io/test-dapp/'),
+      ).toBe('metamask.github.io');
+    });
+
+    it('should return the correct title for localhost', () => {
+      expect(util.transformOriginToTitle('http://localhost:3000')).toBe(
+        'localhost',
+      );
+    });
+
+    it('should return the correct title for IPv4 address', () => {
+      expect(util.transformOriginToTitle('http://127.0.0.1:3000')).toBe(
+        '127.0.0.1',
+      );
+    });
+
+    it('should return the correct title for IPv6 address', () => {
+      expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
+        '[fe80::1]',
+      );
+    });
+  });
+
+  describe('checkExistingAllTokens', () => {
+    const tokensList = {
+      1: {
+        '0xAccount1': [{ address: '0xToken1' }, { address: '0xToken2' }],
+      },
+      2: {
+        '0xAccount2': [{ address: '0xToken3' }],
+      },
+    };
+
+    it('should return false if address is not provided', () => {
+      const result = util.checkExistingAllTokens(
+        '',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return false if token is not found in the list', () => {
+      const result = util.checkExistingAllTokens(
+        '0xNonExistentToken',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return true if token is found (exact match)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xToken1',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
+    });
+
+    it('should return true if token is found (case insensitive)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xtoken2',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
     });
   });
 });

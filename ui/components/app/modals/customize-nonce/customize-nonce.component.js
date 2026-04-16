@@ -111,7 +111,9 @@ const CustomizeNonce = ({
               min="0"
               placeholder={defaultNonce}
               onChange={(e) => {
-                setCustomNonce(e.target.value);
+                // Prevent decimal nonce values
+                const sanitizedValue = e.target.value.replace(/[.,]/gu, '');
+                setCustomNonce(sanitizedValue);
               }}
               fullWidth
               margin="dense"

@@ -42,8 +42,7 @@ const EnhancedReader = ({ handleScan }) => {
         })
         .catch(log.info);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [codeReader, handleScan]);
 
   return (
     <div className="qr-scanner__content__video-wrapper">

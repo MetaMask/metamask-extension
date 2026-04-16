@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -27,7 +27,7 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
@@ -59,12 +59,24 @@ import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { Nav } from '../confirmations/components/confirm/nav';
+import { hideAppHeader } from '../routes/utils';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
+
+  const classNames = classnames(
+    'confirm-add-suggested-nft page-container h-full',
+    {
+      'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
@@ -74,7 +86,7 @@ const ConfirmAddSuggestedNFT = () => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
@@ -96,6 +108,7 @@ const ConfirmAddSuggestedNFT = () => {
   });
 
   const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
+  const approvalId = suggestedNfts[0]?.id;
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(
@@ -116,8 +129,8 @@ const ConfirmAddSuggestedNFT = () => {
         });
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
@@ -130,17 +143,17 @@ const ConfirmAddSuggestedNFT = () => {
         );
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, mostRecentOverviewPage, suggestedNfts]);
 
   useEffect(() => {
     const goBackIfNoSuggestedNftsOnFirstRender = () => {
       if (!suggestedNfts.length) {
-        history.push(mostRecentOverviewPage);
+        navigate(mostRecentOverviewPage);
       }
     };
     goBackIfNoSuggestedNftsOnFirstRender();
-  }, [history, mostRecentOverviewPage, suggestedNfts]);
+  }, [navigate, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
   let link;
@@ -178,15 +191,17 @@ const ConfirmAddSuggestedNFT = () => {
     };
 
     addImageUrlToSuggestedNFTs();
-  }, []); // Empty dependency array to run only on mount
+  }, [suggestedNfts, ipfsGateway]); // rerender when suggestedNfts or ipfsGateway changes
 
   return (
     <Box
+      className={classNames}
       height={BlockSize.Full}
       width={BlockSize.Full}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
+      <Nav confirmationId={approvalId} />
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
         <NetworkAccountBalanceHeader
           accountName={accountName}
@@ -236,7 +251,7 @@ const ConfirmAddSuggestedNFT = () => {
           ])}
         </Text>
       </Box>
-      <Box className="confirm-add-suggested-nft__content">
+      <Box className="page-container__content confirm-add-suggested-nft__content">
         <Box
           className="confirm-add-suggested-nft__card"
           padding={2}
@@ -266,7 +281,6 @@ const ConfirmAddSuggestedNFT = () => {
                 const nftImageURL = found
                   ? found.requestData.asset.assetImageUrl
                   : '';
-
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,

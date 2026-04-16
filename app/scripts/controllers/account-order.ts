@@ -1,7 +1,11 @@
 import {
   BaseController,
-  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
+import { AccountOrderControllerMethodActions } from './account-order-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -17,30 +21,31 @@ export type AccountOrderControllerState = {
   hiddenAccountList: AccountAddress[];
 };
 
-// Describes the action for updating the accounts list
-export type AccountOrderControllerupdateAccountsListAction = {
-  type: `${typeof controllerName}:updateAccountsList`;
-  handler: AccountOrderController['updateAccountsList'];
-};
+export type AccountOrderControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  AccountOrderControllerState
+>;
 
-// Describes the action for updating the accounts list
-export type AccountOrderControllerhideAccountsListAction = {
-  type: `${typeof controllerName}:updateHiddenAccountsList`;
-  handler: AccountOrderController['updateHiddenAccountsList'];
-};
+const MESSENGER_EXPOSED_METHODS = [
+  'updateAccountsList',
+  'updateHiddenAccountsList',
+] as const;
 
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
-  | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction;
+  | AccountOrderControllerGetStateAction
+  | AccountOrderControllerMethodActions;
+
+export type AccountOrderControllerMessengerEvents = ControllerStateChangeEvent<
+  typeof controllerName,
+  AccountOrderControllerState
+>;
 
 // Type for the messenger of AccountOrderController
-export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
+export type AccountOrderControllerMessenger = Messenger<
   typeof controllerName,
   AccountOrderControllerMessengerActions,
-  never,
-  never,
-  never
+  AccountOrderControllerMessengerEvents
 >;
 
 // Default state for the controller
@@ -50,14 +55,18 @@ const defaultState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<AccountOrderControllerState> = {
   pinnedAccountList: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   hiddenAccountList: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -83,7 +92,7 @@ export class AccountOrderController extends BaseController<
     state,
   }: {
     messenger: AccountOrderControllerMessenger;
-    state?: AccountOrderControllerState;
+    state?: Partial<AccountOrderControllerState>;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -92,6 +101,11 @@ export class AccountOrderController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**

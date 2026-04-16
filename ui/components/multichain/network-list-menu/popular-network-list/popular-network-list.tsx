@@ -1,34 +1,33 @@
 import React, { useState, useMemo } from 'react';
-import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
   AvatarNetwork,
-  Button,
   AvatarNetworkSize,
-  ButtonVariant,
-  IconName,
-  Icon,
-  IconSize,
   ButtonLinkSize,
   ButtonLink,
   Popover,
   PopoverPosition,
 } from '../../../component-library';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../../shared/constants/app';
-import {
-  requestUserApproval,
+  setEnabledNetworks,
   toggleNetworkMenu,
+  addNetwork,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
@@ -36,12 +35,12 @@ import {
   Display,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -51,18 +50,11 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+  const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setBoxRef = (ref: any) => {
     setReferenceElement(ref);
@@ -70,7 +62,7 @@ const PopularNetworkList = ({
 
   // Memoize the popover content so it only updates when searchAddNetworkResults changes
   const popoverContent = useMemo(() => {
-    if (Object.keys(searchAddNetworkResults).length === 0) {
+    if (searchAddNetworkResults.length === 0) {
       return null;
     }
 
@@ -86,45 +78,56 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
-            <Icon
-              className="add-network__warning-icon"
-              name={IconName.Info}
-              color={IconColor.iconMuted}
-              size={IconSize.Sm}
-              marginLeft={2}
-            />
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            onMouseEnter={open}
+          >
+            <Box marginLeft={2} display={Display.Flex}>
+              <Icon
+                className="add-network__warning-icon"
+                name={IconName.Info}
+                color={IconColor.IconMuted}
+                size={IconSize.Sm}
+              />
+            </Box>
             <Popover
               referenceElement={referenceElement}
-              position={PopoverPosition.Top}
+              position={PopoverPosition.TopStart}
+              paddingTop={3}
+              paddingBottom={3}
+              offset={[16, 12]}
               isOpen={isOpen}
-              matchWidth
               flip
-              hasArrow
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              onMouseLeave={handleMouseLeave}
+              backgroundColor={BackgroundColor.backgroundSection}
+              onMouseLeave={close}
+              style={{
+                width: '326px',
+              }}
             >
-              {t('popularNetworkAddToolTip', [
-                <Box key="learn-more-link">
-                  <ButtonLink
-                    size={ButtonLinkSize.Inherit}
-                    externalLink
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                      });
-                    }}
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                </Box>,
-              ])}
+              <Text variant={TextVariant.bodyMd}>
+                {' '}
+                {t('popularNetworkAddToolTip')}{' '}
+              </Text>
+              <Box key="learn-more-link">
+                <ButtonLink
+                  size={ButtonLinkSize.Auto}
+                  externalLink
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                    });
+                  }}
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </Box>
             </Popover>
           </Box>
         </Box>
       </Box>
     );
-  }, [searchAddNetworkResults, referenceElement, isOpen]);
+  }, [searchAddNetworkResults, referenceElement, isOpen, t]);
 
   return (
     <Box className="new-network-list__networks-container">
@@ -146,7 +149,7 @@ const PopularNetworkList = ({
             paddingTop={4}
             className="new-network-list__list-of-networks"
             data-testid={`popular-network-${network.chainId}`}
-            onMouseEnter={handleMouseLeave}
+            onMouseEnter={close}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
@@ -169,50 +172,23 @@ const PopularNetworkList = ({
                 </Text>
               </Box>
             </Box>
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              marginLeft={1}
-            >
-              <Button
-                type={ButtonVariant.Link}
-                className="add-network__add-button"
-                variant={ButtonVariant.Link}
-                data-testid="test-add-button"
+            <Box data-testid="test-add-button">
+              <ButtonIcon
+                iconName={IconName.Add}
+                size={ButtonIconSize.Md}
+                ariaLabel={t('add')}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
-                  await dispatch(
-                    requestUserApproval({
-                      origin: ORIGIN_METAMASK,
-                      type: ApprovalType.AddEthereumChain,
-                      requestData: {
-                        chainId: network.chainId,
-                        rpcUrl:
-                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
-                            .url,
-                        ticker: network.nativeCurrency,
-                        rpcPrefs: {
-                          blockExplorerUrl:
-                            network.defaultBlockExplorerUrlIndex === undefined
-                              ? undefined
-                              : network.blockExplorerUrls[
-                                  network.defaultBlockExplorerUrlIndex
-                                ],
-                        },
-                        imageUrl:
-                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                          ],
-                        chainName: network.name,
-                        referrer: ORIGIN_METAMASK,
-                        source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
-                      },
-                    }),
-                  );
+
+                  // First add the network to user's configuration
+                  await dispatch(addNetwork(network));
+
+                  // Then enable it in the network list
+                  await dispatch(setEnabledNetworks(network.chainId));
                 }}
-              >
-                {t('add')}
-              </Button>
+              />
             </Box>
           </Box>
         ))}

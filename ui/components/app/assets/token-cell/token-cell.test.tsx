@@ -1,23 +1,31 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { Hex } from '@metamask/utils';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getTokenList,
   getPreferences,
-  getCurrentCurrency,
   getCurrencyRates,
+  getUseCurrencyRateCheck,
+  getUseSafeChainsListValidation,
+  getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { TokenWithFiatAmount } from '../types';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
+import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -40,6 +48,39 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
     useIsOriginalTokenSymbol: jest.fn(),
   };
 });
+
+const mockShouldShowTokenListItemCta = jest.fn().mockReturnValue(false);
+jest.mock('../../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: mockShouldShowTokenListItemCta,
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: true,
+  }),
+}));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+const mockUseMerklRewards = jest.fn().mockReturnValue({
+  isEligible: false,
+  hasClaimableReward: false,
+  hasClaimedBefore: false,
+  claimableRewardDisplay: null,
+  refetch: jest.fn(),
+});
+jest.mock('../../musd', () => ({
+  ClaimBonusBadge: () => <div data-testid="claim-bonus-badge-mock" />,
+  MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
+  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
+  useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
+}));
+
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
@@ -54,6 +95,24 @@ describe('Token Cell', () => {
           conversionRate: 7.0,
         },
       },
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          defaultRpcEndpointIndex: 0,
+          ticker: 'ETH',
+          rpcEndpoints: [
+            {
+              type: 'custom',
+              url: 'https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY',
+              networkClientId: 'eth-mainnet',
+            },
+          ],
+          blockExplorerUrls: [],
+        },
+      },
+      selectedNetworkClientId: 'eth-mainnet',
       preferences: {},
     },
   };
@@ -83,28 +142,59 @@ describe('Token Cell', () => {
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
+  const propToken: Partial<TokenWithFiatAmount> & { currentCurrency: string } =
+    {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      balance: '5',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    };
 
   const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    image: '',
-    chainId: '0x1',
-    tokenFiatAmount: 5,
+    token: {
+      ...propToken,
+    },
+    musd: {
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
+    },
     onClick: jest.fn(),
   };
-
-  const propsLargeAmount = {
-    address: '0xAnotherToken',
+  const propAnotherToken: Partial<TokenWithFiatAmount> & {
+    currentCurrency: string;
+  } = {
+    address: '0xAnotherToken' as Hex,
     symbol: 'TEST',
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
-    chainId: '0x1',
+    chainId: '0x1' as Hex,
     tokenFiatAmount: 5000000,
+    balance: '5000000',
+    aggregators: [],
+    decimals: 18,
+    isNative: false,
+  };
+  const propsLargeAmount = {
+    token: {
+      ...propAnotherToken,
+    },
+    musd: {
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
+    },
     onClick: jest.fn(),
   };
+  const mockProviderConfig = jest.fn().mockReturnValue({
+    chainId: '0x1',
+    ticker: 'ETH',
+    rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+  });
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -128,13 +218,27 @@ describe('Token Cell', () => {
     if (selector === getCurrencyRates) {
       return { POL: '' };
     }
+    if (selector === getProviderConfig) {
+      return mockProviderConfig();
+    }
+    if (selector === getUseCurrencyRateCheck) {
+      return true;
+    }
+    if (selector === getUseSafeChainsListValidation) {
+      return true;
+    }
+    if (selector === getEnabledNetworksByNamespace) {
+      return {
+        '0x1': true,
+      };
+    }
     return undefined;
   });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -143,7 +247,7 @@ describe('Token Cell', () => {
 
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -156,7 +260,7 @@ describe('Token Cell', () => {
 
   it('should render the correct token and filter by symbol and address', () => {
     const { getByTestId, getByAltText } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -169,13 +273,140 @@ describe('Token Cell', () => {
 
   it('should render amount with the correct format', () => {
     const { getByTestId } = renderWithProvider(
-      <TokenCell {...propsLargeAmount} />,
+      <TokenCell {...(propsLargeAmount as TokenCellProps)} />,
       mockStore,
     );
 
     const amountElement = getByTestId('multichain-token-list-item-value');
 
     expect(amountElement).toBeInTheDocument();
-    expect(amountElement.textContent).toBe('5,000,000 TEST');
+    expect(amountElement.textContent).toBe('5.00M TEST');
+  });
+
+  describe('musd.convert', () => {
+    it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
+
+    it('shows the mUSD convert CTA when musd.convert is set and token is eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).toBeInTheDocument();
+    });
+
+    it('does not show the mUSD convert CTA when musd.convert is set but token is not eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(false);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('ClaimBonusBadge visibility', () => {
+    afterEach(() => {
+      mockUseMerklRewards.mockReturnValue({
+        isEligible: false,
+        hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
+        refetch: jest.fn(),
+      });
+    });
+
+    it('shows ClaimBonusBadge when isEligible and hasClaimableReward are both true', () => {
+      mockUseMerklRewards.mockReturnValue({
+        isEligible: true,
+        hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: '10.50',
+        refetch: jest.fn(),
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('claim-bonus-badge-mock')).toBeInTheDocument();
+    });
+
+    it('does not show ClaimBonusBadge when isEligible is false', () => {
+      mockUseMerklRewards.mockReturnValue({
+        isEligible: false,
+        hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
+        refetch: jest.fn(),
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
+    });
+
+    it('does not show ClaimBonusBadge when hasClaimableReward is false', () => {
+      mockUseMerklRewards.mockReturnValue({
+        isEligible: true,
+        hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
+        refetch: jest.fn(),
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should show a scam warning if the native ticker does not match the expected ticker', async () => {
+    const token = { ...propToken };
+    token.chainId = '0x1';
+    token.isNative = true;
+    token.symbol = 'BTC'; // incorrect ticker
+    mockProviderConfig.mockReturnValue({
+      chainId: '0x1',
+      ticker: 'BTC', // incorrect ticker
+      rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+      type: 'mainnet',
+      rpcUrl: '',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell {...({ token } as TokenCellProps)} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('scam-warning')).toBeInTheDocument();
+    });
   });
 });

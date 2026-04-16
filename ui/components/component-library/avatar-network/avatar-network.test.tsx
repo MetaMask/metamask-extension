@@ -7,8 +7,8 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
-import { AvatarNetwork, AvatarNetworkSize } from '.';
+import { AvatarNetwork } from './avatar-network';
+import { AvatarNetworkSize } from './avatar-network.types';
 
 describe('AvatarNetwork', () => {
   const args = {

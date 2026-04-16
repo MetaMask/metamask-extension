@@ -1,20 +1,19 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
 
-  // Having 2 versions of the address is a bug(#25286)
-  const shortSampleAddress = '0x1111...1111';
-  const shortSampleAddresV2 = '0x11111...11111';
+  const shortSampleAddress = '0x11111...11111';
   const chainId = 1;
 
   // ENS Contract Addresses and Function Signatures
@@ -81,35 +80,35 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed('20');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed('20');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        const sendToPage = new SendPage(driver);
+        await sendToPage.selectToken('0x1', 'ETH');
         await sendToPage.fillRecipient(sampleEnsDomain);
 
-        // verify that ens domain resolves to the correct address
-        await sendToPage.check_ensAddressResolution(
+        // Verify that ens is resolved to the correct address
+        await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
           shortSampleAddress,
-        );
-
-        // Verify the resolved ENS address can be used as the recipient address
-        await sendToPage.check_ensAddressAsRecipient(
-          sampleEnsDomain,
-          shortSampleAddresV2,
         );
       },
     );

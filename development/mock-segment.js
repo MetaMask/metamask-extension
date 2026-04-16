@@ -5,17 +5,55 @@ const { parsePort } = require('./lib/parse-port');
 const DEFAULT_PORT = 9090;
 const prefix = '[mock-segment]';
 
-function onRequest(request, response, events) {
-  console.log(`${prefix}: ${request.method} ${request.url}`);
-  const eventDescriptions = events.map((event) => {
-    if (event.type === 'track') {
-      return event.event;
-    } else if (event.type === 'page') {
-      return event.name;
+function onRequest(_request, response, events) {
+  const getTypeLabel = (e) => {
+    switch (e.type) {
+      case 'track':
+        return 'Track';
+      case 'page':
+        return 'Page';
+      case 'identify':
+        return 'Identify';
+      default:
+        return 'Unknown';
     }
-    return `[Unrecognized event type: ${event.type}]`;
+  };
+  const getNameOrId = (e) => {
+    switch (e.type) {
+      case 'track':
+        return e.event || '(no name)';
+      case 'page':
+        return e.name || '(no name)';
+      case 'identify':
+        return e.userId || e.anonymousId || '(no id)';
+      default:
+        return `[Unrecognized event type: ${e.type}]`;
+    }
+  };
+
+  events.forEach((event) => {
+    const properties =
+      event && event.type === 'identify'
+        ? event.traits
+        : event && event.properties;
+    const hasProperties =
+      properties &&
+      typeof properties === 'object' &&
+      Object.keys(properties).length > 0;
+    const label = getTypeLabel(event);
+    const nameOrId = getNameOrId(event);
+    if (hasProperties) {
+      console.log(
+        `${prefix}: ${label} event received: ${nameOrId}\n${JSON.stringify(
+          properties,
+          null,
+          2,
+        )}`,
+      );
+    } else {
+      console.log(`${prefix}: ${label} event received: ${nameOrId}`);
+    }
   });
-  console.log(`${prefix}: Events received: ${eventDescriptions.join(', ')}`);
 
   response.statusCode = 200;
   response.end();

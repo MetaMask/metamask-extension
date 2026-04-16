@@ -1,6 +1,10 @@
-import { isProduction } from '../modules/environment';
+import { isProduction } from '../lib/environment';
 import { SECOND } from './time';
 import { CHAIN_IDS } from './network';
+
+// Client identifiers for transaction metadata
+export const CLIENT_ID_EXTENSION_CHROME = 'extensionChrome';
+export const CLIENT_ID_EXTENSION_FIREFOX = 'extensionFirefox';
 
 export const FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME: number = SECOND * 10;
 export const FALLBACK_SMART_TRANSACTIONS_DEADLINE: number = 180;
@@ -11,10 +15,21 @@ export const FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER: number = 2;
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.LINEA_SEPOLIA,
+  CHAIN_IDS.POLYGON,
 ];
 
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
   CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.POLYGON,
 ];
 
 export const getAllowedSmartTransactionsChainIds = (): string[] => {
@@ -29,3 +44,6 @@ export const CANCEL_GAS_LIMIT_DEC = 21000;
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
   'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/';
+
+export const SMART_ACCOUNT_LEARN_MORE_URL =
+  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts';

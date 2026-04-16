@@ -1,15 +1,17 @@
 import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
-  veryLargeDelayMs,
-  withFixtures,
-} from '../../helpers';
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
-import HomePage from '../../page-objects/pages/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { login } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   const blockNumber = { value: 0 };
@@ -55,6 +57,20 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         },
       };
     }),
+    await mockServer
+      .forGet(
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
   ];
 }
 
@@ -101,16 +117,21 @@ describe('Account Tracker API Usage', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
         await driver.delay(veryLargeDelayMs);
-        let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        let allInfuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
         let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
@@ -123,14 +144,13 @@ describe('Account Tracker API Usage', function () {
           )} request has been made to infura before opening the UI`,
         );
 
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
+        await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
 
-        allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        allInfuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
         rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
@@ -155,28 +175,32 @@ describe('Account Tracker API Usage', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
+        await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
-        const initialInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        const initialInfuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
 
         await driver.openNewURL('about:blank');
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
         await driver.delay(20000);
 
-        const currentInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        const currentInfuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
 
         const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           initialInfuraJsonRpcRequests,

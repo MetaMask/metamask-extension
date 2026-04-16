@@ -1,6 +1,7 @@
 .snap-ui-renderer {
   &__selector {
     width: 100%;
+    border: 1px solid var(--color-border-muted);
 
     & > span:first-child {
       width: 100%;
@@ -10,8 +11,9 @@
       width: 100%;
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
       background-color: var(--color-background-alternative-hover);
+      border-color: var(--color-border-default);
     }
   }
 

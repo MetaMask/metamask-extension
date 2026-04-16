@@ -20,7 +20,7 @@ describe('formatMenuItemDate', () => {
     const assertToday = (modifyDate?: (d: Date) => void) => {
       const testDate = new Date();
       modifyDate?.(testDate);
-      expect(formatMenuItemDate(testDate)).toMatch(/^\d{2}:\d{2}$/u);
+      expect(formatMenuItemDate(testDate)).toMatch(/^\d{2}:\d{2}$/u); // E.g. HH:mm
     };
 
     // assert current date
@@ -53,11 +53,11 @@ describe('formatMenuItemDate', () => {
     });
   });
 
-  it('should format date as "DD Mon" if the date is this year but not today or yesterday', () => {
+  it('should format date as "MM DD" if the date is this year but not today or yesterday', () => {
     const assertMonthsAgo = (modifyDate: (d: Date) => Date | void) => {
       let testDate = new Date();
       testDate = modifyDate(testDate) ?? testDate;
-      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}$/u);
+      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}$/u); // E.g. Oct 21
     };
 
     // assert exactly 1 month ago
@@ -77,11 +77,11 @@ describe('formatMenuItemDate', () => {
     });
   });
 
-  it('should format date as "Mon DD, YYYY" if the date is not this year', () => {
+  it('should format date as "MM DD, YYYY" if the date is not this year', () => {
     const assertYearsAgo = (modifyDate: (d: Date) => Date | void) => {
       let testDate = new Date();
       testDate = modifyDate(testDate) ?? testDate;
-      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}, \d{4}$/u);
+      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}, \d{4}$/u); // E.g. Oct 21, 2022
     };
 
     // assert exactly 1 year ago

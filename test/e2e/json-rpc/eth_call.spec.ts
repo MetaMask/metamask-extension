@@ -1,43 +1,47 @@
 import { strict as assert } from 'assert';
-import { keccak } from 'ethereumjs-util';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { keccak256 } from 'ethereum-cryptography/keccak';
+import { bytesToHex } from '@metamask/utils';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
-import { Ganache } from '../seeder/ganache';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
+import { Anvil } from '../seeder/anvil';
+import { Ganache } from '../seeder/ganache';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
   it('executes a new message call', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         contractRegistry,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodes: Anvil[] | Ganache[] | undefined[];
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await login(driver, { localNode: localNodes[0] });
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);
-        const balanceOf = `0x${keccak(
-          Buffer.from('balanceOf(address)'),
-        ).toString('hex')}`;
+        const balanceOf = bytesToHex(
+          keccak256(Buffer.from('balanceOf(address)')),
+        );
         const walletAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
         const request = JSON.stringify({
           jsonrpc: '2.0',

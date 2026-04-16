@@ -20,9 +20,6 @@
   "accountSelectionRequired": {
     "message": "መለያ መምረጥ ይኖርብዎታል!"
   },
-  "activityLog": {
-    "message": "የእንቅስቃሴ ምዝግብ ማስታወሻ"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
   },
@@ -220,14 +217,8 @@
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum ሕዝባዊ አድራሻ"
-  },
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
-  },
-  "expandView": {
-    "message": "እይታን ዘርጋ"
   },
   "failed": {
     "message": "አልተሳካም"
@@ -245,26 +236,11 @@
   "from": {
     "message": "ከ"
   },
-  "functionType": {
-    "message": "የተግባር ዓይነት"
-  },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
-  },
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
-  },
-  "gasPrice": {
-    "message": "የነዳጅ ዋጋ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "የነዳጅ ዋጋ እጅግ በጣም ዝቅ ያለ ነው"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "የነዳጅ ዋጋ እርስዎ ለእያንዳንዱ የነዳጅ መጠን መክፈል የሚፈልጉትን የ Ether መጠን ይገልጻል።"
   },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
@@ -307,18 +283,12 @@
     "message": "ከውጭ አስመጣ",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "መለያ አስመጣ"
-  },
   "importAccountMsg": {
     "message": "የመጡ መለያዎች በመጀመሪያ ከተፈጠረው የእርስዎ MetaMask መለያ የዘር ሐረግ ጋር አይዛመዱም። ስለሚመጡ መለያዎቸ ተጨማሪ መረጃ ያግኙ"
   },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
   },
   "insufficientBalance": {
     "message": "በቂ ያልሆነ ቀሪ ሂሳብ"
@@ -363,14 +333,8 @@
   "links": {
     "message": "ማስፈንጠሪያዎች"
   },
-  "loadMore": {
-    "message": "ተጨማሪ ጫን"
-  },
   "loading": {
     "message": "በመጫን ላይ…"
-  },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
   },
   "lock": {
     "message": "ዘግተህ ውጣ"
@@ -397,9 +361,6 @@
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "አሉታዊ የ ETH መጠኖችን መላክ አይቻልም።"
-  },
   "networkName": {
     "message": "የአውታረ መረብ ስም"
   },
@@ -416,9 +377,6 @@
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "አዲስ ዕውቂያ"
-  },
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
@@ -427,12 +385,6 @@
   },
   "next": {
     "message": "ቀጣይ"
-  },
-  "noConversionRateAvailable": {
-    "message": "ምንም የልወጣ ተመን አይገኝም"
-  },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
   },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
@@ -457,9 +409,6 @@
   },
   "origin": {
     "message": "መነሻ"
-  },
-  "parameters": {
-    "message": "መለኪያዎች"
   },
   "participateInMetaMetrics": {
     "message": "በ MetaMetrics ውስጥ ይሳተፉ"
@@ -511,12 +460,6 @@
   "rejectAll": {
     "message": "ሁሉንም አትቀበል"
   },
-  "rejectTxsDescription": {
-    "message": "$1ግብይቶችን በጅምላ ውድቅ ሊያደርጉ ነው።"
-  },
-  "rejectTxsN": {
-    "message": "$1ግብይቶችን አትቀበል"
-  },
   "rejected": {
     "message": "ውድቅ የተደረገ"
   },
@@ -525,12 +468,6 @@
   },
   "removeAccount": {
     "message": "መለያ ያስወግዱ"
-  },
-  "removeAccountDescription": {
-    "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
   },
   "required": {
     "message": "የሚያስፈልግ"
@@ -599,9 +536,6 @@
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
   },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
-  },
   "sign": {
     "message": "ፈርም"
   },
@@ -620,9 +554,6 @@
   "speedUpCancellation": {
     "message": "ይህን ስረዛ ያፋጥኑ"
   },
-  "speedUpTransaction": {
-    "message": "ይህን ግብይት አፋጥን"
-  },
   "stateLogError": {
     "message": "የስቴት መዛግብትን መልሶ በማግኘት ሒደት የተፈጠረ ስህተት።"
   },
@@ -638,9 +569,6 @@
   "supportCenter": {
     "message": "የድጋፍ መስጫ ማዕከላችንን ይጎብኙ"
   },
-  "switchNetworks": {
-    "message": "አውታረ መረቦችን ቀያይር"
-  },
   "symbol": {
     "message": "ምልክት"
   },
@@ -649,9 +577,6 @@
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
-  },
-  "tips": {
-    "message": "መረጃዎች"
   },
   "to": {
     "message": "ለ"
@@ -674,41 +599,11 @@
   "transaction": {
     "message": "ግብይት"
   },
-  "transactionCancelAttempted": {
-    "message": "ግብይት የመሰረዝ ሙከራ በነዳጅ ዋጋ $1በ $2ተደርጓል"
-  },
-  "transactionCancelSuccess": {
-    "message": "ግብይቱ በ$2ላይ በሚገባ ተሰርዟል"
-  },
-  "transactionConfirmed": {
-    "message": "ግብይት በ$2ተረጋግጧል።"
-  },
-  "transactionCreated": {
-    "message": "ግብይቱ በ$1ዋጋ በ$2የተፈጠረ ነው።"
-  },
-  "transactionDropped": {
-    "message": "ግብይት ወደ $2ዝቅ ብሏል።"
-  },
   "transactionError": {
     "message": "የግብይት ስህተት። በኮንትራት ኮድ የሚላኩ ልዩ ሁኔታዎች አሉ።"
   },
   "transactionErrorNoContract": {
     "message": "ከኮንትራት ውጭ ያለ አድራሻ ተግባር ለመደወል መሞከር።"
-  },
-  "transactionErrored": {
-    "message": "ግብይቱ እንከን አጋጥሞታል።"
-  },
-  "transactionFee": {
-    "message": " የግብይት ክፍያ"
-  },
-  "transactionResubmitted": {
-    "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
-  },
-  "transactionSubmitted": {
-    "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
-  },
-  "transactionUpdated": {
-    "message": "ግብይት የዘመነው በ $2ነው።"
   },
   "transfer": {
     "message": "ያስተላልፉ"
@@ -728,29 +623,17 @@
   "unknown": {
     "message": "ያልታወቀ"
   },
-  "unknownNetwork": {
-    "message": "የማይታወቅ የግል አውታረ መረብ"
-  },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
   },
   "unlock": {
     "message": "ክፈት"
   },
-  "unlockMessage": {
-    "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
   },
   "usedByClients": {
     "message": "በተለያዩ ደንበኞች ጥቅም ላይ የዋለ ነው"
-  },
-  "userName": {
-    "message": "የተጣቃሚ ስም"
-  },
-  "viewContact": {
-    "message": "ዕውቂያን ይመልከቱ"
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
@@ -760,14 +643,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "youSign": {
-    "message": "እየፈረሙ ነው"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "የግል ዘር ሐረግዎ"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"
   }
 }

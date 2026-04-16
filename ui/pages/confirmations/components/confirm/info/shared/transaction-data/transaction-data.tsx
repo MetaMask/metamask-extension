@@ -1,8 +1,12 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
+
+import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
@@ -26,21 +30,50 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { hasTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
+import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
+import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
 
-export const TransactionData = () => {
+export const TransactionData = ({
+  data,
+  noPadding,
+  to,
+  nestedTransactionIndex,
+}: {
+  data?: Hex;
+  noPadding?: boolean;
+  to?: Hex;
+  nestedTransactionIndex?: number;
+} = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { data: currentData, to: currentTo } = txParams ?? {};
+  const transactionData = data ?? (currentData as Hex);
+  const transactionTo = to ?? (currentTo as Hex);
 
-  const transactionData = currentConfirmation?.txParams?.data as Hex;
-  const decodeResponse = useDecodedTransactionData();
+  const decodeResponse = useDecodedTransactionData({
+    data: transactionData,
+    to: transactionTo,
+  });
+
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
 
   const { value, pending } = decodeResponse;
 
+  // Don't show root transaction data if this is a batch transaction
+  if (nestedTransactions?.length && !data) {
+    return null;
+  }
+
   if (pending) {
-    return <Container isLoading />;
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!hasTransactionData(transactionData)) {
@@ -49,30 +82,47 @@ export const TransactionData = () => {
 
   if (!value) {
     return (
-      <Container transactionData={transactionData}>
+      <Container noPadding={noPadding} transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
       </Container>
     );
   }
 
-  const { data, source } = value;
-  const isExpandable = data.length > 1;
+  const { data: decodeData, source } = value;
+  const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
 
   return (
-    <Container transactionData={transactionData}>
+    <Container transactionData={transactionData} noPadding={noPadding}>
       <>
-        {data.map((method, index) => (
-          <React.Fragment key={index}>
-            <FunctionContainer
-              method={method}
-              source={source}
-              isExpandable={isExpandable}
-              chainId={chainId}
-            />
-            {index < data.length - 1 && <ConfirmInfoRowDivider />}
-          </React.Fragment>
-        ))}
+        {decodeData.map((method, index) => {
+          const isBatchedApproval =
+            nestedTransactionIndex !== undefined &&
+            nestedTransactionIndex >= 0 &&
+            APPROVAL_METHOD_NAMES.includes(method.name);
+          if (isBatchedApproval) {
+            return (
+              <React.Fragment key={index}>
+                <BatchedApprovalFunction
+                  method={method}
+                  nestedTransactionIndex={nestedTransactionIndex}
+                />
+                {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
+              </React.Fragment>
+            );
+          }
+          return (
+            <React.Fragment key={index}>
+              <FunctionContainer
+                method={method}
+                source={source}
+                isExpandable={isExpandable}
+                chainId={chainId}
+              />
+              {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
+            </React.Fragment>
+          );
+        })}
       </>
     </Container>
   );
@@ -81,20 +131,27 @@ export const TransactionData = () => {
 export function Container({
   children,
   isLoading,
+  noPadding,
   transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  noPadding?: boolean;
   transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
-      <ConfirmInfoSection data-testid="advanced-details-data-section">
+      <ConfirmInfoSection
+        noPadding={noPadding}
+        data-testid="advanced-details-data-section"
+      >
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>
@@ -192,10 +249,18 @@ function ParamValue({
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
     return <UniswapPath pathPools={value} chainId={chainId} />;
   }
+  // if its a long string value truncate it
 
   let valueString = value.toString();
+  if (valueString.length > 15 && !valueString.startsWith('0x')) {
+    valueString = renderShortTokenId(valueString, 5);
+  }
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+  if (
+    !Array.isArray(value) &&
+    valueString.startsWith('0x') &&
+    isHexString(valueString)
+  ) {
     valueString = hexStripZeros(valueString);
   }
 

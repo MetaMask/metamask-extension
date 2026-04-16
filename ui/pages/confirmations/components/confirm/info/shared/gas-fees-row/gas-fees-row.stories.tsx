@@ -2,13 +2,13 @@ import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import mockState from '../../../../../../../../test/data/mock-state.json';
+import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { GasFeesRow } from './gas-fees-row';
 
 function getStore() {
-  return configureStore(mockState);
+  return configureStore(getMockContractInteractionConfirmState());
 }
 
 const Story = {
@@ -23,7 +23,7 @@ const Story = {
             padding: 30,
           }}
         >
-          {story()}
+          <ConfirmContextProvider>{story()}</ConfirmContextProvider>
         </div>
       </Provider>
     ),
@@ -33,15 +33,13 @@ const Story = {
 export default Story;
 
 export const DefaultStory = () => (
-  <ConfirmContextProvider>
-    <GasFeesRow
-      label="Some kind of fee"
-      tooltipText="Tooltip text"
-      fiatFee="$1"
-      fiatFeeWith18SignificantDigits="0.001234"
-      nativeFee="0.0001 ETH"
-    />
-  </ConfirmContextProvider>
+  <GasFeesRow
+    label="Some kind of fee"
+    tooltipText="Tooltip text"
+    fiatFee="$1"
+    fiatFeeWith18SignificantDigits="0.001234"
+    nativeFee="0.0001 ETH"
+  />
 );
 
 DefaultStory.storyName = 'Default';

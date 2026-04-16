@@ -1,9 +1,12 @@
 import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
-import { NetworkState } from '../../shared/modules/selectors/networks';
-import { getMemoizedCurrentChainId } from './selectors';
+import {
+  getCurrentChainId,
+  NetworkState,
+} from '../../shared/lib/selectors/networks';
+import { EMPTY_OBJECT } from './shared';
 
-export type NftState = {
+type NftState = {
   metamask: {
     allNftContracts: {
       [account: string]: {
@@ -19,7 +22,7 @@ export type NftState = {
 };
 
 function getNftContractsByChainByAccount(state: NftState) {
-  return state.metamask.allNftContracts ?? {};
+  return state.metamask.allNftContracts ?? EMPTY_OBJECT;
 }
 
 /**
@@ -28,8 +31,8 @@ function getNftContractsByChainByAccount(state: NftState) {
  * @param state - Metamask state.
  * @returns All NFTs owned by the user, keyed by chain ID then account address.
  */
-function getNftsByChainByAccount(state: NftState) {
-  return state.metamask.allNfts ?? {};
+export function getNftsByChainByAccount(state: NftState) {
+  return state.metamask.allNfts ?? EMPTY_OBJECT;
 }
 
 export const getNftContractsByAddressByChain = createSelector(
@@ -49,21 +52,24 @@ export const getNftContractsByAddressByChain = createSelector(
       .flat()
       .flat();
 
-    return allNftContracts.reduce((acc, contract) => {
-      const { chainId, ...data } = contract;
+    return allNftContracts.reduce(
+      (acc, contract) => {
+        const { chainId, ...data } = contract;
 
-      const chainIdContracts = acc[chainId] ?? {};
-      acc[chainId] = chainIdContracts;
+        const chainIdContracts = acc[chainId] ?? {};
+        acc[chainId] = chainIdContracts;
 
-      chainIdContracts[data.address.toLowerCase()] = data;
+        chainIdContracts[data.address.toLowerCase()] = data;
 
-      return acc;
-    }, {} as { [chainId: string]: { [address: string]: NftContract } });
+        return acc;
+      },
+      {} as { [chainId: string]: { [address: string]: NftContract } },
+    );
   },
 );
 
 export const getNftContractsByAddressOnCurrentChain = createSelector(
-  (state: NftState & NetworkState) => getMemoizedCurrentChainId(state),
+  (state: NftState & NetworkState) => getCurrentChainId(state),
   getNftContractsByAddressByChain,
   (currentChainId, nftContractsByAddressByChain) => {
     return nftContractsByAddressByChain[currentChainId] ?? {};

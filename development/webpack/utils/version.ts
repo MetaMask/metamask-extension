@@ -1,4 +1,4 @@
-import type { BuildType } from './config';
+import type { BuildType } from '../../lib/build-type';
 
 /**
  * Computes the version number for use in the extension manifest. Uses the

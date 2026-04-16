@@ -1,26 +1,32 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { getCurrentQRHardwareState } from '../../../selectors';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { getActiveQrCodeScanRequest } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  cancelSyncQRHardware as cancelSyncQRHardwareAction,
-  cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
   rejectPendingApproval,
+  cancelQrCodeScan,
 } from '../../../store/actions';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
 const QRHardwarePopover = () => {
   const t = useI18nContext();
 
-  const qrHardware = useSelector(getCurrentQRHardwareState);
-  const { sync, sign } = qrHardware;
-  const showWalletImporter = sync?.reading;
-  const showSignRequest = sign?.request;
-  const showPopover = showWalletImporter || showSignRequest;
+  const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
+
+  const environmentType = getEnvironmentType();
+  const isRestrictedEnv =
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const [errorTitle, setErrorTitle] = useState('');
 
   const { txData } = useSelector((state) => {
@@ -31,12 +37,11 @@ const QRHardwarePopover = () => {
   // we want to block the changing by sign request id;
   const _txData = useMemo(() => {
     return txData;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sign?.request?.requestId]);
+  }, [activeScanRequest?.requestId]);
 
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
-    () => dispatch(cancelSyncQRHardwareAction()),
+    () => dispatch(cancelQrCodeScan()),
     [dispatch],
   );
 
@@ -48,37 +53,50 @@ const QRHardwarePopover = () => {
       ),
     );
     dispatch(cancelTx(_txData));
-    dispatch(cancelQRHardwareSignRequestAction());
+    dispatch(cancelQrCodeScan());
   }, [dispatch, _txData]);
 
   const title = useMemo(() => {
-    let _title = '';
-    if (showSignRequest) {
-      _title = t('QRHardwareSignRequestTitle');
-    } else if (showWalletImporter) {
-      _title = t('QRHardwareWalletImporterTitle');
+    if (activeScanRequest === QrScanRequestType.SIGN) {
+      return t('QRHardwareSignRequestTitle');
+    }
+    if (activeScanRequest === QrScanRequestType.PAIR) {
+      return t('QRHardwareWalletImporterTitle');
     }
     if (errorTitle !== '') {
-      _title = errorTitle;
+      return errorTitle;
     }
-    return _title;
-  }, [showSignRequest, showWalletImporter, t, errorTitle]);
-  return showPopover ? (
+    return '';
+  }, [activeScanRequest, t, errorTitle]);
+
+  // PAIR requests are always handled in a fullscreen tab opened by the
+  // add-wallet-modal. Rendering in sidepanel/popup would cause BaseReader's
+  // checkEnvironment() to open a duplicate fullscreen tab, stealing focus
+  // from the tab that shows the "Select an account" list after scanning.
+  if (isRestrictedEnv && activeScanRequest?.type === QrScanRequestType.PAIR) {
+    return null;
+  }
+
+  return activeScanRequest ? (
     <Popover
       title={title}
-      onClose={showWalletImporter ? walletImporterCancel : signRequestCancel}
+      onClose={
+        activeScanRequest.type === QrScanRequestType.PAIR
+          ? walletImporterCancel
+          : signRequestCancel
+      }
     >
-      {showWalletImporter && (
+      {activeScanRequest.type === QrScanRequestType.PAIR && (
         <QRHardwareWalletImporter
           handleCancel={walletImporterCancel}
           setErrorTitle={setErrorTitle}
         />
       )}
-      {showSignRequest && (
+      {activeScanRequest.type === QrScanRequestType.SIGN && (
         <QRHardwareSignRequest
           setErrorTitle={setErrorTitle}
           handleCancel={signRequestCancel}
-          request={sign.request}
+          request={activeScanRequest.request}
         />
       )}
     </Popover>

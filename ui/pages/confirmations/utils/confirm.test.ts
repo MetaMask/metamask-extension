@@ -13,6 +13,7 @@ import {
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
   toPunycodeURL,
+  stripProtocol,
 } from './confirm';
 
 const typedDataMsg =
@@ -79,12 +80,34 @@ describe('confirm util', () => {
   });
 
   describe('isValidASCIIURL', () => {
-    it('returns true for URL containing only ASCII characters', () => {
+    it('returns true for URL containing only ASCII characters in its hostname', () => {
       expect(isValidASCIIURL('https://www.google.com')).toEqual(true);
     });
 
-    it('returns false for URL containing special character', () => {
+    it('returns true for URL with both its hostname and path containing ASCII characters', () => {
+      expect(
+        isValidASCIIURL('https://infura.io/gnosis?x=xn--ifura-dig.io'),
+      ).toStrictEqual(true);
+    });
+
+    it('returns true for URL with its hostname containing ASCII characters and its path containing non-ASCII characters', () => {
+      expect(
+        isValidASCIIURL('https://infura.io/gnosis?x=iոfura.io'),
+      ).toStrictEqual(true);
+      expect(
+        isValidASCIIURL('infura.io:7777/gnosis?x=iոfura.io'),
+      ).toStrictEqual(true);
+    });
+
+    it('returns false for URL with its hostname containing non-ASCII characters', () => {
       expect(isValidASCIIURL('https://iոfura.io/gnosis')).toStrictEqual(false);
+      expect(isValidASCIIURL('iոfura.io:7777/gnosis?x=test')).toStrictEqual(
+        false,
+      );
+    });
+
+    it('returns false for empty string', () => {
+      expect(isValidASCIIURL('')).toStrictEqual(false);
     });
   });
 
@@ -93,8 +116,11 @@ describe('confirm util', () => {
       expect(toPunycodeURL('https://iոfura.io/gnosis')).toStrictEqual(
         'https://xn--ifura-dig.io/gnosis',
       );
-      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
-        'https://www.google.com/',
+      expect(toPunycodeURL('https://iոfura.io')).toStrictEqual(
+        'https://xn--ifura-dig.io',
+      );
+      expect(toPunycodeURL('https://iոfura.io/')).toStrictEqual(
+        'https://xn--ifura-dig.io/',
       );
       expect(
         toPunycodeURL('https://iոfura.io/gnosis:5050?test=iոfura&foo=bar'),
@@ -102,7 +128,19 @@ describe('confirm util', () => {
         'https://xn--ifura-dig.io/gnosis:5050?test=i%D5%B8fura&foo=bar',
       );
       expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
-        'https://www.google.com/',
+        'https://www.google.com',
+      );
+    });
+  });
+
+  describe('stripUrlProtocol', () => {
+    it('removes https protocol from URL', () => {
+      expect(stripProtocol('https://example.com')).toStrictEqual('example.com');
+    });
+
+    it('removes http protocol from URL', () => {
+      expect(stripProtocol('http://localhost:8545')).toStrictEqual(
+        'localhost:8545',
       );
     });
   });

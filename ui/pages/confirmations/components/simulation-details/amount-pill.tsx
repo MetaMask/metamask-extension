@@ -4,18 +4,18 @@ import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
@@ -26,27 +26,34 @@ import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
  * @param props
  * @param props.asset
  * @param props.amount
+ * @param props.isApproval
+ * @param props.isAllApproval
+ * @param props.isUnlimitedApproval
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
   amount: BigNumber;
-}> = ({ asset, amount }) => {
+  isApproval?: boolean;
+  isAllApproval?: boolean;
+  isUnlimitedApproval?: boolean;
+}> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
+  const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
+  const color = getColor({ amount, isApproval });
 
-  const backgroundColor = amount.isNegative()
-    ? BackgroundColor.errorMuted
-    : BackgroundColor.successMuted;
-
-  const color = amount.isNegative()
-    ? TextColor.errorAlternative
-    : TextColor.successDefault;
-
-  const amountParts: string[] = [amount.isNegative() ? '-' : '+'];
+  const amountParts: string[] = [];
   const tooltipParts: string[] = [];
 
+  if (!isApproval) {
+    amountParts.push(amount.isNegative() ? '-' : '+');
+  }
+
   // ERC721 amounts are always 1 and are not displayed.
-  if (asset.standard !== TokenStandard.ERC721) {
-    const formattedAmount = formatAmount(locale, amount.abs());
+  if (asset.standard !== TokenStandard.ERC721 && !isAllApproval) {
+    const formattedAmount = isUnlimitedApproval
+      ? t('unlimited')
+      : formatAmount(locale, amount.abs());
+
     const fullPrecisionAmount = formatAmountMaxPrecision(locale, amount.abs());
 
     amountParts.push(formattedAmount);
@@ -69,16 +76,19 @@ export const AmountPill: React.FC<{
     tooltipParts.push(tooltipIdPart);
   }
 
+  if (isAllApproval) {
+    amountParts.push(t('all'));
+    tooltipParts.push(t('all'));
+  }
+
   return (
     <Box
       data-testid="simulation-details-amount-pill"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      backgroundColor={backgroundColor}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       style={{
-        padding: '0px 8px',
         flexShrink: 1,
         flexBasis: 'auto',
         minWidth: 0,
@@ -98,3 +108,19 @@ export const AmountPill: React.FC<{
     </Box>
   );
 };
+
+function getColor({
+  amount,
+  isApproval,
+}: {
+  amount: BigNumber;
+  isApproval?: boolean;
+}) {
+  if (isApproval) {
+    return TextColor.textDefault;
+  }
+
+  return amount.isNegative()
+    ? TextColor.errorAlternative
+    : TextColor.successDefault;
+}

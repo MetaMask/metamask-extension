@@ -2,10 +2,17 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Text } from '../../../../../component-library';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { Severity } from '../../../../../../helpers/constants/design-system';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import {
+  Severity,
+  TextColor,
+} from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps } from './alert-row';
+import {
+  ConfirmInfoAlertRow,
+  ConfirmInfoAlertRowProps,
+  getAlertTextColors,
+} from './alert-row';
 
 const onProcessActionMock = jest.fn();
 
@@ -91,6 +98,24 @@ describe('AlertRow', () => {
       expect(queryByTestId('inline-alert')).toBeNull();
     });
 
+    describe('display row only when there is an alert', () => {
+      it('does not render when isShownWithAlertsOnly is true and there is no alert', () => {
+        const { queryByTestId } = renderAlertRow({
+          isShownWithAlertsOnly: true,
+        });
+        expect(queryByTestId('inline-alert')).toBeNull();
+      });
+
+      it('renders when isShownWithAlertsOnly is false and there is an alert', () => {
+        const { getByTestId } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+          isShownWithAlertsOnly: false,
+        });
+        expect(getByTestId('inline-alert')).toBeDefined();
+      });
+    });
+
     describe('Modal visibility', () => {
       it('show when clicked in the inline alert', () => {
         const { getByTestId } = renderAlertRow({
@@ -155,6 +180,22 @@ describe('AlertRow', () => {
         fireEvent.click(getByText(ACTION_LABEL_MOCK));
         expect(getByTestId('inline-alert')).toBeDefined();
       });
+    });
+  });
+
+  describe('getAlertTextColors', () => {
+    it('returns TextColor.errorDefault for Severity.Danger', () => {
+      expect(getAlertTextColors(Severity.Danger)).toBe(TextColor.errorDefault);
+    });
+
+    it('returns TextColor.warningDefault for Severity.Warning', () => {
+      expect(getAlertTextColors(Severity.Warning)).toBe(
+        TextColor.warningDefault,
+      );
+    });
+
+    it('returns TextColor.textAlternative for undefined severity', () => {
+      expect(getAlertTextColors()).toBe(TextColor.textAlternative);
     });
   });
 });

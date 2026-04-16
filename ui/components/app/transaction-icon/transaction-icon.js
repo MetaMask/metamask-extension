@@ -21,6 +21,10 @@ const ICON_MAP = {
   [TransactionGroupCategory.signatureRequest]: IconName.SecurityTick,
   [TransactionGroupCategory.swap]: IconName.SwapHorizontal,
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
+  [TransactionGroupCategory.bridge]: IconName.Bridge,
+  [TransactionGroupCategory.redeposit]: IconName.Refresh,
+  'stake:deposit': IconName.Stake,
+  'stake:withdraw': IconName.Stake,
 };
 
 const COLOR_MAP = {
@@ -61,8 +65,10 @@ export default function TransactionIcon({ status, category }) {
     );
     return (
       <AvatarIcon
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={backgroundColor}
+        iconName={IconName.Question}
         size={AvatarIconSize.Md}
+        color={color}
       />
     );
   }
@@ -97,5 +103,8 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.signatureRequest,
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
+    TransactionGroupCategory.bridge,
+    'stake:deposit',
+    'stake:withdraw',
   ]).isRequired,
 };

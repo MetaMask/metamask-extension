@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { Box, Icon, IconName, IconSize, PopoverHeader, Text } from '..';
+import README from './README.mdx';
+import { Text } from '../text';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,12 +13,16 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import README from './README.mdx';
-import { Popover, PopoverPosition, PopoverRole } from '.';
+import { Popover } from './popover';
+import { PopoverPosition, PopoverRole } from './popover.types';
+import { Box } from '../box';
+import { PopoverHeader } from '../popover-header';
+import { Icon, IconName, IconSize } from '../icon';
 
 export default {
   title: 'Components/ComponentLibrary/Popover',
   component: Popover,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

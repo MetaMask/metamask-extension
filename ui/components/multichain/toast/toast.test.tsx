@@ -1,9 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { InternalAccount } from '@metamask/keyring-api';
-import { AvatarAccount, AvatarAccountSize } from '../../component-library';
-import { BorderColor } from '../../../helpers/constants/design-system';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { Toast } from '.';
 
@@ -22,7 +24,6 @@ const ToastArgs = {
     <AvatarAccount
       address={CHAOS_ACCOUNT.address}
       size={AvatarAccountSize.Md}
-      borderColor={BorderColor.transparent}
     />
   ),
   text: 'This is the Toast text',
@@ -50,6 +51,6 @@ describe('Toast', () => {
       fireEvent.click(closeButton);
     }
     expect(closeButton).toBeDefined();
-    expect(onActionClick).toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalled();
   });
 });

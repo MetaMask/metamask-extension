@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import {
   FALLBACK_VARIATION,
   NameControllerState,
@@ -9,7 +10,7 @@ import { getNames } from '../selectors';
 import { useName } from './useName';
 
 jest.mock('react-redux', () => ({
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelector: (selector: any) => selector(),
 }));
@@ -36,7 +37,7 @@ const PROPOSED_NAMES_MOCK = {
 
 describe('useName', () => {
   const getNamesMock =
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.mocked<(state: any) => NameControllerState['names']>(getNames);
 
@@ -47,13 +48,15 @@ describe('useName', () => {
   it('returns default values if no state', () => {
     getNamesMock.mockReturnValue({} as NameControllerState['names']);
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: null,
-      sourceId: null,
-      origin: null,
-      proposedNames: {},
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: null,
+        sourceId: null,
+        origin: null,
+        proposedNames: {},
+      });
     });
   });
 
@@ -71,13 +74,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: null,
-      sourceId: null,
-      origin: null,
-      proposedNames: {},
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: null,
+        sourceId: null,
+        origin: null,
+        proposedNames: {},
+      });
     });
   });
 
@@ -95,13 +100,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 
@@ -119,13 +126,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 
@@ -144,13 +153,15 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+      renderHook(() => {
+        const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-      expect(nameEntry).toStrictEqual<NameEntry>({
-        name: NAME_MOCK,
-        sourceId: SOURCE_ID_MOCK,
-        proposedNames: PROPOSED_NAMES_MOCK,
-        origin: ORIGIN_MOCK,
+        expect(nameEntry).toStrictEqual<NameEntry>({
+          name: NAME_MOCK,
+          sourceId: SOURCE_ID_MOCK,
+          proposedNames: PROPOSED_NAMES_MOCK,
+          origin: ORIGIN_MOCK,
+        });
       });
     });
 
@@ -174,13 +185,15 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+      renderHook(() => {
+        const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-      expect(nameEntry).toStrictEqual<NameEntry>({
-        name: NAME_MOCK,
-        proposedNames: {},
-        sourceId: SOURCE_ID_MOCK,
-        origin: ORIGIN_MOCK,
+        expect(nameEntry).toStrictEqual<NameEntry>({
+          name: NAME_MOCK,
+          proposedNames: {},
+          sourceId: SOURCE_ID_MOCK,
+          origin: ORIGIN_MOCK,
+        });
       });
     });
   });
@@ -199,13 +212,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName('0xAbC123', TYPE_MOCK, VARIATION_MOCK);
+    renderHook(() => {
+      const nameEntry = useName('0xAbC123', TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 });

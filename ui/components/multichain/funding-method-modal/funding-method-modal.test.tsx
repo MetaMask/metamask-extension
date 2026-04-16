@@ -2,12 +2,15 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
 
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -35,6 +38,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -50,6 +54,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -64,11 +69,12 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Token marketplace'));
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
     expect(openBuyCryptoInPdapp).toHaveBeenCalled();
   });
 
@@ -80,11 +86,12 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={onClickReceive}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Receive crypto'));
+    fireEvent.click(getByText(messages.receiveCrypto.message));
     expect(onClickReceive).toHaveBeenCalled();
   });
 
@@ -97,11 +104,12 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Transfer crypto'));
+    fireEvent.click(getByText(messages.transferCrypto.message));
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expect.stringContaining('transfer'),
     });

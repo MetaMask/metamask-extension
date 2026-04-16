@@ -29,6 +29,7 @@ export default {
           },
         },
         options: {},
+        scopes: ['eip155:0'],
         type: 'eip155:eoa',
       },
     ],

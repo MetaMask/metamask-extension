@@ -6,15 +6,12 @@ import {
 
 export const INSUFFICIENT_GAS_TRANSACTION_MOCK = {
   from: SENDER_ADDRESS_MOCK,
-  maxFeePerGas: '0x0',
-  maxPriorityFeePerGas: '0x0',
   to: RECIPIENT_ADDRESS_MOCK,
   value: '0x6BC75E2D63100000',
 };
 
 export const INSUFFICIENT_GAS_REQUEST_MOCK: MockRequestResponse = {
   request: {
-    id: '0',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [

@@ -2,17 +2,16 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { Container } from '../../shared/transaction-data/transaction-data';
 import {
   MethodDataRow,
   OriginRow,
@@ -20,6 +19,8 @@ import {
 } from '../../shared/transaction-details/transaction-details';
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
+import { NetworkRow } from '../../shared/network-row/network-row';
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -32,29 +33,28 @@ const Spender = ({
     useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
+  const parsedTransactionData = useTokenTransactionData();
 
-  const decodedResponse = useDecodedTransactionData();
-
-  const { value, pending } = decodedResponse;
-
-  if (pending) {
-    return <Container isLoading />;
-  }
-
-  if (!value) {
+  if (!parsedTransactionData) {
     return null;
   }
 
-  const spender = value.data[0].params[0].value;
+  const spender =
+    parsedTransactionData.args?._spender ?? // ERC-20 - approve
+    parsedTransactionData.args?._operator ?? // ERC-721 - setApprovalForAll
+    parsedTransactionData.args?.spender; //  Fiat Token V2 - increaseAllowance
+
   const { chainId } = transactionMeta;
 
-  if (getIsRevokeSetApprovalForAll(value)) {
+  if (getIsRevokeSetApprovalForAll(parsedTransactionData)) {
     return null;
   }
 
   return (
     <>
-      <ConfirmInfoRow
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.Spender}
+        ownerId={transactionMeta.id}
         label={t(isSetApprovalForAll ? 'permissionFor' : 'spender')}
         tooltip={t(
           isNFT ? 'spenderTooltipDesc' : 'spenderTooltipERC20ApproveDesc',
@@ -62,7 +62,7 @@ const Spender = ({
         data-testid="confirmation__approve-spender"
       >
         <ConfirmInfoRowAddress address={spender} chainId={chainId} />
-      </ConfirmInfoRow>
+      </ConfirmInfoAlertRow>
 
       <ConfirmInfoRowDivider />
     </>
@@ -77,18 +77,14 @@ export const ApproveDetails = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
+      <NetworkRow />
       <OriginRow />
       <SigningInWithRow />
-      {showAdvancedDetails && (
-        <>
-          <RecipientRow />
-          <MethodDataRow />
-        </>
-      )}
+      <RecipientRow />
+      {showAdvancedDetails && <MethodDataRow />}
     </ConfirmInfoSection>
   );
 };

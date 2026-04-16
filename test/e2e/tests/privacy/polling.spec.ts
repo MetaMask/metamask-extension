@@ -2,11 +2,13 @@ import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
-import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
-import HomePage from '../../page-objects/pages/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { login } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 const infuraMainnetUrl =
   'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -232,6 +234,20 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           result: '0x15af1d78b58c40000',
         },
       })),
+    await mockServer
+      .forGet(
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
   ];
 }
 const DELAY_UNTIL_NEXT_POLL = 20000;
@@ -262,23 +278,26 @@ describe('Account Tracker API polling', function () {
   it('should make the expected RPC calls to infura', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
+          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
+        await homepage.checkPageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
         await driver.delay(DELAY_UNTIL_NEXT_POLL);
-        const infuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        const infuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
 
         // TODO: expecting the length of infuraJsonRpcRequests would be more accurate
         if (process.env.PORTFOLIO_VIEW) {
@@ -288,14 +307,6 @@ describe('Account Tracker API polling', function () {
               (obj.params as unknown[])?.[1] === '3',
           );
 
-          const ethGetBalanceInfuraRequests = infuraJsonRpcRequests.filter(
-            (obj) =>
-              obj.method === 'eth_getBalance' &&
-              (obj.params as unknown[])?.[1] === '3',
-          );
-
-          // We will call eth_getBalance for Sepolia and Linea Sepolia because multicall is not available for them
-          expect(ethGetBalanceInfuraRequests.length).toEqual(2);
           // We will call eth_call for linea mainnet and mainnet
           expect(ethCallInfuraRequests.length).toEqual(2);
         } else {
@@ -316,9 +327,7 @@ describe('Account Tracker API polling', function () {
       },
     );
   });
-});
 
-describe('Token Detection', function () {
   async function mockAccountApiForPortfolioView(mockServer: Mockttp) {
     return [
       await mockServer
@@ -350,22 +359,25 @@ describe('Token Detection', function () {
         })),
     ];
   }
-  it('should make calls to account api as expected', async function () {
+  it('should make token detection calls to account api as expected', async function () {
     if (process.env.PORTFOLIO_VIEW) {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerOnMainnet()
-            .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          fixtures: new FixtureBuilderV2()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+                '0xe708': true,
+              },
+            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,
         },
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await loginWithoutBalanceValidation(driver);
+          await login(driver, { validateBalance: false });
           const homepage = new HomePage(driver);
-          await homepage.check_pageIsLoaded();
+          await homepage.checkPageIsLoaded();
           await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
           for (const single of mockedEndpoints) {

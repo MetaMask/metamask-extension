@@ -1,18 +1,23 @@
-import { NamespaceId } from '@metamask/snaps-utils';
-import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  KnownCaipNamespace,
+  CaipNamespace,
+} from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  getMemoizedAccountName,
   getAddressBookEntryByNetwork,
   AddressBookMetaMaskState,
   AccountsMetaMaskState,
+  getAccountNameFromState,
 } from '../../selectors/snaps';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
+import { decimalToHex } from '../../../shared/lib/conversion.utils';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type UseDisplayNameParams = {
   chain: {
-    namespace: NamespaceId;
+    namespace: CaipNamespace;
     reference: string;
   };
   chainId: CaipChainId;
@@ -38,8 +43,13 @@ export const useDisplayName = (
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;
 
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, [parsedAddress]),
+  );
+
+  const accountGroupName = accountGroups[0]?.metadata.name;
   const accountName = useSelector((state: AccountsMetaMaskState) =>
-    getMemoizedAccountName(state, parsedAddress),
+    getAccountNameFromState(state, parsedAddress),
   );
 
   const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
@@ -50,5 +60,12 @@ export const useDisplayName = (
     ),
   );
 
-  return accountName || (isEip155 && addressBookEntry?.name) || undefined;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return (
+    accountGroupName ||
+    accountName ||
+    (isEip155 && addressBookEntry?.name) ||
+    undefined
+  );
 };

@@ -1,5 +1,5 @@
 import { MINUTE, SECOND } from '../constants/time';
-import getFetchWithTimeout from '../modules/fetch-with-timeout';
+import getFetchWithTimeout from './fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
 const fetchWithCache = async ({
@@ -10,10 +10,12 @@ const fetchWithCache = async ({
   allowStale = false,
 }: {
   url: string;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchOptions?: Record<string, any>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cacheOptions?: Record<string, any>;
   functionName: string;

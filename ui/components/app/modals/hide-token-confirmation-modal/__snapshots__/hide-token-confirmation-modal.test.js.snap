@@ -11,48 +11,13 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
       Hide token?
     </div>
     <div
-      class=""
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12 hide-token-confirmation__identicon"
     >
-      <div
-        class="identicon hide-token-confirmation__identicon"
-        style="height: 45px; width: 45px; border-radius: 22.5px;"
+      <span
+        class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
       >
-        <div
-          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 45px; height: 45px; display: inline-block; background: rgb(24, 151, 242);"
-        >
-          <svg
-            height="45"
-            width="45"
-            x="0"
-            y="0"
-          >
-            <rect
-              fill="#2362E1"
-              height="45"
-              transform="translate(5.047495572364477 -7.501374313922141) rotate(458.4 22.5 22.5)"
-              width="45"
-              x="0"
-              y="0"
-            />
-            <rect
-              fill="#F94301"
-              height="45"
-              transform="translate(-21.604864626070608 11.239244487403075) rotate(268.8 22.5 22.5)"
-              width="45"
-              x="0"
-              y="0"
-            />
-            <rect
-              fill="#FA7900"
-              height="45"
-              transform="translate(-12.763482299017626 41.456272332211) rotate(117.3 22.5 22.5)"
-              width="45"
-              x="0"
-              y="0"
-            />
-          </svg>
-        </div>
-      </div>
+        T
+      </span>
     </div>
     <div
       class="hide-token-confirmation__symbol"
@@ -65,16 +30,16 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
       You can add this token back in the future by going to “Import token” in your accounts options menu.
     </div>
     <div
-      class="hide-token-confirmation__buttons"
+      class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
     >
       <button
-        class="button btn--rounded btn-secondary hide-token-confirmation__button"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
         data-testid="hide-token-confirmation__cancel"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-primary hide-token-confirmation__button"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="hide-token-confirmation__hide"
       >
         Hide

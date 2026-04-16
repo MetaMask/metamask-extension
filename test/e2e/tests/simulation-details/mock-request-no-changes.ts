@@ -2,8 +2,6 @@ import { MockRequestResponse, SENDER_ADDRESS_MOCK } from './types';
 
 export const NO_CHANGES_TRANSACTION_MOCK = {
   from: SENDER_ADDRESS_MOCK,
-  maxFeePerGas: '0x0',
-  maxPriorityFeePerGas: '0x0',
   to: SENDER_ADDRESS_MOCK,
   value: '0x0',
 };

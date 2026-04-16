@@ -94,7 +94,7 @@ describe('Notification Manager', () => {
       top: 0,
       type: 'popup',
       url: 'notification.html',
-      width: 360,
+      width: 400,
     });
   });
 });

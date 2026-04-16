@@ -1,0 +1,64 @@
+import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
+import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+
+describe('Test Protocol Snaps', function () {
+  it('can call getBlockHeight exposed by Snap', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
+        title: this.test?.fullTitle(),
+        ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          withProtocolSnap: true,
+        }),
+      },
+      async ({ driver, mockServer, extensionId }) => {
+        await login(driver);
+        const mockBlockHeight = 368556246;
+        await mockServer
+          .forPost('https://api.devnet.solana.com/')
+          .thenJson(200, {
+            id: 1,
+            jsonrpc: '2.0',
+            result: mockBlockHeight,
+          });
+
+        const devnetScope = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1';
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectProtocolButton',
+          { url: DAPP_ONE_URL },
+        );
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await testDapp.connectExternallyConnectable(extensionId);
+        await testDapp.initCreateSessionScopes([devnetScope]);
+
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.invokeMethodAndCheckResult({
+          scope: devnetScope,
+          method: 'getBlockHeight',
+          expectedResult: mockBlockHeight.toString(),
+        });
+      },
+    );
+  });
+});

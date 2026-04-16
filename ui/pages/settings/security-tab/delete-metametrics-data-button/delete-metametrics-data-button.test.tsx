@@ -2,12 +2,14 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
@@ -27,6 +29,9 @@ describe('DeleteMetaMetricsDataButton', () => {
   beforeEach(() => {
     useDispatchMock.mockReturnValue(mockDispatch);
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getParticipateInMetaMetrics) {
+        return true;
+      }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
       }
@@ -52,12 +57,14 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(getByTestId('delete-metametrics-data-button')).toBeInTheDocument();
-    expect(getAllByText('Delete MetaMetrics data')).toHaveLength(2);
+    expect(getAllByText(messages.deleteMetaMetricsData.message)).toHaveLength(
+      2,
+    );
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Policy. "`,
     );
   });
   it('should enable the data deletion button when metrics is opted in and metametrics id is available ', async () => {
@@ -67,19 +74,22 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Policy. "`,
     );
   });
   it('should enable the data deletion button when page mounts after a deletion task is performed and more data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
+      }
+      if (selector === getParticipateInMetaMetrics) {
+        return true;
       }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
@@ -92,21 +102,21 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Policy. "`,
     );
   });
 
-  // if user does not opt in to participate in metrics or for profile sync, metametricsId will not be created.
+  // if user does not opt in to participate in metrics or for backup and sync, metametricsId will not be created.
   it('should disable the data deletion button when there is metametrics id not available', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getMetaMetricsId) {
-        return null;
+      if (selector === getParticipateInMetaMetrics) {
+        return false;
       }
       return undefined;
     });
@@ -116,13 +126,13 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Policy. "`,
     );
     expect(
       container.querySelector('.settings-page__content-item-col')?.textContent,
@@ -154,13 +164,13 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy policy "`,
+      `" You initiated deletion on 7/06/2024. This process can take up to 30 days. View the Privacy Policy. "`,
     );
   });
 
@@ -187,13 +197,13 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy policy "`,
+      `" You initiated deletion on 7/06/2024. This process can take up to 30 days. View the Privacy Policy. "`,
     );
   });
 
@@ -204,7 +214,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     const deleteButton = getByRole('button', {
-      name: 'Delete MetaMetrics data',
+      name: messages.deleteMetaMetricsData.message,
     });
     fireEvent.click(deleteButton);
     expect(mockDispatch).toHaveBeenCalledWith(openDeleteMetaMetricsDataModal());

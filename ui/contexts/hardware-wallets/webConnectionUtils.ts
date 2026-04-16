@@ -1,0 +1,494 @@
+import {
+  LEDGER_USB_VENDOR_ID,
+  TREZOR_USB_VENDOR_IDS,
+} from '../../../shared/constants/hardware-wallets';
+import { CameraPermissionState } from './constants';
+import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
+
+/**
+ * Check if WebHID is available in the current browser
+ */
+export function isWebHidAvailable(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.navigator !== 'undefined' &&
+    'hid' in window.navigator
+  );
+}
+
+/**
+ * Check if WebUSB is available in the current browser
+ */
+export function isWebUsbAvailable(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.navigator !== 'undefined' &&
+    'usb' in window.navigator
+  );
+}
+
+/**
+ * Check if camera APIs are available in the current browser.
+ */
+export function isCameraAvailable(): boolean {
+  if (globalThis.window === undefined) {
+    return false;
+  }
+  const { navigator } = globalThis;
+  return (
+    navigator.mediaDevices !== undefined &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
+  );
+}
+
+/** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
+const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
+  'Unable to determine camera permission state';
+
+/**
+ * Shared probe for the browser camera permission. Returns `null` when
+ * `permissions.query` throws so callers can map to `Unknown` vs surface an error.
+ */
+async function queryCameraPermissionDomState(): Promise<PermissionState | null> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const { permissions } = navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Check if a device matches the vendor filters for a specific hardware wallet type
+ *
+ * @param device - The device to check (HIDDevice or USBDevice)
+ * @param walletType - The hardware wallet type to match against
+ * @returns true if the device matches the filters for the specified wallet type
+ */
+function isHardwareWalletDevice(
+  device: HIDDevice | USBDevice,
+  walletType: HardwareWalletType,
+): boolean {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return device.vendorId === Number(LEDGER_USB_VENDOR_ID);
+    case HardwareWalletType.Trezor:
+      return TREZOR_USB_VENDOR_IDS.some(
+        (filter) =>
+          device.vendorId === filter.vendorId &&
+          device.productId === filter.productId,
+      );
+    default:
+      return false;
+  }
+}
+
+/**
+ * Get the device filters for a specific hardware wallet type
+ *
+ * @param walletType - The hardware wallet type to get filters for
+ * @returns Device filters for WebHID or WebUSB
+ */
+function getDeviceFilters(
+  walletType: HardwareWalletType,
+): HIDDeviceFilter[] | USBDeviceFilter[] {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }];
+    case HardwareWalletType.Trezor:
+      return TREZOR_USB_VENDOR_IDS;
+    default:
+      return [];
+  }
+}
+
+/**
+ * Check hardware wallet permission based on wallet type
+ *
+ * @param walletType - The type of hardware wallet (Ledger uses WebHID, Trezor uses WebUSB)
+ * @returns Permission state for the specified wallet type
+ */
+export async function checkHardwareWalletPermission(
+  walletType: HardwareWalletType,
+): Promise<HardwareConnectionPermissionState> {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return await checkWebHidPermission(walletType);
+    case HardwareWalletType.Trezor:
+      return await checkWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return await checkCameraPermissionState();
+    default:
+      return HardwareConnectionPermissionState.Denied;
+  }
+}
+
+/**
+ * Check camera permission state for hardware-wallet permission UI.
+ */
+export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+
+  switch (domState) {
+    case CameraPermissionState.Granted:
+      return HardwareConnectionPermissionState.Granted;
+    case CameraPermissionState.Denied:
+      return HardwareConnectionPermissionState.Denied;
+    default:
+      return HardwareConnectionPermissionState.Prompt;
+  }
+}
+
+/**
+ * Check if WebHID permission is granted by checking for paired devices
+ *
+ * @param walletType - The hardware wallet type to check for
+ */
+export async function checkWebHidPermission(
+  walletType: HardwareWalletType,
+): Promise<HardwareConnectionPermissionState> {
+  if (!isWebHidAvailable()) {
+    return HardwareConnectionPermissionState.Denied;
+  }
+
+  try {
+    const devices = await window.navigator.hid.getDevices();
+
+    // Check if any devices matching the wallet type are paired
+    const hasDevice = devices.some((device) =>
+      isHardwareWalletDevice(device, walletType),
+    );
+
+    if (hasDevice) {
+      return HardwareConnectionPermissionState.Granted;
+    }
+
+    // No paired devices means we need to request permission
+    return HardwareConnectionPermissionState.Prompt;
+  } catch (error) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+}
+
+/**
+ * Check if WebUSB permission is granted by checking for paired devices
+ *
+ * @param walletType - The hardware wallet type to check for
+ */
+export async function checkWebUsbPermission(
+  walletType: HardwareWalletType,
+): Promise<HardwareConnectionPermissionState> {
+  if (!isWebUsbAvailable()) {
+    return HardwareConnectionPermissionState.Denied;
+  }
+
+  try {
+    const devices = await window.navigator.usb.getDevices();
+
+    // Check if any devices matching the wallet type are paired
+    const hasDevice = devices.some((device) =>
+      isHardwareWalletDevice(device, walletType),
+    );
+
+    if (hasDevice) {
+      return HardwareConnectionPermissionState.Granted;
+    }
+
+    // No paired devices means we need to request permission
+    return HardwareConnectionPermissionState.Prompt;
+  } catch (error) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+}
+
+/**
+ * Request hardware wallet permission based on wallet type
+ *
+ * @param walletType - The type of hardware wallet (Ledger uses WebHID, Trezor uses WebUSB)
+ * @returns true if permission was granted
+ */
+export async function requestHardwareWalletPermission(
+  walletType: HardwareWalletType,
+): Promise<boolean> {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return requestWebHidPermission(walletType);
+    case HardwareWalletType.Trezor:
+      return requestWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return requestCameraPermission();
+    default:
+      return false;
+  }
+}
+
+/**
+ * Request camera permission from the user.
+ */
+export async function requestCameraPermission(): Promise<boolean> {
+  if (!isCameraAvailable()) {
+    return false;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
+
+    stream.getTracks().forEach((track) => track.stop());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Return browser camera permission state for adapter readiness checks.
+ *
+ * @throws {Error} When the permission probe fails (equivalent to
+ * `HardwareConnectionPermissionState.Unknown` from `checkCameraPermissionState`).
+ */
+export async function checkCameraPermission(): Promise<PermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    throw new Error(CAMERA_PERMISSION_PROBE_FAILED_MESSAGE);
+  }
+  return domState;
+}
+
+/**
+ * Request WebHID permission from the user
+ * This will show the browser's device selection dialog
+ *
+ * @param walletType - The hardware wallet type to request permission for
+ */
+export async function requestWebHidPermission(
+  walletType: HardwareWalletType,
+): Promise<boolean> {
+  if (!isWebHidAvailable()) {
+    return false;
+  }
+
+  try {
+    const devices = await window.navigator.hid.requestDevice({
+      filters: getDeviceFilters(walletType) as HIDDeviceFilter[],
+    });
+
+    // Check if user selected a device matching the wallet type
+    const hasDevice = devices.some((device) =>
+      isHardwareWalletDevice(device, walletType),
+    );
+
+    return hasDevice;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Request WebUSB permission from the user
+ * This will show the browser's device selection dialog
+ *
+ * @param walletType - The hardware wallet type to request permission for
+ */
+export async function requestWebUsbPermission(
+  walletType: HardwareWalletType,
+): Promise<boolean> {
+  if (!isWebUsbAvailable()) {
+    return false;
+  }
+
+  try {
+    const device = await window.navigator.usb.requestDevice({
+      filters: getDeviceFilters(walletType) as USBDeviceFilter[],
+    });
+
+    const hasDevice = isHardwareWalletDevice(device, walletType);
+
+    return hasDevice;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get list of connected Ledger devices (WebHID)
+ */
+export async function getConnectedLedgerDevices(): Promise<HIDDevice[]> {
+  if (!isWebHidAvailable()) {
+    return [];
+  }
+
+  try {
+    const devices = await window.navigator.hid.getDevices();
+    return devices.filter((device) =>
+      isHardwareWalletDevice(device, HardwareWalletType.Ledger),
+    );
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Get list of connected Trezor devices (WebUSB)
+ */
+export async function getConnectedTrezorDevices(): Promise<USBDevice[]> {
+  if (!isWebUsbAvailable()) {
+    return [];
+  }
+
+  try {
+    const devices = await window.navigator.usb.getDevices();
+    return devices.filter((device) =>
+      isHardwareWalletDevice(device, HardwareWalletType.Trezor),
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Get list of connected devices for a specific hardware wallet type
+ *
+ * @param walletType - The type of hardware wallet
+ * @returns Array of connected devices (HIDDevice[] for Ledger, USBDevice[] for Trezor)
+ */
+export async function getConnectedDevices(
+  walletType: HardwareWalletType,
+): Promise<HIDDevice[] | USBDevice[]> {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return getConnectedLedgerDevices();
+    case HardwareWalletType.Trezor:
+      return getConnectedTrezorDevices();
+    default:
+      return [];
+  }
+}
+
+/**
+ * Subscribe to native WebHID connect/disconnect events
+ *
+ * @param walletType - The hardware wallet type to filter events for
+ * @param onConnect - Callback when a device is connected
+ * @param onDisconnect - Callback when a device is disconnected
+ * @returns Unsubscribe function to clean up event listeners
+ */
+export function subscribeToWebHidEvents(
+  walletType: HardwareWalletType,
+  onConnect: (device: HIDDevice) => void,
+  onDisconnect: (device: HIDDevice) => void,
+): () => void {
+  if (!isWebHidAvailable()) {
+    return () => {
+      // No-op cleanup
+    };
+  }
+
+  const handleConnect = (event: HIDConnectionEvent) => {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
+      onConnect(event.device);
+    }
+  };
+
+  const handleDisconnect = (event: HIDConnectionEvent) => {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
+      onDisconnect(event.device);
+    }
+  };
+
+  navigator.hid.addEventListener('connect', handleConnect);
+  navigator.hid.addEventListener('disconnect', handleDisconnect);
+
+  // Return cleanup function
+  return () => {
+    navigator.hid.removeEventListener('connect', handleConnect);
+    navigator.hid.removeEventListener('disconnect', handleDisconnect);
+  };
+}
+
+/**
+ * Subscribe to native WebUSB connect/disconnect events
+ *
+ * @param walletType - The hardware wallet type to filter events for
+ * @param onConnect - Callback when a device is connected
+ * @param onDisconnect - Callback when a device is disconnected
+ * @returns Unsubscribe function to clean up event listeners
+ */
+export function subscribeToWebUsbEvents(
+  walletType: HardwareWalletType,
+  onConnect: (device: USBDevice) => void,
+  onDisconnect: (device: USBDevice) => void,
+): () => void {
+  if (!isWebUsbAvailable()) {
+    return () => {
+      // No-op cleanup
+    };
+  }
+
+  const handleConnect = (event: USBConnectionEvent) => {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
+      onConnect(event.device);
+    }
+  };
+
+  const handleDisconnect = (event: USBConnectionEvent) => {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
+      onDisconnect(event.device);
+    }
+  };
+
+  navigator.usb.addEventListener('connect', handleConnect);
+  navigator.usb.addEventListener('disconnect', handleDisconnect);
+
+  // Return cleanup function
+  return () => {
+    navigator.usb.removeEventListener('connect', handleConnect);
+    navigator.usb.removeEventListener('disconnect', handleDisconnect);
+  };
+}
+
+/**
+ * Subscribe to hardware wallet connect/disconnect events based on wallet type
+ *
+ * @param walletType - The type of hardware wallet to subscribe to
+ * @param onConnect - Callback for device connection
+ * @param onDisconnect - Callback for device disconnection
+ * @returns Unsubscribe function to clean up event listeners
+ */
+export function subscribeToHardwareWalletEvents(
+  walletType: HardwareWalletType,
+  onConnect: (device: HIDDevice | USBDevice) => void,
+  onDisconnect: (device: HIDDevice | USBDevice) => void,
+): () => void {
+  switch (walletType) {
+    case HardwareWalletType.Ledger:
+      return subscribeToWebHidEvents(walletType, onConnect, onDisconnect);
+    case HardwareWalletType.Trezor:
+      return subscribeToWebUsbEvents(walletType, onConnect, onDisconnect);
+    default:
+      return () => {
+        // No-op cleanup
+      };
+  }
+}

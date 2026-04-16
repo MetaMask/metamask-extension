@@ -1,11 +1,8 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixture-builder');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  openDapp,
-  unlockWallet,
-} = require('../helpers');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
+const { login } = require('../page-objects/flows/login.flow');
+const { withFixtures } = require('../helpers');
+const { DAPP_URL } = require('../constants');
 
 // https://github.com/thenativeweb/uuidv4/blob/bdcf3a3138bef4fb7c51f389a170666f9012c478/lib/uuidv4.ts#L5
 const UUID_V4_REGEX =
@@ -17,17 +14,16 @@ describe('EIP-6963 Provider', function () {
   it('should respond to the request provider event', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await login(driver);
 
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.executeScript(`
           window.announceProviderEvents = []
           window.addEventListener(

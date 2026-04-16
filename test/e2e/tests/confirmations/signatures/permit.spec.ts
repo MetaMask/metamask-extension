@@ -1,55 +1,50 @@
 import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
+  mockPermitDecoding,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import { login } from '../../../page-objects/flows/login.flow';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
-
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -66,112 +61,112 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signPermit');
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        await login(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await driver.waitForSelector({
-          tag: 'span',
-          text: 'Error: User rejected the request.',
-        });
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           location: 'confirmation',
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
+    );
+  });
+
+  it('display decoding information if available', async function () {
+    await withSignatureFixtures(
+      this.test?.fullTitle(),
+      async ({ driver }: TestSuiteArguments) => {
+        const testDapp = new TestDapp(driver);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
+
+        const simulationSection = driver.findElement({
+          text: 'Estimated changes',
+        });
+        const receiveChange = driver.findElement({ text: 'Listing price' });
+        const listChange = driver.findElement({ text: 'You list' });
+        const listChangeValue = driver.findElement({ text: '#2101' });
+
+        assert.ok(await simulationSection, 'Estimated changes');
+        assert.ok(await receiveChange, 'Listing price');
+        assert.ok(await listChange, 'You list');
+        assert.ok(await listChangeValue, '#2101');
+
+        await driver.delay(10000);
+      },
+      mockPermitDecoding,
     );
   });
 });
 
 async function assertInfoValues(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapseButton"]');
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Permit' });
-  const owner = driver.findElement({ css: '.name__name', text: 'Account 1' });
-  const spender = driver.findElement({
-    css: '.name__value',
-    text: '0x5B38D...eddC4',
-  });
-  const value = driver.findElement({ text: '3,000' });
-  const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await owner, 'owner');
-  assert.ok(await spender, 'spender');
-  assert.ok(await value, 'value');
-  assert.ok(await nonce, 'nonce');
-  assert.ok(await deadline, 'deadline');
+  const permitConfirmation = new PermitConfirmation(driver);
+  await permitConfirmation.clickCollapseSectionButton();
+  await permitConfirmation.verifyOrigin();
+  await permitConfirmation.verifyContractPetName();
+  await permitConfirmation.verifyPrimaryType();
+  await permitConfirmation.verifyOwner();
+  await permitConfirmation.verifySpender();
+  await permitConfirmation.verifyValue();
+  await permitConfirmation.verifyNonce();
+  await permitConfirmation.verifyDeadline();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
+  const expectedSignature =
+    '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d730103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea491b';
+  const expectedR =
+    '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d73';
+  const expectedS =
+    '0x0103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea49';
+  const expectedV = '27';
+
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signPermitVerify');
 
-  await driver.waitForSelector({
-    css: '#signPermitVerifyResult',
-    text: publicAddress,
-  });
-
-  await driver.waitForSelector({
-    css: '#signPermitResult',
-    text: '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d730103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea491b',
-  });
-
-  await driver.waitForSelector({
-    css: '#signPermitResultR',
-    text: 'r: 0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d73',
-  });
-
-  await driver.waitForSelector({
-    css: '#signPermitResultS',
-    text: 's: 0x0103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea49',
-  });
-
-  await driver.waitForSelector({
-    css: '#signPermitResultV',
-    text: 'v: 27',
-  });
-  await driver.waitForSelector({
-    css: '#signPermitVerifyResult',
-    text: publicAddress,
-  });
+  await testDapp.checkSuccessSignPermit(publicAddress);
+  await testDapp.verifySignPermitResult(expectedSignature);
+  await testDapp.verifySignPermitResultR(expectedR);
+  await testDapp.verifySignPermitResultS(expectedS);
+  await testDapp.verifySignPermitResultV(expectedV);
 }

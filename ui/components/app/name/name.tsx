@@ -6,27 +6,23 @@ import React, {
   useState,
 } from 'react';
 import { NameType } from '@metamask/name-controller';
-import classnames from 'classnames';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import { shortenAddress, shortenString } from '../../../helpers/utils/util';
+import { Box, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexDirection,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
-import Identicon from '../../ui/identicon';
+import NameDisplay from './name-details/name-display';
 import NameDetails from './name-details/name-details';
 
 export type NameProps = {
-  /** Whether to prevent the modal from opening when the component is clicked. */
-  disableEdit?: boolean;
-
-  /** Whether this is being rendered inside the NameDetails modal. */
-  internal?: boolean;
-
   /**
    * Applies to recognized contracts with no petname saved:
    * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
@@ -44,35 +40,42 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
+
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
+
+  /**
+   * Whether to show the full name.
+   */
+  showFullName?: boolean;
+
+  /**
+   * The class name to apply to the box.
+   */
+  className?: string;
+
+  /**
+   * Whether to disable the onClick handler.
+   */
+  disableNameClick?: boolean;
 };
-
-function formatValue(value: string, type: NameType): string {
-  if (!value.length) {
-    return value;
-  }
-
-  switch (type) {
-    case NameType.ETHEREUM_ADDRESS:
-      return shortenAddress(toChecksumAddress(value));
-
-    default:
-      return value;
-  }
-}
 
 const Name = memo(
   ({
     value,
     type,
-    disableEdit,
-    internal,
     preferContractSymbol = false,
     variation,
+    className,
+    disableNameClick = false,
+    ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
 
-    const { name, hasPetname, image } = useDisplayName({
+    const { name, subtitle, isAccount } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -80,41 +83,39 @@ const Name = memo(
     });
 
     useEffect(() => {
-      if (internal) {
-        return;
-      }
-
       trackEvent({
         event: MetaMetricsEventName.PetnameDisplayed,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_petname: Boolean(name?.length),
         },
       });
+      // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
     }, []);
 
     const handleClick = useCallback(() => {
+      if (isAccount || disableNameClick) {
+        return;
+      }
       setModalOpen(true);
-    }, [setModalOpen]);
+    }, [disableNameClick, isAccount, setModalOpen]);
 
     const handleModalClose = useCallback(() => {
       setModalOpen(false);
     }, [setModalOpen]);
 
-    const formattedValue = formatValue(value, type);
-    const MAX_PET_NAME_LENGTH = 12;
-    const formattedName = shortenString(name || undefined, {
-      truncatedCharLimit: MAX_PET_NAME_LENGTH,
-      truncatedStartChars: MAX_PET_NAME_LENGTH,
-      truncatedEndChars: 0,
-      skipCharacterInEnd: true,
-    });
-    const hasDisplayName = Boolean(name);
-
     return (
-      <Box display={Display.Flex}>
-        {!disableEdit && modalOpen && (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={className}
+      >
+        {modalOpen && (
           <NameDetails
             value={value}
             type={type}
@@ -122,34 +123,24 @@ const Name = memo(
             onClose={handleModalClose}
           />
         )}
-        <div
-          className={classnames({
-            name: true,
-            name__saved: hasPetname,
-            name__recognized_unsaved: !hasPetname && hasDisplayName,
-            name__missing: !hasDisplayName,
-          })}
-          onClick={handleClick}
-        >
-          {hasDisplayName ? (
-            <Identicon address={value} diameter={16} image={image} />
-          ) : (
-            <Icon
-              name={IconName.Question}
-              className="name__icon"
-              size={IconSize.Md}
-            />
-          )}
-          {hasDisplayName ? (
-            <Text className="name__name" variant={TextVariant.bodyMd}>
-              {formattedName}
-            </Text>
-          ) : (
-            <Text className="name__value" variant={TextVariant.bodyMd}>
-              {formattedValue}
-            </Text>
-          )}
-        </div>
+        <NameDisplay
+          value={value}
+          type={type}
+          preferContractSymbol={preferContractSymbol}
+          variation={variation}
+          handleClick={handleClick}
+          disableNameClick={disableNameClick}
+          {...props}
+        />
+        {subtitle && (
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            style={{ textAlign: 'right' }}
+          >
+            {subtitle}
+          </Text>
+        )}
       </Box>
     );
   },

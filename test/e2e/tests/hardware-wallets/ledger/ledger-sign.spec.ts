@@ -1,0 +1,32 @@
+import { Suite } from 'mocha';
+import { Driver } from '../../../webdriver/driver';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../../helpers';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import { login } from '../../../page-objects/flows/login.flow';
+import TestDappPage from '../../../page-objects/pages/test-dapp';
+import { signTypedDataV4 } from '../../../page-objects/flows/sign.flow';
+
+describe('Ledger Hardware Signatures', function (this: Suite) {
+  it('sign typed v4', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withLedgerAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage();
+        await testDappPage.checkPageIsLoaded();
+        await signTypedDataV4(driver, KNOWN_PUBLIC_KEY_ADDRESSES[0].address);
+      },
+    );
+  });
+});

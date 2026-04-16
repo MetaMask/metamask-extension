@@ -5,18 +5,19 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
   getChainIdsToPoll,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
-import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useFormatters } from '../../../hooks/useFormatters';
 import {
   Display,
   TextColor,
@@ -26,10 +27,16 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/asset-list/asset-list';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { TokenWithBalance } from '../../multichain/asset-picker-amount/asset-picker-modal/types';
 
-export const AggregatedPercentageOverviewCrossChains = () => {
-  const locale = useSelector(getIntlLocale);
+export const AggregatedPercentageOverviewCrossChains = ({
+  trailingChild,
+}: {
+  trailingChild: () => JSX.Element | null;
+}) => {
+  const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -51,6 +58,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
     selectedAccount,
     formattedTokensWithBalancesPerChain,
   );
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   const getPerChainTotalFiat1dAgo = (
     chainId: string,
@@ -60,7 +70,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
     const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
       (total1dAgo: number, item: { address: string }, idx: number) => {
         const found =
-          crossChainMarketData?.[chainId]?.[toChecksumAddress(item.address)];
+          crossChainMarketData?.[chainId as Hex]?.[
+            toChecksumAddress(item.address) as Hex
+          ];
 
         const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
           tokenFiatBalances[idx],
@@ -91,7 +103,7 @@ export const AggregatedPercentageOverviewCrossChains = () => {
           item.tokensWithBalances,
         );
         const nativePricePercentChange1d =
-          crossChainMarketData?.[item.chainId]?.[
+          crossChainMarketData?.[item.chainId as Hex]?.[
             getNativeTokenAddress(item.chainId as Hex)
           ]?.pricePercentChange1d;
 
@@ -113,7 +125,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   const amountChangeCrossChains =
     totalCrossChainBalance - crossChainTotalBalance1dAgo;
   const percentageChangeCrossChains =
-    (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100 || 0;
+    crossChainTotalBalance1dAgo === 0
+      ? 0
+      : (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100;
 
   const formattedPercentChangeCrossChains = formatValue(
     amountChangeCrossChains === 0 ? 0 : percentageChangeCrossChains,
@@ -125,27 +139,10 @@ export const AggregatedPercentageOverviewCrossChains = () => {
     formattedAmountChangeCrossChains =
       (amountChangeCrossChains as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedAmountChangeCrossChains += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(amountChangeCrossChains as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedAmountChangeCrossChains += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(amountChangeCrossChains as number)} `;
-    }
+    formattedAmountChangeCrossChains += formatCurrencyCompact(
+      amountChangeCrossChains,
+      fiatCurrency,
+    );
   }
 
   let color = TextColor.textDefault;
@@ -163,28 +160,36 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   }
 
   return (
-    <Box display={Display.Flex}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedAmountChangeCrossChains}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedPercentChangeCrossChains}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable &&
+        isZeroAmount(formattedAmountChangeCrossChains)
+      }
+    >
+      <Box display={Display.Flex} className="gap-1">
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedAmountChangeCrossChains}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedPercentChangeCrossChains}
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };

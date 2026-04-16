@@ -6,7 +6,7 @@ import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
-import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
@@ -105,7 +105,10 @@ export const DataTree = ({
   chainId: string;
 }) => {
   const tokenContract = getTokenContractInDataTree(data);
-  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+  const { decimalsNumber } = useGetTokenStandardAndDetails(
+    tokenContract,
+    chainId,
+  );
   const tokenDecimals =
     typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
@@ -138,11 +141,15 @@ export const DataTree = ({
 };
 
 function isDateField(label: string, primaryType?: PrimaryType) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
 }
 
 function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     primaryType || '',
   );
 }
@@ -199,6 +206,10 @@ const DataField = memo(
       })
     ) {
       return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
+    }
+
+    if (type === 'bool') {
+      return <ConfirmInfoRowText text={String(value)} />;
     }
 
     return <ConfirmInfoRowText text={sanitizeString(value)} />;

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "activityLog": {
-    "message": "veiklos žurnalas"
-  },
   "addAcquiredTokens": {
     "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
   },
@@ -229,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
-  "ethereumPublicAddress": {
-    "message": "„Ethereum“ viešasis adresas"
-  },
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
-  },
-  "expandView": {
-    "message": "Išskleisti rodinį"
   },
   "failed": {
     "message": "Nepavyko"
@@ -254,26 +245,11 @@
   "from": {
     "message": "Nuo"
   },
-  "functionType": {
-    "message": "Funkcijos tipas"
-  },
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
-  },
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
-  },
-  "gasPrice": {
-    "message": "Dujų kaina (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Dujų kaina ypatingai maža"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Dujų kaina nurodo eterių sumą, kurią pageidaujate sumokėti už kiekvieną dujų vienetą."
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -316,18 +292,12 @@
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importuoti paskyrą"
-  },
   "importAccountMsg": {
     "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
   },
   "imported": {
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
   },
   "insufficientBalance": {
     "message": "Nepakankamas likutis."
@@ -375,14 +345,8 @@
   "links": {
     "message": "Nuorodos"
   },
-  "loadMore": {
-    "message": "Įkelti daugiau"
-  },
   "loading": {
     "message": "Įkeliama..."
-  },
-  "loadingTokens": {
-    "message": "Įkeliami žetonai..."
   },
   "localhost": {
     "message": "Vietinis serveris 8545"
@@ -412,9 +376,6 @@
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Neigiamų ETH sumų siųsti negalima."
-  },
   "networkName": {
     "message": "Tinklo pavadinimas"
   },
@@ -431,9 +392,6 @@
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Naujas kontaktas"
-  },
   "newContract": {
     "message": "Nauja sutartis"
   },
@@ -442,12 +400,6 @@
   },
   "next": {
     "message": "Toliau"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nėra keitimo kurso"
-  },
-  "noTransactions": {
-    "message": "Neturite jokių operacijų"
   },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
@@ -472,9 +424,6 @@
   },
   "origin": {
     "message": "Kilmė"
-  },
-  "parameters": {
-    "message": "Parametrai"
   },
   "participateInMetaMetrics": {
     "message": "Dalyvaukite „MetaMetrics“"
@@ -526,12 +475,6 @@
   "rejectAll": {
     "message": "Atmesti viską"
   },
-  "rejectTxsDescription": {
-    "message": "Vienu metu atmesite $1 operac."
-  },
-  "rejectTxsN": {
-    "message": "Atmesti $1 operac."
-  },
   "rejected": {
     "message": "Atmesta"
   },
@@ -540,12 +483,6 @@
   },
   "removeAccount": {
     "message": "Pašalinti paskyrą"
-  },
-  "removeAccountDescription": {
-    "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "patvirtinimo laukiančios užklausos"
   },
   "required": {
     "message": "Reikalaujama"
@@ -614,9 +551,6 @@
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
   },
-  "sigRequest": {
-    "message": "Parašo užklausa"
-  },
   "sign": {
     "message": "Prisijunkite"
   },
@@ -635,9 +569,6 @@
   "speedUpCancellation": {
     "message": "Pagreitinti šį atšaukimą"
   },
-  "speedUpTransaction": {
-    "message": "Paspartinti šią operaciją"
-  },
   "stateLogError": {
     "message": "Klaida gaunant būsenos žurnalus."
   },
@@ -653,9 +584,6 @@
   "supportCenter": {
     "message": "Apsilankykite mūsų pagalbos centre"
   },
-  "switchNetworks": {
-    "message": "Perjungti tinklus"
-  },
   "symbol": {
     "message": "Simbolis"
   },
@@ -664,9 +592,6 @@
   },
   "terms": {
     "message": "Naudojimo sąlygos"
-  },
-  "tips": {
-    "message": "Arbatpinigiai"
   },
   "to": {
     "message": "Iki"
@@ -689,41 +614,11 @@
   "transaction": {
     "message": "operacija"
   },
-  "transactionCancelAttempted": {
-    "message": "Operaciją mėginta atšaukti $2 su $1 dujų mokesčiu"
-  },
-  "transactionCancelSuccess": {
-    "message": "Operacija sėkmingai atšaukta $2"
-  },
-  "transactionConfirmed": {
-    "message": "Operacijos patvirtinimas $2."
-  },
-  "transactionCreated": {
-    "message": "Operacija sukurta $2 su $1 verte."
-  },
-  "transactionDropped": {
-    "message": "Operacija numesta prie$2."
-  },
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
   },
   "transactionErrorNoContract": {
     "message": "Mėginama iškviesti funkciją nekontaktiniu adresu."
-  },
-  "transactionErrored": {
-    "message": "Įvyko operacijos klaida"
-  },
-  "transactionFee": {
-    "message": "Operacijos mokestis"
-  },
-  "transactionResubmitted": {
-    "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
-  },
-  "transactionSubmitted": {
-    "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
-  },
-  "transactionUpdated": {
-    "message": "Operacija atnaujinta$2."
   },
   "transfer": {
     "message": "Pervesti"
@@ -743,29 +638,17 @@
   "unknown": {
     "message": "Nežinoma"
   },
-  "unknownNetwork": {
-    "message": "Nežinomas privatusis tinklas"
-  },
   "unknownQrCode": {
     "message": "Klaida: negalime identifikuoti šio QR kodo"
   },
   "unlock": {
     "message": "Atrakinti"
   },
-  "unlockMessage": {
-    "message": "Laukiančios decentralizuotos svetainės"
-  },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
   },
   "usedByClients": {
     "message": "Naudojama daugelio skirtingų klientų"
-  },
-  "userName": {
-    "message": "Vartotojo vardas"
-  },
-  "viewContact": {
-    "message": "Peržiūrėti kontaktą"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
@@ -775,14 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "youSign": {
-    "message": "Pasirašote"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nustatykite nulinę dujų kainą greitėjant"
   }
 }

@@ -1,60 +1,57 @@
-import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
-  scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { login } from '../../../page-objects/flows/login.flow';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertPastedAddress,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  openDappAndTriggerDeploy,
-  SignatureType,
-  triggerSignature,
 } from './signature-helpers';
 
-describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await clickHeaderInfoBtn(driver);
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await assertAccountDetailsMetrics(
           driver,
@@ -67,121 +64,90 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
+        const confirmation = new PermitConfirmation(driver);
+        const testDapp = new TestDapp(driver);
+
+        await login(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await driver.waitForSelector({
-          tag: 'span',
-          text: 'Error: User rejected the request.',
-        });
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           location: 'confirmation',
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
     );
   });
 });
 
 async function assertInfoValues(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapseButton"]');
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0x581c3...45947',
-  });
-
-  const title = driver.findElement({ text: 'Withdrawal request' });
-  const description = driver.findElement({
-    text: 'This site wants permission to withdraw your NFTs',
-  });
-  const primaryType = driver.findElement({ text: 'Permit' });
-  const spender = driver.findElement({
-    css: '.name__value',
-    text: '0x581c3...45947',
-  });
-  const tokenId = driver.findElement({ text: '3606393' });
-  const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '23 December 2024, 23:03' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await title, 'title');
-  assert.ok(await description, 'description');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await spender, 'spender');
-  assert.ok(await tokenId, 'tokenId');
-  assert.ok(await nonce, 'nonce');
-  assert.ok(await deadline, 'deadline');
+  const confirmation = new PermitConfirmation(driver);
+  await confirmation.clickCollapseSectionButton();
+  await confirmation.verifyOrigin();
+  await confirmation.verifyNftContractPetName();
+  await confirmation.verifyNftTitle();
+  await confirmation.verifyNftDescription();
+  await confirmation.verifyNftPrimaryType();
+  await confirmation.verifyNftSpender();
+  await confirmation.verifyNftTokenId();
+  await confirmation.verifyNftNonce();
+  await confirmation.verifyNftDeadline();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#sign721PermitVerify');
+  const testDapp = new TestDapp(driver);
 
-  await driver.waitForSelector({
-    css: '#sign721PermitVerifyResult',
-    text: publicAddress,
-  });
-
-  await driver.waitForSelector({
-    css: '#sign721PermitResult',
-    text: '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c',
-  });
-
-  await driver.waitForSelector({
-    css: '#sign721PermitResultR',
-    text: 'r: 0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360',
-  });
-
-  await driver.waitForSelector({
-    css: '#sign721PermitResultS',
-    text: 's: 0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
-  });
-
-  await driver.waitForSelector({
-    css: '#sign721PermitResultV',
-    text: 'v: 28',
-  });
-
-  await driver.waitForSelector({
-    css: '#sign721PermitVerifyResult',
-    text: publicAddress,
-  });
+  await testDapp.checkSuccessSign721Permit(publicAddress);
+  await testDapp.verifySign721PermitResult(
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c',
+  );
+  await testDapp.verifySign721PermitResultR(
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360',
+  );
+  await testDapp.verifySign721PermitResultS(
+    '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
+  );
+  await testDapp.verifySign721PermitResultV('28');
+  await testDapp.checkSuccessSign721Permit(publicAddress);
 }

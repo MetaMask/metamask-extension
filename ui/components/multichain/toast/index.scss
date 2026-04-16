@@ -1,20 +1,43 @@
+@use "design-system";
+
 .toasts-container {
-  position: sticky;
+  position: fixed;
   bottom: 16px;
-  margin-inline-start: 16px;
-  margin-inline-end: 16px;
-  z-index: 200;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: design-system.$toast-z-index;
   display: flex;
   gap: 10px;
   width: 90%;
   flex-direction: column;
 
   &__banner-base {
-    border-radius: 8px;
-    box-shadow: var(--shadow-size-md);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+    &.perps-toast {
+      .mm-banner-base__close-button {
+        align-self: center;
+      }
+
+      .perps-toast__success-icon {
+        color: var(--color-accent03-dark);
+        background-color: var(--color-accent03-normal);
+      }
+    }
   }
 }
 
 .toast-text {
   word-break: break-word;
+}
+
+/* react-hot-toast override */
+.toast-container {
+  view-transition-name: toast;
+
+  [role=status] {
+    justify-content: flex-start;
+  }
 }

@@ -1,95 +1,34 @@
-import { unlockWallet, withFixtures } from '../../helpers';
-import {
-  withFixturesOptions,
-  buildQuote,
-  reviewQuote,
-  waitForTransactionToComplete,
-  checkActivityTransaction,
-  changeExchangeRate,
-  mockEthDaiTrade,
-} from './shared';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import { getBridgeFixtures } from '../bridge/bridge-test-utils';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
-describe('Swap Eth for another Token @no-mmi', function () {
-  it('Completes second Swaps while first swap is processing', async function () {
-    withFixturesOptions.ganacheOptions.miner.blockTime = 10;
-
+// TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
+describe('Swap Eth for another Token', function () {
+  it('Completes a Swap between ETH and MUSD', async function () {
     await withFixtures(
-      {
-        ...withFixturesOptions,
+      getBridgeFixtures({
         title: this.test?.fullTitle(),
-      },
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await buildQuote(driver, {
-          amount: 0.001,
-          swapTo: 'USDC',
-        });
-        await reviewQuote(driver, {
-          amount: 0.001,
-          swapFrom: 'TESTETH',
-          swapTo: 'USDC',
-        });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await driver.clickElement({ text: 'View in activity', tag: 'button' });
-        await buildQuote(driver, {
-          amount: 0.003,
-          swapTo: 'DAI',
-        });
-        await reviewQuote(driver, {
-          amount: 0.003,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
-        await checkActivityTransaction(driver, {
-          index: 0,
-          amount: '0.003',
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
-        await checkActivityTransaction(driver, {
-          index: 1,
-          amount: '0.001',
-          swapFrom: 'TESTETH',
-          swapTo: 'USDC',
-        });
-      },
-    );
-  });
+        await login(driver, { expectedBalance: '$225,730.11' });
 
-  it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
-    await withFixtures(
-      {
-        ...withFixturesOptions,
-        testSpecificMock: mockEthDaiTrade,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await buildQuote(driver, {
-          amount: 2,
-          swapTo: 'DAI',
-        });
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
-        await changeExchangeRate(driver);
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-          skipCounter: true,
-        });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
-        await checkActivityTransaction(driver, {
-          index: 0,
-          amount: '2',
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
+        await bridgeTransaction({
+          driver,
+          quote: {
+            amount: '1',
+            tokenFrom: 'ETH',
+          },
+          expectedTransactionsCount: 1,
+          expectedSwapTokens: {
+            tokenFrom: 'ETH',
+            tokenTo: 'MUSD',
+          },
+          // The expected amount in destination token can vary as upstream quote data changes.
+          expectedDestAmount: '',
+          skipStatusPage: true,
         });
       },
     );

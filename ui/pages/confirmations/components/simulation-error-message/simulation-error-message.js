@@ -17,7 +17,7 @@ export default function SimulationErrorMessage({
 }) {
   const t = useContext(I18nContext);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({
@@ -29,7 +29,6 @@ export default function SimulationErrorMessage({
         ],
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return userAcknowledgedGasMissing === true ? (

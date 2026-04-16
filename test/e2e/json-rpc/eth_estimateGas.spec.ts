@@ -1,29 +1,21 @@
 import { strict as assert } from 'assert';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import { withFixtures } from '../helpers';
+import { login } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
 
         // eth_estimateGas
         await driver.openNewPage(`http://127.0.0.1:8080`);

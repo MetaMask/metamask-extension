@@ -1,15 +1,18 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   AlertController,
-  AllowedActions,
-  AllowedEvents,
   AlertControllerMessenger,
-  AlertControllerGetStateAction,
-  AlertControllerStateChangeEvent,
   AlertControllerOptions,
   getDefaultAlertControllerState,
 } from './alert-controller';
@@ -29,16 +32,19 @@ const EMPTY_ACCOUNT = {
   },
 };
 
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<AlertControllerMessenger>,
+  MessengerEvents<AlertControllerMessenger>
+>;
+
 type WithControllerOptions = Partial<AlertControllerOptions>;
 
 type WithControllerCallback<ReturnValue> = ({
   controller,
 }: {
   controller: AlertController;
-  messenger: ControllerMessenger<
-    AllowedActions | AlertControllerGetStateAction,
-    AllowedEvents | AlertControllerStateChangeEvent
-  >;
+  messenger: RootMessenger;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -51,19 +57,21 @@ async function withController<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { ...alertControllerOptions } = rest;
 
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions | AlertControllerGetStateAction,
-    AllowedEvents | AlertControllerStateChangeEvent
-  >();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
-  const alertControllerMessenger: AlertControllerMessenger =
-    controllerMessenger.getRestricted({
-      name: 'AlertController',
-      allowedActions: ['AccountsController:getSelectedAccount'],
-      allowedEvents: ['AccountsController:selectedAccountChange'],
-    });
+  const alertControllerMessenger: AlertControllerMessenger = new Messenger({
+    namespace: 'AlertController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: alertControllerMessenger,
+    actions: ['AccountsController:getSelectedAccount'],
+    events: ['AccountsController:selectedAccountChange'],
+  });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     jest.fn().mockReturnValue(EMPTY_ACCOUNT),
   );
@@ -75,7 +83,7 @@ async function withController<ReturnValue>(
 
   return await fn({
     controller,
-    messenger: controllerMessenger,
+    messenger,
   });
 }
 
@@ -163,7 +171,8 @@ describe('AlertController', () => {
           address: '0x1234567',
           options: {},
           methods: [],
-          type: 'eip155:eoa',
+          scopes: [EthScope.Eoa],
+          type: EthAccountType.Eoa,
           metadata: {
             name: '',
             keyring: {
@@ -175,6 +184,94 @@ describe('AlertController', () => {
         expect(
           controller.state.unconnectedAccountAlertShownOrigins,
         ).toStrictEqual({});
+      });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInDebugSnapshot',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "alertEnabledness": {
+              "smartTransactionsMigration": true,
+              "unconnectedAccount": true,
+              "web3ShimUsage": true,
+            },
+          }
+        `);
+      });
+    });
+
+    it('includes expected state in state logs', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "alertEnabledness": {
+              "smartTransactionsMigration": true,
+              "unconnectedAccount": true,
+              "web3ShimUsage": true,
+            },
+            "unconnectedAccountAlertShownOrigins": {},
+            "web3ShimUsageOrigins": {},
+          }
+        `);
+      });
+    });
+
+    it('persists expected state', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "alertEnabledness": {
+              "smartTransactionsMigration": true,
+              "unconnectedAccount": true,
+              "web3ShimUsage": true,
+            },
+            "unconnectedAccountAlertShownOrigins": {},
+            "web3ShimUsageOrigins": {},
+          }
+        `);
+      });
+    });
+
+    it('exposes expected state to UI', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'usedInUi',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "alertEnabledness": {
+              "smartTransactionsMigration": true,
+              "unconnectedAccount": true,
+              "web3ShimUsage": true,
+            },
+            "unconnectedAccountAlertShownOrigins": {},
+            "web3ShimUsageOrigins": {},
+          }
+        `);
       });
     });
   });

@@ -9,6 +9,7 @@ import {
 import { PRIMARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
 import { ETH_DEFAULT_DECIMALS } from '../constants';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { useMultichainSelector } from './useMultichainSelector';
 
 /**
@@ -18,10 +19,10 @@ import { useMultichainSelector } from './useMultichainSelector';
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {number} [ethNumberOfDecimals] - Number of significant decimals to display
  *                                             when using ETH
- * @property {number} [fiatNumberOfDecimals] - Number of significant decimals to display
- *                                            when using fiat
  * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
  *                                                  show native token as main balance is needed
+ * @property {boolean} [showFiatOverride] - Boolean to override showFiat value from state
+ * @property {boolean} [showNativeOverride] - Boolean to override showNative value from state
  */
 
 /**
@@ -42,9 +43,10 @@ import { useMultichainSelector } from './useMultichainSelector';
  *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
+ * @param {string} chainId - chainId to use
  * @returns {UserPreferredCurrency}
  */
-export function useUserPreferencedCurrency(type, opts = {}) {
+export function useUserPreferencedCurrency(type, opts = {}, chainId = null) {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const account = opts.account ?? selectedAccount;
   const nativeCurrency = useMultichainSelector(
@@ -64,11 +66,15 @@ export function useUserPreferencedCurrency(type, opts = {}) {
 
   const fiatReturn = {
     currency: currentCurrency,
-    numberOfDecimals: opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2,
+    numberOfDecimals: opts.numberOfDecimals || 2,
   };
 
   const nativeReturn = {
-    currency: nativeCurrency || EtherDenomination.ETH,
+    currency: chainId
+      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ||
+        nativeCurrency ||
+        EtherDenomination.ETH
+      : nativeCurrency || EtherDenomination.ETH,
     numberOfDecimals:
       opts.numberOfDecimals || opts.ethNumberOfDecimals || ETH_DEFAULT_DECIMALS,
   };

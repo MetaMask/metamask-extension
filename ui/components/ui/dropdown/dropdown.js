@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Icon, IconName, IconSize } from '../../component-library';
 
 const Dropdown = ({
@@ -35,7 +35,11 @@ const Dropdown = ({
       >
         {options.map((option) => {
           return (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.name || option.value}
             </option>
           );

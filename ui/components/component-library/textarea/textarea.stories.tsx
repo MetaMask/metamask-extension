@@ -1,4 +1,5 @@
 import React from 'react';
+import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
@@ -6,15 +7,14 @@ import {
   FlexDirection,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Box } from '..';
+import { Box } from '../box';
 import { TextareaResize } from './textarea.types';
 import { Textarea } from './textarea';
-
-import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Textarea',
   component: Textarea,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

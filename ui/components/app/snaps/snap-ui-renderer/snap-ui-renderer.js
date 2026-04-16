@@ -1,58 +1,90 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import LuxonUtils from '@date-io/luxon';
+import { ThemeProvider } from '@material-ui/core/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { SnapDelineator } from '../snap-delineator';
-import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
+import { getInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import PulseLoader from '../../../ui/pulse-loader';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapToTemplate } from './utils';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import {
+  mapToExtensionCompatibleColor,
+  mapToTemplate,
+  muiPickerTheme,
+} from './utils';
+import { COMPONENT_MAPPING } from './components';
+
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+const PerformanceTracker = () => {
+  const rendersRef = useRef(0);
+  rendersRef.current += 1;
+
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
+};
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
-  delineatorType = DelineatorType.Content,
-  isCollapsable = false,
-  isCollapsed = false,
   isLoading = false,
   // This is a workaround while we have the prompt dialog type since we can't inject the SnapUIRenderer in the template renderer.
   isPrompt = false,
   inputValue,
   onInputChange,
   placeholder,
-  onClick,
-  boxProps,
   interfaceId,
-  useDelineator = true,
   useFooter = false,
   onCancel,
   contentBackgroundColor,
+  PERF_DEBUG,
 }) => {
-  const t = useI18nContext();
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
 
-  const { name: snapName } = useSelector((state) =>
-    getSnapMetadata(state, snapId),
-  );
+  const scrollableContainerRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
 
   const interfaceState = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
+    (state) => getInterface(state, interfaceId),
     // We only want to update the state if the content has changed.
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
+
+  useEffect(() => {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
+    }
+  }, [interfaceState?.content]);
+
+  /**
+   * Sets the scroll position to the current scroll position of the scrollable container.
+   * This is used to restore the scroll position when the content changes.
+   */
+  const setScroll = () => {
+    if (scrollableContainerRef.current) {
+      scrollRef.current = scrollableContainerRef.current.scrollTop;
+    }
+  };
+
   const rawContent = interfaceState?.content;
   const content =
     rawContent?.type === 'Container' || !rawContent
@@ -69,6 +101,11 @@ const SnapUIRendererComponent = ({
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
+  const backgroundColor =
+    contentBackgroundColor ??
+    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
+    BackgroundColor.backgroundAlternative;
+
   const sections = useMemo(
     () =>
       content &&
@@ -79,8 +116,12 @@ const SnapUIRendererComponent = ({
         useFooter,
         promptLegacyProps,
         t,
+        contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
+        setScroll,
+        scrollableContainerRef,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t],
+    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
 
   if (isLoading || !content) {
@@ -97,43 +138,29 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  const { state: initialState, context } = interfaceState;
+  const { state: initialState } = interfaceState;
 
-  return useDelineator ? (
-    <SnapDelineator
-      snapName={snapName}
-      type={delineatorType}
-      isCollapsable={isCollapsable}
-      isCollapsed={isCollapsed}
-      onClick={onClick}
-      boxProps={boxProps}
-      disablePadding
-    >
-      <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider
-          snapId={snapId}
-          interfaceId={interfaceId}
-          initialState={initialState}
-          context={context}
-        >
-          <MetaMaskTemplateRenderer sections={sections} />
-        </SnapInterfaceContextProvider>
-      </Box>
-    </SnapDelineator>
-  ) : (
+  return (
     <SnapInterfaceContextProvider
       snapId={snapId}
       interfaceId={interfaceId}
       initialState={initialState}
-      context={context}
     >
-      <Box
-        className="snap-ui-renderer__content"
-        height={BlockSize.Full}
-        backgroundColor={contentBackgroundColor}
-      >
-        <MetaMaskTemplateRenderer sections={sections} />
-      </Box>
+      <ThemeProvider theme={muiPickerTheme}>
+        <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
+          <Box
+            className="snap-ui-renderer__content"
+            height={BlockSize.Full}
+            backgroundColor={backgroundColor}
+            style={{
+              overflowY: 'auto',
+            }}
+          >
+            <MetaMaskTemplateRenderer sections={sections} />
+            {PERF_DEBUG && <PerformanceTracker />}
+          </Box>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </SnapInterfaceContextProvider>
   );
 };
@@ -146,19 +173,14 @@ export const SnapUIRenderer = memo(
 
 SnapUIRendererComponent.propTypes = {
   snapId: PropTypes.string,
-  delineatorType: PropTypes.string,
-  isCollapsable: PropTypes.bool,
-  isCollapsed: PropTypes.bool,
   isLoading: PropTypes.bool,
   isPrompt: PropTypes.bool,
   inputValue: PropTypes.string,
   onInputChange: PropTypes.func,
   placeholder: PropTypes.string,
-  onClick: PropTypes.func,
-  boxProps: PropTypes.object,
   interfaceId: PropTypes.string,
-  useDelineator: PropTypes.bool,
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
+  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };

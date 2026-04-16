@@ -1,87 +1,91 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
-import { Hex } from '@metamask/utils';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mockNetworkState } from '../../../test/stub/networks';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
+import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type {
-  AllowedActions,
-  AllowedEvents,
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import { PreferencesController } from './preferences-controller';
-
-const NETWORK_CONFIGURATION_DATA = mockNetworkState(
-  {
-    id: 'test-networkConfigurationId-1',
-    rpcUrl: 'https://testrpc.com',
-    chainId: CHAIN_IDS.GOERLI,
-    blockExplorerUrl: 'https://etherscan.io',
-    nickname: '0X5',
-  },
-  {
-    id: 'test-networkConfigurationId-2',
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    ticker: 'ETH',
-    nickname: 'Localhost 8545',
-  },
-).networkConfigurationsByChainId;
+import {
+  PreferencesController,
+  ReferralStatus,
+} from './preferences-controller';
 
 const setupController = ({
   state,
 }: {
   state?: Partial<PreferencesControllerState>;
-}) => {
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    | AllowedEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-  >();
+} = {}) => {
+  const messenger = new Messenger<
+    MockAnyNamespace,
+    | MessengerActions<PreferencesControllerMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<PreferencesControllerMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    controllerMessenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
     });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+    ],
+  });
 
-  controllerMessenger.registerActionHandler(
-    'NetworkController:getState',
-    jest.fn().mockReturnValue({
-      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-    }),
-  );
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,
   });
 
-  const accountsControllerMessenger = controllerMessenger.getRestricted({
-    name: 'AccountsController',
-    allowedEvents: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    MessengerActions<AccountsControllerMessenger>,
+    MessengerEvents<AccountsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    events: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
+      'SnapKeyring:accountAssetListUpdated',
+      'SnapKeyring:accountBalancesUpdated',
+      'SnapKeyring:accountTransactionsUpdated',
+      'MultichainNetworkController:networkDidChange',
     ],
-    allowedActions: [],
   });
   const mockAccountsControllerState = {
     internalAccounts: {
       accounts: {},
       selectedAccount: '',
     },
+    accountIdByAddress: {},
   };
   const accountsController = new AccountsController({
     messenger: accountsControllerMessenger,
@@ -90,22 +94,32 @@ const setupController = ({
 
   return {
     controller,
-    messenger: controllerMessenger,
+    messenger,
     accountsController,
   };
 };
 
 describe('preferences controller', () => {
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
       const { controller } = setupController({});
-      expect(controller.state.useBlockie).toStrictEqual(false);
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
     });
 
-    it('setUseBlockie to true', () => {
+    it('preserves existing avatarType', () => {
       const { controller } = setupController({});
-      controller.setUseBlockie(true);
-      expect(controller.state.useBlockie).toStrictEqual(true);
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
     });
   });
 
@@ -121,176 +135,6 @@ describe('preferences controller', () => {
       controller.setCurrentLocale('ja');
       const { currentLocale } = controller.state;
       expect(currentLocale).toStrictEqual('ja');
-    });
-  });
-
-  describe('setAccountLabel', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    const mockName = 'mockName';
-    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-
-    it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-      const { identities } = controller.state;
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      controller.setAccountLabel(firstAccount.address, mockName);
-
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-
-    it('updating name from accounts controller updates the name in preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      accountsController.setAccountName(firstAccount.id, mockName);
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-  });
-
-  describe('setSelectedAddress', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      controller.setSelectedAddress(secondAddress);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
-
-      expect(controller.getSelectedAddress()).toBe(secondAddress);
-    });
-
-    it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-      const accounts = accountsController.listAccounts();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      accountsController.setSelectedAccount(accounts[1].id);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
     });
   });
 
@@ -324,6 +168,9 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         true,
       );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
@@ -331,15 +178,9 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         false,
       );
-    });
-  });
-
-  describe('isRedesignedConfirmationsFeatureEnabled', () => {
-    const { controller } = setupController({});
-    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
-      expect(
-        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
-      ).toStrictEqual(false);
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        false,
+      );
     });
   });
 
@@ -470,75 +311,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setIncomingTransactionsPreferences', () => {
-    const { controller } = setupController({});
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      controller.setIncomingTransactionsPreferences(
-        CHAIN_IDS.LINEA_MAINNET,
-        false,
-      );
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-  });
-
-  describe('AccountsController:stateChange subscription', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('sync the identities with the accounts in the accounts controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-            },
-          ],
-        },
-        [],
-      );
-
-      const accounts = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      expect(accounts.map((account) => account.address)).toStrictEqual(
-        Object.keys(identities),
-      );
-    });
-  });
-
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -550,7 +322,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -576,34 +347,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-  });
-
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -625,6 +368,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
       expect(controller.state.openSeaEnabled).toStrictEqual(true);
       expect(controller.state.useNftDetection).toStrictEqual(true);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(true);
     });
 
     it('useExternalServices to false', () => {
@@ -637,19 +381,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
       expect(controller.state.openSeaEnabled).toStrictEqual(false);
       expect(controller.state.useNftDetection).toStrictEqual(false);
-    });
-  });
-
-  describe('useRequestQueue', () => {
-    it('defaults useRequestQueue to true', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useRequestQueue).toStrictEqual(true);
-    });
-
-    it('setUseRequestQueue to false', () => {
-      const { controller } = setupController({});
-      controller.setUseRequestQueue(false);
-      expect(controller.state.useRequestQueue).toStrictEqual(false);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
   });
 
@@ -676,21 +408,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setWatchEthereumAccountEnabled(true);
       expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
-    });
-  });
-
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
     });
   });
 
@@ -729,19 +446,21 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
+        showDefaultAddress: true,
+        defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
+        skipDeepLinkInterstitial: false,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -759,19 +478,21 @@ describe('preferences controller', () => {
       controller.setPreference('showConfirmationAdvancedDetails', true);
       expect(controller.getPreferences()).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
+        showDefaultAddress: true,
+        defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
+        skipDeepLinkInterstitial: false,
         privacyMode: false,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -782,6 +503,26 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
       });
+    });
+
+    it('disables side panel default when enabling full screen view', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        true,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+    });
+
+    it('disables full screen default when enabling side panel default', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+      controller.setPreference('useSidePanelAsDefault', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
     });
   });
 
@@ -871,18 +612,654 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
+      const { controller } = setupController({});
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "isMultiAccountBalancesEnabled": true,
+          "ledgerTransportType": "u2f",
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": true,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
+          },
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useCurrencyRateCheck": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+        }
+      `);
     });
 
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+    it('includes expected state in state logs', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
 
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": true,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
+          },
+          "referrals": {
+            "asterdex": {},
+            "gmx": {},
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": true,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
+          },
+          "referrals": {
+            "asterdex": {},
+            "gmx": {},
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "defaultAddressScope": "eip155",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showDefaultAddress": true,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
+          },
+          "referrals": {
+            "asterdex": {},
+            "gmx": {},
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+  });
+
+  describe('Referral methods', () => {
+    const partner = DefiReferralPartner.Hyperliquid;
+
+    describe('addReferralApprovedAccount', () => {
+      it('adds an account with approved status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('overwrites existing account status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
+
+        controller.addReferralApprovedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('adds multiple unique accounts', () => {
+        const { controller } = setupController({});
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+
+        controller.addReferralApprovedAccount(partner, testAccount1);
+        controller.addReferralApprovedAccount(partner, testAccount2);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+    });
+
+    describe('addReferralPassedAccount', () => {
+      it('adds account with passed status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
+      });
+
+      it('overwrites existing account status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+
+        controller.addReferralPassedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
+      });
+    });
+
+    describe('addReferralDeclinedAccount', () => {
+      it('adds account with declined status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
+      });
+
+      it('overwrites existing account status', () => {
+        const { controller } = setupController({});
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
+
+        controller.addReferralDeclinedAccount(partner, testAccount);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
+      });
+    });
+
+    describe('removeReferralDeclinedAccount', () => {
+      it('removes the specified account from referrals completely', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              [DefiReferralPartner.Hyperliquid]: {
+                [testAccount1]: ReferralStatus.Declined,
+                [testAccount2]: ReferralStatus.Declined,
+              },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(partner, testAccount1);
+        expect(
+          controller.state.referrals[partner][testAccount1],
+        ).toBeUndefined();
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
+      });
+
+      it('handles removing non-existent account gracefully', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              [DefiReferralPartner.Hyperliquid]: {
+                [testAccount1]: ReferralStatus.Declined,
+              },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(partner, testAccount2);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
+        expect(
+          controller.state.referrals[partner][testAccount2],
+        ).toBeUndefined();
+      });
+    });
+
+    describe('setAccountsReferralApproved', () => {
+      it('sets all accounts to approved status', () => {
+        const { controller } = setupController({});
+        const testAccounts = ['0x123', '0x456'] as Hex[];
+
+        controller.setAccountsReferralApproved(partner, testAccounts);
+        expect(controller.state.referrals[partner]['0x123']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals[partner]['0x456']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('overwrites existing account statuses', () => {
+        const existingAccount = '0x123';
+        const newAccount = '0x456';
+        const accountsToApprove = [existingAccount, newAccount] as Hex[];
+
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              [DefiReferralPartner.Hyperliquid]: {
+                [existingAccount]: ReferralStatus.Declined,
+              },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved(partner, accountsToApprove);
+        expect(
+          controller.state.referrals[partner][existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][newAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('handles empty array input gracefully', () => {
+        const existingAccount = '0x123';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              [DefiReferralPartner.Hyperliquid]: {
+                [existingAccount]: ReferralStatus.Approved,
+              },
+              [DefiReferralPartner.GMX]: {},
+              [DefiReferralPartner.AsterDEX]: {},
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved(partner, []);
+        expect(
+          controller.state.referrals[partner][existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+    });
+
+    describe('referral state defaults', () => {
+      it('initializes with empty referral records for all partners', () => {
+        const { controller } = setupController({});
+
+        expect(
+          controller.state.referrals[DefiReferralPartner.Hyperliquid],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.GMX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
+      });
+
+      it('deep merges referrals state to add new partners while preserving existing data', () => {
+        // Simulate old user state that only has Hyperliquid
+        const existingUserState = {
+          referrals: {
+            [DefiReferralPartner.Hyperliquid]: {
+              '0x123': ReferralStatus.Approved,
+            },
+          },
+        };
+
+        const { controller } = setupController({
+          state:
+            existingUserState as unknown as Partial<PreferencesControllerState>,
+        });
+
+        // All partners from the enum should be present and correctly initialized
+        Object.values(DefiReferralPartner).forEach((partnerId) => {
+          expect(controller.state.referrals[partnerId]).toStrictEqual(
+            partnerId === DefiReferralPartner.Hyperliquid
+              ? { '0x123': ReferralStatus.Approved }
+              : {},
+          );
+        });
+      });
+    });
+  });
+
+  describe('resetState', () => {
+    it('resets the preferences state to the default values', () => {
+      const { controller } = setupController({
+        state: {
+          currentLocale: 'ja',
+          theme: ThemeType.dark,
+          knownMethodData: { '0x12345678': 'transfer' },
+          advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
+          preferences: {
+            autoLockTimeLimit: undefined,
+            avatarType: 'jazzicon',
+            showExtensionInFullSizeView: true,
+            privacyMode: true,
+            showFiatInTestnets: true,
+            showTestNetworks: true,
+            smartTransactionsMigrationApplied: false,
+            smartTransactionsOptInStatus: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
+            useSidePanelAsDefault: false,
+            showDefaultAddress: true,
+            defaultAddressScope: 'eip155',
+            hideZeroBalanceTokens: true,
+            skipDeepLinkInterstitial: false,
+            dismissSmartAccountSuggestionEnabled: false,
+            featureNotificationsEnabled: true,
+            showConfirmationAdvancedDetails: true,
+            showMultiRpcModal: false,
+            showNativeTokenAsMainBalance: true,
+            tokenSortConfig: {
+              key: 'tokenFiatAmount',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            tokenNetworkFilter: {},
+          },
+        },
+      });
+
+      // Verify state was customized
+      expect(controller.state.currentLocale).toBe('ja');
+      expect(controller.state.theme).toBe(ThemeType.dark);
+
+      controller.resetState();
+
+      // Verify state was reset to defaults
+      expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
+      expect(controller.state.theme).toBe(ThemeType.os);
+      expect(controller.state.knownMethodData).toStrictEqual({});
+      expect(controller.state.advancedGasFee).toStrictEqual({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+      expect(controller.state.preferences.privacyMode).toBe(false);
+      expect(controller.state.preferences.showFiatInTestnets).toBe(false);
+      expect(controller.state.preferences.showTestNetworks).toBe(false);
+      expect(controller.state.preferences.hideZeroBalanceTokens).toBe(false);
+      expect(controller.state.preferences.featureNotificationsEnabled).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showConfirmationAdvancedDetails).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showNativeTokenAsMainBalance).toBe(
+        true,
+      );
+      expect(controller.state.preferences.autoLockTimeLimit).toBe(
+        DEFAULT_AUTO_LOCK_TIME_LIMIT,
+      );
     });
   });
 });

@@ -22,12 +22,6 @@ export const DEFAULT_FOOTER = {
     padding: 4,
     className: 'snap-ui-renderer__footer',
     backgroundColor: BackgroundColor.backgroundDefault,
-    style: {
-      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-      height: '80px',
-      position: 'fixed',
-      bottom: 0,
-    },
   },
 };
 
@@ -73,9 +67,12 @@ export const footer: UIComponentFactory<FooterElement> = ({
     } as UIComponentParams<ButtonElement>);
     return {
       element: 'SnapUIFooterButton',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
       props: {
         ...buttonMapped.props,
+        snapVariant: buttonMapped.props?.variant,
         variant:
           providedChildren.length === 2 && index === 0
             ? ButtonVariant.Secondary

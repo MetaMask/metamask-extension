@@ -1,18 +1,31 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { useAccountSyncingEffect } from '../../hooks/metamask-notifications/useProfileSyncing';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  useDisableNotifications,
+  useEnableNotifications,
+  useListNotifications,
+} from '../../hooks/metamask-notifications/useNotifications';
+import {
+  getIsNotificationEnabledByDefaultFeatureFlag,
+  selectIsMetamaskNotificationsEnabled,
+} from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-
-type Notification = NotificationServicesController.Types.INotification;
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import {
+  hasNotificationSubscriptionExpired,
+  hasUserTurnedOffNotificationsOnce,
+} from './notification-storage-keys';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
-  notificationsData?: Notification[];
+  notificationsData?: INotification[];
   isLoading: boolean;
   error?: unknown;
 };
@@ -31,36 +44,137 @@ export const useMetamaskNotificationsContext = () => {
   return context;
 };
 
-export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+const useDisableAndRefresh = () => {
+  const { disableNotifications } = useDisableNotifications();
+  const { listNotifications } = useListNotifications();
+  return useCallback(async () => {
+    await disableNotifications();
+    await listNotifications();
+  }, [disableNotifications, listNotifications]);
+};
+
+const useEnableAndRefresh = () => {
+  const { enableNotifications } = useEnableNotifications();
+  const { listNotifications } = useListNotifications();
+  return useCallback(
+    async (shouldEnable = true) => {
+      shouldEnable && (await enableNotifications());
+      await listNotifications();
+    },
+    [enableNotifications, listNotifications],
+  );
+};
+
+export function useBasicFunctionalityDisableEffect() {
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const basicFunctionality = useSelector(getUseExternalServices);
+  const disableAndRefresh = useDisableAndRefresh();
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
+          await disableAndRefresh();
+        }
+      } catch {
+        // Do nothing
+      }
+    };
+    run();
+  }, [disableAndRefresh, isBasicFunctionalityEnabled, isNotificationsEnabled]);
+}
+
+export function useFetchInitialNotificationsEffect() {
+  const isNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isSignedIn = useSelector(selectIsSignedIn);
+  const shouldFetchNotifications =
+    Boolean(isNotificationsEnabled) && Boolean(isSignedIn);
+  const enableAndRefresh = useEnableAndRefresh();
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        if (
+          isBasicFunctionalityEnabled &&
+          shouldFetchNotifications &&
+          isUnlocked
+        ) {
+          await enableAndRefresh(await hasNotificationSubscriptionExpired());
+        }
+      } catch {
+        // Do nothing
+      }
+    };
+    run();
+  }, [
+    shouldFetchNotifications,
+    isBasicFunctionalityEnabled,
+    isUnlocked,
+    enableAndRefresh,
+  ]);
+}
+
+export function useEnableNotificationsByDefaultEffect() {
+  const isNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
+  const isUnlocked = useSelector(getIsUnlocked);
+  const isNotificationsEnabledByDefaultFeatureFlag = useSelector(
+    getIsNotificationEnabledByDefaultFeatureFlag,
+  );
+  const enableAndRefresh = useEnableAndRefresh();
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        if (
+          !isNotificationsEnabled &&
+          isBasicFunctionalityEnabled &&
+          isUnlocked &&
+          isNotificationsEnabledByDefaultFeatureFlag
+        ) {
+          if (!(await hasUserTurnedOffNotificationsOnce())) {
+            await enableAndRefresh();
+          }
+        }
+      } catch {
+        // Do nothing
+      }
+    };
+    run();
+  }, [
+    enableAndRefresh,
+    isBasicFunctionalityEnabled,
+    isNotificationsEnabled,
+    isNotificationsEnabledByDefaultFeatureFlag,
+    isUnlocked,
+  ]);
+}
+
+export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
-  const shouldFetchNotifications = useMemo(
-    () => isProfileSyncingEnabled && isNotificationsEnabled,
-    [isProfileSyncingEnabled, isNotificationsEnabled],
-  );
+  // Basic functionality effect
+  useBasicFunctionalityDisableEffect();
 
-  useAccountSyncingEffect();
+  // Update subscriptions and fetch notifications
+  useFetchInitialNotificationsEffect();
 
-  useEffect(() => {
-    if (basicFunctionality && shouldFetchNotifications && isUnlocked) {
-      listNotifications();
-    }
-  }, [
-    shouldFetchNotifications,
-    listNotifications,
-    basicFunctionality,
-    isUnlocked,
-  ]);
+  // Enable notifications by default for users
+  useEnableNotificationsByDefaultEffect();
 
   return (
     <MetamaskNotificationsContext.Provider
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       value={{ listNotifications, notificationsData, isLoading, error }}
     >
       {children}

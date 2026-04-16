@@ -1,5 +1,6 @@
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { regularDelayMs } from '../../helpers';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -25,9 +26,6 @@ class SnapSimpleKeyringPage {
     text: 'Approve request',
     tag: 'div',
   };
-
-  private readonly cancelAddAccountWithNameButton =
-    '[data-testid="cancel-add-account-with-name"]';
 
   private readonly confirmAddtoMetamask = {
     text: 'Confirm',
@@ -64,8 +62,6 @@ class SnapSimpleKeyringPage {
     text: 'Create account',
     tag: 'div',
   };
-
-  private readonly createSnapAccountName = '#account-name';
 
   private readonly errorRequestMessage = {
     text: 'Error request',
@@ -131,9 +127,6 @@ class SnapSimpleKeyringPage {
   private readonly snapInstallScrollButton =
     '[data-testid="snap-install-scroll"]';
 
-  private readonly submitAddAccountWithNameButton =
-    '[data-testid="submit-add-account-with-name"]';
-
   private readonly useSyncApprovalToggle =
     '[data-testid="use-sync-flow-toggle"]';
 
@@ -141,7 +134,7 @@ class SnapSimpleKeyringPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.pageTitle,
@@ -170,6 +163,9 @@ class SnapSimpleKeyringPage {
     console.log(
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
+
+    await this.driver.delay(regularDelayMs);
+
     if (isSignatureRequest) {
       await this.driver.clickElementAndWaitForWindowToClose(
         this.confirmationSubmitButton,
@@ -224,36 +220,6 @@ class SnapSimpleKeyringPage {
     );
   }
 
-  async cancelCreateSnapOnFillNameScreen(): Promise<void> {
-    console.log('Cancel create snap on fill name screen');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.cancelAddAccountWithNameButton,
-    );
-  }
-
-  /**
-   * Confirms the add account dialog on Snap Simple Keyring page.
-   *
-   * @param accountName - Optional: name for the snap account. Defaults to "SSK Account".
-   */
-  async confirmAddAccountDialog(
-    accountName: string = 'SSK Account',
-  ): Promise<void> {
-    console.log('Confirm add account dialog');
-    await this.driver.waitForSelector(this.createSnapAccountName);
-    await this.driver.fill(this.createSnapAccountName, accountName);
-    await this.driver.clickElement(this.submitAddAccountWithNameButton);
-
-    await this.driver.waitForSelector(this.accountCreatedMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmationSubmitButton,
-    );
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.SnapSimpleKeyringDapp,
-    );
-    await this.driver.waitForSelector(this.newAccountMessage);
-  }
-
   async confirmCreateSnapOnConfirmationScreen(): Promise<void> {
     console.log('Confirm create snap on confirmation screen');
     await this.driver.clickElement(this.confirmationSubmitButton);
@@ -262,18 +228,25 @@ class SnapSimpleKeyringPage {
   /**
    * Creates a new account on the Snap Simple Keyring page and checks the account is created.
    *
-   * @param accountName - Optional: name for the snap account. Defaults to "SSK Account".
    * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
    * @returns the public key of the new created account
    */
-  async createNewAccount(
-    accountName: string = 'SSK Account',
-    isFirstAccount: boolean = true,
-  ): Promise<string> {
+  async createNewAccount(isFirstAccount: boolean = true): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
     await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
     await this.confirmCreateSnapOnConfirmationScreen();
-    await this.confirmAddAccountDialog(accountName);
+
+    // Wait for account creation to complete and success message
+    await this.driver.waitForSelector(this.accountCreatedMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmationSubmitButton,
+    );
+
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
+
     const newAccountJSONMessage = await (
       await this.driver.waitForSelector(this.newAccountMessage)
     ).getText();
@@ -293,7 +266,17 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.importAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.confirmCreateSnapOnConfirmationScreen();
-    await this.confirmAddAccountDialog();
+
+    // Wait for account creation to complete
+    await this.driver.waitForSelector(this.accountCreatedMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmationSubmitButton,
+    );
+
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
   }
 
   /**
@@ -306,7 +289,10 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.clickElement(this.confirmConnectionButton);
 
-    await this.driver.waitForSelector(this.addtoMetamaskMessage);
+    // set a bigger timeout to wait for element as a temporary fix to reduce flakiness
+    await this.driver.waitForSelector(this.addtoMetamaskMessage, {
+      timeout: 15000,
+    });
     await this.driver.clickElementSafe(this.snapInstallScrollButton, 200);
     await this.driver.waitForSelector(this.confirmAddtoMetamask);
     await this.driver.clickElement(this.confirmAddtoMetamask);
@@ -319,7 +305,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.check_simpleKeyringSnapConnected();
+    await this.checkSimpleKeyringSnapConnected();
   }
 
   /**
@@ -346,14 +332,14 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.useSyncApprovalToggle);
   }
 
-  async check_errorRequestMessageDisplayed(): Promise<void> {
+  async checkErrorRequestMessageDisplayed(): Promise<void> {
     console.log(
       'Check error request message is displayed on snap simple keyring page',
     );
     await this.driver.waitForSelector(this.errorRequestMessage);
   }
 
-  async check_simpleKeyringSnapConnected(): Promise<void> {
+  async checkSimpleKeyringSnapConnected(): Promise<void> {
     console.log('Check simple keyring snap is connected');
     await this.driver.waitForSelector(this.snapConnectedMessage);
   }

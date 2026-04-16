@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,14 +22,17 @@ import { Toast } from '../../multichain';
 type Survey = {
   url: string;
   description: string;
+  content?: string;
   cta: string;
   id: number;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const basicFunctionality = useSelector(getUseExternalServices);
@@ -136,10 +140,11 @@ export function SurveyToast() {
       dataTestId="survey-toast"
       key="survey-toast"
       text={survey.description}
+      description={survey.content}
       actionText={survey.cta}
       onActionClick={handleActionClick}
       onClose={handleClose}
-      startAdornment={null}
+      startAdornment={<Icon name={IconName.Feedback} size={IconSize.Lg} />}
     />
   );
 }

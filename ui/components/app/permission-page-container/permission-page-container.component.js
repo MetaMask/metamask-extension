@@ -4,33 +4,51 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
+import {
+  Caip25EndowmentPermissionName,
+  generateCaip25Caveat,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+
 import {
-  BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-import { PermissionPageContainerContent } from '.';
+import {
+  getCaip25CaveatValueFromPermissions,
+  getCaip25PermissionsResponse,
+} from '../../../pages/permissions-connect/connect-page/utils';
+import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
+import PermissionPageContainerContent from './permission-page-container-content';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
+    requestedChainIds: PropTypes.array,
+    /**
+     * Full CAIP account IDs for chain-agnostic permission approval.
+     * When provided, these are used instead of selectedAccounts for building
+     * the CAIP-25 permission response. This supports non-EVM chains like Solana.
+     */
+    selectedCaipAccountIds: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Full CAIP chain IDs for chain-agnostic permission approval.
+     * When provided, these are used instead of requestedChainIds.
+     */
+    selectedCaipChainIds: PropTypes.arrayOf(PropTypes.string),
     allAccountsSelected: PropTypes.bool,
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -44,7 +62,7 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     connectPath: PropTypes.string.isRequired,
   };
 
@@ -52,6 +70,8 @@ export default class PermissionPageContainer extends Component {
     request: {},
     requestMetadata: {},
     selectedAccounts: [],
+    selectedCaipAccountIds: null,
+    selectedCaipChainIds: null,
     allAccountsSelected: false,
     currentPermissions: {},
   };
@@ -125,13 +145,13 @@ export default class PermissionPageContainer extends Component {
   }
 
   goBack() {
-    const { history, connectPath } = this.props;
-    history.push(connectPath);
+    const { navigate, connectPath } = this.props;
+    navigate(connectPath);
   }
 
   onCancel = () => {
     const { request, rejectPermissionsRequest } = this.props;
-    rejectPermissionsRequest(request.metadata.id);
+    rejectPermissionsRequest(request?.metadata?.id);
   };
 
   onSubmit = () => {
@@ -140,37 +160,76 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      requestedChainIds,
+      selectedCaipAccountIds,
+      selectedCaipChainIds,
     } = this.props;
 
-    const approvedAccounts = selectedAccounts.map(
-      (selectedAccount) => selectedAccount.address,
+    const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
+      _request.permissions,
     );
 
-    const permittedChainsPermission =
-      _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value;
+    let permissionsResponse;
+
+    if (
+      selectedCaipAccountIds?.length > 0 &&
+      selectedCaipChainIds?.length > 0
+    ) {
+      // Use chain-agnostic approach when CAIP account IDs are provided
+      // This supports non-EVM chains like Solana, Bitcoin, etc.
+      permissionsResponse = generateCaip25Caveat(
+        requestedCaip25CaveatValue,
+        selectedCaipAccountIds,
+        selectedCaipChainIds,
+      );
+    } else if (selectedAccounts?.length > 0) {
+      // Fallback to EVM-only approach when accounts are selected (e.g., snaps flow)
+      permissionsResponse = getCaip25PermissionsResponse(
+        requestedCaip25CaveatValue,
+        selectedAccounts.map((account) => account.address),
+        requestedChainIds,
+      );
+    } else {
+      // No user selection occurred (no selectedCaipAccountIds and no selectedAccounts).
+      // This happens in scenarios like:
+      // - Network-only permission changes (adding a new chain without changing accounts)
+      // - Incremental permission requests that don't involve account selection UI
+      //
+      // Extract the account/chain IDs already embedded in the request's CAIP-25 caveat.
+      // We must preserve these values rather than passing empty arrays, which would
+      // effectively deny the permission or create an invalid state.
+      const originalCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
+      );
+      const originalCaipChainIds = getAllScopesFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
+      );
+
+      permissionsResponse = generateCaip25Caveat(
+        requestedCaip25CaveatValue,
+        originalCaipAccountIds,
+        originalCaipChainIds,
+      );
+    }
 
     const request = {
       ..._request,
-      permissions: { ..._request.permissions },
-      ...(_request.permissions?.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions?.[PermissionNames.permittedChains] && {
-        approvedChainIds,
-      }),
+      permissions: {
+        ..._request.permissions,
+        ...permissionsResponse,
+      },
     };
 
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
-      rejectPermissionsRequest(request.metadata.id);
+      rejectPermissionsRequest(request?.metadata?.id);
     }
   };
 
   onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
+    if (requestedPermissions[Caip25EndowmentPermissionName] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
@@ -179,10 +238,13 @@ export default class PermissionPageContainer extends Component {
 
   render() {
     const {
+      request,
       requestMetadata,
       targetSubjectMetadata,
       selectedAccounts,
       allAccountsSelected,
+      requestedChainIds,
+      selectedCaipChainIds,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -199,13 +261,16 @@ export default class PermissionPageContainer extends Component {
     };
 
     const footerLeftActionText = requestedPermissions[
-      PermissionNames.permittedChains
+      Caip25EndowmentPermissionName
     ]
       ? this.context.t('cancel')
       : this.context.t('back');
 
     return (
-      <>
+      <TemplateAlertContextProvider
+        onSubmit={() => this.onSubmit()}
+        confirmationId={request?.metadata?.id}
+      >
         {this.state.isShowingSnapsPrivacyWarning && (
           <SnapPrivacyWarning
             onAccepted={() => confirmSnapsPrivacyWarning()}
@@ -213,35 +278,30 @@ export default class PermissionPageContainer extends Component {
           />
         )}
         <PermissionPageContainerContent
+          request={request}
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
+          requestedChainIds={requestedChainIds}
+          selectedCaipChainIds={selectedCaipChainIds}
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
-        <Box
-          display={Display.Flex}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-          flexDirection={FlexDirection.Column}
-        >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}
-          <PageContainerFooter
-            footerClassName="permission-page-container-footer"
-            cancelButtonType="default"
+          <PermissionPageContainerFooter
             onCancel={() => this.onLeftFooterClick()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('confirm')}
-            buttonSizeLarge={false}
             disabled={containsEthPermissionsAndNonEvmAccount(
               selectedAccounts,
               requestedPermissions,
             )}
           />
         </Box>
-      </>
+      </TemplateAlertContextProvider>
     );
   }
 }

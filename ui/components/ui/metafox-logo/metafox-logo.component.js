@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Box } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import MetaFoxHorizontalLogo from './horizontal-logo';
@@ -10,43 +10,28 @@ export default class MetaFoxLogo extends PureComponent {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
     isOnboarding: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     theme: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   static defaultProps = {
     onClick: undefined,
+    unsetIconHeight: false,
+    isOnboarding: false,
+    src: undefined,
+    theme: undefined,
   };
 
   render() {
-    const {
-      onClick,
-      unsetIconHeight,
-      isOnboarding,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      src,
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      theme,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
+    const { onClick, unsetIconHeight, isOnboarding, src, theme } = this.props;
+
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     iconProps.src = './images/logo/metamask-fox.svg';
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    iconProps.src = './build-types/mmi/images/logo/mmi-logo-with-words.svg';
-    ///: END:ONLY_INCLUDE_IF
-
     let renderHorizontalLogo = () => (
       <MetaFoxHorizontalLogo
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         theme={theme}
-        ///: END:ONLY_INCLUDE_IF
         className={classnames({
           'app-header__metafox-logo--horizontal': !isOnboarding,
           'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
@@ -56,7 +41,6 @@ export default class MetaFoxLogo extends PureComponent {
 
     let imageSrc = './images/logo/metamask-fox.svg';
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     if (src) {
       renderHorizontalLogo = () => (
         <img
@@ -72,7 +56,6 @@ export default class MetaFoxLogo extends PureComponent {
 
       imageSrc = src;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return (
       <Box

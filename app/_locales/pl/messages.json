@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "activityLog": {
-    "message": "dziennik aktywności"
-  },
   "addAcquiredTokens": {
     "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
   },
@@ -229,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
-  "ethereumPublicAddress": {
-    "message": "Adres publiczny Ethereum"
-  },
   "etherscanView": {
     "message": "Zobacz konto na Etherscan"
-  },
-  "expandView": {
-    "message": "Rozwiń widok"
   },
   "failed": {
     "message": "Nie udało się"
@@ -254,26 +245,11 @@
   "from": {
     "message": "Z"
   },
-  "functionType": {
-    "message": "Typ funkcji"
-  },
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
-  },
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
-  },
-  "gasPrice": {
-    "message": "Cena gazu (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bardzo niska cena gazu"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -316,18 +292,12 @@
     "message": "Importuj",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importuj konto"
-  },
   "importAccountMsg": {
     "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed MetaMask. Dowiedz się więcej o importowaniu kont "
   },
   "imported": {
     "message": "Zaimportowane",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Twoja transakcja została potwierdzona w sieci. Kliknij OK żeby wrócić."
   },
   "insufficientBalance": {
     "message": "Niewystarczające saldo."
@@ -375,14 +345,8 @@
   "links": {
     "message": "Łącza"
   },
-  "loadMore": {
-    "message": "Załaduj więcej"
-  },
   "loading": {
     "message": "Ładowanie..."
-  },
-  "loadingTokens": {
-    "message": "Ładowanie tokenów..."
   },
   "localhost": {
     "message": "Serwer lokalny 8545"
@@ -409,9 +373,6 @@
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nie można wysłać ujemnych ilości ETH."
-  },
   "networkName": {
     "message": "Nazwa sieci"
   },
@@ -428,9 +389,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nowy kontakt"
-  },
   "newContract": {
     "message": "Nowy kontrakt"
   },
@@ -439,12 +397,6 @@
   },
   "next": {
     "message": "Dalej"
-  },
-  "noConversionRateAvailable": {
-    "message": "Brak kursu waluty"
-  },
-  "noTransactions": {
-    "message": "Nie ma transakcji"
   },
   "noWebcamFound": {
     "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
@@ -466,9 +418,6 @@
   },
   "origin": {
     "message": "Pochodzenie"
-  },
-  "parameters": {
-    "message": "Parametry"
   },
   "participateInMetaMetrics": {
     "message": "Weź udział w MetaMetrics"
@@ -520,12 +469,6 @@
   "rejectAll": {
     "message": "Odrzuć wszystkie"
   },
-  "rejectTxsDescription": {
-    "message": "Zamierzasz odrzucić wiele ($1) transakcji jednocześnie."
-  },
-  "rejectTxsN": {
-    "message": "Odrzuć transakcje ($1)"
-  },
   "rejected": {
     "message": "Odrzucone"
   },
@@ -534,12 +477,6 @@
   },
   "removeAccount": {
     "message": "Usuń konto"
-  },
-  "removeAccountDescription": {
-    "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "wnioski oczekujące na zatwierdzenie"
   },
   "required": {
     "message": "Wymagane"
@@ -608,9 +545,6 @@
   "showHexDataDescription": {
     "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
   },
-  "sigRequest": {
-    "message": "Prośba o podpis"
-  },
   "sign": {
     "message": "Podpisz"
   },
@@ -629,9 +563,6 @@
   "speedUpCancellation": {
     "message": "Przyśpiesz anulowanie"
   },
-  "speedUpTransaction": {
-    "message": "Przyśpiesz transakcję"
-  },
   "stateLogError": {
     "message": "Błąd podczas pobierania logów stanów."
   },
@@ -647,17 +578,11 @@
   "supportCenter": {
     "message": "Odwiedź nasze Centrum Pomocy"
   },
-  "switchNetworks": {
-    "message": "Zmień sieci"
-  },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
   "terms": {
     "message": "Regulamin"
-  },
-  "tips": {
-    "message": "Napiwki"
   },
   "to": {
     "message": "Do"
@@ -677,41 +602,11 @@
   "transaction": {
     "message": "transakcja"
   },
-  "transactionCancelAttempted": {
-    "message": "Podjęto próbę anulowania transakcji z opłatą za gaz w wysokości $1 – $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcja została anulowana pomyślnie – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcja została potwierdzona o $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcja o wartości $1 została utworzona o $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcja odrzucona – $2."
-  },
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
   },
   "transactionErrorNoContract": {
     "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
-  },
-  "transactionErrored": {
-    "message": "Wystąpił błąd podczas wykonywania transakcji."
-  },
-  "transactionFee": {
-    "message": "Opłata transakcyjna"
-  },
-  "transactionResubmitted": {
-    "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcja zaktualizowana – $2."
   },
   "transfer": {
     "message": "Przelew"
@@ -731,29 +626,17 @@
   "unknown": {
     "message": "Nieznane"
   },
-  "unknownNetwork": {
-    "message": "Nieznana sieć prywatna"
-  },
   "unknownQrCode": {
     "message": "Błąd: nie mogliśmy odczytać tego kodu QR"
   },
   "unlock": {
     "message": "Odblokuj"
   },
-  "unlockMessage": {
-    "message": "Zdecentralizowana sieć oczekuje"
-  },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
   },
   "usedByClients": {
     "message": "Używany przez różnych klientów"
-  },
-  "userName": {
-    "message": "Nazwa użytkownika"
-  },
-  "viewContact": {
-    "message": "Wyświetl kontakt"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
@@ -763,14 +646,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
-  },
-  "youSign": {
-    "message": "Podpisujesz"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Twoja prywatna fraza seed"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Przyspieszenie z zerową ceną gazu"
   }
 }

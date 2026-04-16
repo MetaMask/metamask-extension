@@ -1,40 +1,52 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getTokenList } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { AssetWithDisplayData, ERC20Asset } from './types';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getImageForChainId,
+} from '../../../../selectors/multichain';
+import { selectERC20TokensByChain } from '../../../../selectors/selectors';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
-type AssetProps = AssetWithDisplayData<ERC20Asset> & {
+type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;
+  assetItemProps?: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
+  >;
+  name?: string;
+  isDestinationToken?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Asset({
   address,
   image,
   symbol,
   string: decimalTokenAmount,
+  name,
   tooltipText,
+  tokenFiatAmount,
+  chainId,
+  accountType,
+  assetItemProps = {},
+  isDestinationToken = false,
+  rwaData,
 }: AssetProps) {
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const chainId = useSelector(getCurrentChainId);
-  const tokenList = useSelector(getTokenList);
-  const tokenData = address
-    ? Object.values(tokenList).find(
-        (token) =>
-          isEqualCaseInsensitive(token.symbol, symbol) &&
-          isEqualCaseInsensitive(token.address, address),
-      )
-    : undefined;
+  const currency = useSelector(getCurrentCurrency);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  const isTokenChainIdInWallet = Boolean(
+    chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
+  );
 
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
     decimalTokenAmount,
@@ -43,22 +55,33 @@ export default function Asset({
     true,
   );
   const formattedAmount = decimalTokenAmount
-    ? `${formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
-      )} ${symbol}`
+    ? `${formatTokenQuantity(Number(decimalTokenAmount), symbol)}`
     : undefined;
+  const primaryAmountToUse = tokenFiatAmount
+    ? formatCurrency(tokenFiatAmount, currency)
+    : formattedFiat;
 
   return (
     <TokenListItem
+      key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      secondary={formattedAmount}
-      primary={formattedFiat}
-      title={title}
+      tokenImage={
+        image ??
+        cachedTokens?.[chainId]?.data?.[
+          ((address as string) ?? '').toLowerCase()
+        ]?.iconUrl
+      }
+      secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
+      primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
+      title={name ?? symbol}
       tooltipText={tooltipText}
-      isPrimaryTokenSymbolHidden
+      tokenChainImage={getImageForChainId(chainId)}
+      isDestinationToken={isDestinationToken}
+      address={address}
+      accountType={accountType}
+      rwaData={rwaData}
+      {...assetItemProps}
     />
   );
 }

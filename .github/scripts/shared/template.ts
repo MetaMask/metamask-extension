@@ -27,7 +27,6 @@ const bugReportIssueTemplateTitles = [
   '### Expected behavior',
   '### Screenshots', // TODO: replace '### Screenshots' by '### Screenshots/Recordings' in January 2024 (as most issues will meet this criteria by then)
   '### Steps to reproduce',
-  '### Error messages or log output',
   '### Version',
   '### Build type',
   '### Browser',
@@ -40,6 +39,7 @@ const bugReportIssueTemplateTitles = [
 // Titles of PR template
 const prTemplateTitles = [
   '## **Description**',
+  '## **Changelog**',
   '## **Related issues**',
   '## **Manual testing steps**',
   '## **Screenshots/Recordings**',

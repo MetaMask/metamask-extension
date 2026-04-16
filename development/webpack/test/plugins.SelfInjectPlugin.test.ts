@@ -42,7 +42,7 @@ describe('SelfInjectPlugin', () => {
         // we should have matched our file so it should have been updated:
 
         assert.strictEqual(compilation.updateAsset.mock.callCount(), 1);
-        const newAsset = compilation.updateAsset.mock.calls[0].result;
+        const newAsset = compilation.getAsset(filename)?.source;
         assert(newAsset, 'newAsset should be defined');
         const { source: newSource, map: newMap } = newAsset.sourceAndMap();
 
@@ -55,7 +55,7 @@ describe('SelfInjectPlugin', () => {
           // reference the `sourceMappingURL`
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
+            `{let d=document,s=d.createElement('script');s.textContent="${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove()}`,
           );
         } else {
           // the new source should NOT reference the new sourcemap, since it's
@@ -66,7 +66,7 @@ describe('SelfInjectPlugin', () => {
           // console.
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
+            `{let d=document,s=d.createElement('script');s.textContent="console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove()}`,
           );
         }
 

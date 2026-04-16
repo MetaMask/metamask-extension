@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
+import README from './README.mdx';
 import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
-import {
-  Box,
-  ButtonVariant,
-  Button,
-  Text,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '..';
+import { Text } from '../text';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
 
-import README from './README.mdx';
+import { Button, ButtonVariant } from '../button';
+import { Modal } from '../modal';
+import { ModalHeader } from '../modal-header';
+import { ModalBody } from '../modal-body';
+import { ModalFooter } from '../modal-footer';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/ModalContent',
   component: ModalContent,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
@@ -64,7 +61,7 @@ export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
         <ModalContent {...args}>
           <ModalHeader>Modal Header</ModalHeader>
           <ModalBody>
-            <Text>Modal Content</Text>
+            <Text>Modal Body</Text>
           </ModalBody>
           <ModalFooter
             onSubmit={handleOnClick}
@@ -172,7 +169,8 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
                 {currentSize === ModalContentSizeStoryOption.ClassName ? (
                   <>
                     This ModalContent has size set using modalDialogProps and
-                    adding a className setting a max width (max-width: 800px){' '}
+                    adding a className setting a max width (max-width:
+                    800px){' '}
                   </>
                 ) : (
                   <>This ModalContent is using size: {currentSize}</>

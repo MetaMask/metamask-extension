@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { getActiveFeatures } = require('./config');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -17,14 +17,12 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms,
   shouldIncludeLockdown = true,
   shouldIncludeSnow = true,
-  buildType,
 }) {
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
   const buildConfig = loadBuildTypesConfig();
-
-  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+  const activeFeatures = getActiveFeatures();
 
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
@@ -119,6 +117,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `images`,
     },
     {
+      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
+      dest: 'images/rive.wasm',
+      pattern: '',
+    },
+    {
       src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
@@ -197,7 +200,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/browserify/iframe/index.html',
+              'dist/webpack/iframe/index.html',
             ),
             dest: `snaps/index.html`,
             pattern: '',
@@ -205,7 +208,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/browserify/iframe/bundle.js',
+              'dist/webpack/iframe/bundle.js',
             ),
             dest: `snaps/bundle.js`,
             pattern: '',

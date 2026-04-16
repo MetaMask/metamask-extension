@@ -1,0 +1,38 @@
+name: Merge Previous Release Branches
+
+permissions:
+  pull-requests: write
+  contents: write
+  issues: write
+
+on:
+  create:
+
+jobs:
+  merge-previous-releases:
+    name: Merge previous release branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    # Only run for release branch creation (not tags or other branches)
+    if: startsWith(github.ref, 'refs/heads/release/')
+    environment: release-ci
+    steps:
+      - name: Validate release branch format
+        id: validate
+        env:
+          BRANCH: ${{ github.event.ref }}
+        run: |
+          if [[ ! "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Branch '$BRANCH' does not match release/X.Y.Z format. Skipping."
+            echo "is-valid=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Branch '$BRANCH' matches release/X.Y.Z format"
+            echo "is-valid=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Merge previous releases
+        if: steps.validate.outputs.is-valid == 'true'
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1.2.0
+        with:
+          new-release-branch: ${{ github.event.ref }}
+          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}

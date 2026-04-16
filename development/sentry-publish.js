@@ -5,6 +5,7 @@ const path = require('node:path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
+const { getSentryRelease } = require('../shared/lib/sentry-release');
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
 const { loadBuildTypesConfig } = require('./lib/build-type');
@@ -44,10 +45,15 @@ async function start() {
           description:
             'The MetaMask extension build distribution (typically for MV2 builds, omit for MV3)',
           type: 'string',
+        })
+        .option('dist-directory', {
+          default: 'dist',
+          description: 'The MetaMask extension build dist directory path',
+          type: 'string',
         }),
   );
 
-  const { buildType, buildVersion, dist, org, project } = argv;
+  const { buildType, buildVersion, dist, distDirectory, org, project } = argv;
 
   process.env.SENTRY_ORG = org;
   process.env.SENTRY_PROJECT = project;
@@ -58,35 +64,29 @@ async function start() {
   }
 
   const version = getVersion(buildType, buildVersion);
+  const release = getSentryRelease('production', version);
 
-  // check if version exists or not
-  const versionAlreadyExists = await checkIfVersionExists(version);
+  // check if release exists or not
+  const releaseAlreadyExists = await checkIfReleaseExists(release);
   // abort if versions exists
-  if (versionAlreadyExists) {
+  if (releaseAlreadyExists) {
     console.log(
-      `Version "${version}" already exists on Sentry, skipping version creation`,
+      `Release "${release}" already exists on Sentry, skipping creation`,
     );
   } else {
     // create sentry release
-    console.log(`creating Sentry release for "${version}"...`);
-    await runCommand('sentry-cli', ['releases', 'new', version]);
+    console.log(`creating Sentry release for "${release}"...`);
+    await runCommand('sentry-cli', ['releases', 'new', release]);
     console.log(
-      `removing any existing files from Sentry release "${version}"...`,
+      `removing any existing files from Sentry release "${release}"...`,
     );
     await runCommand('sentry-cli', [
       'releases',
       'files',
-      version,
+      release,
       'delete',
       '--all',
     ]);
-  }
-
-  let distDirectory = 'dist';
-  if (buildType !== loadBuildTypesConfig().default) {
-    distDirectory = dist ? `dist-${buildType}-${dist}` : `dist-${buildType}`;
-  } else if (dist) {
-    distDirectory = `dist-${dist}`;
   }
 
   const absoluteDistDirectory = path.resolve(__dirname, '../', distDirectory);
@@ -99,7 +99,7 @@ async function start() {
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
     '--release',
-    version,
+    release,
     ...additionalUploadArgs,
   ]);
 }
@@ -110,9 +110,9 @@ async function checkIfAuthWorks() {
   );
 }
 
-async function checkIfVersionExists(version) {
+async function checkIfReleaseExists(release) {
   return await doesNotFail(() =>
-    runCommand('sentry-cli', ['releases', 'info', version]),
+    runCommand('sentry-cli', ['releases', 'info', release]),
   );
 }
 

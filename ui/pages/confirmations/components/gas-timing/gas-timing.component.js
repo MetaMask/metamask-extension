@@ -1,15 +1,18 @@
 import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import {
+  GasEstimateTypes,
+  PriorityLevels,
+} from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
 import {
@@ -19,15 +22,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  GAS_FORM_ERRORS,
-  PRIORITY_LEVEL_ICON_MAP,
-} from '../../../../helpers/constants/gas';
+import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
-import { isMMI } from '../../../../helpers/utils/build-types';
-
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
@@ -39,20 +36,26 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   }
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
+// Preset levels show their label; others (e.g. PriorityLevels.tenPercentIncreased, custom) show as "Advanced"
+const PRESET_ESTIMATES = new Set(['low', 'medium', 'high']);
+
 export default function GasTiming({
+  chainId,
   maxFeePerGas = '0',
   maxPriorityFeePerGas = '0',
   gasWarnings,
+  userFeeLevelOverride,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const chainGasFeeEstimates = useSelector((state) =>
+    getGasFeeEstimatesByChainId(state, chainId),
+  );
+  const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
+  const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
-  const { estimateUsed } = useGasFeeContext();
-
-  const transactionData = useDraftTransactionWithTxParams();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -65,6 +68,15 @@ export default function GasTiming({
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
   const previousIsUnknownLow = usePrevious(isUnknownLow);
+
+  const estimateTextMap = useMemo(
+    () => ({
+      [PriorityLevels.tenPercentIncreased]: t('tenPercentIncreased'),
+      [PriorityLevels.dAppSuggested]: t('dappSuggested'),
+      [PriorityLevels.dappSuggestedHigh]: t('dappSuggested'),
+    }),
+    [t],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -130,15 +142,15 @@ export default function GasTiming({
 
   const { low = {}, medium = {}, high = {} } = gasFeeEstimates;
 
-  const estimateToUse =
-    estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = isMMI() ? '' : PRIORITY_LEVEL_ICON_MAP[estimateToUse];
-  let text = `${estimateEmoji} ${t(estimateToUse)}`;
-  let time = '';
+  const estimateToUse = userFeeLevelOverride ?? 'medium';
 
-  if (estimateToUse === 'low') {
-    text = `${estimateEmoji} ${t('gasTimingLow')}`;
-  }
+  const isPresetEstimate = PRESET_ESTIMATES.has(estimateToUse);
+  const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
+  let text =
+    estimateTextMap[estimateToUse] ??
+    (isPresetEstimate ? t(textTKey) : t('custom'));
+  let time = '';
+  let timeMs = 0;
 
   // Anything medium or faster is positive
   if (
@@ -149,10 +161,12 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      timeMs = low.maxWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
+      timeMs = high.minWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     }
   } else if (isUnknownLow) {
     // If the user has chosen a value less than our low estimate,
@@ -167,28 +181,31 @@ export default function GasTiming({
     ) {
       text = t('editGasTooLow');
     } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      timeMs = Number(customEstimatedTime?.upperTimeBound);
+      time = toHumanReadableTime(timeMs, t);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    timeMs = low.maxWaitTimeEstimate;
+    time = toHumanReadableTime(timeMs, t);
   }
 
   return (
-    <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMd}
-        paddingInlineEnd={1}
-      >
-        {text}
-      </Text>
+    <Box display={Display.Flex} marginBottom={1} flexWrap={FlexWrap.Wrap}>
+      {text && (
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMd}
+          paddingInlineEnd={2}
+        >
+          {text}
+        </Text>
+      )}
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          <span data-testid="gas-timing-time">~{time}</span>
+          <span data-testid="gas-timing-time">
+            {timeMs > 0 && timeMs < 1000 ? `<${time}` : `~${time}`}
+          </span>
         </Text>
       )}
     </Box>
@@ -196,7 +213,9 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
+  chainId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,
+  userFeeLevelOverride: PropTypes.string,
 };

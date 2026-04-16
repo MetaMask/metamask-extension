@@ -1,61 +1,101 @@
-import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
+import { captureException } from '../shared/lib/sentry';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
-import { maskObject } from '../shared/modules/object.utils';
+import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
-import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../shared/constants/app';
+import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
-import switchDirection from '../shared/lib/switch-direction';
+import { START_UI_SYNC } from '../shared/constants/ui-initialization';
+import { PATCH_STORE_SUBSTREAM_METHODS } from '../shared/constants/patch-store-substream-methods';
+import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../shared/lib/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import {
+  setupLongTaskObserver,
+  setupLongTaskSentryReporting,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getOriginOfCurrentTab,
-  getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
-  getSwitchedNetworkDetails,
-  getUseRequestQueue,
+  getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
+  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  submitRequestToBackground,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
+import { getPerpsStreamManager } from './providers/perps';
+import { setupPatchStoreSubstreamConnection } from './store/patch-store-substream-connection';
+
+export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
+export {
+  displayCriticalErrorMessage,
+  CriticalErrorTranslationKey,
+} from './helpers/utils/display-critical-error';
+
+/**
+ * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
+ */
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
-let reduxStore;
+/**
+ * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
+ */
+const reduxStore = withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
  *
  * @param backgroundConnection - connection object to background
+ * @param handleStartUISync - function to call when startUISync notification is received
  */
-export const updateBackgroundConnection = (backgroundConnection) => {
+export const connectToBackground = (
+  backgroundConnection,
+  handleStartUISync,
+) => {
   setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else {
+  backgroundConnection.onNotification(async (data) => {
+    const { method } = data;
+    if (method === START_UI_SYNC) {
+      await handleStartUISync(data.params[0]);
+    } else if (method === 'perpsStreamUpdate') {
+      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
@@ -65,19 +105,33 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   });
 };
 
-export default async function launchMetamaskUi(opts) {
-  const { backgroundConnection, traceContext } = opts;
+/**
+ * Handles messages coming through the patch store substream from the
+ * background.
+ *
+ * @param {Substream} patchStoreSubstream - The connection with the background
+ * process.
+ */
+export const connectToBackgroundViaPatchStoreSubstream = (
+  patchStoreSubstream,
+) => {
+  setupPatchStoreSubstreamConnection(patchStoreSubstream, {
+    handleSendUpdate: async (notification) => {
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(notification.params[0]));
+    },
+  });
+};
 
-  const metamaskState = await trace(
-    { name: TraceName.GetState, parentContext: traceContext },
-    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
-  );
+export async function launchMetamaskUi(opts) {
+  const { patchSubstream, initialState } = opts;
 
-  const store = await startApp(metamaskState, backgroundConnection, opts);
+  const store = await startApp(initialState, opts);
 
-  await promisify(
-    backgroundConnection.startPatches.bind(backgroundConnection),
-  )();
+  patchSubstream.write({
+    jsonrpc: '2.0',
+    method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+  });
 
   setupStateHooks(store);
 
@@ -88,15 +142,10 @@ export default async function launchMetamaskUi(opts) {
  * Method to setup initial redux store for the ui application
  *
  * @param {*} metamaskState - flatten background state
- * @param {*} backgroundConnection - rpc client connecting to the background process
  * @param {*} activeTab - active browser tab
  * @returns redux store
  */
-export async function setupInitialStore(
-  metamaskState,
-  backgroundConnection,
-  activeTab,
-) {
+export async function setupInitialStore(metamaskState, activeTab) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -125,15 +174,23 @@ export async function setupInitialStore(
       en: enLocaleMessages,
     },
   };
-
-  updateBackgroundConnection(backgroundConnection);
-
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress =
-      getSelectedInternalAccount(draftInitialState)?.address ?? '';
+      getAllPermittedAccountsForCurrentTab(draftInitialState);
+
+    const selectedAccount = getSelectedInternalAccount(draftInitialState);
+
+    const currentTabIsConnectedToSelectedAddress =
+      selectedAccount &&
+      isInternalAccountInPermittedAccountIds(
+        selectedAccount,
+        permittedAccountsForCurrentTab,
+      );
+
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -144,7 +201,7 @@ export async function setupInitialStore(
       unconnectedAccountAlertIsEnabled &&
       !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
-      !permittedAccountsForCurrentTab.includes(selectedAddress)
+      !currentTabIsConnectedToSelectedAddress
     ) {
       draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
@@ -154,7 +211,7 @@ export async function setupInitialStore(
   }
 
   const store = configureStore(draftInitialState);
-  reduxStore = store;
+  reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
@@ -180,8 +237,11 @@ export async function setupInitialStore(
   return store;
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
+
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
@@ -191,8 +251,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       parentContext: traceContext,
       tags,
     },
-    () =>
-      setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
+    () => setupInitialStore(metamaskState, opts.activeTab),
   );
 
   // global metamask api - used by tooling
@@ -217,40 +276,87 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
-  const state = store.getState();
+export async function runInitialActions(store) {
+  const initialState = store.getState();
+
+  // Update browser environment with accurate browser detection from UI
+  // This corrects the initial detection from background which can't detect Brave
+  try {
+    const browserName = getBrowserName().toLowerCase();
+    const { os } = initialState.metamask.browserEnvironment || {};
+    if (os && browserName) {
+      store
+        .dispatch(actions.setBrowserEnvironment(os, browserName))
+        .catch((err) => {
+          log.error('Failed to update browser environment:', err);
+        });
+    }
+  } catch (error) {
+    log.error('Failed to get browser name:', error);
+  }
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(initialState);
 
   if (networkIdToSwitchTo) {
     await store.dispatch(
-      actions.automaticallySwitchNetwork(
-        networkIdToSwitchTo,
-        getOriginOfCurrentTab(state),
-      ),
+      actions.automaticallySwitchNetwork(networkIdToSwitchTo),
     );
-  } else if (getSwitchedNetworkDetails(state)) {
-    // It's possible that old details could exist if the user
-    // opened the toast but then didn't close it
-    // Clear out any existing switchedNetworkDetails
-    // if the user didn't just change the dapp network
-    await store.dispatch(actions.clearSwitchedNetworkDetails());
   }
 
   // Register this window as the current popup
   // and set in background state
-  if (
-    getUseRequestQueue(state) &&
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-  ) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
   }
+
+  try {
+    const validateSeedlessPasswordOutdated = async (state) => {
+      const isUnlocked = getIsUnlocked(state);
+      if (isUnlocked) {
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
+      }
+    };
+    await validateSeedlessPasswordOutdated(initialState);
+    // periodically check seedless password outdated when app UI is open
+    const pwdCheckIntervalId = setInterval(() => {
+      const state = store.getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
+      const isSocialLoginFlow = getIsSocialLoginFlow(state);
+      if (firstTimeFlowType !== null && !isSocialLoginFlow) {
+        // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
+        clearInterval(pwdCheckIntervalId);
+        return;
+      }
+      validateSeedlessPasswordOutdated(state);
+    }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
+  } catch (e) {
+    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
+  }
+}
+
+export async function getCleanAppState(store) {
+  const state = { ...store.getState() };
+  // we use the manifest.json version from getVersion and not
+  // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+  // for more info)
+  state.version = global.platform.getVersion();
+  state.browser = window.navigator.userAgent;
+
+  // when JSON.stringiy, `undefined` value will be left out.
+  state.metamask = {
+    ...state.metamask,
+    socialLoginEmail: undefined,
+  };
+
+  return state;
 }
 
 /**
@@ -267,7 +373,7 @@ function setupStateHooks(store) {
   ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
-     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     * manual and E2E tests to ensure that errors are attempted to be sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
@@ -277,8 +383,19 @@ function setupStateHooks(store) {
       throw error;
     };
     /**
+     * The following stateHook is a method intended to capture an error, used in
+     * manual and E2E tests to ensure that errors are correctly sent to sentry.
+     *
+     * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
+     */
+    window.stateHooks.captureTestError = async function (msg = 'Test Error') {
+      const error = new Error(msg);
+      error.name = 'TestError';
+      captureException(error);
+    };
+    /**
      * The following stateHook is a method intended to throw an error in the
-     * background, used in our E2E test to ensure that errors are attempted to be
+     * background, used in manual and E2E tests to ensure that errors are attempted to be
      * sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
@@ -288,16 +405,30 @@ function setupStateHooks(store) {
     ) {
       await actions.throwTestBackgroundError(msg);
     };
+    /**
+     * The following stateHook is a method intended to capture an error in the background, used
+     * in manual and E2E tests to ensure that errors are correctly sent to sentry.
+     *
+     * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
+     */
+    window.stateHooks.captureBackgroundError = async function (
+      msg = 'Test Error',
+    ) {
+      await actions.captureTestBackgroundError(msg);
+    };
   }
 
+  /**
+   * Reload the extension.
+   *
+   * This is used for the `first-install` E2E test, which uses a production-like build. This
+   * function must be present even if `process.env.IN_TEST` is false.
+   */
+  window.stateHooks.reloadExtension = () => {
+    browser.runtime.reload();
+  };
   window.stateHooks.getCleanAppState = async function () {
-    const state = clone(store.getState());
-    // we use the manifest.json version from getVersion and not
-    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
-    // for more info)
-    state.version = global.platform.getVersion();
-    state.browser = window.navigator.userAgent;
-    return state;
+    return getCleanAppState(store);
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
@@ -314,33 +445,55 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    exposeLongTaskMetricsForTesting();
+  }
+
+  // Agentic dev hooks — expose internals for CDP automation
+  if (process.env.METAMASK_DEBUG) {
+    globalThis.stateHooks.store = store;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
+    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  }
 }
 
-window.logStateString = async function (cb) {
+/**
+ * Returns the extension state as a formatted JSON string for debugging.
+ * Includes app state, logs, and platform info.
+ *
+ * @returns {Promise<string>} The state as a JSON string
+ */
+window.logStateString = async function () {
   const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
+  state.logs = window.stateHooks.getLogs();
+  state.platform = await browser.runtime.getPlatformInfo();
+  return JSON.stringify(state, null, 2);
 };
 
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
+window.logState = async function (toClipboard) {
+  try {
+    const result = await window.logStateString();
+    if (toClipboard) {
       copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);
     }
-  });
+  } catch (err) {
+    console.error(err.message);
+  }
 };

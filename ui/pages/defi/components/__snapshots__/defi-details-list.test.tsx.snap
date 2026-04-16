@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DefiDetailsList renders defi details list 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <div
+      class="mm-box"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
+        data-testid="defi-details-list-supply-position"
+      >
+        Supplied
+      </p>
+      <div
+        data-testid="defi-details-token-cell-stub"
+      />
+    </div>
+    <div
+      class="mm-box"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
+        data-testid="defi-details-list-supply-position"
+      >
+        Reward
+      </p>
+      <div
+        data-testid="defi-details-token-cell-stub"
+      />
+    </div>
+  </div>
+</div>
+`;

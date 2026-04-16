@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Unatakiwa kuchagua akaunti!"
   },
-  "activityLog": {
-    "message": "kumbukumbu ya shughuli"
-  },
   "addAcquiredTokens": {
     "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
   },
@@ -223,14 +220,8 @@
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
-  "ethereumPublicAddress": {
-    "message": "Anwani ya Umma ya Ethereum"
-  },
   "etherscanView": {
     "message": "Tazama akaunti kwenye Etherscan"
-  },
-  "expandView": {
-    "message": "Panua Mwonekano"
   },
   "failed": {
     "message": "Imeshindwa"
@@ -248,26 +239,11 @@
   "from": {
     "message": "Kutoka"
   },
-  "functionType": {
-    "message": "Aina ya Shughuli"
-  },
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
-  },
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
-  },
-  "gasPrice": {
-    "message": "Pata Bei (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bei ya Gesi Ipo Chini Kupita Kiasi"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Bei ya gesi hubainisha kiwango cha Ether ambacho upo radhi kulipia kila kizio cha gesi."
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
@@ -307,18 +283,12 @@
     "message": "Ingiza",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Ingiza Akaunti"
-  },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
   },
   "imported": {
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
   },
   "insufficientBalance": {
     "message": "Salio halitoshi."
@@ -366,14 +336,8 @@
   "links": {
     "message": "Viungo"
   },
-  "loadMore": {
-    "message": "Pak zAIDI"
-  },
   "loading": {
     "message": "Inapakia..."
-  },
-  "loadingTokens": {
-    "message": "Inapakia Vianzio..."
   },
   "lock": {
     "message": "Toka kwenye akaunti"
@@ -394,9 +358,6 @@
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Haiwezi kutuma viwango hasi vya ETH."
-  },
   "networkName": {
     "message": "Jina la mtandao"
   },
@@ -413,9 +374,6 @@
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Mawasiliano Mapya"
-  },
   "newContract": {
     "message": "Mkataba Mpya"
   },
@@ -424,12 +382,6 @@
   },
   "next": {
     "message": "Inayofuata"
-  },
-  "noConversionRateAvailable": {
-    "message": "Hakuna Kiwango cha Ubadilishaji"
-  },
-  "noTransactions": {
-    "message": "Huna miamala."
   },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."
@@ -454,9 +406,6 @@
   },
   "origin": {
     "message": "Asili"
-  },
-  "parameters": {
-    "message": "Vigezo"
   },
   "participateInMetaMetrics": {
     "message": "Shiriki katika MetaMetrics"
@@ -508,12 +457,6 @@
   "rejectAll": {
     "message": "Kataa Zote"
   },
-  "rejectTxsDescription": {
-    "message": "Unakaribia kukataa miamala $1kwa mafungu."
-  },
-  "rejectTxsN": {
-    "message": "Kataa $1 miamala"
-  },
   "rejected": {
     "message": "Imekataliwa"
   },
@@ -522,12 +465,6 @@
   },
   "removeAccount": {
     "message": "Ondoa akaunti"
-  },
-  "removeAccountDescription": {
-    "message": "Akaunti hii itaondolewa kwenye waleti yako. Tafadhali hakikisha una kirai kianzio cha asili au ufunguo binafsi kwa akaunti hii iliyohamishwa kabla ya kuendelea. Unaweza kuhamisha au kufungua akaunti tena kutoka kwenye menyu ya akaunti."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "maombi yanasubiriwa kutambuliwa"
   },
   "required": {
     "message": "Inahitajika"
@@ -596,9 +533,6 @@
   "showHexDataDescription": {
     "message": "Chagua hii ili uonyeshe sehemu ya data ya hex kwenye skrini ya tuma"
   },
-  "sigRequest": {
-    "message": "Ombi la Saini"
-  },
   "sign": {
     "message": "Ingia kwenye akaunti"
   },
@@ -617,9 +551,6 @@
   "speedUpCancellation": {
     "message": "Ongeza kasi ya ubatilishaji huu"
   },
-  "speedUpTransaction": {
-    "message": "Ongeza kasi ya muamala huu"
-  },
   "stateLogError": {
     "message": "Hitilafu imetokea kurejesha kumbukumbu za hali."
   },
@@ -635,9 +566,6 @@
   "supportCenter": {
     "message": "Tembelea Kituo chetu cha Usaidizi"
   },
-  "switchNetworks": {
-    "message": "Badilisha mitandao"
-  },
   "symbol": {
     "message": "Ishara"
   },
@@ -646,9 +574,6 @@
   },
   "terms": {
     "message": "Masharti ya Matumizi"
-  },
-  "tips": {
-    "message": "Michango"
   },
   "to": {
     "message": "Kwenda"
@@ -671,41 +596,11 @@
   "transaction": {
     "message": "muamala"
   },
-  "transactionCancelAttempted": {
-    "message": "Jaribio la kubatilisha muamala ukiwa na ada ya gesi ya  $1 mnamo $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Muamala umefanikiwa kubatilishwa mnamo $2"
-  },
-  "transactionConfirmed": {
-    "message": "Muamala umethibitishwa mnamo $2."
-  },
-  "transactionCreated": {
-    "message": "Muamala umeanzishwa kwa thamani ya $1 mnamo$2."
-  },
-  "transactionDropped": {
-    "message": "Muamala umedondoswa mnamo $2."
-  },
   "transactionError": {
     "message": "Hitilafu ya muamala. Kighairi kimerushwa kwenye msimbo wa mkataba."
   },
   "transactionErrorNoContract": {
     "message": "Inajaribu kuita shughuli kwenye anwani isiyo ya mkataba."
-  },
-  "transactionErrored": {
-    "message": "Muamala umepata hitilafu."
-  },
-  "transactionFee": {
-    "message": "Ada ya Muamala"
-  },
-  "transactionResubmitted": {
-    "message": "Muamala umewasilishwa tena ukiwa na ada ya gesi iliyoongezeka hadi $1 manamo $2"
-  },
-  "transactionSubmitted": {
-    "message": "Muamala umewasilishwa ukiwa na ada ya gesi ya$1 mnamo $2."
-  },
-  "transactionUpdated": {
-    "message": "Muamala umesasishwa mnamo $2."
   },
   "transfer": {
     "message": "Kutuma"
@@ -725,29 +620,17 @@
   "unknown": {
     "message": "Haijulikani"
   },
-  "unknownNetwork": {
-    "message": "Mtandao Binafsi Usiojulikana"
-  },
   "unknownQrCode": {
     "message": "Hitilafu: Hatukuweza kubainisha msimbo huo wa QR"
   },
   "unlock": {
     "message": "Fungua"
   },
-  "unlockMessage": {
-    "message": "Wavuti uliotenganishwa unasubiri"
-  },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
   "usedByClients": {
     "message": "Hutumiwa na wateja mbalimbali"
-  },
-  "userName": {
-    "message": "Jina la mtumiaji"
-  },
-  "viewContact": {
-    "message": "Tazama Mawasiliano"
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
@@ -757,14 +640,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."
-  },
-  "youSign": {
-    "message": "Unasaini"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Kirai chako kianzio cha binafsi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Bei ya gesi sifuri kwenye kuongeza kasi"
   }
 }

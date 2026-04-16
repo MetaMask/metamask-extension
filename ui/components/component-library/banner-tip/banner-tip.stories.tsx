@@ -4,20 +4,18 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  ButtonPrimary,
-  Box,
-  Icon,
-  IconName,
-} from '..';
+import { BannerTip } from './banner-tip';
+import { BannerTipLogoType } from './banner-tip.types';
+import { Box } from '../box';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { Icon, IconName } from '../icon';
+import { ButtonPrimary } from '../button-primary';
 import README from './README.mdx';
-import { BannerTip, BannerTipLogoType } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

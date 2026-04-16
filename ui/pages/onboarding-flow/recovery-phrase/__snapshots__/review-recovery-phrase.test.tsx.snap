@@ -1,0 +1,930 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Review Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
+    data-testid="recovery-phrase"
+  >
+    <div
+      class=""
+    >
+      <div
+        class="gap-3 items-center mb-4 recovery-phrase__header grid w-full"
+      >
+        <button
+          aria-label="Back"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          color="text-icon-default"
+          data-testid="reveal-recovery-phrase-review-back-button"
+        >
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
+        </button>
+        <h4
+          class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
+        >
+          Save Secret Recovery Phrase
+        </h4>
+        <button
+          aria-label="Close"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          color="text-icon-default"
+          data-testid="reveal-recovery-phrase-review-close-button"
+        >
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class=""
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          <span>
+             
+            This is your 
+            <button
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
+            >
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
+            </button>
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="flex flex-col gap-4"
+      >
+        <div
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
+        >
+          <div
+            class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
+            data-quiz-words="[]"
+            data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+            data-testid="recovery-phrase-chips"
+          >
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-0"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                1
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                candy
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-1"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                2
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                maple
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-2"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                3
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                cake
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-3"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                4
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                sugar
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-4"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                5
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                pudding
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-5"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                6
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                cream
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-6"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                7
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                honey
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-7"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                8
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                rich
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-8"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                9
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                smooth
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-9"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                10
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                crumble
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-10"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                11
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                sweet
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-11"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                12
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                treat
+              </p>
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__secret-blocker-container w-full h-full"
+          >
+            <div
+              class="flex flex-col items-center justify-center pt-2 pb-9 recovery-phrase__secret-blocker rounded-sm w-full h-full px-0"
+            />
+            <div
+              class="flex flex-col gap-2 items-center justify-center bg-transparent recovery-phrase__secret-blocker-text w-full h-full"
+              data-testid="recovery-phrase-reveal"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-icon-default"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m16.1 13.186-1.45-1.45q.225-1.176-.675-2.2t-2.325-.8l-1.45-1.45a4.2 4.2 0 0 1 .863-.3 4.2 4.2 0 0 1 .937-.1q1.875 0 3.188 1.312C16.5 9.51 16.5 10.135 16.5 11.386q0 .5-.1.937t-.3.863m3.2 3.15-1.45-1.4q.95-.726 1.688-1.588c.738-.862.912-1.23 1.262-1.963q-1.25-2.524-3.587-4.012T12 5.886q-.725 0-1.425.1a10 10 0 0 0-1.375.3l-1.55-1.55a11.1 11.1 0 0 1 4.35-.85q3.775 0 6.725 2.087T23 11.385a11.7 11.7 0 0 1-1.512 2.738 11 11 0 0 1-2.188 2.212m.5 6.15-4.2-4.15q-.874.274-1.762.412T12 18.886q-3.775 0-6.725-2.088T1 11.386q.525-1.326 1.325-2.463A11.5 11.5 0 0 1 4.15 6.886l-2.75-2.8 1.4-1.4 18.4 18.4zM5.55 8.286q-.725.65-1.325 1.425A9 9 0 0 0 3.2 11.386q1.25 2.524 3.588 4.012T12 16.886q.5 0 .975-.063t.975-.137l-.9-.95q-.274.075-.525.112a3 3 0 0 1-.525.038q-1.875 0-3.188-1.313C7.5 13.26 7.5 12.636 7.5 11.386q0-.276.037-.525.038-.25.113-.525z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Tap to reveal
+              </p>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+              >
+                Make sure no one is watching your screen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-4 w-full"
+    >
+      <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
+        data-testid="recovery-phrase-continue"
+        disabled=""
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Review Recovery Phrase Component should match snapshot 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
+    data-testid="recovery-phrase"
+  >
+    <div
+      class=""
+    >
+      <div
+        class="justify-start mb-4 w-full"
+      >
+        <h2
+          class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+        >
+          Save your Secret Recovery Phrase
+        </h2>
+      </div>
+      <div
+        class=""
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          <span>
+             
+            This is your 
+            <button
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
+            >
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
+            </button>
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="flex flex-col gap-4"
+      >
+        <div
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
+        >
+          <div
+            class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
+            data-quiz-words="[]"
+            data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+            data-testid="recovery-phrase-chips"
+          >
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-0"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                1
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                candy
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-1"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                2
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                maple
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-2"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                3
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                cake
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-3"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                4
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                sugar
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-4"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                5
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                pudding
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-5"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                6
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                cream
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-6"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                7
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                honey
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-7"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                8
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                rich
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-8"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                9
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                smooth
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-9"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                10
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                crumble
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-10"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                11
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                sweet
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-11"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                12
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                treat
+              </p>
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__secret-blocker-container w-full h-full"
+          >
+            <div
+              class="flex flex-col items-center justify-center pt-2 pb-9 recovery-phrase__secret-blocker rounded-sm w-full h-full px-0"
+            />
+            <div
+              class="flex flex-col gap-2 items-center justify-center bg-transparent recovery-phrase__secret-blocker-text w-full h-full"
+              data-testid="recovery-phrase-reveal"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-icon-default"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m16.1 13.186-1.45-1.45q.225-1.176-.675-2.2t-2.325-.8l-1.45-1.45a4.2 4.2 0 0 1 .863-.3 4.2 4.2 0 0 1 .937-.1q1.875 0 3.188 1.312C16.5 9.51 16.5 10.135 16.5 11.386q0 .5-.1.937t-.3.863m3.2 3.15-1.45-1.4q.95-.726 1.688-1.588c.738-.862.912-1.23 1.262-1.963q-1.25-2.524-3.587-4.012T12 5.886q-.725 0-1.425.1a10 10 0 0 0-1.375.3l-1.55-1.55a11.1 11.1 0 0 1 4.35-.85q3.775 0 6.725 2.087T23 11.385a11.7 11.7 0 0 1-1.512 2.738 11 11 0 0 1-2.188 2.212m.5 6.15-4.2-4.15q-.874.274-1.762.412T12 18.886q-3.775 0-6.725-2.088T1 11.386q.525-1.326 1.325-2.463A11.5 11.5 0 0 1 4.15 6.886l-2.75-2.8 1.4-1.4 18.4 18.4zM5.55 8.286q-.725.65-1.325 1.425A9 9 0 0 0 3.2 11.386q1.25 2.524 3.588 4.012T12 16.886q.5 0 .975-.063t.975-.137l-.9-.95q-.274.075-.525.112a3 3 0 0 1-.525.038q-1.875 0-3.188-1.313C7.5 13.26 7.5 12.636 7.5 11.386q0-.276.037-.525.038-.25.113-.525z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Tap to reveal
+              </p>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+              >
+                Make sure no one is watching your screen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-4 w-full"
+    >
+      <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
+        data-testid="recovery-phrase-continue"
+        disabled=""
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
+      </button>
+      <button
+        class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed w-full hover:bg-transparent active:bg-transparent"
+        data-testid="recovery-phrase-remind-later"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Remind me later
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
+    data-testid="recovery-phrase"
+  >
+    <div
+      class=""
+    >
+      <div
+        class="justify-start mb-4 w-full"
+      >
+        <h2
+          class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+        >
+          Save your Secret Recovery Phrase
+        </h2>
+      </div>
+      <div
+        class=""
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          <span>
+             
+            This is your 
+            <button
+              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent w-fit"
+              role="button"
+            >
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
+            </button>
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="flex flex-col gap-4"
+      >
+        <div
+          class="bg-section recovery-phrase__secret rounded-lg w-full"
+        >
+          <div
+            class="items-center justify-center recovery-phrase__chips grid"
+            data-quiz-words="[]"
+            data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+            data-testid="recovery-phrase-chips"
+          >
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-0"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                1
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                debris
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-1"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                2
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                dizzy
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-2"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                3
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                just
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-3"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                4
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                program
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-4"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                5
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                just
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-5"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                6
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                float
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-6"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                7
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                decrease
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-7"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                8
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                vacant
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-8"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                9
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                alarm
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-9"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                10
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                reduce
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-10"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                11
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                speak
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-1 items-center pt-1 pb-1 border border-muted bg-muted recovery-phrase__text rounded-lg px-2"
+              data-testid="recovery-phrase-chip-11"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default recovery-phrase__word-index"
+              >
+                12
+                .
+              </p>
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              >
+                stadium
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-4 w-full"
+    >
+      <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default recovery-phrase__footer--button w-full"
+        data-testid="recovery-phrase-continue"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
+      </button>
+      <button
+        class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed w-full hover:bg-transparent active:bg-transparent"
+        data-testid="recovery-phrase-remind-later"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Remind me later
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

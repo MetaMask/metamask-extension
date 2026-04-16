@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslogg"
-  },
   "addAcquiredTokens": {
     "message": "Lägg till de tokens du har skaffat med MetaMask"
   },
@@ -223,14 +220,8 @@
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adress"
-  },
   "etherscanView": {
     "message": "Visa konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Expandera vy"
   },
   "failed": {
     "message": "Misslyckades"
@@ -248,26 +239,11 @@
   "from": {
     "message": "Från"
   },
-  "functionType": {
-    "message": "Funktionstyp"
-  },
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
-  },
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-pris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaspris extremt lågt"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaspriset anger den summa Ether som du är villig att betala för varje gasenhet."
   },
   "gasUsed": {
     "message": "Gas använd"
@@ -310,18 +286,12 @@
     "message": "Importera",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importera konto"
-  },
   "importAccountMsg": {
     "message": "Importerade konton kommer inte att kopplas till din ursprungligen skapade seedphrase för ditt MetaMask-konto. Läs mer om importerade konton"
   },
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Din initiala transaktion har bekräftats av nätverket. Klicka på OK för att gå tillbaka."
   },
   "insufficientBalance": {
     "message": "Otillräcklig balans."
@@ -369,14 +339,8 @@
   "links": {
     "message": "Länkar"
   },
-  "loadMore": {
-    "message": "Ladda mer"
-  },
   "loading": {
     "message": "Läser in..."
-  },
-  "loadingTokens": {
-    "message": "Laddar tokens..."
   },
   "lock": {
     "message": "Logga ut"
@@ -400,9 +364,6 @@
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Kan inte skicka negativa summor av ETH."
-  },
   "networkName": {
     "message": "Nätverksnamn"
   },
@@ -419,9 +380,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Ny kontakt"
-  },
   "newContract": {
     "message": "Nytt kontrakt"
   },
@@ -430,12 +388,6 @@
   },
   "next": {
     "message": "Nästa"
-  },
-  "noConversionRateAvailable": {
-    "message": "Ingen omräkningskurs tillgänglig"
-  },
-  "noTransactions": {
-    "message": "Du har inga överföringar"
   },
   "noWebcamFound": {
     "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
@@ -460,9 +412,6 @@
   },
   "origin": {
     "message": "Ursprung"
-  },
-  "parameters": {
-    "message": "Parametrar"
   },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics"
@@ -514,12 +463,6 @@
   "rejectAll": {
     "message": "Neka alla"
   },
-  "rejectTxsDescription": {
-    "message": "Du håller på att massneka överföringar på $1."
-  },
-  "rejectTxsN": {
-    "message": "Neka överföringar på $1"
-  },
   "rejected": {
     "message": "Nekad"
   },
@@ -528,12 +471,6 @@
   },
   "removeAccount": {
     "message": "Ta bort konto"
-  },
-  "removeAccountDescription": {
-    "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "anrop som väntar på godkännande"
   },
   "required": {
     "message": "Krävs"
@@ -602,9 +539,6 @@
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
   },
-  "sigRequest": {
-    "message": "Signaturförfrågan"
-  },
   "sign": {
     "message": "Signera"
   },
@@ -623,9 +557,6 @@
   "speedUpCancellation": {
     "message": "Snabba upp denna avbokning"
   },
-  "speedUpTransaction": {
-    "message": "Snabba upp den här transaktionen"
-  },
   "stateLogError": {
     "message": "Fel vid inhämtande av statusloggar."
   },
@@ -641,17 +572,11 @@
   "supportCenter": {
     "message": "Besök vårt supportcenter"
   },
-  "switchNetworks": {
-    "message": "Växla nätverk"
-  },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "terms": {
     "message": "Användarvillkor"
-  },
-  "tips": {
-    "message": "Donationer"
   },
   "to": {
     "message": "Till"
@@ -668,41 +593,11 @@
   "transaction": {
     "message": "överföring"
   },
-  "transactionCancelAttempted": {
-    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Överföringen avbröts vid $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktionen bekräftad på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaktion skapad med ett värde på $1 på $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen avbruten vid $2."
-  },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
   "transactionErrorNoContract": {
     "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen påträffade ett fel."
-  },
-  "transactionFee": {
-    "message": "Transaktionsavgift"
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktionen uppdaterades $2."
   },
   "transfer": {
     "message": "Överföring"
@@ -722,29 +617,17 @@
   "unknown": {
     "message": "okänt"
   },
-  "unknownNetwork": {
-    "message": "Okänt privatnätverk"
-  },
   "unknownQrCode": {
     "message": "Fel: Vi kunde inte identifiera denna QR-kod"
   },
   "unlock": {
     "message": "Lås upp"
   },
-  "unlockMessage": {
-    "message": "Den decentraliserade webben väntar"
-  },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },
   "usedByClients": {
     "message": "Används av många olika klienter"
-  },
-  "userName": {
-    "message": "Användarnamn"
-  },
-  "viewContact": {
-    "message": "Visa kontakt"
   },
   "visitWebSite": {
     "message": "Besök vår hemsida"
@@ -754,14 +637,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
-  },
-  "youSign": {
-    "message": "Du signerar"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din privata seedphrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Inget gaspris vid uppsnabbning"
   }
 }

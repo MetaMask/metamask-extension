@@ -6,7 +6,14 @@ type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: ['browsers', 'description', 'manifest_version', 'version', 'zip'],
+  required: [
+    'browsers',
+    'description',
+    'manifest_version',
+    'version',
+    'zip',
+    'buildType',
+  ],
   properties: {
     browsers: {
       description: 'The browsers to build for.',
@@ -99,6 +106,15 @@ export const schema = {
         },
       },
       additionalProperties: false,
+    },
+    buildType: {
+      description: 'The build type to create.',
+      type: 'string',
+    },
+    setBuildId: {
+      description:
+        'Whether to set a build ID in the emitted manifest. The build ID is a hash of the build contents that can be used to identify the build and detect when it has changed.',
+      type: 'boolean',
     },
   },
   additionalProperties: false,

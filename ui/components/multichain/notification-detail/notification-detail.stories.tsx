@@ -1,11 +1,12 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
+import { AvatarAccount } from '@metamask/design-system-react';
 import {
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AvatarAccount, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   NotificationDetail,
   NotificationDetailProps,

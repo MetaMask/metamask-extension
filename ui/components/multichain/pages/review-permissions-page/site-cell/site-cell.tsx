@@ -1,25 +1,21 @@
 import React, { useContext, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-  IconName,
-} from '../../../../component-library';
+import { Box, IconName } from '../../../../component-library';
+import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/lib/string-utils';
 import { SiteCellTooltip } from './site-cell-tooltip';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
@@ -27,17 +23,19 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   name: string;
   chainId: string;
+  caipChainId: CaipChainId;
 };
 
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: MergedInternalAccount[];
-  onSelectAccountAddresses: (addresses: string[]) => void;
-  onSelectChainIds: (chainIds: Hex[]) => void;
-  selectedAccountAddresses: string[];
-  selectedChainIds: string[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
+  onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
+  onSelectChainIds: (chainIds: CaipChainId[]) => void;
+  selectedAccountAddresses: CaipAccountId[];
+  selectedChainIds: CaipChainId[];
   isConnectFlow?: boolean;
+  hideAllToasts?: () => void;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
@@ -49,21 +47,22 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   selectedAccountAddresses,
   selectedChainIds,
   isConnectFlow,
+  hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
-  const selectedAccounts = accounts.filter(({ address }) =>
+  const selectedAccounts = accounts.filter(({ caipAccountId }) =>
     selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
+      isEqualCaseInsensitive(selectedAccountAddress, caipAccountId),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
+    selectedChainIds.includes(caipChainId),
   );
 
   const selectedChainIdsLength = selectedChainIds.length;
@@ -91,6 +90,32 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       ? t('requestingForNetwork', [selectedNetworks[0].name])
       : t('requestingFor');
 
+  const handleOpenAccountsModal = () => {
+    hideAllToasts?.();
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location:
+          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
+  const handleOpenNetworksModal = () => {
+    hideAllToasts?.();
+    setShowEditNetworksModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedNetworks,
+      properties: {
+        location:
+          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
   return (
     <>
       <Box
@@ -105,25 +130,15 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={accountMessageConnectedState}
           unconnectedMessage={accountMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditAccountsModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedAccounts,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
           content={
             // Why this difference?
             selectedAccounts.length === 1 ? (
-              <AvatarAccount
+              <PreferredAvatar
                 address={selectedAccounts[0].address}
                 size={AvatarAccountSize.Xs}
-                borderColor={BorderColor.transparent}
               />
             ) : (
               <SiteCellTooltip accounts={selectedAccounts} />
@@ -136,16 +151,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={networkMessageConnectedState}
           unconnectedMessage={networkMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditNetworksModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedNetworks,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
           content={<SiteCellTooltip networks={selectedNetworks} />}

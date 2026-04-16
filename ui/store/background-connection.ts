@@ -1,19 +1,18 @@
-import pify from 'pify';
+import { NamespacedName } from '@metamask/messenger';
+import { Json, JsonRpcNotification } from '@metamask/utils';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 
-let background:
-  | ({
-      connectionStream: { readable: boolean };
-      DisconnectError: typeof Error;
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } & Record<string, (...args: any[]) => any>)
-  | null = null;
-let promisifiedBackground: Record<
-  string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (...args: any[]) => Promise<any>
-> | null = null;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Api = Record<string, (...params: any[]) => any>;
+type BackgroundRpcClient = MetaRpcClientFactory<Api>;
+
+const NO_BACKGROUND_CONNECTION_MESSAGE =
+  'Background connection is not set. Please initialize the background connection before making requests.';
+
+let background: BackgroundRpcClient;
 
 export const generateActionId = () => Date.now() + Math.random();
 
@@ -24,49 +23,61 @@ export const generateActionId = () => Date.now() + Math.random();
  * @param [args] - arguments to that method, if any
  * @returns
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function submitRequestToBackground<R>(
-  method: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args?: any[],
+  method: keyof Api,
+  args?: Parameters<Api[typeof method]>,
 ): Promise<R> {
-  return promisifiedBackground?.[method](
-    ...(args ?? []),
-  ) as unknown as Promise<R>;
+  if (process.env.IN_TEST) {
+    // tests don't always set the `background` property for convenience, as
+    // the return values for various RPC calls aren't always used. In production
+    // builds, this will not happen, and even if it did MM wouldn't work.
+    if (!background) {
+      console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
+      return Promise.resolve() as Promise<R>;
+    }
+  }
+  return background[method](...(args ?? [])) as unknown as Promise<R>;
 }
-
-type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
-
-/**
- * [Deprecated] Callback-style call to background method
- * invokes promisifiedBackground method directly.
- *
- * @deprecated Use async `submitRequestToBackground` function instead.
- * @param method - name of the background method
- * @param [args] - arguments to that method, if any
- * @param callback - Node style (error, result) callback for finishing the operation
- */
-export const callBackgroundMethod = <R>(
-  method: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args: any[],
-  callback: CallbackMethod<R>,
-) => {
-  background?.[method](...args, callback);
-};
 
 /**
  * Sets/replaces the background connection reference
- * Under MV3 it also triggers queue processing if the new background is connected
  *
  * @param backgroundConnection
  */
 export async function setBackgroundConnection(
-  backgroundConnection: typeof background,
+  backgroundConnection: BackgroundRpcClient,
 ) {
   background = backgroundConnection;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  promisifiedBackground = pify(background as Record<string, any>);
+}
+
+/**
+ * Subscribe to a given messenger event emitted by the background.
+ *
+ * @param event - The event name.
+ * @param callback - The callback to invoke when the event is emitted.
+ * @returns A cleanup function that can be invoked to unsubscribe.
+ */
+export async function subscribeToMessengerEvent<Data extends Json>(
+  event: NamespacedName,
+  callback: (data: Data) => void,
+): Promise<() => Promise<void>> {
+  await submitRequestToBackground('messengerSubscribe', [event]);
+
+  const listener = (notification: JsonRpcNotification<[string, Data]>) => {
+    if (
+      notification.method === MESSENGER_SUBSCRIPTION_NOTIFICATION &&
+      notification.params?.[0] === event
+    ) {
+      callback(notification.params[1]);
+    }
+  };
+
+  background.onNotification(listener);
+
+  return () => {
+    background.removeOnNotification(listener);
+    return submitRequestToBackground('messengerUnsubscribe', [event]);
+  };
 }

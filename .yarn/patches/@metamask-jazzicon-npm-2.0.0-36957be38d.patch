@@ -1,0 +1,21 @@
+diff --git a/index.js b/index.js
+index 77b913b9f57b8f669e7ab6aeae92c299c57a9112..5aa31c0e3a7c787dc216eabe7d59f750e1721a6c 100644
+--- a/index.js
++++ b/index.js
+@@ -46,12 +46,14 @@ function genShape(remainingColors, diameter, i, total, svg) {
+   var tx = (Math.cos(angle) * velocity)
+   var ty = (Math.sin(angle) * velocity)
+ 
+-  var translate = 'translate(' + tx + ' ' +  ty + ')'
++  // Prevent rounding errors, which causes intermittent failures when running Jest snapshot tests
++  var translate = 'translate(' + tx.toFixed(14) + ' ' +  ty.toFixed(14) + ')'
+ 
+   // Third random is a shape rotation on top of all of that.
+   var secondRot = generator.random()
+   var rot = (firstRot * 360) + secondRot * 180
+-  var rotate = 'rotate(' + rot.toFixed(1) + ' ' + center + ' ' + center + ')'
++  // Prevent rounding errors, which causes intermittent failures when running Jest snapshot tests
++  var rotate = 'rotate(' + rot.toFixed(1) + ' ' + center.toFixed(14) + ' ' + center.toFixed(14) + ')'
+   var transform = translate + ' ' + rotate
+   shape.setAttributeNS(null, 'transform', transform)
+   var fill = genColor(remainingColors)

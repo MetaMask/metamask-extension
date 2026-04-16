@@ -28,8 +28,20 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
     super(opts);
   }
 
-  async _getCreds() {
+  async _getCreds(): Promise<
+    | {
+        deviceID: string;
+        password: string;
+        endpoint?: string;
+      }
+    | undefined
+  > {
     try {
+      // If we already have credentials cached
+      if (this._hasCreds()) {
+        return undefined;
+      }
+
       // If we are not aware of what Lattice we should be talking to,
       // we need to open a window that lets the user go through the
       // pairing or connection process.
@@ -41,7 +53,7 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
       const creds = await new Promise<{
         deviceID: string;
         password: string;
-        endpoint: string;
+        endpoint?: string;
       }>((resolve, reject) => {
         chrome.runtime.sendMessage(
           {
@@ -51,17 +63,27 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
             },
           },
           (response) => {
-            if (response.error) {
-              reject(response.error);
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+              return;
             }
 
-            resolve(response.result);
+            if (response?.error) {
+              reject(response.error);
+              return;
+            }
+
+            resolve(response?.result);
           },
         );
       });
 
+      if (!creds?.deviceID || !creds?.password) {
+        throw new Error('Invalid credentials returned from Lattice.');
+      }
+
       return creds;
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       throw new Error(err);

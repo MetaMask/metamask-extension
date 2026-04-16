@@ -1,6 +1,6 @@
 @use "sass:map";
 
-$font-family: 'Euclid Circular B', Helvetica, Arial, sans-serif;
+$font-family: var(--font-family-default); // from @metamask/design-tokens stylesheet
 
 $typography-variants: (
   'h1': 2.5rem,

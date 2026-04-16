@@ -31,23 +31,60 @@ function generateJustifyContent(alignment?: BoxProps['alignment']) {
   }
 }
 
-export const box: UIComponentFactory<BoxElement> = ({
-  element,
-  ...params
-}) => ({
-  element: 'Box',
-  children: getJsxChildren(element).map((children) =>
-    mapToTemplate({ ...params, element: children as JSXElement }),
-  ) as NonEmptyArray<UIComponent>,
-  props: {
-    display: Display.Flex,
-    flexDirection:
-      element.props.direction === 'horizontal'
-        ? FlexDirection.Row
-        : FlexDirection.Column,
-    justifyContent: generateJustifyContent(element.props.alignment),
-    alignItems: element.props.center && AlignItems.center,
-    className: 'snap-ui-renderer__panel',
-    color: TextColor.textDefault,
-  },
-});
+function generateAlignItems(
+  crossAlignment: BoxProps['crossAlignment'],
+  center?: BoxProps['center'],
+) {
+  if (center) {
+    return AlignItems.center;
+  }
+
+  switch (crossAlignment) {
+    default:
+      // align-items defaults to stretch but it's not available in the JustifyContent enum
+      return undefined;
+    case 'start':
+      return AlignItems.flexStart;
+
+    case 'center':
+      return AlignItems.center;
+
+    case 'end':
+      return AlignItems.flexEnd;
+  }
+}
+
+export const box: UIComponentFactory<BoxElement> = ({ element, ...params }) => {
+  const scrollBehavior = params.isScrollableContainer
+    ? {
+        ref: params.scrollableContainerRef,
+        onScroll: params.setScroll,
+      }
+    : {};
+
+  return {
+    element: 'Box',
+    children: getJsxChildren(element).map((children) =>
+      mapToTemplate({
+        ...params,
+        isScrollableContainer: false,
+        element: children as JSXElement,
+      }),
+    ) as NonEmptyArray<UIComponent>,
+    props: {
+      display: Display.Flex,
+      flexDirection:
+        element.props.direction === 'horizontal'
+          ? FlexDirection.Row
+          : FlexDirection.Column,
+      justifyContent: generateJustifyContent(element.props.alignment),
+      alignItems: generateAlignItems(
+        element.props.crossAlignment,
+        element.props.center,
+      ),
+      ...scrollBehavior,
+      className: 'snap-ui-renderer__panel',
+      color: TextColor.textDefault,
+    },
+  };
+};

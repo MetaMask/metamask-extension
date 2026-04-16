@@ -1,11 +1,11 @@
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { AddressBalanceMapping } from '../token-list/token-list';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
+import { AddressBalanceMapping } from '../types';
 
 type CalculateTokenBalanceParams = {
-  isNative: boolean;
+  isNative?: boolean;
   chainId: Hex;
   address: Hex;
   decimals: number;
@@ -27,8 +27,8 @@ export function calculateTokenBalance({
     const nativeTokenBalanceHex = nativeBalances?.[chainId];
     if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
       balance = stringifyBalance(
-        new BN(hexToDecimal(nativeTokenBalanceHex)),
-        new BN(decimals),
+        hexToDecimal(nativeTokenBalanceHex),
+        decimals,
         5, // precision for native token balance
       );
     } else {
@@ -36,12 +36,11 @@ export function calculateTokenBalance({
     }
   } else {
     const hexBalance =
-      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[
+        toChecksumHexAddress(address) as Hex
+      ] || selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
     if (hexBalance && hexBalance !== '0x0') {
-      balance = stringifyBalance(
-        new BN(hexToDecimal(hexBalance)),
-        new BN(decimals),
-      );
+      balance = stringifyBalance(hexToDecimal(hexBalance), decimals);
     } else {
       balance = '0';
     }

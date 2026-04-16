@@ -1,10 +1,10 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation } from '../../helpers';
 import {
   getMetaMaskStateWithUnapprovedPermitSign,
   verifyDetails,
@@ -55,7 +55,7 @@ describe('Permit Batch Signature Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '4' },
       }),
     );
   });
@@ -68,10 +68,10 @@ describe('Permit Batch Signature Tests', () => {
     await renderPermitBatchSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 
@@ -87,10 +87,10 @@ describe('Permit Batch Signature Tests', () => {
       'Estimated changes',
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
-      '0xA0b86...6eB48',
-      '1,461,501,637,3...',
+      'USDC',
+      'Unlimited',
       '0xb0B86...6EB48',
-      '2,461,501,637,3...',
+      'Unlimited',
     ];
 
     verifyDetails(simulationSection, simulationDetails);

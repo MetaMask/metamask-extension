@@ -1,5 +1,6 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
   TransactionController,
   TransactionMeta,
@@ -7,9 +8,9 @@ import {
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
+import { Hex } from '@metamask/utils';
 import {
   generateSecurityAlertId,
-  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
@@ -18,15 +19,35 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
+import {
+  SupportedEVMChain,
+  ResultType,
+  AddAddressSecurityAlertResponse,
+  GetAddressSecurityAlertResponse,
+} from '../../../../shared/lib/trust-signals';
+import { accountSupports7702 } from '../account-supports-7702';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
   AddTransactionRequest,
   addDappTransaction,
   addTransaction,
+  stripSingleLeadingZero,
 } from './util';
+import { getTempoTransactionBatchArgs } from './tempo-tx-utils';
+
+jest.mock('./tempo-tx-utils', () => ({
+  ...jest.requireActual('./tempo-tx-utils'),
+  getTempoTransactionBatchArgs: jest.fn(),
+}));
+const realGetTempoTransactionBatchArgsImpl =
+  jest.requireActual('./tempo-tx-utils').getTempoTransactionBatchArgs;
 
 jest.mock('../ppom/ppom-util');
+jest.mock('../trust-signals/security-alerts-api');
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -37,7 +58,13 @@ jest.mock('uuid', () => {
   };
 });
 
+jest.mock('../account-supports-7702', () => ({
+  accountSupports7702: jest.fn().mockResolvedValue(true),
+}));
+
 const SECURITY_ALERT_ID_MOCK = '123';
+const BATCHID_MOCK = '0xmockBatchId' as Hex;
+const FROM_FIELD_MOCK = '0x1';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const INTERNAL_ACCOUNT = createMockInternalAccount({
@@ -45,26 +72,81 @@ const INTERNAL_ACCOUNT = createMockInternalAccount({
 });
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
-  from: '0x1',
+  from: FROM_FIELD_MOCK,
 };
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  requestId: 'mockActionId',
+  networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
 };
 
-const DAPP_REQUEST_MOCK = {
-  id: TRANSACTION_OPTIONS_MOCK.actionId,
-  method: 'eth_sendTransaction',
-  origin: TRANSACTION_OPTIONS_MOCK.origin,
-  securityAlertResponse: { test: 'value' },
+const TEMPO_VALID_CALLS_FIELD_MOCK = [
+  {
+    data: '0xa9059cbb0000000000000000000000002367e6eca6e1fcc2d112133c896e3bddad375aff000000000000000000000000000000000000000000000000002386f26fc10000',
+    to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+    value: '0x',
+  },
+  {
+    data: '0xa9059cbb0000000000000000000000001e3abc74428056924ceee2f45f060879c3f063ed000000000000000000000000000000000000000000000000002386f26fc10000',
+    to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+    value: '0x',
+  },
+];
+
+const TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD = [
+  {
+    params: {
+      data: '0xa9059cbb0000000000000000000000002367e6eca6e1fcc2d112133c896e3bddad375aff000000000000000000000000000000000000000000000000002386f26fc10000',
+      to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+      value: '0x0',
+    },
+  },
+  {
+    params: {
+      data: '0xa9059cbb0000000000000000000000001e3abc74428056924ceee2f45f060879c3f063ed000000000000000000000000000000000000000000000000002386f26fc10000',
+      to: '0x86fA047df5b69df0CBD6dF566F1468756dCF339D',
+      value: '0x0',
+    },
+  },
+];
+
+const TEMPO_FEE_TOKEN_MOCK = '0xtempoFeeToken';
+
+const TEMPO_VALID_CHAIN_ID = '0xa5bf' as Hex;
+
+const TEMPO_TRANSACTION_PARAMS_MOCK = {
+  type: '0x76' as const,
+  from: FROM_FIELD_MOCK,
+  feeToken: TEMPO_FEE_TOKEN_MOCK,
+  calls: TEMPO_VALID_CALLS_FIELD_MOCK,
 };
+
+const makeDappRequest = () => ({
+  jsonrpc: '2.0' as const,
+  id: TRANSACTION_OPTIONS_MOCK.actionId as string,
+  method: 'eth_sendTransaction',
+  params: [],
+});
+
+const makeRequestContext = () =>
+  new MiddlewareContext<Record<PropertyKey, unknown>>({
+    origin: TRANSACTION_OPTIONS_MOCK.origin as string,
+    securityAlertResponse: { test: 'value' },
+  });
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
   id: 'testId',
   hash: 'testHash',
+} as TransactionMeta;
+
+const BATCH_TRANSACTION_META_MOCK: TransactionMeta = {
+  id: 'batchTestId',
+  hash: 'batchTestHash',
+  batchId: BATCHID_MOCK,
 } as TransactionMeta;
 
 const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
@@ -81,6 +163,7 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
 function createTransactionControllerMock() {
   return {
     addTransaction: jest.fn(),
+    addTransactionBatch: jest.fn(),
     state: { transactions: [] },
   } as unknown as jest.Mocked<TransactionController>;
 }
@@ -95,24 +178,51 @@ function createUserOperationControllerMock() {
 describe('Transaction Utils', () => {
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
+  let tempoDappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
+  let getAddressSecurityAlertResponseMock: jest.Mock;
+  let addAddressSecurityAlertResponseMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  const isChainSupportedMock = jest.mocked(isChainSupported);
+  const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
+    (accountSupports7702 as jest.Mock).mockResolvedValue(true);
+
+    (getTempoTransactionBatchArgs as jest.Mock).mockImplementation(
+      realGetTempoTransactionBatchArgsImpl,
+    );
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+    getAddressSecurityAlertResponseMock = jest.fn();
+    addAddressSecurityAlertResponseMock = jest.fn();
+
+    scanAddressAndAddToCacheMock.mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: 'Safe address',
+    });
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
       transactionMeta: TRANSACTION_META_MOCK,
+    });
+
+    transactionController.addTransactionBatch.mockImplementation(async () => {
+      transactionController.state.transactions.push(
+        BATCH_TRANSACTION_META_MOCK,
+      );
+      return {
+        batchId: BATCHID_MOCK,
+      };
     });
 
     transactionController.state.transactions.push(TRANSACTION_META_MOCK);
@@ -124,15 +234,29 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
-    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
     request.updateSecurityAlertResponse = jest.fn();
+    request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
+    request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
 
     dappRequest = {
       ...request,
-      dappRequest: DAPP_REQUEST_MOCK,
+      dappRequest: makeDappRequest(),
+      requestContext: makeRequestContext(),
+    };
+
+    tempoDappRequest = {
+      ...dappRequest,
+      chainId: TEMPO_VALID_CHAIN_ID,
+      securityAlertsEnabled: true,
+      networkClientId: 'mockNetworkClientId',
+      transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
+      dappRequest: {
+        ...dappRequest.dappRequest,
+        params: [TEMPO_TRANSACTION_PARAMS_MOCK],
+      },
     };
   });
 
@@ -149,23 +273,6 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addTransaction(request);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -415,7 +522,9 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: BlockaidReason.checkingChain,
+            reason: BlockaidReason.inProgress,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
@@ -519,6 +628,114 @@ describe('Transaction Utils', () => {
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
+
+      it('does not call PPOM if is a transfer to self and value is zero', async () => {
+        const INTERNAL_ACCOUNT_ADDRESS_2 =
+          '0x68d3ad12ea94779cb37262be1c179dbd8e208afe';
+        const sendRequest = {
+          ...request,
+          internalAccounts: [
+            createMockInternalAccount({
+              address: INTERNAL_ACCOUNT_ADDRESS_2,
+            }),
+          ],
+          transactionParams: {
+            ...request.transactionParams,
+            data: '0xa9059cbb00000000000000000000000068d3ad12ea94779cb37262be1c179dbd8e208afe00000000000000000000000000000000000000000000000000000000000f4240',
+            value: '0x0',
+          },
+        };
+
+        await addTransaction({
+          ...sendRequest,
+          transactionOptions: {
+            ...TRANSACTION_OPTIONS_MOCK,
+            type: TransactionType.tokenMethodTransfer,
+          },
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('adds trust signals', () => {
+      beforeEach(() => {
+        request.transactionOptions.origin = ORIGIN_METAMASK;
+        request.transactionParams.to =
+          '0x1234567890123456789012345678901234567890';
+        request.addSecurityAlertResponse =
+          jest.fn() as AddAddressSecurityAlertResponse;
+        request.getSecurityAlertResponse =
+          jest.fn() as GetAddressSecurityAlertResponse;
+      });
+
+      it('calls scanAddressAndAddToCache', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.any(Function),
+          expect.any(Function),
+          SupportedEVMChain.Ethereum,
+        );
+      });
+
+      it('does not call scanAddressAndAddToCache when security alerts are disabled', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when origin is not ORIGIN_METAMASK', async () => {
+        request.transactionOptions.origin = 'https://example.com';
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when to address is not a string', async () => {
+        request.transactionParams.to = undefined;
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
+        // Test with a chain ID that the real function doesn't support
+        const transactionMeta = await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0xfake-chain-id', // This will return undefined from the real function
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
+      });
     });
   });
 
@@ -534,32 +751,13 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          method: DAPP_REQUEST_MOCK.method,
+          method: makeDappRequest().method,
           requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
+          securityAlertResponse: makeRequestContext().assertGet(
+            'securityAlertResponse',
+          ),
           type: undefined,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addDappTransaction(dappRequest);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-          method: DAPP_REQUEST_MOCK.method,
-          requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
-          type: undefined,
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {
@@ -632,6 +830,97 @@ describe('Transaction Utils', () => {
           'Test Error',
         );
       });
+    });
+
+    describe('if transaction is on a Tempo chain', () => {
+      it('adds transaction with extra Tempo-specific params', async () => {
+        await addDappTransaction({
+          ...dappRequest,
+          chainId: '0xa5bf',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          method: makeDappRequest().method,
+          requireApproval: true,
+          securityAlertResponse: makeRequestContext().assertGet(
+            'securityAlertResponse',
+          ),
+          type: undefined,
+          gasFeeToken: '0x20c0000000000000000000000000000000000000',
+          excludeNativeTokenForFee: true,
+        });
+      });
+    });
+
+    describe('if transaction is Tempo Transaction (0x76)', () => {
+      it('calls addTransactionBatch with converted Tempo-specific params', async () => {
+        const result = await addDappTransaction(tempoDappRequest);
+
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            actionId: TRANSACTION_OPTIONS_MOCK.actionId,
+            networkClientId: TRANSACTION_OPTIONS_MOCK.networkClientId,
+            origin: TRANSACTION_OPTIONS_MOCK.origin,
+            requestId: TRANSACTION_OPTIONS_MOCK.requestId,
+            requireApproval: true,
+            traceContext: undefined,
+            from: FROM_FIELD_MOCK,
+            gasFeeToken: TEMPO_FEE_TOKEN_MOCK,
+            excludeNativeTokenForFee: true,
+            securityAlertResponse: { test: 'value' },
+            transactions: TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD,
+          }),
+        );
+        expect(result).toEqual(BATCH_TRANSACTION_META_MOCK.hash);
+      });
+
+      it('does not call addTransactionBatch if getTempoTransactionBatchArgs throws', async () => {
+        (getTempoTransactionBatchArgs as jest.Mock).mockImplementationOnce(
+          () => {
+            throw new Error('Tempo Transaction: Mock error');
+          },
+        );
+
+        await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
+          `Tempo Transaction: Mock error`,
+        );
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('does not call addTransactionBatch if accountSupports7702 resolves to false', async () => {
+        (accountSupports7702 as jest.Mock).mockResolvedValueOnce(false);
+        await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
+          `Wallet not supported for Tempo Transactions.`,
+        );
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('stripSingleLeadingZero', () => {
+    it('returns the same hex if it does not start with 0x0', () => {
+      expect(stripSingleLeadingZero('0x1a2b3c')).toBe('0x1a2b3c');
+    });
+
+    it('strips a single leading zero from the hex', () => {
+      expect(stripSingleLeadingZero('0x0123')).toBe('0x123');
+      expect(stripSingleLeadingZero('0x0abcdef')).toBe('0xabcdef');
+      expect(stripSingleLeadingZero('0x0001')).toBe('0x001');
     });
   });
 });

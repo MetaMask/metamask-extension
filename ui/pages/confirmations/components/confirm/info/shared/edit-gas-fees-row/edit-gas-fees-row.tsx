@@ -1,10 +1,16 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
+import { Hex } from '@metamask/utils';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  SuccessPill,
+  Text,
+} from '../../../../../../../components/component-library';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -13,83 +19,201 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
+import { useTransactionNativeTicker } from '../../../../../hooks/transactions/useTransactionNativeTicker';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
+import { SelectedGasFeeToken } from '../selected-gas-fee-token';
 
 export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
-  supportsEIP1559,
-  setShowCustomizeGasPopover,
+  disableUpdate,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
-  supportsEIP1559: boolean;
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
+  disableUpdate?: boolean;
 }) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
-  type TestNetChainId = (typeof TEST_CHAINS)[number];
-  const isTestnet = TEST_CHAINS.includes(
-    transactionMeta.chainId as TestNetChainId,
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
   );
-  const { showFiatInTestnets } = useSelector(getPreferences);
+  const {
+    chainId,
+    isGasFeeSponsored: doesSentinelAllowSponsorship,
+    simulationData,
+  } = transactionMeta;
+
+  const estimationFailed = useEstimationFailed();
+  const gasFeeToken = useSelectedGasFeeToken();
+  const showFiat = useShowFiat(chainId);
+  const fiatValue = gasFeeToken?.amountFiat || fiatFee;
+  const hasFiatValue = Boolean(fiatValue);
+  const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
+  const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
+  const nativeTokenSymbol = useTransactionNativeTicker() ?? '';
+
+  const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
+  const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
+  // This prevents the gas fee row from showing as sponsored if stx is disabled
+  // by the user and 7702 is not supported in the chain.
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
+
+  let tooltip = t('estimatedFeeTooltip');
+  if (isGasFeeSponsored) {
+    tooltip = t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol]);
+  } else if (gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0') {
+    tooltip = t('confirmGasFeeTokenTooltip', [metamaskFeeFiat]);
+  }
+
+  const isGasFeeEditable =
+    !disableUpdate &&
+    !isQuotedSwapDisplayedInInfo &&
+    !gasFeeToken &&
+    !isGasFeeSponsored;
+  const shouldShowPrimaryFiatValue =
+    showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
 
   return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.EstimatedFee}
-      ownerId={transactionMeta.id}
-      data-testid="edit-gas-fees-row"
-      label={t('networkFee')}
-      tooltip={t('estimatedFeeTooltip')}
-    >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        textAlign={TextAlign.Center}
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.EstimatedFee}
+        ownerId={transactionMeta.id}
+        data-testid="edit-gas-fees-row"
+        label={t('networkFee')}
+        tooltip={tooltip}
+        style={{ alignItems: AlignItems.center }}
       >
-        <Text
-          marginRight={1}
-          color={TextColor.textDefault}
-          data-testid="first-gas-field"
-        >
-          {nativeFee}
-        </Text>
-        {(!isTestnet || showFiatInTestnets) &&
-        fiatFeeWith18SignificantDigits ? (
-          <Tooltip title={fiatFeeWith18SignificantDigits}>
-            <Text
-              marginRight={2}
-              color={TextColor.textAlternative}
-              data-testid="native-currency"
-            >
-              {fiatFee}
-            </Text>
-          </Tooltip>
+        {isLoadingGasUsed ? (
+          <Skeleton height={16} width={128} />
         ) : (
-          <Text
-            marginRight={2}
-            color={TextColor.textAlternative}
-            data-testid="native-currency"
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            textAlign={TextAlign.Center}
+            gap={1}
           >
-            {fiatFee}
-          </Text>
+            {isGasFeeSponsored && (
+              <SuccessPill
+                label={t('paidByMetaMask')}
+                data-testid="paid-by-meta-mask"
+              />
+            )}
+            {isGasFeeEditable && <EditGasIconButton />}
+            {estimationFailed && !isGasFeeSponsored && (
+              <Text color={TextColor.textDefault}>{t('unavailable')}</Text>
+            )}
+            {!estimationFailed && (
+              <>
+                {shouldShowPrimaryFiatValue && (
+                  <FiatValue
+                    fullValue={fiatFeeWith18SignificantDigits}
+                    roundedValue={fiatValue}
+                  />
+                )}
+                {!shouldShowPrimaryFiatValue && !isGasFeeSponsored && (
+                  <TokenValue roundedValue={tokenValue} />
+                )}
+              </>
+            )}
+            {!isGasFeeSponsored && <SelectedGasFeeToken />}
+          </Box>
         )}
-        <EditGasIconButton
-          supportsEIP1559={supportsEIP1559}
-          setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-        />
-      </Box>
-    </ConfirmInfoAlertRow>
+      </ConfirmInfoAlertRow>
+      {!isGasFeeSponsored && (
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          paddingInline={2}
+        >
+          <Box style={{ marginTop: gasFeeToken ? -8 : 0 }}>
+            <Text
+              data-testid="gas-fee-token-fee"
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              paddingBottom={gasFeeToken ? 2 : 0}
+            >
+              {gasFeeToken?.metaMaskFee && gasFeeToken?.metaMaskFee !== '0x0'
+                ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
+                : ' '}
+            </Text>
+          </Box>
+          {showAdvancedDetails && !estimationFailed && hasFiatValue && (
+            <FiatValue
+              fullValue={fiatFeeWith18SignificantDigits}
+              roundedValue={fiatValue}
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            />
+          )}
+        </Box>
+      )}
+    </Box>
   );
 };
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function TokenValue({ roundedValue }: { roundedValue: string }) {
+  return (
+    <Text color={TextColor.textDefault} data-testid="first-gas-field">
+      {roundedValue}
+    </Text>
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function FiatValue({
+  color,
+  fullValue,
+  roundedValue,
+  variant,
+}: {
+  color?: TextColor;
+  fullValue: string | null;
+  roundedValue: string;
+  variant?: TextVariant;
+}) {
+  const styleProps = { color, variant };
+  const value = (
+    <Text {...styleProps} data-testid="native-currency">
+      {roundedValue}
+    </Text>
+  );
+
+  return fullValue ? (
+    <Tooltip title={fullValue}>{value}</Tooltip>
+  ) : (
+    <>{value}</>
+  );
+}
+
+function useShowFiat(chainId: Hex): boolean {
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+
+  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
+  return !isTestnet || showFiatInTestnets;
+}

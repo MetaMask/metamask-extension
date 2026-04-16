@@ -1,0 +1,173 @@
+import { useCallback, useMemo } from 'react';
+import {
+  GasFeeEstimateType,
+  GasFeeEstimateLevel,
+  type TransactionMeta,
+  type GasFeeEstimates as TransactionGasFeeEstimates,
+} from '@metamask/transaction-controller';
+import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../context/confirm';
+import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
+import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
+import { updateTransactionGasFees } from '../../../../store/actions';
+import { type GasOption } from '../../types/gas';
+import { EMPTY_VALUE_STRING } from '../../constants/gas';
+import { toHumanEstimatedTimeRange } from '../../utils/time';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+
+const HEX_ZERO = '0x0';
+
+/**
+ * Minimal TransactionMeta used only when useConfirmContext returns no transaction
+ * so that useFeeCalculations and its inner hooks are always called (Rules of Hooks).
+ * The return value is never used when transactionMeta is undefined (we return []).
+ */
+const DUMMY_TRANSACTION_META = {
+  chainId: '',
+  networkClientId: '',
+  txParams: { gas: '0x5208' },
+} as unknown as TransactionMeta;
+
+export const useGasFeeEstimateLevelOptions = ({
+  handleCloseModals,
+}: {
+  handleCloseModals: () => void;
+}): GasOption[] => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+  const effectiveTransactionMeta = transactionMeta ?? DUMMY_TRANSACTION_META;
+
+  const nativeTicker =
+    useSelector(
+      (state: Parameters<typeof getNetworkConfigurationsByChainId>[0]) =>
+        getNetworkConfigurationsByChainId(state)?.[transactionMeta?.chainId]
+          ?.nativeCurrency,
+    ) ?? CURRENCY_SYMBOLS.ETH;
+  const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
+  const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
+    transactionMeta?.networkClientId,
+  ) as {
+    gasFeeEstimates: GasFeeEstimates;
+  };
+
+  const gasFeeEstimates = transactionMeta?.gasFeeEstimates;
+  const id = transactionMeta?.id;
+  const userFeeLevel = transactionMeta?.userFeeLevel;
+
+  const transactionGasFeeEstimates =
+    gasFeeEstimates as TransactionGasFeeEstimates;
+
+  const shouldIncludeGasFeeEstimateLevelOptions = useMemo(
+    () =>
+      (transactionGasFeeEstimates?.type === GasFeeEstimateType.FeeMarket ||
+        transactionGasFeeEstimates?.type === GasFeeEstimateType.Legacy) &&
+      networkGasFeeEstimates,
+    [transactionGasFeeEstimates, networkGasFeeEstimates],
+  );
+
+  const onGasFeeEstimateLevelClick = useCallback(
+    async (level: GasFeeEstimateLevel) => {
+      await dispatch(
+        updateTransactionGasFees(id, {
+          userFeeLevel: level,
+        }),
+      );
+      handleCloseModals();
+    },
+    [id, handleCloseModals, dispatch],
+  );
+
+  if (!transactionMeta) {
+    return [];
+  }
+
+  const options: GasOption[] = [];
+
+  if (shouldIncludeGasFeeEstimateLevelOptions) {
+    Object.values(GasFeeEstimateLevel).forEach((level) => {
+      // Skip adding the high option if it has the same fees as the medium option
+      if (
+        level === GasFeeEstimateLevel.High &&
+        transactionGasFeeEstimates?.type === GasFeeEstimateType.FeeMarket
+      ) {
+        const mediumEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.Medium];
+        const highEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.High];
+
+        const hasSameFees =
+          mediumEstimates?.maxFeePerGas === highEstimates?.maxFeePerGas &&
+          mediumEstimates?.maxPriorityFeePerGas ===
+            highEstimates?.maxPriorityFeePerGas;
+
+        if (hasSameFees) {
+          return;
+        }
+      }
+
+      const estimatedTime = toHumanEstimatedTimeRange(
+        networkGasFeeEstimates[level].minWaitTimeEstimate,
+        networkGasFeeEstimates[level].maxWaitTimeEstimate,
+      );
+
+      let feePerGas = HEX_ZERO;
+      let gasPrice = HEX_ZERO;
+      const gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+      let shouldUseEIP1559FeeLogic = true;
+      let priorityFeePerGas = HEX_ZERO;
+
+      switch (transactionGasFeeEstimates?.type) {
+        case GasFeeEstimateType.FeeMarket:
+          feePerGas = transactionGasFeeEstimates?.[level]?.maxFeePerGas;
+          priorityFeePerGas =
+            transactionGasFeeEstimates?.[level]?.maxPriorityFeePerGas;
+          break;
+        case GasFeeEstimateType.Legacy:
+          gasPrice = transactionGasFeeEstimates?.[level];
+          shouldUseEIP1559FeeLogic = false;
+          break;
+        default:
+          gasPrice = transactionGasFeeEstimates?.gasPrice;
+          shouldUseEIP1559FeeLogic = false;
+          break;
+      }
+
+      const { currentCurrencyFee, preciseNativeCurrencyFee } =
+        calculateGasEstimate({
+          feePerGas,
+          priorityFeePerGas,
+          gasPrice,
+          gas,
+          shouldUseEIP1559FeeLogic,
+        });
+
+      options.push({
+        estimatedTime,
+        isSelected: userFeeLevel === level,
+        key: level,
+        name: t(level),
+        onSelect: () => onGasFeeEstimateLevelClick(level),
+        value: preciseNativeCurrencyFee
+          ? `${preciseNativeCurrencyFee} ${nativeTicker}`
+          : EMPTY_VALUE_STRING,
+        valueInFiat: currentCurrencyFee || EMPTY_VALUE_STRING,
+        tooltipProps: {
+          priorityLevel: level,
+          maxFeePerGas: hexWEIToDecGWEI(feePerGas),
+          maxPriorityFeePerGas: hexWEIToDecGWEI(priorityFeePerGas),
+          gasLimit: parseInt(gas, 16),
+          transaction: transactionMeta as unknown as Record<string, unknown>,
+        },
+      });
+    });
+  }
+
+  return options;
+};

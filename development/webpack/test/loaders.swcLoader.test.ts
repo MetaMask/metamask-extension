@@ -1,10 +1,8 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
-import swcLoader, {
-  type SwcLoaderOptions,
-  type SwcConfig,
-} from '../utils/loaders/swcLoader';
+import swcLoader, { type SwcLoaderOptions } from '../utils/loaders/swcLoader';
+import { type SwcConfig } from '../utils/loaders/getSwcLoader';
 import { Combination, generateCases } from './helpers';
 
 describe('swcLoader', () => {
@@ -22,7 +20,10 @@ describe('swcLoader', () => {
     // swc doesn't use node's fs module, so we can't mock
     const resourcePath = 'test.ts';
 
-    let resolveCallback: (value: CallbackArgs) => void;
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+    // browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
     const mockContext = {
       mode: 'production',
       sourceMap: true,
@@ -32,15 +33,12 @@ describe('swcLoader', () => {
       resourcePath,
       async: () => {
         return (...args: CallbackArgs) => {
-          resolveCallback(args);
+          resolve(args);
         };
       },
     } as unknown as LoaderContext<SwcLoaderOptions>;
-    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
-      resolveCallback = resolve;
-    });
     mockContext.async = mockContext.async.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise };
+    return { context: mockContext, source, expected, deferredPromise: promise };
   }
 
   it('should transform code', async () => {
@@ -66,6 +64,21 @@ describe('swcLoader', () => {
       () => swcLoader.call(context, source),
       /[ValidationError]: Invalid configuration object/u,
     );
+  });
+
+  it('should stringify object source maps for inputSourceMap', async () => {
+    const { context, source, deferredPromise } = generateData();
+    const sourceMapObject = {
+      version: 3,
+      sources: ['test.ts'],
+      mappings: 'AAAA',
+    };
+
+    swcLoader.call(context, source, sourceMapObject as unknown as string);
+
+    const [err, content] = await deferredPromise;
+    assert.strictEqual(err, null);
+    assert.ok(content);
   });
 
   it('should return an error when code is invalid', async () => {
@@ -99,21 +112,20 @@ describe('swcLoader', () => {
         // helpers caches `__HMR_READY__` on initialization, so we need to a new
         // one after we mock `process.env.__HMR_READY__`.
         delete require.cache[require.resolve('../utils/helpers')];
-        delete require.cache[require.resolve('../utils/loaders/swcLoader')];
+        delete require.cache[require.resolve('../utils/loaders/getSwcLoader')];
         const {
           getSwcLoader,
-        }: typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
+        }: typeof import('../utils/loaders/getSwcLoader') = require('../utils/loaders/getSwcLoader');
 
         // note: this test isn't exhaustive of all possible `swcConfig`
         // properties; it is mostly intended as sanity check.
         const swcConfig: SwcConfig = {
           args: { watch },
-          safeVariables: {},
           browsersListQuery: '',
           isDevelopment,
         };
 
-        const loader = getSwcLoader(syntax, enableJsx, swcConfig);
+        const loader = getSwcLoader(syntax, enableJsx, {}, swcConfig);
         assert.strictEqual(
           loader.loader,
           require.resolve('../utils/loaders/swcLoader'),

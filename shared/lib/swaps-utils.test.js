@@ -10,7 +10,7 @@ import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/pages/swaps/swaps-util-test-constants';
 import {
   fetchTradesInfo,
@@ -70,7 +70,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);

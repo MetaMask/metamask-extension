@@ -12,11 +12,6 @@
 @import 'create-account/connect-hardware/index';
 @import 'error-page/index';
 @import 'home/index';
-@import "institutional/account-list/index";
-@import "institutional/institutional-entity-done-page/index";
-@import "institutional/confirm-add-custodian-token/index";
-@import "institutional/interactive-replacement-token-page/index";
-@import "institutional/remind-srp/index";
 @import 'keychains/index';
 @import 'notifications/index';
 @import 'onboarding-flow/index';
@@ -27,6 +22,10 @@
 @import 'snaps/snap-view/index';
 @import 'create-snap-account/index';
 @import 'remove-snap-account/index';
-@import 'swaps/index';
 @import 'bridge/index';
 @import 'unlock-page/index';
+@import 'multichain-accounts/wallet-details-page/index';
+@import 'multi-srp/import-srp/index';
+@import 'multichain-accounts/multichain-account-details-page/index';
+@import 'shield-plan/index';
+@import 'multichain-accounts/multichain-accounts-connect-page/index';

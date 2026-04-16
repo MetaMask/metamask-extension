@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Вам потрібно обрати обліковий запис!"
   },
-  "activityLog": {
-    "message": "журнал активності"
-  },
   "addAcquiredTokens": {
     "message": "Додайте токени, отримані за допомогою MetaMask"
   },
@@ -229,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
   },
-  "ethereumPublicAddress": {
-    "message": "Публічна адреса Ethereum"
-  },
   "etherscanView": {
     "message": "Переглянути обліковий запис на Etherscan"
-  },
-  "expandView": {
-    "message": "Розгорнути подання"
   },
   "failed": {
     "message": "Помилка"
@@ -254,26 +245,11 @@
   "from": {
     "message": "Від"
   },
-  "functionType": {
-    "message": "Тип функції"
-  },
   "gasLimit": {
     "message": "Ліміт газу"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
-  },
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
-  },
-  "gasPrice": {
-    "message": "Ціна на пальне (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ціна газу дуже низька"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Ціна на пальне визначає кількість Ether, яку ви готові заплатити за кожну одиницю пального."
   },
   "gasUsed": {
     "message": "Пального використано"
@@ -316,18 +292,12 @@
     "message": "Імпортувати",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Імпортувати обліковий запис"
-  },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
   },
   "imported": {
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
   },
   "insufficientBalance": {
     "message": "Недостатньо коштів"
@@ -375,14 +345,8 @@
   "links": {
     "message": "Посилання"
   },
-  "loadMore": {
-    "message": "Завантажити більше"
-  },
   "loading": {
     "message": "Завантаження..."
-  },
-  "loadingTokens": {
-    "message": "Завантаження токенів…"
   },
   "localhost": {
     "message": "Локальний хост 8545"
@@ -412,9 +376,6 @@
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Не можливо наділсати від'ємну кількість ETH."
-  },
   "networkName": {
     "message": "Ім’я мережі"
   },
@@ -431,9 +392,6 @@
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Новий контакт"
-  },
   "newContract": {
     "message": "Новий контракт"
   },
@@ -442,12 +400,6 @@
   },
   "next": {
     "message": "Далі"
-  },
-  "noConversionRateAvailable": {
-    "message": "Немає доступного обмінного курсу"
-  },
-  "noTransactions": {
-    "message": "У вас немає транзакцій"
   },
   "noWebcamFound": {
     "message": "Веб-камеру комп’ютера не знайдено. Повторіть спробу."
@@ -472,9 +424,6 @@
   },
   "origin": {
     "message": "Походження"
-  },
-  "parameters": {
-    "message": "Параметри"
   },
   "participateInMetaMetrics": {
     "message": "Взяти участь у MetaMetrics"
@@ -526,12 +475,6 @@
   "rejectAll": {
     "message": "Відхилити все"
   },
-  "rejectTxsDescription": {
-    "message": "Ви збираєтеся пакетно відхилити транзакції ($1)."
-  },
-  "rejectTxsN": {
-    "message": "Відхилити транзакції ($1)"
-  },
   "rejected": {
     "message": "Відмовлено"
   },
@@ -540,12 +483,6 @@
   },
   "removeAccount": {
     "message": "Видалення облікового запису"
-  },
-  "removeAccountDescription": {
-    "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "запити, що очікують на визнання"
   },
   "required": {
     "message": "Обов'язкове"
@@ -614,9 +551,6 @@
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
   },
-  "sigRequest": {
-    "message": "Запит підпису"
-  },
   "sign": {
     "message": "Підписати"
   },
@@ -635,9 +569,6 @@
   "speedUpCancellation": {
     "message": "Пришвидшити це скасування"
   },
-  "speedUpTransaction": {
-    "message": "Прискорити цю транзакцію"
-  },
   "stateLogError": {
     "message": "При отриманні логів стану сталася помилка."
   },
@@ -653,9 +584,6 @@
   "supportCenter": {
     "message": "Відвідайте наш центр підтримки"
   },
-  "switchNetworks": {
-    "message": "Переключити мережі"
-  },
   "symbol": {
     "message": "Символ"
   },
@@ -664,9 +592,6 @@
   },
   "terms": {
     "message": "Умови використання"
-  },
-  "tips": {
-    "message": "Чайові"
   },
   "to": {
     "message": "Кому"
@@ -689,41 +614,11 @@
   "transaction": {
     "message": "транзакція"
   },
-  "transactionCancelAttempted": {
-    "message": "Сталась спроба скасувати транзакцію з ціною пального $1 за $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакцію успішно скасовано на $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакцію підтверджено о $2."
-  },
-  "transactionCreated": {
-    "message": "Транзакція створена з вартістю $1 о $2."
-  },
-  "transactionDropped": {
-    "message": "Транзакція впала о $2."
-  },
   "transactionError": {
     "message": "Помилка транзакції. В контрактному коді виданий виняток"
   },
   "transactionErrorNoContract": {
     "message": "Ви намагаєтесь викликати функцію за неконтрактною адресою."
-  },
-  "transactionErrored": {
-    "message": "Під час виконання транзакції сталася помилка."
-  },
-  "transactionFee": {
-    "message": "Комісія за транзакцію"
-  },
-  "transactionResubmitted": {
-    "message": "Транзакція повторно подана з підвищеною платою за газ до $1 о $2"
-  },
-  "transactionSubmitted": {
-    "message": "Транзакція надіслана з оплатою за газ $1 о $2."
-  },
-  "transactionUpdated": {
-    "message": "Час оновлення транзакції: $2."
   },
   "transfer": {
     "message": "Передати"
@@ -743,29 +638,17 @@
   "unknown": {
     "message": "невідомо"
   },
-  "unknownNetwork": {
-    "message": "Незнайома приватна мережа"
-  },
   "unknownQrCode": {
     "message": "Помилка: ми не змогли ідентифікувати цей QR-код "
   },
   "unlock": {
     "message": "Розблокувати"
   },
-  "unlockMessage": {
-    "message": "Децентралізована мережа очікує"
-  },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
   },
   "usedByClients": {
     "message": "Використовується низкою різних клієнтів"
-  },
-  "userName": {
-    "message": "Ім’я користувача"
-  },
-  "viewContact": {
-    "message": "Переглянути контакт"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
@@ -775,14 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
-  },
-  "youSign": {
-    "message": "Ви підписуєте"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретна seed-фраза"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Ціна пального на прискорення - нуль"
   }
 }

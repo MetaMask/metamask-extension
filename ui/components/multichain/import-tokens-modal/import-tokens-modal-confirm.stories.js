@@ -74,7 +74,12 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <ImportTokensModalConfirm {...args} />;
+export const DefaultStory = (args) => (
+  <ImportTokensModalConfirm
+    {...args}
+    networkFilter={{ [CHAIN_IDS.MAINNET]: true }}
+  />
+);
 DefaultStory.decorators = [
   (Story) => (
     <Provider store={createStore()}>
@@ -87,12 +92,15 @@ DefaultStory.storyName = 'Default';
 
 export const LongValueStory = (args) => (
   <div style={{ width: '300px' }}>
-    <ImportTokensModalConfirm {...args} />
+    <ImportTokensModalConfirm
+      {...args}
+      networkFilter={{ [CHAIN_IDS.MAINNET]: true }}
+    />
   </div>
 );
 LongValueStory.decorators = [
   (Story) => (
-    <Provider store={createStore(CHAIN_IDS.MAINNET, true, 5)}>
+    <Provider store={createStore()}>
       <Story />
     </Provider>
   ),

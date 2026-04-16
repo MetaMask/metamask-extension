@@ -97,9 +97,6 @@
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
-  "gasPrice": {
-    "message": "Gasprijs (GWEI)"
-  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -113,9 +110,6 @@
   "import": {
     "message": "Importeren",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Account importeren"
   },
   "importAccountMsg": {
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
@@ -149,9 +143,6 @@
   "loading": {
     "message": "Bezig met laden..."
   },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
-  },
   "lock": {
     "message": "Uitloggen"
   },
@@ -168,9 +159,6 @@
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Kan geen negatieve hoeveelheden ETH verzenden."
-  },
   "networks": {
     "message": "netwerken"
   },
@@ -185,9 +173,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noTransactions": {
-    "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
@@ -246,9 +231,6 @@
   "settings": {
     "message": "instellingen"
   },
-  "sigRequest": {
-    "message": "Ondertekeningsverzoek"
-  },
   "sign": {
     "message": "Teken"
   },
@@ -282,9 +264,6 @@
   "unknown": {
     "message": "Onbekend"
   },
-  "unknownNetwork": {
-    "message": "Onbekend privénetwerk"
-  },
   "unlock": {
     "message": "Log in"
   },
@@ -296,8 +275,5 @@
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
-  },
-  "youSign": {
-    "message": "U ondertekent"
   }
 }

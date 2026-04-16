@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tooltip } from 'react-tippy';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 const INPUT_HORIZONTAL_PADDING = 4;
 
@@ -95,7 +95,7 @@ export default class UnitInput extends PureComponent {
     }
 
     this.props.onBlur && this.props.onBlur(value);
-    this.unitInput.scrollTo && this.unitInput.scrollTo(0, 0);
+    this.unitInput?.scrollTo?.(0, 0);
   };
 
   handleChange = (event) => {

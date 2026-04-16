@@ -11,10 +11,12 @@ const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
-const { intersection } = require('lodash');
+const intersection = require('lodash/intersection');
+
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, TASKS } = require('./constants');
+const { getActiveFeatures, setActiveFeatures } = require('./config');
 const {
   createTask,
   composeSeries,
@@ -28,13 +30,14 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const {
   getBrowserVersionMap,
+  getBuildTargetFromTask,
   getEnvironment,
   isDevBuild,
   isTestBuild,
 } = require('./utils');
 const { getConfig } = require('./config');
 
-/* eslint-disable no-constant-condition, node/global-require */
+/* eslint-disable no-constant-condition, n/global-require */
 if (false) {
   // Packages required dynamically via browserify/eslint configuration in
   // dependencies. This is a workaround for LavaMoat's static analyzer used in
@@ -51,21 +54,21 @@ if (false) {
   require('@babel/eslint-plugin');
   require('@metamask/eslint-config');
   require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import-x/no-unresolved
   require('@typescript-eslint/parser');
   require('eslint');
   require('eslint-config-prettier');
   require('eslint-import-resolver-node');
   require('eslint-import-resolver-typescript');
-  require('eslint-plugin-import');
+  require('eslint-plugin-import-x');
   require('eslint-plugin-jsdoc');
-  require('eslint-plugin-node');
+  require('eslint-plugin-n');
   require('eslint-plugin-prettier');
   require('eslint-plugin-react');
   require('eslint-plugin-react-hooks');
   require('eslint-plugin-jest');
 }
-/* eslint-enable no-constant-condition, node/global-require */
+/* eslint-enable no-constant-condition, n/global-require */
 
 defineAndRunBuildTasks().catch((error) => {
   console.error(error.stack || error);
@@ -78,17 +81,16 @@ async function defineAndRunBuildTasks() {
     buildType,
     entryTask,
     isLavaMoat,
+    platform,
     policyOnly,
     shouldIncludeLockdown,
     shouldIncludeSnow,
     shouldLintFenceFiles,
     skipStats,
     version,
-    platform,
   } = await parseArgv();
 
   const isRootTask = Object.values(BUILD_TARGETS).includes(entryTask);
-
   if (isRootTask) {
     // scuttle on production/tests environment only
     const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
@@ -102,6 +104,7 @@ async function defineAndRunBuildTasks() {
       'removeEventListener',
       'ShadowRoot',
       'HTMLElement',
+      'HTMLFormElement',
       'Element',
       'pageXOffset',
       'pageYOffset',
@@ -143,6 +146,18 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'logEncryptedVault',
+      'history', // needed by Sentry and react-router-dom v6 HashRouter
+      // Globals used by `react-dom`
+      'getSelection',
+      // globals `opera` needs to function
+      'opr',
+      // for @popperjs/core and snap simple keyring site
+      'devicePixelRatio',
+      // for @tanstack/react-virtual
+      'ResizeObserver',
+      'setTimeout',
+      'clearTimeout',
     ];
 
     if (
@@ -155,6 +170,10 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
+
+        'browser', // for testing vault corruption
+        'chrome', // for testing vault corruption
+        `indexedDB`, // for testing vault corruption
       ];
     }
 
@@ -177,29 +196,28 @@ async function defineAndRunBuildTasks() {
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
-  const ignoredFiles = getIgnoredFiles(buildType);
+  const ignoredFiles = getIgnoredFiles(entryTask);
 
   const staticTasks = createStaticAssetTasks({
-    livereload,
     browserPlatforms,
+    buildType,
+    livereload,
     shouldIncludeLockdown,
     shouldIncludeSnow,
-    buildType,
   });
 
   const manifestTasks = createManifestTasks({
+    applyLavaMoat,
     browserPlatforms,
     browserVersionMap,
     buildType,
-    applyLavaMoat,
-    shouldIncludeSnow,
     entryTask,
+    shouldIncludeSnow,
   });
 
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
-    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,
@@ -207,6 +225,7 @@ async function defineAndRunBuildTasks() {
     isLavaMoat,
     livereload,
     policyOnly,
+    shouldIncludeSnow,
     shouldLintFenceFiles,
     version,
   });
@@ -254,7 +273,11 @@ async function defineAndRunBuildTasks() {
     composeSeries(
       clean,
       styleTasks.prod,
-      composeParallel(scriptTasks.dist, staticTasks.prod, manifestTasks.prod),
+      composeParallel(
+        scriptTasks.dist,
+        staticTasks.prod,
+        manifestTasks.scriptDist,
+      ),
       zip,
     ),
   );
@@ -363,6 +386,12 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           hidden: true,
           type: 'string',
         })
+        .option('features', {
+          default: [],
+          description:
+            'Specify a list of features to include in the build, in addition to the features of the build type.',
+          type: 'array',
+        })
         .check((args) => {
           if (!Number.isInteger(args.buildVersion)) {
             throw new Error(
@@ -388,7 +417,10 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     skipStats,
     task,
     platform,
+    features: additionalFeatures,
   } = argv;
+
+  setActiveFeatures(buildType, additionalFeatures);
 
   // Manually default this to `false` for dev and test builds.
   const shouldLintFenceFiles =
@@ -408,24 +440,24 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     buildType,
     entryTask: task,
     isLavaMoat: process.argv[0].includes('lavamoat'),
+    platform,
     policyOnly,
     shouldIncludeLockdown: lockdown,
     shouldIncludeSnow: snow,
     shouldLintFenceFiles,
     skipStats,
     version,
-    platform,
   };
 }
 
 /**
  * Gets the files to be ignored by the current build, if any.
  *
- * @param {string} currentBuildType - The type of the current build.
+ * @param target - The build target.
  * @returns {string[] | null} The array of files to be ignored by the current
  * build, or `null` if no files are to be ignored.
  */
-function getIgnoredFiles(currentBuildType) {
+function getIgnoredFiles(target) {
   const buildConfig = loadBuildTypesConfig();
   const cwd = process.cwd();
 
@@ -442,8 +474,7 @@ function getIgnoredFiles(currentBuildType) {
     );
 
   const allFeatures = Object.keys(buildConfig.features);
-  const activeFeatures =
-    buildConfig.buildTypes[currentBuildType].features ?? [];
+  const activeFeatures = getActiveFeatures();
   const inactiveFeatures = difference(allFeatures, activeFeatures);
 
   const ignoredPaths = exclusiveAssetsForFeatures(inactiveFeatures);
@@ -452,10 +483,18 @@ function getIgnoredFiles(currentBuildType) {
   const activePaths = exclusiveAssetsForFeatures(activeFeatures);
   const conflicts = intersection(activePaths, ignoredPaths);
   if (conflicts.length !== 0) {
-    throw new Error(`Below paths are required exclusively by both active and inactive features resulting in a conflict:
+    throw new Error(`The following paths are required exclusively by both active and inactive features:
 \t-> ${conflicts.join('\n\t-> ')}
-Please fix builds.yml`);
+Please fix builds.yml or specify a compatible set of features.`);
   }
 
-  return ignoredPaths;
+  const buildTarget = getBuildTargetFromTask(target);
+
+  if (isDevBuild(buildTarget) || isTestBuild(buildTarget)) {
+    return ignoredPaths;
+  }
+
+  // For all production build tasks exclude test files.
+  const testPaths = globby(['./test', './app/scripts/fixtures']);
+  return [...ignoredPaths, ...testPaths];
 }

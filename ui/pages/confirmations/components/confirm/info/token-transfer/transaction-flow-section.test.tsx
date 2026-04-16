@@ -1,51 +1,44 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
+import { useDisplayName } from '../../../../../../hooks/useDisplayName';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import { TrustSignalDisplayState } from '../../../../../../hooks/useTrustSignals';
+import { useTransferRecipient } from '../hooks/useTransferRecipient';
 import { TransactionFlowSection } from './transaction-flow-section';
 
-jest.mock('../hooks/useDecodedTransactionData', () => ({
-  ...jest.requireActual('../hooks/useDecodedTransactionData'),
-  useDecodedTransactionData: jest.fn(),
-}));
+jest.mock('../hooks/useTransferRecipient');
+jest.mock('../../../../../../hooks/useDisplayName');
 
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
   () => ({
-    useAlertMetrics: jest.fn(() => ({
+    useAlertMetrics: () => ({
       trackInlineAlertClicked: jest.fn(),
       trackAlertRender: jest.fn(),
       trackAlertActionClicked: jest.fn(),
-    })),
+    }),
   }),
 );
 
-describe('<TransactionFlowSection />', () => {
-  const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
-    pending: false,
-    value: {
-      data: [
-        {
-          name: TransactionType.tokenMethodTransfer,
-          params: [
-            {
-              name: 'dst',
-              type: 'address',
-              value: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-            },
-            { name: 'wad', type: 'uint256', value: 0 },
-          ],
-        },
-      ],
-      source: 'Sourcify',
-    },
-  }));
+const mockUseDisplayName = jest.mocked(useDisplayName);
 
-  (useDecodedTransactionData as jest.Mock).mockImplementation(
-    useDecodedTransactionDataMock,
-  );
+describe('<TransactionFlowSection />', () => {
+  const useTransferRecipientMock = jest.mocked(useTransferRecipient);
+
+  const RECIPIENT_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    useTransferRecipientMock.mockReturnValue(RECIPIENT_ADDRESS);
+    mockUseDisplayName.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      isAccount: false,
+      displayState: TrustSignalDisplayState.Unknown,
+    });
+  });
 
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
@@ -55,5 +48,93 @@ describe('<TransactionFlowSection />', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders From and To labels', () => {
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    expect(getByText(messages.from.message)).toBeInTheDocument();
+    expect(getByText(messages.to.message)).toBeInTheDocument();
+  });
+
+  it('renders sender and recipient address sections', () => {
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    expect(getByTestId('sender-address')).toBeInTheDocument();
+    expect(getByTestId('recipient-address')).toBeInTheDocument();
+  });
+
+  it('displays the transaction flow section container', () => {
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    expect(getByTestId('confirmation__transaction-flow')).toBeInTheDocument();
+  });
+
+  it('renders display name elements for sender and recipient', () => {
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getAllByTestId } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    const displayNames = getAllByTestId('confirm-info-row-display-name');
+    expect(displayNames).toHaveLength(2);
+  });
+
+  it('displays wallet name next to labels when subtitle is returned', () => {
+    mockUseDisplayName.mockReturnValue({
+      name: 'Account 1',
+      hasPetname: true,
+      isAccount: true,
+      displayState: TrustSignalDisplayState.Petname,
+      subtitle: 'Wallet 1',
+    });
+
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    expect(getByText('From Wallet 1')).toBeInTheDocument();
+    expect(getByText('To Wallet 1')).toBeInTheDocument();
+  });
+
+  it('displays plain labels when subtitle is not returned', () => {
+    mockUseDisplayName.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      isAccount: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      subtitle: undefined,
+    });
+
+    const state = getMockTokenTransferConfirmState({});
+    const mockStore = configureMockStore([])(state);
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <TransactionFlowSection />,
+      mockStore,
+    );
+
+    expect(getByText(messages.from.message)).toBeInTheDocument();
+    expect(getByText(messages.to.message)).toBeInTheDocument();
+    expect(queryByText(/Wallet/u)).not.toBeInTheDocument();
   });
 });

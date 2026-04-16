@@ -2,12 +2,20 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { getStatePatches } from '../../../../store/patch-store-substream-connection';
 import NewAccountModal from './new-account-modal.container';
+
+const getStatePatchesMock = jest.mocked(getStatePatches);
+
+const mockAddress = '0x1234567890';
+const mockNewAccount = createMockInternalAccount({
+  name: 'New Account',
+  address: mockAddress,
+});
 
 const mockOnCreateNewAccount = jest.fn();
 const mockNewAccountNumber = 2;
@@ -15,7 +23,11 @@ const mockNewMetamaskState = {
   ...mockState.metamask,
   currentLocale: 'en',
 };
-const mockAddress = '0x1234567890';
+
+jest.mock('../../../../selectors/accounts', () => ({
+  ...jest.requireActual('../../../../selectors/accounts'),
+  getInternalAccountByAddress: () => mockNewAccount,
+}));
 
 const mockSubmitRequestToBackground = jest.fn().mockImplementation((method) => {
   switch (method) {
@@ -34,6 +46,11 @@ jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: (method: string, args: unknown) =>
     mockSubmitRequestToBackground(method, args),
+}));
+
+jest.mock('../../../../store/patch-store-substream-connection', () => ({
+  ...jest.requireActual('../../../../store/patch-store-substream-connection'),
+  getStatePatches: jest.fn(),
 }));
 
 const renderModal = (
@@ -64,6 +81,7 @@ const renderModal = (
   const store = mockStore(state);
 
   return {
+    // @ts-expect-error TODO: Remove once `NewAccountModal` is converted to TypeScript.
     render: renderWithProvider(<NewAccountModal />, store),
     store,
   };
@@ -79,11 +97,7 @@ describe('NewAccountModal', () => {
     fireEvent.click(addAccountButton);
 
     await waitFor(() => {
-      expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-        2,
-        'getStatePatches',
-        undefined,
-      );
+      expect(getStatePatchesMock).toHaveBeenCalled();
     });
   });
 });

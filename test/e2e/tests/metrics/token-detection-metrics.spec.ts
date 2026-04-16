@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -16,16 +17,7 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
  */
 async function mockSegment(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Selected' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
+    // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
@@ -49,16 +41,15 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Token detection event @no-mmi', function () {
+describe('Token detection event', function () {
   it('is sent when onboarding user', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
-          .withPreferencesController({ useTokenDetection: true })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
@@ -70,28 +61,22 @@ describe('Token detection event @no-mmi', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 3);
+        assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-        });
-        assert.deepStrictEqual(events[1].properties, {
-          method: 'create',
-          category: 'Onboarding',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-          is_profile_syncing_enabled: true,
-        });
-        assert.deepStrictEqual(events[2].properties, {
-          token_detection_enabled: true,
-          category: 'Onboarding',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );

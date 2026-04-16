@@ -1,38 +1,44 @@
-import React from 'react';
-import { IconName } from '@metamask/snaps-sdk/jsx';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
-  ButtonLink,
-  IconSize,
+  type QuoteMetadata,
+  type QuoteResponse,
+  UnifiedSwapBridgeEventName,
+  formatProviderLabel,
+} from '@metamask/bridge-controller';
+import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Tag,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
+  FontWeight,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  formatEtaInMinutes,
-  formatFiatAmount,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../selectors';
-import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import { SortOrder } from '../types';
+import {
+  setSelectedQuote,
+  trackUnifiedSwapBridgeEvent,
+} from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
-  getBridgeSortOrder,
+  getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -41,10 +47,64 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { sortedQuotes, activeQuote } = useSelector(getBridgeQuotes);
-  const sortOrder = useSelector(getBridgeSortOrder);
+  const { insufficientBal } = useSelector(getQuoteRequest);
+
+  const { sortedQuotes, activeQuote, recommendedQuote } =
+    useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const locale = useSelector(getIntlLocale);
+
+  const isRecommendedQuote = useCallback(
+    (quote: QuoteMetadata & QuoteResponse) => {
+      return quote.quote.requestId === recommendedQuote?.quote.requestId;
+    },
+    [recommendedQuote],
+  );
+
+  const handleQuoteSelected = useCallback(
+    (quote: QuoteMetadata & QuoteResponse) => {
+      dispatch(setSelectedQuote(quote));
+      recommendedQuote &&
+        dispatch(
+          trackUnifiedSwapBridgeEvent(
+            UnifiedSwapBridgeEventName.QuoteSelected,
+            {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              can_submit: !insufficientBal,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_best_quote: isRecommendedQuote(quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              best_quote_provider: formatProviderLabel(recommendedQuote.quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              provider: formatProviderLabel(quote.quote),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              gas_included: Boolean(quote.quote?.gasIncluded),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              gas_included_7702: Boolean(quote.quote?.gasIncluded7702),
+            },
+          ),
+        );
+      onClose();
+    },
+    [dispatch, isRecommendedQuote, insufficientBal, onClose, recommendedQuote],
+  );
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -57,152 +117,145 @@ export const BridgeQuotesModal = ({
       >
         <ModalHeader onBack={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t('swapSelectAQuote')}
+            {t('bridgeSelectQuote')}
           </Text>
         </ModalHeader>
 
-        {/* HEADERS */}
-        <Row padding={[4, 3]} paddingBottom={1}>
-          {[
-            [SortOrder.COST_ASC, t('bridgeNetCost'), IconName.Arrow2Up],
-            [SortOrder.ETA_ASC, t('time'), IconName.Arrow2Down],
-          ].map(([sortOrderOption, label, icon]) => (
-            <ButtonLink
-              key={label}
-              onClick={() => dispatch(setSortOrder(sortOrderOption))}
-              startIconName={
-                sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
-                  ? icon
-                  : undefined
-              }
-              startIconProps={{
-                size: IconSize.Xs,
-              }}
-              endIconName={
-                sortOrder === sortOrderOption &&
-                sortOrder === SortOrder.COST_ASC
-                  ? icon
-                  : undefined
-              }
-              endIconProps={{
-                size: IconSize.Xs,
-              }}
-              color={
-                sortOrder === sortOrderOption
-                  ? TextColor.primaryDefault
-                  : TextColor.textAlternative
-              }
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  sortOrder === sortOrderOption
-                    ? TextColor.primaryDefault
-                    : TextColor.textAlternative
-                }
-              >
-                {label}
-              </Text>
-            </ButtonLink>
-          ))}
+        {/* HEADER */}
+        <Row padding={4} paddingTop={0}>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('bridgeQuotesSortedByCost')}
+          </Text>
         </Row>
         {/* QUOTE LIST */}
-        <Column style={{ overflow: 'scroll' }}>
-          {sortedQuotes.map((quote, index) => {
-            const {
-              totalNetworkFee,
-              estimatedProcessingTimeInSeconds,
-              toTokenAmount,
-              cost,
-              quote: { destAsset, bridges, requestId },
-            } = quote;
-            const isQuoteActive = requestId === activeQuote?.quote.requestId;
+        <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
+          {sortedQuotes.map(
+            (quote: QuoteMetadata & QuoteResponse, index: number) => {
+              const {
+                totalNetworkFee,
+                toTokenAmount,
+                cost,
+                quote: { destAsset, bridges, requestId },
+              } = quote;
+              const isQuoteActive = requestId === activeQuote?.quote.requestId;
+              const isRecommended = isRecommendedQuote(quote);
 
-            return (
-              <Row
-                alignItems={AlignItems.flexStart}
-                key={index}
-                backgroundColor={
-                  isQuoteActive ? BackgroundColor.primaryMuted : undefined
-                }
-                onClick={() => {
-                  dispatch(setSelectedQuote(quote));
-                  onClose();
-                }}
-                paddingInline={4}
-                paddingTop={3}
-                paddingBottom={3}
-                style={{ position: 'relative', height: 78 }}
-              >
-                {isQuoteActive && (
-                  <Column
-                    style={{
-                      position: 'absolute',
-                      left: 4,
-                      top: 4,
-                      height: 70,
-                      width: 4,
-                      borderRadius: 8,
-                    }}
-                    backgroundColor={BackgroundColor.primaryDefault}
-                  />
-                )}
-                <Column>
-                  <Text variant={TextVariant.bodyMd}>
-                    {cost.fiat && formatFiatAmount(cost.fiat, currency, 0)}
-                  </Text>
-                  {[
-                    totalNetworkFee?.fiat
-                      ? t('quotedNetworkFee', [
-                          formatFiatAmount(totalNetworkFee.fiat, currency, 0),
-                        ])
-                      : t('quotedNetworkFee', [
-                          formatTokenAmount(
-                            totalNetworkFee.amount,
-                            nativeCurrency,
-                          ),
-                        ]),
-                    t(
-                      sortOrder === SortOrder.ETA_ASC
-                        ? 'quotedReceivingAmount'
-                        : 'quotedReceiveAmount',
-                      [
-                        formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
-                          formatTokenAmount(
-                            toTokenAmount.amount,
-                            destAsset.symbol,
-                            0,
-                          ),
-                      ],
-                    ),
-                  ]
-                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
-                    .map((content) => (
-                      <Text
-                        key={content}
-                        variant={TextVariant.bodyXsMedium}
-                        color={TextColor.textAlternative}
-                      >
-                        {content}
-                      </Text>
-                    ))}
-                </Column>
-                <Column alignItems={AlignItems.flexEnd}>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('bridgeTimingMinutes', [
-                      formatEtaInMinutes(estimatedProcessingTimeInSeconds),
-                    ])}
-                  </Text>
-                  <Text
-                    variant={TextVariant.bodyXsMedium}
-                    color={TextColor.textAlternative}
+              return (
+                <Column
+                  className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
+                  alignItems={AlignItems.flexStart}
+                  key={index}
+                  backgroundColor={
+                    isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                  }
+                  onClick={() => handleQuoteSelected(quote)}
+                  paddingInline={4}
+                  paddingTop={3}
+                  paddingBottom={3}
+                  style={{ position: 'relative', cursor: 'pointer' }}
+                >
+                  {isQuoteActive && (
+                    <Column
+                      style={{
+                        position: 'absolute',
+                        left: 4,
+                        top: 4,
+                        height: 'calc(100% - 8px)',
+                        width: 4,
+                        borderRadius: 8,
+                      }}
+                      backgroundColor={BackgroundColor.primaryDefault}
+                    />
+                  )}
+
+                  <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
+                    {/* PROVIDER NAME */}
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                      ellipsis={true}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        flexShrink: 1,
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {startCase(bridges[0])}
+                    </Text>
+                    {/* DEST AMOUNT */}
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {formatTokenAmount(
+                        locale,
+                        toTokenAmount.amount,
+                        destAsset.symbol,
+                      )}
+                    </Text>
+                  </Row>
+
+                  <Row
+                    alignItems={AlignItems.stretch}
+                    gap={2}
+                    width={BlockSize.Full}
                   >
-                    {startCase(bridges[0])}
-                  </Text>
+                    {/* TOTAL COST + TAG */}
+                    <Row gap={1}>
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
+                        {t('quotedTotalCost', [
+                          cost.valueInCurrency === null
+                            ? formatTokenAmount(
+                                locale,
+                                totalNetworkFee.amount,
+                                nativeCurrency,
+                              )
+                            : formatCurrencyAmount(
+                                cost.valueInCurrency,
+                                currency,
+                                2,
+                              ),
+                        ])}
+                      </Text>
+                      {isRecommended && (
+                        <Tag
+                          backgroundColor={BackgroundColor.successMuted}
+                          labelProps={{
+                            color: TextColor.successDefault,
+                            fontWeight: FontWeight.Medium,
+                          }}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingInline: 6,
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                          }}
+                          label={t('bridgeLowestCost')}
+                        />
+                      )}
+                    </Row>
+                    {/* RECEIVED AMOUNT */}
+                    <Text
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {formatCurrencyAmount(
+                        toTokenAmount.valueInCurrency,
+                        currency,
+                        2,
+                      ) ?? ''}
+                    </Text>
+                  </Row>
                 </Column>
-              </Row>
-            );
-          })}
+              );
+            },
+          )}
         </Column>
       </ModalContent>
     </Modal>

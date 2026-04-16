@@ -4,23 +4,16 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   getCleanAppState,
   getEventPayloads,
-  WINDOW_TITLES,
   withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-  openDapp,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import FixtureBuilder from '../../fixture-builder';
-
-const selectors = {
-  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
-  globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
-  securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
-  dataCollectionForMarketingToggle:
-    '[data-testid="dataCollectionForMarketing"] .toggle-button',
-  dataCollectionWarningAckButton: { text: 'Okay', tag: 'Button' },
-};
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
+import HomePage from '../../page-objects/pages/home/homepage';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { login } from '../../page-objects/flows/login.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -51,16 +44,16 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should be send to segment when preferences are enabled', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
-        fixtures: new FixtureBuilder()
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -68,9 +61,9 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-
-        await openDapp(driver);
+        await login(driver);
+        const dappPage = new TestDapp(driver);
+        await dappPage.openTestDappPage();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -81,7 +74,9 @@ describe('Marketing cookieId', function (this: Suite) {
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.openGlobalMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],
@@ -95,15 +90,15 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when dataCollectionForMarketing is never toggled on', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
-        fixtures: new FixtureBuilder()
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -111,9 +106,10 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await login(driver);
+        const dappPage = new TestDapp(driver);
+        await dappPage.openTestDappPage();
 
-        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -124,7 +120,9 @@ describe('Marketing cookieId', function (this: Suite) {
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.openGlobalMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],
@@ -138,10 +136,10 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
-        fixtures: new FixtureBuilder().withMetaMetricsController().build(),
-        ganacheOptions: defaultGanacheOptions,
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -149,9 +147,10 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await login(driver);
+        const dappPage = new TestDapp(driver);
+        await dappPage.openTestDappPage();
 
-        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -162,7 +161,9 @@ describe('Marketing cookieId', function (this: Suite) {
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.openGlobalMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],
@@ -174,16 +175,16 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should updates marketingCampaignCookieId to null when dataCollectionForMarketing is toggled off ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
-        fixtures: new FixtureBuilder()
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -191,9 +192,10 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await login(driver);
+        const dappPage = new TestDapp(driver);
+        await dappPage.openTestDappPage();
 
-        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -204,7 +206,9 @@ describe('Marketing cookieId', function (this: Suite) {
         let uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
-        await driver.clickElement(selectors.accountOptionsMenuButton);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.openSettingsPage();
 
         const events = await getEventPayloads(
           driver,
@@ -214,10 +218,13 @@ describe('Marketing cookieId', function (this: Suite) {
         const eventContext = events[0].context;
         assert.equal(eventContext.marketingCampaignCookieId, 12345);
 
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
-        await driver.clickElement(selectors.dataCollectionForMarketingToggle);
-        await driver.clickElement(selectors.dataCollectionWarningAckButton);
+        // opt out data collection for marketing on privacy settings page
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
+        await privacySettings.optOutDataCollectionForMarketing();
 
         // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);

@@ -1,14 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`BridgeCTAButton should disable the component when quotes are loading and there are no existing quotes 1`] = `<div />`;
+
+exports[`BridgeCTAButton should render the component when amount and dest token is missing 1`] = `
+<div>
+  <p
+    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+  >
+    Select amount
+  </p>
+</div>
+`;
+
+exports[`BridgeCTAButton should render the component when amount, dest chain and dest token are missing (defaults set 1`] = `
+<div>
+  <p
+    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+  >
+    Select amount
+  </p>
+</div>
+`;
+
+exports[`BridgeCTAButton should render the component when quotes are loading and market is closed (no quotes) 1`] = `<div />`;
+
+exports[`BridgeCTAButton should render the component when quotes are loading and recipient address is not set (no quotes) 1`] = `<div />`;
+
 exports[`BridgeCTAButton should render the component's initial state 1`] = `
 <div>
-  <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-    data-testid="bridge-cta-button"
-    data-theme="light"
-    disabled=""
+  <p
+    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
   >
     Select token
-  </button>
+  </p>
 </div>
 `;

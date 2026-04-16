@@ -8,7 +8,7 @@ const animationEventEmitter = new EventEmitter();
 
 const containerStyle = {
   height: '600px',
-  width: '357px',
+  width: '400px',
   border: '1px solid black',
   display: 'flex',
   flexFlow: 'column',

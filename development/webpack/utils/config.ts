@@ -1,13 +1,17 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { parse as parseYaml } from 'yaml';
+import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-
-const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
+import {
+  ENVIRONMENTS,
+  MODES,
+  VARIABLES_REQUIRED_IN_PRODUCTION,
+} from './constants';
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -64,17 +68,18 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
+  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow'>,
 ) {
   const buildName =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {
     const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
-    const lockdownStr = args.lockdown ? ' lockdown' : '';
-    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}${lockdownStr}`;
+    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
   }
   return buildName;
 }
@@ -85,17 +90,19 @@ export function getBuildName(
  * @param args
  * @param args.type
  * @param args.test
+ * @param args.mode
  * @param args.env
  * @param buildConfig
  */
 export function getVariables(
-  { type, env, ...args }: Args,
-  buildConfig: BuildConfig,
+  { type, ...args }: Args,
+  buildConfig: BuildTypesConfig,
 ) {
   const activeBuild = buildConfig.buildTypes[type];
-  const variables = loadConfigVars(activeBuild, buildConfig);
+  const { required, variables } = loadConfigVars(activeBuild, buildConfig);
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
-  const isDevBuild = env === 'development';
+  const { mode, env } = args;
+  const isDevBuild = mode === MODES.DEVELOPMENT;
 
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
@@ -134,14 +141,36 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
-  variables.set('ENABLE_LOCKDOWN', args.lockdown.toString());
+
+  // Validate required production variables
+  if (args.validateEnv && env === ENVIRONMENTS.PRODUCTION) {
+    const requiredVars =
+      VARIABLES_REQUIRED_IN_PRODUCTION[
+        type as keyof typeof VARIABLES_REQUIRED_IN_PRODUCTION
+      ];
+    if (requiredVars) {
+      const undefinedVariables = requiredVars.filter(
+        (variable) =>
+          variables.get(variable) === null ||
+          variables.get(variable) === undefined,
+      );
+      if (undefinedVariables.length !== 0) {
+        throw new AssertionError({
+          message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
+        });
+      }
+    }
+  }
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
   const safeVariables: Record<string, string> = {};
   variables.forEach((value, key) => {
-    if (value === null || value === undefined) return;
-    safeVariables[key] = JSON.stringify(value);
+    // this intentionally allows `null`, but omits `undefined`
+    // as this is what the old build system did.
+    if (typeof value !== 'undefined') {
+      safeVariables[key] = JSON.stringify(value);
+    }
   });
 
   // special location for the PPOM_URI, as we don't want to copy the wasm file
@@ -153,69 +182,52 @@ export function getVariables(
   // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
   safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
 
-  return { variables, safeVariables, version };
-}
-
-export type BuildType = {
-  id: number;
-  features?: string[];
-  env?: (string | { [k: string]: unknown })[];
-  isPrerelease?: boolean;
-  buildNameOverride?: string;
-};
-
-export type BuildConfig = {
-  buildTypes: Record<string, BuildType>;
-  env: (string | Record<string, unknown>)[];
-  features: Record<
-    string,
-    null | { env?: (string | { [k: string]: unknown })[] }
-  >;
-};
-
-/**
- *
- */
-export function getBuildTypes(): BuildConfig {
-  return parseYaml(readFileSync(BUILDS_YML_PATH, 'utf8'));
+  return {
+    variables,
+    safeVariables,
+    version,
+    environment: env,
+    buildEnvVarDeclarations: required,
+  };
 }
 
 /**
- * Loads configuration variables from process.env, .metamaskrc, and build.yml.
+ * Loads configuration variables from process.env, .metamaskprodrc, .metamaskrc, and build.yml.
  *
  * The order of precedence is:
  * 1. process.env
- * 2. .metamaskrc
- * 3. build.yml
+ * 2. .metamaskprodrc
+ * 3. .metamaskrc
+ * 4. builds.yml
  *
  * i.e., if a variable is defined in `process.env`, it will take precedence over
- * the same variable defined in `.metamaskrc` or `build.yml`.
+ * the same variable defined in `.metamaskprodrc`, `.metamaskrc` or `build.yml`.
  *
  * @param activeBuild
  * @param build
  * @param build.env
- * @param build.features
  * @returns
  */
 function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
-  { env, features }: BuildConfig,
+  { env }: BuildTypesConfig,
 ) {
-  const definitions = loadEnv();
-  addRc(definitions, join(__dirname, '../../../.metamaskrc'));
-  addVars(activeBuild.env);
-  activeBuild.features?.forEach((feature) => addVars(features[feature]?.env));
-  addVars(env);
+  const variables = loadEnv();
+  const required = new Set<string>();
 
-  function addVars(pairs?: (string | Record<string, unknown>)[]): void {
-    pairs?.forEach((pair) => {
-      if (typeof pair === 'string') return;
-      Object.entries(pair).forEach(([key, value]) => {
-        if (definitions.has(key)) return;
-        definitions.set(key, value);
-      });
+  function addVars(pairs: Record<string, unknown> = {}): void {
+    Object.entries(pairs).forEach(([key, value]) => {
+      required.add(key);
+      if (value === undefined) return;
+      if (variables.has(key)) return;
+      variables.set(key, value);
     });
   }
 
-  return definitions;
+  addRc(variables, join(__dirname, '../../../.metamaskprodrc'));
+  addRc(variables, join(__dirname, '../../../.metamaskrc'));
+  addVars(activeBuild.env);
+  addVars(env);
+
+  return { required, variables };
 }

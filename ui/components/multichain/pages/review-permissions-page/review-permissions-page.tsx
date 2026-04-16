@@ -1,9 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  CaipAccountId,
+  CaipChainId,
+  NonEmptyArray,
+  parseCaipAccountId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import { uniq } from 'lodash';
 import {
   AlignItems,
   BlockSize,
@@ -11,24 +16,22 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
+  getAllPermittedAccountsForSelectedTab,
+  getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
-  getInternalAccounts,
   getPermissionSubjects,
-  getPermittedAccountsForSelectedTab,
-  getPermittedChainsForSelectedTab,
   getShowPermittedNetworkToastOpen,
-  getUpdatedAndSortedAccounts,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
-  addPermittedAccounts,
-  addPermittedChains,
   hidePermittedNetworkToast,
   removePermissionsFor,
-  removePermittedAccount,
-  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
+  setPermittedAccounts,
+  setPermittedChains,
 } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -46,23 +49,25 @@ import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Page } from '../page';
 import { SubjectsType } from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../../disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { MergedInternalAccount } from '../../../../selectors/selectors.types';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import {
+  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+  MergedInternalAccountWithCaipAccountId,
+} from '../../../../selectors/selectors.types';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const urlParams = useParams<{ origin: string }>();
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
+
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -77,15 +82,18 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(activeTabOrigin),
     );
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
@@ -112,22 +120,34 @@ export const ReviewPermissions = () => {
     dispatch(hidePermittedNetworkToast());
   };
 
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurationsByCaipChainId = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          const caipChainId = chainId as CaipChainId;
+          const isTestNetwork =
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
+          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
+            ...network,
+            caipChainId,
+          });
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+        ],
       ),
-    [networkConfigurations],
+    [networkConfigurationsByCaipChainId],
   );
+
   const connectedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+    getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as CaipChainId[];
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -135,44 +155,50 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(addPermittedChains(activeTabOrigin, chainIds));
-
-    connectedChainIds.forEach((chainId: string) => {
-      if (!chainIds.includes(chainId)) {
-        dispatch(removePermittedChain(activeTabOrigin, chainId));
-      }
-    });
+    dispatch(setPermittedChains(activeTabOrigin, chainIds));
 
     setShowNetworkToast(true);
   };
 
-  const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
-    );
-  }, [accounts, internalAccounts]);
+  const allAccounts = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
 
-  const connectedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+  const nonRemappedConnectedAccountAddresses = useSelector((state) =>
+    getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  ) as CaipAccountId[];
 
-  const handleSelectAccountAddresses = (addresses: string[]) => {
-    if (addresses.length === 0) {
+  // This remaps EVM caip account addresses to match the 'eip155:0'
+  // value that is currently set in InternalAccount.scopes[0] for
+  // EOA EVM accounts. This logic will need to be updated to
+  // support non EOA accounts.
+  const connectedAccountAddresses = uniq(
+    nonRemappedConnectedAccountAddresses.map((caipAccountId) => {
+      const {
+        address,
+        chain: { namespace },
+      } = parseCaipAccountId(caipAccountId);
+      if (namespace === KnownCaipNamespace.Eip155) {
+        return toEvmCaipAccountId(address);
+      }
+      return caipAccountId;
+    }),
+  );
+
+  const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
+    if (caipAccountIds.length === 0) {
       setShowDisconnectAllModal(true);
       return;
     }
 
-    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
-
-    connectedAccountAddresses.forEach((address: string) => {
-      if (!addresses.includes(address)) {
-        dispatch(removePermittedAccount(activeTabOrigin, address));
-      }
-    });
+    dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
 
     setShowAccountToast(true);
+  };
+
+  const hideAllToasts = () => {
+    setShowAccountToast(false);
+    setShowNetworkToast(false);
   };
 
   return (
@@ -190,23 +216,26 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={mergedAccounts}
+              accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
+              hideAllToasts={hideAllToasts}
             />
           ) : (
             <NoConnectionContent />
           )}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
+                trace({ name: TraceName.DisconnectAllModal });
                 disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
+                endTrace({ name: TraceName.DisconnectAllModal });
               }}
             />
           ) : null}
@@ -270,6 +299,8 @@ export const ReviewPermissions = () => {
                     size={ButtonPrimarySize.Lg}
                     block
                     data-test-id="no-connections-button"
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}

@@ -12,7 +12,7 @@ import {
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
-import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
+import { getSelectedNetworkClientId } from '../../shared/lib/selectors/networks';
 import usePolling from './usePolling';
 
 /**
@@ -21,7 +21,7 @@ import usePolling from './usePolling';
  *   '@metamask/gas-fee-controller'
  * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
  * @property {object} gasEstimateType - The type of estimate provided
- * @property {boolean} isGasEstimateLoading - indicates whether the gas
+ * @property {boolean} isGasEstimatesLoading - indicates whether the gas
  *  estimates are currently loading.
  * @property {boolean} isNetworkBusy - indicates whether the network is busy.
  */
@@ -33,9 +33,10 @@ import usePolling from './usePolling';
  * the returned gas estimate for validity on the current network.
  *
  * @param _networkClientId - The optional network client ID to get gas fee estimates for. Defaults to the currently selected network.
+ * @param enabled - Whether to enable gas fee estimation polling. Defaults to true.
  * @returns {GasEstimates} GasEstimates object
  */
-export function useGasFeeEstimates(_networkClientId) {
+export function useGasFeeEstimates(_networkClientId, enabled = true) {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const networkClientId = _networkClientId ?? selectedNetworkClientId;
 
@@ -59,6 +60,12 @@ export function useGasFeeEstimates(_networkClientId) {
   );
 
   useEffect(() => {
+    if (!enabled) {
+      return () => {
+        // No cleanup needed when disabled
+      };
+    }
+
     let isMounted = true;
     getNetworkConfigurationByNetworkClientId(networkClientId).then(
       (networkConfig) => {
@@ -71,13 +78,14 @@ export function useGasFeeEstimates(_networkClientId) {
     return () => {
       isMounted = false;
     };
-  }, [networkClientId]);
+  }, [networkClientId, enabled]);
 
   usePolling({
     startPolling: (input) =>
       gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
     input: { networkClientId },
+    enabled,
   });
 
   return {

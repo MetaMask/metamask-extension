@@ -1,0 +1,170 @@
+import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import { Driver } from '../../webdriver/driver';
+import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
+import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { login } from '../../page-objects/flows/login.flow';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import { AccountType, withMultichainAccountsDesignEnabled } from './common';
+
+describe('Multichain Accounts - Account tree', function (this: Suite) {
+  it('should display basic wallets and accounts', async function () {
+    await withMultichainAccountsDesignEnabled(
+      {
+        title: this.test?.fullTitle(),
+      },
+      async (driver: Driver) => {
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+
+        // Ensure that wallet information is displayed
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 1',
+        );
+
+        await accountListPage.checkAccountNameIsDisplayedUnderWallet(
+          'Account 1',
+          'Wallet 2',
+        );
+        await accountListPage.checkAddWalletButttonIsDisplayed();
+
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 2',
+          balance: '$0.00',
+        });
+        await accountListPage.checkNumberOfAvailableAccounts(2);
+      },
+    );
+  });
+  it('should display wallet and accounts for hardware wallet', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withLedgerAccount()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+            useCurrencyRateCheck: true,
+          })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSnapSimpleKeyringAndSite(mockServer);
+          return [await mockPriceApi(mockServer)];
+        },
+      },
+      async ({ driver, localNodes }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x15af1d78b58c40000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+
+        // Ensure that wallet information is displayed
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
+        await accountListPage.checkAddWalletButttonIsDisplayed();
+
+        // The balance is not loaded for a non-selected account (which was never selected before)
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$0.00',
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$85,025.00',
+          wallet: 'Ledger',
+          account: 'Ledger 1',
+        });
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
+        await accountListPage.checkNumberOfAvailableAccounts(2);
+      },
+    );
+  });
+
+  it('should display wallet for Snap Keyring', async function () {
+    await withMultichainAccountsDesignEnabled(
+      {
+        title: this.test?.fullTitle(),
+        accountType: AccountType.SSK,
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
+        testSpecificMock: async (mockServer) => {
+          return mockSnapSimpleKeyringAndSite(mockServer);
+        },
+      },
+      async (driver: Driver) => {
+        await installSnapSimpleKeyring(driver);
+        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+        await snapSimpleKeyringPage.createNewAccount();
+
+        // Check snap account is displayed after adding the snap account.
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+
+        // Ensure that wallet information is displayed
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
+        await accountListPage.checkWalletDisplayedInAccountListMenu(
+          'MetaMask Simple Snap Keyring',
+        );
+        // Ensure that account balances within each wallet are displayed
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Snap Account 1',
+          wallet: 'MetaMask Simple Snap Keyring',
+          balance: '$0.00',
+        });
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList(
+          'Snap Account 1',
+        );
+        await accountListPage.checkNumberOfAvailableAccounts(3);
+      },
+    );
+  });
+});

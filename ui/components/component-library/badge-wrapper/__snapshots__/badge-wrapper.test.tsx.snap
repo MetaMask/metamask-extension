@@ -7,7 +7,7 @@ exports[`BadgeWrapper should render correctly 1`] = `
   >
     content
     <div
-      class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+      class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
     >
       <div
         data-testid="badge"

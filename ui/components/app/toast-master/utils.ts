@@ -1,7 +1,14 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
-import { SHOW_NFT_DETECTION_ENABLEMENT_TOAST } from '../../../store/actionConstants';
+import {
+  SET_SHOW_NEW_SRP_ADDED_TOAST,
+  SET_SHOW_COPY_ADDRESS_TOAST,
+  SET_SHOW_CLAIM_SUBMIT_TOAST,
+  SET_SHOW_INFURA_SWITCH_TOAST,
+  SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+} from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { ClaimSubmitToastType } from '../../../../shared/constants/app-state';
 
 /**
  * Returns true if the privacy policy toast was shown either never, or less than a day ago.
@@ -10,7 +17,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
  * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 export function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate?: number,
+  newPrivacyPolicyToastShownDate?: number | null,
 ): boolean {
   if (!newPrivacyPolicyToastShownDate) {
     return true;
@@ -47,12 +54,6 @@ export function setShowNftDetectionEnablementToast(
   };
 }
 
-export function setSwitchedNetworkNeverShowMessage() {
-  submitRequestToBackgroundAndCatch('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
-}
-
 export function setSurveyLinkLastClickedOrClosed(time: number) {
   submitRequestToBackgroundAndCatch('setSurveyLinkLastClickedOrClosed', [time]);
 }
@@ -60,10 +61,62 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ) {
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
+}
+
+export function setShowNewSrpAddedToast(value: number | false) {
+  return {
+    type: SET_SHOW_NEW_SRP_ADDED_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowCopyAddressToast(value: boolean) {
+  return {
+    type: SET_SHOW_COPY_ADDRESS_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowClaimSubmitToast(
+  value: ClaimSubmitToastType | string | null,
+) {
+  return {
+    type: SET_SHOW_CLAIM_SUBMIT_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowInfuraSwitchToast(value: boolean) {
+  return {
+    type: SET_SHOW_INFURA_SWITCH_TOAST,
+    payload: value,
+  };
+}
+
+export function setShieldPausedToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldPausedToastLastClickedOrClosed', [
+    time,
+  ]);
+}
+
+export function setShieldEndingToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldEndingToastLastClickedOrClosed', [
+    time,
+  ]);
+}
+
+export function setPna25Acknowledged(acknowledged: boolean) {
+  submitRequestToBackgroundAndCatch('setPna25Acknowledged', [acknowledged]);
+}
+
+export function dismissSidePanelMigrationToast() {
+  submitRequestToBackgroundAndCatch('dismissSidePanelMigrationToast');
 }

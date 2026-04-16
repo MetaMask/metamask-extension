@@ -1,0 +1,48 @@
+import { Suite } from 'mocha';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import ActivityList from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { login } from '../../page-objects/flows/login.flow';
+
+describe('Clear account activity', function (this: Suite) {
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // When user get stuck with pending transactions, one can reset the account by clicking the 'Clear activity tab data' //
+  // button in settings, developer tools tab. This functionality will clear all the transactions history.               //
+  // Note that it only only affects the current network.                                                                //
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  it('User can clear account activity via the developer tools tab, ', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withTransactionControllerCompletedTransaction()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await login(driver, { validateBalance: false });
+
+        // Check local "Sent" transaction history is displayed
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityList(driver);
+        await activityList.checkTxAction({
+          action: 'Sent',
+          confirmedTx: 1,
+        });
+
+        // Clear activity and nonce data
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToDeveloperOptions();
+        await settingsPage.clickDeveloperOptionsDeleteActivityAndNonceData();
+        await settingsPage.confirmDeleteActivityAndNonceModal();
+        await settingsPage.clickBackButton();
+
+        await activityList.checkNoTxInActivity();
+      },
+    );
+  });
+});

@@ -1,60 +1,26 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../pages/header-navbar';
-import SelectNetwork from '../pages/dialog/select-network';
-import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal-confirmation';
+import AssetListPage from '../pages/home/asset-list';
+import HomePage from '../pages/home/homepage';
+import NetworkManager from '../pages/network-manager';
 
-/**
- * Switches to a specified network in the header bar.
- *
- * @param driver
- * @param networkName - The name of the network to switch to.
- * @param toggleShowTestNetwork - A boolean indicating whether to toggle the display of test networks. Defaults to false.
- */
-export const switchToNetworkFlow = async (
+export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
-  networkName: string,
-  toggleShowTestNetwork: boolean = false,
-) => {
-  console.log(`Switch to network ${networkName} in header bar`);
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.clickSwitchNetworkDropDown();
-
-  const selectNetworkDialog = new SelectNetwork(driver);
-  await selectNetworkDialog.check_pageIsLoaded();
-  if (toggleShowTestNetwork) {
-    await selectNetworkDialog.toggleShowTestNetwork();
-  }
-  await selectNetworkDialog.selectNetworkName(networkName);
-  await headerNavbar.check_currentSelectedNetwork(networkName);
-};
-
-/**
- * Search for a network in the select network dialog and switches to it.
- *
- * @param driver
- * @param networkName - The name of the network to search for and switch to.
- */
-export const searchAndSwitchToNetworkFlow = async (
-  driver: Driver,
+  networkCategory: string,
   networkName: string,
 ) => {
   console.log(
-    `Search in select network dialog and switch to network ${networkName}`,
+    `Switching to network: ${networkName} in category: ${networkCategory}`,
   );
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.clickSwitchNetworkDropDown();
+  const assetListPage = new AssetListPage(driver);
+  const networkManager = new NetworkManager(driver);
+  const homePage = new HomePage(driver);
 
-  const selectNetworkDialog = new SelectNetwork(driver);
-  await selectNetworkDialog.check_pageIsLoaded();
-  await selectNetworkDialog.fillNetworkSearchInput(networkName);
-  await selectNetworkDialog.clickAddButton();
-
-  const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(
-    driver,
-  );
-  await networkSwitchModalConfirmation.check_pageIsLoaded();
-  await networkSwitchModalConfirmation.clickApproveButton();
-  await headerNavbar.check_currentSelectedNetwork(networkName);
+  const nonEvmNetworks = ['Bitcoin', 'Solana', 'Tron'];
+  if (nonEvmNetworks.includes(networkName)) {
+    // Wait for snap accounts to be ready before switching networks, to prevent race conditions
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
+  await assetListPage.openNetworksFilter();
+  await networkManager.selectTab(networkCategory);
+  await networkManager.selectNetworkByNameWithWait(networkName);
 };

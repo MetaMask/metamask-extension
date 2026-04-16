@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AccountListItem from './account-list-item';
@@ -122,21 +122,6 @@ describe('AccountListItem Component', () => {
       rerender(<AccountListItem {...displayAddressProps} />);
 
       expect(queryByText('0xmockAddress')).toBeInTheDocument();
-    });
-
-    it('render without <AccountMismatchWarning /> if hideDefaultMismatchWarning is true', () => {
-      const { getByTestId, rerender } = renderWithProvider(
-        <AccountListItem {...props} />,
-        store,
-      );
-
-      const infoIcon = getByTestId('account-mismatch-warning-tooltip');
-
-      expect(infoIcon).toBeInTheDocument();
-
-      rerender(<AccountListItem {...props} hideDefaultMismatchWarning />);
-
-      expect(infoIcon).not.toBeInTheDocument();
     });
   });
 });

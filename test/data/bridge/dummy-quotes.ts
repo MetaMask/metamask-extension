@@ -1,6 +1,40 @@
 export const DummyQuotesNoApproval = {
   OP_0_005_ETH_TO_ARB: [
     {
+      sentAmount: {
+        amount: '0.005',
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
       quote: {
         requestId: 'be448070-7849-4d14-bb35-8dcdaf7a4d69',
         srcChainId: 10,
@@ -392,6 +426,40 @@ export const DummyQuotesNoApproval = {
 export const DummyQuotesWithApproval = {
   ETH_11_USDC_TO_ARB: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
       quote: {
         requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432',
         srcChainId: 1,
@@ -812,6 +880,40 @@ export const DummyQuotesWithApproval = {
   ],
   ARB_11_USDC_TO_ETH: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
       quote: {
         requestId: 'edbef62a-d3e6-4b33-aad5-9cdb81f85f53',
         srcChainId: 42161,
@@ -911,6 +1013,40 @@ export const DummyQuotesWithApproval = {
   ],
   ARB_11_USDC_TO_OP: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
       quote: {
         requestId: 'dc63e7e6-dc9b-4aa8-80bb-714192ecd801',
         srcChainId: 42161,
@@ -1334,12 +1470,16 @@ export const DummyQuotesWithApproval = {
         srcChainId: 42161,
         srcTokenAmount: '10903750',
         srcAsset: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _id: '66d776fb76523303f628495c',
           id: '42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           symbol: 'USDC',
           address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           chainId: 42161,
           chain: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _id: '66d776eb0befbcf39c0a01d1',
             id: '42161',
             chainId: '42161',
@@ -1407,6 +1547,8 @@ export const DummyQuotesWithApproval = {
             enabled: true,
             createdAt: '2024-09-03T20:51:55.733Z',
             updatedAt: '2024-09-13T09:57:11.584Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __v: 1,
           },
           name: 'USDC',
@@ -1427,6 +1569,8 @@ export const DummyQuotesWithApproval = {
           enabled: true,
           createdAt: '2024-09-03T20:52:11.579Z',
           updatedAt: '2024-10-08T21:23:55.197Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __v: 0,
           active: true,
           icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -1434,12 +1578,16 @@ export const DummyQuotesWithApproval = {
         destChainId: 10,
         destTokenAmount: '10900626',
         destAsset: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _id: '66d776fd76523303f628520c',
           id: '10_0x0b2c639c533813f4aa9d7837caf62653d097ff85',
           symbol: 'USDC',
           address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
           chainId: 10,
           chain: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _id: '66d776eb0befbcf39c0a01d5',
             id: '10',
             chainId: '10',
@@ -1504,6 +1652,8 @@ export const DummyQuotesWithApproval = {
             enabled: true,
             createdAt: '2024-09-03T20:51:55.745Z',
             updatedAt: '2024-09-13T09:51:30.869Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __v: 1,
           },
           name: 'USDC',
@@ -1520,6 +1670,8 @@ export const DummyQuotesWithApproval = {
           enabled: true,
           createdAt: '2024-09-03T20:52:13.858Z',
           updatedAt: '2024-10-08T21:23:55.474Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __v: 0,
           active: true,
           icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -1528,12 +1680,16 @@ export const DummyQuotesWithApproval = {
           metabridge: {
             amount: '96250',
             asset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495c',
               id: '42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               symbol: 'USDC',
               address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -1604,6 +1760,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -1624,6 +1782,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.579Z',
               updatedAt: '2024-10-08T21:23:55.197Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -1642,12 +1802,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Pancakeswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495c',
               id: '42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               symbol: 'USDC',
               address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -1718,6 +1882,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -1737,17 +1903,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.579Z',
               updatedAt: '2024-10-08T21:23:55.197Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495e',
               id: '42161_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -1818,6 +1990,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -1834,6 +2008,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.583Z',
               updatedAt: '2024-10-08T21:23:55.197Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
@@ -1850,12 +2026,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Axelar',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495e',
               id: '42161_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -1926,6 +2106,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -1942,17 +2124,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.583Z',
               updatedAt: '2024-10-08T21:23:55.197Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f6285210',
               id: '10_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -2020,6 +2208,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -2036,6 +2226,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.860Z',
               updatedAt: '2024-10-08T21:23:55.474Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
@@ -2052,12 +2244,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Uniswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f6285210',
               id: '10_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -2125,6 +2321,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -2141,17 +2339,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.860Z',
               updatedAt: '2024-10-08T21:23:55.474Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520a',
               id: '10_0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               symbol: 'USDC.e',
               address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -2219,6 +2423,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC.e',
@@ -2233,6 +2439,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.857Z',
               updatedAt: '2024-10-08T21:23:55.474Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               subGraphOnly: false,
               active: true,
@@ -2250,12 +2458,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Uniswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520a',
               id: '10_0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               symbol: 'USDC.e',
               address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -2323,6 +2535,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC.e',
@@ -2337,18 +2551,24 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.857Z',
               updatedAt: '2024-10-08T21:23:55.474Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               subGraphOnly: false,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520c',
               id: '10_0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               symbol: 'USDC',
               address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -2416,6 +2636,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -2431,6 +2653,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.858Z',
               updatedAt: '2024-10-08T21:23:55.474Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -2461,6 +2685,40 @@ export const DummyQuotesWithApproval = {
   ],
   OP_11_USDC_TO_ARB: [
     {
+      sentAmount: {
+        amount: '1.1000000',
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
       quote: {
         requestId: '01fa78fd-ed49-42b3-ab0e-94c7108feea9',
         srcChainId: 10,
@@ -2884,12 +3142,16 @@ export const DummyQuotesWithApproval = {
         srcChainId: 10,
         srcTokenAmount: '11000000',
         srcAsset: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _id: '66d776fd76523303f628520c',
           id: '10_0x0b2c639c533813f4aa9d7837caf62653d097ff85',
           symbol: 'USDC',
           address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
           chainId: 10,
           chain: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _id: '66d776eb0befbcf39c0a01d5',
             id: '10',
             chainId: '10',
@@ -2954,6 +3216,8 @@ export const DummyQuotesWithApproval = {
             enabled: true,
             createdAt: '2024-09-03T20:51:55.745Z',
             updatedAt: '2024-09-13T09:51:30.869Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __v: 1,
           },
           name: 'USDC',
@@ -2970,6 +3234,8 @@ export const DummyQuotesWithApproval = {
           enabled: true,
           createdAt: '2024-09-03T20:52:13.858Z',
           updatedAt: '2024-10-08T21:24:40.381Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __v: 0,
           active: true,
           icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -2977,12 +3243,16 @@ export const DummyQuotesWithApproval = {
         destChainId: 42161,
         destTokenAmount: '10996548',
         destAsset: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _id: '66d776fb76523303f628495c',
           id: '42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           symbol: 'USDC',
           address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           chainId: 42161,
           chain: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _id: '66d776eb0befbcf39c0a01d1',
             id: '42161',
             chainId: '42161',
@@ -3050,6 +3320,8 @@ export const DummyQuotesWithApproval = {
             enabled: true,
             createdAt: '2024-09-03T20:51:55.733Z',
             updatedAt: '2024-09-13T09:57:11.584Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __v: 1,
           },
           name: 'USDC',
@@ -3070,6 +3342,8 @@ export const DummyQuotesWithApproval = {
           enabled: true,
           createdAt: '2024-09-03T20:52:11.579Z',
           updatedAt: '2024-10-08T21:24:40.127Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           __v: 0,
           active: true,
           icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -3078,12 +3352,16 @@ export const DummyQuotesWithApproval = {
           metabridge: {
             amount: '0',
             asset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520c',
               id: '10_0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               symbol: 'USDC',
               address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3151,6 +3429,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -3167,6 +3447,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.858Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
@@ -3185,12 +3467,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Uniswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520c',
               id: '10_0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               symbol: 'USDC',
               address: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3258,6 +3544,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -3273,17 +3561,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.858Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520a',
               id: '10_0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               symbol: 'USDC.e',
               address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3351,6 +3645,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC.e',
@@ -3365,6 +3661,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.857Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               subGraphOnly: false,
               active: true,
@@ -3382,12 +3680,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Uniswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f628520a',
               id: '10_0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               symbol: 'USDC.e',
               address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3455,6 +3757,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC.e',
@@ -3469,18 +3773,24 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.857Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               subGraphOnly: false,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f6285210',
               id: '10_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3548,6 +3858,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -3564,6 +3876,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.860Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
@@ -3580,12 +3894,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Axelar',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fd76523303f6285210',
               id: '10_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 10,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d5',
                 id: '10',
                 chainId: '10',
@@ -3653,6 +3971,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.745Z',
                 updatedAt: '2024-09-13T09:51:30.869Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -3669,17 +3989,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:13.860Z',
               updatedAt: '2024-10-08T21:24:40.381Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495e',
               id: '42161_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -3750,6 +4076,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -3766,6 +4094,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.583Z',
               updatedAt: '2024-10-08T21:24:40.127Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
@@ -3782,12 +4112,16 @@ export const DummyQuotesWithApproval = {
               displayName: 'Pancakeswap V3',
             },
             srcAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495e',
               id: '42161_0xeb466342c4d449bc9f53a865d5cb90586f405215',
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -3858,6 +4192,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: ' USDC (Axelar)',
@@ -3874,17 +4210,23 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.583Z',
               updatedAt: '2024-10-08T21:24:40.127Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/axelarnetwork/axelar-configs/main/images/tokens/usdc.svg',
             },
             destAsset: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               _id: '66d776fb76523303f628495c',
               id: '42161_0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               symbol: 'USDC',
               address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
               chainId: 42161,
               chain: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 _id: '66d776eb0befbcf39c0a01d1',
                 id: '42161',
                 chainId: '42161',
@@ -3955,6 +4297,8 @@ export const DummyQuotesWithApproval = {
                 enabled: true,
                 createdAt: '2024-09-03T20:51:55.733Z',
                 updatedAt: '2024-09-13T09:57:11.584Z',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 __v: 1,
               },
               name: 'USDC',
@@ -3974,6 +4318,8 @@ export const DummyQuotesWithApproval = {
               enabled: true,
               createdAt: '2024-09-03T20:52:11.579Z',
               updatedAt: '2024-10-08T21:24:40.127Z',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               __v: 0,
               active: true,
               icon: 'https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/usdc.svg',

@@ -14,6 +14,8 @@ export enum TextFieldSearchSize {
  * Makes all props optional so that if a prop object is used not ALL required props need to be passed
  * TODO: Move to appropriate place in app as this will be highly reusable
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type MakePropsOptional<T> = {
   [K in keyof T]?: T[K];
 };
@@ -62,9 +64,13 @@ export interface TextFieldSearchStyleUtilityProps
   size?: TextFieldSearchSize;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextFieldSearchProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextFieldSearchStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextFieldSearchComponent = <C extends React.ElementType = 'input'>(
   props: TextFieldSearchProps<C>,
 ) => React.ReactElement | null;

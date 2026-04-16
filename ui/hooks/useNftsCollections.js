@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
-import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
+import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import { getSelectedInternalAccount } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { usePrevious } from './usePrevious';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
+import { getNftImage } from '../helpers/utils/nfts';
 import { useI18nContext } from './useI18nContext';
 
 export function useNftsCollections() {
@@ -12,72 +11,70 @@ export function useNftsCollections() {
   const previouslyOwnedText = t('nftsPreviouslyOwned');
   const unknownCollectionText = t('unknownCollection');
 
-  const [collections, setCollections] = useState({});
-  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
-    collectionName: previouslyOwnedText,
-    nfts: [],
-  });
-  const nfts = useSelector(getNfts);
-  const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
+  const allUserNfts = useSelector(getAllNfts);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const chainId = useSelector(getCurrentChainId);
   const nftContracts = useSelector(getNftContracts);
-  const prevNfts = usePrevious(nfts);
-  const prevChainId = usePrevious(chainId);
-  const prevSelectedAddress = usePrevious(selectedAddress);
 
-  useEffect(() => {
-    const getCollections = () => {
-      setNftsLoading(true);
-      if (selectedAddress === undefined || chainId === undefined) {
-        return;
-      }
-      const newCollections = {};
-      const newPreviouslyOwnedCollections = {
-        collectionName: previouslyOwnedText,
-        nfts: [],
+  const { collections, previouslyOwnedCollection } = useMemo(() => {
+    if (selectedAddress === undefined) {
+      return {
+        collections: {},
+        previouslyOwnedCollection: {
+          collectionName: previouslyOwnedText,
+          nfts: [],
+        },
       };
+    }
 
-      nfts.forEach((nft) => {
-        if (nft?.isCurrentlyOwned === false) {
-          newPreviouslyOwnedCollections.nfts.push(nft);
-        } else if (newCollections[nft.address]) {
-          newCollections[nft.address].nfts.push(nft);
-        } else {
-          const collectionContract = nftContracts.find(
-            ({ address }) => address === nft.address,
-          );
-          newCollections[nft.address] = {
-            collectionName: collectionContract?.name || unknownCollectionText,
-            collectionImage: collectionContract?.logo || nft.image,
-            nfts: [nft],
-          };
+    const nftsFromEnabledNetworks = {};
+    Object.entries(allUserNfts ?? {}).forEach(
+      ([networkChainId, networkNfts]) => {
+        if (
+          enabledNetworksByNamespace?.[networkChainId] &&
+          Array.isArray(networkNfts)
+        ) {
+          nftsFromEnabledNetworks[networkChainId] = networkNfts;
         }
-      });
-      setCollections(newCollections);
-      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
-      setNftsLoading(false);
+      },
+    );
+
+    const allNfts = Object.values(nftsFromEnabledNetworks).flat();
+    const newCollections = {};
+    const newPreviouslyOwned = {
+      collectionName: previouslyOwnedText,
+      nfts: [],
     };
 
-    if (
-      !isEqual(prevNfts, nfts) ||
-      !isEqual(prevSelectedAddress, selectedAddress) ||
-      !isEqual(prevChainId, chainId)
-    ) {
-      getCollections();
-    }
+    allNfts.forEach((nft) => {
+      if (nft?.isCurrentlyOwned === false) {
+        newPreviouslyOwned.nfts.push(nft);
+      } else if (newCollections[nft.address]) {
+        newCollections[nft.address].nfts.push(nft);
+      } else {
+        const collectionContract = nftContracts.find(
+          ({ address }) => address === nft.address,
+        );
+        newCollections[nft.address] = {
+          collectionName: collectionContract?.name || unknownCollectionText,
+          collectionImage: collectionContract?.logo || getNftImage(nft.image),
+          nfts: [nft],
+        };
+      }
+    });
+
+    return {
+      collections: newCollections,
+      previouslyOwnedCollection: newPreviouslyOwned,
+    };
   }, [
-    nfts,
-    prevNfts,
-    nftContracts,
-    setNftsLoading,
-    chainId,
-    prevChainId,
+    allUserNfts,
+    enabledNetworksByNamespace,
     selectedAddress,
-    prevSelectedAddress,
+    nftContracts,
     previouslyOwnedText,
     unknownCollectionText,
   ]);
 
-  return { nftsLoading, collections, previouslyOwnedCollection };
+  return { collections, previouslyOwnedCollection };
 }

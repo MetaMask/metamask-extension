@@ -1,7 +1,7 @@
-import { createSelector } from 'reselect';
 import { Action } from 'redux'; // Import types for actions
+import { createSelector } from 'reselect';
 import * as actionConstants from '../../store/actionConstants';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { getNormalizedLocale } from '../../../shared/constants/locales';
 
 /**
  * Type for the locale messages part of the state
@@ -72,19 +72,17 @@ type AppState = {
  * @returns The user's selected locale
  */
 export const getCurrentLocale = (state: AppState): string | undefined =>
-  state.localeMessages.currentLocale;
+  state.localeMessages?.currentLocale;
 
 /**
- * This selector returns a BCP 47 Language Tag for use with the Intl API.
+ * Selector to get the locale formatted for Intl API usage.
+ * Converts locale codes from underscore format (en_US) to hyphen format (en-US).
  *
- * @returns The user's selected locale in BCP 47 format
+ * @returns The canonicalized locale string for Intl API.
  */
 export const getIntlLocale = createSelector(
   getCurrentLocale,
-  (locale): string =>
-    Intl.getCanonicalLocales(
-      locale ? locale.replace(/_/gu, '-') : FALLBACK_LOCALE,
-    )[0],
+  (locale): string => getNormalizedLocale(locale),
 );
 
 /**

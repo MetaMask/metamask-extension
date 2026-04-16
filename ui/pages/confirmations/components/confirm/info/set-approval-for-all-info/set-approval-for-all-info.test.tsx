@@ -1,4 +1,3 @@
-import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -16,6 +15,10 @@ jest.mock('../../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+}));
+
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
 }));
 
 jest.mock(
@@ -39,10 +42,6 @@ describe('<SetApprovalForAllInfo />', () => {
       <SetApprovalForAllInfo />,
       mockStore,
     );
-
-    await waitFor(() => {
-      expect(screen.getByText('Data')).toBeInTheDocument();
-    });
 
     expect(container).toMatchSnapshot();
   });

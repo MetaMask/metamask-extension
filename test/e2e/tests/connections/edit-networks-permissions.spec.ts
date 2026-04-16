@@ -1,0 +1,54 @@
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import Homepage from '../../page-objects/pages/home/homepage';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
+import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+
+describe('Edit Networks Permissions', function () {
+  it('should be able to edit networks', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        await connectAccountToTestDapp(driver, {
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await new Homepage(driver).checkPageIsLoaded();
+
+        // Open permission page for dapp
+        await openPermissionsPageFlow(driver);
+        const permissionListPage = new PermissionListPage(driver);
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = new SitePermissionPage(driver);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+
+        // Disconnect Mainnet
+        await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
+
+        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
+        await sitePermissionPage.checkConnectedNetworksNumber(10);
+      },
+    );
+  });
+});

@@ -3,20 +3,22 @@ import {
   EthMethod,
   BtcMethod,
   BtcAccountType,
-  InternalAccount,
   isEvmAccountType,
+  EthScope,
+  SolAccountType,
+  SolMethod,
+  TrxAccountType,
+  TrxMethod,
 } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import { Json } from '@metamask/utils';
-import {
-  DraftTransaction,
-  draftTransactionInitialState,
-  initialState,
-} from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
+import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
 export type MockState = typeof mockState;
 
@@ -129,66 +131,21 @@ export const createGasFeeEstimatesForFeeMarket = () => {
   };
 };
 
-export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
-  ...initialState,
-  currentTransactionUUID: 'test-uuid',
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-    },
-  },
-};
-
-export const getInitialSendStateWithExistingTxState = (
-  draftTxState: DraftTransaction & { test: string },
-) => ({
-  ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-      ...draftTxState,
-      amount: {
-        ...draftTransactionInitialState.amount,
-        ...draftTxState.amount,
-      },
-      sendAsset: {
-        ...draftTransactionInitialState.sendAsset,
-        ...draftTxState.sendAsset,
-      },
-      gas: {
-        ...draftTransactionInitialState.gas,
-        ...draftTxState.gas,
-      },
-      isSwapQuoteLoading: false,
-      quotes: draftTxState.quotes ?? null,
-      receiveAsset: {
-        ...draftTransactionInitialState.receiveAsset,
-        ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
-      },
-      swapQuotesError: null,
-      swapQuotesLatestRequestTimestamp: null,
-      timeToFetchQuotes: null,
-      recipient: {
-        ...draftTransactionInitialState.recipient,
-        ...draftTxState.recipient,
-      },
-      history: draftTxState.history ?? [],
-      userInputHexData: draftTxState.userInputHexData ?? null,
-      // Use this key if you want to console.log inside the send.js file.
-      test: draftTxState.test ?? 'yo',
-    },
-  },
-});
-
 export function createMockInternalAccount({
+  id,
   name = 'Account 1',
   address = MOCK_DEFAULT_ADDRESS,
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
-  snapOptions = undefined,
+  snapOptions = {
+    enabled: true,
+    id: 'npm:snap-id',
+    name: 'snap-name',
+  },
   options = undefined,
 }: {
+  id?: string;
   name?: string;
   address?: string;
   type?: string;
@@ -201,10 +158,12 @@ export function createMockInternalAccount({
   };
   options?: Record<string, Json>;
 } = {}) {
+  let scopes;
   let methods;
 
   switch (type) {
     case EthAccountType.Eoa:
+      scopes = [EthScope.Eoa];
       methods = [
         EthMethod.PersonalSign,
         EthMethod.SignTransaction,
@@ -214,14 +173,42 @@ export function createMockInternalAccount({
       ];
       break;
     case EthAccountType.Erc4337:
+      // NOTE: This is not really valid here, cause a SC account might not be deployed on
+      // every EVM chains, but for testing purposes we enable everything.
+      scopes = [EthScope.Testnet];
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
         EthMethod.SignUserOperation,
       ];
       break;
-    case BtcAccountType.P2wpkh:
-      methods = [BtcMethod.SendBitcoin];
+    case BtcAccountType.P2wpkh: {
+      // If no address is given, we fallback to testnet
+      const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
+
+      scopes = [
+        isMainnet
+          ? MultichainNetworks.BITCOIN
+          : MultichainNetworks.BITCOIN_TESTNET,
+      ];
+      methods = Object.values(BtcMethod);
+      break;
+    }
+    case SolAccountType.DataAccount:
+      scopes = [
+        MultichainNetworks.SOLANA,
+        MultichainNetworks.SOLANA_TESTNET,
+        MultichainNetworks.SOLANA_DEVNET,
+      ];
+      methods = [SolMethod.SendAndConfirmTransaction];
+      break;
+    case TrxAccountType.Eoa:
+      scopes = [
+        MultichainNetworks.TRON,
+        MultichainNetworks.TRON_SHASTA,
+        MultichainNetworks.TRON_NILE,
+      ];
+      methods = [TrxMethod.SignMessageV2];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
@@ -229,17 +216,18 @@ export function createMockInternalAccount({
 
   return {
     address,
-    id: uuidv4(),
+    id: id ?? uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
       importTime: Date.now(),
       keyring: {
         type: keyringType,
       },
-      snap: snapOptions,
+      snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },
     options: options ?? {},
+    scopes,
     methods,
     type,
   };
@@ -287,6 +275,7 @@ export function overrideAccountsFromMockState<
     newKeyrings.push({
       type: keyring.type,
       accounts: newAccountsForKeyring,
+      metadata: keyring.metadata,
     });
   }
 

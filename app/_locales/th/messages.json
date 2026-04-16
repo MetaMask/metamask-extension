@@ -111,9 +111,6 @@
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
-  "expandView": {
-    "message": "ขยายมุมมอง"
-  },
   "failed": {
     "message": "ล้มเหลว"
   },
@@ -133,9 +130,6 @@
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
-  "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
-  },
   "general": {
     "message": "ทั่วไป"
   },
@@ -152,9 +146,6 @@
   "import": {
     "message": "นำเข้า",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "นำเข้าบัญชี"
   },
   "importAccountMsg": {
     "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
@@ -194,9 +185,6 @@
   "loading": {
     "message": "กำลังโหลด..."
   },
-  "loadingTokens": {
-    "message": "กำลังโหลดโทเค็น..."
-  },
   "lock": {
     "message": "ออกจากระบบ"
   },
@@ -212,9 +200,6 @@
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
   },
   "networks": {
     "message": "เครือข่าย"
@@ -234,9 +219,6 @@
   },
   "next": {
     "message": "ถัดไป"
-  },
-  "noTransactions": {
-    "message": "ยังไม่มีรายการธุรกรรม"
   },
   "on": {
     "message": "เปิด"
@@ -307,9 +289,6 @@
   "settings": {
     "message": "การตั้งค่า"
   },
-  "sigRequest": {
-    "message": "ขอลายเซ็น"
-  },
   "sign": {
     "message": "เซ็นชื่อ"
   },
@@ -327,9 +306,6 @@
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
-  },
-  "switchNetworks": {
-    "message": "เปลี่ยนเครือข่าย"
   },
   "symbol": {
     "message": "เครื่องหมาย"
@@ -352,17 +328,8 @@
   "total": {
     "message": "รวม"
   },
-  "transactionCancelSuccess": {
-    "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
-  },
-  "transactionDropped": {
-    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
-  },
   "unknown": {
     "message": "ไม่รู้จัก"
-  },
-  "unknownNetwork": {
-    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
   },
   "unlock": {
     "message": "ปลดล็อก"
@@ -375,8 +342,5 @@
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
-  },
-  "youSign": {
-    "message": "คุณกำลังเซ็นชื่อ"
   }
 }

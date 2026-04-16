@@ -1,15 +1,16 @@
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 
 type AppHeaderLockedContentProps = {
-  currentNetwork: MultichainNetwork;
+  currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
 };
 
@@ -18,9 +19,10 @@ export const AppHeaderLockedContent = ({
   networkOpenCallback,
 }: AppHeaderLockedContentProps) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   return (
     <>
@@ -29,11 +31,11 @@ export const AppHeaderLockedContent = ({
           avatarNetworkProps={{
             backgroundColor: testNetworkBackgroundColor,
             role: 'img',
-            name: currentNetwork?.nickname ?? '',
+            name: currentNetwork.name,
           }}
-          aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-          label={currentNetwork?.nickname ?? ''}
-          src={currentNetwork?.network?.rpcPrefs?.imageUrl}
+          aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+          label={currentNetwork.name}
+          src={networkIconSrc}
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
             e.preventDefault();
@@ -46,7 +48,7 @@ export const AppHeaderLockedContent = ({
       <MetafoxLogo
         unsetIconHeight
         onClick={async () => {
-          history.push(DEFAULT_ROUTE);
+          navigate(DEFAULT_ROUTE);
         }}
       />
     </>

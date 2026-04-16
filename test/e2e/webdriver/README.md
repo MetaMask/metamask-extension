@@ -408,6 +408,27 @@ Each of these actions requires first [locating](#locators) the web element you w
 > ```
 
 </details>
+<details><summary><b>findScrollToAndClickElement</b></summary>
+
+> **`findScrollToAndClickElement`** function finds the element, scrolls the page until the element is in view, and clicks it.
+>
+> [source](https://github.com/MetaMask/metamask-extension/blob/4add40d41d9290941fb91ad451959b4ed0338626/test/e2e/webdriver/driver.js#L805)
+>
+> #### Arguments
+>
+> @param {string | object} rawLocator - Element locator<br>
+>
+> #### Returns
+>
+> @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
+>
+> **Example**
+>
+> ```jsx
+> await driver.findScrollToAndClickElement('#sendGetFileTextButton');
+> ```
+
+</details>
 <details><summary><b>press</b></summary>
 
 > **`press`** function enables the simulation of keyboard actions on a specified web element. This can include typing characters into a text field, activating keyboard shortcuts, or any other keyboard-related interactions within a web page.
@@ -459,7 +480,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > ```jsx
 > const pageTitle = await driver.findElement('.unlock-page__title');
-> assert.equal(await pageTitle.getText(), 'Welcome back!');
+> assert.equal(await pageTitle.getText(), 'Welcome back');
 > ```
 >
 > >
@@ -579,15 +600,20 @@ This organization helps provide a clear structure for understanding the various 
 > The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
 >
 > #### Returns
+>
 > @returns `{Promise<Array<WebElement>>}` Promise resolving when all elements meet the state or timeout occurs.<br>
 > @throws `{Error}` Will throw an error if any of the elements do not reach the specified state within the timeout period.
 
 > **Example** wait for multiple elements to load
 >
 > ```jsx
-> await driver.waitForMultipleSelectors(['.selector1', '.selector2', '.selector3']);
+> await driver.waitForMultipleSelectors([
+>   '.selector1',
+>   '.selector2',
+>   '.selector3',
+> ]);
 > ```
->
+
 </details>
 <details><summary><b>waitForNonEmptyElement</b></summary>
 
@@ -913,6 +939,8 @@ Navigation refers to the process of moving through web pages within a browser se
 > await driver.navigate(PAGES.HOME);
 > ```
 >
+> Note: In Firefox, this will automatically use `PAGES.HOME` since Firefox doesn't support sidepanel.
+>
 > **Example - navigate to the background page**
 >
 > ```jsx
@@ -1047,32 +1075,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 
 </details>
 
-<details><summary><b>switchToHandleAndWaitForTitleToBe</b></summary>
-
-> **`switchToHandleAndWaitForTitleToBe`** switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
->
-> [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L589)
->
-> #### Arguments
->
-> @param {int} handleId - unique ID for the tab whose title is needed.
-> @param {string} expectedTitle - the title we are expecting.
->
-> #### Returns
->
-> @returns nothing on success.
->
-> **Example**
->
-> ```jsx
-> const fullScreenWindowTitle = await driver.switchToHandleAndWaitForTitleToBe(
->   windowHandles[0],
->   WINDOW_TITLES.Dialog,
-> );
-> ```
-
-</details>
-
 ### Switching windows or tabs
 
 <details><summary><b>switchToWindow</b></summary>
@@ -1202,23 +1204,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 > );
 > await driver.closeWindowHandle(serviceWorkerTab);
 > ```
-
-</details>
-
-<details><summary><b>closeAllWindowHandlesExcept</b></summary>
-
-> **`closeAllWindowHandlesExcept`** function close all browser windows or tabs except for those specified in a list of exceptions.
->
-> [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L689)
->
-> #### Arguments
->
-> @param {Array<string>} exceptions - list of window handle exceptions<br>
-> @param {Array} [windowHandles] - full list of window handles
->
-> #### Returns
->
-> @returns `{Promise<void>}`- promise resolving after closing the specified window
 
 </details>
 

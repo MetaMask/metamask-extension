@@ -1,16 +1,14 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { shortenAddress } from '../../../helpers/utils/util';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { ConnectAccountsModal } from './connect-accounts-modal';
 
@@ -43,10 +41,18 @@ const render = (props = defaultProps) => {
         {
           type: 'HD Key Tree',
           accounts: [mockAccount.address],
+          metadata: {
+            id: 'mock-keyring-id-1',
+            name: '',
+          },
         },
         {
           type: 'Snap Keyring',
           accounts: [mockBtcAccount.address],
+          metadata: {
+            id: 'mock-keyring-id-2',
+            name: '',
+          },
         },
       ],
       accounts: {

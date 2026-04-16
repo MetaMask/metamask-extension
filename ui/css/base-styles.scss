@@ -4,73 +4,41 @@
   box-sizing: border-box;
 }
 
+:root {
+  --width-sm: 576px;
+  --width-max: 798px;
+  --width-max-sidepanel: 490px;
+  --header-height: 68px;
+
+  color-scheme: dark light;
+  color: light-dark(var(--brand-colors-grey-grey1000), var(--brand-colors-grey-grey050));
+  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-grey-grey1000));
+}
+
 html,
 body {
-  color: var(--color-text-default);
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   font-size: 16px;
   overflow: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-html {
-  min-height: 500px;
-
-  @include design-system.screen-sm-max {
-    &:not([data-theme]) {
-      background-color: var(--color-background-default);
-    }
-  }
-
-  /*
-    Until we get the user's preference from React state,
-    assume the user is in dark mode, because the default
-    theme is system preference
-  */
-  @media (prefers-color-scheme: dark) {
-    &:not([data-theme]) {
-      color: var(--brand-colors-white);
-      background-color: var(--brand-colors-grey-grey900);
-    }
-
-    @include design-system.screen-sm-max {
-      &:not([data-theme]) {
-        background-color: var(--brand-colors-grey-grey800);
-      }
-    }
-  }
-}
-
-/*
-  This error class is used in the following files still:
-  /ui/pages/create-account/import-account/json.js
-  /ui/pages/create-account/import-account/private-key.js
-*/
-.error {
-  color: var(--color-error-default);
-  margin-top: 3px;
-  margin-bottom: 9px;
-  overflow-wrap: anywhere;
+html[data-theme] {
+  color: var(--color-text-default);
+  background-color: var(--color-background-alternative);
 }
 
 /* stylelint-disable */
-#app-content {
+#app-content, #critical-error-content {
   overflow-x: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  html[data-theme] & {
-    background: var(--color-background-alternative);
-  }
-
-  @include design-system.screen-sm-max {
-    html[data-theme] & {
-      background-color: var(--color-background-default);
-    }
-  }
 }
 /* stylelint-enable */
 
@@ -83,48 +51,30 @@ a:hover {
   color: var(--color-primary-alternative);
 }
 
-.input-label {
-  padding-bottom: 10px;
-  font-weight: 400;
-  display: inline-block;
-}
-
-input.form-control {
-  padding-left: 10px;
-  font-size: 14px;
-  height: 40px;
-  border: 1px solid var(--color-border-default);
-  color: 1px solid var(--color-text-default);
-  background: transparent;
-  border-radius: 3px;
-  width: 100%;
-
-  &::-webkit-input-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &::-moz-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &:-ms-input-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &:-moz-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &--error {
-    border: 1px solid var(--color-error-default);
-  }
-}
-
 /** Default Typography on base elements **/
 * {
   font-family: design-system.$font-family;
+}
+
+/** Global Scrollbar Styles **/
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-icon-muted) transparent;
+}
+
+/* Webkit: Chrome, Brave, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background: var(--color-icon-muted);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }

@@ -1,11 +1,14 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   EncryptionPublicKeyManager,
   AbstractMessage,
   OriginalRequest,
+  EncryptionPublicKeyManagerMessenger,
 } from '@metamask/message-manager';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import EncryptionPublicKeyController, {
+import {
+  EncryptionPublicKeyController,
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
 } from './encryption-public-key';
@@ -34,20 +37,7 @@ const messageMock = {
   status: 'unapproved',
   type: 'testType',
   rawSig: undefined,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any as AbstractMessage;
-
-const coreMessageMock = {
-  ...messageMock,
-  messageParams: messageParamsMock,
-};
-
-const stateMessageMock = {
-  ...messageMock,
-  msgParams: addressMock,
-  origin: messageParamsMock.origin,
-};
+} as unknown as AbstractMessage;
 
 const requestMock = {
   origin: 'http://test2.com',
@@ -56,13 +46,20 @@ const requestMock = {
 const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
+    registerMethodActionHandlers: jest.fn(),
     publish: jest.fn(),
+    subscribe: jest.fn(),
     call: jest.fn(),
     registerInitialEventPayload: jest.fn(),
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>;
 
+const createManagerMessengerMock = () =>
+  ({
+    subscribe: jest.fn(),
+  }) as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>;
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -76,9 +73,7 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as unknown as jest.Mocked<T>;
 
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;
@@ -90,6 +85,7 @@ describe('EncryptionPublicKeyController', () => {
   const encryptionPublicKeyManagerMock =
     createEncryptionPublicKeyManagerMock<EncryptionPublicKeyManager>();
   const messengerMock = createMessengerMock();
+  const managerMessengerMock = createManagerMessengerMock();
   const getEncryptionPublicKeyMock = jest.fn();
   const getAccountKeyringTypeMock = jest.fn();
   const getStateMock = jest.fn();
@@ -103,21 +99,28 @@ describe('EncryptionPublicKeyController', () => {
     );
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getEncryptionPublicKey: getEncryptionPublicKeyMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getAccountKeyringType: getAccountKeyringTypeMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
+      manager: new EncryptionPublicKeyManager({
+        messenger: managerMessengerMock,
+      }),
     } as EncryptionPublicKeyControllerOptions);
   });
 
@@ -137,7 +140,8 @@ describe('EncryptionPublicKeyController', () => {
       encryptionPublicKeyController.update(() => ({
         unapprovedEncryptionPublicKeyMsgs: {
           [messageIdMock]: messageMock,
-          // TODO: Replace `any` with type
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         unapprovedEncryptionPublicKeyMsgCount: 1,
@@ -159,14 +163,14 @@ describe('EncryptionPublicKeyController', () => {
         [messageIdMock2]: messageMock,
       };
       encryptionPublicKeyManagerMock.getUnapprovedMessages.mockReturnValueOnce(
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages as any,
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       encryptionPublicKeyController.update(() => ({
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unapprovedEncryptionPublicKeyMsgs: messages as any,
       }));
@@ -195,22 +199,6 @@ describe('EncryptionPublicKeyController', () => {
           action: 'Encryption public key Request',
         },
       });
-    });
-  });
-
-  describe('clearUnapproved', () => {
-    it('resets state in all message managers', () => {
-      encryptionPublicKeyController.clearUnapproved();
-
-      const defaultState = {
-        unapprovedMessages: {},
-        unapprovedMessagesCount: 0,
-      };
-
-      expect(encryptionPublicKeyManagerMock.update).toHaveBeenCalledTimes(1);
-      expect(encryptionPublicKeyManagerMock.update).toHaveBeenCalledWith(
-        defaultState,
-      );
     });
   });
 
@@ -375,55 +363,55 @@ describe('EncryptionPublicKeyController', () => {
     });
   });
 
-  describe('message manager events', () => {
-    it('bubbles update badge event from EncryptionPublicKeyManager', () => {
-      const mockListener = jest.fn();
-
-      encryptionPublicKeyController.hub.on('updateBadge', mockListener);
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (encryptionPublicKeyManagerMock.hub.on as any).mock.calls[0][1]();
-
-      expect(mockListener).toHaveBeenCalledTimes(1);
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
     });
 
-    it('requires approval on unapproved message event from EncryptionPublicKeyManager', () => {
-      messengerMock.call.mockResolvedValueOnce({});
-
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (encryptionPublicKeyManagerMock.hub.on as any).mock.calls[1][1](
-        messageParamsMock,
-      );
-
-      expect(messengerMock.call).toHaveBeenCalledTimes(1);
-      expect(messengerMock.call).toHaveBeenCalledWith(
-        'ApprovalController:addRequest',
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
         {
-          id: messageIdMock,
-          origin: messageParamsMock.origin,
-          type: 'eth_getEncryptionPublicKey',
-        },
-        true,
-      );
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
     });
 
-    it('updates state on EncryptionPublicKeyManager state change', async () => {
-      await encryptionPublicKeyManagerMock.subscribe.mock.calls[0][0]({
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        unapprovedMessages: { [messageIdMock]: coreMessageMock as any },
-        unapprovedMessagesCount: 3,
-      });
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
 
-      expect(encryptionPublicKeyController.state).toEqual({
-        unapprovedEncryptionPublicKeyMsgs: {
-          // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          [messageIdMock]: stateMessageMock as any,
-        },
-        unapprovedEncryptionPublicKeyMsgCount: 3,
-      });
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
     });
   });
 });

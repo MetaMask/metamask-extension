@@ -6,7 +6,7 @@ import RemoveSnapAccount from './remove-snap-account';
 
 const store = configureStore(testData);
 
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line import-x/no-anonymous-default-export
 export default {
   title: 'Components/UI/RemoveSnapAccount', // title should follow the folder structure location of the component. Don't use spaces.
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
@@ -14,9 +14,9 @@ export default {
 
 export const DefaultStory = () => (
   <RemoveSnapAccount
-    snapId="npm:@metamask/snap-simple-keyring"
-    snapName="Test name"
-    publicAddress="0x64a845a5b02460acf8a3d84503b0d68d028b4bb4"
+    snapId="npm:@metamask/test-snap-bip44"
+    publicAddress="0xde939393DDe455081fFb3Dfd027E189919F04BD0"
+    onCancel={() => {}}
   />
 );
 

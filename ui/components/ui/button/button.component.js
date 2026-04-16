@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 const CLASSNAME_DEFAULT = 'btn-default';
 const CLASSNAME_PRIMARY = 'btn-primary';
@@ -39,7 +39,7 @@ const Button = ({
   children,
   icon,
   className,
-  rounded = true,
+  rounded = false,
   ...buttonProps
 }) => {
   const doRounding = rounded && type !== 'link' && type !== 'inline';

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
+import { MULTICHAIN_NETWORK_TICKER } from '@metamask/multichain-network-controller';
+import { formatCurrency as deprecatedFormatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
   getMultichainIsEvm,
@@ -8,11 +9,17 @@ import {
   getMultichainConversionRate,
 } from '../selectors/multichain';
 
-import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
-import { Numeric } from '../../shared/modules/Numeric';
+import { getValueFromWeiHex } from '../../shared/lib/conversion.utils';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  TEST_NETWORK_TICKER_MAP,
+} from '../../shared/constants/network';
+import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
+import { getCurrencyRates } from '../ducks/metamask/metamask';
+import { useFormatters } from './useFormatters';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.
@@ -29,10 +36,8 @@ export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 function formatEthCurrencyDisplay({
   isNativeCurrency,
   isUserPreferredCurrency,
-  currency,
   nativeCurrency,
   inputValue,
-  conversionRate,
   denomination,
   numberOfDecimals,
 }) {
@@ -46,18 +51,6 @@ function formatEthCurrencyDisplay({
     return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
       ? MIN_AMOUNT_DISPLAY
       : ethDisplayValue;
-  } else if (isUserPreferredCurrency && conversionRate) {
-    return formatCurrency(
-      getValueFromWeiHex({
-        value: inputValue,
-        fromCurrency: nativeCurrency,
-        toCurrency: currency,
-        conversionRate,
-        numberOfDecimals: numberOfDecimals || 2,
-        toDenomination: denomination,
-      }),
-      currency,
-    );
   }
   return null;
 }
@@ -73,7 +66,7 @@ function formatNonEvmAssetCurrencyDisplay({
   conversionRate,
 }) {
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
-    // NOTE: We use the value coming from the BalancesController here (and thus, the non-EVM
+    // NOTE: We use the value coming from the MultichainBalancesController here (and thus, the non-EVM
     // account Snap).
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
@@ -90,7 +83,7 @@ function formatNonEvmAssetCurrencyDisplay({
         false,
         false,
       ) ?? '0'; // if the conversion fails, return 0
-    return formatCurrency(amount, currency);
+    return deprecatedFormatCurrency(amount, currency);
   }
   return null;
 }
@@ -105,6 +98,7 @@ function formatNonEvmAssetCurrencyDisplay({
  * @property {string} [denomination] - Denomination (wei, gwei) to convert to for display
  * @property {string} [currency] - Currency type to convert to. Will override nativeCurrency
  * @property {boolean} [hideLabel] – hide the currency label
+ * @property {object} [account] - The account object
  */
 
 /**
@@ -125,6 +119,7 @@ function formatNonEvmAssetCurrencyDisplay({
  *
  * @param {string} inputValue - The value to format for display
  * @param {UseCurrencyOptions} opts - An object for options to format the inputValue
+ * @param {string} chainId - chainId to use
  * @returns {[string, CurrencyDisplayParts]}
  */
 export function useCurrencyDisplay(
@@ -139,7 +134,9 @@ export function useCurrencyDisplay(
     isAggregatedFiatOverviewBalance,
     ...opts
   },
+  chainId = null,
 ) {
+  const { formatCurrency } = useFormatters();
   const isEvm = useMultichainSelector(getMultichainIsEvm, account);
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
@@ -154,24 +151,37 @@ export function useCurrencyDisplay(
     account,
   );
 
+  const currencyRates = useMultichainSelector(getCurrencyRates, account);
   const isUserPreferredCurrency = currency === currentCurrency;
-  const isNativeCurrency = currency === nativeCurrency;
+  const isNativeCurrency =
+    currency === nativeCurrency ||
+    currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+
+  // Check if the transaction's chain is EVM, not just the account
+  const isTransactionOnEvmChain = chainId ? isEvmChainId(chainId) : isEvm;
+
+  // When chainId is provided, use the chain-specific native currency and conversion rate
+  // Fall back to account defaults if the chain is not in the predefined map (custom networks)
+  const chainNativeCurrency =
+    (chainId && CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]) || nativeCurrency;
+  const chainConversionRate =
+    currencyRates?.[chainNativeCurrency]?.conversionRate ?? conversionRate;
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
 
-    if (!isEvm) {
+    if (!isTransactionOnEvmChain && !isAggregatedFiatOverviewBalance) {
       return formatNonEvmAssetCurrencyDisplay({
-        tokenSymbol: nativeCurrency,
+        tokenSymbol: chainNativeCurrency,
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,
         currentCurrency,
-        nativeCurrency,
+        nativeCurrency: chainNativeCurrency,
         inputValue,
-        conversionRate,
+        conversionRate: chainConversionRate,
       });
     }
 
@@ -179,39 +189,54 @@ export function useCurrencyDisplay(
       return formatCurrency(inputValue, currency);
     }
 
+    if (!isNativeCurrency && isUserPreferredCurrency && chainConversionRate) {
+      const valueFromHex = getValueFromWeiHex({
+        value: inputValue,
+        fromCurrency: chainNativeCurrency,
+        toCurrency: currency,
+        conversionRate: chainConversionRate,
+        numberOfDecimals: numberOfDecimals || 2,
+        toDenomination: denomination,
+      });
+      return formatCurrency(valueFromHex, currency);
+    }
+
     return formatEthCurrencyDisplay({
       isNativeCurrency,
       isUserPreferredCurrency,
-      currency,
-      nativeCurrency,
+      nativeCurrency: chainNativeCurrency,
       inputValue,
-      conversionRate,
       denomination,
       numberOfDecimals,
     });
   }, [
     displayValue,
-    isEvm,
+    isTransactionOnEvmChain,
     isNativeCurrency,
     isUserPreferredCurrency,
     currency,
-    nativeCurrency,
+    chainNativeCurrency,
     inputValue,
-    conversionRate,
+    chainConversionRate,
     denomination,
     numberOfDecimals,
     currentCurrency,
     isAggregatedFiatOverviewBalance,
+    formatCurrency,
   ]);
 
   let suffix;
 
-  if (!opts.hideLabel) {
+  // Don't add suffix to fiat currencies
+  const isFiatCurrency = isAggregatedFiatOverviewBalance || !isNativeCurrency;
+
+  if (!opts.hideLabel && !isFiatCurrency) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
-    const currencyTickerSymbol = Object.values(
-      TEST_NETWORK_TICKER_MAP,
-    ).includes(currency)
+    const currencyTickerSymbol = [
+      ...Object.values(TEST_NETWORK_TICKER_MAP),
+      ...Object.values(MULTICHAIN_NETWORK_TICKER),
+    ].includes(currency)
       ? currency
       : currency?.toUpperCase();
 

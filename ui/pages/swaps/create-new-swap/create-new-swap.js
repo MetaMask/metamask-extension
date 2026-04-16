@@ -1,25 +1,29 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
-
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   navigateBackToPrepareSwap,
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwapsDefaultToken } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
   return (
@@ -27,12 +31,15 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
       <button
         onClick={async () => {
           trackEvent({
-            event: 'Make Another Swap',
+            event: MetaMetricsEventName.MakeAnotherSwap,
             category: MetaMetricsEventCategory.Swaps,
             sensitiveProperties: sensitiveTrackingProperties,
+            properties: {
+              hd_entropy_index: hdEntropyIndex,
+            },
           });
-          history.push(DEFAULT_ROUTE); // It cleans up Swaps state.
-          await dispatch(navigateBackToPrepareSwap(history));
+          navigate(DEFAULT_ROUTE); // It cleans up Swaps state.
+          await dispatch(navigateBackToPrepareSwap(navigate));
           dispatch(setSwapsFromToken(defaultSwapsToken));
         }}
       >

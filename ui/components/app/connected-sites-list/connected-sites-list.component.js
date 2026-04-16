@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isSnapId } from '@metamask/snaps-utils';
 import Button from '../../ui/button';
 import { AvatarFavicon, IconSize } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 import { Size } from '../../../helpers/constants/design-system';
-import { isSnapId } from '../../../helpers/utils/snaps';
 import { SnapIcon } from '../snaps/snap-icon';
 
 export default class ConnectedSitesList extends Component {

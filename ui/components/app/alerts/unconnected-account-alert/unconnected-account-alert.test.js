@@ -7,7 +7,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import { tick } from '../../../../../test/lib/timer-helpers';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 
 import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -17,19 +17,6 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
-  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
-
-  const identities = {
-    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Account 1',
-    },
-    '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-      address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-      name: 'Account 2',
-    },
-  };
-
   const accounts = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -55,6 +42,10 @@ describe('Unconnected Account Alert', () => {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
       ],
+      metadata: {
+        id: 'mock-keyring-id',
+        name: '',
+      },
     },
   ];
 
@@ -104,8 +95,6 @@ describe('Unconnected Account Alert', () => {
 
   const mockState = {
     metamask: {
-      selectedAddress,
-      identities,
       internalAccounts,
       accounts,
       accountsByChainId,
@@ -123,15 +112,25 @@ describe('Unconnected Account Alert', () => {
       subjects: {
         'https://test.dapp': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               invoker: 'https://test.dapp',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },

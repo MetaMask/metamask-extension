@@ -4,6 +4,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { FEATURED_RPCS } from '../../../../../shared/constants/network';
 import {
   validateAddEthereumChainParams,
   switchChain,
@@ -18,12 +19,13 @@ const addEthereumChain = {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     requestUserApproval: true,
-    startApprovalFlow: true,
-    endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    setEnabledNetworks: true,
+    getEnabledNetworks: true,
   },
 };
 
@@ -40,17 +42,18 @@ async function addEthereumChainHandler(
     getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
-    startApprovalFlow,
-    endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
   },
 ) {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0], end);
+    validParams = validateAddEthereumChainParams(req.params[0]);
   } catch (error) {
     return end(error);
   }
@@ -79,7 +82,6 @@ async function addEthereumChainHandler(
     );
   }
 
-  let approvalFlowId;
   let updatedNetwork = existingNetwork;
 
   let rpcIndex = existingNetwork?.rpcEndpoints.findIndex(({ url }) =>
@@ -93,14 +95,14 @@ async function addEthereumChainHandler(
     : undefined;
 
   // If there's something to add or update
-  if (
+
+  const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     (firstValidBlockExplorerUrl &&
-      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
-  ) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex);
 
+  if (shouldAddOrUpdateNetwork) {
     try {
       await requestUserApproval({
         origin,
@@ -133,9 +135,6 @@ async function addEthereumChainHandler(
           rpcIndex = clonedNetwork.rpcEndpoints.length - 1;
         }
 
-        // The provided rpc endpoint becomes the default
-        clonedNetwork.defaultRpcEndpointIndex = rpcIndex;
-
         if (firstValidBlockExplorerUrl) {
           // If a block explorer was provided and it doesn't exist, add a new one
           if (blockExplorerIndex === -1) {
@@ -162,6 +161,13 @@ async function addEthereumChainHandler(
         );
       } else {
         // A network for this chain id does not exist, so add a new network
+
+        // If a featured RPC endpoint exists for this chain, include it and keep it as default
+        const featured = FEATURED_RPCS.find((f) => f.chainId === chainId);
+        const featuredEndpoint = featured
+          ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
+          : undefined;
+
         updatedNetwork = await addNetwork({
           blockExplorerUrls: firstValidBlockExplorerUrl
             ? [firstValidBlockExplorerUrl]
@@ -170,10 +176,19 @@ async function addEthereumChainHandler(
             ? 0
             : undefined,
           chainId,
+          // Keep featured (if present) as the first and default endpoint
           defaultRpcEndpointIndex: 0,
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
+            // MetaMask may use a public RPC endpoint from FEATURED_RPCS,
+            // if the URL `firstValidRPCUrl` sent from the client is the same as the one in FEATURED_RPCS,
+            // it will fail validation due to duplication of the same URL.
+            // So we only add the featured endpoint if the URL is different.
+            ...(featuredEndpoint &&
+            !URI.equal(firstValidRPCUrl, featuredEndpoint.url)
+              ? [featuredEndpoint]
+              : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
@@ -183,28 +198,30 @@ async function addEthereumChainHandler(
         });
       }
     } catch (error) {
-      endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
   }
 
-  // If the added or updated network is not the current chain, prompt the user to switch
-  if (chainId !== currentChainIdForDomain) {
-    const { networkClientId } =
-      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  const existingNetworkClientId =
+    existingNetwork?.rpcEndpoints?.[existingNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
 
-    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      endApprovalFlow,
-      getCaveat,
-      requestPermittedChainsPermission,
-      grantPermittedChainsPermissionIncremental,
-    });
-  } else if (approvalFlowId) {
-    endApprovalFlow({ id: approvalFlowId });
-  }
+  const updatedNetworkClientId =
+    updatedNetwork?.rpcEndpoints?.[updatedNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
 
-  res.result = null;
-  return end();
+  // Determines the specific RPC endpoint to use
+  const networkClientId = existingNetworkClientId ?? updatedNetworkClientId;
+
+  return switchChain(res, end, chainId, networkClientId, {
+    isAddFlow: true,
+    autoApprove: shouldAddOrUpdateNetwork,
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
+  });
 }

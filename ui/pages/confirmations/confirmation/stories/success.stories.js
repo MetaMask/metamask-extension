@@ -8,8 +8,8 @@ import { PendingApproval } from './util';
 
 /**
  * A standard success confirmation to be reused across confirmation flows with minimal code.<br/><br/>
- * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.success` method.<br/><br/>
- * The below arguments are properties in the `ApprovalController.success` request.
+ * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.showSuccess` method.<br/><br/>
+ * The below arguments are properties in the `ApprovalController.showSuccess` request.
  */
 export default {
   title: 'Pages/ConfirmationPage/ResultSuccess',
@@ -108,6 +108,7 @@ export const TemplateStory = () => {
                 borderRadius: '10px',
                 boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
               },
+              key: 'snapAccountSuccessMessage',
             },
             children: [
               {
@@ -167,7 +168,7 @@ export const TemplateStory = () => {
         header: [
           {
             name: 'SnapAuthorshipHeader',
-            key: 'snapHeader',
+            key: 'snapAccountSuccessMessage',
             properties: { snapId: 'npm:@test/test-snap' },
           },
         ],
@@ -206,6 +207,7 @@ export const TemplateOnlyStory = () => {
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
+              scopes: ['eip155:0'],
               type: 'eip155:eoa',
               keyring: 'HD Key Tree',
               label: null,

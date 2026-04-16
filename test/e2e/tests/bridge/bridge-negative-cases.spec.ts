@@ -1,0 +1,260 @@
+import { Suite } from 'mocha';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import {
+  enterBridgeQuote,
+  getBridgeNegativeCasesFixtures,
+  getInsufficientFundsFixtures,
+  getQuoteNegativeCasesFixtures,
+} from './bridge-test-utils';
+import {
+  GET_QUOTE_INVALID_RESPONSE,
+  FAILED_SOURCE_TRANSACTION,
+  FAILED_DEST_TRANSACTION,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+} from './constants';
+
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
+
+describe('Bridge functionality', function (this: Suite) {
+  it('should show that more funds are needed to execute the Bridge', async function () {
+    await withFixtures(
+      {
+        ...getInsufficientFundsFixtures(
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote({
+          amount: '24.9950',
+          tokenFrom: 'ETH',
+          tokenTo: 'WETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
+        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await bridgePage.checkMoreETHneededIsDisplayed();
+      },
+    );
+  });
+
+  it('should show message that no trade route is available if getQuote returns error 500', async function () {
+    await withFixtures(
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+      },
+    );
+  });
+
+  it('should show message that no trade route is available if getQuote returns empty array', async function () {
+    await withFixtures(
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: [],
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+      },
+    );
+  });
+
+  it('should show message that no trade route is available if getQuote returns invalid response', async function () {
+    await withFixtures(
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: GET_QUOTE_INVALID_RESPONSE,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+      },
+    );
+  });
+
+  it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
+    await withFixtures(
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'USD',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.submitQuoteAndDismiss();
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkPendingBridgeTransactionActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'pending',
+          '1',
+          'ETH',
+        );
+      },
+    );
+  });
+
+  it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
+    await withFixtures(
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: FAILED_SOURCE_TRANSACTION,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+          { minedTx: 'reverted' },
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.submitQuoteAndDismiss();
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
+      },
+    );
+  });
+
+  it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
+    await withFixtures(
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: FAILED_DEST_TRANSACTION,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+          { minedTx: 'reverted' },
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
+        await homePage.startSwapFlow();
+
+        const bridgePage = await enterBridgeQuote(driver);
+        await bridgePage.submitQuoteAndDismiss();
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
+      },
+    );
+  });
+});

@@ -1,94 +1,220 @@
 import { MockttpServer } from 'mockttp';
-import {
-  buildQuote,
-  reviewQuote,
-  checkActivityTransaction,
-} from '../swaps/shared';
-import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { mockSwapRequests } from './mock-requests-for-swap-test';
+import { login } from '../../page-objects/flows/login.flow';
+import {
+  createDappTransaction,
+  createInternalTransaction,
+} from '../../page-objects/flows/transaction';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
+import { mockGetTxStatus } from '../bridge/bridge-test-utils';
+import { mockSpotPrices } from '../tokens/utils/mocks';
+import {
+  mockSmartTransactionRequests,
+  mockGasIncludedTransactionRequests,
+  mockChooseGasFeeTokenRequests,
+  mockSwapTokensMockApis,
+  mockSentinelNetworks,
+} from './mocks';
 
-export async function withFixturesForSmartTransactions(
+async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
+    ignoredConsoleErrors,
+    expectedBalance = '20 ETH',
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
+    ignoredConsoleErrors?: string[];
+    expectedBalance?: string;
   },
-  test: (args: { driver: Driver }) => Promise<void>,
+  runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .withPreferencesControllerSmartTransactionsOptedIn()
-        .withNetworkControllerOnMainnet()
+      dappOptions: { numberOfTestDapps: 1 },
+      fixtures: new FixtureBuilderV2()
+        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+        .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+        .withEnabledNetworks({
+          eip155: {
+            '0x1': true,
+          },
+        })
         .build(),
       title,
+      localNodeOptions: {
+        hardfork: 'london',
+        chainId: '1',
+      },
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        },
+      },
       testSpecificMock,
-      dapp: true,
+      ignoredConsoleErrors,
     },
     async ({ driver }) => {
-      await unlockWallet(driver);
-      await test({ driver });
+      await login(driver, { expectedBalance });
+      await runTestWithFixtures({ driver });
     },
   );
 }
 
-export const waitForTransactionToComplete = async (
-  driver: Driver,
-  options: { tokenName: string },
-) => {
-  await driver.waitForSelector({
-    css: '[data-testid="swap-smart-transaction-status-header"]',
-    text: 'Privately submitting your Swap',
-  });
-
-  await driver.waitForSelector(
-    {
-      css: '[data-testid="swap-smart-transaction-status-header"]',
-      text: 'Swap complete!',
-    },
-    { timeout: 30000 },
-  );
-
-  await driver.findElement({
-    css: '[data-testid="swap-smart-transaction-status-description"]',
-    text: `${options.tokenName}`,
-  });
-
-  await driver.clickElement({ text: 'Close', tag: 'button' });
-  await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
-};
-
-describe('smart transactions @no-mmi', function () {
-  it('Completes a Swap', async function () {
+describe('Smart Transactions', function () {
+  it('should send transaction using USDC to pay fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapRequests,
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+          await mockChooseGasFeeTokenRequests(mockServer);
+          await mockSentinelNetworks(mockServer);
+        },
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }) => {
-        await buildQuote(driver, {
-          amount: 2,
-          swapTo: 'DAI',
-        });
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'ETH',
-          swapTo: 'DAI',
+        // fill ens address as recipient when user lands on send token screen
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        const homePage = new HomePage(driver);
+        const activityList = new ActivityListPage(driver);
+
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          symbol: 'ETH',
+          amount: '0.01',
         });
 
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
-        await checkActivityTransaction(driver, {
-          index: 0,
-          amount: '2',
-          swapFrom: 'ETH',
-          swapTo: 'DAI',
-        });
+        await transactionConfirmation.selectTokenFee('USDC');
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+
+        await homePage.goToActivityList();
+        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
+      },
+    );
+  });
+
+  it('should Swap using smart transaction', async function () {
+    await withFixturesForSmartTransactions(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+          await mockSmartTransactionRequests(mockServer);
+          await mockSwapTokensMockApis(mockServer);
+          await mockGetTxStatus(mockServer);
+        },
+      },
+      async ({ driver }) => {
+        const homePage = new HomePage(driver);
+        await homePage.checkIfSwapButtonIsClickable();
+        await homePage.startSwapFlow();
+
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await swapPage.enterSwapAmount('2');
+        await swapPage.selectDestinationToken('DAI');
+        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.submitSwap();
+
+        await swapPage.waitForSmartTransactionToComplete();
+        await swapPage.clickViewActivity();
+
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedTxNumberDisplayedInActivity();
+        await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAction({ action: 'Swap ETH to DAI' });
+        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+      },
+    );
+  });
+
+  it('should Swap with gas included fee', async function () {
+    await withFixturesForSmartTransactions(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockGasIncludedTransactionRequests,
+      },
+      async ({ driver }) => {
+        const homePage = new HomePage(driver);
+        await homePage.checkIfSwapButtonIsClickable();
+        await homePage.startSwapFlow();
+
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await swapPage.enterSwapAmount('20');
+        await swapPage.waitForQuote();
+        await swapPage.checkQuoteIsGasIncluded();
+        await swapPage.submitSwap();
+
+        await swapPage.waitForSmartTransactionToComplete();
+        await swapPage.clickViewActivity();
+
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedTxNumberDisplayedInActivity();
+        await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+      },
+    );
+  });
+
+  it('should execute a dApp Transaction', async function () {
+    await withFixturesForSmartTransactions(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSmartTransactionRequests,
+      },
+      async ({ driver }) => {
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.clickFooterConfirmButton();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedTxNumberDisplayedInActivity();
+        await activityList.checkNoFailedTransactions();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
   });

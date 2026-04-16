@@ -26,6 +26,10 @@
       opacity: 1;
     }
 
+    @include design-system.screen-sm-min {
+      max-height: 50px;
+    }
+
     &__selected-indicator {
       width: 4px;
       height: calc(100% - 8px);
@@ -38,10 +42,15 @@
       display: flex;
       align-items: center;
       position: relative;
+      overflow: hidden;
       width: 100%;
 
       &__title {
         @include design-system.H4;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @include design-system.screen-sm-min {
           @include design-system.H6;

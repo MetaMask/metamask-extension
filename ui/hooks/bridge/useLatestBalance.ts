@@ -1,64 +1,33 @@
-import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { getSelectedInternalAccount, SwapsEthToken } from '../../selectors';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
-import { useAsyncResult } from '../useAsyncResult';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
+import { setEvmBalances } from '../../ducks/bridge/actions';
+import { getFromToken } from '../../ducks/bridge/selectors';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
- * Custom hook to fetch and format the latest balance of a given token or native asset.
- *
- * @param token - The token object for which the balance is to be fetched. Can be null.
- * @param chainId - The chain ID to be used for fetching the balance. Optional.
- * @returns An object containing the formatted balance as a string.
+ * This sets the latest balance for the fromToken and the native token on the src chain
  */
-const useLatestBalance = (
-  token: SwapsTokenObject | SwapsEthToken | null,
-  chainId?: Hex,
-) => {
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
+export const useLatestBalance = () => {
+  const dispatch = useDispatch();
+  const fromToken = useSelector(getFromToken);
 
-  const { value: latestBalance } = useAsyncResult<
-    Numeric | undefined
-  >(async () => {
-    if (token?.address && chainId && currentChainId === chainId) {
-      return await calcLatestSrcBalance(
-        global.ethereumProvider,
-        selectedAddress,
-        token.address,
-        chainId,
-      );
+  /**
+   * @deprecated remove this when GNS references are removed
+   */
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+
+  const { token } = useBridgeNavigation();
+
+  // Set src chain balances when the fromToken changes and after the token object is applied
+  useEffect(() => {
+    if (
+      isCrossChain(fromToken.chainId, currentChainId) ||
+      (token && token.assetId.toLowerCase() !== fromToken.assetId.toLowerCase())
+    ) {
+      return;
     }
-    return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-  ]);
-
-  if (token && !token.decimals) {
-    throw new Error(
-      `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
-    );
-  }
-
-  const tokenDecimals = token?.decimals ? Number(token.decimals) : 1;
-
-  return {
-    formattedBalance:
-      token && latestBalance
-        ? latestBalance
-            .shiftedBy(tokenDecimals)
-            .round(DEFAULT_PRECISION)
-            .toString()
-        : undefined,
-  };
+    dispatch(setEvmBalances(fromToken.assetId));
+  }, [fromToken, currentChainId, token]);
 };
-
-export default useLatestBalance;

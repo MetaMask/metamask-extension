@@ -2,14 +2,30 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { SortOrder } from '../types';
+import { QuoteResponse, SortOrder } from '@metamask/bridge-controller';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
   title: 'Pages/Bridge/BridgeQuotesModal',
   component: BridgeQuotesModal,
 };
+
+const mockQuotes = (
+  mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]
+).map((quote) => ({
+  ...quote,
+  quote: {
+    ...quote.quote,
+    bridges: ['across (via Socket)'],
+    destAsset: {
+      ...quote.quote.destAsset,
+      decimals: 7,
+      symbol: 'USDC.E',
+    },
+    destTokenAmount: '1',
+  },
+}));
 
 export const NoTokenPricesAvailableStory = () => {
   return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
@@ -20,7 +36,9 @@ NoTokenPricesAvailableStory.decorators = [
     <Provider
       store={configureStore(
         createBridgeMockStore({
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockQuotes,
+          },
         }),
       )}
     >
@@ -40,11 +58,11 @@ DefaultStory.decorators = [
         createBridgeMockStore({
           bridgeSliceOverrides: {
             fromTokenExchangeRate: 0.99,
-            toNativeExchangeRate: 1,
-            toTokenExchangeRate: 0.99,
             sortOrder: SortOrder.COST_ASC,
           },
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockQuotes,
+          },
           metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 }, //1
@@ -77,10 +95,10 @@ PositiveArbitrage.decorators = [
         createBridgeMockStore({
           bridgeSliceOverrides: {
             fromTokenExchangeRate: 0.99,
-            toNativeExchangeRate: 1,
-            toTokenExchangeRate: 2.1,
           },
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockQuotes,
+          },
           metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 },

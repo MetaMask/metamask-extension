@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkFilterImportToken should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <label
+      class="mm-box mm-text mm-label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+    >
+      mockTitle
+    </label>
+    <div
+      class="mm-box dropdown-editor__item-dropdown mm-box--padding-right-2 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <div
+        class="mm-box mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-between mm-box--width-full"
+      >
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          >
+            Current network
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-flex-start"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          >
+            ?
+          </div>
+        </div>
+      </div>
+      <button
+        aria-label="mockTitle"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="mockButtonDataTestId"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NetworkFilterImportToken should renders "popular networks" text when isTokenNetworkFilterEqualCurrentNetwork is true 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <label
+      class="mm-box mm-text mm-label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+    >
+      mockTitle
+    </label>
+    <div
+      class="mm-box dropdown-editor__item-dropdown mm-box--padding-right-2 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <div
+        class="mm-box mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-between mm-box--width-full"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+        >
+          Popular networks
+        </p>
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-flex-end"
+        />
+      </div>
+      <button
+        aria-label="mockTitle"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="mockButtonDataTestId"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;

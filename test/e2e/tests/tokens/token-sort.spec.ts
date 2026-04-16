@@ -1,105 +1,70 @@
-import { strict as assert } from 'assert';
 import { Context } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixture-builder';
-import {
-  clickNestedButton,
-  defaultGanacheOptions,
-  regularDelayMs,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { login } from '../../page-objects/flows/login.flow';
+import { mockSpotPrices } from './utils/mocks';
 
-describe('Token List', function () {
-  const chainId = CHAIN_IDS.MAINNET;
-  const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
-  const symbol = 'ABC';
+describe('Token List Sorting', function () {
+  const mainnetChainId = CHAIN_IDS.MAINNET;
+  const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
+  const customTokenSymbol = 'ABC';
 
-  const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
-      ...defaultGanacheOptions,
-      chainId: parseInt(chainId, 16),
+  const testFixtures = {
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [mainnetChainId]: true } })
+      .build(),
+    localNodeOptions: {
+      chainId: parseInt(mainnetChainId, 16),
     },
   };
 
-  const importToken = async (driver: Driver) => {
-    await driver.clickElement(`[data-testid="import-token-button"]`);
-    await driver.clickElement(`[data-testid="importTokens"]`);
-    await clickNestedButton(driver, 'Custom token');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-address"]',
-      tokenAddress,
-    );
-    await driver.waitForSelector('p.mm-box--color-error-default');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-symbol"]',
-      symbol,
-    );
-    await driver.delay(2000);
-    await driver.clickElement({ text: 'Next', tag: 'button' });
-    await driver.clickElement(
-      '[data-testid="import-tokens-modal-import-button"]',
-    );
-    await driver.findElement({ text: 'Token imported', tag: 'h6' });
-  };
-
-  it('should sort alphabetically and by decreasing balance', async function () {
+  it('should sort tokens alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
-        ...fixtures,
+        ...testFixtures,
         title: (this as Context).test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await importToken(driver);
+        await login(driver);
 
-        const tokenListBeforeSorting = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        const tokenSymbolsBeforeSorting = await Promise.all(
-          tokenListBeforeSorting.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
-        );
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
 
-        assert.ok(tokenSymbolsBeforeSorting[0].includes('Ethereum'));
-
-        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
-        await driver.clickElement('[data-testid="sortByAlphabetically"]');
-
-        await driver.delay(regularDelayMs);
-        const tokenListAfterSortingAlphabetically = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        const tokenListSymbolsAfterSortingAlphabetically = await Promise.all(
-          tokenListAfterSortingAlphabetically.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
+        await homePage.checkPageIsLoaded();
+        await assetListPage.importCustomTokenByChain(
+          CHAIN_IDS.MAINNET,
+          customTokenAddress,
+          customTokenSymbol,
         );
 
-        assert.ok(
-          tokenListSymbolsAfterSortingAlphabetically[0].includes('ABC'),
-        );
+        await assetListPage.checkTokenExistsInList('Ethereum');
+        await assetListPage.sortTokenList('alphabetically');
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: customTokenSymbol,
+        });
 
-        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
-        await driver.clickElement('[data-testid="sortByDecliningBalance"]');
-
-        await driver.delay(regularDelayMs);
-        const tokenListBeforeSortingByDecliningBalance =
-          await driver.findElements(
-            '[data-testid="multichain-token-list-button"]',
-          );
-
-        const tokenListAfterSortingByDecliningBalance = await Promise.all(
-          tokenListBeforeSortingByDecliningBalance.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
-        );
-        assert.ok(
-          tokenListAfterSortingByDecliningBalance[0].includes('Ethereum'),
-        );
+        await assetListPage.sortTokenList('decliningBalance');
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: 'Ethereum',
+        });
       },
     );
   });

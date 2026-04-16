@@ -2,10 +2,10 @@
 import React, { useState, useContext, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
 import AccountListItem from '../../components/app/account-list-item';
@@ -15,7 +15,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
   ButtonIcon,
@@ -43,19 +43,23 @@ import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
+import { Nav } from '../confirmations/components/confirm/nav';
 
-const Header = () => {
+const Header = ({ approvalId }) => {
   const t = useI18nContext();
   return (
-    <div className="request-decrypt-message__header">
-      <div className="request-decrypt-message__header-background" />
-      <div className="request-decrypt-message__header__text">
-        {t('decryptRequest')}
+    <>
+      <Nav confirmationId={approvalId} />
+      <div className="request-decrypt-message__header">
+        <div className="request-decrypt-message__header-background" />
+        <div className="request-decrypt-message__header__text">
+          {t('decryptRequest')}
+        </div>
+        <div className="request-decrypt-message__header__tip-container">
+          <div className="request-decrypt-message__header__tip" />
+        </div>
       </div>
-      <div className="request-decrypt-message__header__tip-container">
-        <div className="request-decrypt-message__header__tip" />
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -182,7 +186,7 @@ const MessageBody = forwardRef(
     ref,
   ) => {
     const dispatch = useDispatch();
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
     const t = useI18nContext();
 
     const [copyToClipboardPressed, setCopyToClipboardPressed] = useState(false);
@@ -208,7 +212,7 @@ const MessageBody = forwardRef(
     const onDecryptMessage = async (event) => {
       event.stopPropagation(event);
 
-      const params = messageData.msgParams;
+      const params = { ...messageData.msgParams };
       params.metamaskId = messageData.id;
 
       const result = await dispatch(decryptMsgInline(params));
@@ -323,9 +327,9 @@ const Footer = ({
   messageData,
 }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onCancelClick = async (event) => {
     event.stopPropagation(event);
@@ -340,12 +344,12 @@ const Footer = ({
       },
     });
     dispatch(clearConfirmTransaction());
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   };
 
   const onSubmitClick = async (event) => {
     event.stopPropagation(event);
-    const params = messageData.msgParams;
+    const params = { ...messageData.msgParams };
     params.metamaskId = messageData.id;
 
     await dispatch(decryptMsg(params));
@@ -358,7 +362,7 @@ const Footer = ({
       },
     });
     dispatch(clearConfirmTransaction());
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   };
 
   return (
@@ -391,11 +395,15 @@ const ConfirmDecryptMessage = () => {
   const [rawMessage, setRawMessage] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const { id: approvalId } = useParams();
 
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
   );
-  const messageData = cloneDeep(unconfirmedTransactions[0]);
+
+  const messageData = cloneDeep(
+    unconfirmedTransactions.find((tx) => tx.id === approvalId),
+  );
 
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, messageData?.msgParams?.from),
@@ -427,7 +435,7 @@ const ConfirmDecryptMessage = () => {
 
   return (
     <div className="request-decrypt-message__container">
-      <Header />
+      <Header approvalId={approvalId} />
       <div className="request-decrypt-message__body">
         <Account fromAccount={fromAccount} nativeCurrency={nativeCurrency} />
         <VisualSection

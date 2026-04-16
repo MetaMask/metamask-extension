@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
@@ -12,19 +12,20 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 
 import {
   getUsedQuote,
@@ -49,14 +50,12 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenSymbol } from '../../../../shared/lib/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  stopPollingForQuotes,
-  setDefaultHomeActiveTabName,
-} from '../../../store/actions';
+import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -77,9 +76,10 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
@@ -209,6 +209,9 @@ export default function AwaitingSwap({
         event: 'Quotes Timed Out',
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
+        properties: {
+          hd_entropy_index: hdEntropyIndex,
+        },
       });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
@@ -272,16 +275,34 @@ export default function AwaitingSwap({
     }
   }, [dispatch, errorKey]);
 
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    if (isBeta()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+      />
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
-        {!(swapComplete || errorKey) && (
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
-            width="90"
-            height="90"
-          />
-        )}
+        {!(swapComplete || errorKey) && renderMascot()}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"
@@ -305,31 +326,30 @@ export default function AwaitingSwap({
           /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
               fetchQuotesAndSetQuoteState(
-                history,
+                navigate,
                 fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToPrepareSwap(history));
+            await dispatch(navigateBackToPrepareSwap(navigate));
           } else if (
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            history.push(DEFAULT_ROUTE);
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('activity'));
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () =>
-          await dispatch(navigateBackToPrepareSwap(history))
+          await dispatch(navigateBackToPrepareSwap(navigate))
         }
         submitText={submitText}
         disabled={submittingSwap}

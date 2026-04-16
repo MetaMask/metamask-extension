@@ -5,17 +5,11 @@ import { BannerAlert } from '../../component-library';
 
 import IconTokenSearch from '../icon/icon-token-search';
 
-import README from './README.mdx';
 import Button from '.';
 
 export default {
   title: 'Components/UI/Button',
   component: Button,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: { control: 'text' },
     type: {
@@ -47,13 +41,6 @@ export default {
     disabled: { control: 'boolean' },
     className: { control: 'text' },
     onClick: { action: 'clicked' },
-  },
-  args: {
-    disabled: false,
-    large: false,
-    submit: false,
-    className: '',
-    rounded: true,
   },
 };
 

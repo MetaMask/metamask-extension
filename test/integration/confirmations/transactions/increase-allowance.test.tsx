@@ -1,12 +1,10 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedIncreaseAllowanceTransaction } from './transactionDataHelpers';
@@ -14,7 +12,6 @@ import { getUnapprovedIncreaseAllowanceTransaction } from './transactionDataHelp
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -38,7 +35,6 @@ const getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
@@ -102,6 +98,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -110,31 +107,27 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
 describe('ERC20 increaseAllowance Confirmation', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
-        standard: TokenStandard.ERC20,
+      getTokenStandardAndDetailsByChain: {
+        standard: ERC20,
+        decimals: '4',
       },
     });
     const INCREASE_ALLOWANCE_ERC20_HEX_SIG = '0x39509351';
@@ -151,6 +144,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -167,10 +161,10 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 
@@ -191,14 +185,14 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
 
     expect(simulationSection).toHaveTextContent(
-      tEn('simulationDetailsERC20ApproveDesc') as string,
+      tEn('simulationDetailsERC20ApproveDesc'),
     );
-    expect(simulationSection).toHaveTextContent(tEn('spendingCap') as string);
+    expect(simulationSection).toHaveTextContent(tEn('spendingCap'));
     const spendingCapValue = await screen.findByTestId(
       'simulation-token-value',
     );
     expect(simulationSection).toContainElement(spendingCapValue);
-    expect(spendingCapValue).toHaveTextContent('1');
+    expect(spendingCapValue).toHaveTextContent('3');
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
   });
 
@@ -224,8 +218,8 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
-    expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent(tEn('spender'));
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -233,7 +227,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     await testUser.hover(spenderTooltip);
 
     const spenderTooltipContent = await screen.findByText(
-      tEn('spenderTooltipERC20ApproveDesc') as string,
+      tEn('spenderTooltipERC20ApproveDesc'),
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
@@ -254,47 +248,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
-      tEn('requestFromTransactionDescription') as string,
-    );
-    expect(requestFromTooltipContent).toBeInTheDocument();
-  });
-
-  it('displays spending cap section with correct data', async () => {
-    const testUser = userEvent.setup();
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const spendingCapSection = await screen.findByTestId(
-      'confirmation__approve-spending-cap-section',
-    );
-    expect(spendingCapSection).toBeInTheDocument();
-
-    expect(spendingCapSection).toHaveTextContent(
-      tEn('accountBalance') as string,
-    );
-    expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group',
-    );
-    expect(spendingCapSection).toContainElement(spendingCapGroup);
-    expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('1');
-
-    const spendingCapGroupTooltip = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group-tooltip',
-    );
-    expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
-    await testUser.hover(spendingCapGroupTooltip);
-    const requestFromTooltipContent = await screen.findByText(
-      tEn('spendingCapTooltipDesc') as string,
+      tEn('requestFromTransactionDescription'),
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
@@ -323,9 +277,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
-    expect(approveDetailsRecipient).toHaveTextContent(
-      tEn('interactingWith') as string,
-    );
+    expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
@@ -336,7 +288,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     await testUser.hover(approveDetailsRecipientTooltip);
     const recipientTooltipContent = await screen.findByText(
-      tEn('interactingWithTransactionDescription') as string,
+      tEn('interactingWithTransactionDescription'),
     );
     expect(recipientTooltipContent).toBeInTheDocument();
 
@@ -344,7 +296,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'transaction-details-method-data-row',
     );
     expect(approveDetails).toContainElement(approveMethodData);
-    expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
+    expect(approveMethodData).toHaveTextContent(tEn('methodData'));
     expect(approveMethodData).toHaveTextContent('increaseAllowance');
     const approveMethodDataTooltip = await screen.findByTestId(
       'transaction-details-method-data-row-tooltip',
@@ -352,7 +304,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
     await testUser.hover(approveMethodDataTooltip);
     const approveMethodDataTooltipContent = await screen.findByText(
-      tEn('methodDataTransactionDesc') as string,
+      tEn('methodDataTransactionDesc'),
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
@@ -371,7 +323,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(dataSection).toContainElement(dataSectionFunction);
     expect(dataSectionFunction).toHaveTextContent(
-      tEn('transactionDataFunction') as string,
+      tEn('transactionDataFunction'),
     );
     expect(dataSectionFunction).toHaveTextContent('increaseAllowance');
 

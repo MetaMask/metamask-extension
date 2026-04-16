@@ -4,9 +4,20 @@ import {
   Display,
   FlexDirection,
   FlexWrap,
+  IconColor,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  Text,
+  IconName,
+} from '../../../../components/component-library';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
 import { BalanceChange } from './types';
@@ -19,13 +30,70 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.label
  * @param props.showFiat
  * @param props.balanceChange
+ * @param props.labelColor
+ * @param props.isFirstRow
+ * @param props.hasIncomingTokens
+ * @param props.confirmationId
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
-}> = ({ label, showFiat, balanceChange }) => {
-  const { asset, amount, fiatAmount } = balanceChange;
+  labelColor?: TextColor;
+  isFirstRow?: boolean;
+  hasIncomingTokens?: boolean;
+  confirmationId?: string;
+}> = ({
+  label,
+  showFiat,
+  balanceChange,
+  labelColor,
+  isFirstRow,
+  hasIncomingTokens,
+  confirmationId,
+}) => {
+  const t = useI18nContext();
+
+  const {
+    asset,
+    amount,
+    fiatAmount,
+    isApproval,
+    isAllApproval,
+    isUnlimitedApproval,
+    onEdit,
+  } = balanceChange;
+
+  const renderLabel = () => {
+    if (!label) {
+      return null;
+    }
+
+    if (hasIncomingTokens && isFirstRow && confirmationId) {
+      return (
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.IncomingTokens}
+          ownerId={confirmationId}
+          label={label}
+          style={{
+            margin: 0,
+            padding: 0,
+          }}
+        />
+      );
+    }
+
+    return (
+      <Text
+        style={{ whiteSpace: 'nowrap' }}
+        color={labelColor ?? TextColor.textAlternative}
+        variant={TextVariant.bodyMdMedium}
+      >
+        {label}
+      </Text>
+    );
+  };
+
   return (
     <Box
       data-testid="simulation-details-balance-change-row"
@@ -35,11 +103,7 @@ export const BalanceChangeRow: React.FC<{
       gap={1}
       flexWrap={FlexWrap.Wrap}
     >
-      {label && (
-        <Text style={{ whiteSpace: 'nowrap' }} variant={TextVariant.bodyMd}>
-          {label}
-        </Text>
-      )}
+      {renderLabel()}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -48,7 +112,25 @@ export const BalanceChangeRow: React.FC<{
         style={{ minWidth: 0 }}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
-          <AmountPill asset={asset} amount={amount} />
+          {onEdit && (
+            <ButtonIcon
+              data-testid="balance-change-edit"
+              color={IconColor.primaryDefault}
+              ariaLabel={t('edit')}
+              iconName={IconName.Edit}
+              onClick={onEdit}
+              size={ButtonIconSize.Sm}
+              // to reset the button padding
+              style={{ marginRight: '-4px' }}
+            />
+          )}
+          <AmountPill
+            asset={asset}
+            amount={amount}
+            isApproval={isApproval}
+            isAllApproval={isAllApproval}
+            isUnlimitedApproval={isUnlimitedApproval}
+          />
           <AssetPill asset={asset} />
         </Box>
         {showFiat && <IndividualFiatDisplay fiatAmount={fiatAmount} />}

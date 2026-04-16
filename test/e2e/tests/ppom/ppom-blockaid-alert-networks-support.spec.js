@@ -1,12 +1,14 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
 const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { withFixtures } = require('../../helpers');
+const { login } = require('../../page-objects/flows/login.flow');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 async function mockInfura(mockServer) {
@@ -46,20 +48,24 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
+describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert after switchinig to another supported network', async function () {
+  it.skip('should show banner alert after switching to another supported network', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1, 42161],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
@@ -69,14 +75,13 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousTradeOrder');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');
@@ -120,7 +125,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         await driver.clickElement({ tag: 'button', text: 'Approve' });
         await driver.clickElement({
           tag: 'h6',
-          text: 'Switch to Arbitrum One',
+          text: 'Switch to Arbitrum',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -128,7 +133,6 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         await driver.clickElement('#maliciousRawEthButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         bannerAlertFoundByTitle = await driver.findElement({

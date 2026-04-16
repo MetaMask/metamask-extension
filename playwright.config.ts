@@ -1,9 +1,8 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
-import dotenv from 'dotenv';
+import { DAPP_PAGE_LOAD_BENCHMARK_DIR } from './test/e2e/benchmarks/utils/constants';
 import { isHeadless } from './test/helpers/env';
 
-dotenv.config({ path: './test/e2e/playwright/mmi/.env' });
 const logOutputFolder = './public/playwright/playwright-reports';
 
 /**
@@ -50,21 +49,6 @@ const config: PlaywrightTestConfig = {
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'mmi',
-      testMatch: '/mmi/specs/**.spec.ts',
-      testIgnore: '/mmi/specs/visual.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-    {
-      name: 'mmi.visual',
-      testMatch: '/mmi/**/*visual.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-    {
       name: 'swap',
       testMatch: '/swap/specs/*swap.spec.ts',
       use: {
@@ -81,6 +65,17 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
         headless: true,
       },
+    },
+    {
+      name: 'benchmark',
+      testDir: DAPP_PAGE_LOAD_BENCHMARK_DIR,
+      testMatch: '**/*.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: Boolean(process.env.CI),
+      },
+      fullyParallel: false,
+      timeout: 600 * 1000, // 10 minutes
     },
   ],
 

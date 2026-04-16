@@ -1,43 +1,45 @@
-import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
-import { Driver } from '../../../webdriver/driver';
+import { WINDOW_TITLES } from '../../../constants';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
-import {
-  assertSignatureRejectedMetrics,
-  openDappAndTriggerSignature,
-  SignatureType,
-} from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
+import { assertSignatureRejectedMetrics } from './signature-helpers';
 
-describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
+describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        const confirmation = new Confirmation(driver);
+        const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await verifyAlertIsDisplayed(driver);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
+        );
 
-        await acknowledgeAlert(driver);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickInlineAlert();
+
+        await alertModal.acknowledgeAlert();
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await confirmFromAlertModal(driver);
-
-        await assertVerifiedMessage(
-          driver,
+        await testDapp.assertVerifiedSiweMessage(
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
         );
       },
@@ -45,47 +47,60 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from confirmation screen', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        const confirmation = new Confirmation(driver);
+        const testDapp = new TestDapp(driver);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
         );
 
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#siweResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await testDapp.assertUserRejectedRequest();
+
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
           expectedProps: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_action_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_key_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved_count: 0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 0,
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,
@@ -93,85 +108,68 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from alert friction modal', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
+
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
+        );
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await acknowledgeAlert(driver);
+        await alertModal.acknowledgeAlert();
 
-        await driver.clickElement(
-          '[data-testid="confirm-alert-modal-cancel-button"]',
-        );
+        await alertModal.rejectFromAlertModal();
+
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#siweResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await testDapp.assertUserRejectedRequest();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'alert_friction_modal',
           expectedProps: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_action_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_key_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 1,
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,
     );
   });
 });
-
-async function confirmFromAlertModal(driver: Driver) {
-  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
-  await driver.clickElement(
-    '[data-testid="confirm-alert-modal-submit-button"]',
-  );
-}
-
-async function acknowledgeAlert(driver: Driver) {
-  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
-  await driver.clickElement('[data-testid="alert-modal-button"]');
-}
-
-async function verifyAlertIsDisplayed(driver: Driver) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.waitForSelector({
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  });
-  await driver.clickElement('[data-testid="inline-alert"]');
-}
-
-async function assertVerifiedMessage(driver: Driver, message: string) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-  await driver.waitForSelector({
-    css: '#siweResult',
-    text: message,
-  });
-}

@@ -1,8 +1,8 @@
-import { isProduction } from '../modules/environment';
+import { isProduction } from '../lib/environment';
 import { getAllowedSmartTransactionsChainIds } from './smartTransactions';
 import { CHAIN_IDS } from './network';
 
-jest.mock('../modules/environment', () => ({
+jest.mock('../lib/environment', () => ({
   isProduction: jest.fn(() => false), // Initially mock isProduction to return false
 }));
 
@@ -21,13 +21,26 @@ describe('smartTransactions', () => {
       expect(allowedChainIds).toStrictEqual([
         CHAIN_IDS.MAINNET,
         CHAIN_IDS.SEPOLIA,
+        CHAIN_IDS.BSC,
+        CHAIN_IDS.BASE,
+        CHAIN_IDS.ARBITRUM,
+        CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.LINEA_SEPOLIA,
+        CHAIN_IDS.POLYGON,
       ]);
     });
 
     it('should return the correct chain IDs for production environment', () => {
       mockIsProduction.mockReturnValue(true);
       const allowedChainIds = getAllowedSmartTransactionsChainIds();
-      expect(allowedChainIds).toStrictEqual([CHAIN_IDS.MAINNET]);
+      expect(allowedChainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.BSC,
+        CHAIN_IDS.BASE,
+        CHAIN_IDS.ARBITRUM,
+        CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.POLYGON,
+      ]);
     });
   });
 });

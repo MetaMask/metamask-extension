@@ -1,5 +1,5 @@
 import { Hex, createProjectLogger } from '@metamask/utils';
-import EthQuery from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
 import {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,
@@ -17,12 +17,12 @@ export async function decodeTransactionData({
   transactionData,
   contractAddress,
   chainId,
-  ethQuery,
+  provider,
 }: {
   transactionData: Hex;
   contractAddress: Hex;
   chainId: Hex;
-  ethQuery: EthQuery;
+  provider: Provider;
 }): Promise<DecodedTransactionDataResponse | undefined> {
   log('Decoding transaction data', {
     transactionData,
@@ -45,7 +45,7 @@ export async function decodeTransactionData({
     };
   }
 
-  const proxyAddress = await getContractProxyAddress(contractAddress, ethQuery);
+  const proxyAddress = await getContractProxyAddress(contractAddress, provider);
 
   if (proxyAddress) {
     log('Retrieved proxy implementation address', proxyAddress);
@@ -116,12 +116,13 @@ function normalizeDecodedParam(
   };
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeDecodedParamValue(value: any): any {
   const hexValue = value._hex;
 
   if (hexValue) {
-    return parseInt(hexValue, 16);
+    return BigInt(hexValue).toString();
   }
 
   return value;

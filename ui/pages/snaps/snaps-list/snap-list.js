@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,7 +17,10 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
@@ -40,10 +43,22 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const history = useHistory();
   const settingsRef = useRef();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
   const onClick = (snap) => {
-    history.push(getSnapRoute(snap.id));
+    navigate(getSnapRoute(snap.id));
   };
 
   useEffect(() => {
@@ -63,7 +78,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => history.push(DEFAULT_ROUTE)}
+              onClick={handleBack}
             />
           }
         >
@@ -136,7 +151,7 @@ const SnapList = () => {
                   display={Display.Flex}
                   width={BlockSize.Full}
                   height={BlockSize.Min}
-                ></Box>
+                />
                 <Box
                   className="snaps__content__list__container--no-snaps_banner-tip"
                   display={Display.Flex}

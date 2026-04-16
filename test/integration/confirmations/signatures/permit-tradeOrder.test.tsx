@@ -1,10 +1,10 @@
 import { act, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation } from '../../helpers';
 import {
   getMetaMaskStateWithUnapprovedPermitSign,
   verifyDetails,
@@ -55,7 +55,7 @@ describe('Permit Trade Order Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '4' },
       }),
     );
   });
@@ -68,10 +68,10 @@ describe('Permit Trade Order Tests', () => {
     await renderTradeOrderSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitleSignature') as string),
+      await screen.findByText(tEn('confirmTitleSignature')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescSign') as string),
+      await screen.findByText(tEn('confirmTitleDescSign')),
     ).toBeInTheDocument();
   });
 
@@ -112,7 +112,7 @@ describe('Permit Trade Order Tests', () => {
       'Nonce',
       '100131415900000000000000000000000000000083840314483690155566137712510085002484',
       'Erc20Token',
-      'Wrapped Ether',
+      'Wrapped E...',
       'Erc20TokenAmount',
       '42000000000000',
       'Fees',

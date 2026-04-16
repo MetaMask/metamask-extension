@@ -3,7 +3,7 @@
  * a local blockchain instance.
  */
 class ContractAddressRegistry {
-  #addresses = {};
+  #contracts = [];
 
   /**
    * Store new contract address in key:value pair.
@@ -12,16 +12,33 @@ class ContractAddressRegistry {
    * @param contractAddress
    */
   storeNewContractAddress(contractName, contractAddress) {
-    this.#addresses[contractName] = contractAddress;
+    this.#contracts.push({
+      name: contractName,
+      address: contractAddress,
+    });
   }
 
   /**
-   * Get deployed contract address by its name (key).
+   * Get the most recently deployed contract address by its name (key).
    *
    * @param contractName
    */
   getContractAddress(contractName) {
-    return this.#addresses[contractName];
+    const matchingContracts = this.#contracts.filter(
+      (contract) => contract.name === contractName,
+    );
+    return matchingContracts.length > 0
+      ? matchingContracts[matchingContracts.length - 1].address
+      : undefined;
+  }
+
+  /**
+   * Get all deployed contract addresses in deployment order.
+   *
+   * @returns Array of all deployed contract addresses in deployment order
+   */
+  getAllDeployedContractAddresses() {
+    return this.#contracts.map((contract) => contract.address);
   }
 }
 

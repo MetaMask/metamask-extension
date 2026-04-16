@@ -20,8 +20,9 @@ export const NotificationDetailsHeader = ({
         <ButtonIcon
           ariaLabel="Back"
           iconName={IconName.ArrowLeft}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
           onClick={onClickBack}
+          data-testid="notification-details-back-button"
         />
       }
       endAccessory={null}

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   BorderRadius,
   AlignItems,
@@ -66,6 +66,8 @@ const Header = ({
   return (
     <Box
       className={classnames({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         delineator__header: true,
         'delineator__header--expanded': isExpanded,
         'delineator__header--loading': isLoading,
@@ -125,7 +127,7 @@ const Container = ({
       className="delineator__wrapper"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.backgroundSection}
       borderRadius={BorderRadius.LG}
       {...wrapperBoxProps}
     >
@@ -147,6 +149,8 @@ export const Delineator: React.FC<DelineatorProps> = ({
   wrapperBoxProps,
   contentBoxProps,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const [isExpanded, setIsExpanded] = useState(isExpandedProp || false);
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
 

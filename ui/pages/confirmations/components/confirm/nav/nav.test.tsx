@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -6,24 +7,23 @@ import {
 
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { fireEvent } from '../../../../../../test/jest';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-
-import Nav from './nav';
+import { ConfirmNav } from './nav';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = () => {
   const store = configureStore(
@@ -82,7 +82,7 @@ const render = () => {
     }),
   );
 
-  return renderWithConfirmContextProvider(<Nav />, store);
+  return renderWithConfirmContextProvider(<ConfirmNav />, store);
 };
 
 describe('ConfirmNav', () => {
@@ -95,7 +95,7 @@ describe('ConfirmNav', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
     expect(buttons).toHaveLength(3);
-    expect(getByText('Reject all')).toBeInTheDocument();
+    expect(getByText(messages.rejectAll.message)).toBeInTheDocument();
   });
 
   it('renders button to navigate to previous or next confirmation', () => {
@@ -110,18 +110,22 @@ describe('ConfirmNav', () => {
     const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/testApprovalId2/signature-request',
+      { replace: true },
+    );
   });
 
-  it('invoke action rejectPendingApproval for all pending approvals when "Reject all" button is clicked', () => {
+  it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {
     const { getByRole } = render();
     const rejectAllButton = getByRole('button', { name: /Reject all/iu });
     const rejectSpy = jest
-      .spyOn(Actions, 'rejectPendingApproval')
-      // TODO: Replace `any` with type
+      .spyOn(Actions, 'rejectAllApprovals')
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(rejectAllButton);
-    expect(rejectSpy).toHaveBeenCalledTimes(3);
+    expect(rejectSpy).toHaveBeenCalledTimes(1);
   });
 });

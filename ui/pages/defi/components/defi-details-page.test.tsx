@@ -1,0 +1,107 @@
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../test/data/mock-state.json';
+import DeFiPage from './defi-details-page';
+
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+jest.mock('../../../../ui/hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../../ui/hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
+describe('DeFiDetailsPage', () => {
+  const mockStore = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      allDeFiPositions: {
+        [selectedAddress]: {
+          '0x1': {
+            aggregatedMarketValue: 20540,
+            protocols: {
+              aave: {
+                protocolDetails: {
+                  name: 'Lido',
+                  iconUrl:
+                    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
+                },
+                aggregatedMarketValue: 20000,
+                positionTypes: {
+                  stake: {
+                    aggregatedMarketValue: 20000,
+                    positions: [
+                      [
+                        {
+                          address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+                          name: 'Wrapped liquid staked Ether 2.0',
+                          symbol: 'wstETH',
+                          decimals: 18,
+                          balanceRaw: '800000000000000000000',
+                          balance: 800,
+                          marketValue: 20000,
+                          type: 'protocol',
+                          tokens: [
+                            {
+                              address:
+                                '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+                              name: 'Liquid staked Ether 2.0',
+                              symbol: 'stETH',
+                              decimals: 18,
+                              type: 'underlying',
+                              balanceRaw: '1000000000000000000',
+                              balance: 10,
+                              price: 2000,
+                              marketValue: 20000,
+                              iconUrl:
+                                'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
+                            },
+                          ],
+                        },
+                      ],
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const store = configureMockStore([thunk])(mockStore);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    store.clearActions();
+    jest.restoreAllMocks();
+  });
+
+  it('renders defi asset page', () => {
+    const { container } = renderWithProvider(
+      <Routes>
+        <Route path="/defi/:chainId/:protocolId" element={<DeFiPage />} />
+      </Routes>,
+      store,
+      `/defi/${CHAIN_IDS.MAINNET}/aave`,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+});

@@ -1,78 +1,46 @@
-import FixtureBuilder from '../../../fixture-builder';
-import {
-  PRIVATE_KEY,
-  convertETHToHexGwei,
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import {
-  TestSuiteArguments,
-  openDAppWithContract,
-} from '../transactions/shared';
-import { Driver } from '../../../webdriver/driver';
+import { TestSuiteArguments } from '../transactions/shared';
+import AlertModal from '../../../page-objects/pages/confirmations/alert-modal';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { login } from '../../../page-objects/flows/login.flow';
 
-describe('Alert for insufficient funds @no-mmi', function () {
+describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey: PRIVATE_KEY,
-          balance: convertETHToHexGwei(0.0053), // Low balance only to create the contract and then trigger the alert for insufficient funds
-        },
-      ],
+    const localNodeOptions = {
+      mnemonic: 'test test test test test test test test test test test junk',
     };
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions,
+        localNodeOptions,
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await openDAppWithContract(driver, contractRegistry, nftSmartContract);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const alertModal = new AlertModal(driver);
+        const contractAddress =
+          await contractRegistry?.getContractAddress(nftSmartContract);
 
-        await mintNft(driver);
+        await login(driver, { validateBalance: false });
 
-        await verifyAlertForInsufficientBalance(driver);
+        await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.checkPageIsLoaded();
+        await testDapp.clickERC721MintButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickInlineAlert();
+        await alertModal.checkInsufficientBalanceMessageIsDisplayed();
+        await alertModal.clickConfirmButton();
       },
     );
   });
 });
-
-async function verifyAlertForInsufficientBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  });
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.clickElement('[data-testid="inline-alert"]');
-
-  await displayAlertForInsufficientBalance(driver);
-  await driver.clickElement('[data-testid="alert-modal-button"]');
-}
-
-async function mintNft(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement(`#mintButton`);
-
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
-async function displayAlertForInsufficientBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="alert-modal__selected-alert"]',
-    text: 'You do not have enough ETH in your account to pay for network fees.',
-  });
-}

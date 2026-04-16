@@ -1,16 +1,21 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import classnames from 'classnames';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   IconColor,
-  FlexDirection,
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -23,12 +28,17 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
+
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
+  Object.values(IconName).includes(iconSrc as IconName);
 
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
@@ -45,13 +55,18 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  onDiscoverClick,
   onRpcEndpointClick,
   startAccessory,
+  endAccessory,
   showEndAccessory = true,
+  disabled = false,
+  variant,
+  notSelectable = false,
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: AvatarNetworkSize;
+  iconSize?: AvatarNetworkSize | IconSize;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -59,38 +74,96 @@ export const NetworkListItem = ({
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
   onEditClick?: () => void;
+  onDiscoverClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
+  endAccessory?: ReactNode;
   showEndAccessory?: boolean;
+  disabled?: boolean;
+  variant?: TextVariant;
+  notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
 
   // I can't find a type that satisfies this.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setNetworkListItemMenuRef = (ref: any) => {
-    setNetworkListItemMenuElement(ref);
-  };
-  const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const renderButton = () => {
-    return onDeleteClick || onEditClick ? (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setNetworkListItemMenuRef = useCallback((ref: any) => {
+    setNetworkListItemMenuElement(ref);
+    // Store ref for finalFocusRef
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (menuButtonRef as any).current = ref;
+  }, []);
+  const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+  // Tracks when menu is transitioning from open to closed.
+  // When true, menu renders without ModalFocus to prevent focus management
+  // from briefly focusing the first menu item during the closing animation.
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
+
+  // Prepares menu for closing: focuses button and marks menu as closing
+  const prepareMenuClose = useCallback(() => {
+    if (menuButtonRef.current) {
+      menuButtonRef.current.focus();
+    }
+    setIsMenuClosing(true);
+  }, []);
+
+  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
+
+  const renderButton = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
+        onMouseDown={(e: React.MouseEvent) => {
+          // When closing: prevent button from losing focus and mark menu as closing
+          // This must happen before onClick toggles the state
+          if (networkOptionsMenuOpen) {
+            e.preventDefault();
+            prepareMenuClose();
+          }
+        }}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
-          setNetworkOptionsMenuOpen(true);
+          const willBeOpen = !networkOptionsMenuOpen;
+          setNetworkOptionsMenuOpen(willBeOpen);
+          // When opening, ensure closing flag is reset
+          if (willBeOpen) {
+            setIsMenuClosing(false);
+          }
         }}
         size={ButtonIconSize.Sm}
       />
     ) : null;
-  };
+  }, [
+    onDeleteClick,
+    onEditClick,
+    onDiscoverClick,
+    chainId,
+    t,
+    setNetworkListItemMenuRef,
+    setNetworkOptionsMenuOpen,
+    networkOptionsMenuOpen,
+    prepareMenuClose,
+  ]);
+
+  // Safety: Reset closing flag whenever menu opens
+  // (handles edge cases like rapid toggling)
+  useEffect(() => {
+    if (networkOptionsMenuOpen) {
+      setIsMenuClosing(false);
+    }
+  }, [networkOptionsMenuOpen]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -106,38 +179,39 @@ export const NetworkListItem = ({
 
   return (
     <Box
+      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--deselected': !selected,
+        'multichain-network-list-item--disabled': disabled,
+        'multichain-network-list-item--not-selectable': notSelectable,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
-      {selected && (
-        <Box
-          className="multichain-network-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
+      {isIconSrc(iconSrc) ? (
+        <Icon name={iconSrc} size={iconSize as IconSize} />
+      ) : (
+        <AvatarNetwork
+          borderColor={BorderColor.backgroundDefault}
+          backgroundColor={getAvatarNetworkColor(name)}
+          name={name}
+          src={iconSrc}
+          size={iconSize as AvatarNetworkSize}
         />
       )}
-      <AvatarNetwork
-        borderColor={BorderColor.backgroundDefault}
-        backgroundColor={getAvatarNetworkColor(name)}
-        name={name}
-        src={iconSrc}
-        size={iconSize}
-      />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -149,29 +223,35 @@ export const NetworkListItem = ({
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
+          gap={2}
           data-testid={name}
         >
-          <Text
-            ref={networkRef}
-            color={TextColor.textDefault}
-            backgroundColor={BackgroundColor.transparent}
-            ellipsis
-            onKeyDown={handleKeyPress}
-            tabIndex={0} // Enable keyboard focus
+          <Tooltip
+            title={name}
+            position="bottom"
+            wrapperClassName="multichain-network-list-item__tooltip"
+            disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip
-                title={name}
-                position="bottom"
-                wrapperClassName="multichain-network-list-item__tooltip"
-              >
-                {name}
-              </Tooltip>
-            ) : (
-              name
-            )}
-          </Text>
+            <Text
+              ref={networkRef}
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={variant ?? TextVariant.bodyMd}
+              ellipsis
+              onKeyDown={handleKeyPress}
+              tabIndex={0} // Enable keyboard focus
+            >
+              {name}
+            </Text>
+          </Tooltip>
+          {isNetworkGasSponsored && (
+            <SuccessPill
+              label={t('noNetworkFee')}
+              display={Display.InlineFlex}
+            />
+          )}
         </Box>
         {rpcEndpoint && (
           <Box
@@ -205,15 +285,26 @@ export const NetworkListItem = ({
       </Box>
 
       {renderButton()}
-      {showEndAccessory ? (
-        <NetworkListItemMenu
-          anchorElement={networkListItemMenuElement}
-          isOpen={networkOptionsMenuOpen}
-          onDeleteClick={onDeleteClick}
-          onEditClick={onEditClick}
-          onClose={() => setNetworkOptionsMenuOpen(false)}
-        />
-      ) : null}
+      {showEndAccessory
+        ? (endAccessory ?? (
+            <NetworkListItemMenu
+              anchorElement={networkListItemMenuElement}
+              isOpen={networkOptionsMenuOpen}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
+              onClose={() => {
+                // When closing via click-outside: prepare close and update state
+                prepareMenuClose();
+                setNetworkOptionsMenuOpen(false);
+                // Reset flag after menu closes (prevents stale state if menu doesn't reopen)
+                setTimeout(() => setIsMenuClosing(false), 0);
+              }}
+              finalFocusRef={menuButtonRef}
+              isClosing={isMenuClosing}
+            />
+          ))
+        : null}
     </Box>
   );
 };
@@ -256,7 +347,11 @@ NetworkListItem.propTypes = {
    */
   startAccessory: PropTypes.node,
   /**
-   * Represents if we need to show menu option
+   * Represents end accessory
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option or endAccessory
    */
   showEndAccessory: PropTypes.bool,
 };

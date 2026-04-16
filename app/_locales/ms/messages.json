@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "activityLog": {
-    "message": "log aktiviti"
-  },
   "addAcquiredTokens": {
     "message": "Tambah token yang anda peroleh menggunakan MetaMask"
   },
@@ -226,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat Awam Ethereum"
-  },
   "etherscanView": {
     "message": "Lihat akaun di Etherscan"
-  },
-  "expandView": {
-    "message": "Kembangkan Paparan"
   },
   "failed": {
     "message": "Gagal"
@@ -251,26 +242,11 @@
   "from": {
     "message": "Daripada"
   },
-  "functionType": {
-    "message": "Jenis Fungsi"
-  },
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
-  },
   "gasLimitTooLow": {
     "message": "Had gas mestilah sekurang-kurangnya 21000"
-  },
-  "gasPrice": {
-    "message": "Harga Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Harga Gas Teramat Rendah"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Harga gas menentukan jumlah Ether yang anda sedia bayar untuk setiap unit gas."
   },
   "gasUsed": {
     "message": "Gas Digunakan"
@@ -309,18 +285,12 @@
   "history": {
     "message": "Sejarah"
   },
-  "importAccount": {
-    "message": "Import Akaun"
-  },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
   },
   "imported": {
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
   },
   "insufficientBalance": {
     "message": "Baki tidak mencukupi."
@@ -368,14 +338,8 @@
   "links": {
     "message": "Pautan"
   },
-  "loadMore": {
-    "message": "Muat Lagi"
-  },
   "loading": {
     "message": "Memuatkan..."
-  },
-  "loadingTokens": {
-    "message": "Memuatkan Token..."
   },
   "lock": {
     "message": "Log keluar"
@@ -399,9 +363,6 @@
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Tidak boleh hantar amaun ETH negatif."
-  },
   "networkName": {
     "message": "Nama Rangkaian"
   },
@@ -418,9 +379,6 @@
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Kenalan Baru"
-  },
   "newContract": {
     "message": "Kontrak Baru"
   },
@@ -429,12 +387,6 @@
   },
   "next": {
     "message": "Seterusnya"
-  },
-  "noConversionRateAvailable": {
-    "message": "Tiada Kadar Penukaran yang Tersedia"
-  },
-  "noTransactions": {
-    "message": "Anda tiada transaksi"
   },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."
@@ -456,9 +408,6 @@
   },
   "origin": {
     "message": "Asal"
-  },
-  "parameters": {
-    "message": "Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Sertai MetaMetrics"
@@ -510,12 +459,6 @@
   "rejectAll": {
     "message": "Tolak Semua"
   },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak secara kelompok $1 transaksi."
-  },
-  "rejectTxsN": {
-    "message": "Tolak transaksi $1"
-  },
   "rejected": {
     "message": "Ditolak"
   },
@@ -524,12 +467,6 @@
   },
   "removeAccount": {
     "message": "Alih keluar akaun"
-  },
-  "removeAccountDescription": {
-    "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "permintaan menunggu untuk diakui"
   },
   "required": {
     "message": "Diwajibkan"
@@ -598,9 +535,6 @@
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
   },
-  "sigRequest": {
-    "message": "Permintaan Tandatangan"
-  },
   "sign": {
     "message": "Tandatangan"
   },
@@ -619,9 +553,6 @@
   "speedUpCancellation": {
     "message": "Cepatkan pembatalan ini"
   },
-  "speedUpTransaction": {
-    "message": "Percepatkan transaksi ini"
-  },
   "stateLogError": {
     "message": "Ralat mendapatkan semula log keadaan."
   },
@@ -637,9 +568,6 @@
   "supportCenter": {
     "message": "Lawat Pusat Sokongan kami"
   },
-  "switchNetworks": {
-    "message": "Tukar Rangkaian"
-  },
   "symbol": {
     "message": "Simbol"
   },
@@ -648,9 +576,6 @@
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"
-  },
-  "tips": {
-    "message": "Tip"
   },
   "to": {
     "message": "Kepada"
@@ -670,41 +595,11 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi dicuba dengan yuran gas sebanyak $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berjaya dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi disahkan pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dicipta dengan nilai $1 pada $2."
-  },
-  "transactionDropped": {
-    "message": "Transaksi jatuh pada $2."
-  },
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Cuba memanggil fungsi untuk alamat bukan kontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi berdepan ralat."
-  },
-  "transactionFee": {
-    "message": "Yuran Transaksi"
-  },
-  "transactionResubmitted": {
-    "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
-  },
-  "transactionSubmitted": {
-    "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi dikemaskini pada $2."
   },
   "transfer": {
     "message": "Pindah"
@@ -724,29 +619,17 @@
   "unknown": {
     "message": "Tidak diketahui"
   },
-  "unknownNetwork": {
-    "message": "Rangkaian Persendirian Tidak Dikenali"
-  },
   "unknownQrCode": {
     "message": "Ralat: Kami tidak dapat mengenal pasti kod QR tersebut"
   },
   "unlock": {
     "message": "Buka kunci"
   },
-  "unlockMessage": {
-    "message": "Web ternyahpusat menanti"
-  },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "usedByClients": {
     "message": "Digunakan oleh pelbagai klien berbeza"
-  },
-  "userName": {
-    "message": "Nama pengguna"
-  },
-  "viewContact": {
-    "message": "Lihat Kenalan"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
@@ -756,14 +639,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "youSign": {
-    "message": "Anda menandatangani"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ungkapan benih peribadi anda"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Sifar harga gas untuk pencepatan"
   }
 }

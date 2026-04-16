@@ -1,30 +1,26 @@
 import { Suite } from 'mocha';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../seeder/ganache';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  login,
+} from '../../page-objects/flows/login.flow';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilderV2().build(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
-        const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await lockAndWaitForLoginPage(driver);
+        await login(driver);
       },
     );
   });

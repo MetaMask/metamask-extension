@@ -1,5 +1,6 @@
 import { providerErrors } from '@metamask/rpc-errors';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -16,7 +17,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -171,26 +172,36 @@ async function getAlerts(pendingApproval, data) {
   }
 
   if (data.matchedChain) {
+    const { requestData } = pendingApproval;
+    const networkByPassingValidation =
+      NETWORKS_BYPASSING_VALIDATION[requestData.chainId.toLowerCase()];
     if (
       data.matchedChain.name?.toLowerCase() !==
-      pendingApproval.requestData.chainName.toLowerCase()
+        requestData.chainName.toLowerCase() &&
+      networkByPassingValidation?.name?.toLowerCase() !==
+        requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
-      pendingApproval.requestData.ticker?.toLowerCase()
+        requestData.ticker?.toLowerCase() &&
+      networkByPassingValidation?.symbol?.toLowerCase() !==
+        requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
-    const { origin } = new URL(pendingApproval.requestData.rpcUrl);
+    const { origin } = new URL(requestData.rpcUrl);
     if (
-      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+      !data.matchedChain.rpc
+        ?.map((rpc) => new URL(rpc).origin)
+        .includes(origin) &&
+      !networkByPassingValidation?.rpcUrl?.includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
-    if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
+    if (DEPRECATED_NETWORKS.includes(requestData.chainId)) {
       alerts.push(DEPRECATED_CHAIN_ALERT);
     }
   }
@@ -217,7 +228,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history, data) {
+function getValues(pendingApproval, t, actions, navigate, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
 
@@ -269,6 +280,14 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'TruncatedDefinitionList',
         key: 'network-details',
         props: {
@@ -281,9 +300,10 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
-            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
-              ? undefined
-              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
+            [t('networkURL')]:
+              !customRpcUrl || isValidASCIIURL(customRpcUrl)
+                ? undefined
+                : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
@@ -337,7 +357,6 @@ function getValues(pendingApproval, t, actions, history, data) {
     ],
     cancelText: t('cancel'),
     submitText: t('approveButtonText'),
-    loadingText: t('addingCustomNetwork'),
     onSubmit: async () => {
       let endpointChainId;
       try {
@@ -374,6 +393,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           rpcEndpoints: [
             {
               url: pendingApproval.requestData.rpcUrl,
+              failoverUrls: pendingApproval.requestData.failoverRpcUrls,
               type: RpcEndpointType.Custom,
             },
           ],
@@ -389,7 +409,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
 
         if (!isOnboardingRoute) {
-          history.push(DEFAULT_ROUTE);
+          navigate(DEFAULT_ROUTE);
         }
       }
       return [];

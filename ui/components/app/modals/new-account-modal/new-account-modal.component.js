@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../ui/button/button.component';
-import { ButtonIcon, IconName } from '../../../component-library';
+import {
+  Button,
+  ButtonVariant,
+  ButtonIcon,
+  IconName,
+} from '../../../component-library';
 
 export default class NewAccountModal extends Component {
   static contextTypes = {
@@ -64,11 +68,16 @@ export default class NewAccountModal extends Component {
           />
         </div>
         <div className="new-account-modal__footer">
-          <Button type="secondary" onClick={this.props.hideModal}>
+          <Button
+            variant={ButtonVariant.Secondary}
+            block
+            onClick={this.props.hideModal}
+          >
             {t('cancel')}
           </Button>
           <Button
-            type="primary"
+            variant={ButtonVariant.Primary}
+            block
             onClick={this.onSubmit}
             disabled={!this.state.alias}
           >

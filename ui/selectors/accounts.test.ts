@@ -1,21 +1,28 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  EthScope,
+  BtcScope,
+  SolScope,
+  CaipChainId,
+} from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+  MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
   AccountsState,
   isSelectedInternalAccountEth,
-  isSelectedInternalAccountBtc,
-  hasCreatedBtcMainnetAccount,
-  hasCreatedBtcTestnetAccount,
   getSelectedInternalAccount,
   getInternalAccounts,
+  getInternalAccountsObject,
+  getInternalAccountsByScope,
+  getInternalAccountByAddress,
+  getAccountIdByAddress,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -24,6 +31,7 @@ const MOCK_STATE: AccountsState = {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: MOCK_ACCOUNTS,
     },
+    accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
   },
 };
 
@@ -33,6 +41,95 @@ describe('Accounts Selectors', () => {
       expect(getInternalAccounts(mockState as AccountsState)).toStrictEqual(
         Object.values(mockState.metamask.internalAccounts.accounts),
       );
+    });
+
+    it('returns the same object', () => {
+      const result1 = getInternalAccounts(mockState as AccountsState);
+      const result2 = getInternalAccounts(mockState as AccountsState);
+      expect(result1 === result2).toBe(true);
+    });
+  });
+
+  describe('#getAccountIdByAddress', () => {
+    it('returns the mapping of addresses to account IDs', () => {
+      expect(getAccountIdByAddress(mockState as AccountsState)).toStrictEqual({
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc':
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        '0xb552685e3d2790efd64a175b00d51f02cdafee5d':
+          'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813':
+          '15e69915-2a1a-4019-93b3-916e11fd432f',
+        '0xca8f1f0245530118d0cf14a06b01daf8f76cf281':
+          '694225f4-d30b-4e77-a900-c8bbce735b42',
+        '0xeb9e64b93097bc15f01f13eae97015c57ab64823':
+          '784225f4-d30b-4e77-a900-c8bbce735b88',
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b':
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+      });
+    });
+  });
+
+  describe('#getInternalAccountByAddress', () => {
+    it('returns the internal account by address', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        ),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        scopes: ['eip155:0'],
+        type: 'eip155:eoa',
+      });
+    });
+
+    it('handles checksummed addresses', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+        ),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
+        scopes: ['eip155:0'],
+        type: 'eip155:eoa',
+      });
     });
   });
 
@@ -50,7 +147,9 @@ describe('Accounts Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -58,7 +157,8 @@ describe('Accounts Selectors', () => {
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
-        type: 'eip155:eoa',
+        type: EthAccountType.Eoa,
+        scopes: [EthScope.Eoa],
       });
     });
 
@@ -70,6 +170,7 @@ describe('Accounts Selectors', () => {
               accounts: {},
               selectedAccount: '',
             },
+            accountIdByAddress: {},
           },
         }),
       ).toBeUndefined();
@@ -88,6 +189,7 @@ describe('Accounts Selectors', () => {
         },
         options: {},
         methods: ETH_EOA_METHODS,
+        scopes: [EthScope.Eoa],
         type: EthAccountType.Eoa,
       };
       expect(
@@ -98,6 +200,9 @@ describe('Accounts Selectors', () => {
                 [mockInternalAccount.id]: mockInternalAccount,
               },
               selectedAccount: mockInternalAccount.id,
+            },
+            accountIdByAddress: {
+              [mockInternalAccount.address]: mockInternalAccount.id,
             },
           },
         }),
@@ -122,7 +227,8 @@ describe('Accounts Selectors', () => {
     ])(
       'returns $isEth if the account is: $type',
       ({ id, isEth }: { id: string; isEth: boolean }) => {
-        const state = MOCK_STATE;
+        // Ensure selector memoization works correctly by creating fresh state with new object references.
+        const state = structuredClone(MOCK_STATE);
 
         state.metamask.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountEth(state)).toBe(isEth);
@@ -130,103 +236,212 @@ describe('Accounts Selectors', () => {
     );
 
     it('returns false if no account is selected', () => {
-      const state = MOCK_STATE;
+      const state = structuredClone(MOCK_STATE);
 
       state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
+      expect(isSelectedInternalAccountEth(state)).toBe(false);
     });
   });
 
-  describe('isSelectedInternalAccountBtc', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isBtc: false },
-      {
-        type: MOCK_ACCOUNT_ERC4337.type,
-        id: MOCK_ACCOUNT_ERC4337.id,
-        isBtc: false,
-      },
-      {
-        type: MOCK_ACCOUNT_BIP122_P2WPKH.type,
-        id: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-        isBtc: true,
-      },
-    ])(
-      'returns $isBtc if the account is: $type',
-      ({ id, isBtc }: { id: string; isBtc: boolean }) => {
-        const state = MOCK_STATE;
-
-        state.metamask.internalAccounts.selectedAccount = id;
-        expect(isSelectedInternalAccountBtc(state)).toBe(isBtc);
-      },
-    );
-
-    it('returns false if none account is selected', () => {
-      const state = MOCK_STATE;
-
-      state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
+  describe('getInternalAccountsObject', () => {
+    it('returns the internal accounts object', () => {
+      expect(
+        getInternalAccountsObject(mockState as AccountsState),
+      ).toStrictEqual(mockState.metamask.internalAccounts.accounts);
     });
   });
 
-  describe('hasCreatedBtcMainnetAccount', () => {
-    it('returns true if the BTC mainnet account has been created', () => {
-      const state = MOCK_STATE;
-
-      expect(hasCreatedBtcMainnetAccount(state)).toBe(true);
-    });
-
-    it('returns false if the BTC mainnet account has not been created yet', () => {
-      const state: AccountsState = {
-        metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
-          internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_EOA.id,
-            accounts: { mock_account_eoa: MOCK_ACCOUNT_EOA },
-          },
-        },
+  describe('getInternalAccountsByScope', () => {
+    it('returns all accounts that have any EVM scope when eip155:0 (wildcard) is requested', () => {
+      const accountWithEthScope = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-evm1`,
+        scopes: ['eip155:1'],
+      };
+      const accountWithPolygonScope = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-evm137`,
+        scopes: ['eip155:137'],
+      };
+      const nonEvmAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        id: `${MOCK_ACCOUNT_BIP122_P2WPKH.id}-btc`,
       };
 
-      expect(isSelectedInternalAccountBtc(state)).toBe(false);
-    });
-  });
-
-  describe('hasCreatedBtcTestnetAccount', () => {
-    it('returns true if the BTC testnet account has been created', () => {
       const state: AccountsState = {
         metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
           internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            selectedAccount: accountWithEthScope.id,
             accounts: {
-              mock_account_bip122_pwpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
-              mock_account_bip122_p2wpkh_testnet:
-                MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+              [accountWithEthScope.id]: accountWithEthScope,
+              [accountWithPolygonScope.id]: accountWithPolygonScope,
+              [nonEvmAccount.id]: nonEvmAccount,
             },
           },
         },
-      };
+      } as unknown as AccountsState;
 
-      expect(hasCreatedBtcTestnetAccount(state)).toBe(true);
+      const result = getInternalAccountsByScope(
+        state,
+        'eip155:0' as CaipChainId,
+      );
+      expect(result).toEqual(
+        expect.arrayContaining([accountWithEthScope, accountWithPolygonScope]),
+      );
+      expect(result).toHaveLength(2);
     });
 
-    it('returns false if the BTC testnet account has not been created yet', () => {
+    it('returns EVM accounts for both EOA and SCA (erc4337) when EVM wildcard scope is requested', () => {
+      const eoaAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-eoa`,
+        scopes: ['eip155:1'],
+      };
+      const scaAccount = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-sca`,
+        scopes: ['eip155:137'],
+      };
+      const solAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-sol`,
+        scopes: [SolScope.Mainnet],
+      };
+
       const state: AccountsState = {
         metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
           internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            selectedAccount: eoaAccount.id,
             accounts: {
-              mock_account_bip122_p2wpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+              [eoaAccount.id]: eoaAccount,
+              [scaAccount.id]: scaAccount,
+              [solAccount.id]: solAccount,
             },
           },
         },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        'eip155:0' as CaipChainId,
+      );
+      expect(result).toEqual(expect.arrayContaining([eoaAccount, scaAccount]));
+      expect(result).toHaveLength(2);
+    });
+
+    it('includes accounts with wildcard scope eip155:0 when a specific EVM scope is requested', () => {
+      const wildcardAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-wildcard`,
+        scopes: ['eip155:0'],
+      };
+      const specificChainAccount = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-evm1`,
+        scopes: ['eip155:1'],
       };
 
-      expect(isSelectedInternalAccountBtc(state)).toBe(false);
+      const state: AccountsState = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: wildcardAccount.id,
+            accounts: {
+              [wildcardAccount.id]: wildcardAccount,
+              [specificChainAccount.id]: specificChainAccount,
+            },
+          },
+        },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        'eip155:1' as CaipChainId,
+      );
+      expect(result).toEqual(
+        expect.arrayContaining([wildcardAccount, specificChainAccount]),
+      );
+      expect(result).toHaveLength(2);
+    });
+
+    it('excludes accounts with a different specific EVM chain when requesting eip155:1 (no wildcard)', () => {
+      const eoaAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-eoa-specific`,
+        scopes: ['eip155:1'],
+      };
+      const scaDifferentChain = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-sca-diff`,
+        scopes: ['eip155:137'],
+      };
+
+      const state: AccountsState = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: eoaAccount.id,
+            accounts: {
+              [eoaAccount.id]: eoaAccount,
+              [scaDifferentChain.id]: scaDifferentChain,
+            },
+          },
+        },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        'eip155:1' as CaipChainId,
+      );
+      expect(result).toEqual([eoaAccount]);
+    });
+
+    it('returns only accounts with the exact non-EVM scope', () => {
+      const solanaAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-sol1`,
+        scopes: [SolScope.Mainnet],
+      };
+      const anotherSolanaAccount = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-sol2`,
+        scopes: [SolScope.Mainnet],
+      };
+      const btcAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+      };
+
+      const state: AccountsState = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: solanaAccount.id,
+            accounts: {
+              [solanaAccount.id]: solanaAccount,
+              [anotherSolanaAccount.id]: anotherSolanaAccount,
+              [btcAccount.id]: btcAccount,
+            },
+          },
+        },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        SolScope.Mainnet as CaipChainId,
+      );
+      expect(result).toEqual(
+        expect.arrayContaining([solanaAccount, anotherSolanaAccount]),
+      );
+      expect(result).toHaveLength(2);
+    });
+
+    it('returns an empty array when no accounts match the requested scope', () => {
+      const emptyState = {
+        metamask: { internalAccounts: { selectedAccount: '', accounts: {} } },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        emptyState,
+        BtcScope.Mainnet as CaipChainId,
+      );
+      expect(result).toEqual([]);
     });
   });
 });

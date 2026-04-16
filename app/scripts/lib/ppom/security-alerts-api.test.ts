@@ -3,7 +3,6 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import {
-  getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
@@ -22,6 +21,8 @@ const REQUEST_MOCK = {
 };
 
 const RESPONSE_MOCK = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.maliciousDomain,
   description: 'Test Description',
@@ -94,31 +95,31 @@ describe('Security Alerts API', () => {
       const isEnabled = isSecurityAlertsAPIEnabled();
       expect(isEnabled).toBe(false);
     });
-  });
 
-  describe('getSecurityAlertsAPISupportedChainIds', () => {
-    it('sends GET request', async () => {
-      const SUPPORTED_CHAIN_IDS_MOCK = ['0x1', '0x2'];
-      fetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => SUPPORTED_CHAIN_IDS_MOCK,
-      });
-      const response = await getSecurityAlertsAPISupportedChainIds();
+    it('uses getSecurityAlertsConfig', async () => {
+      const newUrl = 'https://proxy.com/validate/0x1';
+      const authorization = 'Bearer token';
+      const getSecurityAlertsConfigMock = (_url: string) => {
+        return Promise.resolve({
+          newUrl,
+          authorization,
+        });
+      };
 
-      expect(response).toEqual(SUPPORTED_CHAIN_IDS_MOCK);
-
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/supportedChains`,
-        undefined,
+      await validateWithSecurityAlertsAPI(
+        CHAIN_ID_MOCK,
+        REQUEST_MOCK,
+        getSecurityAlertsConfigMock,
       );
-    });
 
-    it('throws an error if response is not ok', async () => {
-      fetchMock.mockResolvedValue({ ok: false, status: 404 });
-
-      await expect(getSecurityAlertsAPISupportedChainIds()).rejects.toThrow(
-        'Security alerts API request failed with status: 404',
+      // Check for new URL and authorization header.
+      expect(fetchMock).toHaveBeenCalledWith(
+        newUrl,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: authorization,
+          }),
+        }),
       );
     });
   });

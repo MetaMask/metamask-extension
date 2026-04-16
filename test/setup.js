@@ -9,3 +9,9 @@ global.platform = {
   // Required for: settings info tab
   getVersion: () => '<version>',
 };
+
+global.browser = {
+  permissions: {
+    request: jest.fn().mockResolvedValue(true),
+  },
+};

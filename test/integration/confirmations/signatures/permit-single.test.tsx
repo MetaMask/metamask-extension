@@ -1,10 +1,10 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation } from '../../helpers';
 import {
   getMetaMaskStateWithUnapprovedPermitSign,
   verifyDetails,
@@ -55,7 +55,7 @@ describe('Permit Single Signature Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '4' },
       }),
     );
   });
@@ -68,10 +68,10 @@ describe('Permit Single Signature Tests', () => {
     await renderSingleBatchSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 
@@ -85,8 +85,8 @@ describe('Permit Single Signature Tests', () => {
       'Estimated changes',
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
-      '0xA0b86...6eB48',
-      '1,461,501,637,3...',
+      'USDC',
+      'Unlimited',
     ];
 
     expect(simulationSection).toBeInTheDocument();
@@ -114,9 +114,7 @@ describe('Permit Single Signature Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderSingleBatchSignature();
-    act(async () => {
-      fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
-    });
+    fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
 
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',

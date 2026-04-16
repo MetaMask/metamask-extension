@@ -2,10 +2,11 @@ import log from 'loglevel';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  NetworkConfiguration,
+  type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,18 +21,21 @@ import {
 import {
   decimalToHex,
   hexToDecimal,
-} from '../../../../../shared/modules/conversion.utils';
+} from '../../../../../shared/lib/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
-import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+} from '../../../../../shared/lib/network.utils';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
+  setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
   updateNetwork,
@@ -45,6 +49,7 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
+  Tag,
   Text,
 } from '../../../../components/component-library';
 import {
@@ -66,25 +71,39 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
+import {
+  getIsRpcFailoverEnabled,
+  getTokenNetworkFilter,
+} from '../../../../selectors';
+import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
 export const NetworksForm = ({
   networkFormState,
   existingNetwork,
+  trackRpcUpdateFromBanner,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
-  existingNetwork?: NetworkConfiguration;
+  existingNetwork?: UpdateNetworkFields;
+  trackRpcUpdateFromBanner?: boolean;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
     name,
@@ -98,6 +117,11 @@ export const NetworksForm = ({
     blockExplorers,
     setBlockExplorers,
   } = networkFormState;
+
+  const defaultRpcEndpoint =
+    rpcUrls.defaultRpcEndpointIndex === undefined
+      ? undefined
+      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const { safeChains } = useSafeChains();
 
@@ -113,6 +137,8 @@ export const NetworksForm = ({
   const [suggestedTicker, setSuggestedTicker] = useState<string>();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
       ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
@@ -122,8 +148,11 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
-      ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -143,14 +172,22 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
-      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+          ?.nativeCurrency?.symbol)
       : undefined;
 
-    const mismatch = expectedSymbol && expectedSymbol !== ticker;
+    const isWhitelistedSymbol = chainIdHex
+      ? NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
+      : false;
+
+    const mismatch =
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
     setWarnings((state) => ({
       ...state,
@@ -267,22 +304,90 @@ export const NetworksForm = ({
                 : undefined,
           };
           await dispatch(updateNetwork(networkPayload, options));
+          if (Object.keys(tokenNetworkFilter).length === 1) {
+            await dispatch(
+              setTokenNetworkFilter({
+                [existingNetwork.chainId]: true,
+              }),
+            );
+            await dispatch(setEnabledNetworks(existingNetwork.chainId));
+          }
+
+          // Track RPC update from network connection banner
+          // Wrapped in try-catch to prevent analytics failures from affecting the UI
+          // since the network update has already succeeded at this point
+          if (trackRpcUpdateFromBanner) {
+            try {
+              const newRpcEndpoint =
+                networkPayload.rpcEndpoints[
+                  networkPayload.defaultRpcEndpointIndex
+                ];
+              const oldRpcEndpoint =
+                existingNetwork.rpcEndpoints?.[
+                  existingNetwork.defaultRpcEndpointIndex ?? 0
+                ];
+
+              const chainIdAsDecimal = hexToNumber(chainIdHex);
+
+              const sanitizeRpcUrl = async (url: string) => {
+                const isPublic = await submitRequestToBackground<boolean>(
+                  'isPublicEndpointUrl',
+                  [url],
+                );
+                return isPublic ? onlyKeepHost(url) : 'custom';
+              };
+
+              const [fromRpcDomain, toRpcDomain] = await Promise.all([
+                oldRpcEndpoint?.url
+                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                  : Promise.resolve('unknown'),
+                sanitizeRpcUrl(newRpcEndpoint.url),
+              ]);
+
+              trackEvent({
+                category: MetaMetricsEventCategory.Network,
+                event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                properties: {
+                  chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                  from_rpc_domain: fromRpcDomain,
+                  to_rpc_domain: toRpcDomain,
+                },
+                /* eslint-enable @typescript-eslint/naming-convention */
+              });
+            } catch (error) {
+              // Analytics tracking failed, but network update succeeded - don't surface this error
+              console.error('Failed to track RPC update analytics:', error);
+            }
+          }
         } else {
           await dispatch(addNetwork(networkPayload));
+          await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
 
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             block_explorer_url:
               blockExplorers?.blockExplorerUrls?.[
                 blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
               ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainIdHex,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             network_name: name,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: ticker,
           },
           sensitiveProperties: {
@@ -305,7 +410,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -332,6 +438,8 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -369,6 +477,7 @@ export const NetworksForm = ({
               </>
             )
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setName(e.target?.value);
@@ -396,6 +505,8 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -404,8 +515,16 @@ export const NetworksForm = ({
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
                 paddingBottom={3}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+                {isRpcFailoverEnabled &&
+                item.failoverUrls &&
+                item.failoverUrls.length > 0 ? (
+                  <Tag label={t('failover')} display={Display.Inline} />
+                ) : null}
               </Text>
             )
           }
@@ -443,6 +562,29 @@ export const NetworksForm = ({
             </HelpText>
           </Box>
         )}
+
+        {isRpcFailoverEnabled &&
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        defaultRpcEndpoint &&
+        defaultRpcEndpoint.failoverUrls &&
+        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+          <FormTextField
+            id="failoverRpcUrl"
+            size={FormTextFieldSize.Lg}
+            paddingTop={4}
+            label={t('failoverRpcUrl')}
+            labelProps={{
+              children: undefined,
+              variant: TextVariant.bodyMdMedium,
+            }}
+            textFieldProps={{
+              borderRadius: BorderRadius.LG,
+            }}
+            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            disabled={true}
+          />
+        ) : null}
+
         <FormTextField
           id="chainId"
           size={FormTextFieldSize.Lg}
@@ -497,6 +639,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >
@@ -536,6 +679,7 @@ export const NetworksForm = ({
               </Text>
             ) : null
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setTicker(e.target?.value);
@@ -628,6 +772,8 @@ export const NetworksForm = ({
             !rpcUrls?.rpcEndpoints?.length ||
             Object.values(errors).some((e) => e)
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

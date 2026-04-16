@@ -7,6 +7,8 @@ export const unapprovedTypedSignMsgV1 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: '3a938cfc-301d-4af0-96c4-b51fe1a5d6ad',
   },
@@ -64,6 +66,8 @@ export const unapprovedTypedSignMsgV3 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'efefe1db-6c6e-4a2c-aa0d-6183ad3ec810',
   },
@@ -146,11 +150,46 @@ export const unapprovedTypedSignMsgV4 = {
   },
 } as SignatureRequestType;
 
+export const unapprovedTypedSignMsgV4WithPermission = {
+  id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
+  status: 'unapproved',
+  time: new Date().getTime(),
+  chainid: '0x5',
+  type: TransactionType.signTypedData,
+  securityProviderResponse: null,
+  msgParams: {
+    from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    data: JSON.stringify(rawMessageV4),
+    origin: 'https://metamask.github.io',
+    requestId: 123456789,
+    signatureMethod: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  },
+  decodedPermission: {
+    expiry: 123456789,
+    origin: 'https://metamask.github.io',
+    permission: {
+      type: 'native-token-stream',
+      data: {
+        initialAmount: '0x1234',
+        maxAmount: '0x1234',
+        amountPerSecond: '0x1234',
+        startTime: 123456789,
+      },
+      justification: 'The reason for the permission',
+    },
+    chainId: '0x1',
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
+  },
+} as SignatureRequestType;
+
 export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
-    result_type: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'Loading',
     reason: 'validation_in_progress',
     securityAlertId: 'dadfc03d-43f9-4515-9aa2-cb00715c3e07',
   },
@@ -172,6 +211,8 @@ export const permitSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -202,8 +243,10 @@ export const seaportSignatureMsg = {
   },
   networkClientId: 'mainnet',
   securityAlertResponse: {
-    result_type: 'loading',
-    reason: 'CheckingChain',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'Loading',
+    reason: 'validation_in_progress',
     securityAlertId: 'def3b0ef-c96b-4c87-b1b1-c69cc02a0f78',
   },
   status: 'unapproved',
@@ -262,6 +305,8 @@ export const permitSignatureMsgWithNoDeadline = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -282,6 +327,8 @@ export const permitBatchSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -298,11 +345,66 @@ export const permitBatchSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const signatureMsgPermitRevokeDAI = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
+  securityAlertResponse: {
+    reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: TransactionType.signTypedData,
+  msgParams: {
+    data: JSON.stringify({
+      domain: {
+        name: 'Dai Stablecoin',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'holder', type: 'address' },
+          { name: 'spender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'expiry', type: 'uint256' },
+          { name: 'allowed', type: 'bool' },
+        ],
+      },
+      primaryType: 'Permit',
+      message: {
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        tokenId: '3606393',
+        nonce: 0,
+        expiry: 0,
+        allowed: false,
+      },
+    }),
+    from: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    version: 'V4',
+    requestId: 15,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },

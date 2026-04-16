@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarTokenSize,
@@ -21,11 +21,15 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip';
-import { AvatarGroup } from '../../multichain';
+import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import {
+  getAvatarType,
+  PreferredAvatar,
+} from '../preferred-avatar/preferred-avatar';
 
 /**
  * Renders status of the given permission. Used by PermissionCell component.
@@ -46,6 +50,7 @@ export const PermissionCellStatus = ({
   networks,
 }) => {
   const t = useI18nContext();
+  const avatarAccountVariant = useSelector(getAvatarType);
 
   const renderAccountsGroup = () => (
     <>
@@ -56,24 +61,31 @@ export const PermissionCellStatus = ({
           display={Display.InlineFlex}
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks?.map((network, index) => (
-              <Box
-                key={`${network.name}_${index}`}
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexStart}
-                alignItems={AlignItems.center}
-                marginTop={2}
-              >
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-                  name={network.name}
-                />
-                <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                  {network.name}
-                </Text>
-              </Box>
-            ))}
+            {networks?.map((network, index) => {
+              // Get network icon: try EVM chain ID map first, then rpcPrefs.imageUrl for non-EVM
+              const networkImageUrl =
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ??
+                network.rpcPrefs?.imageUrl ??
+                network.nativeTokenIconUrl;
+              return (
+                <Box
+                  key={`${network.name}_${index}`}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
+                  alignItems={AlignItems.center}
+                  marginTop={2}
+                >
+                  <AvatarNetwork
+                    size={AvatarNetworkSize.Xs}
+                    src={networkImageUrl}
+                    name={network.name}
+                  />
+                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                    {network.name}
+                  </Text>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       ) : (
@@ -110,10 +122,9 @@ export const PermissionCellStatus = ({
                       alignItems={AlignItems.center}
                       marginTop={2}
                     >
-                      <AvatarAccount
+                      <PreferredAvatar
                         address={account.avatarValue}
                         size={AvatarAccountSize.Xs}
-                        borderColor={BorderColor.backgroundDefault}
                       />
                       <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
                         {account.avatarName}
@@ -128,6 +139,7 @@ export const PermissionCellStatus = ({
               limit={3}
               members={accounts}
               avatarType={AvatarType.ACCOUNT}
+              variant={avatarAccountVariant}
               size={AvatarTokenSize.Xs}
               width={BlockSize.Min}
               borderColor={BorderColor.backgroundDefault}
@@ -140,15 +152,23 @@ export const PermissionCellStatus = ({
     </>
   );
 
+  // Check if we have content to display (either accounts or networks).
+  // This is important for switch ethereum chain requests where we only have networks
+  // to display (no accounts), but still need to call renderAccountsGroup() to show
+  // the network cells. The renderAccountsGroup function internally decides whether
+  // to render networks (when networks.length > 0) or accounts.
+  const hasAccountsOrNetworks =
+    (accounts && accounts.length > 0) || (networks && networks.length > 0);
+
   const getStatusMessage = () => {
     if (revoked) {
-      return accounts && accounts.length
+      return hasAccountsOrNetworks
         ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
         : t('permissionRevoked');
     }
 
     if (dateApproved) {
-      return accounts && accounts.length
+      return hasAccountsOrNetworks
         ? t('approvedOnForAccounts', [
             formatDate(dateApproved, 'yyyy-MM-dd'),
             renderAccountsGroup(),
@@ -160,7 +180,7 @@ export const PermissionCellStatus = ({
       return t('approved');
     }
 
-    return accounts && accounts.length
+    return hasAccountsOrNetworks
       ? t('permissionRequestedForAccounts', [renderAccountsGroup()])
       : t('permissionRequested');
   };

@@ -1,0 +1,58 @@
+@use "design-system";
+
+.srp-input-import {
+  &__container {
+    min-height: 218px;
+  }
+
+  &__initial-input {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__words-list {
+    grid-template-columns: repeat(3, 1fr);
+    // SRP_OVERRIDE: custom text field style
+    .mm-text-field {
+      padding-inline-start: 8px;
+      border-radius: 8px;
+    }
+
+    .mm-text-field:not(.mm-text-field--error) {
+      border-color: var(--color-border-muted);
+    }
+    // SRP_OVERRIDE: custom text field style
+    .mm-text-field.mm-text-field--focused {
+      outline: 5px auto var(--color-primary-default);
+    }
+    // SRP_OVERRIDE: custom text field style
+    .mm-input {
+      padding-inline-end: 8px;
+      padding-inline-start: 4px;
+    }
+  }
+
+  &__word-index {
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    height: 3rem;
+  }
+
+  &__text {
+    height: 40px;
+  }
+}
+

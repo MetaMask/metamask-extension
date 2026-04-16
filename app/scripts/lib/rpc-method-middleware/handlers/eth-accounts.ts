@@ -8,17 +8,16 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { AccountAddress } from '../../../controllers/account-order';
 import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
-  getAccounts: () => Promise<AccountAddress[]>;
+  getAccounts: () => string[];
 };
 
 type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     _req: JsonRpcRequest<Params>,
-    res: PendingJsonRpcResponse<AccountAddress[]>,
+    res: PendingJsonRpcResponse<string[]>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
     { getAccounts }: EthAccountsHandlerOptions,
@@ -44,16 +43,15 @@ export default ethAccounts;
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
  * @param options - The RPC method hooks.
- * @param options.getAccounts - Gets the accounts for the requesting
- * origin.
+ * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
  */
 async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   _req: JsonRpcRequest<Params>,
-  res: PendingJsonRpcResponse<AccountAddress[]>,
+  res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getAccounts }: EthAccountsHandlerOptions,
 ): Promise<void> {
-  res.result = await getAccounts();
+  res.result = getAccounts();
   return end();
 }

@@ -11,7 +11,7 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Identicon from '../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   Icon,
@@ -81,7 +81,7 @@ const SetApproveForAllWarning = ({
         className="set-approval-for-all-warning__content__account"
       >
         <Box display={DISPLAY.FLEX}>
-          <Identicon address={senderAddress} diameter={32} />
+          <PreferredAvatar address={senderAddress} />
           <Text
             variant={TextVariant.bodyMd}
             as="h5"

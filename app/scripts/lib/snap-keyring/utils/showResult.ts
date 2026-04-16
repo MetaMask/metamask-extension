@@ -3,7 +3,7 @@ import type {
   ErrorResult,
 } from '@metamask/approval-controller';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../../ui/components/component-library/icon';
 import { SnapKeyringBuilderMessenger } from '../types';
 
@@ -44,7 +44,7 @@ export const showError = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {
@@ -74,7 +74,7 @@ export const showSuccess = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {

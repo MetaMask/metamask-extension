@@ -4,11 +4,11 @@ import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { CombinedBackgroundAndReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -18,14 +18,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-function mapStateToProps(state: CombinedBackgroundAndReduxState) {
+function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
   const { buyView, warning } = state.appState;
   return {
     buyView,
@@ -34,18 +33,25 @@ function mapStateToProps(state: CombinedBackgroundAndReduxState) {
 }
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   warning,
   accountName,
+  location = 'Account Details Modal',
 }: {
-  Qr: { message: string; data: string };
-  warning: null | string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Qr: { message?: string; data: string };
+  warning: string | null | undefined;
   accountName?: string;
+  location?: string;
 }) {
-  const trackEvent = useContext(MetaMetricsContext);
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  const { trackEvent } = useContext(MetaMetricsContext);
+
+  // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
   const { message, data } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);
@@ -58,14 +64,12 @@ function QrCodeView({
   const header = message ? (
     <div className="qr-code__header">{message}</div>
   ) : null;
-
   const addressStart = data.substring(0, PREFIX_LEN);
   const addressMiddle: string = data.substring(
     PREFIX_LEN,
     data.length - SUFFIX_LEN,
   );
   const addressEnd: string = data.substring(data.length - SUFFIX_LEN);
-
   return (
     <div className="qr-code">
       {Array.isArray(message) ? (
@@ -89,6 +93,8 @@ function QrCodeView({
           data-testid="qr-code-image"
           className="qr-code__image"
           dangerouslySetInnerHTML={{
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __html: qrImage.createTableTag(5, 16),
           }}
         />
@@ -128,13 +134,14 @@ function QrCodeView({
         color={TextColor.primaryDefault}
         className="qr-code__copy-button"
         data-testid="address-copy-button-text"
+        data-clipboard-text={checksummedAddress}
         onClick={() => {
           handleCopy(checksummedAddress);
           trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.PublicAddressCopied,
             properties: {
-              location: 'Account Details Modal',
+              location,
             },
           });
         }}
@@ -159,6 +166,7 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
+  location: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

@@ -2,16 +2,17 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 import { TokenListItem } from '.';
 
 const state = {
@@ -39,27 +40,12 @@ const state = {
   },
 };
 
-const safeChainDetails = {
-  chainId: '1',
-  nativeCurrency: {
-    symbol: 'ETH',
-  },
-};
-
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock(
-  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
-  () => ({
-    useSafeChains: jest.fn().mockReturnValue({
-      safeChains: [safeChainDetails],
-    }),
-  }),
-);
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -69,11 +55,28 @@ jest.mock('react-redux', () => {
 });
 
 const mockGetIntlLocale = getIntlLocale;
-const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
+  const buildRWAMarketWindow = ({
+    isOpen,
+  }: {
+    isOpen: boolean;
+  }): NonNullable<React.ComponentProps<typeof TokenListItem>['rwaData']> => {
+    const now = Date.now();
+
+    return {
+      instrumentType: 'stock',
+      market: {
+        nextOpen: new Date(isOpen ? now - 60_000 : now + 60_000).toISOString(),
+        nextClose: new Date(now + 3_600_000).toISOString(),
+      },
+    };
+  };
+
   beforeAll(() => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+    // @ts-expect-error mocking platform
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });
@@ -124,11 +127,12 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
@@ -151,11 +155,13 @@ describe('TokenListItem', () => {
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
+      nativeCurrencySymbol: 'ETH',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
+    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
@@ -168,7 +174,6 @@ describe('TokenListItem', () => {
   });
 
   it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
-    (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
     const store = configureMockStore()(state);
     const propsToUse = {
       primary: '11.9751 ETH',
@@ -179,12 +184,14 @@ describe('TokenListItem', () => {
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
+      nativeCurrencySymbol: undefined,
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
+    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
@@ -209,11 +216,12 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -230,9 +238,67 @@ describe('TokenListItem', () => {
     expect(props.onClick).toHaveBeenCalled();
   });
 
+  it('renders the stock badge when rwaData marks the token as a stock', () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getIsRWATokensEnabled) {
+        return true;
+      }
+      if (selector === getCurrencyRates) {
+        return {};
+      }
+      return undefined;
+    });
+    const store = configureMockStore()(state);
+    const { getByText } = renderWithProvider(
+      <TokenListItem
+        {...props}
+        title="Apple"
+        tokenSymbol="AAPLON"
+        rwaData={buildRWAMarketWindow({ isOpen: true })}
+      />,
+      store,
+    );
+
+    expect(getByText(messages.tokenStock.message)).toBeInTheDocument();
+  });
+
+  it('opens the market closed modal instead of calling onClick when the market is closed', () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getIsRWATokensEnabled) {
+        return true;
+      }
+      if (selector === getCurrencyRates) {
+        return {};
+      }
+      return undefined;
+    });
+    const store = configureMockStore()(state);
+    const onClick = jest.fn();
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TokenListItem
+        {...props}
+        onClick={onClick}
+        title="Apple"
+        tokenSymbol="AAPLON"
+        rwaData={buildRWAMarketWindow({ isOpen: false })}
+      />,
+      store,
+    );
+
+    const targetElem = queryByTestId('multichain-token-list-button');
+
+    targetElem && fireEvent.click(targetElem);
+
+    expect(onClick).not.toHaveBeenCalled();
+    expect(getByTestId('market-closed-modal')).toBeInTheDocument();
+    expect(
+      getByText(messages.bridgeMarketClosedModalTitle.message),
+    ).toBeInTheDocument();
+  });
+
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, container } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -243,6 +309,7 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

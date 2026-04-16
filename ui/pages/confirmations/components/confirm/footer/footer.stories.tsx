@@ -3,7 +3,9 @@ import { Provider } from 'react-redux';
 
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../store/store';
+import { HardwareWalletErrorProvider } from '../../../../../contexts/hardware-wallets';
 import { ConfirmContextProvider } from '../../../context/confirm';
+import { DappSwapContextProvider } from '../../../context/dapp-swap';
 
 import Footer from './footer';
 
@@ -15,7 +17,11 @@ const Story = {
   decorators: [
     (story: any) => (
       <Provider store={store}>
-        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+        <HardwareWalletErrorProvider>
+          <ConfirmContextProvider>
+            <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+          </ConfirmContextProvider>
+        </HardwareWalletErrorProvider>
       </Provider>
     ),
   ],

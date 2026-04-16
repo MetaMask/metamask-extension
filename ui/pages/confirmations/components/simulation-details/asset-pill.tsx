@@ -10,7 +10,6 @@ import {
 } from '../../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
@@ -19,7 +18,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Name from '../../../../components/app/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
@@ -40,11 +39,7 @@ const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
       flexDirection={FlexDirection.Row}
       borderRadius={BorderRadius.pill}
       alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
-      style={{
-        padding: '1px 8px 1px 4px',
-      }}
     >
       <AvatarNetwork
         name={nativeCurrency}

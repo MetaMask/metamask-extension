@@ -1,194 +1,162 @@
-import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { QuoteResponse, QuoteRequest, Quote, L1GasFees } from '../types';
-import {
-  hexToDecimal,
-  sumDecimals,
-} from '../../../../shared/modules/conversion.utils';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
-
-export const isNativeAddress = (address?: string) => address === zeroAddress();
-
-export const isValidQuoteRequest = (
-  partialRequest: Partial<QuoteRequest>,
-  requireAmount = true,
-): partialRequest is QuoteRequest => {
-  const STRING_FIELDS = ['srcTokenAddress', 'destTokenAddress'];
-  if (requireAmount) {
-    STRING_FIELDS.push('srcTokenAmount');
-  }
-  const NUMBER_FIELDS = ['srcChainId', 'destChainId', 'slippage'];
-
-  return (
-    STRING_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'string' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        partialRequest[field as keyof typeof partialRequest] !== '' &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    ) &&
-    NUMBER_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'number' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        !isNaN(Number(partialRequest[field as keyof typeof partialRequest])) &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    )
-  );
-};
-
-export const calcToAmount = (
-  { destTokenAmount, destAsset }: Quote,
-  exchangeRate: number | null,
-) => {
-  const normalizedDestAmount = calcTokenAmount(
-    destTokenAmount,
-    destAsset.decimals,
-  );
-  return {
-    amount: normalizedDestAmount,
-    fiat: exchangeRate
-      ? normalizedDestAmount.mul(exchangeRate.toString())
-      : null,
-  };
-};
-
-export const calcSentAmount = (
-  { srcTokenAmount, srcAsset, feeData }: Quote,
-  exchangeRate: number | null,
-) => {
-  const normalizedSentAmount = calcTokenAmount(
-    new BigNumber(srcTokenAmount).plus(feeData.metabridge.amount),
-    srcAsset.decimals,
-  );
-  return {
-    amount: normalizedSentAmount,
-    fiat: exchangeRate
-      ? normalizedSentAmount.mul(exchangeRate.toString())
-      : null,
-  };
-};
-
-export const calcRelayerFee = (
-  bridgeQuote: QuoteResponse,
-  nativeExchangeRate?: number,
-) => {
-  const {
-    quote: { srcAsset, srcTokenAmount, feeData },
-    trade,
-  } = bridgeQuote;
-  const relayerFeeInNative = calcTokenAmount(
-    new BigNumber(hexToDecimal(trade.value)).minus(
-      isNativeAddress(srcAsset.address)
-        ? new BigNumber(srcTokenAmount).plus(feeData.metabridge.amount)
-        : 0,
-    ),
-    18,
-  );
-  return {
-    amount: relayerFeeInNative,
-    fiat: nativeExchangeRate
-      ? relayerFeeInNative.mul(nativeExchangeRate.toString())
-      : null,
-  };
-};
-
-export const calcTotalGasFee = (
-  bridgeQuote: QuoteResponse & L1GasFees,
-  estimatedBaseFeeInDecGwei: string,
-  maxPriorityFeePerGasInDecGwei: string,
-  nativeExchangeRate?: number,
-) => {
-  const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
-  const totalGasLimitInDec = sumDecimals(
-    trade.gasLimit?.toString() ?? '0',
-    approval?.gasLimit?.toString() ?? '0',
-  );
-  const feePerGasInDecGwei = sumDecimals(
-    estimatedBaseFeeInDecGwei,
-    maxPriorityFeePerGasInDecGwei,
-  );
-
-  const l1GasFeesInDecGWei = Numeric.from(
-    l1GasFeesInHexWei ?? '0',
-    16,
-    EtherDenomination.WEI,
-  ).toDenomination(EtherDenomination.GWEI);
-
-  const gasFeesInDecGwei = totalGasLimitInDec
-    .times(feePerGasInDecGwei)
-    .add(l1GasFeesInDecGWei);
-
-  const gasFeesInDecEth = new BigNumber(
-    gasFeesInDecGwei.shiftedBy(9).toString(),
-  );
-  const gasFeesInUSD = nativeExchangeRate
-    ? gasFeesInDecEth.times(nativeExchangeRate.toString())
-    : null;
-
-  return {
-    amount: gasFeesInDecEth,
-    fiat: gasFeesInUSD,
-  };
-};
-
-export const calcAdjustedReturn = (
-  destTokenAmountInFiat: BigNumber | null,
-  totalNetworkFeeInFiat: BigNumber | null,
-) => ({
-  fiat:
-    destTokenAmountInFiat && totalNetworkFeeInFiat
-      ? destTokenAmountInFiat.minus(totalNetworkFeeInFiat)
-      : null,
-});
-
-export const calcSwapRate = (
-  sentAmount: BigNumber,
-  destTokenAmount: BigNumber,
-) => destTokenAmount.div(sentAmount);
-
-export const calcCost = (
-  adjustedReturnInFiat: BigNumber | null,
-  sentAmountInFiat: BigNumber | null,
-) => ({
-  fiat:
-    adjustedReturnInFiat && sentAmountInFiat
-      ? sentAmountInFiat.minus(adjustedReturnInFiat)
-      : null,
-});
-
-export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
-  (estimatedProcessingTimeInSeconds / 60).toFixed();
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
-  amount: BigNumber,
-  symbol: string,
-  precision: number = 2,
-) => `${amount.toFixed(precision)} ${symbol}`;
+  locale: string,
+  amount: string,
+  symbol: string = '',
+  roundingMode?: number,
+) => {
+  const stringifiedAmount = formatAmount(
+    locale,
+    new BigNumber(amount),
+    roundingMode,
+  );
 
-export const formatFiatAmount = (
-  amount: BigNumber | null,
+  return [stringifiedAmount, symbol].join(' ').trim();
+};
+
+export const formatCurrencyAmount = (
+  stringifiedDecAmount: string | null | undefined,
   currency: string,
   precision: number = DEFAULT_PRECISION,
 ) => {
-  if (!amount) {
+  if (!stringifiedDecAmount) {
     return undefined;
   }
+  const amount = new BigNumber(stringifiedDecAmount);
+
   if (precision === 0) {
     if (amount.lt(0.01)) {
-      return `<${formatCurrency('0', currency, precision)}`;
+      return '<$0.01';
     }
     if (amount.lt(1)) {
       return formatCurrency(amount.toString(), currency, 2);
     }
   }
   return formatCurrency(amount.toString(), currency, precision);
+};
+
+/**
+ * Formats network fees with dynamic precision to avoid showing $0.00 for non-zero fees.
+ * If fees are less than $0.01, increases decimal places up to 4 until the first non-zero digit is shown.
+ * If fees are non-zero but smaller than $0.0001, rounds up to $0.0001.
+ *
+ * @param stringifiedDecAmount - The fee amount as a string
+ * @param currency - The currency code (e.g., 'USD')
+ * @returns Formatted currency string with appropriate precision
+ */
+export function formatNetworkFee(
+  stringifiedDecAmount: string | null | undefined,
+  currency: string,
+): string | undefined {
+  if (!stringifiedDecAmount) {
+    return undefined;
+  }
+
+  const amount = new BigNumber(stringifiedDecAmount);
+
+  // If amount is zero, return formatted zero
+  if (amount.isZero()) {
+    return formatCurrency(amount.toString(), currency, 2);
+  }
+
+  // If amount is >= $0.01, use standard 2 decimal places
+  if (amount.gte(0.01)) {
+    return formatCurrency(amount.toString(), currency, 2);
+  }
+
+  // For amounts < $0.01, find the precision that shows the first non-zero digit
+  // Try precision from 2 to 4 (max allowed)
+  for (let precision = 2; precision <= 4; precision++) {
+    // Scale the amount by 10^precision to move the target digit to the ones place
+    // Example: 0.0005 with precision 3 → 0.5 (moves 3rd decimal to ones place)
+    const scaleFactor = new BigNumber(10).pow(precision);
+    const scaledAmount = amount.times(scaleFactor);
+
+    // Round using ROUND_HALF_UP to match currency formatter's rounding behavior
+    // If the rounded value is non-zero, this precision will show a non-zero digit
+    const roundedValue = scaledAmount.round(0, BigNumber.ROUND_HALF_UP);
+
+    if (roundedValue.gt(0)) {
+      return formatCurrency(amount.toString(), currency, precision);
+    }
+  }
+
+  // If after 4 decimal places it's still showing as zero but original amount > 0,
+  // round up to $0.0001
+  if (amount.gt(0)) {
+    return formatCurrency('0.0001', currency, 4);
+  }
+
+  // Fallback to 2 decimal places
+  return formatCurrency(amount.toString(), currency, 2);
+}
+
+export const formatProviderLabel = (args?: {
+  bridgeId: QuoteResponse['quote']['bridgeId'];
+  bridges: QuoteResponse['quote']['bridges'];
+}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
+
+export const sanitizeAmountInput = (
+  textToSanitize: string,
+  dropNumbersAfterSecondDecimal = true,
+) => {
+  // Remove non-numeric and non-decimal characters
+  const cleanedString = textToSanitize.replace(/[^\d.]+/gu, '');
+  // Find first decimal point and use its index to split the string into two parts
+  const pointIndex = cleanedString.indexOf('.');
+  const firstPart = cleanedString.slice(0, pointIndex + 1);
+  const secondPart = dropNumbersAfterSecondDecimal
+    ? // Ignore digits after second decimal point
+      cleanedString.slice(pointIndex + 1).split('.')[0]
+    : // Preserve digits after second decimal point
+      cleanedString.slice(pointIndex + 1).replace(/[^\d]+/gu, '');
+
+  return [firstPart, secondPart].filter(Boolean).join('');
+};
+
+/**
+ * Sanitizes the amount string for BigNumber calculations by converting empty strings or single decimal points to '0'.
+ *
+ * @param amount - The raw amount string from input
+ * @returns A safe string for BigNumber operations
+ */
+export const safeAmountForCalc = (
+  amount: string | null | undefined,
+): string => {
+  if (!amount) {
+    return '0';
+  }
+  const sanitized = sanitizeAmountInput(amount);
+  return sanitized === '' || sanitized === '.' ? '0' : sanitized;
+};
+
+export const isQuoteExpiredOrInvalid = ({
+  activeQuote,
+  toToken,
+  isQuoteExpired,
+}: {
+  activeQuote: QuoteResponse | null;
+  toToken: BridgeToken | null;
+  isQuoteExpired: boolean;
+}): boolean => {
+  // 1. Ignore quotes that are expired
+  if (isQuoteExpired) {
+    return true;
+  }
+
+  // 2. Ensure the quote still matches the currently selected destination asset / chain
+  if (activeQuote && toToken) {
+    return (
+      activeQuote.quote.destAsset.assetId.toLowerCase() !==
+      toToken.assetId.toLowerCase()
+    );
+  }
+
+  return false;
 };

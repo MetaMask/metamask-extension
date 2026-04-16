@@ -2,22 +2,35 @@ import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
+import { useGasSponsorshipWarningAlerts } from './alerts/transactions/useGasSponsorshipWarningAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
+import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
-import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
+import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
+import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
-import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
+import { usePayHardwareAccountAlert } from './alerts/transactions/usePayHardwareAccountAlert';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
-///: END:ONLY_INCLUDE_IF
-import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
+import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
+import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
+import { useSpenderAlerts } from './alerts/useSpenderAlerts';
+import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
+import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
+import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
+import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
+import { useTokenContractAlert } from './alerts/transactions/useTokenContractAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -30,50 +43,75 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const burnAddressAlert = useBurnAddressAlert();
+  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
+  const gasSponsorshipWarningAlerts = useGasSponsorshipWarningAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
-  const networkBusyAlerts = useNetworkBusyAlerts();
+  const insufficientPayTokenBalanceAlerts =
+    useInsufficientPayTokenBalanceAlert();
+  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
+  const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
+  const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
+  const payHardwareAccountAlerts = usePayHardwareAccountAlert();
   const resimulationAlert = useResimulationAlert();
-  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const shieldCoverageAlert = useShieldCoverageAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  ///: END:ONLY_INCLUDE_IF
-  const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
+  const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
+  const tokenContractAlert = useTokenContractAlert();
+  const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
 
   return useMemo(
     () => [
+      ...accountTypeUpgradeAlerts,
+      ...burnAddressAlert,
+      ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
+      ...gasSponsorshipWarningAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
-      ...networkBusyAlerts,
+      ...insufficientPayTokenBalanceAlerts,
+      ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
+      ...noPayTokenQuotesAlerts,
+      ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
+      ...payHardwareAccountAlerts,
       ...resimulationAlert,
-      ...firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      ...shieldCoverageAlert,
       ...signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
-      ...queuedConfirmationsAlerts,
+      ...suggestedGasFeeHighAlert,
+      ...tokenContractAlert,
+      ...tokenTrustSignalAlerts,
     ],
     [
+      accountTypeUpgradeAlerts,
+      burnAddressAlert,
+      firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
+      gasSponsorshipWarningAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
-      networkBusyAlerts,
+      insufficientPayTokenBalanceAlerts,
+      multipleApprovalAlerts,
       noGasPriceAlerts,
+      noPayTokenQuotesAlerts,
+      nonContractAddressAlerts,
       pendingTransactionAlerts,
+      payHardwareAccountAlerts,
       resimulationAlert,
-      firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      shieldCoverageAlert,
       signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
-      queuedConfirmationsAlerts,
+      suggestedGasFeeHighAlert,
+      tokenContractAlert,
+      tokenTrustSignalAlerts,
     ],
   );
 }
@@ -84,6 +122,11 @@ export default function useConfirmationAlerts(): Alert[] {
   const signatureAlerts = useSignatureAlerts();
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
+  const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
+  const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
+  const originTrustSignalAlerts = useOriginTrustSignalAlerts();
+  const spenderAlerts = useSpenderAlerts();
+  const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
   return useMemo(
     () => [
@@ -92,6 +135,11 @@ export default function useConfirmationAlerts(): Alert[] {
       ...signatureAlerts,
       ...transactionAlerts,
       ...selectedAccountAlerts,
+      ...networkAndOriginSwitchingAlerts,
+      ...addressTrustSignalAlerts,
+      ...originTrustSignalAlerts,
+      ...spenderAlerts,
+      ...addEthereumChainAlerts,
     ],
     [
       blockaidAlerts,
@@ -99,6 +147,11 @@ export default function useConfirmationAlerts(): Alert[] {
       signatureAlerts,
       transactionAlerts,
       selectedAccountAlerts,
+      networkAndOriginSwitchingAlerts,
+      addressTrustSignalAlerts,
+      originTrustSignalAlerts,
+      spenderAlerts,
+      addEthereumChainAlerts,
     ],
   );
 }

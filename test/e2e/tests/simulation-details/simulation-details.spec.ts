@@ -1,15 +1,12 @@
 import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixture-builder';
-import {
-  createDappTransaction,
-  Fixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { Fixtures, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { login } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
   BUY_ERC1155_REQUEST_2_MOCK,
@@ -43,15 +40,6 @@ import {
 } from './mock-request-send-eth';
 import { MockRequestResponse } from './types';
 
-const TX_SENTINEL_URL =
-  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/';
-
-const mockNetworkRequest = async (mockServer: Mockttp) => {
-  await mockServer.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
-    '1': { name: 'Mainnet', confirmations: true },
-  });
-};
-
 async function withFixturesForSimulationDetails(
   {
     title,
@@ -62,59 +50,37 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (
+    args: Pick<Fixtures, 'driver' | 'mockServer'>,
+  ) => Promise<void>,
 ) {
-  const testSpecificMock = async (mockServer: MockttpServer) => {
-    await mockNetworkRequest(mockServer);
-    await mockRequests(mockServer);
-  };
   await withFixtures(
     {
-      fixtures: new FixtureBuilder({ inputChainId })
-        .withPermissionControllerConnectedToTestDapp()
+      fixtures: new FixtureBuilderV2()
+        .withEnabledNetworks({
+          eip155: {
+            [inputChainId]: true,
+          },
+        })
+        .withPermissionControllerConnectedToTestDapp({
+          chainIds: [hexToNumber(inputChainId)],
+        })
         .build(),
       title,
-      testSpecificMock,
-      dapp: true,
-      ganacheOptions: {
-        hardfork: 'london',
+      testSpecificMock: mockRequests,
+      dappOptions: { numberOfTestDapps: 1 },
+      localNodeOptions: {
         chainId: hexToNumber(inputChainId),
       },
     },
     async ({ driver, mockServer }) => {
-      await unlockWallet(driver);
-      await test({ driver, mockServer });
+      await login(driver);
+      await runTestWithFixtures({ driver, mockServer });
     },
   );
 }
 
-async function expectBalanceChange(
-  driver: Driver,
-  isOutgoing: boolean,
-  index: number,
-  displayAmount: string,
-  assetName: string,
-) {
-  const listTestId = isOutgoing
-    ? 'simulation-rows-outgoing'
-    : 'simulation-rows-incoming';
-
-  const css = `[data-testid="${listTestId}"] [data-testid="simulation-details-balance-change-row"]:nth-child(${
-    index + 1
-  })`;
-
-  await driver.findElement({
-    css,
-    text: displayAmount,
-  });
-
-  await driver.findElement({
-    css,
-    text: assetName,
-  });
-}
-
-export async function mockRequest(
+async function mockRequest(
   server: Mockttp,
   { request, response }: MockRequestResponse,
 ) {
@@ -124,23 +90,32 @@ export async function mockRequest(
     .thenJson(200, response);
 }
 
-describe('Simulation Details', () => {
-  it('renders send eth transaction', async function (this: Mocha.Context) {
+describe('Simulation Details', function () {
+  it('renders send eth transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.001', 'ETH');
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.001',
+          assetName: 'ETH',
+        });
       },
     );
   });
 
-  it('renders buy ERC20 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC20 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC20_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC20_REQUEST_2_MOCK);
@@ -148,16 +123,31 @@ describe('Simulation Details', () => {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC20_TRANSACTION);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC20_TRANSACTION])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.002', 'ETH');
-        await expectBalanceChange(driver, false, 0, '+ 6.756', 'DAI');
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.002',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 6.756',
+          assetName: 'DAI',
+        });
       },
     );
   });
 
-  it('renders buy ERC721 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC721 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC721_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC721_REQUEST_2_MOCK);
@@ -165,81 +155,110 @@ describe('Simulation Details', () => {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC721_TRANSACTION_MOCK);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.014', 'ETH');
-        await expectBalanceChange(
-          driver,
-          false,
-          0,
-          '+ #719',
-          '0xEF9c2...2AD6e',
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC721_TRANSACTION_MOCK])}`,
         );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.014',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ #719',
+          assetName: '0xEF9c2...2AD6e',
+        });
       },
     );
   });
 
-  it('renders buy ERC1155 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC1155 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_1_MOCK as MockRequestResponse,
+      );
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_2_MOCK as MockRequestResponse,
+      );
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC1155_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC1155_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.00045', 'ETH');
-        await expectBalanceChange(
-          driver,
-          false,
-          0,
-          '+ 1 #10340',
-          '0x76BE3...E8E77',
-        );
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.00045',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 1 #10340',
+          assetName: '0x76BE3...E8E77',
+        });
       },
     );
   });
 
-  it('renders no changes transaction', async function (this: Mocha.Context) {
+  it('renders no changes transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, NO_CHANGES_REQUEST_MOCK);
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, NO_CHANGES_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([NO_CHANGES_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'No changes',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'No changes',
+        );
       },
     );
   });
 
-  it('displays error message if transaction will fail or revert', async function (this: Mocha.Context) {
+  it('displays error message if transaction will fail or revert', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, INSUFFICIENT_GAS_REQUEST_MOCK);
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, INSUFFICIENT_GAS_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([INSUFFICIENT_GAS_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'This transaction is likely to fail',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'This transaction is likely to fail',
+        );
       },
     );
   });
 
-  it('does not display if chain is not supported', async function (this: Mocha.Context) {
+  it('does not display if chain is not supported', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
@@ -250,18 +269,21 @@ describe('Simulation Details', () => {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.assertElementNotPresent(
-          '[data-testid="simulation-details-layout"]',
-          { waitAtLeastGuard: 1000 },
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetailsNotDisplayed(
+          1000,
         );
       },
     );
   });
 
-  it('displays generic error message', async function (this: Mocha.Context) {
+  it('displays generic error message', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, MALFORMED_TRANSACTION_REQUEST_MOCK);
     };
@@ -271,13 +293,16 @@ describe('Simulation Details', () => {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, MALFORMED_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([MALFORMED_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'Unavailable',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'Unavailable',
+        );
       },
     );
   });

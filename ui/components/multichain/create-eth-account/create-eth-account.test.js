@@ -1,16 +1,24 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CreateEthAccount } from '.';
+
+const mockNewEthAccount = createMockInternalAccount({
+  name: 'Eth Account 1',
+  address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+});
 
 const render = (props = { onActionComplete: () => jest.fn() }) => {
   const store = configureStore(mockState);
   return renderWithProvider(<CreateEthAccount {...props} />, store);
 };
 
-const mockAddNewAccount = jest.fn().mockReturnValue({ type: 'TYPE' });
+const mockAddNewAccount = jest.fn().mockReturnValue(mockNewEthAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockGetNextAvailableAccountName = jest.fn().mockReturnValue('Account 7');
 
@@ -44,12 +52,12 @@ describe('CreateEthAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Add account'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() => expect(mockAddNewAccount).toHaveBeenCalled());
     await waitFor(() =>
       expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        { type: 'TYPE' },
+        mockNewEthAccount.address,
         newAccountName,
       ),
     );
@@ -66,7 +74,31 @@ describe('CreateEthAccount', () => {
       target: { value: usedAccountName },
     });
 
-    const submitButton = getByText('Add account');
+    const submitButton = getByText(messages.addAccount.message);
     expect(submitButton).toHaveAttribute('disabled');
+  });
+
+  it('passes keyringId when creating account with multi-srp', async () => {
+    const onActionComplete = jest.fn();
+    const selectedKeyringId = 'test-keyring-id';
+    const { getByText, getByPlaceholderText } = render({
+      onActionComplete,
+      selectedKeyringId,
+    });
+
+    const input = await waitFor(() => getByPlaceholderText('Account 7'));
+    const newAccountName = 'New Account Name';
+
+    fireEvent.change(input, {
+      target: { value: newAccountName },
+    });
+    fireEvent.click(getByText(messages.addAccount.message));
+
+    await waitFor(() =>
+      expect(mockAddNewAccount).toHaveBeenCalledWith(selectedKeyringId),
+    );
+    await waitFor(() =>
+      expect(onActionComplete).toHaveBeenCalledWith(true, mockNewEthAccount),
+    );
   });
 });

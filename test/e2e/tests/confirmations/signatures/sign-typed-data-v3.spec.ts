@@ -1,54 +1,50 @@
-import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { login } from '../../../page-objects/flows/login.flow';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(
-          driver,
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV3,
         );
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
-
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.delay(1000);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -62,6 +58,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -70,36 +67,33 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
   });
 
   it('initiates and rejects', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(
-          driver,
+        const confirmation = new SignTypedData(driver);
+        const testDapp = new TestDapp(driver);
+
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV3,
         );
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await driver.waitForSelector({
-          css: '#signTypedDataV3Result',
-          text: 'Error: User rejected the request.',
-        });
+        await testDapp.assertUserRejectedRequest();
       },
       mockSignatureRejected,
     );
@@ -107,47 +101,23 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
 });
 
 async function assertInfoValues(driver: Driver) {
+  const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Mail' });
-  const fromName = driver.findElement({ text: 'Cow' });
-  const fromAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  const toName = driver.findElement({ text: 'Bob' });
-  const toAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xbBbBB...bBBbB',
-  });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await fromName, 'fromName');
-  assert.ok(await fromAddress, 'fromAddress');
-  assert.ok(await toName, 'toName');
-  assert.ok(await toAddress, 'toAddress');
-  assert.ok(await contents, 'contents');
+  await signTypedData.verifyOrigin();
+  await signTypedData.verifyContractPetName();
+  await signTypedData.verifyPrimaryType();
+  await signTypedData.verifyFromName();
+  await signTypedData.verifyFromAddress();
+  await signTypedData.verifyToName();
+  await signTypedData.verifyToAddress();
+  await signTypedData.verifyContents();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle('E2E Test Dapp');
-  await driver.clickElement('#signTypedDataV3Verify');
-  await driver.waitForSelector({
-    css: '#signTypedDataV3Result',
-    text: '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
-  });
-
-  await driver.waitForSelector({
-    css: '#signTypedDataV3VerifyResult',
-    text: publicAddress,
-  });
+  await testDapp.checkSuccessSignTypedDataV3(publicAddress);
+  await testDapp.verifySuccessSignTypedDataV3Result(
+    '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
+  );
 }

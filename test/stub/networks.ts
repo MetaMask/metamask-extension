@@ -4,15 +4,21 @@ import {
   NetworkStatus,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { Hex } from '@metamask/utils';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
 } from '../../shared/constants/network';
 
-// TODO: This is intentionally the old network state, and could be
-// removed if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION` to >= 127
+/**
+ * @deprecated Use `FixtureBuilderV2.withNetworkController()` instead.
+ * This helper produces the legacy flat `networkConfigurations` format (pre-migration 127).
+ * It will be removed once `FixtureBuilder` (legacy) is fully replaced by `FixtureBuilderV2`.
+ * @param networks - The network configurations to mock.
+ */
 export const mockNetworkStateOld = (
   ...networks: {
     id?: string;
@@ -72,6 +78,40 @@ export const mockNetworkStateOld = (
   };
 };
 
+export const mockMultichainNetworkState =
+  (): MultichainNetworkControllerState => {
+    return {
+      multichainNetworkConfigurationsByChainId: {
+        [BtcScope.Mainnet]: {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
+        },
+        [SolScope.Mainnet]: {
+          chainId: SolScope.Mainnet,
+          name: 'Solana',
+          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+          isEvm: false,
+        },
+        [TrxScope.Mainnet]: {
+          chainId: TrxScope.Mainnet,
+          name: 'Tron',
+          nativeCurrency: `${TrxScope.Mainnet}/slip44:195`,
+          isEvm: false,
+        },
+      },
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      isEvmSelected: true,
+      networksWithTransactionActivity: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          namespace: 'eip155',
+          activeChains: ['0x5'],
+        },
+      },
+    };
+  };
+
 export const mockNetworkState = (
   ...networks: {
     id?: string;
@@ -92,8 +132,8 @@ export const mockNetworkState = (
   const networkConfigurations = networks.map((network) => {
     const blockExplorer =
       !('blockExplorerUrl' in network) || network.blockExplorerUrl
-        ? network.blockExplorerUrl ??
-          `https://localhost/blockExplorer/${network.chainId}`
+        ? (network.blockExplorerUrl ??
+          `https://localhost/blockExplorer/${network.chainId}`)
         : undefined;
 
     const rpc =

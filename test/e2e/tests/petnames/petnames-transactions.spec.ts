@@ -1,0 +1,118 @@
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import { Driver } from '../../webdriver/driver';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
+
+const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
+const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
+const CUSTOM_NAME_MOCK = 'Custom Name';
+const PROPOSED_NAME_MOCK = 'test4.lens';
+
+describe('Petnames - Transactions', function () {
+  it('can save petnames for addresses in dapp send transactions', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .withNoNames()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        await login(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // Test custom name.
+        await confirmation.saveName({
+          name: CUSTOM_NAME_MOCK,
+        });
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
+
+        // Test proposed name.
+        await confirmation.saveName({
+          proposedName: PROPOSED_NAME_MOCK,
+        });
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
+      },
+    );
+  });
+
+  it('can save petnames for addresses in wallet send transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .withNoNames()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        const confirmation = new Confirmation(driver);
+        await login(driver);
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
+        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
+
+        // Test custom name.
+        await confirmation.saveName({
+          name: CUSTOM_NAME_MOCK,
+        });
+
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
+        await confirmation.checkAddressIsDisplayed(CUSTOM_NAME_MOCK);
+
+        // Test proposed name.
+        await confirmation.saveName({
+          proposedName: PROPOSED_NAME_MOCK,
+        });
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await createWalletSendTransaction(ADDRESS_MOCK, driver);
+        await confirmation.checkAddressIsDisplayed(PROPOSED_NAME_MOCK);
+      },
+    );
+  });
+});
+
+async function createWalletSendTransaction(
+  recipientAddress: string,
+  driver: Driver,
+): Promise<void> {
+  await createInternalTransaction({
+    driver,
+    chainId: '0x539',
+    symbol: 'ETH',
+    recipientAddress,
+    amount: '1',
+  });
+}

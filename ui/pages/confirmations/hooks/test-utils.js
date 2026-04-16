@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getCurrentKeyring,
@@ -18,7 +18,7 @@ import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../../../ducks/swaps/swaps';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {

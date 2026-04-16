@@ -1,10 +1,10 @@
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation } from '../../helpers';
 import {
   getMetaMaskStateWithUnapprovedPermitSign,
   verifyDetails,
@@ -55,7 +55,7 @@ describe('Permit Seaport Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '4' },
       }),
     );
   });
@@ -68,10 +68,10 @@ describe('Permit Seaport Tests', () => {
     await renderSeaportSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitleSignature') as string),
+      await screen.findByText(tEn('confirmTitleSignature')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescSign') as string),
+      await screen.findByText(tEn('confirmTitleDescSign')),
     ).toBeInTheDocument();
   });
 
@@ -92,6 +92,8 @@ describe('Permit Seaport Tests', () => {
   it('renders message details section', async () => {
     await renderSeaportSignature();
 
+    fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
@@ -111,6 +113,8 @@ describe('Permit Seaport Tests', () => {
 
   it('renders offer and consideration details', async () => {
     await renderSeaportSignature();
+
+    fireEvent.click(screen.getByTestId('sectionCollapseButton'));
 
     const offers = await screen.findByTestId('confirmation_data-offer-index-2');
     const offerDetails0 = offers.querySelector(
@@ -138,7 +142,7 @@ describe('Permit Seaport Tests', () => {
           'ItemType',
           '2',
           'Token',
-          'MutantApeYachtClub',
+          'MutantApe...',
           'IdentifierOrCriteria',
           '26464',
           'StartAmount',
@@ -153,7 +157,7 @@ describe('Permit Seaport Tests', () => {
           'ItemType',
           '2',
           'Token',
-          'MutantApeYachtClub',
+          'MutantApe...',
           'IdentifierOrCriteria',
           '7779',
           'StartAmount',
@@ -168,7 +172,7 @@ describe('Permit Seaport Tests', () => {
           'ItemType',
           '2',
           'Token',
-          'MutantApeYachtClub',
+          'MutantApe...',
           'IdentifierOrCriteria',
           '26464',
           'StartAmount',

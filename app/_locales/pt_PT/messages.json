@@ -140,9 +140,6 @@
   "settings": {
     "message": "Definições"
   },
-  "tips": {
-    "message": "Doações"
-  },
   "tryAgain": {
     "message": "Tentar novamente"
   },
@@ -151,9 +148,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "userName": {
-    "message": "Nome de utilizador"
   },
   "welcomeBack": {
     "message": "Bem-vindo de volta!"

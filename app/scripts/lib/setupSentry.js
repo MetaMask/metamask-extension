@@ -1,19 +1,21 @@
-import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
+import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { sentryLogger as log } from '../../../shared/lib/sentry';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { getManifestFlags } from './manifestFlags';
-import { filterEvents } from './sentry-filter-events';
-
-const projectLogger = createProjectLogger('sentry');
-let installType = 'unknown';
-
-export const log = createModuleLogger(
-  projectLogger,
-  globalThis.document ? 'ui' : 'background',
-);
+import { metaMetricsIntegration } from './sentry-metametrics';
+import {
+  getMetaMetricsState,
+  getMetaMetricsStateFromAppState,
+  getState,
+} from './sentry-get-state';
+import { makeTransport } from './sentry-make-transport';
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -22,10 +24,13 @@ const internalLog = createModuleLogger(log, 'internal');
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
-const RELEASE = process.env.METAMASK_VERSION;
+const RELEASE = getSentryRelease(
+  METAMASK_ENVIRONMENT,
+  process.env.METAMASK_VERSION,
+);
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
+const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -51,25 +56,32 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+  // Initialize install type early - fire and forget.
+  // By the time errors are reported, the cache should be populated.
+  initInstallType();
+
   integrateLogging();
   setSentryClient();
 
   return {
     ...Sentry,
-    getMetaMetricsEnabled,
   };
+}
+
+/**
+ * Deep-clone a Sentry report.
+ * If `cloneDeep` throws (unexpected graph), returns the original reference.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {Record<string, unknown>} Cloned report, or original reference on failure.
+ */
+function safeCloneReport(report) {
+  try {
+    return cloneDeep(report);
+  } catch (err) {
+    log('Failed to clone Sentry event, using original reference', err);
+    return report;
+  }
 }
 
 function getClientOptions() {
@@ -78,7 +90,11 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
+    // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
+    // which would otherwise make the next error look like a different stack (background timers
+    // usually run after beforeSend finished; rapid UI captures often dedupe first).
+    beforeSend: (report) => rewriteReport(safeCloneReport(report)),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -87,12 +103,18 @@ function getClientOptions() {
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
+        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+        // Pairs with TBT aggregate measurements from performance-observers.ts.
+        enableLongAnimationFrame: true,
         shouldCreateSpanForRequest: (url) => {
           // Do not create spans for outgoing requests to a 'sentry.io' domain.
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      metaMetricsIntegration({
+        getMetaMetricsState,
+        log,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -103,6 +125,8 @@ function getClientOptions() {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
+    // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
+    ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,
   };
 }
@@ -126,111 +150,43 @@ function getTracesSampleRate(sentryTarget) {
     return flags.sentry.tracesSampleRate;
   }
 
-  if (flags.circleci) {
-    // Report very frequently on develop branch, and never on other branches
+  if (flags.ci) {
+    // Report more frequently on main branch, and less frequently on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'develop') {
+    if (flags.ci.branch === 'main') {
       return 0.015;
     }
-    return 0;
+    return 0.001;
   }
 
   if (METAMASK_DEBUG) {
     return 1.0;
   }
 
-  return 0.01;
+  return 0.0075;
 }
 
 /**
- * Get CircleCI tags passed from the test environment, through manifest.json,
+ * Get CI tags passed from the test environment, through manifest.json,
  * and give them to the Sentry client.
  */
-function setCircleCiTags() {
-  const { circleci } = getManifestFlags();
+function setCITags() {
+  const { ci } = getManifestFlags();
 
-  if (circleci?.enabled) {
-    Sentry.setTag('circleci.enabled', circleci.enabled);
-    Sentry.setTag('circleci.branch', circleci.branch);
-    Sentry.setTag('circleci.buildNum', circleci.buildNum);
-    Sentry.setTag('circleci.job', circleci.job);
-    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
-    Sentry.setTag('circleci.prNumber', circleci.prNumber);
-  }
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the application state.
- *
- * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.participateInMetaMetrics);
+  if (ci?.enabled) {
+    Sentry.setTag('ci.enabled', ci.enabled);
+    Sentry.setTag('ci.branch', ci.branch);
+    Sentry.setTag('ci.commitHash', ci.commitHash);
+    Sentry.setTag('ci.job', ci.job);
+    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
+    Sentry.setTag('ci.prNumber', ci.prNumber);
+    if (ci.persona) {
+      Sentry.setTag('ci.persona', ci.persona);
     }
-    // background
-    return Boolean(
-      appState.state.MetaMetricsController?.participateInMetaMetrics,
-    );
-  }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the persisted state.
- *
- * @param {unknown} persistedState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-  );
-}
-
-/**
- * Returns whether onboarding has completed, given the application state.
- *
- * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getOnboardingCompleteFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.completedOnboarding);
+    if (ci.testTitle) {
+      Sentry.setTag('ci.testTitle', ci.testTitle);
     }
-    // background
-    return Boolean(appState.state.OnboardingController?.completedOnboarding);
   }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether onboarding has completed, given the persisted state.
- *
- * @param {Record<string, unknown>} persistedState - Persisted state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState.data?.OnboardingController?.completedOnboarding,
-  );
 }
 
 function getSentryEnvironment() {
@@ -242,19 +198,21 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  const manifestFlags = getManifestFlags();
+
   if (
     process.env.IN_TEST &&
-    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
+    (!SENTRY_DSN_DEV || !manifestFlags.sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }
 
-  if (METAMASK_ENVIRONMENT !== 'production') {
-    return SENTRY_DSN_DEV;
+  if (manifestFlags.ci?.enabled && SENTRY_DSN_PERFORMANCE) {
+    return SENTRY_DSN_PERFORMANCE;
   }
 
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return SENTRY_DSN_MMI;
+  if (METAMASK_ENVIRONMENT !== 'production') {
+    return SENTRY_DSN_DEV;
   }
 
   if (!SENTRY_DSN) {
@@ -264,45 +222,6 @@ function getSentryTarget() {
   }
 
   return SENTRY_DSN;
-}
-
-/**
- * Returns whether MetaMetrics is enabled. If the application hasn't yet
- * been initialized, the persisted state will be used (if any).
- *
- * @returns `true` if MetaMetrics is enabled, `false` otherwise.
- */
-async function getMetaMetricsEnabled() {
-  const flags = getManifestFlags();
-
-  if (
-    METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && flags.sentry.forceEnable)
-  ) {
-    return true;
-  }
-
-  const appState = getState();
-
-  if (appState.state || appState.persistedState) {
-    return (
-      getMetaMetricsEnabledFromAppState(appState) &&
-      getOnboardingCompleteFromAppState(appState)
-    );
-  }
-
-  // If we reach here, it means the error was thrown before initialization
-  // completed, and before we loaded the persisted state for the first time.
-  try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return (
-      getMetaMetricsEnabledFromPersistedState(persistedState) &&
-      getOnboardingCompleteFromPersistedState(persistedState)
-    );
-  } catch (error) {
-    log('Error retrieving persisted state', error);
-    return false;
-  }
 }
 
 function setSentryClient() {
@@ -333,7 +252,7 @@ function setSentryClient() {
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
-  setCircleCiTags();
+  setCITags();
 
   addDebugListeners();
 
@@ -367,9 +286,9 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
+    const state = getMetaMetricsStateFromAppState(appState);
     if (
-      !getMetaMetricsEnabledFromAppState(appState) ||
-      !getOnboardingCompleteFromAppState(appState) ||
+      !state?.participateInMetaMetrics ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
@@ -401,13 +320,11 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
- * Receives a Sentry event object and modifies it before the
- * error is sent to Sentry. Modifications include both sanitization
- * of data via helper methods and addition of state data from the
- * return value of the second parameter passed to the function.
+ * Receives a Sentry event object and modifies it before the error is sent to Sentry.
+ * Sanitizes messages/URLs and attaches app state.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {object} A modified Sentry event object.
+ * @returns {object} The modified report (same reference).
  */
 export function rewriteReport(report) {
   try {
@@ -423,7 +340,6 @@ export function rewriteReport(report) {
     // modify report urls
     rewriteReportUrls(report);
 
-    // append app state
     const appState = getState();
 
     if (!report.extra) {
@@ -433,6 +349,8 @@ export function rewriteReport(report) {
       report.tags = {};
     }
 
+    const installType = getInstallType();
+
     Object.assign(report.extra, {
       appState,
       installType,
@@ -440,6 +358,8 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
+    report.tags.storageKind =
+      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
   } catch (err) {
     log('Error rewriting report', err);
   }
@@ -554,10 +474,6 @@ function toMetamaskUrl(origUrl) {
   return metamaskUrl;
 }
 
-function getState() {
-  return globalThis.stateHooks?.getSentryState?.() || {};
-}
-
 function integrateLogging() {
   if (!METAMASK_DEBUG) {
     return;
@@ -592,18 +508,6 @@ function addDebugListeners() {
   });
 
   log('Added debug listeners');
-}
-
-function makeTransport(options) {
-  return Sentry.makeFetchTransport(options, async (...args) => {
-    const metricsEnabled = await getMetaMetricsEnabled();
-
-    if (!metricsEnabled) {
-      throw new Error('Network request skipped as metrics disabled');
-    }
-
-    return await fetch(...args);
-  });
 }
 
 function isCompletedSessionEnvelope(envelope) {

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "activityLog": {
-    "message": "ಚಟುವಟಿಕೆ ಲಾಗ್"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
@@ -229,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
-  "ethereumPublicAddress": {
-    "message": "ಎಥೆರಿಯಮ್ ಸಾರ್ವಜನಿಕ ವಿಳಾಸ"
-  },
   "etherscanView": {
     "message": "ಎಥರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
-  },
-  "expandView": {
-    "message": "ವಿಸ್ತರಿಸಿದ ವೀಕ್ಷಣೆ"
   },
   "failed": {
     "message": "ವಿಫಲವಾಗಿದೆ"
@@ -254,26 +245,11 @@
   "from": {
     "message": "ನಿಂದ"
   },
-  "functionType": {
-    "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
-  },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
-  },
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
-  },
-  "gasPrice": {
-    "message": "ಗ್ಯಾಸ್ ದರ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಅತ್ಯಂತ ಕಡಿಮೆಯಿದೆ"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "ಗ್ಯಾಸ್ ದರವು ಪ್ರತಿ ಯೂನಿಟ್ ಗ್ಯಾಸ್‌ಗೆ ನೀವು ಪಾವತಿಸಲು ಸಿದ್ಧವಿರುವ ಎಥರ್‌ನ ಪ್ರಮಾಣವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
   },
   "gasUsed": {
     "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
@@ -316,18 +292,12 @@
     "message": "ಆಮದು",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
-  },
   "importAccountMsg": {
     "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "ನಿಮ್ಮ ಆರಂಭಿಕ ವಹಿವಾಟನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಖಚಿತಪಡಿಸಲಾಗಿದೆ. ಹಿಂತಿರುಗಲು ಸರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
   },
   "insufficientBalance": {
     "message": "ಸಾಕಷ್ಟು ಮೊಬಲಗು ಇಲ್ಲ."
@@ -375,14 +345,8 @@
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
   },
-  "loadMore": {
-    "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
-  },
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
-  },
-  "loadingTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
   },
   "localhost": {
     "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545"
@@ -412,9 +376,6 @@
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ನಕಾರಾತ್ಮಕ ಪ್ರಮಾಣದ ಇಟಿಹೆಚ್ ಅನ್ನು ಕಳುಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
   "networkName": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಹೆಸರು"
   },
@@ -431,9 +392,6 @@
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "ಹೊಸ ಸಂಪರ್ಕ"
-  },
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
   },
@@ -442,12 +400,6 @@
   },
   "next": {
     "message": "ಮುಂದೆ"
-  },
-  "noConversionRateAvailable": {
-    "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
-  },
-  "noTransactions": {
-    "message": "ನೀವು ಯಾವುದೇ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿಲ್ಲ"
   },
   "noWebcamFound": {
     "message": "ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ನ ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
@@ -472,9 +424,6 @@
   },
   "origin": {
     "message": "ಮೂಲ"
-  },
-  "parameters": {
-    "message": "ಪ್ಯಾರಾಮೀಟರ್‌ಗಳು"
   },
   "participateInMetaMetrics": {
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
@@ -526,12 +475,6 @@
   "rejectAll": {
     "message": "ಎಲ್ಲವನ್ನೂ ತಿರಸ್ಕರಿಸಿ"
   },
-  "rejectTxsDescription": {
-    "message": "ನೀವು $1 ವಹಿವಾಟುಗಳನ್ನು ಬ್ಯಾಚ್ ತಿರಸ್ಕರಿಸಲಿರುವಿರಿ."
-  },
-  "rejectTxsN": {
-    "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
-  },
   "rejected": {
     "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
   },
@@ -540,12 +483,6 @@
   },
   "removeAccount": {
     "message": "ಖಾತೆಯನ್ನು ತೆಗೆದುಹಾಕಿ"
-  },
-  "removeAccountDescription": {
-    "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
   },
   "required": {
     "message": "ಅಗತ್ಯವಿದೆ"
@@ -614,9 +551,6 @@
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "sigRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
-  },
   "sign": {
     "message": "ಸಹಿ"
   },
@@ -635,9 +569,6 @@
   "speedUpCancellation": {
     "message": "ಈ ರದ್ದತಿಯ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಿ"
   },
-  "speedUpTransaction": {
-    "message": "ಈ ವಹಿವಾಟಿನ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಿ"
-  },
   "stateLogError": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯುವಲ್ಲಿ ದೋಷ."
   },
@@ -653,9 +584,6 @@
   "supportCenter": {
     "message": "ನಮ್ಮ ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ಮಾಡಿ"
   },
-  "switchNetworks": {
-    "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"
-  },
   "symbol": {
     "message": "ಚಿಹ್ನೆ"
   },
@@ -664,9 +592,6 @@
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
-  },
-  "tips": {
-    "message": "ಸಲಹೆಗಳು"
   },
   "to": {
     "message": "ವರೆಗೆ"
@@ -689,41 +614,11 @@
   "transaction": {
     "message": "ವಹಿವಾಟು"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟಿನ ರದ್ದತಿಯನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ"
-  },
-  "transactionCancelSuccess": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಮಾಡಲಾಗಿದೆ"
-  },
-  "transactionConfirmed": {
-    "message": "$2 ಗೆ ವಹಿವಾಟನ್ನು ಖಚಿತಪಡಿಸಲಾಗಿದೆ."
-  },
-  "transactionCreated": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಮೌಲ್ಯದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionDropped": {
-    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟು ಕುಸಿದಿದೆ."
-  },
   "transactionError": {
     "message": "ವಹಿವಾಟಿನ ದೋಷ. ಒಪ್ಪಂದದ ಕೋಡ್‌ನಲ್ಲಿ ವಿನಾಯಿತಿಯನ್ನು ನೀಡಲಾಗಿದೆ."
   },
   "transactionErrorNoContract": {
     "message": "ಒಪ್ಪಂದವಲ್ಲದ ವಿಳಾಸದಲ್ಲಿ ಕಾರ್ಯಕ್ಕೆ ಕರೆ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
-  },
-  "transactionErrored": {
-    "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
-  },
-  "transactionFee": {
-    "message": "ವಹಿವಾಟು ಶುಲ್ಕ"
-  },
-  "transactionResubmitted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
-  },
-  "transactionSubmitted": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionUpdated": {
-    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
   },
   "transfer": {
     "message": "ವರ್ಗಾಯಿಸಿ"
@@ -743,29 +638,17 @@
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
-  "unknownNetwork": {
-    "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
-  },
   "unknownQrCode": {
     "message": "ದೋಷ: ನಮಗೆ ಆ QR ಕೋಡ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
   },
   "unlock": {
     "message": "ಅನ್‌ಲಾಕ್"
   },
-  "unlockMessage": {
-    "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
-  },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
   },
   "usedByClients": {
     "message": "ವಿಭಿನ್ನ ಕ್ಲೈಂಟ್‌ಗಳ ಮೂಲಕ ಬಳಸಲಾಗುತ್ತದೆ"
-  },
-  "userName": {
-    "message": "ಬಳಕೆದಾರಹೆಸರು"
-  },
-  "viewContact": {
-    "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"
@@ -775,14 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
-  },
-  "youSign": {
-    "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"
   }
 }

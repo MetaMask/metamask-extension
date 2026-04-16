@@ -1,199 +1,96 @@
-import FixtureBuilder from '../../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  largeDelayMs,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import { Mockttp } from '../../../mock-e2e';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { WINDOW_TITLES } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../../helpers';
+import { login } from '../../../page-objects/flows/login.flow';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { openDAppWithContract, TestSuiteArguments } from './shared';
+import { mocked4BytesIncreaseAllowance, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
-  describe('Submit an increase allowance transaction @no-mmi', function () {
-    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3',
-            contractRegistry,
-          );
-        },
-      );
-    });
+  const smartContract = SMART_CONTRACTS.HST;
 
-    it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3',
-            contractRegistry,
-          );
-        },
-      );
-    });
+  it('submits an increase allowance transaction with a small spending cap', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        smartContract,
+        testSpecificMock: mocked4BytesIncreaseAllowance,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        const contractAddress =
+          await contractRegistry?.getContractAddress(smartContract);
+        await login(driver, { localNode: localNodes?.[0] });
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.checkPageIsLoaded();
 
-    it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3000',
-            contractRegistry,
-          );
-        },
-      );
-    });
+        await testDapp.clickERC20IncreaseAllowanceButton();
 
-    it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3000',
-            contractRegistry,
-          );
-        },
-      );
-    });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new ERC20ApproveTransactionConfirmation(driver);
+        await txConfirmation.editSpendingCap('3');
+
+        await txConfirmation.clickScrollToBottomButton();
+        await txConfirmation.clickFooterConfirmButton();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickConfirmedTransaction();
+        await activityList.checkSpendingCapValueInDetails('3 TST');
+      },
+    );
+  });
+
+  it('submits an increase allowance transaction with a large spending cap', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        smartContract,
+        testSpecificMock: mocked4BytesIncreaseAllowance,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        const contractAddress =
+          await contractRegistry?.getContractAddress(smartContract);
+        await login(driver, { localNode: localNodes?.[0] });
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.checkPageIsLoaded();
+
+        await testDapp.clickERC20IncreaseAllowanceButton();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new ERC20ApproveTransactionConfirmation(driver);
+        await txConfirmation.editSpendingCap('3000');
+
+        await txConfirmation.clickScrollToBottomButton();
+        await txConfirmation.clickFooterConfirmButton();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickConfirmedTransaction();
+        await activityList.checkSpendingCapValueInDetails('3000 TST');
+      },
+    );
   });
 });
-
-function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
-  return {
-    dapp: true,
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
-      .withPreferencesController({
-        preferences: {
-          redesignedConfirmationsEnabled: true,
-          isRedesignedConfirmationsDeveloperEnabled: true,
-        },
-      })
-      .build(),
-    ganacheOptions: defaultGanacheOptions,
-    smartContract: SMART_CONTRACTS.HST,
-    testSpecificMock: mocks,
-    title: mochaContext.test?.fullTitle(),
-  };
-}
-
-function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
-  return {
-    dapp: true,
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
-      .withPreferencesController({
-        preferences: {
-          redesignedConfirmationsEnabled: true,
-          isRedesignedConfirmationsDeveloperEnabled: true,
-        },
-      })
-      .build(),
-    ganacheOptions: defaultGanacheOptionsForType2Transactions,
-    smartContract: SMART_CONTRACTS.HST,
-    testSpecificMock: mocks,
-    title: mochaContext.test?.fullTitle(),
-  };
-}
-
-async function createAndAssertIncreaseAllowanceSubmission(
-  driver: Driver,
-  newSpendingCap: string,
-  contractRegistry?: ContractAddressRegistry,
-) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
-
-  await createERC20IncreaseAllowanceTransaction(driver);
-
-  await editSpendingCap(driver, newSpendingCap);
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await assertChangedSpendingCap(driver, newSpendingCap);
-}
-
-async function mocks(server: Mockttp) {
-  return [await mocked4BytesIncreaseAllowance(server)];
-}
-
-export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .always()
-    .withQuery({ hex_signature: '0x39509351' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 46002,
-              created_at: '2018-06-24T21:43:27.354648Z',
-              text_signature: 'increaseAllowance(address,uint256)',
-              hex_signature: '0x39509351',
-              bytes_signature: '9PQ',
-            },
-          ],
-        },
-      };
-    });
-}
-
-async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#increaseTokenAllowance');
-}
-
-export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[data-testid="edit-spending-cap-icon"');
-
-  await driver.fill(
-    '[data-testid="custom-spending-cap-input"]',
-    newSpendingCap,
-  );
-
-  await driver.delay(largeDelayMs);
-
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-
-  // wait for the confirmation to be updated before submitting tx
-  await driver.delay(veryLargeDelayMs * 2);
-}
-
-export async function assertChangedSpendingCap(
-  driver: Driver,
-  newSpendingCap: string,
-) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-
-  await driver.delay(veryLargeDelayMs);
-
-  await driver.clickElement(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
-
-  await driver.waitForSelector({
-    text: `${newSpendingCap} TST`,
-    tag: 'span',
-  });
-
-  await driver.waitForSelector({ text: 'Confirmed', tag: 'div' });
-}

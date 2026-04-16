@@ -8,11 +8,20 @@ import {
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import ConfirmAddSuggestedToken from '.';
+
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
+}));
 
 const PENDING_APPROVALS = {
   1: {
@@ -67,10 +76,24 @@ jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
 });
 
 const renderComponent = (tokens = []) => {
+  mockNavigate.mockClear();
+  mockUseLocation.mockReturnValue({
+    pathname: '/',
+    search: '',
+    hash: '',
+    key: 'test-key',
+    state: undefined,
+  });
+
   const store = configureStore({
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
+      allTokens: {
+        '0x5': {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [...tokens],
+        },
+      },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       internalAccounts: {
@@ -91,7 +114,21 @@ const renderComponent = (tokens = []) => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      networkConfigurationsByChainId: {
+        '0x5': {
+          nativeCurrency: 'ETH',
+          chainId: '0x5',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'goerli',
+            },
+          ],
+        },
+      },
+      selectedNetworkClientId: 'goerli',
     },
+
     history: {
       mostRecentOverviewPage: '/',
     },
@@ -103,15 +140,19 @@ describe('ConfirmAddSuggestedToken Component', () => {
   it('should render', () => {
     renderComponent();
 
-    expect(screen.getByText('Add suggested tokens')).toBeInTheDocument();
     expect(
-      screen.getByText('Would you like to import these tokens?'),
+      screen.getByText(messages.addSuggestedTokens.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Token')).toBeInTheDocument();
-    expect(screen.getByText('Balance')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Add token' }),
+      screen.getByText(messages.likeToImportTokens.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.token.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.cancel.message }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.addToken.message }),
     ).toBeInTheDocument();
   });
 
@@ -130,7 +171,9 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
   it('should dispatch resolvePendingApproval when clicking the "Add token" button', async () => {
     renderComponent();
-    const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
+    const addTokenBtn = screen.getByRole('button', {
+      name: messages.addToken.message,
+    });
 
     await act(async () => {
       fireEvent.click(addTokenBtn);
@@ -147,7 +190,9 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
   it('should dispatch rejectPendingApproval when clicking the "Cancel" button', async () => {
     renderComponent();
-    const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
+    const cancelBtn = screen.getByRole('button', {
+      name: messages.cancel.message,
+    });
 
     await act(async () => {
       fireEvent.click(cancelBtn);
@@ -188,7 +233,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
         ),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('link', { name: 'scams and security risks.' }),
+        screen.getByRole('link', { name: messages.learnScamRisk.message }),
       ).toBeInTheDocument();
     });
   });
@@ -204,9 +249,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
       renderComponent(mockTokens);
 
       expect(
-        screen.getByText(
-          'A token here reuses a symbol from another token you watch, this can be confusing or deceptive.',
-        ),
+        screen.getByText(messages.reusedTokenNameWarning.message),
       ).toBeInTheDocument();
     });
   });

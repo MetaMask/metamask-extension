@@ -1,7 +1,10 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import {
@@ -17,12 +20,10 @@ import {
   createTextItems,
   getAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
   getUsdAmount,
+  getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
 import {
   TextVariant,
   BackgroundColor,
@@ -33,8 +34,6 @@ import {
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -46,22 +45,25 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
 
 const getTitle = () => {
   const items = createTextItems(
-    [t('notificationItemUnStakingRequested') || ''],
+    [t('notificationItemUnStakingRequested') ?? ''],
     TextVariant.bodySm,
   );
   return items;
 };
 
 const getDescription = (n: LidoWithdrawalRequestedNotification) => {
-  const amount = getAmount(n.data.stake_in.amount, n.data.stake_in.decimals, {
-    shouldEllipse: true,
-  });
+  const amount = getAmount(
+    n.payload.data.stake_in.amount,
+    n.payload.data.stake_in.decimals,
+    {
+      shouldEllipse: true,
+    },
+  );
   const description =
-    // @ts-expect-error: Expected 0-1 arguments, but got an array
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    t('notificationItemLidoWithdrawalRequestedMessage', [
-      `${amount} ${n.data.stake_in.symbol}`,
-    ]) || '';
+    t(
+      'notificationItemLidoWithdrawalRequestedMessage',
+      `${amount} ${n.payload.data.stake_in.symbol}`,
+    ) ?? '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;
 };
@@ -76,7 +78,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           isRead={notification.isRead}
           icon={{
             type: NotificationListItemIconType.Token,
-            value: notification.data.stake_in.image,
+            value: notification.payload.data.stake_in.image,
             badge: {
               icon: IconName.Stake,
               position: BadgeWrapperPosition.bottomRight,
@@ -86,10 +88,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           description={getDescription(notification)}
           createdAt={new Date(notification.createdAt)}
           amount={`${getAmount(
-            notification.data.stake_in.amount,
-            notification.data.stake_in.decimals,
+            notification.payload.data.stake_in.amount,
+            notification.payload.data.stake_in.decimals,
             { shouldEllipse: true },
-          )} ${notification.data.stake_in.symbol}`}
+          )} ${notification.payload.data.stake_in.symbol}`}
           onClick={onClick}
         />
       );
@@ -98,21 +100,21 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       title: ({ notification }) => {
         return (
           <NotificationDetailTitle
-            title={t('notificationItemUnStakingRequested') || ''}
+            title={t('notificationItemUnStakingRequested') ?? ''}
             date={formatIsoDateString(notification.createdAt)}
           />
         );
       },
       body: {
-        type: 'body_onchain_notification',
+        type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
-          if (!notification.address) {
+          if (!notification.payload.address) {
             return null;
           }
           return (
             <NotificationDetailAddress
-              side={t('account') || ''}
-              address={notification.address}
+              side={t('account') ?? ''}
+              address={notification.payload.address}
             />
           );
         },
@@ -123,78 +125,75 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
               color: TextColor.successDefault,
               backgroundColor: BackgroundColor.successMuted,
             }}
-            label={t('notificationItemStatus') || ''}
-            detail={t('notificationItemConfirmed') || ''}
+            label={t('notificationItemStatus') ?? ''}
+            detail={t('notificationItemConfirmed') ?? ''}
             action={
               <NotificationDetailCopyButton
                 notification={notification}
-                text={notification.tx_hash}
-                displayText={t('notificationItemTransactionId') || ''}
+                text={notification.payload.tx_hash}
+                displayText={t('notificationItemTransactionId') ?? ''}
               />
             }
           />
         ),
         Asset: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+            notification.payload.chain_id,
           );
           return (
             <NotificationDetailAsset
               icon={{
-                src: notification.data.stake_in.image,
+                src: notification.payload.data.stake_in.image,
                 badge: {
                   src: nativeCurrencyLogo,
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemUnStakingRequested') || ''}
-              detail={notification.data.stake_in.symbol}
+              label={t('notificationItemUnStakingRequested') ?? ''}
+              detail={notification.payload.data.stake_in.symbol}
               fiatValue={`$${getUsdAmount(
-                notification.data.stake_in.amount,
-                notification.data.stake_in.decimals,
-                notification.data.stake_in.usd,
+                notification.payload.data.stake_in.amount,
+                notification.payload.data.stake_in.decimals,
+                notification.payload.data.stake_in.usd,
               )}`}
               value={`${getAmount(
-                notification.data.stake_in.amount,
-                notification.data.stake_in.decimals,
+                notification.payload.data.stake_in.amount,
+                notification.payload.data.stake_in.decimals,
                 { shouldEllipse: true },
-              )} ${notification.data.stake_in.symbol}`}
+              )} ${notification.payload.data.stake_in.symbol}`}
             />
           );
         },
         AssetReceived: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+            notification.payload.chain_id,
           );
           return (
             <NotificationDetailAsset
               icon={{
-                src: notification.data.stake_in.image,
+                src: notification.payload.data.stake_in.image,
                 badge: {
                   src: nativeCurrencyLogo,
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemStakingProvider') || ''}
+              label={t('notificationItemStakingProvider') ?? ''}
               detail="Lido-staked ETH"
             />
           );
         },
       },
-    },
-    footer: {
-      type: 'footer_onchain_notification',
-      ScanLink: ({ notification }) => {
-        return (
-          <NotificationDetailBlockExplorerButton
-            notification={notification}
-            chainId={notification.chain_id}
-            txHash={notification.tx_hash}
-            id={notification.id}
-          />
-        );
+      footer: {
+        type: NotificationComponentType.OnChainFooter,
+        ScanLink: ({ notification }) => {
+          return (
+            <NotificationDetailBlockExplorerButton
+              notification={notification}
+              chainId={notification.payload.chain_id}
+              txHash={notification.payload.tx_hash}
+            />
+          );
+        },
       },
     },
   };

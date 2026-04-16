@@ -1,126 +1,150 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getCurrentKeyring,
-  getDataCollectionForMarketing,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  SwapsEthToken,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+  formatChainIdToCaip,
+  GenericQuoteRequest,
+  getNativeAssetForChainId,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
+import { parseCaipChainId } from '@metamask/utils';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
+import { trace, TraceName } from '../../../shared/lib/trace';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
+  getBip44DefaultPairsConfig,
+  getFromChain,
+  getFromChains,
+  getLastSelectedChainId,
+} from '../../ducks/bridge/selectors';
+import {
+  resetInputFields,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
+import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import {
+  BridgeNavigationOptions,
+  useBridgeNavigation,
+} from './useBridgeNavigation';
 
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isHardwareKeyring } from '../../helpers/utils/hardware';
-import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-///: END:ONLY_INCLUDE_IF
-
+/**
+ * This hook is the entrypoint for the bridge experience
+ *
+ * @returns a function to navigate to the bridge page
+ */
 const useBridging = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const providerConfig = useSelector(getProviderConfig);
-  const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
+  const lastSelectedChainId = useSelector(getLastSelectedChainId);
+  const fromChain = useSelector(getFromChain);
+  const fromChains = useSelector(getFromChains);
+  const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
-  const isBridgeSupported = useSelector(getIsBridgeEnabled);
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  const isChainIdEnabledForBridging = useCallback(
+    (chainId: string | number) =>
+      isSupportedBridgeChain(chainId) &&
+      fromChains.some(
+        (chain) =>
+          formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
+      ),
+    [fromChains],
+  );
 
-  useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
-  }, [dispatch, setBridgeFeatureFlags]);
-
+  /**
+   * Navigates to the bridge page
+   *
+   * @param location - the entrypoint from which the bridge experience was triggered
+   * @param token - the token to set as the source token for the bridge experience
+   */
   const openBridgeExperience = useCallback(
     (
-      location: string,
-      token: SwapsTokenObject | SwapsEthToken,
-      portfolioUrlSuffix?: string,
+      location: MetaMetricsSwapsEventSource | 'Carousel',
+      token?: {
+        symbol: string;
+        address: string;
+        decimals?: number;
+        name?: string;
+        chainId: GenericQuoteRequest['srcChainId'];
+      },
     ) => {
-      if (!isBridgeChain || !providerConfig) {
-        return;
+      !bridgeState && dispatch(resetInputFields());
+      trace({
+        name: TraceName.SwapViewLoaded,
+        startTime: Date.now(),
+      });
+      dispatch(
+        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
+          location: location as never,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_source: token?.symbol ?? 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_destination: '',
+        }),
+      );
+
+      let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
+      const search = new URLSearchParams('');
+
+      /**
+       * Defined if the token is a valid src or dest token
+       */
+      const assetId =
+        token?.chainId && isSupportedBridgeChain(token.chainId)
+          ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
+          : undefined;
+
+      if (token && assetId) {
+        // If token is supported for bridging, propagate it to the bridge experience
+        const tokenWithAssetId = {
+          ...token,
+          assetId,
+          name: token.name ?? token.symbol,
+          chainId: formatChainIdToCaip(token.chainId),
+        };
+        if (validateMinimalAssetObject(tokenWithAssetId)) {
+          tokenToUse = tokenWithAssetId;
+        } else if (!bridgeState && isChainIdEnabledForBridging(token.chainId)) {
+          // If bridgeState is defined, it means the user is returning to the bridge page
+          // If the token is not in an enabled chain then it can't be used as the source token
+          // Otherwise, set the `from` query param to use the bridge page's deep linking logic
+          search.set(BridgeQueryParams.From, assetId);
+        }
+      } else if (lastSelectedChainId !== fromChain.chainId) {
+        // If an unsupported network is selected in the network filter, use bridge page's default fromChain
+        const fallbackChainId = lastSelectedChainId ?? fromChain.chainId;
+        const { namespace } = parseCaipChainId(fallbackChainId);
+        // Use the bip44 default asset for the fallback chain if it is defined
+        const bip44AssetId = Object.keys(
+          bip44DefaultPairsConfig?.[namespace]?.standard ?? {},
+        )[0];
+        // Otherwise, use the native assetId
+        const defaultAssetId =
+          bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
+        search.set(BridgeQueryParams.From, defaultAssetId);
       }
 
-      if (isBridgeSupported) {
-        trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            token_symbol: token.symbol,
-            location,
-            text: 'Bridge',
-            chain_id: providerConfig.chainId,
-          },
-        });
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
-        } else {
-          history.push(
-            `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
-          );
-        }
-      } else {
-        const portfolioUrl = getPortfolioUrl(
-          'bridge',
-          'ext_bridge_button',
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
-        );
-        global.platform.openTab({
-          url: `${portfolioUrl}${
-            portfolioUrlSuffix ?? `&token=${token.address}`
-          }`,
-        });
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.BridgeLinkClicked,
-          properties: {
-            location,
-            text: 'Bridge',
-            url: portfolioUrl,
-            chain_id: providerConfig.chainId,
-            token_symbol: token.symbol,
-          },
-        });
+      if (location === MetaMetricsSwapsEventSource.TransactionShield) {
+        search.set(BridgeQueryParams.IsFromTransactionShield, 'true');
       }
+
+      navigateToBridgePage({
+        token: tokenToUse,
+        search,
+        isEntrypoint: true,
+      });
     },
     [
-      isBridgeSupported,
-      isBridgeChain,
+      navigateToBridgePage,
+      lastSelectedChainId,
+      fromChain?.chainId,
+      isChainIdEnabledForBridging,
+      bip44DefaultPairsConfig,
+      bridgeState,
       dispatch,
-      usingHardwareWallet,
-      history,
-      metaMetricsId,
-      trackEvent,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
-      providerConfig,
     ],
   );
 

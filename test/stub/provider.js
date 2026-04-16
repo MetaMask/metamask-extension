@@ -3,7 +3,7 @@ import {
   createScaffoldMiddleware,
 } from '@metamask/json-rpc-engine';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
+import { InternalProvider } from '@metamask/eth-json-rpc-provider';
 import Ganache from 'ganache';
 import { CHAIN_IDS } from '../../shared/constants/network';
 
@@ -53,10 +53,16 @@ export function createTestProviderTools(opts = {}) {
         network_id: opts.networkId ?? 1,
         chain: { chainId: opts.chainId ?? CHAIN_IDS.MAINNET },
         hardfork: 'muirGlacier',
+        logging: {
+          logger: {
+            // eslint-disable-next-line no-empty-function
+            log: () => {}, // don't do anything
+          },
+        },
       }),
     ),
   );
   // wrap in standard provider interface
-  const provider = providerFromEngine(engine);
+  const provider = new InternalProvider({ engine });
   return { provider, engine };
 }

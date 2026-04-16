@@ -1,8 +1,15 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  type SupportedCaipChainId,
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+} from '@metamask/multichain-network-controller';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -13,6 +20,10 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+  MOCK_ACCOUNT_TRON_MAINNET,
+  MOCK_ACCOUNT_TRON_NILE,
+  MOCK_ACCOUNT_TRON_SHASTA,
+  MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import {
   CHAIN_IDS,
@@ -21,7 +32,8 @@ import {
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import type { MetaMaskReduxState } from '../store/store';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -32,31 +44,29 @@ import {
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
-  getMultichainNetworkProviders,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
   getMultichainIsBitcoin,
+  getMultichainIsTron,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-} from '.';
+import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {
-    metamask: {
-      preferences: { showFiatInTestnets: boolean };
-      accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
-      currentCurrency: string;
-      currencyRates: Record<string, { conversionRate: string }>;
-      completedOnboarding: boolean;
-      selectedNetworkClientId?: string;
-    };
+    metamask: Pick<
+      MetaMaskReduxState['metamask'],
+      | 'preferences'
+      | 'accountsByChainId'
+      | 'networkConfigurationsByChainId'
+      | 'currentCurrency'
+      | 'currencyRates'
+      | 'completedOnboarding'
+      | 'selectedNetworkClientId'
+      | 'remoteFeatureFlags'
+    >;
   };
 
 function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
@@ -64,12 +74,14 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
     metamask: {
       preferences: {
         showFiatInTestnets: false,
-      },
+      } as MetaMaskReduxState['metamask']['preferences'],
       ...mockNetworkState({ chainId }),
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
-          conversionRate: 'usd',
+          conversionRate: null,
+          conversionDate: null,
+          usdConversionRate: null,
         },
       },
       completedOnboarding: true,
@@ -77,10 +89,20 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         selectedAccount: MOCK_ACCOUNT_EOA.id,
         accounts: MOCK_ACCOUNTS,
       },
+      accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
       accountsByChainId: {
         '0x1': {
           [MOCK_ACCOUNT_EOA.address]: {
             balance: '3',
+          },
+        },
+      },
+      nonEvmTransactions: {
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          [BtcScope.Mainnet]: {
+            transactions: [],
+            next: null,
+            lastUpdated: 0,
           },
         },
       },
@@ -97,6 +119,24 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             unit: 'BTC',
           },
         },
+        [MOCK_ACCOUNT_TRON_MAINNET.id]: {
+          [MultichainNativeAssets.TRON]: {
+            amount: '100.000000',
+            unit: 'TRX',
+          },
+        },
+        [MOCK_ACCOUNT_TRON_NILE.id]: {
+          [MultichainNativeAssets.TRON_NILE]: {
+            amount: '200.000000',
+            unit: 'TRX',
+          },
+        },
+        [MOCK_ACCOUNT_TRON_SHASTA.id]: {
+          [MultichainNativeAssets.TRON_SHASTA]: {
+            amount: '150.000000',
+            unit: 'TRX',
+          },
+        },
       },
       fiatCurrency: 'usd',
       cryptocurrencies: [Cryptocurrency.Btc],
@@ -105,12 +145,31 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
           conversionDate: 0,
           conversionRate: 100000,
         },
+        trx: {
+          conversionDate: 0,
+          conversionRate: 0.08,
+        },
       },
+      conversionRates: {},
+      historicalPrices: {},
+      assetsMetadata: {},
+      accountsAssets: {},
+      allIgnoredAssets: {},
+      isEvmSelected: false,
+      multichainNetworkConfigurationsByChainId: {
+        ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      },
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      networksWithTransactionActivity: {},
+      remoteFeatureFlags: {},
     },
   };
 }
 
-function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
+function getNonEvmState(
+  account = MOCK_ACCOUNT_BIP122_P2WPKH,
+  selectedChainId: SupportedCaipChainId = BtcScope.Mainnet,
+): TestState {
   return {
     metamask: {
       ...getEvmState().metamask,
@@ -118,6 +177,7 @@ function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
         selectedAccount: account.id,
         accounts: MOCK_ACCOUNTS,
       },
+      selectedMultichainNetworkChainId: selectedChainId,
     },
   };
 }
@@ -128,17 +188,32 @@ function getBip122ProviderConfig(): MultichainProviderConfig {
   return MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN];
 }
 
+function getTronState(
+  account = MOCK_ACCOUNT_TRON_MAINNET,
+  selectedChainId: SupportedCaipChainId = TrxScope.Mainnet,
+): TestState {
+  return {
+    metamask: {
+      ...getEvmState().metamask,
+      internalAccounts: {
+        selectedAccount: account.id,
+        accounts: {
+          ...MOCK_ACCOUNTS,
+          [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
+          [MOCK_ACCOUNT_TRON_NILE.id]: MOCK_ACCOUNT_TRON_NILE,
+          [MOCK_ACCOUNT_TRON_SHASTA.id]: MOCK_ACCOUNT_TRON_SHASTA,
+        },
+      },
+      selectedMultichainNetworkChainId: selectedChainId,
+    },
+  };
+}
+
+function getTronProviderConfig(): MultichainProviderConfig {
+  return MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON];
+}
+
 describe('Multichain Selectors', () => {
-  describe('getMultichainNetworkProviders', () => {
-    it('has some providers', () => {
-      const state = getEvmState();
-
-      const networkProviders = getMultichainNetworkProviders(state);
-      expect(Array.isArray(networkProviders)).toBe(true);
-      expect(networkProviders.length).toBeGreaterThan(0);
-    });
-  });
-
   describe('getMultichainNetwork', () => {
     it('returns an EVM network provider if account is EVM', () => {
       const state = getEvmState();
@@ -152,6 +227,15 @@ describe('Multichain Selectors', () => {
 
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(false);
+    });
+
+    it('returns a Tron network provider if account is Tron', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+
+      const network = getMultichainNetwork(state);
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(TrxScope.Mainnet);
+      expect(network.network.ticker).toBe('TRX');
     });
 
     it('returns an EVM network provider if user is not onboarded', () => {
@@ -198,6 +282,71 @@ describe('Multichain Selectors', () => {
       expect(network.nickname).toBe(network.network.rpcUrl);
       expect(network.nickname).toBe(mockNetworkRpc);
     });
+
+    it('prioritizes account scopes over selectedMultichainNetworkChainId for non-EVM networks', () => {
+      // Create a Bitcoin account with Bitcoin scope
+      const bitcoinAccount = MOCK_ACCOUNT_BIP122_P2WPKH;
+      const state = getNonEvmState(bitcoinAccount, BtcScope.Mainnet);
+
+      // Set selectedMultichainNetworkChainId to Solana (different from account scope)
+      state.metamask.selectedMultichainNetworkChainId = SolScope.Mainnet;
+
+      const network = getMultichainNetwork(state);
+
+      // Should return Bitcoin network based on account scope, not Solana from selectedChainId
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.BITCOIN);
+      expect(network.nickname).toBe('Bitcoin');
+    });
+
+    it('falls back to selectedMultichainNetworkChainId when account has no matching scopes', () => {
+      // Create a state with a Bitcoin account but no matching provider configs
+      const state = getNonEvmState(
+        MOCK_ACCOUNT_BIP122_P2WPKH,
+        SolScope.Mainnet,
+      );
+
+      // Modify the account to have no scopes that match available providers
+      const modifiedAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        scopes: ['bip122:nonexistent-network' as `${string}:${string}`],
+      };
+      state.metamask.internalAccounts.accounts = {
+        ...state.metamask.internalAccounts.accounts,
+        [modifiedAccount.id]: modifiedAccount,
+      };
+
+      const network = getMultichainNetwork(state);
+
+      // Should fall back to selectedMultichainNetworkChainId (Solana)
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.SOLANA);
+      expect(network.nickname).toBe('Solana');
+    });
+
+    it('uses address compatibility as final fallback', () => {
+      // Create a state where neither scopes nor selectedChainId match
+      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
+
+      // Set selectedMultichainNetworkChainId to null and modify account scopes
+      // @ts-expect-error - Testing null case for fallback behavior
+      state.metamask.selectedMultichainNetworkChainId = null;
+      const modifiedAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        scopes: ['bip122:nonexistent-network' as `${string}:${string}`],
+      };
+      state.metamask.internalAccounts.accounts = {
+        ...state.metamask.internalAccounts.accounts,
+        [modifiedAccount.id]: modifiedAccount,
+      };
+
+      const network = getMultichainNetwork(state);
+
+      // Should fall back to address compatibility (Bitcoin for Bitcoin address)
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.BITCOIN);
+      expect(network.nickname).toBe('Bitcoin');
+    });
   });
 
   describe('getMultichainIsEvm', () => {
@@ -230,6 +379,13 @@ describe('Multichain Selectors', () => {
       const bip122ProviderConfig = getBip122ProviderConfig();
       expect(getMultichainProviderConfig(state)).toBe(bip122ProviderConfig);
     });
+
+    it('returns a MultichainProviderConfig if account is Tron', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+
+      const tronProviderConfig = getTronProviderConfig();
+      expect(getMultichainProviderConfig(state)).toBe(tronProviderConfig);
+    });
   });
 
   describe('getMultichainNativeCurrency', () => {
@@ -246,6 +402,12 @@ describe('Multichain Selectors', () => {
       expect(getMultichainNativeCurrency(state)).toBe(
         bip122ProviderConfig.ticker,
       );
+    });
+
+    it('returns TRX if account is Tron', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+
+      expect(getMultichainNativeCurrency(state)).toBe('TRX');
     });
   });
 
@@ -270,15 +432,17 @@ describe('Multichain Selectors', () => {
       },
     );
 
-    it('fallbacks to ticker as currency if account is non-EVM (bip122:*)', () => {
-      const state = getNonEvmState(); // .currentCurrency = 'ETH'
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(['usd', 'BTC'])(
+      "returns current currency '%s' if account is non-EVM",
+      (currency: string) => {
+        const state = getNonEvmState();
 
-      const bip122ProviderConfig = getBip122ProviderConfig();
-      expect(getCurrentCurrency(state).toLowerCase()).not.toBe('usd');
-      expect(getMultichainCurrentCurrency(state)).toBe(
-        bip122ProviderConfig.ticker,
-      );
-    });
+        state.metamask.currentCurrency = currency;
+        expect(getCurrentCurrency(state)).toBe(currency);
+        expect(getMultichainCurrentCurrency(state)).toBe(currency);
+      },
+    );
   });
 
   describe('getMultichainShouldShowFiat', () => {
@@ -288,10 +452,25 @@ describe('Multichain Selectors', () => {
       expect(getMultichainShouldShowFiat(state)).toBe(getShouldShowFiat(state));
     });
 
-    it('returns true if account is non-EVM', () => {
-      const state = getNonEvmState();
-
+    it('returns true if account is non-EVM and setting currencyRateCheck is true', () => {
+      const state = {
+        metamask: {
+          ...getNonEvmState().metamask,
+          useCurrencyRateCheck: true,
+        },
+      };
       expect(getMultichainShouldShowFiat(state)).toBe(true);
+    });
+    it('returns false if account is non-EVM and setting currencyRateCheck is false', () => {
+      const state = {
+        ...getNonEvmState(),
+        metamask: {
+          ...getNonEvmState().metamask,
+          useCurrencyRateCheck: false,
+        },
+      };
+
+      expect(getMultichainShouldShowFiat(state)).toBe(false);
     });
   });
 
@@ -310,6 +489,14 @@ describe('Multichain Selectors', () => {
       const bip122ProviderConfig = getBip122ProviderConfig();
       expect(getMultichainDefaultToken(state)).toEqual({
         symbol: bip122ProviderConfig.ticker,
+      });
+    });
+
+    it('returns TRX if account is Tron', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+
+      expect(getMultichainDefaultToken(state)).toEqual({
+        symbol: 'TRX',
       });
     });
   });
@@ -331,6 +518,30 @@ describe('Multichain Selectors', () => {
 
       expect(getMultichainCurrentChainId(state)).toEqual(
         MultichainNetworks.BITCOIN,
+      );
+    });
+
+    it('returns current chain ID if account is Tron mainnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+
+      expect(getMultichainCurrentChainId(state)).toEqual(
+        MultichainNetworks.TRON,
+      );
+    });
+
+    it('returns current chain ID if account is Tron Nile testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_NILE, TrxScope.Nile);
+
+      expect(getMultichainCurrentChainId(state)).toEqual(
+        MultichainNetworks.TRON_NILE,
+      );
+    });
+
+    it('returns current chain ID if account is Tron Shasta testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
+
+      expect(getMultichainCurrentChainId(state)).toEqual(
+        MultichainNetworks.TRON_SHASTA,
       );
     });
 
@@ -367,6 +578,21 @@ describe('Multichain Selectors', () => {
         expect(getMultichainIsMainnet(state)).toBe(isMainnet);
       },
     );
+
+    it('returns true if Tron account is on mainnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+      expect(getMultichainIsMainnet(state)).toBe(true);
+    });
+
+    it('returns false if Tron account is on Nile testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_NILE, TrxScope.Nile);
+      expect(getMultichainIsMainnet(state)).toBe(false);
+    });
+
+    it('returns false if Tron account is on Shasta testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
+      expect(getMultichainIsMainnet(state)).toBe(false);
+    });
   });
 
   describe('getMultichainIsTestnet', () => {
@@ -403,6 +629,21 @@ describe('Multichain Selectors', () => {
         expect(getMultichainIsTestnet(state)).toBe(isTestnet);
       },
     );
+
+    it('returns false for Tron mainnet account (expected behavior)', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+      expect(getMultichainIsTestnet(state)).toBe(false);
+    });
+
+    it('returns true for Tron Nile testnet account', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_NILE, TrxScope.Nile);
+      expect(getMultichainIsTestnet(state)).toBe(true);
+    });
+
+    it('returns true for Tron Shasta testnet account', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
+      expect(getMultichainIsTestnet(state)).toBe(true);
+    });
   });
 
   describe('getMultichainSelectedAccountCachedBalance', () => {
@@ -420,22 +661,65 @@ describe('Multichain Selectors', () => {
         network: 'mainnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH,
         asset: MultichainNativeAssets.BITCOIN,
+        chainId: BtcScope.Mainnet,
       },
       {
         network: 'testnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
         asset: MultichainNativeAssets.BITCOIN_TESTNET,
+        chainId: BtcScope.Testnet,
       },
-    ])(
+    ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({
         account,
         asset,
+        chainId,
       }: {
         account: InternalAccount;
         asset: MultichainNativeAssets;
+        chainId: SupportedCaipChainId;
       }) => {
-        const state = getNonEvmState(account);
+        const state = getNonEvmState(account, chainId);
+        const balance = state.metamask.balances[account.id][asset].amount;
+
+        state.metamask.internalAccounts.selectedAccount = account.id;
+        expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      {
+        network: 'Tron mainnet',
+        account: MOCK_ACCOUNT_TRON_MAINNET,
+        asset: MultichainNativeAssets.TRON,
+        chainId: TrxScope.Mainnet,
+      },
+      {
+        network: 'Tron Nile',
+        account: MOCK_ACCOUNT_TRON_NILE,
+        asset: MultichainNativeAssets.TRON_NILE,
+        chainId: TrxScope.Nile,
+      },
+      {
+        network: 'Tron Shasta',
+        account: MOCK_ACCOUNT_TRON_SHASTA,
+        asset: MultichainNativeAssets.TRON_SHASTA,
+        chainId: TrxScope.Shasta,
+      },
+    ] as const)(
+      'returns cached balance if account is Tron: $network',
+      ({
+        account,
+        asset,
+        chainId,
+      }: {
+        account: InternalAccount;
+        asset: MultichainNativeAssets;
+        chainId: SupportedCaipChainId;
+      }) => {
+        const state = getTronState(account, chainId);
         const balance = state.metamask.balances[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
@@ -491,6 +775,33 @@ describe('Multichain Selectors', () => {
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
         false,
       );
+    });
+  });
+
+  describe('getMultichainIsTron', () => {
+    it('returns false if account is EVM', () => {
+      const state = getEvmState();
+      expect(getMultichainIsTron(state)).toBe(false);
+    });
+
+    it('returns false if account is Bitcoin', () => {
+      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
+      expect(getMultichainIsTron(state)).toBe(false);
+    });
+
+    it('returns true if account is Tron mainnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
+      expect(getMultichainIsTron(state)).toBe(true);
+    });
+
+    it('returns true if account is Tron Nile testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_NILE, TrxScope.Nile);
+      expect(getMultichainIsTron(state)).toBe(true);
+    });
+
+    it('returns true if account is Tron Shasta testnet', () => {
+      const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
+      expect(getMultichainIsTron(state)).toBe(true);
     });
   });
 });

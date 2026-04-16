@@ -1,7 +1,9 @@
 import React from 'react';
 import testData from '../../../../.storybook/test-data';
-import { AvatarAccount, AvatarAccountSize } from '../../component-library';
-import { BorderColor } from '../../../helpers/constants/design-system';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { Toast } from '.';
 
 const [chaosAccount] = Object.values(
@@ -25,6 +27,9 @@ export default {
     text: {
       control: 'text',
     },
+    description: {
+      control: 'text',
+    },
     actionText: {
       control: 'text',
     },
@@ -40,10 +45,10 @@ export default {
       <AvatarAccount
         address={CHAOS_ACCOUNT.address}
         size={AvatarAccountSize.Md}
-        borderColor={BorderColor.transparent}
       />
     ),
     text: 'This is the Toast text',
+    description: 'This is the Toast description',
     actionText: 'Take some action',
     onActionClick: () => undefined,
     onClose: () => undefined,

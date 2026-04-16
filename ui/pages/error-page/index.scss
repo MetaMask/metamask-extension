@@ -17,7 +17,7 @@
   &__stack {
     max-height: 120px;
     overflow: auto;
-    font-family: var(--font-family-sans);
+    font-family: var(--font-family-default);
     font-weight: var(--typography-l-body-xs-font-weight);
     font-size: var(--typography-l-body-xs-font-size);
   }
@@ -29,7 +29,7 @@
 
 // override styles for sentry feedback form
 #sentry-feedback {
-  --font-family: var(--font-family-sans);
+  --font-family: var(--font-family-default);
   --inset: auto 20px 20px auto;
   --input-font-size: 14px;
   --button-color: var(--color-primary-default);

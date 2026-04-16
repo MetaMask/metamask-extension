@@ -1,24 +1,30 @@
 import { useSelector } from 'react-redux';
-import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../shared/lib/conversion.utils';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
+import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import useMultiPolling from './useMultiPolling';
 
 export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const enabledChainIds = useSelector(getEnabledChainIds);
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+
+  const pollableChains =
+    chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
 
   useMultiPolling({
     startPolling: tokenBalancesStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
-    input: chainIds ?? Object.keys(networkConfigurations),
+    input: isAssetsUnifyStateEnabled ? [] : [pollableChains],
   });
 
   return { tokenBalances };
@@ -40,26 +46,41 @@ export const useTokenTracker = ({
   hideZeroBalanceTokens?: boolean;
 }) => {
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
-
-  const tokensWithBalances = tokens.reduce((acc, token) => {
-    const hexBalance =
-      tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
-    if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
-      const decimalBalance = hexToDecimal(hexBalance);
-      acc.push({
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        balance: decimalBalance,
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  if (isAssetsUnifyStateEnabled) {
+    return {
+      tokensWithBalances: tokens.map((token) => ({
+        ...token,
+        balance: '0',
         balanceError: null,
-        string: stringifyBalance(
-          new BN(decimalBalance),
-          new BN(token.decimals),
-        ),
-      });
-    }
-    return acc;
-  }, [] as (Token & { balance: string; string: string; balanceError: unknown })[]);
+        string: stringifyBalance('0', token.decimals),
+      })),
+    };
+  }
+
+  const tokensWithBalances = tokens.reduce(
+    (acc, token) => {
+      const hexBalance =
+        tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
+      if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
+        const decimalBalance = hexToDecimal(hexBalance);
+        acc.push({
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          balance: decimalBalance,
+          balanceError: null,
+          string: stringifyBalance(decimalBalance, token.decimals),
+        });
+      }
+      return acc;
+    },
+    [] as (Token & {
+      balance: string;
+      string: string;
+      balanceError: unknown;
+    })[],
+  );
 
   return {
     tokensWithBalances,
@@ -69,20 +90,22 @@ export const useTokenTracker = ({
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
 export function stringifyBalance(
-  balance: BN,
-  bnDecimals: BN,
+  balance: string,
+  tokenDecimals?: number,
   balanceDecimals = 5,
 ) {
-  if (balance.eq(new BN(0))) {
+  if (balance === '0') {
     return '0';
   }
 
-  const decimals = parseInt(bnDecimals.toString(), 10);
+  const parsed = Number(tokenDecimals);
+  const decimals = Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
+
   if (decimals === 0) {
-    return balance.toString();
+    return balance;
   }
 
-  let bal = balance.toString();
+  let bal = balance;
   let len = bal.length;
   let decimalIndex = len - decimals;
   let prefix = '';
