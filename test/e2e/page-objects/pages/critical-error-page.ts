@@ -100,9 +100,37 @@ class CriticalErrorPage {
         waitForLoadingLogoToDisappear: false,
       });
 
-      // Handoff can leave duplicate extension tabs which break Terms-of-Use
-      // interactions (visibility / observers). Keep only one.
-      await this.driver.closeAllOtherTabs();
+      // The service worker handoff runs asynchronously after runtime.reload():
+      // it reads the restore session from storage.local, converts the
+      // metamask.io/restoring tab to home.html, then clears the key. We must
+      // wait for that key to be cleared before closing extra tabs — otherwise
+      // we kill the restoring tab before the service worker can hand it off,
+      // causing a fallback that opens a second home.html tab.
+      await this.driver.waitUntil(
+        async () => {
+          const cleared = await this.driver.executeScript(`
+            return new Promise(resolve => {
+              const b = globalThis.browser ?? globalThis.chrome;
+              b.storage.local.get('criticalErrorRestore', (data) => {
+                resolve(!data.criticalErrorRestore);
+              });
+            });
+          `);
+          return Boolean(cleared);
+        },
+        { interval: 300, timeout: 30_000 },
+      );
+
+      // Now safe to close extra tabs (service worker has finished handoff / fallback).
+      const allHandles = await this.driver.driver.getAllWindowHandles();
+      const currentHandle = await this.driver.driver.getWindowHandle();
+      for (const handle of allHandles) {
+        if (handle !== currentHandle) {
+          await this.driver.driver.switchTo().window(handle);
+          await this.driver.driver.close();
+        }
+      }
+      await this.driver.driver.switchTo().window(currentHandle);
     } else {
       await alert.dismiss();
     }
