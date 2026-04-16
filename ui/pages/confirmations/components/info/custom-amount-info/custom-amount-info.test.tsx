@@ -317,6 +317,18 @@ describe('CustomAmountInfo', () => {
     });
   });
 
+  it('does not render alert message text in the body', () => {
+    const { queryByText } = render({
+      alertsHookReturn: {
+        alertMessage: 'Insufficient funds',
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(queryByText('Insufficient funds')).not.toBeInTheDocument();
+  });
+
   describe('overrideCenterContent', () => {
     it('renders override content when provided', () => {
       jest

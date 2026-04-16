@@ -1,14 +1,11 @@
 import React, { ReactNode, useCallback } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
   AlignItems,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   CustomAmount,
@@ -218,8 +215,6 @@ function CenterContainer({
       {hasTokens && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
-
-      <AlertMessage />
     </Box>
   );
 }
@@ -278,20 +273,3 @@ function useIsResultReady() {
   return isQuotesLoading || Boolean(quotes?.length);
 }
 
-function AlertMessage() {
-  const { alertMessage } = useTransactionCustomAmountAlerts();
-
-  if (!alertMessage) {
-    return null;
-  }
-
-  return (
-    <Text
-      variant={TextVariant.bodySm}
-      color={TextColor.errorDefault}
-      textAlign={TextAlign.Center}
-    >
-      {alertMessage}
-    </Text>
-  );
-}
