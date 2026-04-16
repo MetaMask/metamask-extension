@@ -16,15 +16,16 @@ class OnboardingPrivacySettingsPage {
 
   // General settings
   private readonly basicFunctionalityCheckbox =
-    '[id="basic-configuration-checkbox"]';
+    '[data-testid="basic-configuration-checkbox"]';
 
   private readonly basicFunctionalityToggle =
     '[data-testid="basic-functionality-toggle"] .toggle-button';
 
-  private readonly basicFunctionalityTurnOffButton = {
-    text: 'Turn off',
-    tag: 'button',
-  };
+  private readonly basicFunctionalityToggleOffState =
+    '[data-testid="basic-functionality-toggle"] .toggle-button.toggle-button--off';
+
+  private readonly basicFunctionalityTurnOffButton =
+    '[data-testid="basic-configuration-modal-toggle-button"]';
 
   private readonly basicFunctionalityTurnOffMessage = {
     text: 'Turn off basic functionality',
@@ -192,6 +193,9 @@ class OnboardingPrivacySettingsPage {
         (toggle) => toggle.click(),
       ),
     );
+    console.log('Verify all asset privacy toggles are off');
+    await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
+
     await this.navigateBackToSettingsPage();
   }
 
@@ -205,6 +209,10 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
     await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
+
+    console.log('Verify basic functionality toggle is off');
+    await this.driver.waitForSelector(this.basicFunctionalityToggleOffState);
+
     await this.navigateBackToSettingsPage();
   }
 }

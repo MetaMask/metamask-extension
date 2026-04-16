@@ -14,7 +14,7 @@ import {
   formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
-} from '../../../../shared/modules/shield';
+} from '../../../../shared/lib/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';

@@ -18,7 +18,6 @@ import { ConnectionState } from './connectionState';
  */
 export type HardwareWalletState = {
   // Basic state
-  deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   connectionState: HardwareWalletConnectionState;
 
@@ -40,13 +39,14 @@ export type HardwareWalletRefs = {
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   /**
-   * Stores the pending ensureDeviceReady promise to prevent overlapping checks.
+   * Stores pending ensureDeviceReady promises keyed by a dedup key derived
+   * from requireBlindSigning and preflightMessageBytes. This prevents duplicate
+   * checks for the same option combination while allowing different option
+   * sets to run independently.
    */
-  ensureDeviceReadyPromiseRef: React.MutableRefObject<Promise<boolean> | null>;
-  /**
-   * Tracks the device ID for the in-flight ensureDeviceReady call.
-   */
-  ensureDeviceReadyDeviceIdRef: React.MutableRefObject<string | null>;
+  ensureDeviceReadyPromiseRef: React.MutableRefObject<
+    Map<string, Promise<boolean>>
+  >;
   /**
    * Flag to prevent concurrent connection attempts.
    * Used to synchronously check-and-set before any async work.
@@ -54,9 +54,9 @@ export type HardwareWalletRefs = {
   isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
+  isEnsuringDeviceReadyRef: React.MutableRefObject<boolean>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
   connectRef: React.MutableRefObject<(() => Promise<void>) | null>;
-  deviceIdRef: React.MutableRefObject<string | null>;
   walletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
   previousWalletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
 };
@@ -80,7 +80,6 @@ export const useHardwareWalletStateManager = () => {
   const accountAddress = accountInfo.address;
 
   // State declarations
-  const [deviceId, setDeviceId] = useState<string | null>(null);
   const [
     hardwareConnectionPermissionState,
     setHardwareConnectionPermissionState,
@@ -94,20 +93,17 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
-  const ensureDeviceReadyPromiseRef = useRef<Promise<boolean> | null>(null);
-  const ensureDeviceReadyDeviceIdRef = useRef<string | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<Map<string, Promise<boolean>>>(
+    new Map(),
+  );
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
+  const isEnsuringDeviceReadyRef = useRef(false);
   const currentConnectionIdRef = useRef<number | null>(null);
   const connectRef = useRef<(() => Promise<void>) | null>(null);
-  const deviceIdRef = useRef<string | null>(null);
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
-
-  // Sync refs immediately during render (not in useEffect) to avoid stale values
-  // This is safe because updating refs doesn't trigger re-renders
-  deviceIdRef.current = deviceId;
 
   // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
   if (walletTypeRef.current !== walletType) {
@@ -116,7 +112,6 @@ export const useHardwareWalletStateManager = () => {
   }
 
   const state: HardwareWalletState = {
-    deviceId,
     hardwareConnectionPermissionState,
     connectionState,
     walletType,
@@ -130,13 +125,12 @@ export const useHardwareWalletStateManager = () => {
       abortControllerRef,
       connectingPromiseRef,
       ensureDeviceReadyPromiseRef,
-      ensureDeviceReadyDeviceIdRef,
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
+      isEnsuringDeviceReadyRef,
       currentConnectionIdRef,
       connectRef,
-      deviceIdRef,
       walletTypeRef,
       previousWalletTypeRef,
     }),
@@ -145,7 +139,6 @@ export const useHardwareWalletStateManager = () => {
 
   const setters = useMemo(
     () => ({
-      setDeviceId,
       setHardwareConnectionPermissionState,
       setConnectionState,
       /**
@@ -173,8 +166,7 @@ export const useHardwareWalletStateManager = () => {
        */
       resetConnectionRefs: () => {
         connectingPromiseRef.current = null;
-        ensureDeviceReadyPromiseRef.current = null;
-        ensureDeviceReadyDeviceIdRef.current = null;
+        ensureDeviceReadyPromiseRef.current.clear();
         currentConnectionIdRef.current = null;
         isConnectingRef.current = false;
       },
@@ -186,29 +178,16 @@ export const useHardwareWalletStateManager = () => {
         lastConnectedAccountRef.current = null;
       },
       /**
-       * Marks auto-connect as completed for an account with a specific device
+       * Marks auto-connect as completed for an account
        *
        * @param connectedAccountAddress - The account address that was auto-connected
-       * @param connectedDeviceId - The device ID that was connected
        */
-      setAutoConnected: (
-        connectedAccountAddress: string | null,
-        connectedDeviceId: string,
-      ) => {
+      setAutoConnected: (connectedAccountAddress: string | null) => {
         hasAutoConnectedRef.current = true;
         lastConnectedAccountRef.current = connectedAccountAddress;
-        deviceIdRef.current = connectedDeviceId;
-      },
-      /**
-       * Updates the device ID ref directly (for auto-connect scenarios)
-       *
-       * @param newDeviceId - The device ID to set
-       */
-      setDeviceIdRef: (newDeviceId: string) => {
-        deviceIdRef.current = newDeviceId;
       },
     }),
-    [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
+    [setHardwareConnectionPermissionState, setConnectionState],
   );
 
   return {

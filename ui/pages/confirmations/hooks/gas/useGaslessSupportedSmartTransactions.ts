@@ -4,9 +4,10 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   getIsSmartTransaction,
   SmartTransactionsState,
-} from '../../../../../shared/modules/selectors';
+} from '../../../../../shared/lib/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isSendBundleSupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useGaslessSupportedSmartTransactions(): {
@@ -18,6 +19,7 @@ export function useGaslessSupportedSmartTransactions(): {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, chainId),
   );
@@ -29,7 +31,9 @@ export function useGaslessSupportedSmartTransactions(): {
 
   return {
     isSmartTransaction: Boolean(isSmartTransaction),
-    isSupported: Boolean(isSmartTransaction && sendBundleSupported),
-    pending,
+    isSupported: Boolean(
+      !isHardwareWalletAccount && isSmartTransaction && sendBundleSupported,
+    ),
+    pending: !isHardwareWalletAccount && pending,
   };
 }

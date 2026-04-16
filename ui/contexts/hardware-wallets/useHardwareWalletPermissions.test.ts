@@ -13,7 +13,6 @@ jest.mock('./webConnectionUtils');
 
 describe('useHardwareWalletPermissions', () => {
   let mockState: {
-    deviceId: string | null;
     hardwareConnectionPermissionState: HardwareConnectionPermissionState;
     currentAppName: string | null;
     connectionState: HardwareWalletConnectionState;
@@ -33,7 +32,6 @@ describe('useHardwareWalletPermissions', () => {
     mockSetHardwareConnectionPermissionState = jest.fn();
 
     mockState = {
-      deviceId: null,
       hardwareConnectionPermissionState:
         HardwareConnectionPermissionState.Unknown,
       currentAppName: null,

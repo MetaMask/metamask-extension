@@ -38,7 +38,7 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     (async () => {
       const lastConfirmation = await getLastInteractedConfirmationInfo();
 
-      if (!isMounted) {
+      if (!isMounted || !currentConfirmation) {
         return;
       }
 

@@ -13,9 +13,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:name-lookup': 'endowment:name-lookup',
   'endowment:assets': 'endowment:assets',
   'endowment:protocol': 'endowment:protocol',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   'endowment:keyring': 'endowment:keyring',
-  ///: END:ONLY_INCLUDE_IF
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.

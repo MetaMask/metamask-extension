@@ -4,51 +4,47 @@ import { WALLET_PASSWORD } from '../../constants';
 class LoginPage {
   private driver: Driver;
 
-  private passwordInput: string;
+  private readonly connectionsRemovedModal: object = {
+    testId: 'connections-removed-modal',
+  };
 
-  private unlockButton: string;
+  private readonly connectionsRemovedModalButton: object = {
+    testId: 'connections-removed-modal-button',
+  };
 
-  private welcomeBackMessage: object;
+  private readonly forgotPasswordButton: object = {
+    testId: 'unlock-forgot-password-button',
+  };
 
-  private forgotPasswordButton: string;
+  private readonly incorrectPasswordMessage: object = {
+    testId: 'unlock-page-help-text',
+    text: 'Password is incorrect. Please try again.',
+  };
 
-  private resetPasswordModalButton: string;
+  private readonly passwordInput: object = { testId: 'unlock-password' };
 
-  private resetWalletButton: string;
+  private readonly resetPasswordModalButton: object = {
+    testId: 'reset-password-modal-button',
+  };
 
-  private connectionsRemovedModal: string;
+  private readonly resetPasswordModalButtonLink: object = {
+    testId: 'reset-password-modal-button-link',
+  };
 
-  private connectionsRemovedModalButton: string;
+  private readonly resetWalletButton: object = {
+    testId: 'login-error-modal-button',
+  };
 
-  private incorrectPasswordMessage: { css: string; text: string };
+  private readonly unlockButton: object = { testId: 'unlock-submit' };
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.passwordInput = '[data-testid="unlock-password"]';
-    this.unlockButton = '[data-testid="unlock-submit"]';
-    this.welcomeBackMessage = {
-      css: '[data-testid="unlock-page-title"]',
-      text: 'Welcome back',
-    };
-    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
-
-    this.resetPasswordModalButton =
-      '[data-testid="reset-password-modal-button"]';
-
-    this.incorrectPasswordMessage = {
-      css: '[data-testid="unlock-page-help-text"]',
-      text: 'Password is incorrect. Please try again.',
-    };
-
-    this.resetWalletButton = '[data-testid="login-error-modal-button"]';
-    this.connectionsRemovedModal = '[data-testid="connections-removed-modal"]';
-    this.connectionsRemovedModalButton =
-      '[data-testid="connections-removed-modal-button"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.forgotPasswordButton,
         this.passwordInput,
         this.unlockButton,
       ]);
@@ -93,6 +89,21 @@ class LoginPage {
       'Resetting wallet due to unrecoverable error in social login unlock',
     );
     await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
+  }
+
+  /**
+   * Resets the wallet via the "Forgot password?" flow on the unlock page.
+   * Clicks "Forgot password?" -> "I don't know my Recovery Phrase" -> "Reset wallet".
+   */
+  async resetWalletFromForgotPassword(): Promise<void> {
+    console.log(
+      'Resetting wallet from forgot password flow on the unlock page',
+    );
+    await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElement(this.resetPasswordModalButtonLink);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {

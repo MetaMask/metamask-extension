@@ -1,7 +1,7 @@
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   buildQuote,
   reviewQuote,
@@ -10,7 +10,7 @@ import {
 } from '../tests/swaps/shared';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
 import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
@@ -43,12 +43,14 @@ describe('Snap Account - Swap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

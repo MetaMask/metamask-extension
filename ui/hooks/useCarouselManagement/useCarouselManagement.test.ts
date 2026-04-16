@@ -10,12 +10,16 @@ import {
   getShowDownloadMobileAppSlide,
   getRemoteFeatureFlags,
 } from '../../selectors';
+import { getCurrentLocale } from '../../ducks/locale/locale';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { useCarouselManagement } from './useCarouselManagement';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 jest.mock('./fetchCarouselSlidesFromContentful');
+jest.mock('../../ducks/locale/locale', () => ({
+  getCurrentLocale: jest.fn(),
+}));
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
   useSelector: jest.fn((selector) => selector()),
@@ -55,6 +59,7 @@ const mockGetSelectedInternalAccount = jest
   .mockReturnValue({ address: '0xabc' });
 const mockGetShowDownloadMobileAppSlide = jest.fn().mockReturnValue(true);
 const mockGetRemoteFeatureFlags = jest.fn();
+const mockGetCurrentLocale = jest.fn().mockReturnValue('en-US');
 
 describe('useCarouselManagement (simple Contentful tests)', () => {
   beforeEach(() => {
@@ -86,6 +91,9 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         if (selector === (getRemoteFeatureFlags as MockSelector)) {
           return mockGetRemoteFeatureFlags() as TSelected;
         }
+        if (selector === (getCurrentLocale as MockSelector)) {
+          return mockGetCurrentLocale() as TSelected;
+        }
         return undefined as unknown as TSelected;
       },
     );
@@ -97,6 +105,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
     mockGetRemoteFeatureFlags.mockReturnValue({
       contentfulCarouselEnabled: true,
     });
+    mockGetCurrentLocale.mockReturnValue('en');
 
     jest.clearAllMocks();
   });

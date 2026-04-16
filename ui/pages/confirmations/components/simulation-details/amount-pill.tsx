@@ -10,7 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

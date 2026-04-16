@@ -22,10 +22,13 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import { useSuppressNavigation } from '../../../hooks/useSuppressConfirmNavigate';
 
 export enum ConfirmationLoader {
   Default = 'default',
   CustomAmount = 'customAmount',
+  Send = 'send',
 }
 
 const CONNECT_APPROVAL_TYPES = [
@@ -37,12 +40,14 @@ const CONNECT_APPROVAL_TYPES = [
 
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
+  goBackTo?: string;
 };
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const navigate = useNavigate();
+  const suppressNavigation = useSuppressNavigation();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
 
@@ -59,6 +64,10 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
+      if (suppressNavigation(confirmationId, confirmations)) {
+        return;
+      }
+
       const url = getConfirmationRoute(
         confirmationId,
         confirmations,
@@ -70,7 +79,13 @@ export function useConfirmationNavigation() {
         navigate(url, { replace: true });
       }
     },
-    [approvalFlows?.length, confirmations, navigate, queryString],
+    [
+      approvalFlows?.length,
+      confirmations,
+      navigate,
+      queryString,
+      suppressNavigation,
+    ],
   );
 
   const navigateToIndex = useCallback(
@@ -96,13 +111,19 @@ export function useConfirmationNavigation() {
 
   const navigateToTransaction = useCallback(
     (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
-      const loader = options.loader ?? ConfirmationLoader.Default;
+      const params = new URLSearchParams();
+
+      if (options.loader && options.loader !== ConfirmationLoader.Default) {
+        params.set('loader', options.loader);
+      }
+
+      if (options.goBackTo) {
+        params.set('goBackTo', options.goBackTo);
+      }
 
       navigate({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-        search: options.loader
-          ? new URLSearchParams({ loader }).toString()
-          : '',
+        search: params.toString(),
       });
     },
     [navigate],
@@ -198,7 +219,10 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
+  const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
+
   return {
     loader,
+    goBackTo,
   };
 }

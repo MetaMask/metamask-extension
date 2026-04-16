@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AddEthereumChain } from './add-ethereum-chain';
 
 const mockConfirmation = {
@@ -50,7 +51,14 @@ describe('AddEthereumChain', () => {
 
     render(<AddEthereumChain />, mockState);
 
-    expect(screen.getByText('Add Test Network')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.addNetworkConfirmationTitle.message.replace(
+          '$1',
+          'Test Network',
+        ),
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
@@ -71,6 +79,13 @@ describe('AddEthereumChain', () => {
 
     render(<AddEthereumChain />, mockState);
 
-    expect(screen.getByText('Update Existing Network')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.updateNetworkConfirmationTitle.message.replace(
+          '$1',
+          'Existing Network',
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 });

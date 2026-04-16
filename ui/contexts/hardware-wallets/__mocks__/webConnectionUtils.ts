@@ -1,3 +1,4 @@
+import { CameraPermissionState } from '../constants';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,
@@ -10,14 +11,17 @@ import {
 // Mock functions
 export const isWebHidAvailable = jest.fn();
 export const isWebUsbAvailable = jest.fn();
+export const isCameraAvailable = jest.fn();
 export const checkWebHidPermission = jest.fn();
 export const checkWebUsbPermission = jest.fn();
+export const checkCameraPermissionState = jest.fn();
+export const checkCameraPermission = jest.fn();
 export const checkHardwareWalletPermission = jest.fn();
 export const requestWebHidPermission = jest.fn();
 export const requestWebUsbPermission = jest.fn();
+export const requestCameraPermission = jest.fn();
 export const requestHardwareWalletPermission = jest.fn();
-export const getDeviceId = jest.fn();
-export const getHardwareWalletDeviceId = jest.fn();
+export const getConnectedDevices = jest.fn();
 export const subscribeToWebHidEvents = jest.fn();
 export const subscribeToWebUsbEvents = jest.fn();
 export const subscribeToHardwareWalletEvents = jest.fn();
@@ -25,6 +29,7 @@ export const subscribeToHardwareWalletEvents = jest.fn();
 // Default mock implementations
 isWebHidAvailable.mockReturnValue(true);
 isWebUsbAvailable.mockReturnValue(true);
+isCameraAvailable.mockReturnValue(true);
 checkWebHidPermission.mockResolvedValue(
   HardwareConnectionPermissionState.Granted,
 );
@@ -38,26 +43,33 @@ checkHardwareWalletPermission.mockImplementation(
         return Promise.resolve(HardwareConnectionPermissionState.Granted);
       case HardwareWalletType.Trezor:
         return Promise.resolve(HardwareConnectionPermissionState.Granted);
+      case HardwareWalletType.Qr:
+        return Promise.resolve(HardwareConnectionPermissionState.Granted);
       default:
         return Promise.resolve(HardwareConnectionPermissionState.Denied);
     }
   },
 );
+checkCameraPermissionState.mockResolvedValue(
+  HardwareConnectionPermissionState.Granted,
+);
+checkCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
 requestWebHidPermission.mockResolvedValue(true);
 requestWebUsbPermission.mockResolvedValue(true);
+requestCameraPermission.mockResolvedValue(true);
 requestHardwareWalletPermission.mockImplementation(
   (walletType: HardwareWalletType) => {
     switch (walletType) {
       case HardwareWalletType.Ledger:
       case HardwareWalletType.Trezor:
+      case HardwareWalletType.Qr:
         return Promise.resolve(true);
       default:
         return Promise.resolve(false);
     }
   },
 );
-getDeviceId.mockResolvedValue('test-device-id');
-getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
+getConnectedDevices.mockResolvedValue([]);
 subscribeToWebHidEvents.mockReturnValue(jest.fn());
 subscribeToWebUsbEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
@@ -66,6 +78,7 @@ subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
 export const resetwebConnectionUtilsMocks = () => {
   isWebHidAvailable.mockReturnValue(true);
   isWebUsbAvailable.mockReturnValue(true);
+  isCameraAvailable.mockReturnValue(true);
   checkWebHidPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Granted,
   );
@@ -78,27 +91,33 @@ export const resetwebConnectionUtilsMocks = () => {
         case HardwareWalletType.Ledger:
           return Promise.resolve(HardwareConnectionPermissionState.Granted);
         case HardwareWalletType.Trezor:
+        case HardwareWalletType.Qr:
           return Promise.resolve(HardwareConnectionPermissionState.Granted);
         default:
           return Promise.resolve(HardwareConnectionPermissionState.Denied);
       }
     },
   );
+  checkCameraPermissionState.mockResolvedValue(
+    HardwareConnectionPermissionState.Granted,
+  );
+  checkCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
   requestWebHidPermission.mockResolvedValue(true);
   requestWebUsbPermission.mockResolvedValue(true);
+  requestCameraPermission.mockResolvedValue(true);
   requestHardwareWalletPermission.mockImplementation(
     (walletType: HardwareWalletType) => {
       switch (walletType) {
         case HardwareWalletType.Ledger:
         case HardwareWalletType.Trezor:
+        case HardwareWalletType.Qr:
           return Promise.resolve(true);
         default:
           return Promise.resolve(false);
       }
     },
   );
-  getDeviceId.mockResolvedValue('test-device-id');
-  getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
+  getConnectedDevices.mockResolvedValue([]);
   subscribeToWebHidEvents.mockReturnValue(jest.fn());
   subscribeToWebUsbEvents.mockReturnValue(jest.fn());
   subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
@@ -117,11 +136,16 @@ export const mockPermissionsDenied = () => {
   checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
+  checkCameraPermissionState.mockResolvedValue(
+    HardwareConnectionPermissionState.Denied,
+  );
+  checkCameraPermission.mockResolvedValue(CameraPermissionState.Denied);
   checkHardwareWalletPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
   requestWebHidPermission.mockResolvedValue(false);
   requestWebUsbPermission.mockResolvedValue(false);
+  requestCameraPermission.mockResolvedValue(false);
   requestHardwareWalletPermission.mockResolvedValue(false);
 };
 
@@ -133,6 +157,10 @@ export const mockPermissionsPrompt = () => {
   checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Prompt,
   );
+  checkCameraPermissionState.mockResolvedValue(
+    HardwareConnectionPermissionState.Prompt,
+  );
+  checkCameraPermission.mockResolvedValue(CameraPermissionState.Prompt);
   checkHardwareWalletPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Prompt,
   );
@@ -157,14 +185,5 @@ export const mockWebUsbUnavailable = () => {
 
 // Helper to mock device discovery failures
 export const mockNoDevicesFound = () => {
-  getDeviceId.mockResolvedValue(null);
-  getHardwareWalletDeviceId.mockResolvedValue(null);
-};
-
-// Helper to mock device discovery errors
-export const mockDeviceDiscoveryError = () => {
-  getDeviceId.mockRejectedValue(new Error('Device discovery failed'));
-  getHardwareWalletDeviceId.mockRejectedValue(
-    new Error('Device discovery failed'),
-  );
+  getConnectedDevices.mockResolvedValue([]);
 };

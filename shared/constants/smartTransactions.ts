@@ -1,4 +1,4 @@
-import { isProduction } from '../modules/environment';
+import { isProduction } from '../lib/environment';
 import { SECOND } from './time';
 import { CHAIN_IDS } from './network';
 

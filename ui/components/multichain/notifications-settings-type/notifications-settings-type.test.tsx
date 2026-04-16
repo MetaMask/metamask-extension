@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { IconName } from '../../component-library';
+import { IconName } from '@metamask/design-system-react';
 import { NotificationsSettingsType } from './notifications-settings-type';
 
 describe('NotificationsSettingsType', () => {

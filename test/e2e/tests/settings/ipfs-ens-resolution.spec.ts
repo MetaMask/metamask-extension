@@ -1,11 +1,12 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { tinyDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -31,7 +32,9 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
@@ -40,6 +43,20 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
+        // Wait for the live controller state (via Redux) to confirm the
+        // ipfsGateway and useAddressBarEnsResolution settings are active.
+        // Unlike getPersistedState (which reads IndexedDB fixture data
+        // immediately), getCleanAppState reflects the running controller
+        // state that has been synced to the UI after background init.
+        await driver.wait(async () => {
+          const uiState = await getCleanAppState(driver);
+          return (
+            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
+            uiState?.metamask?.useAddressBarEnsResolution === true
+          );
+        }, 10000);
+
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
 
@@ -76,12 +93,12 @@ describe('Settings', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: ensDomainPassthrough,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();
@@ -92,6 +109,7 @@ describe('Settings', function () {
         // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
+        await privacySettings.goToThirdPartyApisSettings();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 

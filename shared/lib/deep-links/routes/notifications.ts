@@ -1,11 +1,11 @@
 import {
   NOTIFICATIONS_ROUTE,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../ui/helpers/constants/routes';
 import { Route } from './route';
 
-export default new Route({
+export const notifications = new Route({
   pathname: '/notifications',
   getTitle: (_: URLSearchParams) => 'deepLink_theNotificationsPage',
   handler: function handler(_: URLSearchParams) {

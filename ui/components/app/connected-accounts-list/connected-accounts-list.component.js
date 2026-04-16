@@ -41,7 +41,6 @@ export default class ConnectedAccountsList extends PureComponent {
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        lastActive: PropTypes.number,
       }),
     ).isRequired,
     connectAccount: PropTypes.func.isRequired,
@@ -130,7 +129,10 @@ export default class ConnectedAccountsList extends PureComponent {
         onShowOptions={this.showAccountOptions.bind(null, address)}
         show={accountWithOptionsShown === address}
       >
-        <MenuItem iconName={IconName.Logout} onClick={this.disconnectAccount}>
+        <MenuItem
+          iconNameLegacy={IconName.Logout}
+          onClick={this.disconnectAccount}
+        >
           {t('disconnectThisAccount')}
         </MenuItem>
       </ConnectedAccountsListOptions>

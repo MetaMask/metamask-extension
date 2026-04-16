@@ -2,8 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import * as selectors from '../../../../selectors';
 import ChangePassword from './change-password';
 
 const mockUseNavigate = jest.fn();
@@ -39,80 +41,219 @@ jest.mock('../../../../store/actions', () => ({
   },
 }));
 
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+  getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
+}));
+
 describe('ChangePassword', () => {
   const mockStore = configureMockStore()(mockState);
   const mockPassword = '12345678';
   const mockNewPassword = '87654321';
 
-  it('should render correctly', () => {
-    const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
-
-    const verifyCurrentPasswordInput = getByTestId(
-      'verify-current-password-input',
-    );
-
-    expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
   });
 
-  it('should go to the next step when the current password verification is successful', async () => {
-    const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
-
-    const verifyCurrentPasswordInput = getByTestId(
-      'verify-current-password-input',
-    );
-
-    expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
-
-    const verifyCurrentPasswordButton = getByTestId(
-      'verify-current-password-button',
-    );
-    expect(verifyCurrentPasswordButton).toBeInTheDocument();
-    expect(verifyCurrentPasswordButton).toBeDisabled();
-
-    fireEvent.change(verifyCurrentPasswordInput, {
+  async function advanceToChangePasswordStep(
+    getByTestId: (id: string) => HTMLElement,
+  ) {
+    fireEvent.change(getByTestId('verify-current-password-input'), {
       target: { value: mockPassword },
     });
-    expect(verifyCurrentPasswordButton).toBeEnabled();
-
-    fireEvent.click(verifyCurrentPasswordButton);
-
+    fireEvent.click(getByTestId('verify-current-password-button'));
     await waitFor(() => {
       expect(mockVerifyPassword).toHaveBeenCalledWith(mockPassword);
     });
+  }
 
-    const changePasswordButton = getByTestId('change-password-button');
-    const changePasswordInput = getByTestId('change-password-input');
-    const checkTerms = getByTestId('change-password-terms');
-    const changePasswordConfirmInput = getByTestId(
-      'change-password-confirm-input',
-    );
+  describe('Step 1: verify current password', () => {
+    it('renders the current password input', () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
-    expect(changePasswordInput).toBeInTheDocument();
-    expect(changePasswordConfirmInput).toBeInTheDocument();
-    expect(changePasswordButton).toBeInTheDocument();
-    expect(changePasswordButton).toBeDisabled();
-
-    fireEvent.click(checkTerms);
-
-    fireEvent.change(changePasswordInput, {
-      target: { value: mockNewPassword },
-    });
-    fireEvent.change(changePasswordConfirmInput, {
-      target: { value: mockNewPassword },
+      const input = getByTestId('verify-current-password-input');
+      expect(input).toBeInTheDocument();
+      expect(input).toHaveAttribute('type', 'password');
     });
 
-    expect(changePasswordButton).toBeEnabled();
+    it('disables the continue button when the password field is empty', () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
-    fireEvent.click(changePasswordButton);
+      expect(getByTestId('verify-current-password-button')).toBeDisabled();
+    });
 
-    await waitFor(() => {
-      expect(mockChangePassword).toHaveBeenCalledWith(
-        mockNewPassword,
-        mockPassword,
+    it('shows an error when an incorrect password is submitted', async () => {
+      mockVerifyPassword.mockRejectedValueOnce(new Error('Incorrect password'));
+      const { getByTestId, getByText } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+
+      fireEvent.change(getByTestId('verify-current-password-input'), {
+        target: { value: 'wrongpassword' },
+      });
+      fireEvent.click(getByTestId('verify-current-password-button'));
+
+      await waitFor(() => {
+        expect(
+          getByText(messages.unlockPageIncorrectPassword.message),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('advances to the change password step on successful password verification', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      expect(getByTestId('change-password-input')).toBeInTheDocument();
+      expect(getByTestId('change-password-confirm-input')).toBeInTheDocument();
+      expect(getByTestId('change-password-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('Step 2: set new password (standard flow)', () => {
+    it('disables the save button until new password, confirm password, and terms are all provided', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      const saveButton = getByTestId('change-password-button');
+      expect(saveButton).toBeDisabled();
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      expect(saveButton).toBeDisabled();
+
+      fireEvent.click(getByTestId('change-password-terms'));
+      expect(saveButton).toBeEnabled();
+    });
+
+    it('changes the password and navigates to security settings on save', async () => {
+      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(mockChangePassword).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockPassword,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
+    });
+  });
+
+  describe('Step 2: set new password (social login flow)', () => {
+    beforeEach(() => {
+      (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+    });
+
+    it('shows the warning modal on form submission instead of immediately changing the password', async () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-warning-modal'),
+        ).toBeInTheDocument();
+      });
+      expect(mockChangePassword).not.toHaveBeenCalled();
+    });
+
+    it('canceling the warning modal returns to the change password form', async () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-warning-modal'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(getByTestId('change-password-warning-cancel'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-warning-modal'),
+        ).not.toBeInTheDocument();
+      });
+      expect(getByTestId('change-password-button')).toBeInTheDocument();
+      expect(mockChangePassword).not.toHaveBeenCalled();
+    });
+
+    it('confirming the warning modal proceeds with the password change', async () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await advanceToChangePasswordStep(getByTestId);
+
+      fireEvent.change(getByTestId('change-password-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.change(getByTestId('change-password-confirm-input'), {
+        target: { value: mockNewPassword },
+      });
+      fireEvent.click(getByTestId('change-password-terms'));
+      fireEvent.click(getByTestId('change-password-button'));
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('change-password-warning-modal'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(getByTestId('change-password-warning-confirm'));
+
+      await waitFor(() => {
+        expect(mockChangePassword).toHaveBeenCalledWith(
+          mockNewPassword,
+          mockPassword,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      });
     });
   });
 });

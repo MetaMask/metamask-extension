@@ -26,10 +26,12 @@ function getState({
   gasFeeTokens,
   chainId,
   currencyRates,
+  excludeNativeTokenForFee,
 }: {
   gasFeeTokens?: GasFeeToken[];
   chainId?: Hex;
   currencyRates?: Record<string, { conversionRate: number }>;
+  excludeNativeTokenForFee?: boolean;
 } = {}) {
   const networkConfigurations: Record<string, unknown> = {};
   let providerConfig = {};
@@ -66,6 +68,7 @@ function getState({
       chainId,
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      excludeNativeTokenForFee,
     }),
     {
       metamask: {
@@ -163,6 +166,32 @@ describe('useGasFeeToken', () => {
   it('returns native gas fee token if no token address', () => {
     const result = runHook({ tokenAddress: undefined });
     expect(result.tokenAddress).toStrictEqual(NATIVE_TOKEN_ADDRESS);
+  });
+
+  it('returns native gas fee token if `tokenAddress` doesnt match any `gasFeeTokens`', () => {
+    const result = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      tokenAddress: '0x00000000000d6ffc74a8feb35af5827bf57f6786', // Non-existing
+    });
+    expect(result.tokenAddress).toEqual(NATIVE_TOKEN_ADDRESS);
+  });
+
+  it('returns first of gasFeeTokens if `tokenAddress` doesnt match any `gasFeeTokens` but `excludeNativeTokenForFee` is set', () => {
+    const state = getState({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      excludeNativeTokenForFee: true,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useGasFeeToken({
+          tokenAddress: '0x00000000000d6ffc74a8feb35af5827bf57f6786',
+        }),
+      state,
+    );
+    expect(result.current.tokenAddress).toEqual(
+      GAS_FEE_TOKEN_MOCK.tokenAddress,
+    );
   });
 
   describe('returns native gas fee token', () => {

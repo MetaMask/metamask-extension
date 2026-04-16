@@ -2,7 +2,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getDappActiveNetwork } from './dapp';
 import {
   getOrderedConnectedAccountsForActiveTab,
@@ -11,6 +11,10 @@ import {
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
+// Mocked value for testing purposes only
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockedValue = any;
+
 // Mock the selectors that the new getDappActiveNetwork uses
 jest.mock('./selectors', () => ({
   getOrderedConnectedAccountsForActiveTab: jest.fn(),
@@ -18,7 +22,7 @@ jest.mock('./selectors', () => ({
   getAllDomains: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 
@@ -103,7 +107,7 @@ describe('getDappActiveNetwork selector', () => {
 
   const arrangeMocks = () => {
     mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockEvmAccount,
+      mockEvmAccount as MockedValue,
     ]);
     mockGetOriginOfCurrentTab.mockReturnValue(mockOrigin);
     mockGetAllDomains.mockReturnValue({
@@ -135,7 +139,7 @@ describe('getDappActiveNetwork selector', () => {
   it('returns correct non-EVM network configuration for Solana account', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockSolanaAccount,
+      mockSolanaAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({
       'solana:mainnet': mockMultichainNetworkConfig,
@@ -154,7 +158,9 @@ describe('getDappActiveNetwork selector', () => {
 
   it('returns null when orderedConnectedAccounts is null', () => {
     const mocks = arrangeMocks();
-    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue(null);
+    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue(
+      null as MockedValue,
+    );
     const result = getDappActiveNetwork(mocks.mockState);
     expect(result).toBeNull();
   });
@@ -169,7 +175,7 @@ describe('getDappActiveNetwork selector', () => {
   it('returns null when no matching non-EVM network configuration exists', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
-      mockSolanaAccount,
+      mockSolanaAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({});
 

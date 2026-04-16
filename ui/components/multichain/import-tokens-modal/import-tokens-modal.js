@@ -25,7 +25,7 @@ import {
   getAllNetworkConfigurationsByCaipChainId,
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getInternalAccounts,
   getSelectedInternalAccount,
@@ -38,6 +38,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
+  importCustomAssetsBatch,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -86,9 +87,9 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
@@ -117,6 +118,11 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../../selectors/assets-unify-state/asset-preferences';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -146,6 +152,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
 
@@ -201,7 +211,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const allTokens = useSelector(getAllTokens);
-  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
+  const tokens = allTokens?.[selectedNetwork]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   // Use the new useTokensWithFiltering hook for getting token data
@@ -300,6 +310,10 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
+      const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
+        return toAssetId(tokenAddress, selectedNetwork);
+      });
+
       const addedTokenValues = Object.values(pendingTokens);
 
       if (addedTokenValues.length === 0) {
@@ -360,6 +374,40 @@ export const ImportTokensModal = ({ onClose }) => {
         await dispatch(addImportedTokens(addedTokenValues, clientId));
       }
 
+      if (assetsUnifyStateFeatureEnabled) {
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+
+        // Build PendingTokenMetadata keyed by assetId for the batch call.
+        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
+        const pendingMetadataByAssetId = Object.fromEntries(
+          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
+            toAssetId(tokenAddress, selectedNetwork),
+            {
+              address: token.address,
+              symbol: token.symbol,
+              name: token.name ?? token.symbol,
+              decimals: token.decimals,
+              iconUrl: token.image,
+              aggregators: token.aggregators,
+              occurrences: token.occurrences,
+              chainId: token.chainId,
+              unlisted: token.unlisted,
+            },
+          ]),
+        );
+
+        await dispatch(
+          importCustomAssetsBatch(
+            selectedAccount.id,
+            assets,
+            pendingMetadataByAssetId,
+          ),
+        );
+      }
+
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
@@ -400,6 +448,10 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    assetsUnifyStateFeatureEnabled,
+    assetPreferences,
+    selectedAccount?.id,
+    selectedNetwork,
   ]);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getSocialLoginType } from '../../../selectors/seedless-onboarding/social-sync';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import RewardsQRCode from './RewardsQRCode';
 import {
   GOOGLE_ONBOARDING_URL,
@@ -145,7 +146,9 @@ describe('RewardsQRCode', () => {
 
     render(<RewardsQRCode />);
 
-    const closeButton = screen.getByRole('button', { name: 'Got it' });
+    const closeButton = screen.getByRole('button', {
+      name: messages.gotIt.message,
+    });
     expect(closeButton).toBeInTheDocument();
     fireEvent.click(closeButton);
 

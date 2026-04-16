@@ -36,7 +36,6 @@ const Template: StoryFn<typeof AddMultichainAccount> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 Default.parameters = {
   docs: {
     description: {

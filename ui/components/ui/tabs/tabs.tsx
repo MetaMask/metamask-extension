@@ -6,7 +6,32 @@ import {
   BoxJustifyContent,
   twMerge,
 } from '@metamask/design-system-react';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TabsProps, TabChild } from './tabs.types';
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(value, max));
+}
+
+async function startTransition(
+  direction: 'forward' | 'backward',
+  update: () => void,
+) {
+  if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
+    document.documentElement.dataset.tabTransitionDirection = direction;
+
+    const transition = document.startViewTransition(update);
+
+    try {
+      await transition.finished;
+    } finally {
+      delete document.documentElement.dataset.tabTransitionDirection;
+    }
+  } else {
+    update();
+  }
+}
 
 export const Tabs = <TKey extends string = string>({
   activeTab,
@@ -16,6 +41,7 @@ export const Tabs = <TKey extends string = string>({
   tabListProps = {},
   tabContentProps = {},
   className = '',
+  animated,
   ...props
 }: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
@@ -56,10 +82,25 @@ export const Tabs = <TKey extends string = string>({
     }
   }, [activeTab, findChildByKey, activeTabIndex]);
 
+  const clampedIndex =
+    getValidChildren.length > 0
+      ? clamp(activeTabIndex, 0, getValidChildren.length - 1)
+      : 0;
+
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
-    if (tabIndex !== activeTabIndex) {
-      setActiveTabIndex(tabIndex);
-      onTabClick?.(tabKey);
+    if (tabIndex !== clampedIndex) {
+      const direction = tabIndex > clampedIndex ? 'forward' : 'backward';
+
+      const applyUpdate = () => {
+        setActiveTabIndex(tabIndex);
+        onTabClick?.(tabKey);
+      };
+
+      if (animated) {
+        startTransition(direction, applyUpdate);
+      } else {
+        applyUpdate();
+      }
     }
   };
 
@@ -74,7 +115,7 @@ export const Tabs = <TKey extends string = string>({
         ...child.props,
         onClick: (idx: number) => handleTabClick(idx, tabKey),
         tabIndex: index,
-        isActive: numberOfTabs > 1 && index === activeTabIndex,
+        isActive: numberOfTabs > 1 && index === clampedIndex,
         key: tabKey,
       });
     });
@@ -87,11 +128,7 @@ export const Tabs = <TKey extends string = string>({
       return null;
     }
 
-    if (activeTabIndex >= validChildren.length || activeTabIndex < 0) {
-      throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
-    }
-
-    const activeChild = validChildren[activeTabIndex];
+    const activeChild = validChildren[clampedIndex];
     return activeChild?.props.children || null;
   };
 
@@ -108,7 +145,14 @@ export const Tabs = <TKey extends string = string>({
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box role="tabpanel" {...tabContentProps}>
+      <Box
+        role="tabpanel"
+        {...tabContentProps}
+        style={{
+          ...tabContentProps?.style,
+          ...(animated ? { viewTransitionName: 'tab-content' } : undefined),
+        }}
+      >
         {renderActiveTabContent()}
       </Box>
     </Box>

@@ -6,10 +6,7 @@ export default {
 };
 
 export const DefaultStory = () => (
-  <VisitSupportDataConsentModal
-    isOpen
-    onClose={() => {}}
-  />
+  <VisitSupportDataConsentModal isOpen onClose={() => {}} />
 );
 
 DefaultStory.storyName = 'Default';

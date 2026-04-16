@@ -267,5 +267,38 @@ describe('Bridge asset selectors', () => {
         }
       `);
     });
+
+    it('returns empty results when accountGroupId is undefined', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: {
+              normal: 1,
+              gasless: 2,
+            },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
+          },
+        },
+      });
+
+      // Simulate the caller pattern: accountGroup is undefined when address has no matching group
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        'non-existent-address',
+      ]);
+      expect(accountGroup).toBeUndefined();
+
+      expect(getBridgeSortedAssets(state, accountGroup?.id)).toEqual([]);
+      expect(getBridgeAssetsByAssetId(state, accountGroup?.id)).toEqual({});
+      expect(getBridgeBalancesByChainId(state, accountGroup?.id)).toEqual({});
+    });
   });
 });

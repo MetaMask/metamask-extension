@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { isHexString } from '@metamask/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../../../shared/modules/hexstring-utils';
+} from '../../../../../../shared/lib/hexstring-utils';
 import {
   ButtonIcon,
   IconName,

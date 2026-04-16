@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { AccountShowPrivateKeyRow } from './account-show-private-key-row';
 
@@ -129,8 +130,8 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      expect(screen.getByText('Private key')).toBeInTheDocument();
-      expect(screen.getByLabelText('Next')).toBeInTheDocument();
+      expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.next.message)).toBeInTheDocument();
     });
 
     it('does not render for non-exportable account (hardware)', () => {
@@ -182,12 +183,14 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
-      expect(screen.getByText('Show private key')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.showPrivateKey.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByTestId('account-details-authenticate'),
       ).toBeInTheDocument();
@@ -203,16 +206,18 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
       // Close modal
-      const closeButton = screen.getByLabelText('Close');
+      const closeButton = screen.getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText('Show private key')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.showPrivateKey.message),
+      ).not.toBeInTheDocument();
     });
 
     it('closes modal when cancel button is clicked', () => {
@@ -225,7 +230,7 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -249,7 +254,7 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -279,7 +284,7 @@ describe('AccountShowPrivateKeyRow', () => {
         store,
       );
 
-      expect(screen.getByText('Private key')).toBeInTheDocument();
+      expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
     });
   });
 });

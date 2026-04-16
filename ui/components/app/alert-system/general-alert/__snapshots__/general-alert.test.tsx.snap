@@ -13,12 +13,12 @@ exports[`GeneralAlert renders general alert 1`] = `
       class="mm-box mm-box--min-width-0"
     >
       <p
-        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
       >
         Security Alert
       </p>
       <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
       >
         This is a security alert
       </p>

@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
@@ -30,6 +34,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   REVIEW_PERMISSIONS,
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
@@ -38,7 +43,7 @@ import {
   getPermissionSubjects,
 } from '../../../../selectors';
 import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { Toast, ToastContainer } from '../../toast';
@@ -47,9 +52,24 @@ import { ConnectionListItem } from './connection-list-item';
 const PermissionsPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const headerRef = useRef();
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(
+        isGatorPermissionsRevocationFeatureEnabled()
+          ? GATOR_PERMISSIONS
+          : DEFAULT_ROUTE,
+      );
+    }
+  };
   const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -104,10 +124,12 @@ const PermissionsPage = () => {
   }, [dispatch, mergedConnectionsList, subjects]);
 
   const handleConnectionClick = (connection) => {
-    const hostName = connection.origin;
-    const safeEncodedHost = encodeURIComponent(hostName);
-
-    navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    navigate({
+      pathname: REVIEW_PERMISSIONS,
+      search: createSearchParams({
+        origin: connection.origin,
+      }).toString(),
+    });
   };
 
   const renderConnectionsList = (connectionList) =>
@@ -133,13 +155,7 @@ const PermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() =>
-              navigate(
-                isGatorPermissionsRevocationFeatureEnabled()
-                  ? GATOR_PERMISSIONS
-                  : DEFAULT_ROUTE,
-              )
-            }
+            onClick={handleBack}
             size={ButtonIconSize.Sm}
             data-testid="permissions-page-back"
           />

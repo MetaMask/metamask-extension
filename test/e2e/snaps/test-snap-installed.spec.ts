@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import {
@@ -58,11 +58,12 @@ describe('Test Snap installed', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegmentAndSnaps,
@@ -71,7 +72,7 @@ describe('Test Snap installed', function () {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);

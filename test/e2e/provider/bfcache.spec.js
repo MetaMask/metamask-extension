@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { DAPP_URL } = require('../constants');
 const { withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 
 const triggerBFCache = async (driver) => {
   await driver.executeScript(`
@@ -30,7 +30,7 @@ describe('BFCache', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

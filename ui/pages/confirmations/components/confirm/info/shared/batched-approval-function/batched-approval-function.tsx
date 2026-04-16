@@ -8,7 +8,7 @@ import {
 
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,

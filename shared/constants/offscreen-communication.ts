@@ -64,6 +64,9 @@ export enum TrezorAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'trezor-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getFeatures = 'trezor-get-features',
 }
 
 /**
@@ -91,6 +94,9 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getAppConfiguration = 'ledger-get-app-configuration',
 }
 
 /**

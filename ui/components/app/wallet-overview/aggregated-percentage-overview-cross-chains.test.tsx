@@ -12,7 +12,7 @@ import {
 } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({
@@ -44,7 +44,7 @@ jest.mock('../../../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 

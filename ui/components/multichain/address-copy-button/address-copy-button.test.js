@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { AddressCopyButton } from '.';
 
 jest.mock('copy-to-clipboard');

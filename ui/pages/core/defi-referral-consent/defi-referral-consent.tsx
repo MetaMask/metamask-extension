@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -13,6 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export type DefiReferralConsentProps = {
   onActionComplete: (result: {
@@ -52,7 +53,6 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
     <img
       src={`./images/${partnerId}-referral.png`}
       alt={`${partnerName} referral`}
-      width="full"
     />
   );
 };
@@ -65,7 +65,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   learnMoreUrl,
 }) => {
   const t = useI18nContext();
-  const [isChecked, setIsChecked] = useState(true);
+  const { value: isChecked, toggle } = useBoolean(true);
 
   const handleSubmit = () => {
     onActionComplete({
@@ -74,14 +74,12 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
     });
   };
 
-  const handleCheckboxClick = () => {
-    setIsChecked(!isChecked);
-  };
-
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
   const defiReferralSubtitle = `${partnerId}ReferralSubtitle`;
-  // This is here to stop yarn verify-locales from removing this string
+  // This is here to stop yarn verify-locales from removing these strings
   t('hyperliquidReferralSubtitle');
+  t('gmxReferralSubtitle');
+  t('asterdexReferralSubtitle');
 
   return (
     <Box
@@ -121,7 +119,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           <Checkbox
             id="defi-referral-consent-checkbox"
             isSelected={isChecked}
-            onChange={handleCheckboxClick}
+            onChange={toggle}
             label={t('defiReferralCheckboxLabel')}
             labelProps={{
               variant: TextVariant.BodySm,

@@ -25,6 +25,7 @@ import {
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
@@ -47,23 +48,35 @@ import { useConfirmContext } from '../../../context/confirm';
 export type CustomAmountInfoProps = {
   children?: ReactNode;
   currency?: string;
+  /**
+   * When true, it prevents automatic selection of payment token based on balance and feature flags
+   */
+  disableAutomaticToken?: boolean;
+  /**
+   * When true, it disables MetaMask Pay for transactions that just need custom amount input
+   */
   disablePay?: boolean;
   hasMax?: boolean;
+  hidePayTokenAmount?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideContent?: (amountHuman: string) => ReactNode;
+  overrideBottomContent?: ReactNode;
+  overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
 export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
     children,
     currency,
+    disableAutomaticToken,
     disablePay,
     hasMax,
-    overrideContent,
+    hidePayTokenAmount,
+    overrideBottomContent,
+    overrideCenterContent,
     preferredToken,
   }) => {
     useAutomaticTransactionPayToken({
-      disable: disablePay,
+      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
     useTransactionPayMetrics();
@@ -114,13 +127,14 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
           disablePay={disablePay}
           hasMax={hasMax && !isNativePayToken}
           hasTokens={hasTokens}
+          hidePayTokenAmount={hidePayTokenAmount}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
-          overrideContent={overrideContent}
+          overrideCenterContent={overrideCenterContent}
         >
           {children}
         </CenterContainer>
-        <BottomContainer />
+        {overrideBottomContent ?? <BottomContainer />}
       </Box>
     );
   },
@@ -147,9 +161,10 @@ type CenterContainerProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hasTokens: boolean;
+  hidePayTokenAmount?: boolean;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
-  overrideContent?: (amountHuman: string) => ReactNode;
+  overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
 function CenterContainer({
@@ -160,9 +175,10 @@ function CenterContainer({
   disablePay,
   hasMax,
   hasTokens,
+  hidePayTokenAmount,
   onAmountChange,
   onPercentageClick,
-  overrideContent,
+  overrideCenterContent,
 }: CenterContainerProps) {
   return (
     <Box
@@ -180,8 +196,8 @@ function CenterContainer({
         onChange={onAmountChange}
       />
 
-      {overrideContent ? (
-        overrideContent(amountHuman)
+      {overrideCenterContent ? (
+        overrideCenterContent(amountHuman)
       ) : (
         <Box
           display={Display.Flex}
@@ -189,11 +205,13 @@ function CenterContainer({
           alignItems={AlignItems.center}
           gap={3}
         >
-          {disablePay !== true && (
+          {disablePay !== true && !hidePayTokenAmount && (
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
-          {disablePay !== true && hasTokens && <PayWithRow />}
+          {disablePay !== true && hasTokens && (
+            <PayWithRow variant={ConfirmInfoRowSize.Small} />
+          )}
         </Box>
       )}
 
@@ -246,9 +264,9 @@ function BottomContainer() {
       gap={2}
       paddingBottom={4}
     >
-      <BridgeFeeRow />
-      <BridgeTimeRow />
-      <TotalRow />
+      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
+      <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+      <TotalRow variant={ConfirmInfoRowSize.Small} />
     </Box>
   );
 }

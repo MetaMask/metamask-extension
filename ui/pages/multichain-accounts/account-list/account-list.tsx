@@ -25,12 +25,19 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
   getAccountTree,
+  getSelectedAccountGroup,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  getIsDefaultAddressEnabled,
+  getShowDefaultAddressPreference,
+} from '../../../selectors';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
@@ -47,7 +54,6 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
-import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
@@ -56,10 +62,12 @@ export const AccountList = () => {
   const navigate = useNavigate();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
-  const { selectedAccountGroup } = accountTree;
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -116,6 +124,10 @@ export const AccountList = () => {
     setIsAddWalletModalOpen(false);
   }, [setIsAddWalletModalOpen]);
 
+  const handleBack = useCallback(() => {
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  }, [navigate]);
+
   return (
     <Page className="account-list-page">
       <Header
@@ -127,7 +139,7 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={handleBack}
           />
         }
       >
@@ -162,6 +174,7 @@ export const AccountList = () => {
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
+              showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
             />
           ) : (
             <Box

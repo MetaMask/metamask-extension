@@ -5,13 +5,14 @@ import {
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import {
-  ClearSnapState,
-  GetSnap,
-  GetSnapState,
-  HandleSnapRequest,
-  UpdateSnapState,
-  CreateInterface,
-  GetInterface,
+  SnapControllerClearSnapStateAction,
+  SnapControllerGetSnapAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerUpdateSnapStateAction,
+  SnapInterfaceControllerCreateInterfaceAction,
+  SnapInterfaceControllerGetInterfaceAction,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerGetKeyringsByTypeAction,
@@ -19,7 +20,6 @@ import {
   KeyringTypes,
   KeyringMetadata,
 } from '@metamask/keyring-controller';
-import { hasProperty } from '@metamask/utils';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
@@ -31,28 +31,30 @@ import {
 } from '../../../../../shared/constants/snaps/permissions';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
-import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller';
+import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
+import { getMnemonic, getMnemonicSeed } from './utils';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
-  | ClearSnapState
+  | SnapControllerClearSnapStateAction
   | ControllerGetStateAction<
       'CurrencyRateController',
       CurrencyRateController['state']
     >
-  | CreateInterface
-  | GetInterface
-  | GetSnap
-  | GetSnapState
-  | HandleSnapRequest
+  | SnapInterfaceControllerCreateInterfaceAction
+  | SnapInterfaceControllerGetInterfaceAction
+  | SnapControllerGetSnapAction
+  | SnapControllerGetSnapStateAction
+  | SnapControllerHandleRequestAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerWithKeyringAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
-  | UpdateSnapState;
+  | SnapControllerUpdateSnapStateAction;
 
 type SnapPermissionSpecificationsHooks = {
   addAndShowApprovalRequest(request: unknown): Promise<unknown>;
@@ -122,106 +124,15 @@ export function getSnapPermissionSpecifications(
           'SnapController:clearSnapState',
         ),
 
-        /**
-         * Get the mnemonic for a given entropy source. If no source is
-         * provided, the primary HD keyring's mnemonic will be returned.
-         *
-         * @param source - The ID of the entropy source keyring.
-         * @returns The mnemonic.
-         */
-        getMnemonic: async (source: string) => {
-          if (!source) {
-            const [keyring] = messenger.call(
-              'KeyringController:getKeyringsByType',
-              KeyringType.hdKeyTree,
-            ) as { mnemonic?: string }[];
-
-            if (!keyring.mnemonic) {
-              throw new Error('Primary keyring mnemonic unavailable.');
-            }
-
-            return keyring.mnemonic;
-          }
-
-          try {
-            const { type, mnemonic } = (await messenger.call(
-              'KeyringController:withKeyring',
-              {
-                id: source,
-              },
-              async ({ keyring }) => ({
-                type: keyring.type,
-                mnemonic: hasProperty(keyring, 'mnemonic')
-                  ? keyring.mnemonic
-                  : undefined,
-              }),
-            )) as { type: string; mnemonic?: string };
-
-            if (type !== KeyringTypes.hd || !mnemonic) {
-              // The keyring isn't guaranteed to have a mnemonic (e.g.,
-              // hardware wallets, which can't be used as entropy sources),
-              // so we throw an error if it doesn't.
-              throw new Error(`Entropy source with ID "${source}" not found.`);
-            }
-
-            return mnemonic;
-          } catch {
-            throw new Error(`Entropy source with ID "${source}" not found.`);
-          }
-        },
-
-        /**
-         * Get the mnemonic seed for a given entropy source. If no source is
-         * provided, the primary HD keyring's mnemonic seed will be returned.
-         *
-         * @param source - The ID of the entropy source keyring.
-         * @returns The mnemonic seed.
-         */
-        getMnemonicSeed: async (source: string) => {
-          if (!source) {
-            const [keyring] = messenger.call(
-              'KeyringController:getKeyringsByType',
-              KeyringType.hdKeyTree,
-            ) as { seed?: Uint8Array }[];
-
-            if (!keyring.seed) {
-              throw new Error('Primary keyring mnemonic unavailable.');
-            }
-
-            return keyring.seed;
-          }
-
-          try {
-            const { type, seed } = (await messenger.call(
-              'KeyringController:withKeyring',
-              {
-                id: source,
-              },
-              async ({ keyring }) => ({
-                type: keyring.type,
-                seed: hasProperty(keyring, 'seed') ? keyring.seed : undefined,
-              }),
-            )) as { type: string; seed?: Uint8Array };
-
-            if (type !== KeyringTypes.hd || !seed) {
-              // The keyring isn't guaranteed to have a mnemonic (e.g.,
-              // hardware wallets, which can't be used as entropy sources),
-              // so we throw an error if it doesn't.
-              throw new Error(`Entropy source with ID "${source}" not found.`);
-            }
-
-            return seed;
-          } catch {
-            throw new Error(`Entropy source with ID "${source}" not found.`);
-          }
-        },
+        getMnemonic: getMnemonic.bind(null, messenger),
+        getMnemonicSeed: getMnemonicSeed.bind(null, messenger),
 
         getUnlockPromise: messenger.call.bind(
           messenger,
           'AppStateController:getUnlockPromise',
         ),
 
-        getSnap: messenger.call.bind(messenger, 'SnapController:get'),
+        getSnap: messenger.call.bind(messenger, 'SnapController:getSnap'),
         handleSnapRpcRequest: messenger.call.bind(
           messenger,
           'SnapController:handleRequest',
@@ -351,7 +262,6 @@ export function getSnapPermissionSpecifications(
          */
         getClientCryptography: () => ({}),
 
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         getSnapKeyring: async () => {
           // TODO: Use `withKeyring` instead.
           const [snapKeyring] = messenger.call(
@@ -370,7 +280,11 @@ export function getSnapPermissionSpecifications(
 
           return snapKeyring;
         },
-        ///: END:ONLY_INCLUDE_IF
+
+        setInterfaceDisplayed: messenger.call.bind(
+          messenger,
+          'SnapInterfaceController:setInterfaceDisplayed',
+        ),
       },
     ),
   };

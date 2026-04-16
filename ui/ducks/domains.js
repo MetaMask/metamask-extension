@@ -12,11 +12,11 @@ import {
   getPermissionSubjects,
   getSnapMetadata,
 } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { handleSnapRequest } from '../store/actions';
 import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send-utils/send.constants';
 import { CHAIN_CHANGED } from '../store/actionConstants';
-import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
+import { BURN_ADDRESS } from '../../shared/lib/hexstring-utils';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';

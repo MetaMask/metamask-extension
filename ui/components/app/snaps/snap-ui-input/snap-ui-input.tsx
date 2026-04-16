@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 

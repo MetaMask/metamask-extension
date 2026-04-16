@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
@@ -11,6 +12,9 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,8 +32,31 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { PayWithModal } from '../../modals/pay-with-modal';
 import { TokenIcon } from '../../token-icon';
+
+export { ConfirmInfoRowSize };
+
+type PayWithRowContentProps = {
+  displayToken: {
+    chainId: string;
+    address: string;
+    symbol: string;
+    balanceUsd: string;
+  };
+  canEdit: boolean;
+  from: string | undefined;
+  onOpenModal: () => void;
+};
+
+type PayWithRowPillProps = PayWithRowContentProps & {
+  balanceUsdFormatted: string;
+};
+
+export type PayWithRowProps = {
+  variant?: ConfirmInfoRowSize;
+};
 
 export const PayWithRowSkeleton = () => {
   return (
@@ -54,15 +81,16 @@ export const PayWithRowSkeleton = () => {
   );
 };
 
-export const PayWithRow = () => {
-  const t = useI18nContext();
+export function PayWithRow({
+  variant = ConfirmInfoRowSize.Default,
+}: PayWithRowProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
+  const requiredTokens = useTransactionPayRequiredTokens();
   const fiatFormatter = useFiatFormatter();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
-  const chainId = payToken?.chainId;
 
   const fromAccount = useSelector((state) =>
     getInternalAccountByAddress(state, from ?? ''),
@@ -70,72 +98,175 @@ export const PayWithRow = () => {
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
-  const handleClick = useCallback(() => {
-    if (!canEdit) {
-      return;
+  const handleOpenModal = useCallback(() => {
+    if (canEdit) {
+      setIsModalOpen(true);
     }
-    setIsModalOpen(true);
   }, [canEdit]);
 
-  const handleClose = useCallback(() => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
 
+  const firstRequiredToken = requiredTokens?.[0];
+  const displayToken = payToken ?? firstRequiredToken;
+
   const balanceUsdFormatted = useMemo(
-    () => fiatFormatter(new BigNumber(payToken?.balanceUsd ?? '0').toNumber()),
-    [fiatFormatter, payToken?.balanceUsd],
+    () =>
+      fiatFormatter(new BigNumber(displayToken?.balanceUsd ?? '0').toNumber()),
+    [fiatFormatter, displayToken?.balanceUsd],
   );
 
-  if (!payToken || !chainId) {
-    return <PayWithRowSkeleton />;
+  if (!displayToken?.chainId) {
+    return null;
   }
+
+  const contentProps: PayWithRowContentProps = {
+    displayToken: {
+      chainId: displayToken.chainId,
+      address: displayToken.address,
+      symbol: displayToken.symbol,
+      balanceUsd: displayToken.balanceUsd,
+    },
+    canEdit,
+    from,
+    onOpenModal: handleOpenModal,
+  };
+
+  const isSmall = variant === ConfirmInfoRowSize.Small;
 
   return (
     <>
       {isModalOpen && (
-        <PayWithModal isOpen={isModalOpen} onClose={handleClose} />
+        <PayWithModal isOpen={isModalOpen} onClose={handleCloseModal} />
       )}
+      {isSmall ? (
+        <PayWithRowPill
+          {...contentProps}
+          balanceUsdFormatted={balanceUsdFormatted}
+        />
+      ) : (
+        <PayWithRowInline
+          {...contentProps}
+          ownerId={currentConfirmation?.id ?? ''}
+        />
+      )}
+    </>
+  );
+}
+
+function PayWithRowInline({
+  displayToken,
+  canEdit,
+  from,
+  onOpenModal,
+  ownerId,
+}: PayWithRowContentProps & { ownerId: string }) {
+  const t = useI18nContext();
+
+  return (
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.PayWith}
+      ownerId={ownerId}
+      data-testid="pay-with-row"
+      label={t('payWith')}
+      rowVariant={ConfirmInfoRowSize.Default}
+    >
       <Box
-        data-testid="pay-with-row"
-        onClick={handleClick}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        data-testid="pay-with-pill"
+        onClick={canEdit ? onOpenModal : undefined}
+        backgroundColor={
+          canEdit
+            ? BackgroundColor.backgroundMuted
+            : BackgroundColor.transparent
+        }
         borderRadius={BorderRadius.pill}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
+        display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        gap={3}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={2}
-        paddingRight={4}
+        gap={1}
         style={{
           cursor: canEdit ? 'pointer' : 'default',
+          padding: canEdit ? '4px 8px' : '0px',
         }}
       >
-        <TokenIcon chainId={chainId} tokenAddress={payToken.address} />
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
-          data-testid="pay-with-symbol"
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          marginRight={1}
         >
-          {`${t('payWith')} ${payToken.symbol}`}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-          data-testid="pay-with-balance"
-        >
-          {balanceUsdFormatted}
-        </Text>
+          <TokenIcon
+            chainId={displayToken.chainId as `0x${string}`}
+            tokenAddress={displayToken.address as `0x${string}`}
+            size="xs"
+          />
+        </Box>
+        <Text data-testid="pay-with-symbol">{displayToken.symbol}</Text>
         {canEdit && from && (
           <Icon
+            data-testid="pay-with-arrow"
             name={IconName.ArrowDown}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
           />
         )}
       </Box>
-    </>
+    </ConfirmInfoAlertRow>
   );
-};
+}
+
+function PayWithRowPill({
+  displayToken,
+  balanceUsdFormatted,
+  canEdit,
+  from,
+  onOpenModal,
+}: PayWithRowPillProps) {
+  const t = useI18nContext();
+
+  return (
+    <Box
+      data-testid="pay-with-row"
+      onClick={canEdit ? onOpenModal : undefined}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.pill}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={3}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingLeft={2}
+      paddingRight={4}
+      style={{
+        cursor: canEdit ? 'pointer' : 'default',
+      }}
+    >
+      <TokenIcon
+        chainId={displayToken.chainId as `0x${string}`}
+        tokenAddress={displayToken.address as `0x${string}`}
+      />
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        color={TextColor.textDefault}
+        data-testid="pay-with-symbol"
+      >
+        {`${t('payWith')} ${displayToken.symbol}`}
+      </Text>
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        color={TextColor.textAlternative}
+        data-testid="pay-with-balance"
+      >
+        {balanceUsdFormatted}
+      </Text>
+      {canEdit && from && (
+        <Icon
+          data-testid="pay-with-arrow"
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+          color={IconColor.iconAlternative}
+        />
+      )}
+    </Box>
+  );
+}
