@@ -10,6 +10,7 @@ import {
   Text,
   AvatarTokenSize,
 } from '../../../../../components/component-library';
+import NftDefaultImage from '../../../../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AlignItems,
   BackgroundColor,
@@ -78,19 +79,32 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
             ) : null
           }
         >
-          {image || collection?.imageUrl ? (
-            <Box
-              as="img"
-              src={nftItemSrc || (collection?.imageUrl as string)}
-              alt={name}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                objectFit: 'cover',
-              }}
-            />
-          ) : null}
+          <Box
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              overflow: 'hidden',
+            }}
+          >
+            {image || collection?.imageUrl ? (
+              <Box
+                as="img"
+                src={nftItemSrc || (collection?.imageUrl as string)}
+                alt={name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <NftDefaultImage
+                className="nft-fallback-image"
+                clickable={false}
+              />
+            )}
+          </Box>
         </BadgeWrapper>
       </Box>
       <Box
