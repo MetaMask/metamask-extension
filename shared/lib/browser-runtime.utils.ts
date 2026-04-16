@@ -104,15 +104,13 @@ export function getBrowserName(
 }
 
 /**
- * @param bowser - Optional Bowser parser (defaults from `window.navigator.userAgent`).
- * @param nav - Optional Navigator (defaults to `window.navigator`).
+ * Checks whether the current browser is Firefox.
+ *
+ * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
  * @returns Whether the host browser is Firefox (MV2 extension build).
  */
 export function isFirefoxBrowser(
-  bowser: Bowser.Parser.Parser = Bowser.getParser(
-    globalThis.navigator.userAgent,
-  ),
-  nav: Navigator = globalThis.navigator,
+  ...args: Parameters<typeof getBrowserName>
 ): boolean {
-  return getBrowserName(bowser, nav) === PLATFORM_FIREFOX;
+  return getBrowserName(...args) === PLATFORM_FIREFOX;
 }
