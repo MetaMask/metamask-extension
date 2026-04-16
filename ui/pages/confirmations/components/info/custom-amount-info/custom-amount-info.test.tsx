@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -320,13 +321,15 @@ describe('CustomAmountInfo', () => {
   it('does not render alert message text in the body', () => {
     const { queryByText } = render({
       alertsHookReturn: {
-        alertMessage: 'Insufficient funds',
+        alertMessage: messages.alertInsufficientPayTokenBalance.message,
         hideResults: true,
         disableUpdate: false,
       },
     });
 
-    expect(queryByText('Insufficient funds')).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.alertInsufficientPayTokenBalance.message),
+    ).not.toBeInTheDocument();
   });
 
   describe('overrideCenterContent', () => {
