@@ -118,26 +118,3 @@ export function computeTotalExposureForPermission(
     expiry,
   });
 }
-
-/**
- * Computes total exposure for a stream permission from decoded `permission.data` and expiry.
- * Call once when building the UI render context for stream permission types.
- *
- * @param permission - Permission whose `data` contains stream fields
- * @param permission.data
- * @param expiry - Expiry timestamp in Unix seconds, or null if none
- * @deprecated Use `isPermissionDataWithTotalExposure` + `computeTotalExposureForPermission` instead.
- */
-export function computeStreamTotalExposureForPermission(
-  permission: { data: Record<string, unknown> },
-  expiry: number | null,
-): BigNumber | null {
-  const { data } = permission;
-  return computeTotalExposure({
-    initialAmount: data.initialAmount as Hex | undefined | null,
-    maxAmount: data.maxAmount as Hex | undefined | null,
-    amountPerSecond: data.amountPerSecond as Hex,
-    startTime: data.startTime as number,
-    expiry,
-  });
-}
