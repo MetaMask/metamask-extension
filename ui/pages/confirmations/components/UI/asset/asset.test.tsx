@@ -187,8 +187,21 @@ describe('NFTAsset', () => {
     };
     const { getByAltText } = render(<Asset asset={assetWithoutImage} />);
 
-    const image = getByAltText('Test NFT');
+    const image = getByAltText('Test NFT logo');
     expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
+  });
+
+  it('renders NFT asset with AvatarToken fallback when no image is available', () => {
+    const assetWithoutAnyImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: { ...mockNFTERC721Asset.collection, imageUrl: undefined },
+    };
+    mockUseNftImageUrl.mockReturnValue('');
+    const { getByTestId } = render(<Asset asset={assetWithoutAnyImage} />);
+    
+    expect(getByTestId('nft-asset')).toBeInTheDocument();
+    // AvatarToken should render instead of null, preventing layout issues
   });
 
   it('renders account type label when account type is provided', () => {
