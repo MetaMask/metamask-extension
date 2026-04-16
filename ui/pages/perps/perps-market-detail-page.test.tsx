@@ -155,6 +155,14 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.0001,
+    isLoading: false,
+    hasError: false,
+  }),
+}));
+
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
   getSelectedInternalAccount: () => ({ address: '0x123' }),
@@ -230,12 +238,14 @@ jest.mock(
   }),
 );
 
+const mockLivePositions = jest.fn(() => ({
+  positions: mockPositions,
+  isInitialLoading: false,
+}));
+
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLivePositions: () => ({
-    positions: mockPositions,
-    isInitialLoading: false,
-  }),
+  usePerpsLivePositions: () => mockLivePositions(),
   usePerpsLiveOrders: () => ({
     orders: mockOrders,
     isInitialLoading: false,
@@ -265,6 +275,14 @@ jest.mock('../../hooks/perps/stream', () => ({
     hasHistoricalData: true,
     error: null,
     fetchMoreHistory: jest.fn(),
+  }),
+}));
+
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({
+    feeRate: 0.00145,
+    isLoading: false,
+    hasError: false,
   }),
 }));
 
@@ -342,6 +360,10 @@ describe('PerpsMarketDetailPage', () => {
       account: mockAccountState,
       isInitialLoading: false,
     });
+    mockLivePositions.mockReturnValue({
+      positions: mockPositions,
+      isInitialLoading: false,
+    });
     mockUsePerpsMarketFills.mockReturnValue({
       fills: [],
       isInitialLoading: false,
@@ -373,6 +395,115 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'ETH',
+          pendingOrderFilledDescription: 'Long 0.33 ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFilled',
+        description: 'Long 0.33 ETH',
+      });
+    });
+
+    it('shows order filled toast without description when pendingOrderFilledDescription is absent', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFilled',
+      });
+    });
+
+    it('does not show order filled toast when no matching position exists', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'DOGE',
+          pendingOrderFilledDescription: 'Long 100 DOGE',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when pendingOrderSymbol is absent', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: { someOtherKey: 'value' },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when pendingOrderSymbol is not a string', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 123,
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when route state is null', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: null,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
     });
 
     it('shows handed-off perps toast and clears route state', async () => {
@@ -724,7 +855,7 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
-    it('navigates to order entry in close mode when Reduce exposure is clicked', async () => {
+    it('opens Close position modal when Reduce exposure is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -732,12 +863,9 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
       fireEvent.click(screen.getByTestId('perps-modify-menu-reduce-exposure'));
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('/perps/trade/ETH'),
-      );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('mode=close'),
-      );
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
     });
 
     it('opens Reverse position modal when Reverse position is clicked', async () => {
@@ -917,11 +1045,11 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
 
       // ETH is long, entry=2850, leverage=3.
-      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3,087.50
+      // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3087.50
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3,087.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3087.50')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -934,11 +1062,11 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
 
       // ETH is long, entry=2850, leverage=3.
-      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2,612.50
+      // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2612.50
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2,612.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2612.50')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
@@ -949,11 +1077,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44,700.00
+      // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44700.00
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('44,700.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44700.00')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
@@ -964,11 +1092,11 @@ describe('PerpsMarketDetailPage', () => {
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
-      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45,300.00
+      // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45300.00
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('45,300.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45300.00')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {

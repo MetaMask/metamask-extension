@@ -14,6 +14,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/lib/transaction.utils';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
+import { MINUTE } from '../../../../shared/constants/time';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
@@ -83,6 +84,7 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       accountAddresses.length > 0,
     retry: false,
     keepPreviousData: true,
+    staleTime: 5 * MINUTE,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
@@ -119,7 +121,11 @@ export function usePrefetchTransactions() {
 
     queryClient
       // @ts-expect-error apiClient returns v5 types, repo still in v4
-      .prefetchInfiniteQuery({ ...queryOptions, retry: false })
+      .prefetchInfiniteQuery({
+        ...queryOptions,
+        retry: false,
+        staleTime: 5 * MINUTE,
+      })
       .catch(() => {
         // Prefetch is opportunistic
       });

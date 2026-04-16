@@ -40,6 +40,6 @@ export const SnapKeyringBuilderInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller: builder,
+    messengerClient: builder,
   };
 };

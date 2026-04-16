@@ -71,7 +71,7 @@ export function submitRequestToBackgroundAndCatch(
   });
 }
 
-export function setShowNewSrpAddedToast(value: boolean) {
+export function setShowNewSrpAddedToast(value: number | false) {
   return {
     type: SET_SHOW_NEW_SRP_ADDED_TOAST,
     payload: value,

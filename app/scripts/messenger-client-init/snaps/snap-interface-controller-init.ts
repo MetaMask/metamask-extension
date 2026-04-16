@@ -16,7 +16,7 @@ export const SnapInterfaceControllerInit: MessengerClientInitFunction<
   SnapInterfaceController,
   SnapInterfaceControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new SnapInterfaceController({
+  const messengerClient = new SnapInterfaceController({
     // @ts-expect-error: `persistedState.SnapInterfaceController` is not compatible
     // with the expected type.
     // TODO: Look into the type mismatch.
@@ -25,6 +25,6 @@ export const SnapInterfaceControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

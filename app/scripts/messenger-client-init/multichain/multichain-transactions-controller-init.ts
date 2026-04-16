@@ -14,12 +14,12 @@ export const MultichainTransactionsControllerInit: MessengerClientInitFunction<
   MultichainTransactionsController,
   MultichainTransactionsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultichainTransactionsController({
+  const messengerClient = new MultichainTransactionsController({
     messenger: controllerMessenger,
     state: persistedState.MultichainTransactionsController,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

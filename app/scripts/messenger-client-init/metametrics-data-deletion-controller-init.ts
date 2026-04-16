@@ -12,24 +12,24 @@ import { MessengerClientInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to use for the
  * controller.
- * @param request.getController - The function to get other controllers.
+ * @param request.getMessengerClient - The function to get other messenger clients.
  * @returns The initialized controller.
  */
 export const MetaMetricsDataDeletionControllerInit: MessengerClientInitFunction<
   MetaMetricsDataDeletionController,
   MetaMetricsDataDeletionControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
-  const dataDeletionService = getController(
+> = ({ controllerMessenger, persistedState, getMessengerClient }) => {
+  const dataDeletionService = getMessengerClient(
     'DataDeletionService',
   ) as DataDeletionService;
 
-  const controller = new MetaMetricsDataDeletionController({
+  const messengerClient = new MetaMetricsDataDeletionController({
     messenger: controllerMessenger,
     state: persistedState.MetaMetricsDataDeletionController,
     dataDeletionService,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

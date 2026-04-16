@@ -26,7 +26,7 @@ describe('DataDeletionServiceInit', () => {
   it('returns the service instance', () => {
     const requestMock = buildInitRequestMock();
 
-    expect(DataDeletionServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(DataDeletionServiceInit(requestMock).messengerClient).toBeInstanceOf(
       DataDeletionService,
     );
   });

@@ -28,8 +28,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('BridgeStatusControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = BridgeStatusControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(BridgeStatusController);
+    const { messengerClient } =
+      BridgeStatusControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(BridgeStatusController);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -65,7 +66,7 @@ describe('BridgeStatusControllerInit', () => {
               : undefined,
           ),
         );
-      requestMock.getController.mockImplementation(((
+      requestMock.getMessengerClient.mockImplementation(((
         name: MessengerClientName,
       ) => {
         if (name === 'TransactionController') {
@@ -80,7 +81,7 @@ describe('BridgeStatusControllerInit', () => {
           return { getKeyringForAccount: mockGetKeyringForAccount };
         }
         return undefined;
-      }) as unknown as MessengerClientInitRequest<BridgeStatusControllerMessenger>['getController']);
+      }) as unknown as MessengerClientInitRequest<BridgeStatusControllerMessenger>['getMessengerClient']);
 
       BridgeStatusControllerInit(requestMock);
 

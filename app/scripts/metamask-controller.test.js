@@ -88,7 +88,7 @@ import MetaMaskController from './metamask-controller';
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
+    messengerClient: {
       state: {},
       name: 'PerpsController',
     },

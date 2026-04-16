@@ -18,7 +18,7 @@ export const EnsControllerInit: MessengerClientInitFunction<
   EnsControllerMessenger,
   EnsControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new EnsController({
+  const messengerClient = new EnsController({
     messenger: controllerMessenger,
     onNetworkDidChange: (listener) =>
       initMessenger.subscribe('NetworkController:networkDidChange', listener),
@@ -26,6 +26,6 @@ export const EnsControllerInit: MessengerClientInitFunction<
 
   return {
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

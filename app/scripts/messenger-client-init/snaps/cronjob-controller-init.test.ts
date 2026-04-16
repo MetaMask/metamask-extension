@@ -31,7 +31,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('CronjobControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = CronjobControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(CronjobController);
+    const { messengerClient } = CronjobControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(CronjobController);
   });
 });

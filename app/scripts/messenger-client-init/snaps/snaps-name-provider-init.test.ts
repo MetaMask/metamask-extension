@@ -26,7 +26,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('SnapsNameProvider', () => {
   it('initializes the provider', () => {
-    const { controller } = SnapsNameProviderInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(SnapsNameProvider);
+    const { messengerClient } = SnapsNameProviderInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(SnapsNameProvider);
   });
 });

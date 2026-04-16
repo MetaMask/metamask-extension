@@ -11,7 +11,7 @@ import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-mes
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
- * @param request.getController - Function to get other initialized controllers.
+ * @param request.getMessengerClient - Function to get other initialized controllers.
  * @param request.getUIState - Function to get the UI state.
  * @returns The initialized controller.
  */
@@ -19,10 +19,15 @@ export const DecryptMessageControllerInit: MessengerClientInitFunction<
   DecryptMessageController,
   DecryptMessageControllerMessenger,
   DecryptMessageControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getController, getUIState }) => {
-  const manager = getController('DecryptMessageManager');
+> = ({
+  controllerMessenger,
+  initMessenger,
+  getMessengerClient,
+  getUIState,
+}) => {
+  const manager = getMessengerClient('DecryptMessageManager');
 
-  const controller = new DecryptMessageController({
+  const messengerClient = new DecryptMessageController({
     messenger: controllerMessenger,
     manager,
     getState: getUIState,
@@ -35,6 +40,6 @@ export const DecryptMessageControllerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };
