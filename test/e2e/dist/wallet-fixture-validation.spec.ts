@@ -1,10 +1,6 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
-import {
-  E2E_SRP,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-} from '../constants';
+import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,

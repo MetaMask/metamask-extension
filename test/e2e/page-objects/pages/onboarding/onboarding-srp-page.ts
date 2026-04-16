@@ -57,7 +57,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase word by word
    *
-  * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
    */
   async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
     const words = seedPhrase.split(' ');
