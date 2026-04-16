@@ -34,6 +34,10 @@ export async function readCriticalErrorRestoreSession(
       tabUrl,
     };
   } catch (error) {
+    // Do not rethrow: throwing would block the service worker initialization, and this,
+    // even when the startup is a default init (not a critical-error restore).
+    // Returning null treats the error like absent session data and at least allows
+    // default init to proceed.
     captureException(error);
     return null;
   }
