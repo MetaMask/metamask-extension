@@ -679,7 +679,7 @@ export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
 export const TRON_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
-export const STELLAR_IMAGE_URL = './images/stellar-logo.svg';
+export const STELLAR_IMAGE_URL = './images/stellar-logo.png';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
