@@ -77,6 +77,32 @@ Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
 
+### Example:
+
+```typescript
+// GOOD: Use fixture to set up prerequisites
+new FixtureBuilderV2()
+  .withPreferencesController({ useCurrencyRateCheck: false })
+  .withPermissionControllerConnectedToTestDapp()
+  .build();
+
+// Then test only the essential steps:
+// Login
+// Send TST
+// Assertion
+
+// BAD: Building all state through UI
+new FixtureBuilderV2().build();
+// Login
+// Add Contact
+// Open test dapp
+// Connect to test dapp
+// Deploy TST
+// Add TST to wallet
+// Send TST
+// Assertion
+```
+
 ## Framework Architecture
 
 ### Core Components:
