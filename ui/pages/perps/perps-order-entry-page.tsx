@@ -1095,28 +1095,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
-    if (hasNoAvailableBalance) {
-      if (!isEligible) {
-        setIsGeoBlockModalOpen(true);
-        return;
-      }
-      if (!selectedAddress || isDepositLoading) {
-        return;
-      }
-
-      await triggerDeposit();
-      return;
-    }
-
     await handleOrderSubmit();
-  }, [
-    handleOrderSubmit,
-    hasNoAvailableBalance,
-    isDepositLoading,
-    isEligible,
-    selectedAddress,
-    triggerDeposit,
-  ]);
+  }, [handleOrderSubmit]);
 
   useEffect(() => {
     if (!pendingOrderSymbol) {
