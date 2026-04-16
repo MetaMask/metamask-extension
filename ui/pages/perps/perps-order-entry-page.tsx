@@ -546,6 +546,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isDepositLoading ||
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
+    hasNoAvailableBalance ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
@@ -1195,10 +1196,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const displayName = getDisplayName(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
-    if (hasNoAvailableBalance) {
-      return t('addFunds');
-    }
-
     switch (orderMode) {
       case 'modify':
         return t('perpsModifyPosition');
