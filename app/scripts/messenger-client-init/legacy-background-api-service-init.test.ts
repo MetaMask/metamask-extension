@@ -8,7 +8,7 @@ import { buildControllerInitRequestMock } from './test/utils';
 import { LegacyBackgroundApiServiceInit } from './legacy-background-api-service-init';
 import { getLegacyBackgroundApiServiceMessenger } from './messengers/legacy-background-api-service-messenger';
 
-jest.mock('../services/background-api-service');
+jest.mock('../services/legacy-background-api-service');
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<LegacyBackgroundApiServiceMessenger>
