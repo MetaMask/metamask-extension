@@ -123,6 +123,11 @@ export class PerpsDataChannel<TData> {
       return;
     }
 
+    // Refresh is intentionally last-write-wins for channels backed by
+    // non-cancellable async work. For example, the markets channel reconnects
+    // by issuing a new RPC and its unsubscribe is a no-op, so an older in-flight
+    // request may still resolve after refresh. That is acceptable for the
+    // current idempotent market snapshot callers.
     if (!this.isConnected) {
       this.connect();
       return;

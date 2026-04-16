@@ -63,6 +63,10 @@ export function usePerpsLivePrices(
       return undefined;
     }
 
+    // The background `prices` channel is currently a single shared stream.
+    // Activating here is safe because the current product flow has one active
+    // owner at a time; if we later support concurrent owners, the bridge API
+    // should move to scoped subscriptions or ref-counted teardown.
     const activeSymbols = symbolsKey.split('|');
 
     submitRequestToBackground('perpsActivatePriceStream', [
