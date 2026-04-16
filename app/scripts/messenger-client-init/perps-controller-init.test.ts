@@ -267,6 +267,9 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(getInitRequestMock());
       expect(createPerpsInfrastructure).toHaveBeenCalledWith({
         trackEvent: expect.any(Function),
+        getStorageItem: expect.any(Function),
+        setStorageItem: expect.any(Function),
+        removeStorageItem: expect.any(Function),
       });
     });
 
@@ -296,6 +299,53 @@ describe('PerpsControllerInit', () => {
           event: MetaMetricsEventName.PerpsScreenViewed,
           category: MetaMetricsEventCategory.Perps,
         }),
+      );
+    });
+
+    it('storage helpers from createPerpsInfrastructure delegate to StorageService', async () => {
+      const call = jest.fn().mockResolvedValue({ result: 'cached-value' });
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      await deps.getStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+      await deps.setStorageItem(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      await deps.removeStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+
+      expect(call).toHaveBeenNthCalledWith(
+        1,
+        'StorageService:getItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        3,
+        'StorageService:removeItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
       );
     });
   });

@@ -7,7 +7,6 @@
 
 import { createProjectLogger } from '@metamask/utils';
 import type * as Sentry from '@sentry/browser';
-import browser from 'webextension-polyfill';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -43,6 +42,12 @@ import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature
  */
 export type InfrastructureDeps = {
   trackEvent: (payload: MetaMetricsEventPayload) => void;
+  getStorageItem: (key: string) => Promise<{
+    result?: unknown;
+    error?: Error;
+  }>;
+  setStorageItem: (key: string, value: string) => Promise<void>;
+  removeStorageItem: (key: string) => Promise<void>;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -251,74 +256,39 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
   };
 }
 
-const PERPS_DISK_CACHE_KEY_PREFIX = 'perps:';
-const LEGACY_RAW_PERPS_DISK_CACHE_KEYS = new Set([
-  'PERPS_DISK_CACHE_MARKETS',
-  'PERPS_DISK_CACHE_USER_DATA',
-]);
+const PERPS_DISK_CACHE_KEY_PREFIX = 'diskCache:';
 
 function getDiskCacheStorageKey(key: string): string {
   return `${PERPS_DISK_CACHE_KEY_PREFIX}${key}`;
 }
 
-function isLegacyRawPerpsDiskCacheKey(key: string): boolean {
-  return LEGACY_RAW_PERPS_DISK_CACHE_KEYS.has(key);
-}
-
-function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
+function createDiskCache(
+  deps: InfrastructureDeps,
+): PerpsPlatformDependencies['diskCache'] {
   const memoryCache = new Map<string, string>();
-  const storageLocal = browser?.storage?.local;
 
   return {
     getItem: async (key: string) => {
-      if (!storageLocal) {
-        return memoryCache.get(key) ?? null;
-      }
-
       if (memoryCache.has(key)) {
         return memoryCache.get(key) ?? null;
       }
 
-      const storageKey = getDiskCacheStorageKey(key);
-      const legacyFallbackEnabled = isLegacyRawPerpsDiskCacheKey(key);
-      const result = await storageLocal.get(
-        legacyFallbackEnabled ? [storageKey, key] : storageKey,
+      const { result, error } = await deps.getStorageItem(
+        getDiskCacheStorageKey(key),
       );
-      const prefixedValue = result[storageKey];
-      if (typeof prefixedValue === 'string') {
-        memoryCache.set(key, prefixedValue);
-        return prefixedValue;
-      }
-
-      if (!legacyFallbackEnabled || typeof result[key] !== 'string') {
+      if (error || typeof result !== 'string') {
         return null;
       }
-
-      const legacyValue = result[key];
-
-      // Migrate known legacy raw keys into the prefixed namespace on read.
-      await storageLocal.set({ [storageKey]: legacyValue });
-      await storageLocal.remove(key);
-      memoryCache.set(key, legacyValue);
-      return legacyValue;
+      memoryCache.set(key, result);
+      return result;
     },
     setItem: async (key: string, value: string) => {
       memoryCache.set(key, value);
-      if (storageLocal) {
-        await storageLocal.set({ [getDiskCacheStorageKey(key)]: value });
-        if (isLegacyRawPerpsDiskCacheKey(key)) {
-          await storageLocal.remove(key);
-        }
-      }
+      await deps.setStorageItem(getDiskCacheStorageKey(key), value);
     },
     removeItem: async (key: string) => {
       memoryCache.delete(key);
-      if (storageLocal) {
-        const storageKey = getDiskCacheStorageKey(key);
-        await storageLocal.remove(
-          isLegacyRawPerpsDiskCacheKey(key) ? [storageKey, key] : storageKey,
-        );
-      }
+      await deps.removeStorageItem(getDiskCacheStorageKey(key));
     },
   };
 }
@@ -342,7 +312,7 @@ export function createPerpsInfrastructure(
     featureFlags: createFeatureFlags(),
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
-    diskCache: createDiskCache(),
+    diskCache: createDiskCache(deps),
     rewards: {
       getPerpsDiscountForAccount: async (
         _caipAccountId: `${string}:${string}:${string}`,

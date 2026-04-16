@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -30,13 +29,24 @@ function setupSentryScope() {
 
 describe('createPerpsInfrastructure', () => {
   const mockTrackEvent = jest.fn();
+  const mockGetStorageItem = jest.fn();
+  const mockSetStorageItem = jest.fn();
+  const mockRemoveStorageItem = jest.fn();
 
   function getDeps(): InfrastructureDeps {
-    return { trackEvent: mockTrackEvent };
+    return {
+      trackEvent: mockTrackEvent,
+      getStorageItem: mockGetStorageItem,
+      setStorageItem: mockSetStorageItem,
+      removeStorageItem: mockRemoveStorageItem,
+    };
   }
 
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    mockGetStorageItem.mockReset().mockResolvedValue({});
+    mockSetStorageItem.mockReset().mockResolvedValue(undefined);
+    mockRemoveStorageItem.mockReset().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -561,102 +571,53 @@ describe('createPerpsInfrastructure', () => {
       await expect(diskCache.getItem('perps-test-key')).resolves.toBeNull();
     });
 
-    it('prefixes persisted storage keys and migrates known legacy raw keys', async () => {
-      const originalStorage = browser.storage;
-      const getMock = jest
-        .fn()
-        .mockResolvedValueOnce({
-          'perps:PERPS_DISK_CACHE_MARKETS': 'persisted-value',
-        })
-        .mockResolvedValueOnce({
-          PERPS_DISK_CACHE_USER_DATA: 'legacy-user-value',
-        });
-      const setMock = jest.fn().mockResolvedValue(undefined);
-      const removeMock = jest.fn().mockResolvedValue(undefined);
+    it('stores perps disk cache through StorageService namespaced keys', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({ result: 'persisted-value' })
+        .mockResolvedValueOnce({ result: 'persisted-value' });
 
-      Object.defineProperty(browser, 'storage', {
-        configurable: true,
-        value: {
-          local: {
-            get: getMock,
-            set: setMock,
-            remove: removeMock,
-          },
-        },
-      });
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
 
-      try {
-        const { diskCache } = createPerpsInfrastructure(getDeps());
-        expect(diskCache.getItemSync).toBeUndefined();
-        await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
+      await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
 
-        expect(setMock).toHaveBeenCalledWith({
-          'perps:PERPS_DISK_CACHE_MARKETS': 'persisted-value',
-        });
-        expect(removeMock).toHaveBeenCalledWith('PERPS_DISK_CACHE_MARKETS');
+      expect(mockSetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'persisted-value',
+      );
 
-        const { diskCache: hydratedDiskCache } =
-          createPerpsInfrastructure(getDeps());
-        await expect(
-          hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
-        ).resolves.toBe('persisted-value');
-        expect(getMock).toHaveBeenCalledWith([
-          'perps:PERPS_DISK_CACHE_MARKETS',
-          'PERPS_DISK_CACHE_MARKETS',
-        ]);
+      const { diskCache: hydratedDiskCache } =
+        createPerpsInfrastructure(getDeps());
+      await expect(
+        hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBe('persisted-value');
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
 
-        await expect(
-          hydratedDiskCache.getItem('PERPS_DISK_CACHE_USER_DATA'),
-        ).resolves.toBe('legacy-user-value');
-        expect(getMock).toHaveBeenCalledWith([
-          'perps:PERPS_DISK_CACHE_USER_DATA',
-          'PERPS_DISK_CACHE_USER_DATA',
-        ]);
-        expect(setMock).toHaveBeenCalledWith({
-          'perps:PERPS_DISK_CACHE_USER_DATA': 'legacy-user-value',
-        });
-        expect(removeMock).toHaveBeenCalledWith('PERPS_DISK_CACHE_USER_DATA');
-
-        await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
-        expect(removeMock).toHaveBeenCalledWith([
-          'perps:PERPS_DISK_CACHE_MARKETS',
-          'PERPS_DISK_CACHE_MARKETS',
-        ]);
-      } finally {
-        Object.defineProperty(browser, 'storage', {
-          configurable: true,
-          value: originalStorage,
-        });
-      }
+      await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
+      expect(mockRemoveStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
     });
 
-    it('does not read arbitrary unprefixed storage keys', async () => {
-      const originalStorage = browser.storage;
-      const getMock = jest.fn().mockResolvedValue({
-        arbitraryKey: 'unexpected-value',
-      });
+    it('returns null when StorageService misses or returns non-string values', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ result: { unexpected: true } });
 
-      Object.defineProperty(browser, 'storage', {
-        configurable: true,
-        value: {
-          local: {
-            get: getMock,
-            set: jest.fn().mockResolvedValue(undefined),
-            remove: jest.fn().mockResolvedValue(undefined),
-          },
-        },
-      });
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
+      await expect(diskCache.getItem('anotherKey')).resolves.toBeNull();
 
-      try {
-        const { diskCache } = createPerpsInfrastructure(getDeps());
-        await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
-        expect(getMock).toHaveBeenCalledWith('perps:arbitraryKey');
-      } finally {
-        Object.defineProperty(browser, 'storage', {
-          configurable: true,
-          value: originalStorage,
-        });
-      }
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        1,
+        'diskCache:arbitraryKey',
+      );
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        2,
+        'diskCache:anotherKey',
+      );
     });
   });
 });
