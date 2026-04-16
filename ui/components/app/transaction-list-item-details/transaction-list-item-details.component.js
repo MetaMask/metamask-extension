@@ -23,9 +23,7 @@ export default class TransactionListItemDetails extends PureComponent {
     trackEvent: PropTypes.func,
   };
 
-  static defaultProps = {
-    isHardwareWalletAccount: false,
-  };
+  static defaultProps = {};
 
   static propTypes = {
     onCancel: PropTypes.func,
