@@ -1,7 +1,77 @@
 import {
   computeStreamTotalExposureForPermission,
   computeTotalExposure,
+  computeTotalExposureForPermission,
+  isPermissionDataWithTotalExposure,
 } from './compute-total-exposure';
+
+describe('isPermissionDataWithTotalExposure', () => {
+  it('returns true when amountPerSecond is string and startTime is a finite number', () => {
+    expect(
+      isPermissionDataWithTotalExposure({
+        amountPerSecond: '0x1',
+        startTime: 1000,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when amountPerSecond is missing', () => {
+    expect(
+      isPermissionDataWithTotalExposure({
+        startTime: 1000,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when startTime is not a number', () => {
+    expect(
+      isPermissionDataWithTotalExposure({
+        amountPerSecond: '0x1',
+        startTime: '1000',
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when startTime is NaN', () => {
+    expect(
+      isPermissionDataWithTotalExposure({
+        amountPerSecond: '0x1',
+        startTime: NaN,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when startTime is not finite', () => {
+    expect(
+      isPermissionDataWithTotalExposure({
+        amountPerSecond: '0x1',
+        startTime: Infinity,
+      }),
+    ).toBe(false);
+  });
+});
+
+describe('computeTotalExposureForPermission', () => {
+  it('matches computeTotalExposure for the same fields', () => {
+    const data = {
+      initialAmount: '0x0' as const,
+      maxAmount: '0x32' as const,
+      amountPerSecond: '0x1' as const,
+      startTime: 1000,
+    };
+    expect(
+      computeTotalExposureForPermission(data, 1100)?.toNumber(),
+    ).toStrictEqual(
+      computeTotalExposure({
+        initialAmount: '0x0',
+        maxAmount: '0x32',
+        amountPerSecond: '0x1',
+        startTime: 1000,
+        expiry: 1100,
+      })?.toNumber(),
+    );
+  });
+});
 
 describe('computeStreamTotalExposureForPermission', () => {
   it('delegates to computeTotalExposure using permission data', () => {

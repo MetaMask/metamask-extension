@@ -24,7 +24,10 @@ import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
-import { computeStreamTotalExposureForPermission } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
+import {
+  computeTotalExposureForPermission,
+  isPermissionDataWithTotalExposure,
+} from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import {
   PERMISSION_SCHEMAS,
   assertPermissionSchemaEntry,
@@ -212,7 +215,8 @@ function renderElement(
     }
 
     case 'origin': {
-      const tooltipMessage = isSnapId(ctx.origin)
+      const origin = ctx.origin ?? '';
+      const tooltipMessage = isSnapId(origin)
         ? t('requestFromInfoSnap')
         : t('requestFromInfo');
 
@@ -224,7 +228,7 @@ function renderElement(
           label={t('requestFrom')}
           tooltip={tooltipMessage}
         >
-          <ConfirmInfoRowUrl url={ctx.origin} />
+          <ConfirmInfoRowUrl url={origin} />
         </ConfirmInfoAlertRow>
       );
     }
@@ -328,10 +332,6 @@ export const PermissionDetailRenderer: React.FC<{
     tokenInfo = { symbol: '', decimals: erc20Decimals };
   }
 
-  const isStreamPermission =
-    permission.type === 'native-token-stream' ||
-    permission.type === 'erc20-token-stream';
-
   const ctx: PermissionRenderContext = {
     permission,
     expiry,
@@ -339,10 +339,10 @@ export const PermissionDetailRenderer: React.FC<{
     origin,
     to,
     tokenInfo,
-    ...(isStreamPermission
+    ...(isPermissionDataWithTotalExposure(permission.data)
       ? {
-          streamTotalExposure: computeStreamTotalExposureForPermission(
-            permission,
+          streamTotalExposure: computeTotalExposureForPermission(
+            permission.data,
             expiry,
           ),
         }

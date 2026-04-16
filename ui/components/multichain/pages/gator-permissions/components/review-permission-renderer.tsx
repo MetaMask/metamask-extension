@@ -14,7 +14,10 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
-import { computeStreamTotalExposureForPermission } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
+import {
+  isPermissionDataWithTotalExposure,
+  computeTotalExposureForPermission,
+} from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import {
   PERMISSION_SCHEMAS,
   assertPermissionSchemaEntry,
@@ -206,7 +209,7 @@ function renderConfirmationDividerOriginAddressElement(
         <GatorPermissionDetailRow
           key={rowKey}
           label={t('requestFrom')}
-          value={ctx.origin}
+          value={ctx.origin ?? ''}
           testId={element.testId}
         />
       );
@@ -383,23 +386,6 @@ function renderAmountElement(
   );
 }
 
-/**
- * Expiry timestamp used for schema context and stream exposure. When `rules` is non-empty,
- * expiry comes only from rules (same value as the schema expiry field's `getValue(ctx)` via `ctx.expiry`),
- * not from the `expiry` prop.
- * @param expiry
- * @param rules
- */
-function getEffectiveExpiryForReviewRenderer(
-  expiry: number | null,
-  rules?: Rule[] | null,
-): number | null {
-  if (rules?.length) {
-    return extractExpiryTimestampFromRules(rules);
-  }
-  return expiry;
-}
-
 function renderExpiryElement(
   rowKey: string,
   element: ExpiryField,
@@ -478,12 +464,13 @@ export type ReviewPermissionRendererProps = {
   permissionType: string;
   permissionData: Record<string, unknown>;
   chainId: Hex;
-  expiry: number | null;
   rules?: Rule[] | null;
   tokenInfo: Pick<GatorTokenInfo, 'symbol' | 'decimals'>;
   tokenLoading: boolean;
   /** Which view to filter fields by. Defaults to 'reviewDetail'. */
   viewMode?: FieldView;
+  /** Request origin; set when using `viewMode="confirmation"` (e.g. tests). */
+  origin?: string;
   /** Account address for rendering account fields. */
   permissionAccount?: string;
   /** Network name for rendering network fields. */
@@ -498,11 +485,11 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionType
  * @param options0.permissionData
  * @param options0.chainId
- * @param options0.expiry
  * @param options0.rules
  * @param options0.tokenInfo
  * @param options0.tokenLoading
  * @param options0.viewMode
+ * @param options0.origin
  * @param options0.permissionAccount
  * @param options0.networkName
  */
@@ -512,11 +499,11 @@ export const ReviewPermissionRenderer: React.FC<
   permissionType,
   permissionData,
   chainId,
-  expiry,
   rules,
   tokenInfo,
   tokenLoading: loading,
   viewMode = 'reviewDetail',
+  origin,
   permissionAccount,
   networkName,
 }) => {
@@ -525,11 +512,7 @@ export const ReviewPermissionRenderer: React.FC<
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];
   assertPermissionSchemaEntry(permissionType, schemaEntry);
 
-  const isStreamPermission =
-    permissionType === 'native-token-stream' ||
-    permissionType === 'erc20-token-stream';
-
-  const effectiveExpiry = getEffectiveExpiryForReviewRenderer(expiry, rules);
+  const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
 
   const ctx: PermissionRenderContext = {
     permission: {
@@ -539,15 +522,17 @@ export const ReviewPermissionRenderer: React.FC<
     },
     expiry: effectiveExpiry,
     chainId,
-    origin: '',
     tokenInfo: {
       symbol: tokenInfo.symbol,
       decimals: tokenInfo.decimals,
     },
-    ...(isStreamPermission
+    ...(viewMode === 'confirmation' || origin !== undefined
+      ? { origin: origin ?? '' }
+      : {}),
+    ...(isPermissionDataWithTotalExposure(permissionData)
       ? {
-          streamTotalExposure: computeStreamTotalExposureForPermission(
-            { data: permissionData },
+          streamTotalExposure: computeTotalExposureForPermission(
+            permissionData,
             effectiveExpiry,
           ),
         }

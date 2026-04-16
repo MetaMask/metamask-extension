@@ -32,7 +32,6 @@ describe('ReviewPermissionRenderer', () => {
           startTime: 1736271776,
         }}
         chainId="0x1"
-        expiry={null}
         rules={[
           {
             type: 'expiry',
@@ -56,7 +55,7 @@ describe('ReviewPermissionRenderer', () => {
     ).toBeInTheDocument();
   });
 
-  it('uses rules expiry for stream total exposure when expiry prop is null', () => {
+  it('uses rules expiry for stream total exposure', () => {
     renderWithProvider(
       <ReviewPermissionRenderer
         permissionType="native-token-stream"
@@ -67,7 +66,7 @@ describe('ReviewPermissionRenderer', () => {
           startTime: 1000,
         }}
         chainId="0x1"
-        expiry={null}
+        origin="https://example.com"
         rules={[
           {
             type: 'expiry',
@@ -97,7 +96,6 @@ describe('ReviewPermissionRenderer', () => {
           startTime: 1736271776,
         }}
         chainId="0x1"
-        expiry={null}
         tokenInfo={{ symbol: 'ETH', decimals: undefined }}
         tokenLoading={false}
       />,

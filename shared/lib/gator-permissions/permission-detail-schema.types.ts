@@ -35,8 +35,8 @@ export type PermissionRenderContext = {
   expiry: number | null;
   /** Chain ID in hex format. */
   chainId: Hex;
-  /** The origin URL of the request. */
-  origin: string;
+  /** The origin URL of the request. Only required for confirmation views. */
+  origin?: string;
   /** The recipient / delegate address, if present. */
   to?: string;
   /** Pre-resolved token info. Present when tokenResolution.kind is 'native' or 'erc20'. */
@@ -146,7 +146,7 @@ export type OriginField = {
   type: 'origin';
   labelKey: string;
   testId: string;
-  getValue: (ctx: PermissionRenderContext) => string;
+  getValue: (ctx: PermissionRenderContext) => string | undefined;
   tooltip?: string;
   isVisible: (ctx: PermissionRenderContext) => boolean;
   includeInViews: FieldView[];

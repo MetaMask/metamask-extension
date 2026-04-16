@@ -71,12 +71,62 @@ export function computeTotalExposure(
 }
 
 /**
+ * Shape of permission data that supports total exposure computation.
+ * Any permission type whose `data` contains `amountPerSecond` and `startTime`
+ * qualifies, regardless of the specific permission type string.
+ */
+export type PermissionDataWithTotalExposure = Record<string, unknown> & {
+  amountPerSecond: Hex;
+  startTime: number;
+  initialAmount?: Hex | null;
+  maxAmount?: Hex | null;
+};
+
+/**
+ * Type guard: returns true when `permissionData` has the correct shape
+ * for the total exposure calculation (`amountPerSecond` string + finite `startTime`).
+ *
+ * @param permissionData - The decoded permission data record
+ * @returns Whether the data supports total exposure computation
+ */
+export function isPermissionDataWithTotalExposure(
+  permissionData: Record<string, unknown>,
+): permissionData is PermissionDataWithTotalExposure {
+  return (
+    typeof permissionData.amountPerSecond === 'string' &&
+    typeof permissionData.startTime === 'number' &&
+    Number.isFinite(permissionData.startTime)
+  );
+}
+
+/**
+ * Computes total exposure from permission data that has been verified
+ * via `isPermissionDataWithTotalExposure`.
+ *
+ * @param permissionData - Permission data containing stream fields
+ * @param expiry - Expiry timestamp in Unix seconds, or null if none
+ */
+export function computeTotalExposureForPermission(
+  permissionData: PermissionDataWithTotalExposure,
+  expiry: number | null,
+): BigNumber | null {
+  return computeTotalExposure({
+    initialAmount: permissionData.initialAmount,
+    maxAmount: permissionData.maxAmount,
+    amountPerSecond: permissionData.amountPerSecond,
+    startTime: permissionData.startTime,
+    expiry,
+  });
+}
+
+/**
  * Computes total exposure for a stream permission from decoded `permission.data` and expiry.
  * Call once when building the UI render context for stream permission types.
  *
  * @param permission - Permission whose `data` contains stream fields
  * @param permission.data
  * @param expiry - Expiry timestamp in Unix seconds, or null if none
+ * @deprecated Use `isPermissionDataWithTotalExposure` + `computeTotalExposureForPermission` instead.
  */
 export function computeStreamTotalExposureForPermission(
   permission: { data: Record<string, unknown> },
