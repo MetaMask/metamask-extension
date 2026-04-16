@@ -19,47 +19,57 @@ if [[ -z "${GITHUB_REPOSITORY_OWNER:-}" ]]; then
     exit 1
 fi
 
-temp_dir="$(mktemp -d)"
-trap 'rm -rf "${temp_dir}"' EXIT
+mkdir temp
 
-git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git "${temp_dir}"
+git config --global user.email "metamaskbot@users.noreply.github.com"
 
-bundle_size_file='test-artifacts/chrome/bundle_size.json'
-stats_file="${temp_dir}/stats/bundle_size_data.json"
-temp_stats_file="${temp_dir}/stats/bundle_size_data.temp.json"
+git config --global user.name "MetaMask Bot"
 
-if [[ ! -f "${stats_file}" ]]; then
-    echo '{}' > "${stats_file}"
+git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git temp
+
+BUNDLE_SIZE_FILE="test-artifacts/chrome/bundle_size.json"
+STATS_FILE="temp/stats/bundle_size_data.json"
+TEMP_FILE="temp/stats/bundle_size_data.temp.json"
+
+# Ensure the JSON file exists
+if [[ ! -f "${STATS_FILE}" ]]; then
+    echo "{}" > "${STATS_FILE}"
 fi
 
-for file in "${stats_file}" "${bundle_size_file}"; do
-    jq -e . "${file}" > /dev/null
-done
+# Validate JSON files before modification
+jq . "${STATS_FILE}" > /dev/null || {
+    echo "Error: Existing stats JSON is invalid"
+    exit 1
+}
+jq . "${BUNDLE_SIZE_FILE}" > /dev/null || {
+    echo "Error: New bundle size JSON is invalid"
+    exit 1
+}
 
-bundle_size="$(< "${bundle_size_file}")"
-
-if jq -e \
-    --arg sha "${GITHUB_SHA}" \
-    --argjson bundleSize "${bundle_size}" \
-    '
-    .[$sha] == $bundleSize
-    ' "${stats_file}" > /dev/null; then
-    echo "Bundle size stats for SHA ${GITHUB_SHA} are already up to date. No new commit needed."
+# Check if the SHA already exists in the stats file
+if jq -e "has(\"${GITHUB_SHA}\")" "${STATS_FILE}" > /dev/null; then
+    echo "SHA ${GITHUB_SHA} already exists in stats file. No new commit needed."
     exit 0
 fi
 
-jq \
-    --arg sha "${GITHUB_SHA}" \
-    --argjson bundleSize "${bundle_size}" \
-    '.[$sha] = $bundleSize' "${stats_file}" > "${temp_stats_file}"
+# Append new bundle size data correctly using jq
+jq --arg sha "${GITHUB_SHA}" --argjson data "$(cat "${BUNDLE_SIZE_FILE}")" \
+    '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
 
-mv "${temp_stats_file}" "${stats_file}"
+# Overwrite the original JSON file with the corrected version
+mv "${TEMP_FILE}" "${STATS_FILE}"
 
-git -C "${temp_dir}" config user.email "metamaskbot@users.noreply.github.com"
-git -C "${temp_dir}" config user.name "MetaMask Bot"
-git -C "${temp_dir}" add stats/bundle_size_data.json
-git -C "${temp_dir}" commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
+cd temp
+
+# Only add the JSON file
+git add stats/bundle_size_data.json
+
+git commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_bundlesize_stats"
 
-git -C "${temp_dir}" push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" main
+git push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" main
+
+cd ..
+
+rm -rf temp
