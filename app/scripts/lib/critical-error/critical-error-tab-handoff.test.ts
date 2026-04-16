@@ -195,13 +195,19 @@ describe('handoffRestoringTabToExtension', () => {
     getExtensionURL.mockReturnValue('chrome-extension://abc/home.html');
   });
 
-  it('does nothing when tab id is undefined', async () => {
+  it('opens extension UI in a new tab when tab id is undefined', async () => {
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 1 });
+
     await handoffRestoringTabToExtension(platform, {
       tabId: undefined,
       tabUrl: 'https://metamask.io/restoring#1',
     });
 
     expect(browser.tabs.get).not.toHaveBeenCalled();
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
   });
 
   it('updates tab when URL still matches', async () => {
@@ -218,6 +224,7 @@ describe('handoffRestoringTabToExtension', () => {
       active: true,
       url: 'chrome-extension://abc/home.html',
     });
+    expect(browser.tabs.create).not.toHaveBeenCalled();
   });
 
   it('updates tab when metamask.io redirected to locale-prefixed path', async () => {
@@ -234,38 +241,52 @@ describe('handoffRestoringTabToExtension', () => {
       active: true,
       url: 'chrome-extension://abc/home.html',
     });
+    expect(browser.tabs.create).not.toHaveBeenCalled();
   });
 
-  it('does not update when URL diverged', async () => {
+  it('opens extension UI in a new tab when URL diverged', async () => {
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
       url: 'https://example.com/',
     });
 
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
+
     await handoffRestoringTabToExtension(platform, {
       tabId: 7,
       tabUrl: 'https://metamask.io/restoring#frag',
     });
 
     expect(browser.tabs.update).not.toHaveBeenCalled();
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
   });
 
-  it('does not update when hash fragment differs', async () => {
+  it('opens extension UI in a new tab when hash fragment differs', async () => {
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
       url: 'https://metamask.io/restoring#different',
     });
 
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
+
     await handoffRestoringTabToExtension(platform, {
       tabId: 7,
       tabUrl: 'https://metamask.io/restoring#frag',
     });
 
     expect(browser.tabs.update).not.toHaveBeenCalled();
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
   });
 
-  it('swallows errors when tab is gone', async () => {
+  it('opens extension UI in a new tab when tab is gone', async () => {
     (browser.tabs.get as jest.Mock).mockRejectedValueOnce(new Error('No tab'));
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
 
     await expect(
       handoffRestoringTabToExtension(platform, {
@@ -273,5 +294,46 @@ describe('handoffRestoringTabToExtension', () => {
         tabUrl: 'https://metamask.io/restoring#frag',
       }),
     ).resolves.toBeUndefined();
+
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
+  });
+
+  it('opens extension UI in a new tab when tabs.update fails', async () => {
+    const tabUrl = 'https://metamask.io/restoring#frag';
+    (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
+      id: 7,
+      url: tabUrl,
+    });
+    (browser.tabs.update as jest.Mock).mockRejectedValueOnce(
+      new Error('update failed'),
+    );
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
+
+    await handoffRestoringTabToExtension(platform, { tabId: 7, tabUrl });
+
+    expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
+  });
+
+  it('opens extension UI in a new tab when restoring tab has no URL', async () => {
+    (browser.tabs.get as jest.Mock).mockResolvedValueOnce({ id: 7 });
+    (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
+
+    await handoffRestoringTabToExtension(platform, {
+      tabId: 7,
+      tabUrl: 'https://metamask.io/restoring#frag',
+    });
+
+    expect(browser.tabs.update).not.toHaveBeenCalled();
+    expect(browser.tabs.create).toHaveBeenCalledWith({
+      url: 'chrome-extension://abc/home.html',
+      active: true,
+    });
   });
 });

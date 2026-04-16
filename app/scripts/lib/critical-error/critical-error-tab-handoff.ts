@@ -106,28 +106,57 @@ export async function openRestoringTabAndReload(
   await requestSafeReload();
 }
 
-export async function handoffRestoringTabToExtension(
+/**
+ * Opens the extension home UI in a new tab.
+ * Used when we cannot reuse the restoring tab (missing id, tab closed, URL drift,
+ * or `tabs.update` failure).
+ * @param platform
+ */
+async function openExtensionUiInNewTab(
+  platform: ExtensionPlatformLike,
+): Promise<void> {
+  try {
+    const url = platform.getExtensionURL();
+    await browser.tabs.create({ url, active: true });
+  } catch (error) {
+    log.error(
+      'critical-error-restore: failed to open extension UI in a new tab',
+      error,
+    );
+  }
+}
+
+/**
+ * Attempts `tabs.update` on the dedicated restoring tab so it becomes the extension UI.
+ *
+ * @param platform - Extension platform used to resolve the home / full UI URL.
+ * @param handoff - Persisted restoring-tab session (id + expected tab URL).
+ * @returns `true` when the in-place update succeeded.
+ */
+async function tryHandoffViaRestoringTab(
   platform: ExtensionPlatformLike,
   handoff: RestoringTabHandoff,
-): Promise<void> {
-  if (handoff.tabId === undefined) {
-    log.warn('critical-error-restore: cannot hand off — tab id is undefined');
-    return;
+): Promise<boolean> {
+  if (typeof handoff.tabId !== 'number') {
+    log.warn(
+      'critical-error-restore: missing restoring tab id; opening extension UI in a new tab',
+    );
+    return false;
   }
 
   const expected = new URL(handoff.tabUrl);
 
-  let tab: browser.Tabs.Tab;
+  let tab: browser.Tabs.Tab | undefined;
   try {
     tab = await browser.tabs.get(handoff.tabId);
   } catch (error) {
     log.warn('critical-error-restore: restoring tab is gone', error);
-    return;
+    return false;
   }
 
   if (!tab.url) {
     log.warn('critical-error-restore: restoring tab has no URL');
-    return;
+    return false;
   }
 
   const actual = new URL(tab.url);
@@ -140,11 +169,36 @@ export async function handoffRestoringTabToExtension(
     log.warn(
       `critical-error-restore: restoring tab URL diverged — expected ${handoff.tabUrl}, got ${tab.url}`,
     );
-    return;
+    return false;
   }
 
-  await browser.tabs.update(handoff.tabId, {
-    active: true,
-    url: platform.getExtensionURL(),
-  });
+  try {
+    await browser.tabs.update(handoff.tabId, {
+      active: true,
+      url: platform.getExtensionURL(),
+    });
+    return true;
+  } catch (error) {
+    log.warn(
+      'critical-error-restore: failed to update restoring tab; opening extension UI in a new tab',
+      error,
+    );
+    return false;
+  }
+}
+
+/**
+ * Prefer navigating the dedicated restoring tab to the extension UI. If that is not
+ * possible, opens the extension UI in a new tab so restore can still continue.
+ * @param platform
+ * @param handoff
+ */
+export async function handoffRestoringTabToExtension(
+  platform: ExtensionPlatformLike,
+  handoff: RestoringTabHandoff,
+): Promise<void> {
+  const handedOffInPlace = await tryHandoffViaRestoringTab(platform, handoff);
+  if (!handedOffInPlace) {
+    await openExtensionUiInNewTab(platform);
+  }
 }
