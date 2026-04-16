@@ -132,13 +132,30 @@ const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
+
+const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
+
+/**
+ * Whether backup fetch saw a vault at startup less than {@link VAULT_AT_STARTUP_TEST_WINDOW_MS} ago.
+ *
+ * @param {number | null | undefined} hasVaultAtStartup - Timestamp when backup fetch saw a vault, or nullish.
+ * @returns {boolean}
+ */
+function hadVaultAtStartupRecently(hasVaultAtStartup) {
+  if (typeof hasVaultAtStartup !== 'number') {
+    return false;
+  }
+  return Date.now() - hasVaultAtStartup < VAULT_AT_STARTUP_TEST_WINDOW_MS;
+}
+
 /**
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = inTest
-  ? { restoreInProgress: false, hasVaultAtStartup: false }
+  ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
+
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
@@ -632,7 +649,7 @@ const handleOnConnect = async (port) => {
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
       !inTestState?.restoreInProgress &&
-      inTestState?.hasVaultAtStartup
+      hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
     ) {
       return;
     }
@@ -2441,7 +2458,7 @@ async function initBackground(backup) {
       inTest &&
       !backup &&
       getManifestFlags().testing?.simulateBackgroundInitializationHang &&
-      inTestState?.hasVaultAtStartup
+      hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
     ) {
       log.info(
         'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
@@ -2489,7 +2506,7 @@ async function initOrRestoreBackground() {
     testingFlags?.simulateBackgroundInitializationHang
   ) {
     if (inTestState) {
-      inTestState.hasVaultAtStartup = backupHasVault;
+      inTestState.hasVaultAtStartup = backupHasVault ? Date.now() : null;
     }
   }
 
