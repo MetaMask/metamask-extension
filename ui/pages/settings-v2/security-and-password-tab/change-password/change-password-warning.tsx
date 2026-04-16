@@ -51,7 +51,6 @@ export default function ChangePasswordWarning({
     <Modal
       isOpen
       onClose={onCancel}
-      className="change-password-warning-modal"
       data-testid="change-password-warning-modal"
     >
       <ModalOverlay />

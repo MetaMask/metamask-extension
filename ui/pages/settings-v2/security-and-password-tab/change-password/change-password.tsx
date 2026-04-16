@@ -261,7 +261,6 @@ const ChangePassword = ({
                 confirmPwdInputTestId="change-password-confirm-input"
               />
               <Box
-                className="create-password__terms-container"
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
                 justifyContent={BoxJustifyContent.Between}
