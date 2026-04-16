@@ -114,3 +114,4 @@ temp-llm-workflow-*
 
 # Local git worktrees
 .worktrees
+.omx/

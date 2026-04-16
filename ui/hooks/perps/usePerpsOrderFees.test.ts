@@ -76,7 +76,7 @@ describe('usePerpsOrderFees', () => {
     );
   });
 
-  it('enters error state on failure — no fallback to hardcoded constant', async () => {
+  it('falls back to base rates when the RPC call fails', async () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('network error'));
 
     const { result } = renderHook(() =>
@@ -87,10 +87,16 @@ describe('usePerpsOrderFees', () => {
       await Promise.resolve();
     });
 
-    expect(result.current.feeRate).toBeUndefined();
+    expect(result.current.feeRate).toBe(0.00145);
+    expect(result.current.protocolFeeRate).toBe(0.00045);
+    expect(result.current.metamaskFeeRate).toBe(0.001);
     expect(result.current.hasError).toBe(true);
     expect(result.current.isLoading).toBe(false);
-    expect(result.current.feeResult).toBeUndefined();
+    expect(result.current.feeResult).toEqual({
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      metamaskFeeRate: 0.001,
+    });
   });
 
   it('does not update state after unmount', async () => {
@@ -157,7 +163,7 @@ describe('usePerpsOrderFees', () => {
     });
 
     expect(result.current.hasError).toBe(true);
-    expect(result.current.feeRate).toBeUndefined();
+    expect(result.current.feeRate).toBe(0.00145);
 
     mockSubmitRequestToBackground.mockResolvedValueOnce(
       makeFeeResult({ feeRate: 0.001 }),

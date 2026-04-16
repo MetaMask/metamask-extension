@@ -26,69 +26,20 @@ import {
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
+  PERPS_CONSTANTS: {
+    ...jest.requireActual('@metamask/perps-controller').PERPS_CONSTANTS,
+    FallbackPriceDisplay: '$0.00',
+    FallbackPercentageDisplay: '—',
+  },
   PERPS_ERROR_CODES: {
-    CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
-    CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
-    PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
-    TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
-    BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
-    WITHDRAW_FAILED: 'WITHDRAW_FAILED',
-    POSITIONS_FAILED: 'POSITIONS_FAILED',
-    ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
-    MARKETS_FAILED: 'MARKETS_FAILED',
-    UNKNOWN_ERROR: 'UNKNOWN_ERROR',
-    ORDER_LEVERAGE_REDUCTION_FAILED: 'ORDER_LEVERAGE_REDUCTION_FAILED',
-    IOC_CANCEL: 'IOC_CANCEL',
-    CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT',
-    WITHDRAW_ASSET_ID_REQUIRED: 'WITHDRAW_ASSET_ID_REQUIRED',
-    WITHDRAW_AMOUNT_REQUIRED: 'WITHDRAW_AMOUNT_REQUIRED',
-    WITHDRAW_AMOUNT_POSITIVE: 'WITHDRAW_AMOUNT_POSITIVE',
-    WITHDRAW_INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
-    WITHDRAW_ASSET_NOT_SUPPORTED: 'WITHDRAW_ASSET_NOT_SUPPORTED',
-    WITHDRAW_INSUFFICIENT_BALANCE: 'WITHDRAW_INSUFFICIENT_BALANCE',
-    DEPOSIT_ASSET_ID_REQUIRED: 'DEPOSIT_ASSET_ID_REQUIRED',
-    DEPOSIT_AMOUNT_REQUIRED: 'DEPOSIT_AMOUNT_REQUIRED',
-    DEPOSIT_AMOUNT_POSITIVE: 'DEPOSIT_AMOUNT_POSITIVE',
-    DEPOSIT_MINIMUM_AMOUNT: 'DEPOSIT_MINIMUM_AMOUNT',
-    ORDER_COIN_REQUIRED: 'ORDER_COIN_REQUIRED',
-    ORDER_LIMIT_PRICE_REQUIRED: 'ORDER_LIMIT_PRICE_REQUIRED',
-    ORDER_PRICE_POSITIVE: 'ORDER_PRICE_POSITIVE',
-    ORDER_UNKNOWN_COIN: 'ORDER_UNKNOWN_COIN',
-    ORDER_SIZE_POSITIVE: 'ORDER_SIZE_POSITIVE',
-    ORDER_PRICE_REQUIRED: 'ORDER_PRICE_REQUIRED',
-    ORDER_SIZE_MIN: 'ORDER_SIZE_MIN',
-    ORDER_LEVERAGE_INVALID: 'ORDER_LEVERAGE_INVALID',
-    ORDER_LEVERAGE_BELOW_POSITION: 'ORDER_LEVERAGE_BELOW_POSITION',
-    ORDER_MAX_VALUE_EXCEEDED: 'ORDER_MAX_VALUE_EXCEEDED',
-    EXCHANGE_CLIENT_NOT_AVAILABLE: 'EXCHANGE_CLIENT_NOT_AVAILABLE',
-    INFO_CLIENT_NOT_AVAILABLE: 'INFO_CLIENT_NOT_AVAILABLE',
-    SUBSCRIPTION_CLIENT_NOT_AVAILABLE: 'SUBSCRIPTION_CLIENT_NOT_AVAILABLE',
-    NO_ACCOUNT_SELECTED: 'NO_ACCOUNT_SELECTED',
-    KEYRING_LOCKED: 'KEYRING_LOCKED',
-    INVALID_ADDRESS_FORMAT: 'INVALID_ADDRESS_FORMAT',
-    TRANSFER_FAILED: 'TRANSFER_FAILED',
-    SWAP_FAILED: 'SWAP_FAILED',
-    SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
-    PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
-    BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
-    BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
-    INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
-    INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
-    REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
-    POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
-    MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
-    TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
-    ORDER_REJECTED: 'ORDER_REJECTED',
-    SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
-    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
-    SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
-    NETWORK_ERROR: 'NETWORK_ERROR',
+    ...jest.requireActual('@metamask/perps-controller').PERPS_ERROR_CODES,
   },
 }));
 
-const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
@@ -122,7 +73,32 @@ const mockStreamManagerBase = {
 };
 const mockGetPerpsStreamManager = jest.fn(() => mockStreamManagerBase);
 
-const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+const mockSubmitRequestToBackground = jest
+  .fn()
+  .mockImplementation((method: string, ...args: unknown[]) => {
+    const immediate = <T,>(value: T): Promise<T> =>
+      ({
+        then(onFulfilled: (resolved: T) => unknown) {
+          const result = onFulfilled(value);
+          return immediate(result as T);
+        },
+        catch() {
+          return immediate(value);
+        },
+        finally(onFinally: () => void) {
+          onFinally();
+          return immediate(value);
+        },
+      }) as Promise<T>;
+
+    if (method === 'perpsCalculateLiquidationPrice') {
+      const params = args[0] as [{ direction?: 'long' | 'short' }] | undefined;
+      return immediate(
+        params?.[0]?.direction === 'short' ? '120000' : '1609.4',
+      );
+    }
+    return immediate(undefined);
+  });
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),

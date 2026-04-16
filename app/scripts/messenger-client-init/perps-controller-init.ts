@@ -122,6 +122,7 @@ type PerpsActionName =
   | 'perpsGetHistoricalPortfolio'
   | 'perpsFetchHistoricalCandles'
   | 'perpsCalculateFees'
+  | 'perpsCalculateLiquidationPrice'
   | 'perpsGetAvailableDexs'
   | 'perpsRefreshEligibility'
   | 'perpsStartEligibilityMonitoring'
@@ -302,6 +303,9 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
     ),
     perpsCalculateFees: guard(
       messengerClient.calculateFees.bind(messengerClient),
+    ),
+    perpsCalculateLiquidationPrice: guard(
+      messengerClient.calculateLiquidationPrice.bind(messengerClient),
     ),
     perpsGetAvailableDexs: guard(
       messengerClient.getAvailableDexs.bind(messengerClient),

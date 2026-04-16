@@ -9,6 +9,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo, useState } from 'react';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '@metamask/perps-controller';
 
 import {
   BorderRadius,
@@ -16,7 +20,6 @@ import {
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
@@ -73,8 +76,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   asset,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
-
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,
     orderType: 'market',
@@ -483,10 +484,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtTp)}
                 >
                   {estimatedPnlAtTp >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtTp),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}
@@ -590,10 +590,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   color={getPnlDisplayColor(estimatedPnlAtSl)}
                 >
                   {estimatedPnlAtSl >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtSl),
-                    'USD',
-                  )}
+                  {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                    ranges: PRICE_RANGES_MINIMAL_VIEW,
+                  })}
                 </Text>
               </Box>
             )}

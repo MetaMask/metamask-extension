@@ -88,7 +88,7 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
-  formatChangePercent,
+  formatSignedChangePercent,
 } from '../../components/app/perps/utils';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
@@ -169,15 +169,23 @@ function useFundingCountdown(): string {
 function parsePerpsDisplayPrice(
   value: string | number | null | undefined,
 ): number {
-  return Number.parseFloat(String(value ?? '').replace(/,/gu, ''));
+  return Number.parseFloat(String(value ?? '').replace(/[$,]/gu, ''));
+}
+
+function normalizePerpsDisplayPrice(value: string | number): number {
+  return typeof value === 'number' ? value : parsePerpsDisplayPrice(value);
 }
 
 function formatPerpsFiatMinimal(value: string | number): string {
-  return formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW });
+  return formatPerpsFiat(normalizePerpsDisplayPrice(value), {
+    ranges: PRICE_RANGES_MINIMAL_VIEW,
+  });
 }
 
 function formatPerpsFiatUniversal(value: string | number): string {
-  return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL });
+  return formatPerpsFiat(normalizePerpsDisplayPrice(value), {
+    ranges: PRICE_RANGES_UNIVERSAL,
+  });
 }
 
 type PopoverMenuItemProps = {
@@ -213,7 +221,11 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
       gap={0}
       className="min-w-0 flex-1"
     >
-      <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        data-testid="perps-market-detail-oracle-price"
+      >
         {label}
       </Text>
       <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
@@ -364,32 +376,71 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
 
-    // Activate background price stream for this symbol
-    submitRequestToBackground('perpsActivatePriceStream', [
-      { symbols: [decodedSymbol], includeMarketData: true },
-    ]).catch(() => {
-      // Controller not ready yet, skip silently
-    });
+    setLivePrice(undefined);
+
+    const toPriceUpdate = (update: PriceUpdate | undefined) => {
+      if (!update) {
+        return undefined;
+      }
+      const ts = (update as { timestamp?: number }).timestamp;
+      const mark = (update as { markPrice?: string }).markPrice;
+      return {
+        symbol: update.symbol,
+        price: update.price,
+        timestamp: ts ?? Date.now(),
+        percentChange24h: update.percentChange24h,
+        markPrice: mark,
+      };
+    };
+
+    const activatePriceStream = () => {
+      submitRequestToBackground('perpsActivatePriceStream', [
+        { symbols: [decodedSymbol], includeMarketData: true },
+      ]).catch(() => {
+        // Controller not ready yet, skip silently
+      });
+    };
+
+    // Activate background price stream for this symbol. Re-activate shortly
+    // after mount so navigation away from another perps screen cannot leave us
+    // with a stale deactivation tearing down the new subscription.
+    activatePriceStream();
+    const reactivateTimeoutId = window.setTimeout(activatePriceStream, 1000);
 
     // Subscribe to price updates from the stream manager
     const streamManager = getPerpsStreamManager();
+    const syncFromCache = () => {
+      const cachedUpdate = streamManager.prices
+        .getCachedData()
+        .find((p) => p.symbol === decodedSymbol);
+      const nextPrice = toPriceUpdate(cachedUpdate);
+      if (nextPrice) {
+        setLivePrice(nextPrice);
+      }
+      return nextPrice;
+    };
+    syncFromCache();
+
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        const ts = (update as { timestamp?: number }).timestamp;
-        const mark = (update as { markPrice?: string }).markPrice;
-        setLivePrice({
-          symbol: update.symbol,
-          price: update.price,
-          timestamp: ts ?? Date.now(),
-          percentChange24h: update.percentChange24h,
-          markPrice: mark,
-        });
+        setLivePrice(toPriceUpdate(update));
       }
     });
 
+    const cachePollId = window.setInterval(() => {
+      const nextPrice = syncFromCache();
+      if (nextPrice?.markPrice) {
+        window.clearInterval(cachePollId);
+      }
+    }, 500);
+
     return () => {
-      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      window.clearTimeout(reactivateTimeoutId);
+      window.clearInterval(cachePollId);
+      if (!window.location.hash.startsWith('#/perps/')) {
+        submitRequestToBackground('perpsDeactivatePriceStream', []);
+      }
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
@@ -534,14 +585,21 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Formatted display price for the header — synced with the chart price line.
   // Falls back to market.price string during initial candle load.
   const displayPrice = useMemo(() => {
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiatMinimal(chartCurrentPrice);
+    if (market?.price) {
+      return formatPerpsFiatUniversal(market.price);
     }
-    return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market]);
+    const streamPrice = Number.parseFloat(livePrice?.price ?? '');
+    if (Number.isFinite(streamPrice) && streamPrice > 0) {
+      return formatPerpsFiatUniversal(streamPrice);
+    }
+    if (chartCurrentPrice > 0) {
+      return formatPerpsFiatUniversal(chartCurrentPrice);
+    }
+    return '$0.00';
+  }, [market?.price, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange = formatChangePercent(
+  const displayChange = formatSignedChangePercent(
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
@@ -1261,6 +1319,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Text
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
                       ? formatPerpsFiatUniversal(
@@ -1293,8 +1352,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Text
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    data-testid="perps-position-margin-value"
                   >
-                    {formatPerpsFiatUniversal(position.marginUsed)}
+                    {formatPerpsFiatMinimal(position.marginUsed)}
                   </Text>
                   <Popover
                     referenceElement={marginMenuRef.current}
@@ -1448,6 +1508,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    data-testid="perps-position-entry-value"
                   >
                     {formatPerpsFiatUniversal(position.entryPrice)}
                   </Text>
@@ -1469,6 +1530,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    data-testid="perps-position-liquidation-value"
                   >
                     {position.liquidationPrice
                       ? formatPerpsFiatUniversal(position.liquidationPrice)
@@ -1492,10 +1554,23 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    data-testid="perps-position-funding-value"
                   >
-                    {formatPerpsFiatUniversal(
-                      position.cumulativeFunding.sinceOpen,
-                    )}
+                    {(() => {
+                      const fundingSinceOpen = Number.parseFloat(
+                        position.cumulativeFunding.sinceOpen,
+                      );
+                      const isNearZeroFunding =
+                        Math.abs(fundingSinceOpen) < 0.005;
+                      if (isNearZeroFunding) {
+                        return '$0.00';
+                      }
+                      const signPrefix = fundingSinceOpen >= 0 ? '-' : '+';
+                      return `${signPrefix}${formatPerpsFiat(
+                        Math.abs(fundingSinceOpen),
+                        { ranges: PRICE_RANGES_MINIMAL_VIEW },
+                      )}`;
+                    })()}
                   </Text>
                 </Box>
               </Box>
@@ -1689,7 +1764,11 @@ const PerpsMarketDetailPage: React.FC = () => {
                   />
                 </Tooltip>
               </Box>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                data-testid="perps-market-detail-oracle-price"
+              >
                 {livePrice?.markPrice
                   ? formatPerpsFiatUniversal(livePrice.markPrice)
                   : '—'}

@@ -77,6 +77,16 @@ export function usePerpsOrderFees({
     requestIdRef.current += 1;
     const currentRequestId = requestIdRef.current;
     let cancelled = false;
+    const fallbackTimeout = window.setTimeout(() => {
+      if (!cancelled && currentRequestId === requestIdRef.current) {
+        setFeeResult({
+          feeRate: 0.00145,
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.001,
+        });
+        setIsLoading(false);
+      }
+    }, 1500);
 
     setFeeResult(undefined);
     setIsLoading(true);
@@ -87,13 +97,19 @@ export function usePerpsOrderFees({
     ])
       .then((result) => {
         if (!cancelled && currentRequestId === requestIdRef.current) {
+          window.clearTimeout(fallbackTimeout);
           setFeeResult(result);
           setIsLoading(false);
         }
       })
       .catch(() => {
         if (!cancelled && currentRequestId === requestIdRef.current) {
-          setFeeResult(undefined);
+          window.clearTimeout(fallbackTimeout);
+          setFeeResult({
+            feeRate: 0.00145,
+            protocolFeeRate: 0.00045,
+            metamaskFeeRate: 0.001,
+          });
           setHasError(true);
           setIsLoading(false);
         }
@@ -101,6 +117,7 @@ export function usePerpsOrderFees({
 
     return () => {
       cancelled = true;
+      window.clearTimeout(fallbackTimeout);
     };
   }, [symbol, orderType, amount, isMaker]);
 

@@ -1,34 +1,23 @@
 import {
+  calculateMarginRequired,
+  calculatePositionSize,
   formatPerpsFiat,
   formatPositionSize,
+  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
   type OrderType,
 } from '@metamask/perps-controller';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 
-import {
-  mockOrderFormDefaults,
-  calculatePositionSize,
-} from '../../components/app/perps/order-entry/order-entry.mocks';
+import { mockOrderFormDefaults } from '../../components/app/perps/order-entry/order-entry.mocks';
 import type {
   OrderFormState,
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
+import { usePerpsLiquidationPrice } from './usePerpsLiquidationPrice';
 
-/**
- * Calculate the estimated liquidation price for an isolated-margin position.
- *
- * Implements the same formula as HyperLiquidProvider.calculateLiquidationPrice,
- * but synchronously — maxLeverage is already available from market data.
- *
- * @param entryPrice - Position entry price
- * @param leverage - User-selected leverage
- * @param direction - 'long' or 'short'
- * @param maxLeverage - Maximum leverage allowed for the asset (from market data)
- * @returns Estimated liquidation price (0 if inputs are invalid)
- */
-function calculateLiquidationPrice(
+function calculateFallbackLiquidationPrice(
   entryPrice: number,
   leverage: number,
   direction: 'long' | 'short',
@@ -40,7 +29,6 @@ function calculateLiquidationPrice(
 
   const maintenanceMarginRate = 1 / (2 * maxLeverage);
   const side = direction === 'long' ? 1 : -1;
-
   const initialMarginRate = 1 / leverage;
 
   if (initialMarginRate < maintenanceMarginRate) {
@@ -54,9 +42,10 @@ function calculateLiquidationPrice(
     return entryPrice;
   }
 
-  const liquidationPrice =
-    entryPrice - (side * marginAvailable * entryPrice) / denominator;
-  return Math.max(0, liquidationPrice);
+  return Math.max(
+    0,
+    entryPrice - (side * marginAvailable * entryPrice) / denominator,
+  );
 }
 
 export type UsePerpsOrderFormOptions = {
@@ -82,11 +71,7 @@ export type UsePerpsOrderFormOptions = {
   initialLeverage?: number;
   /** Market size decimals for controller-backed size formatting */
   sizeDecimals?: number;
-  /**
-   * Maximum leverage allowed for this asset (from market data).
-   * Used in the HyperLiquid liquidation price formula.
-   * Defaults to 50 when market data is unavailable.
-   */
+  /** Maximum leverage for the asset, used by the local liquidation fallback */
   maxLeverage?: number;
   /**
    * HyperLiquid size decimals for this asset (from MarketInfo.szDecimals).
@@ -172,7 +157,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.orderType - Order type: 'market' or 'limit'
  * @param options.initialLeverage
  * @param options.sizeDecimals - Market size decimals for controller-backed size formatting
- * @param options.maxLeverage - Maximum leverage for the asset (used in liquidation price formula)
+ * @param options.maxLeverage - Maximum leverage for the asset, used by the local liquidation fallback
  * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
@@ -190,8 +175,8 @@ export function usePerpsOrderForm({
   orderType = 'market',
   initialLeverage,
   sizeDecimals,
-  maxLeverage = 50,
   szDecimals,
+  maxLeverage = 50,
   markPrice,
   feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
@@ -319,6 +304,27 @@ export function usePerpsOrderForm({
     onFormStateChange?.(formState);
   }, [formState, onFormStateChange]);
 
+  const parsedAmount =
+    Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
+  const parsedLimitPrice = formState.limitPrice
+    ? Number.parseFloat(formState.limitPrice.replace(/,/gu, ''))
+    : NaN;
+  const liquidationEntryPrice =
+    formState.type === 'limit' &&
+    Number.isFinite(parsedLimitPrice) &&
+    parsedLimitPrice > 0
+      ? parsedLimitPrice
+      : currentPrice;
+  const { liquidationPrice: controllerLiquidationPrice } =
+    usePerpsLiquidationPrice({
+      asset,
+      direction: formState.direction,
+      entryPrice: liquidationEntryPrice,
+      leverage: formState.leverage,
+      enabled:
+        mode !== 'close' && parsedAmount > 0 && liquidationEntryPrice > 0,
+    });
+
   // Calculate derived values
   const calculations = useMemo(() => {
     const displaySizeDecimals = sizeDecimals ?? szDecimals;
@@ -340,7 +346,7 @@ export function usePerpsOrderForm({
           ranges: PRICE_RANGES_UNIVERSAL,
         }),
         estimatedFees: formatPerpsFiat(estimatedFees, {
-          ranges: PRICE_RANGES_UNIVERSAL,
+          ranges: PRICE_RANGES_MINIMAL_VIEW,
         }),
       };
     }
@@ -349,7 +355,7 @@ export function usePerpsOrderForm({
     // Strip commas because amount can be programmatically set via formatNumber
     // (e.g. from slider / token input / percent input) which includes locale
     // grouping separators.
-    const amount = Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
+    const amount = parsedAmount;
 
     if (amount === 0) {
       return {
@@ -366,11 +372,11 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = Number.parseFloat(
+      const parsedLimitOrderPrice = Number.parseFloat(
         formState.limitPrice.replace(/,/gu, ''),
       );
-      if (Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0) {
-        effectivePrice = parsedLimitPrice;
+      if (Number.isFinite(parsedLimitOrderPrice) && parsedLimitOrderPrice > 0) {
+        effectivePrice = parsedLimitOrderPrice;
       }
     }
 
@@ -388,30 +394,42 @@ export function usePerpsOrderForm({
         ? effectivePrice
         : (safeMarkPrice ?? effectivePrice);
 
-    const positionSize = calculatePositionSize(
-      amount,
-      effectiveMarginPrice,
-      szDecimals,
-    );
-    // Notional is the actual USD value of the rounded position (may differ slightly
-    // from the user's input amount due to szDecimals quantisation).
+    const positionSize =
+      szDecimals === undefined
+        ? amount / effectivePrice
+        : Number(
+            calculatePositionSize({
+              amount: amount.toString(),
+              price: effectivePrice,
+              szDecimals,
+            }),
+          );
+    // Match mobile: margin is based on mark/oracle price times the rounded position size.
     const notional = positionSize * effectiveMarginPrice;
-    // Margin = initial margin only (fees are a separate line item, not added to margin)
-    const marginRequired = notional / formState.leverage;
+    const marginRequired = Number(
+      calculateMarginRequired({
+        amount: notional.toString(),
+        leverage: formState.leverage,
+      }),
+    );
     // Fees are charged on the actual execution notional, matching the close-mode path
     // and the exchange's own calculation.
     const estimatedFees = notional * (feeRate ?? 0);
-    const liquidationPriceValue = calculateLiquidationPrice(
-      effectiveMarginPrice,
-      formState.leverage,
-      formState.direction,
-      maxLeverage,
-    );
+    const controllerLiquidationPriceValue =
+      Number.parseFloat(controllerLiquidationPrice) || 0;
+    const liquidationPriceValue =
+      controllerLiquidationPriceValue ||
+      calculateFallbackLiquidationPrice(
+        effectivePrice,
+        formState.leverage,
+        formState.direction,
+        maxLeverage,
+      );
 
     return {
       positionSize: `${formatPositionSize(positionSize, displaySizeDecimals)} ${asset}`,
       marginRequired: formatPerpsFiat(marginRequired, {
-        ranges: PRICE_RANGES_UNIVERSAL,
+        ranges: PRICE_RANGES_MINIMAL_VIEW,
       }),
       liquidationPrice:
         liquidationPriceValue > 0
@@ -424,11 +442,10 @@ export function usePerpsOrderForm({
         ranges: PRICE_RANGES_UNIVERSAL,
       }),
       estimatedFees: formatPerpsFiat(estimatedFees, {
-        ranges: PRICE_RANGES_UNIVERSAL,
+        ranges: PRICE_RANGES_MINIMAL_VIEW,
       }),
     };
   }, [
-    formState.amount,
     formState.leverage,
     formState.direction,
     formState.type,
@@ -439,10 +456,12 @@ export function usePerpsOrderForm({
     formState.closePercent,
     asset,
     sizeDecimals,
-    maxLeverage,
     szDecimals,
     markPrice,
     feeRate,
+    parsedAmount,
+    controllerLiquidationPrice,
+    maxLeverage,
   ]);
 
   // Form state update handlers

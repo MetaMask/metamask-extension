@@ -30,6 +30,12 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  formatPerpsFiat: (value: number) =>
+    `$${Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+  PRICE_RANGES_MINIMAL_VIEW: [],
   formatPositionSize: (value: number, decimals?: number) =>
     Number(value).toLocaleString('en-US', {
       minimumFractionDigits: 0,

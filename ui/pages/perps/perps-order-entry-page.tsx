@@ -33,6 +33,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   formatPerpsFiat,
+  PRICE_RANGES_UNIVERSAL,
   PRICE_RANGES_MINIMAL_VIEW,
   type ClosePositionParams,
   type OrderType,
@@ -82,7 +83,7 @@ import {
   getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
-  formatChangePercent,
+  formatSignedChangePercent,
 } from '../../components/app/perps/utils';
 import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
@@ -384,7 +385,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     });
 
     return () => {
-      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      if (!window.location.hash.startsWith('#/perps/')) {
+        submitRequestToBackground('perpsDeactivatePriceStream', []);
+      }
       unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
@@ -442,7 +445,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     return lastCandle?.close ? Number.parseFloat(lastCandle.close) : 0;
   }, [candleData]);
 
-  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
+  const streamPrice = useMemo(() => {
+    const parsed = Number.parseFloat(livePrice?.price ?? '');
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }, [livePrice?.price]);
+
+  let currentPrice = chartCurrentPrice;
+  if (marketPrice > 0) {
+    currentPrice = marketPrice;
+  }
+  if (streamPrice > 0) {
+    currentPrice = streamPrice;
+  }
 
   // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
   // This is the price the exchange uses for actual margin assessment and liquidation
@@ -590,16 +604,32 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiat(chartCurrentPrice, {
-        ranges: PRICE_RANGES_MINIMAL_VIEW,
+    if (market?.price) {
+      const parsedMarketPrice = Number.parseFloat(
+        market.price.replace(/[$,]/gu, ''),
+      );
+      if (Number.isFinite(parsedMarketPrice) && parsedMarketPrice > 0) {
+        return formatPerpsFiat(parsedMarketPrice, {
+          ranges: PRICE_RANGES_UNIVERSAL,
+        });
+      }
+    }
+    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
+    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
+      return formatPerpsFiat(liveStreamPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
       });
     }
-    return market?.price ?? '$0.00';
-  }, [chartCurrentPrice, market?.price]);
+    if (chartCurrentPrice > 0) {
+      return formatPerpsFiat(chartCurrentPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      });
+    }
+    return '$0.00';
+  }, [market?.price, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange = formatChangePercent(
+  const displayChange = formatSignedChangePercent(
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 

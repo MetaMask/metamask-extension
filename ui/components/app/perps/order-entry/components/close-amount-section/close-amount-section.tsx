@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import {
   formatPerpsFiat,
   formatPositionSize,
+  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '@metamask/perps-controller';
 import {
@@ -94,7 +95,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
             data-testid="close-amount-value"
           >
             {formatPerpsFiat(closeValueUsd, {
-              ranges: PRICE_RANGES_UNIVERSAL,
+              ranges: PRICE_RANGES_MINIMAL_VIEW,
             })}
           </Text>
         </Box>
