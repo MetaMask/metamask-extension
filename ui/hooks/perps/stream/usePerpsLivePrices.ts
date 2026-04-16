@@ -28,8 +28,12 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
-// Stable empty object reference to prevent re-renders
-const EMPTY_PRICES: PriceUpdate[] = [];
+type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
+  timestamp?: number;
+  markPrice?: string;
+};
+
+const EMPTY_PRICES: StreamPriceUpdate[] = [];
 const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
 
 const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
@@ -42,23 +46,6 @@ const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
  *
  * @param options - Configuration options
  * @returns Object containing prices map and loading state
- * @example
- * ```tsx
- * function PriceDisplay() {
- *   const { prices, isInitialLoading } = usePerpsLivePrices({
- *     symbols: ['BTC', 'ETH'],
- *   });
- *
- *   if (isInitialLoading) return <Spinner />;
- *
- *   return (
- *     <div>
- *       BTC: {prices.BTC?.price}
- *       ETH: {prices.ETH?.price}
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePerpsLivePrices(
   options: UsePerpsLivePricesOptions,
@@ -85,42 +72,43 @@ export function usePerpsLivePrices(
 
     submitRequestToBackground('perpsActivatePriceStream', [
       { symbols: activeSymbols, includeMarketData },
-    ]).catch((err) => {
-      // Background may not be ready yet; keep this best-effort and rely on
-      // later retries or future consumers to react to stream data.
+    ]).catch((error) => {
+      // Background readiness can lag popup mounting; keep this best-effort.
       console.debug(
         '[usePerpsLivePrices] perpsActivatePriceStream failed:',
-        err,
+        error,
       );
     });
 
     return () => {
       submitRequestToBackground('perpsDeactivatePriceStream', []).catch(
-        (err) => {
-          // Expected when the port closes before cleanup completes.
+        (error) => {
+          // Expected when the background port closes before cleanup completes.
           console.debug(
             '[usePerpsLivePrices] perpsDeactivatePriceStream failed:',
-            err,
+            error,
           );
         },
       );
     };
-  }, [activateStream, symbolsKey, includeMarketData]);
+  }, [activateStream, includeMarketData, symbolsKey]);
 
-  const { data: priceArray, isInitialLoading } = usePerpsChannel<PriceUpdate[]>(
-    getPricesChannel,
-    EMPTY_PRICES,
-  );
+  const { data: priceArray, isInitialLoading } = usePerpsChannel<
+    StreamPriceUpdate[]
+  >(getPricesChannel, EMPTY_PRICES);
 
   if (isInitialLoading || priceArray.length === 0) {
     return { prices: EMPTY_PRICES_RECORD, isInitialLoading };
   }
 
-  // Convert array to record, filtered to requested symbols
   const priceRecord: Record<string, PriceUpdate> = {};
   priceArray.forEach((update) => {
     if (symbols.length === 0 || symbols.includes(update.symbol)) {
-      priceRecord[update.symbol] = update;
+      priceRecord[update.symbol] = {
+        ...update,
+        timestamp: update.timestamp ?? Date.now(),
+        markPrice: update.markPrice,
+      };
     }
   });
 

@@ -1,33 +1,31 @@
 import { renderHook } from '@testing-library/react-hooks';
-import type { PriceUpdate } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { usePerpsLivePrices } from './usePerpsLivePrices';
 import { usePerpsChannel } from './usePerpsChannel';
+import { usePerpsLivePrices } from './usePerpsLivePrices';
 
-type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
+type StreamPriceUpdate = {
+  symbol: string;
+  price: string;
   timestamp?: number;
   markPrice?: string;
+  percentChange24h?: string;
 };
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
 
 jest.mock('./usePerpsChannel', () => ({
   usePerpsChannel: jest.fn(),
 }));
 
-jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
-}));
-
-const mockUsePerpsChannel = usePerpsChannel as jest.MockedFunction<
-  typeof usePerpsChannel
->;
-const mockSubmitRequestToBackground =
-  submitRequestToBackground as jest.MockedFunction<
-    typeof submitRequestToBackground
-  >;
+const mockUsePerpsChannel = jest.mocked(usePerpsChannel);
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 describe('usePerpsLivePrices', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
   });
 
   it('returns empty prices while initial loading is true', () => {
@@ -63,7 +61,7 @@ describe('usePerpsLivePrices', () => {
     });
   });
 
-  it('filters by requested symbols and keeps provided timestamp/markPrice', () => {
+  it('filters by requested symbols and keeps provided timestamp and markPrice', () => {
     const priceUpdates: StreamPriceUpdate[] = [
       {
         symbol: 'BTC',
@@ -104,7 +102,7 @@ describe('usePerpsLivePrices', () => {
   it('uses fallback timestamp and preserves missing markPrice', () => {
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(999);
     mockUsePerpsChannel.mockReturnValue({
-      data: [{ symbol: 'BTC', price: '100' }] as StreamPriceUpdate[],
+      data: [{ symbol: 'BTC', price: '100' }],
       isInitialLoading: false,
     });
 
@@ -130,15 +128,15 @@ describe('usePerpsLivePrices', () => {
 
     const { unmount } = renderHook(() =>
       usePerpsLivePrices({
-        symbols: ['ETH', 'BTC'],
+        symbols: ['ETH', 'BTC', 'ETH'],
         activateStream: true,
-        includeMarketData: true,
+        includeMarketData: false,
       }),
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsActivatePriceStream',
-      [{ symbols: ['BTC', 'ETH'], includeMarketData: true }],
+      [{ symbols: ['BTC', 'ETH'], includeMarketData: false }],
     );
 
     unmount();
@@ -149,11 +147,10 @@ describe('usePerpsLivePrices', () => {
     );
   });
 
-  it('logs debug output when stream activation or cleanup fails', async () => {
+  it('logs activation and cleanup failures without throwing', async () => {
     const debugSpy = jest
       .spyOn(console, 'debug')
       .mockImplementation(() => undefined);
-
     mockUsePerpsChannel.mockReturnValue({
       data: [],
       isInitialLoading: false,
@@ -170,15 +167,13 @@ describe('usePerpsLivePrices', () => {
     );
 
     await Promise.resolve();
+    unmount();
+    await Promise.resolve();
 
     expect(debugSpy).toHaveBeenCalledWith(
       '[usePerpsLivePrices] perpsActivatePriceStream failed:',
       expect.any(Error),
     );
-
-    unmount();
-    await Promise.resolve();
-
     expect(debugSpy).toHaveBeenCalledWith(
       '[usePerpsLivePrices] perpsDeactivatePriceStream failed:',
       expect.any(Error),

@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
-  usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
@@ -44,6 +43,7 @@ import {
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
 import { PerpsWatchlist } from './perps-watchlist';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -80,8 +80,11 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
-  const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketData();
+  const {
+    exploreMarkets,
+    watchlistMarkets,
+    isInitialLoading: marketsLoading,
+  } = usePerpsTabExploreData();
 
   const {
     transactions: allRecentActivityTransactions,
@@ -260,10 +263,10 @@ export const PerpsView: React.FC = () => {
       />
 
       {/* Watchlist */}
-      <PerpsWatchlist />
+      <PerpsWatchlist markets={watchlistMarkets} />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets markets={allMarkets} />
+      <PerpsExploreMarkets markets={exploreMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity
