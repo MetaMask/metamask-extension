@@ -44,7 +44,7 @@ function mockCommonApis(mockServer: Mockttp) {
         const results = [];
         if (assetIds.includes('eip155:1337')) {
           results.push({
-            assetId: 'eip155:1337/slip44:60',
+            assetId: 'eip155:1337/slip44:1',
             name: 'Ethereum',
             symbol: 'ETH',
             decimals: 18,
