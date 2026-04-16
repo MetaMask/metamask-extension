@@ -109,7 +109,7 @@ function generateCaveats(
       terms: createNativeBalanceChangeTerms({
         recipient,
         balance: delta,
-        changeType: getChangeType(enforceDecrease),
+        changeType: getBalanceChangeType(enforceDecrease),
       }),
       args,
     });
@@ -151,7 +151,7 @@ function generateCaveats(
             tokenAddress: token,
             recipient,
             balance: deltaWithSlippage,
-            changeType: getChangeType(enforceDecrease),
+            changeType: getBalanceChangeType(enforceDecrease),
           }),
           args,
         });
@@ -165,7 +165,7 @@ function generateCaveats(
             tokenAddress: token,
             recipient,
             amount: delta,
-            changeType: getChangeType(enforceDecrease),
+            changeType: getBalanceChangeType(enforceDecrease),
           }),
           args,
         });
@@ -179,7 +179,7 @@ function generateCaveats(
             recipient,
             tokenId,
             balance: delta,
-            changeType: getChangeType(enforceDecrease),
+            changeType: getBalanceChangeType(enforceDecrease),
           }),
           args,
         });
@@ -194,8 +194,15 @@ function generateCaveats(
   return caveats;
 }
 
-function getChangeType(enforceDecrease: boolean): number {
-  return enforceDecrease ? 0 : 1;
+enum BalanceChangeType {
+  DECREASE = 0,
+  INCREASE = 1,
+}
+
+function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {
+  return enforceDecrease
+    ? BalanceChangeType.DECREASE
+    : BalanceChangeType.INCREASE;
 }
 
 function applySlippage(
