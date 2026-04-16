@@ -132,9 +132,20 @@ export class TestDappSolana {
       verifyConnectionStatus: async (
         expectedStatus: 'Connected' | 'Disconnected',
       ) => {
-        await this.driver.waitForSelector(
-          this.connectionStatusLocator(expectedStatus),
-        );
+        try {
+          await this.driver.waitForSelector(
+            this.connectionStatusLocator(expectedStatus),
+          );
+        } catch (e) {
+          const statusEl = await this.driver.findElement({
+            testId: dataTestIds.testPage.header.connectionStatus,
+          }).catch(() => null);
+          const actualStatus = statusEl ? await statusEl.getText() : 'element not found';
+          console.log(
+            `Connection status verification failed. Expected: "${expectedStatus}", Actual: "${actualStatus}"`,
+          );
+          throw e;
+        }
       },
       connect: async () =>
         await this.driver.clickElement(this.connectButtonLocator),
@@ -347,9 +358,15 @@ export class TestDappSolana {
    * @returns
    */
   private async waitSelectorTestId(id: string) {
-    await this.driver.waitForSelector(this.getElementSelectorTestId(id), {
-      timeout: 30000,
-    });
+    try {
+      await this.driver.findElement(this.getElementSelectorTestId(id));
+    } catch (e) {
+      console.log(
+        `Timeout waiting for test dapp section [data-testid="${id}"]. ` +
+        `The wallet may not be connected — check connection status above.`,
+      );
+      throw e;
+    }
   }
 
   /**

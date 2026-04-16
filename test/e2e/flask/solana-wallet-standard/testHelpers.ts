@@ -73,9 +73,13 @@ export const connectSolanaTestDapp = async (
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
 
-  // Go back to the test dapp window
+  // Go back to the test dapp window and verify the connection succeeded.
+  // The wallet-standard provider may take time to process the approval event,
+  // especially under CI load, so we explicitly wait for the status change.
   await testDapp.switchTo();
-  console.log('solana test dapp connected');
+  console.log('Switched back to Solana test dapp, verifying connection status...');
+  await header.verifyConnectionStatus('Connected');
+  console.log('Solana test dapp connection verified: Connected');
 };
 
 /**
