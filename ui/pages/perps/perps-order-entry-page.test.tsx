@@ -26,69 +26,20 @@ import {
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
+  PERPS_CONSTANTS: {
+    ...jest.requireActual('@metamask/perps-controller').PERPS_CONSTANTS,
+    FallbackPriceDisplay: '$0.00',
+    FallbackPercentageDisplay: '—',
+  },
   PERPS_ERROR_CODES: {
-    CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
-    CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
-    PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
-    TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
-    BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
-    WITHDRAW_FAILED: 'WITHDRAW_FAILED',
-    POSITIONS_FAILED: 'POSITIONS_FAILED',
-    ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
-    MARKETS_FAILED: 'MARKETS_FAILED',
-    UNKNOWN_ERROR: 'UNKNOWN_ERROR',
-    ORDER_LEVERAGE_REDUCTION_FAILED: 'ORDER_LEVERAGE_REDUCTION_FAILED',
-    IOC_CANCEL: 'IOC_CANCEL',
-    CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT',
-    WITHDRAW_ASSET_ID_REQUIRED: 'WITHDRAW_ASSET_ID_REQUIRED',
-    WITHDRAW_AMOUNT_REQUIRED: 'WITHDRAW_AMOUNT_REQUIRED',
-    WITHDRAW_AMOUNT_POSITIVE: 'WITHDRAW_AMOUNT_POSITIVE',
-    WITHDRAW_INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
-    WITHDRAW_ASSET_NOT_SUPPORTED: 'WITHDRAW_ASSET_NOT_SUPPORTED',
-    WITHDRAW_INSUFFICIENT_BALANCE: 'WITHDRAW_INSUFFICIENT_BALANCE',
-    DEPOSIT_ASSET_ID_REQUIRED: 'DEPOSIT_ASSET_ID_REQUIRED',
-    DEPOSIT_AMOUNT_REQUIRED: 'DEPOSIT_AMOUNT_REQUIRED',
-    DEPOSIT_AMOUNT_POSITIVE: 'DEPOSIT_AMOUNT_POSITIVE',
-    DEPOSIT_MINIMUM_AMOUNT: 'DEPOSIT_MINIMUM_AMOUNT',
-    ORDER_COIN_REQUIRED: 'ORDER_COIN_REQUIRED',
-    ORDER_LIMIT_PRICE_REQUIRED: 'ORDER_LIMIT_PRICE_REQUIRED',
-    ORDER_PRICE_POSITIVE: 'ORDER_PRICE_POSITIVE',
-    ORDER_UNKNOWN_COIN: 'ORDER_UNKNOWN_COIN',
-    ORDER_SIZE_POSITIVE: 'ORDER_SIZE_POSITIVE',
-    ORDER_PRICE_REQUIRED: 'ORDER_PRICE_REQUIRED',
-    ORDER_SIZE_MIN: 'ORDER_SIZE_MIN',
-    ORDER_LEVERAGE_INVALID: 'ORDER_LEVERAGE_INVALID',
-    ORDER_LEVERAGE_BELOW_POSITION: 'ORDER_LEVERAGE_BELOW_POSITION',
-    ORDER_MAX_VALUE_EXCEEDED: 'ORDER_MAX_VALUE_EXCEEDED',
-    EXCHANGE_CLIENT_NOT_AVAILABLE: 'EXCHANGE_CLIENT_NOT_AVAILABLE',
-    INFO_CLIENT_NOT_AVAILABLE: 'INFO_CLIENT_NOT_AVAILABLE',
-    SUBSCRIPTION_CLIENT_NOT_AVAILABLE: 'SUBSCRIPTION_CLIENT_NOT_AVAILABLE',
-    NO_ACCOUNT_SELECTED: 'NO_ACCOUNT_SELECTED',
-    KEYRING_LOCKED: 'KEYRING_LOCKED',
-    INVALID_ADDRESS_FORMAT: 'INVALID_ADDRESS_FORMAT',
-    TRANSFER_FAILED: 'TRANSFER_FAILED',
-    SWAP_FAILED: 'SWAP_FAILED',
-    SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
-    PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
-    BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
-    BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
-    INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
-    INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
-    REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
-    POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
-    MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
-    TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
-    ORDER_REJECTED: 'ORDER_REJECTED',
-    SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
-    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
-    SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
-    NETWORK_ERROR: 'NETWORK_ERROR',
+    ...jest.requireActual('@metamask/perps-controller').PERPS_ERROR_CODES,
   },
 }));
 
-const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
@@ -122,7 +73,35 @@ const mockStreamManagerBase = {
 };
 const mockGetPerpsStreamManager = jest.fn(() => mockStreamManagerBase);
 
-const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+const mockSubmitRequestToBackground = jest
+  .fn()
+  .mockImplementation((method: string, ...args: unknown[]) => {
+    function immediate<ResolvedValue>(
+      value: ResolvedValue,
+    ): Promise<ResolvedValue> {
+      return {
+        then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+          const result = onFulfilled(value);
+          return immediate(result as ResolvedValue);
+        },
+        catch() {
+          return immediate(value);
+        },
+        finally(onFinally: () => void) {
+          onFinally();
+          return immediate(value);
+        },
+      } as Promise<ResolvedValue>;
+    }
+
+    if (method === 'perpsCalculateLiquidationPrice') {
+      const params = args[0] as [{ direction?: 'long' | 'short' }] | undefined;
+      return immediate(
+        params?.[0]?.direction === 'short' ? '120000' : '1609.4',
+      );
+    }
+    return immediate(undefined);
+  });
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
@@ -815,18 +794,15 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          perpsToastKey: 'perpsToastSubmitInProgress',
-          pendingOrderSymbol: 'ETH',
-          pendingOrderFilledDescription:
-            expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      });
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastOrderSubmitted',
-          autoHideTime: 3000,
+          key: 'perpsToastSubmitInProgress',
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+          description: expect.any(String),
         }),
       );
     });
@@ -914,15 +890,17 @@ describe('PerpsOrderEntryPage', () => {
           },
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCloseInProgress',
+        description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastCloseInProgress',
-          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: expect.stringMatching(
+            /^Your PnL is -?\d+\.\d{2}%$/u,
+          ),
         }),
-      });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastTradeSuccess',
-        description: expect.stringMatching(/^Your PnL is -?\d+\.\d{2}%$/u),
       });
     });
 
@@ -957,17 +935,17 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          perpsToastKey: 'perpsToastPartialCloseInProgress',
-          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
-      });
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastPartialCloseSuccess',
+          key: 'perpsToastPartialCloseInProgress',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastPartialCloseSuccess',
+        }),
+      });
     });
 
     it('falls back to close subtitle when close PnL cannot be calculated', async () => {
@@ -993,13 +971,9 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastCloseInProgress',
+          perpsToastKey: 'perpsToastTradeSuccess',
           perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
-      });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastTradeSuccess',
-        description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
       });
     });
 
@@ -1025,15 +999,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCloseInProgress',
+        description: expect.stringMatching(/^Short [^ ]+ ETH$/u),
+      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastCloseInProgress',
+          perpsToastKey: 'perpsToastTradeSuccess',
           perpsToastDescription: expect.stringMatching(/^Short [^ ]+ ETH$/u),
         }),
-      });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastTradeSuccess',
-        description: expect.stringMatching(/^Short [^ ]+ ETH$/u),
       });
     });
 
@@ -1060,12 +1034,9 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastCloseInProgress',
+          perpsToastKey: 'perpsToastTradeSuccess',
+          perpsToastDescription: 'Your PnL is 0.80%',
         }),
-      });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastTradeSuccess',
-        description: 'Your PnL is 0.80%',
       });
     });
 
@@ -1093,11 +1064,11 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastUpdateInProgress',
+          perpsToastKey: 'perpsToastUpdateSuccess',
         }),
       });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastUpdateSuccess',
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
       });
     });
 
@@ -1132,14 +1103,9 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         state: expect.objectContaining({
-          perpsToastKey: 'perpsToastSubmitInProgress',
+          perpsToastKey: 'perpsToastOrderPlaced',
         }),
       });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastOrderPlaced',
-        }),
-      );
     });
 
     it('submits existing position TP/SL values unchanged in modify mode', async () => {
@@ -1568,17 +1534,23 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          perpsToastKey: 'perpsToastSubmitInProgress',
-        }),
-      });
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastOrderPlaced',
-          autoHideTime: 3000,
+          key: 'perpsToastSubmitInProgress',
         }),
       );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+          description: expect.any(String),
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
     });
 
     it('does not submit a limit order when locale-formatted limit price is entered', async () => {
@@ -1622,7 +1594,43 @@ describe('PerpsOrderEntryPage', () => {
       jest.useRealTimers();
     });
 
-    it('navigates immediately to market detail with pendingOrderSymbol for market order', async () => {
+    it('navigates back when position appears after market order', async () => {
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            symbol: 'ETH',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      await act(async () => {
+        rerender(<PerpsOrderEntryPage />);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderFilled',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      });
+    });
+
+    it('navigates back after 15s timeout if position never appears', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -1636,14 +1644,12 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: expect.objectContaining({
-          perpsToastKey: 'perpsToastSubmitInProgress',
-          pendingOrderSymbol: 'ETH',
-          pendingOrderFilledDescription:
-            expect.stringMatching(/^Long [^ ]+ ETH$/u),
-        }),
+      await act(async () => {
+        jest.advanceTimersByTime(15000);
       });
+
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
 });
