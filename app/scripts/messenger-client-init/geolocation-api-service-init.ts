@@ -3,6 +3,7 @@ import {
   Env,
   type GeolocationApiServiceMessenger,
 } from '@metamask/geolocation-controller';
+import { isProduction } from '../../../shared/lib/environment';
 import type { MessengerClientInitFunction } from './types';
 
 /**
@@ -16,8 +17,7 @@ export const GeolocationApiServiceInit: MessengerClientInitFunction<
   GeolocationApiService,
   GeolocationApiServiceMessenger
 > = ({ controllerMessenger }) => {
-  const env =
-    process.env.METAMASK_ENVIRONMENT === 'production' ? Env.PRD : Env.DEV;
+  const env = isProduction() ? Env.PRD : Env.DEV;
 
   const messengerClient = new GeolocationApiService({
     messenger: controllerMessenger,
