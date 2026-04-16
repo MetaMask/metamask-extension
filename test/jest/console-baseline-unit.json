@@ -1592,11 +1592,22 @@
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 3
     },
+    "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/settings/security-tab/security-tab.test.js": {
       "MetaMask: Background connection not initialized": 36,
       "React: PropTypes validation failures": 3,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
+    },
+    "ui/pages/settings/settings-tab/settings-tab.test.js": {
+      "React: Act warnings (component updates not wrapped)": 7,
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings/settings.test.js": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/transaction-shield-tab/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
