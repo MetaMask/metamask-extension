@@ -36,9 +36,11 @@ import type {
   CandleData,
   CandlePeriod,
 } from '@metamask/perps-controller';
-import { clearPerpsMarketFillsModuleCache } from '../../hooks/perps/usePerpsMarketFills';
-import { clearPerpsMarketInfoModuleCache } from '../../hooks/perps/usePerpsMarketInfo';
 import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  clearPerpsMarketFillsModuleCache,
+  clearPerpsMarketInfoModuleCache,
+} from './perps-cache';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
 

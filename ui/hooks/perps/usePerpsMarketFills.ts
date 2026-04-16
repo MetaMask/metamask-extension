@@ -10,7 +10,7 @@ import {
   clearPerpsMarketFillsModuleCache,
   fetchFillsForCacheKey,
   peekWarmFills,
-} from './cache-utils';
+} from '../../providers/perps/perps-cache';
 import { usePerpsLiveFills } from './stream';
 
 export { clearPerpsMarketFillsModuleCache };
