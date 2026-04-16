@@ -9,6 +9,9 @@ import {
   Box,
   Text,
   AvatarTokenSize,
+  Icon,
+  IconName,
+  IconSize,
 } from '../../../../../components/component-library';
 import {
   AlignItems,
@@ -90,7 +93,25 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                backgroundColor: 'var(--color-background-alternative)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Icon
+                name={IconName.Image}
+                size={IconSize.Md}
+                color={TextColor.textMuted}
+              />
+            </Box>
+          )}
         </BadgeWrapper>
       </Box>
       <Box
