@@ -1,4 +1,4 @@
-* text=auto
+* text=lf
 CHANGELOG.md merge=union
 
 .metamaskrc.dist linguist-language=ini
