@@ -6,7 +6,6 @@ import {
   WINDOW_TITLES,
 } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
@@ -94,13 +93,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+          .withSmartTransactionsOptedOut()
           .build(),
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {

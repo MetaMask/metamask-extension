@@ -113,6 +113,8 @@ jest.mock('@metamask/perps-controller', () => ({
     getWatchlistMarkets: jest.fn(),
     toggleWatchlistMarket: jest.fn(),
     isWatchlistMarket: jest.fn(),
+    reconnect: jest.fn().mockResolvedValue(undefined),
+    getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
   })),
 }));
 
@@ -172,7 +174,7 @@ describe('PerpsControllerInit', () => {
         infrastructure: expect.any(Object),
         clientConfig: {
           fallbackHip3Enabled: true,
-          fallbackHip3AllowlistMarkets: [],
+          fallbackHip3AllowlistMarkets: ['xyz:*'],
           fallbackBlockedRegions: [],
         },
         deferEligibilityCheck: true,

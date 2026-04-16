@@ -69,7 +69,8 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     infrastructure,
     clientConfig: {
       fallbackHip3Enabled: true,
-      fallbackHip3AllowlistMarkets: [],
+      // this is meant to align fallback behavior with the production default and prevent partial HIP-3 market hydration
+      fallbackHip3AllowlistMarkets: ['xyz:*'],
       fallbackBlockedRegions,
       ...(hyperLiquidBuilderAddresses
         ? {
@@ -150,7 +151,9 @@ type PerpsActionName =
   | 'perpsIsFirstTimeUserOnCurrentNetwork'
   | 'perpsGetWatchlistMarkets'
   | 'perpsToggleWatchlistMarket'
-  | 'perpsIsWatchlistMarket';
+  | 'perpsIsWatchlistMarket'
+  | 'perpsReconnect'
+  | 'perpsGetConnectionState';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -159,7 +162,8 @@ type PerpsActionName =
 type PerpsCustomApiNames =
   | 'perpsDepositWithConfirmation'
   | 'perpsGetUserHistory'
-  | 'perpsGetUserNonFundingLedgerUpdates';
+  | 'perpsGetUserNonFundingLedgerUpdates'
+  | 'perpsGetConnectionState';
 
 type PerpsBackgroundApi = {
   [ActionName in Exclude<
@@ -184,6 +188,7 @@ type PerpsBackgroundApi = {
     endTime?: number;
     accountId?: string;
   }) => Promise<RawLedgerUpdate[]>;
+  perpsGetConnectionState: () => string;
 };
 
 /**
@@ -389,5 +394,10 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
       messengerClient.toggleWatchlistMarket.bind(messengerClient),
     perpsIsWatchlistMarket:
       messengerClient.isWatchlistMarket.bind(messengerClient),
+
+    // -- Connection health --
+    perpsReconnect: messengerClient.reconnect.bind(messengerClient),
+    perpsGetConnectionState: () =>
+      messengerClient.getWebSocketConnectionState(),
   };
 }
