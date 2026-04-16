@@ -1,10 +1,8 @@
 export const BUNDLE_SIZE_SCHEMA_VERSION = 4 as const;
 
-export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle_size_stats.json';
+export const BUNDLE_SIZE_SUMMARY_FILE = 'bundle_size.json';
 
 export const WEBPACK_BUNDLE_ANALYZER_DIRECTORY = 'bundle-analyzer';
-
-export const WEBPACK_BUNDLE_ANALYZER_REPORT = `${WEBPACK_BUNDLE_ANALYZER_DIRECTORY}/report.html`;
 
 export const WEBPACK_BUNDLE_STATS_FILE = `${WEBPACK_BUNDLE_ANALYZER_DIRECTORY}/stats.json`;
 

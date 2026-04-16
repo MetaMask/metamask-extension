@@ -6,17 +6,13 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../shared/constants/benchmarks';
-import {
-  BUNDLE_SIZE_SUMMARY_FILE,
-  WEBPACK_BUNDLE_ANALYZER_REPORT,
-} from '../webpack/utils/bundle-size';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../webpack/utils/bundle-size';
 
 type ArtifactLink = { url: string; label: string };
 
 type FlatArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
   bundleSizeStats: ArtifactLink;
-  bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
   storybook: ArtifactLink;
   tsMigrationDashboard: ArtifactLink;
@@ -44,18 +40,14 @@ export function getArtifactLinks(
   repository: string,
   runId: string,
 ): ArtifactLinks {
-  const flatArtifactLinks: FlatArtifactLinkMap = {
-    bundleSizeStats: {
-      url: `${hostUrl}/bundle-size/${BUNDLE_SIZE_SUMMARY_FILE}`,
-      label: 'Bundle Size Stats',
-    },
+  const ARTIFACT_LINK_MAP: FlatArtifactLinkMap = {
     bundleSizeData: {
       url: 'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json',
       label: 'Bundle Size Data',
     },
-    bundleAnalyzer: {
-      url: `${hostUrl}/build-dist-webpack/${WEBPACK_BUNDLE_ANALYZER_REPORT}`,
-      label: 'Bundle Analyzer',
+    bundleSizeStats: {
+      url: `${hostUrl}/bundle-size/${BUNDLE_SIZE_SUMMARY_FILE}`,
+      label: 'Bundle Size Stats',
     },
     interactionStats: {
       url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.WEBPACK}-interactionUserActions.json`,
@@ -76,9 +68,9 @@ export function getArtifactLinks(
   };
 
   const link = (key: FlatArtifactLinkKey) =>
-    `<a href="${flatArtifactLinks[key].url}">${flatArtifactLinks[key].label}</a>`;
+    `<a href="${ARTIFACT_LINK_MAP[key].url}">${ARTIFACT_LINK_MAP[key].label}</a>`;
 
-  return { ...flatArtifactLinks, link };
+  return { ...ARTIFACT_LINK_MAP, link };
 }
 
 export type BuildType =
@@ -228,7 +220,6 @@ export function buildArtifactsBody({
 
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeStats')}`,
-    `bundle analyzer: ${artifacts.link('bundleAnalyzer')}`,
     `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,
     `typescript migration: ${artifacts.link('tsMigrationDashboard')}`,

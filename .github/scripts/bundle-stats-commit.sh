@@ -24,7 +24,7 @@ trap 'rm -rf "${temp_dir}"' EXIT
 
 git clone --depth 1 https://github.com/MetaMask/extension_bundlesize_stats.git "${temp_dir}"
 
-bundle_size_file='test-artifacts/chrome/bundle_size_stats.json'
+bundle_size_file='test-artifacts/chrome/bundle_size.json'
 stats_file="${temp_dir}/stats/bundle_size_data.json"
 temp_stats_file="${temp_dir}/stats/bundle_size_data.temp.json"
 

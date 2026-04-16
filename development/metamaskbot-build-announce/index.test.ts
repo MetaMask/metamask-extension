@@ -56,10 +56,6 @@ function configureMocks(): void {
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
     storybook: { url: 'https://ci/storybook', label: 'Storybook' },
     tsMigrationDashboard: { url: 'https://ci/ts', label: 'TS' },
-    bundleAnalyzer: {
-      url: 'https://ci/bundle-analyzer/report.html',
-      label: 'Bundle Analyzer',
-    },
     allArtifacts: { url: 'https://ci/all', label: 'All' },
   });
   artifacts.buildArtifactsBody.mockReturnValue('<p>artifacts</p>');

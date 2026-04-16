@@ -13,7 +13,7 @@ describe('getArtifactLinks', () => {
     );
 
     expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size_stats.json`,
+      `${HOST}/bundle-size/bundle_size.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -77,21 +77,6 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('storybook:');
   });
 
-  it('includes a bundle analyzer link', () => {
-    const result = buildArtifactsBody({
-      hostUrl: HOST,
-      version: VERSION,
-      shortSha: 'abc1234',
-      artifacts: makeArtifacts(),
-      buildsFromSha: 'abc1234',
-    });
-
-    expect(result).toContain(
-      `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
-    );
-    expect(result).toContain('bundle analyzer:');
-  });
-
   it('includes the bundle size link', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
@@ -102,7 +87,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/bundle_size_stats.json">Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/bundle_size.json">Bundle Size Stats</a>`,
     );
   });
 

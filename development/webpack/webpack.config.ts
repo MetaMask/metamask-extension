@@ -20,7 +20,6 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { WEBPACK_BUNDLE_ANALYZER_REPORT } from './utils/bundle-size';
 import {
   getMinimizers,
   NODE_MODULES_RE,
@@ -237,41 +236,10 @@ if (args.reactCompilerVerbose) {
 }
 
 if (args.stats) {
-  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   const {
     BundleSizeStatsPlugin,
   } = require('./utils/plugins/BundleSizeStatsPlugin');
   plugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      compressionAlgorithm: 'gzip',
-      defaultSizes: 'parsed',
-      generateStatsFile: false,
-      openAnalyzer: false,
-      reportFilename: WEBPACK_BUNDLE_ANALYZER_REPORT,
-      reportTitle: String(args.type ?? 'Webpack Bundle Analyzer'),
-      statsOptions: {
-        all: false,
-        assets: true,
-        cachedAssets: false,
-        chunkModules: true,
-        chunkRelations: false,
-        chunks: true,
-        dependentModules: false,
-        entrypoints: true,
-        ids: true,
-        modules: true,
-        nestedModules: true,
-        optimizationBailout: false,
-        providedExports: false,
-        reasons: false,
-        source: false,
-        timings: false,
-        usedExports: false,
-      },
-    }),
-    // Keep the HTML report from webpack-bundle-analyzer, but emit a tiny
-    // machine-readable bundle stats file that CI can parse directly.
     new BundleSizeStatsPlugin({
       browsers: args.browser,
     }),
