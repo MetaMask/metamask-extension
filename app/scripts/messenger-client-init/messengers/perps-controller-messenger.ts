@@ -3,6 +3,7 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import type { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerSignTypedMessageAction,
@@ -22,6 +23,7 @@ import { MetaMetricsControllerTrackEventAction } from '../../controllers/metamet
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
+  | GeolocationControllerGetGeolocationAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -65,6 +67,7 @@ export function getPerpsControllerMessenger(
   messenger.delegate({
     messenger: perpsControllerMessenger,
     actions: [
+      'GeolocationController:getGeolocation',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',

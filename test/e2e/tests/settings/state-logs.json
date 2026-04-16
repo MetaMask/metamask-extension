@@ -758,6 +758,7 @@
       }
     },
     "ensResolutionsByAddress": {},
+    "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
@@ -1020,6 +1021,7 @@
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
+    "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -1270,6 +1272,7 @@
       "*": "number"
     },
     "localOverrides": {},
+    "location": "string",
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
@@ -1354,6 +1357,7 @@
         }
       }
     },
+    "status": "string",
     "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
