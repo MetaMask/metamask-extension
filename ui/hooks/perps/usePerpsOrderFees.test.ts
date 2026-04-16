@@ -80,7 +80,11 @@ describe('usePerpsOrderFees', () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('network error'));
 
     const { result } = renderHook(() =>
-      usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
+      usePerpsOrderFees({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: '100',
+      }),
     );
 
     await act(async () => {
@@ -96,6 +100,30 @@ describe('usePerpsOrderFees', () => {
       feeRate: 0.00145,
       protocolFeeRate: 0.00045,
       metamaskFeeRate: 0.001,
+      feeAmount: 0.145,
+      protocolFeeAmount: 0.045,
+      metamaskFeeAmount: 0.1,
+    });
+  });
+
+  it('uses zero fee amounts in fallback mode when amount is missing', async () => {
+    mockSubmitRequestToBackground.mockRejectedValue(new Error('network error'));
+
+    const { result } = renderHook(() =>
+      usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.feeResult).toEqual({
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      metamaskFeeRate: 0.001,
+      feeAmount: 0,
+      protocolFeeAmount: 0,
+      metamaskFeeAmount: 0,
     });
   });
 
