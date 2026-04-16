@@ -8,6 +8,7 @@ import {
   renderWithConfirmContextProvider,
   renderWithConfirmContext,
 } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 jest.mock(
@@ -170,9 +171,11 @@ describe('PermissionDetailRenderer', () => {
         getByTestId('native-token-stream-stream-rate-section'),
       ).toBeInTheDocument();
       await waitFor(() => {
-        expect(getByText('Total exposure')).toBeInTheDocument();
+        expect(
+          getByText(messages.confirmFieldTotalExposure.message),
+        ).toBeInTheDocument();
       });
-      expect(queryByText('Unlimited')).not.toBeInTheDocument();
+      expect(queryByText(messages.unlimited.message)).not.toBeInTheDocument();
     });
   });
 

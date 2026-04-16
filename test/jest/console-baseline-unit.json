@@ -513,6 +513,11 @@
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
+      "Test errors: Uncaught Errors": 1,
+      "error: Error handled by React Router": 1,
+      "error: React Router caught the following": 1
+    },
     "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2
     },
