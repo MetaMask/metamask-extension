@@ -256,5 +256,55 @@ describe('extension platform', () => {
         `Transaction 1 failed! ${expectedErrorMessage}`,
       );
     });
+
+    it('shows failed transaction with user rejected signing message', async () => {
+      const txMeta = {
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { code: '4001', message: 'User rejected the request.' },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      const expectedErrorMessage = t(
+        'notificationTransactionFailedUserRejectedMessage',
+      );
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
+
+    it('shows user rejected signing message when transaction status is rejected with 4001', async () => {
+      const txMeta = {
+        status: TransactionStatus.rejected,
+        txParams: { nonce: '0x1' },
+        error: { code: '4001', message: 'User rejected the request.' },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      const expectedErrorMessage = t(
+        'notificationTransactionFailedUserRejectedMessage',
+      );
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
   });
 });

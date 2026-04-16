@@ -9024,10 +9024,13 @@ export default class MetamaskController extends EventEmitter {
     const createRpcError = isUserRejectedHardwareWalletError(hwError)
       ? providerErrors.userRejectedRequest
       : rpcErrors.internal;
+    const isUserRejected = isUserRejectedHardwareWalletError(hwError);
     // Throw a JsonRpcError with hardware wallet error data preserved
     // This ensures the error properties survive serialization across the RPC boundary
     throw createRpcError({
-      message: hwError.message,
+      message: isUserRejected
+        ? hwError.userMessage || hwError.message
+        : hwError.message,
       data: {
         code: hwError.code,
         severity: hwError.severity,
@@ -9233,9 +9236,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onFinishedTransaction(transactionMeta) {
     if (
-      ![TransactionStatus.confirmed, TransactionStatus.failed].includes(
-        transactionMeta.status,
-      )
+      ![
+        TransactionStatus.confirmed,
+        TransactionStatus.failed,
+        TransactionStatus.rejected,
+      ].includes(transactionMeta.status)
     ) {
       return;
     }

@@ -4855,6 +4855,10 @@
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
+  "notificationTransactionFailedUserRejectedMessage": {
+    "message": "Signing has been rejected by the user.",
+    "description": "Error message used in the browser notification when a user rejects signing on their hardware wallet"
+  },
   "notificationTransactionFailedTitle": {
     "message": "Failed transaction",
     "description": "Title of the browser notification that appears when a transaction fails"
