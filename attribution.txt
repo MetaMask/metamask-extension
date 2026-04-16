@@ -25973,7 +25973,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/profile-metrics-controller
-3.0.3 <https://github.com/MetaMask/core>
+3.0.4 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
