@@ -6,6 +6,9 @@
     },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
       "hasAccountTreeSyncingSyncedAtLeastOnce": false,
       "selectedAccountGroup": ""
