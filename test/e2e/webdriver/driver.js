@@ -830,9 +830,9 @@ class Driver {
    *
    * @param rawLocator - The locator used to identify the element to be clicked.
    * @param {object} [options]
-   * @param {number} [options.disappearTimeout=3000] - Max ms to wait for hidden after each click.
-   * @param {number} [options.maxAttempts=3] - Maximum click + wait cycles.
-   * @param {number} [options.retryDelayMs=1000] - Delay before retrying after a failed wait.
+   * @param {number} [options.disappearTimeout] - Max ms to wait for hidden after each click.
+   * @param {number} [options.maxAttempts] - Maximum click + wait cycles.
+   * @param {number} [options.retryDelayMs] - Delay before retrying after a failed wait.
    */
   async clickElementAndWaitToDisappearWithRetry(
     rawLocator,

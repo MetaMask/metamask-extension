@@ -175,7 +175,7 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
-        await homePage.checkPageIsLoaded()
+        await homePage.checkPageIsLoaded();
 
         // requests happen here
         for (const mockedEndpoint of mockedEndpoints) {

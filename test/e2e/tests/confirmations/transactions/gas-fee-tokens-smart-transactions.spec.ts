@@ -24,7 +24,7 @@ const TRANSACTION_HASH_2 =
   '0x62700f83ba1bbc29004bf7aef71ed0ea735de4fd59861b4235200d8fa028281f';
 
 describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
-    it('confirms one transaction if successful', async function () {
+  it('confirms one transaction if successful', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -230,4 +230,4 @@ async function mockSentinelNetworks(mockServer: MockttpServer) {
         },
       };
     });
-}
+});
