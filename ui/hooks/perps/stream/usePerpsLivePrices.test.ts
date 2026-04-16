@@ -4,7 +4,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 import { usePerpsLivePrices } from './usePerpsLivePrices';
 import { usePerpsChannel } from './usePerpsChannel';
 
-type StreamPriceUpdate = PriceUpdate & {
+type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
   timestamp?: number;
   markPrice?: string;
 };

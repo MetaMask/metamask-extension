@@ -28,7 +28,7 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
-type StreamPriceUpdate = PriceUpdate & {
+type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
   timestamp?: number;
   markPrice?: string;
 };
