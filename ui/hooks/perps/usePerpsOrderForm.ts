@@ -10,6 +10,7 @@ import {
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 
 import { mockOrderFormDefaults } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { getDisplaySymbol } from '../../components/app/perps/utils';
 import type {
   OrderFormState,
   OrderMode,
@@ -180,6 +181,8 @@ export function usePerpsOrderForm({
   markPrice,
   feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
+  const displayAssetSymbol = getDisplaySymbol(asset);
+
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
    * Amount is left empty so the user enters the size INCREASE (additional margin
@@ -338,7 +341,7 @@ export function usePerpsOrderForm({
       const estimatedFees = closeValueUsd * (feeRate ?? 0);
 
       return {
-        positionSize: `${formatPositionSize(closeAmount, displaySizeDecimals)} ${asset}`,
+        positionSize: `${formatPositionSize(closeAmount, displaySizeDecimals)} ${displayAssetSymbol}`,
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
         liquidationPriceRaw: null,
@@ -427,7 +430,7 @@ export function usePerpsOrderForm({
       );
 
     return {
-      positionSize: `${formatPositionSize(positionSize, displaySizeDecimals)} ${asset}`,
+      positionSize: `${formatPositionSize(positionSize, displaySizeDecimals)} ${displayAssetSymbol}`,
       marginRequired: formatPerpsFiat(marginRequired, {
         ranges: PRICE_RANGES_MINIMAL_VIEW,
       }),
@@ -454,7 +457,7 @@ export function usePerpsOrderForm({
     mode,
     existingPosition,
     formState.closePercent,
-    asset,
+    displayAssetSymbol,
     sizeDecimals,
     szDecimals,
     markPrice,
