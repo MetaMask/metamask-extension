@@ -45,7 +45,7 @@ function buildInitRequestMock(): jest.Mocked<
     initMessenger: undefined,
   };
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -59,9 +59,9 @@ describe('NftDetectionControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(NftDetectionControllerInit(requestMock).controller).toBeInstanceOf(
-      NftDetectionController,
-    );
+    expect(
+      NftDetectionControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(NftDetectionController);
   });
 
   it('initializes with correct messenger and state', () => {

@@ -18,7 +18,7 @@ export const AppStateControllerInit: MessengerClientInitFunction<
   AppStateController,
   AppStateControllerMessenger
 > = ({ controllerMessenger, persistedState, setLocked, extension }) => {
-  const controller = new AppStateController({
+  const messengerClient = new AppStateController({
     messenger: controllerMessenger,
     state: persistedState.AppStateController,
     onInactiveTimeout: () => setLocked(),
@@ -26,6 +26,6 @@ export const AppStateControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -12,17 +12,22 @@ import {
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
  * @param request.persistedState - The persisted state.
- * @param request.getController - Function to get other controllers.
+ * @param request.getMessengerClient - Function to get other controllers.
  * @returns The initialized controller.
  */
 export const UserOperationControllerInit: MessengerClientInitFunction<
   UserOperationController,
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
-  const gasFeeController = getController('GasFeeController');
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const gasFeeController = getMessengerClient('GasFeeController');
 
-  const controller = new UserOperationController({
+  const messengerClient = new UserOperationController({
     messenger: controllerMessenger,
     state: persistedState.UserOperationController,
     // @ts-expect-error: `UserOperationController` does not accept `undefined`.
@@ -31,13 +36,13 @@ export const UserOperationControllerInit: MessengerClientInitFunction<
       gasFeeController.fetchGasFeeEstimates(...args),
   });
 
-  controller.hub.on('user-operation-added', (userOperationMeta) =>
+  messengerClient.hub.on('user-operation-added', (userOperationMeta) =>
     initMessenger.call(
       'TransactionController:emulateNewTransaction',
       userOperationMeta.id,
     ),
   );
-  controller.hub.on('transaction-updated', (transactionMeta) =>
+  messengerClient.hub.on('transaction-updated', (transactionMeta) =>
     initMessenger.call(
       'TransactionController:emulateTransactionUpdate',
       transactionMeta,
@@ -45,6 +50,6 @@ export const UserOperationControllerInit: MessengerClientInitFunction<
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

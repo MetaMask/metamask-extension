@@ -17,12 +17,12 @@ export const ClientControllerInit: MessengerClientInitFunction<
 > = (request) => {
   const { controllerMessenger, persistedState } = request;
 
-  const controller = new ClientController({
+  const messengerClient = new ClientController({
     messenger: controllerMessenger,
     state: persistedState.ClientController,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

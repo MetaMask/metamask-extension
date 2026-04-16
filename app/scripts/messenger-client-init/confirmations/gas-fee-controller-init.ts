@@ -30,7 +30,7 @@ export const GasFeeControllerInit: MessengerClientInitFunction<
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const controller = new GasFeeController({
+  const messengerClient = new GasFeeController({
     // @ts-expect-error: `GasFeeController` does not accept a partial state.
     state: persistedState.GasFeeController,
     messenger: controllerMessenger,
@@ -72,6 +72,6 @@ export const GasFeeControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

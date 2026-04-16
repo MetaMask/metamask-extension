@@ -20,6 +20,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsControlBarSkeleton } from '../perps-skeletons';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -65,7 +66,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
     useFormatters();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -74,7 +75,8 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
   const returnOnEquity = account?.returnOnEquity ?? '0';
 
-  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
+  const accountValue = parseFloat(totalBalance);
 
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
@@ -119,6 +121,10 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isDropdownOpen]);
 
+  if (isInitialLoading) {
+    return <PerpsControlBarSkeleton />;
+  }
+
   const rowBaseStyles = 'w-full bg-muted px-4 py-3';
   const balanceRowStyles = hasPositions
     ? 'rounded-t-xl rounded-b-none hover:bg-muted-hover active:bg-muted-pressed'
@@ -162,7 +168,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               </Text>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
-                size={IconSize.Sm}
+                size={IconSize.Xs}
                 color={IconColor.IconAlternative}
                 data-testid="perps-balance-dropdown-chevron"
               />
@@ -202,7 +208,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
       {/* Unrealized P&L Row - only shown when there are positions */}
       {hasPositions && (
         <Box
-          className="w-full rounded-t-none rounded-b-xl bg-muted px-4 py-3"
+          className="w-full rounded-t-none rounded-b-xl bg-muted px-4 py-3 -mt-px"
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}

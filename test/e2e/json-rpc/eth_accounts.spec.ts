@@ -1,7 +1,8 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { ACCOUNT_1, ACCOUNT_2 } from '../constants';
 import { login } from '../page-objects/flows/login.flow';
 
 describe('eth_accounts', function () {
@@ -9,11 +10,12 @@ describe('eth_accounts', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesController()
-          .withAccountsControllerAdditionalAccountIdentities()
-          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            account: [ACCOUNT_1, ACCOUNT_2],
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -32,10 +34,7 @@ describe('eth_accounts', function () {
           `return window.ethereum.request(${accountsRequest})`,
         );
 
-        assert.deepStrictEqual(accounts, [
-          '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        ]);
+        assert.deepStrictEqual(accounts, [ACCOUNT_2, ACCOUNT_1]);
       },
     );
   });
@@ -44,11 +43,12 @@ describe('eth_accounts', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesController()
-          .withAccountsControllerAdditionalAccountIdentities()
-          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            account: [ACCOUNT_1, ACCOUNT_2],
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -65,10 +65,7 @@ describe('eth_accounts', function () {
           `return window.ethereum.request(${accountsRequest})`,
         );
 
-        assert.deepStrictEqual(accounts, [
-          '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        ]);
+        assert.deepStrictEqual(accounts, [ACCOUNT_2, ACCOUNT_1]);
       },
     );
   });

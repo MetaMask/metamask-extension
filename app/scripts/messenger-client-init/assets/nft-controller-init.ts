@@ -24,7 +24,7 @@ export const NftControllerInit: MessengerClientInitFunction<
   NftControllerMessenger,
   NftControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const controller = new NftController({
+  const messengerClient = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
     onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
@@ -53,6 +53,6 @@ export const NftControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };
