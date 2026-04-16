@@ -409,9 +409,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-edit-margin-available-value"
         >
-          {formatPerpsFiat(maxAmount, {
+          {`${formatPerpsFiat(maxAmount, {
             ranges: PRICE_RANGES_UNIVERSAL,
-          })}
+          })} USDC`}
         </Text>
       </Box>
 

@@ -586,6 +586,17 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
+    if (chartCurrentPrice > 0) {
+      return formatPerpsFiat(chartCurrentPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      });
+    }
+    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
+    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
+      return formatPerpsFiat(liveStreamPrice, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+      });
+    }
     if (market?.price) {
       const parsedMarketPrice = Number.parseFloat(
         market.price.replace(/[$,]/gu, ''),
@@ -595,17 +606,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           ranges: PRICE_RANGES_UNIVERSAL,
         });
       }
-    }
-    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
-    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
-      return formatPerpsFiat(liveStreamPrice, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-      });
-    }
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiat(chartCurrentPrice, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-      });
     }
     return '$0.00';
   }, [market?.price, livePrice?.price, chartCurrentPrice]);
@@ -797,9 +797,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     const isPartialClose =
       orderMode === 'close' && closePercent < FULL_CLOSE_PERCENT;
 
-    let inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+    let inProgressToastKey: PerpsToastKey | undefined;
     let inProgressToastDescription: string | undefined;
-
     if (orderMode === 'close') {
       inProgressToastKey = isPartialClose
         ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS
@@ -808,7 +807,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         ? closePartialToastDescription
         : tradeActionToastDescription;
     }
-    if (inProgressToastKey !== undefined) {
+    if (inProgressToastKey) {
       replacePerpsToastByKey({
         key: inProgressToastKey,
         ...(inProgressToastDescription
