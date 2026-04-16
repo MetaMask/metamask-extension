@@ -1,11 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-  PRICE_RANGES_UNIVERSAL,
-} from '@metamask/perps-controller';
-import {
   Box,
   BoxBackgroundColor,
   Text,
@@ -20,6 +14,7 @@ import {
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
 
 /** Fixed width (rem) for the close-% chip so the slider row layout stays stable as digits change */
@@ -34,7 +29,6 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * @param props.onClosePercentChange - Callback when percentage changes
  * @param props.asset - Asset symbol for display
  * @param props.currentPrice - Current asset price for USD calculation
- * @param props.sizeDecimals - Market size decimals for controller-based size formatting
  */
 export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   positionSize,
@@ -42,9 +36,10 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   onClosePercentChange,
   asset,
   currentPrice,
-  sizeDecimals,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
+    useFormatters();
 
   const closeAmount = useMemo(() => {
     const size = Math.abs(parseFloat(positionSize)) || 0;
@@ -76,7 +71,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsAvailableToClose')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {`${formatPositionSize(totalPositionSize, sizeDecimals)} ${getDisplaySymbol(asset)}`}
+          {formatTokenQuantity(totalPositionSize, getDisplaySymbol(asset))}
         </Text>
       </Box>
 
@@ -94,9 +89,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
             fontWeight={FontWeight.Medium}
             data-testid="close-amount-value"
           >
-            {formatPerpsFiat(closeValueUsd, {
-              ranges: PRICE_RANGES_MINIMAL_VIEW,
-            })}
+            {formatCurrencyWithMinThreshold(closeValueUsd, 'USD')}
           </Text>
         </Box>
       </Box>

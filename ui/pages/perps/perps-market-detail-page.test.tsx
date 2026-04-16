@@ -16,36 +16,6 @@ import {
 import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 jest.mock('@metamask/perps-controller', () => ({
-  PRICE_RANGES_MINIMAL_VIEW: [],
-  PRICE_RANGES_UNIVERSAL: [],
-  formatFundingRate: (value: number) =>
-    `${value >= 0 ? '+' : ''}${(value * 100).toFixed(4)}%`,
-  formatPerpsFiat: (value: number | string) => {
-    const amount = Number(value);
-    return `$${amount
-      .toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 6,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
-  formatPnl: (value: number | string) => {
-    const amount = Number(value);
-    const abs = Math.abs(amount).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 6,
-    });
-    return `${amount >= 0 ? '+' : '-'}$${abs}`.replace(
-      /(\.\d*?[1-9])0+$/u,
-      '$1',
-    );
-  },
-  formatPositionSize: (value: number, decimals?: number) =>
-    Number(value).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: decimals ?? 4,
-    }),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -104,10 +74,6 @@ jest.mock('@metamask/perps-controller', () => ({
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
   },
-}));
-
-jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
-  usePerpsMarketInfo: () => ({ szDecimals: 4 }),
 }));
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
@@ -272,12 +238,14 @@ jest.mock(
   }),
 );
 
+const mockLivePositions = jest.fn(() => ({
+  positions: mockPositions,
+  isInitialLoading: false,
+}));
+
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLivePositions: () => ({
-    positions: mockPositions,
-    isInitialLoading: false,
-  }),
+  usePerpsLivePositions: () => mockLivePositions(),
   usePerpsLiveOrders: () => ({
     orders: mockOrders,
     isInitialLoading: false,
@@ -392,6 +360,10 @@ describe('PerpsMarketDetailPage', () => {
       account: mockAccountState,
       isInitialLoading: false,
     });
+    mockLivePositions.mockReturnValue({
+      positions: mockPositions,
+      isInitialLoading: false,
+    });
     mockUsePerpsMarketFills.mockReturnValue({
       fills: [],
       isInitialLoading: false,
@@ -423,6 +395,115 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'ETH',
+          pendingOrderFilledDescription: 'Long 0.33 ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFilled',
+        description: 'Long 0.33 ETH',
+      });
+    });
+
+    it('shows order filled toast without description when pendingOrderFilledDescription is absent', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFilled',
+      });
+    });
+
+    it('does not show order filled toast when no matching position exists', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 'DOGE',
+          pendingOrderFilledDescription: 'Long 100 DOGE',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when pendingOrderSymbol is absent', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: { someOtherKey: 'value' },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when pendingOrderSymbol is not a string', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          pendingOrderSymbol: 123,
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
+    });
+
+    it('does not show order filled toast when route state is null', async () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: null,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFilled',
+        }),
+      );
     });
 
     it('shows handed-off perps toast and clears route state', async () => {
@@ -621,47 +702,6 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         getByText(new RegExp(`${messages.perpsLong.message} 3x`, 'u')),
       ).toBeInTheDocument();
-    });
-
-    it('formats numeric position price fields without throwing', () => {
-      const store = mockStore(createMockState(true));
-      const originalPosition = mockPositions[0];
-      const originalEntryPrice = originalPosition.entryPrice;
-      const originalLiquidationPrice = originalPosition.liquidationPrice;
-      const originalTakeProfitPrice = originalPosition.takeProfitPrice;
-      const originalStopLossPrice = originalPosition.stopLossPrice;
-      const originalCumulativeFunding = {
-        ...originalPosition.cumulativeFunding,
-      };
-
-      Object.assign(originalPosition, {
-        entryPrice: 2850 as unknown as string,
-        liquidationPrice: 2400 as unknown as string,
-        takeProfitPrice: 3200 as unknown as string,
-        stopLossPrice: 2600 as unknown as string,
-        cumulativeFunding: {
-          ...originalPosition.cumulativeFunding,
-          sinceOpen: 8.3 as unknown as string,
-        },
-      });
-
-      try {
-        renderWithProvider(<PerpsMarketDetailPage />, store);
-
-        expect(screen.getByText('$2,850')).toBeInTheDocument();
-        expect(screen.getAllByText('$2,400').length).toBeGreaterThan(0);
-        expect(screen.getByText('$3,200')).toBeInTheDocument();
-        expect(screen.getByText('$2,600')).toBeInTheDocument();
-        expect(screen.getByText('-$8.3')).toBeInTheDocument();
-      } finally {
-        Object.assign(originalPosition, {
-          entryPrice: originalEntryPrice,
-          liquidationPrice: originalLiquidationPrice,
-          takeProfitPrice: originalTakeProfitPrice,
-          stopLossPrice: originalStopLossPrice,
-          cumulativeFunding: originalCumulativeFunding,
-        });
-      }
     });
 
     it('displays stats section', async () => {

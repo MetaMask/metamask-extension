@@ -37,11 +37,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsLiquidationPrice')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          data-testid="perps-order-summary-liquidation-price"
-        >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {liquidationPrice ?? '-'}
         </Text>
       </Box>
@@ -55,11 +51,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsMargin')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          data-testid="perps-order-summary-margin-required"
-        >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {marginRequired ?? '-'}
         </Text>
       </Box>
@@ -73,11 +65,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsFees')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          data-testid="perps-order-summary-estimated-fees"
-        >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {estimatedFees ?? '-'}
         </Text>
       </Box>

@@ -9,12 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-  type Position as PerpsPosition,
-} from '@metamask/perps-controller';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   Modal,
   ModalContent,
@@ -34,6 +29,7 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
@@ -48,7 +44,6 @@ export type ReversePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
-  sizeDecimals?: number;
 };
 
 function toFlipPositionPayload(pos: Position): Position {
@@ -67,10 +62,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
-  sizeDecimals,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -100,7 +95,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
+  const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
 
   const {
     feeRate,
@@ -227,7 +222,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-est-size-value"
                 >
                   {estSizeLabel}
                 </Text>
@@ -250,9 +244,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {shouldShowFeePlaceholder
                     ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
+                    : formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
                 </Text>
               </Box>
               {error && (

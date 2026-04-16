@@ -30,17 +30,6 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock('@metamask/perps-controller', () => ({
-  formatPerpsFiat: (value: number) =>
-    `$${Number(value).toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`,
-  PRICE_RANGES_MINIMAL_VIEW: [],
-  formatPositionSize: (value: number, decimals?: number) =>
-    Number(value).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: decimals ?? 4,
-    }),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -139,7 +128,6 @@ const defaultProps = {
   onClose: jest.fn(),
   position: longPosition,
   currentPrice: 2900,
-  sizeDecimals: 3,
 };
 
 describe('ReversePositionModal', () => {
@@ -247,7 +235,7 @@ describe('ReversePositionModal', () => {
     it('displays correct estimated size', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
+      expect(screen.getByText('2.50 ETH')).toBeInTheDocument();
     });
   });
 
@@ -276,7 +264,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('0.5 BTC')).toBeInTheDocument();
+      expect(screen.getByText('0.50 BTC')).toBeInTheDocument();
     });
   });
 

@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  formatPerpsFiat,
-  PRICE_RANGES_MINIMAL_VIEW,
-} from '@metamask/perps-controller';
-import {
   twMerge,
   TextVariant,
   TextColor,
@@ -68,8 +64,9 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   onWithdraw,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
+    useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
-  const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -84,9 +81,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
-  const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
-    ranges: PRICE_RANGES_MINIMAL_VIEW,
-  })}`;
+  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
   const formattedRoe = formatPercentWithMinThreshold(
     parseFloat(returnOnEquity) / 100,
   );
@@ -169,9 +164,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               gap={2}
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {formatPerpsFiat(accountValue, {
-                  ranges: PRICE_RANGES_MINIMAL_VIEW,
-                })}
+                {formatCurrencyWithMinThreshold(accountValue, 'USD')}
               </Text>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}

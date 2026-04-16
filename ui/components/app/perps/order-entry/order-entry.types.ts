@@ -127,8 +127,6 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
-  /** Market size decimals for controller-based position-size formatting */
-  sizeDecimals?: number;
   /**
    * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
    * Used for margin calculation to match mobile's source of truth.
@@ -246,6 +244,4 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
-  /** Market size decimals for controller-based position-size formatting */
-  sizeDecimals?: number;
 };
