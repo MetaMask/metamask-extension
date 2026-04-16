@@ -11,6 +11,18 @@ export type CriticalErrorRestoreSession = {
   tabUrl: string;
 };
 
+export type RestoringTabHandoff = {
+  tabId: number | undefined;
+  tabUrl: string;
+};
+
+export type ExtensionPlatformLike = {
+  getExtensionURL: (
+    route?: string | null,
+    queryString?: string | null,
+  ) => string;
+};
+
 export async function readCriticalErrorRestoreSession(
   browserApi: typeof browser,
 ): Promise<CriticalErrorRestoreSession | null> {
@@ -74,34 +86,30 @@ export async function openRestoringTabAndReload(
   const fragment = crypto.randomUUID();
   const url = `${METAMASK_RESTORING_PAGE_URL}#${fragment}`;
 
-  let tabId: number | undefined;
+  const value: { tabUrl: string; tabId?: number } = { tabUrl: url };
   try {
-    const tab = await browser.tabs.create({ url, active: true });
-    tabId = tab.id;
+    // Open a new tab before reloading: reloading MetaMask can cause the browser to
+    // shut down if MetaMask is the only open tab.
+    const { id } = await browser.tabs.create({ url, active: true });
+
+    // Defensive check since ID is optional. Based on documentation, a tab may not
+    // be assigned an ID under some circumstances:
+    // - https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+    // - https://developer.chrome.com/docs/extensions/reference/api/tabs#type-Tab
+    if (typeof id === 'number') {
+      value.tabId = id;
+    }
   } catch (error) {
+    // Tab creation should rarely fail. If it does, we still persist session and reload.
+    // Without tabId, handoff may be limited. Reloading alone may close the browser if
+    // MetaMask was the only tab.
     log.error(error);
   }
 
-  const value: Record<string, unknown> = { tabUrl: url };
-  if (typeof tabId === 'number') {
-    value.tabId = tabId;
-  }
   await browser.storage.local.set({ [CRITICAL_ERROR_RESTORE_KEY]: value });
 
   await requestSafeReload();
 }
-
-export type RestoringTabHandoff = {
-  tabId: number | undefined;
-  tabUrl: string;
-};
-
-export type ExtensionPlatformLike = {
-  getExtensionURL: (
-    route?: string | null,
-    queryString?: string | null,
-  ) => string;
-};
 
 export async function handoffRestoringTabToExtension(
   platform: ExtensionPlatformLike,
