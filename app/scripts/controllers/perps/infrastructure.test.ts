@@ -510,7 +510,7 @@ describe('createPerpsInfrastructure', () => {
     });
 
     it('exposes shared universal price ranges', () => {
-      const { marketDataFormatters } = createPerpsInfrastructure();
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       expect(marketDataFormatters.priceRangesUniversal.length).toBeGreaterThan(
         0,
       );
@@ -547,7 +547,7 @@ describe('createPerpsInfrastructure', () => {
 
   describe('diskCache', () => {
     it('supports sync and async cache access', async () => {
-      const { diskCache } = createPerpsInfrastructure();
+      const { diskCache } = createPerpsInfrastructure(getDeps());
 
       expect(diskCache.getItemSync('missing-key')).toBeNull();
 
