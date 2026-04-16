@@ -137,10 +137,7 @@ class SmartTransactionHook {
         (this.#transactions && this.#transactions.length > 0),
     );
 
-    this.#shouldShowStatusPage =
-      featureFlags?.extensionSkipTransactionStatusPage
-        ? false
-        : legacyShowStatusPage;
+    this.#shouldShowStatusPage = legacyShowStatusPage;
 
     log.info(
       '[SmartTransaction] shouldShowStatusPage:',
