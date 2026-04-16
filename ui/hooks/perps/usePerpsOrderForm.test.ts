@@ -43,9 +43,9 @@ describe('usePerpsOrderForm', () => {
         }) as Promise<ResolvedValue>;
 
       if (method === 'perpsCalculateLiquidationPrice') {
-        return immediate('40000') as Promise<never>;
+        return immediate('40000');
       }
-      return immediate(undefined) as Promise<never>;
+      return immediate(undefined);
     });
   });
 
