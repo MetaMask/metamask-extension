@@ -31,9 +31,12 @@ export function usePerpsTabExploreData(
     ? watchlistMarketsState.testnet
     : watchlistMarketsState.mainnet;
 
-  const watchlistSymbolSet = useMemo(
-    () => new Set(watchlistSymbols.map((symbol) => symbol.toUpperCase())),
-    [watchlistSymbols],
+  const liveMarketMap = useMemo(
+    () =>
+      new Map(
+        liveMarkets.map((market) => [market.symbol.toUpperCase(), market]),
+      ),
+    [liveMarkets],
   );
 
   const exploreMarkets = useMemo(
@@ -43,10 +46,10 @@ export function usePerpsTabExploreData(
 
   const filteredWatchlistMarkets = useMemo(
     () =>
-      liveMarkets.filter((market) =>
-        watchlistSymbolSet.has(market.symbol.toUpperCase()),
-      ),
-    [liveMarkets, watchlistSymbolSet],
+      watchlistSymbols
+        .map((symbol) => liveMarketMap.get(symbol.toUpperCase()))
+        .filter((market): market is PerpsMarketData => Boolean(market)),
+    [liveMarketMap, watchlistSymbols],
   );
 
   return {

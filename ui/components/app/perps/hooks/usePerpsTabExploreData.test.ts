@@ -76,4 +76,21 @@ describe('usePerpsTabExploreData', () => {
     expect(result.current.exploreMarkets[0].change24hPercent).toBe('12.34');
     expect(result.current.watchlistMarkets[0].price).toBe('99999');
   });
+
+  it('preserves the user watchlist symbol order', () => {
+    const { result } = renderHookWithProvider(() => usePerpsTabExploreData(), {
+      metamask: {
+        ...mockState.metamask,
+        isTestnet: false,
+        watchlistMarkets: {
+          mainnet: ['ETH', 'BTC'],
+          testnet: [],
+        },
+      },
+    });
+
+    expect(
+      result.current.watchlistMarkets.map((market) => market.symbol),
+    ).toEqual(['ETH', 'BTC']);
+  });
 });
