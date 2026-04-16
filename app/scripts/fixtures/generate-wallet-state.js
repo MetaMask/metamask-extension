@@ -9,7 +9,7 @@ import {
   E2E_SRP,
   defaultFixture,
 } from '../../../test/e2e/fixtures/default-fixture';
-import FixtureBuilder from '../../../test/e2e/fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';
@@ -29,10 +29,10 @@ let FIXTURES_CONFIG = {};
  *
  * @param {object} withState - The fixture configuration state
  * @param {boolean} fromTest - Whether this is being called from a test
- * @returns {Promise<FixtureBuilder>} The generated FixtureBuilder object
+ * @returns {Promise<FixtureBuilderV2>} The generated fixture builder
  */
 export async function generateWalletState(withState, fromTest) {
-  const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
+  const fixtureBuilder = new FixtureBuilderV2();
 
   if (withState) {
     FIXTURES_CONFIG = withState;

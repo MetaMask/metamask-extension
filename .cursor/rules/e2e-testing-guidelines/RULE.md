@@ -89,6 +89,7 @@ For new test code, use `FixtureBuilderV2` by default.
 
 - `withAccountsController`
 - `withAddressBookController`
+- `withAnnouncementController`
 - `withAppStateController`
 - `withCurrencyController`
 - `withKeyringController`
@@ -98,6 +99,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNameController`
 - `withNetworkController`
 - `withNetworkEnablementController`
+- `withNotificationServicesController`
 - `withNftController`
 - `withOnboardingController`
 - `withPermissionController`
