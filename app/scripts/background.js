@@ -193,6 +193,7 @@ const requestAccountTabIds = {};
 let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
+const frameIdMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -1271,6 +1272,9 @@ function trackDappView(remotePort) {
   if (!(tabId in tabOriginMapping)) {
     tabOriginMapping[tabId] = tabOrigin;
   }
+  if (!(tabId in frameIdMapping)) {
+    frameIdMapping[tabId] = frameId;
+  }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
     'PermissionController:hasPermissions',
@@ -2117,7 +2121,11 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(currentOrigin, currentTabOrigin);
+          emitDappViewedMetricEvent(
+            currentOrigin,
+            currentTabOrigin,
+            frameIdMapping[tabId],
+          );
         }
       }
 
