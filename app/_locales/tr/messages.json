@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Hesap simgesi"
   },
-  "accountIdenticonDescription": {
-    "message": "Hesapları bir bakışta tanımanıza yardımcı olabilecek üç farklı benzersiz simge stilinden seçim yapın."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 şuna bağlı değil: $2"
   },
@@ -272,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Donanım cüzdanı"
-  },
-  "addIPFSGateway": {
-    "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
   },
   "addMemo": {
     "message": "Not ekleyin"
@@ -1386,9 +1380,6 @@
     "message": "Varsayılan ayarlarınızı ve yapılandırmalarınızı kullandığımızda, Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla varsayılan uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura'yı kullanırız. Sınırlı durumlarda, kullanıcılarımıza en iyi deneyimi sağlamak amacıyla başka RPC sağlayıcıları kullanabiliriz. Kendi RPC'nizi seçebilirsiniz ancak her RPC'nin işlem yapmak için IP adresinize ve Ethereum cüzdanınıza ulaşacağını unutmayın. Infura'nın, EVM hesapları için verileri nasıl kullandığı hakkında bilgi edinmek için $1 bölümümüzü, Solana hesapları için $2 bölümümüzü okuyun.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "buraya tıklayın"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Donanım Cüzdanınıza bağlamak için MetaMask'ı Google Chrome'da kullanmanız gerekir."
   },
@@ -1400,9 +1391,6 @@
   },
   "clearActivity": {
     "message": "Aktiviteyi ve nonce verilerini temizle"
-  },
-  "clearActivityButton": {
-    "message": "Aktivite sekme verilerini temizle"
   },
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
@@ -2062,12 +2050,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "E-posta yoluyla dahil olmak üzere ürün güncellemeleri, ipuçları ve haberleri alın. Etkileşimlerinizi yaptığımız paylaşımları iyileştirmek için kullanabiliriz."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Tamam"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Pazarlama amacıyla veri toplama seçeneğini kapattınız. Bu, sadece bu cihaz için geçerlidir. MetaMask'i başka cihazlarda kullanırsanız bu cihazlarda da vazgeçtiğinizden emin olun."
   },
   "dataUnavailable": {
     "message": "veri mevcut değil"
@@ -3718,9 +3700,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
   },
-  "lockTimeInvalid": {
-    "message": "Kilit süresi 0 ile 10080 arasında olmalıdır"
-  },
   "logOut": {
     "message": "Oturumu kapat"
   },
@@ -3946,12 +3925,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
-  },
-  "missingSetting": {
-    "message": "Bir ayarı bulamıyor musun?"
-  },
-  "missingSettingRequest": {
-    "message": "Buradan talep et"
   },
   "month": {
     "message": "ay"
@@ -6473,12 +6446,6 @@
   "securityChangePassword": {
     "message": "Şifreyi değiştir"
   },
-  "securityChangePasswordDescription": {
-    "message": "Cihazınızda MetaMask uygulamasının kilidini açmak için güçlü bir şifre seçin. Bu şifreyi kaybederseniz cüzdanınızı yeniden içe aktarmak için Gizli Kurtarma İfadenize ihtiyacınız olacak."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Şifre"
-  },
   "securityChangePasswordToastError": {
     "message": "Şifre değiştirilemedi. Lütfen tekrar deneyin."
   },
@@ -6490,16 +6457,6 @@
   },
   "securityDescription": {
     "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı koruyun"
-  },
-  "securityLoginWithSocial": {
-    "message": "$1 ile oturum aç",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Gizli Kurtarma İfadesi yedeklendi"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Gizli Kurtarma İfadesini yedekle"
   },
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
@@ -6522,14 +6479,8 @@
     "message": "$1 KURTARMA",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Cüzdanınıza erişimi asla kaybetmemeniz için Gizli Kurtarma İfadenizi yedekleyin. Yalnızca sizin erişiminiz olan ve unutmayacağınız güvenli bir yerde sakladığınızdan emin olun."
-  },
   "securitySrpLabel": {
     "message": "GİZLİ KURTARMA İFADELERİ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Kurtarma yöntemlerini yönet"
   },
   "seeAllPermissions": {
     "message": "Tüm izinleri gör",
@@ -7476,12 +7427,6 @@
   "smartAccount": {
     "message": "Akıllı hesap"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Dapp'lerin standart hesaplar için akıllı hesap özellikleri talep etmesine izin verin. Bu durum, halihazırda akıllı hesap olan hesapları etkilemez."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Dapp'lerden akıllı hesap talepleri"
-  },
   "smartAccountLabel": {
     "message": "Akıllı Hesap"
   },
@@ -7502,9 +7447,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Alıcı adresi doğrudan token transferlerini desteklemiyor olabilir ve bu durum para kaybına neden olabilir. Yalnızca transferinizin bu sözleşmeye ulaşabileceğinden eminseniz devam edin."
-  },
-  "smartContracts": {
-    "message": "Akıllı sözleşmeler"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Akıllı swap için yeterli para yok."
@@ -8518,9 +8460,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Token zaten eklenmiş."
-  },
-  "tokenAutoDetection": {
-    "message": "Otomatik token algılama"
   },
   "tokenContractAddress": {
     "message": "Token sözleşme adresi"

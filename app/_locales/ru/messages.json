@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
-  "accountIdenticonDescription": {
-    "message": "Выбирайте из трех различных стилей уникальных значков, которые помогут вам быстро находить счета."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 не подключен к $2"
   },
@@ -272,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Аппаратный кошелек"
-  },
-  "addIPFSGateway": {
-    "message": "Добавьте предпочтительный шлюз IPFS"
   },
   "addMemo": {
     "message": "Добавить примечание"
@@ -1386,9 +1380,6 @@
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1, а для счетов Solana — статью $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "нажмите здесь"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
   },
@@ -1400,9 +1391,6 @@
   },
   "clearActivity": {
     "message": "Очистить данные о действиях и одноразовых номерах"
-  },
-  "clearActivityButton": {
-    "message": "Очистить данные вкладки активности"
   },
   "clearActivityDescription": {
     "message": "Это приведет к сбросу одноразового номера для счета и удалению данных со вкладки \"Активность\" в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -2062,12 +2050,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Хорошо"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
   },
   "dataUnavailable": {
     "message": "данные недоступны"
@@ -3718,9 +3700,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Время блокировки будет числом от 0 до 10080"
-  },
   "logOut": {
     "message": "Выйти"
   },
@@ -3946,12 +3925,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Согласно нашим записям, отправленное значение URL RPC не соответствует известному поставщику для этого ID блокчейна."
-  },
-  "missingSetting": {
-    "message": "Не удается найти настройки?"
-  },
-  "missingSettingRequest": {
-    "message": "Запросить здесь"
   },
   "month": {
     "message": "месяц"
@@ -6473,12 +6446,6 @@
   "securityChangePassword": {
     "message": "Изменить пароль"
   },
-  "securityChangePasswordDescription": {
-    "message": "Выберите надежный пароль для разблокировки приложения MetaMask на вашем устройстве. Если вы потеряете этот пароль, для восстановления доступа к кошельку потребуется ваша секретная фраза для восстановления."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Пароль"
-  },
   "securityChangePasswordToastError": {
     "message": "Не удалось изменить пароль. Попробуйте еще раз."
   },
@@ -6490,16 +6457,6 @@
   },
   "securityDescription": {
     "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
-  "securityLoginWithSocial": {
-    "message": "Войти с помощью $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Создана резервная копия секретной фразы для восстановления"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Создать резервную копию секретной фразы для восстановления"
   },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
@@ -6522,14 +6479,8 @@
     "message": "ВОССТАНОВЛЕНИЕ $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Сохраните свою секретную фразу для восстановления, чтобы никогда не терять доступ к своему кошельку. Обязательно сохраните ее в безопасном месте, к которому сможете получить доступ только вы и которое вы не забудете."
-  },
   "securitySrpLabel": {
     "message": "СЕКРЕТНЫЕ ФРАЗЫ ДЛЯ ВОССТАНОВЛЕНИЯ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Управление способами восстановления"
   },
   "seeAllPermissions": {
     "message": "Смотреть все разрешения",
@@ -7476,12 +7427,6 @@
   "smartAccount": {
     "message": "Смарт-счет"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Запросы на создание смарт-счетов от dapps"
-  },
   "smartAccountLabel": {
     "message": "Смарт-счет"
   },
@@ -7502,9 +7447,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Адрес получателя может не поддерживать прямые переводы токенов, что может привести к потере средств. Продолжайте только в том случае, если вы уверены, что этот контракт может получить ваш перевод."
-  },
-  "smartContracts": {
-    "message": "Смарт-контракты"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Недостаточно средств для смарт-свопа."
@@ -8518,9 +8460,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже добавлен."
-  },
-  "tokenAutoDetection": {
-    "message": "Автоопределение токена"
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"

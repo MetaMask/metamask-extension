@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Ícono de cuenta"
   },
-  "accountIdenticonDescription": {
-    "message": "Elige entre tres estilos diferentes de íconos únicos que pueden ayudarte a identificar cuentas rápidamente."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 no está conectado a $2"
   },
@@ -272,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Billetera física"
-  },
-  "addIPFSGateway": {
-    "message": "Agregue su puerta de enlace de IPFS preferida"
   },
   "addMemo": {
     "message": "Añadir memo"
@@ -1386,9 +1380,6 @@
     "message": "Cuando usa nuestra configuración y ajustes por defecto, usamos Infura como nuestro proveedor de llamada a procedimiento remoto (RPC) por defecto para ofrecer el acceso más confiable y privado posible a los datos de Ethereum. En casos limitados, es posible que usemos otros proveedores de RPC para ofrecer la mejor experiencia a nuestros usuarios. Puede elegir su propio proveedor de RPC, pero recuerde que cualquier proveedor de RPC recibirá su dirección IP y su monedero de Ethereum para realizar transacciones. Para obtener más información sobre cómo Infura maneja los datos de las cuentas EVM, lea nuestra $1, y para las cuentas de Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "haga clic aquí"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su monedero físico."
   },
@@ -1400,9 +1391,6 @@
   },
   "clearActivity": {
     "message": "Borrar datos de actividad y nonce"
-  },
-  "clearActivityButton": {
-    "message": "Borrar datos de la pestaña de actividad"
   },
   "clearActivityDescription": {
     "message": "Esto restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en su monedero. Solo la cuenta actual y la red se verán afectadas. Sus saldos y transacciones entrantes no cambiarán."
@@ -2062,12 +2050,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Recibe actualizaciones de productos, consejos y noticias, incluso por correo electrónico. Podemos usar tus interacciones para mejorar lo que compartimos."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "De acuerdo"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Desactivó la recopilación de datos para nuestros fines de marketing. Esto solo se aplica a este dispositivo. Si utiliza MetaMask en otros dispositivos, asegúrese de desactivarlo allí también."
   },
   "dataUnavailable": {
     "message": "datos no disponibles"
@@ -3718,9 +3700,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Bloqueando MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "El tiempo de bloqueo debe ser un número entre 0 y 10080"
-  },
   "logOut": {
     "message": "Cerrar sesión"
   },
@@ -3946,12 +3925,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Según nuestros registros, el valor de la URL de RPC enviado no coincide con un proveedor conocido para este ID de cadena."
-  },
-  "missingSetting": {
-    "message": "¿No puede encontrar un ajuste?"
-  },
-  "missingSettingRequest": {
-    "message": "Solicítelo aquí"
   },
   "month": {
     "message": "mes"
@@ -6473,12 +6446,6 @@
   "securityChangePassword": {
     "message": "Cambiar contraseña"
   },
-  "securityChangePasswordDescription": {
-    "message": "Elige una contraseña segura para desbloquear la aplicación MetaMask en tu dispositivo. Si la pierdes, necesitarás tu frase secreta de recuperación para volver a importar tu billetera."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Contraseña"
-  },
   "securityChangePasswordToastError": {
     "message": "No se pudo cambiar la contraseña. Inténtalo de nuevo."
   },
@@ -6490,16 +6457,6 @@
   },
   "securityDescription": {
     "message": "Reduzca sus posibilidades de unirse a redes inseguras y proteja sus cuentas"
-  },
-  "securityLoginWithSocial": {
-    "message": "Inicia sesión con $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Se hizo la copia de seguridad de la frase secreta de recuperación"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Copia de seguridad de la frase secreta de recuperación"
   },
   "securityMessageLinkForNetworks": {
     "message": "estafas en la red y riesgos de seguridad"
@@ -6522,14 +6479,8 @@
     "message": "RECUPERACIÓN DE $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Haz una copia de seguridad de tu frase secreta de recuperación para no perder nunca el acceso a tu billetera. Asegúrate de guardarla en un lugar seguro al que solo tú puedas acceder y que no olvides."
-  },
   "securitySrpLabel": {
     "message": "FRASES SECRETAS DE RECUPERACIÓN"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Administrar los métodos de recuperación"
   },
   "seeAllPermissions": {
     "message": "Ver todos los permisos",
@@ -7476,12 +7427,6 @@
   "smartAccount": {
     "message": "Cuenta inteligente"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Solicitudes de cuentas inteligentes desde dapps"
-  },
   "smartAccountLabel": {
     "message": "Cuenta inteligente"
   },
@@ -7502,9 +7447,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Es posible que la dirección del destinatario no admita transferencias directas de tokens, lo que podría provocar la pérdida de fondos. Continúa solo si estás seguro de que este contrato puede recibir tu transferencia."
-  },
-  "smartContracts": {
-    "message": "Contratos inteligentes"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "No hay suficientes fondos para un intercambio inteligente."
@@ -8518,9 +8460,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
-  },
-  "tokenAutoDetection": {
-    "message": "Detección automática de tokens"
   },
   "tokenContractAddress": {
     "message": "Dirección de contrato del token"

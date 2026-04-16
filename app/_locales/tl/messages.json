@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
-  "accountIdenticonDescription": {
-    "message": "Pumili mula sa tatlong iba’t ibang estilo ng kakaibang mga icon na makakatulong para madaling makilala ang mga account sa isang tingin."
-  },
   "accountIsntConnectedToastText": {
     "message": "Hindi nakakoneka ang $1 sa $2"
   },
@@ -272,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
-  },
-  "addIPFSGateway": {
-    "message": "Idagdag ang mas gusto mong IPFS gateway"
   },
   "addMemo": {
     "message": "Magdagdag ng memo"
@@ -1386,9 +1380,6 @@
     "message": "Kapag ginagamit mo ang aming mga default na setting at configuration, ginagamit namin ang Infura bilang aming default na remote procedure call (RPC) provider para mag-alok ng pinakamaasahan at pribadong access sa data ng Ethereum sa abot ng aming makakaya. Sa mga limitadong pangyayari, maaari kaming gumamit ng ibang mga RPC provider upang makapagbigay ng pinakamainam na karanasan para sa aming mga user. Maaari kang pumili ng iyong sariling RPC, ngunit tandaan na ang anumang RPC ay makakatanggap ng iyong IP address at Ethereum wallet upang makapagsagawa ng mga transaksyon. Para matuto pa tungkol sa kung paano pinangangasiwaan ng Infura ang data para sa mga EVM account, basahin ang aming $1, at para sa mga Solana account, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "mag-click dito"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Wallet na Hardware."
   },
@@ -1400,9 +1391,6 @@
   },
   "clearActivity": {
     "message": "I-clear ang aktibidad at datos ng nonce"
-  },
-  "clearActivityButton": {
-    "message": "I-clear ang data ng tab ng aktibidad"
   },
   "clearActivityDescription": {
     "message": "Nire-reset nito ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
@@ -2062,12 +2050,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "In-off mo ang koleksyon ng data para sa layunin sa marketing. Ito ay inilalapat lamang sa device na ito. Kung gumagamit ka ng MetaMask sa ibang mga device, siguraduhing mag-opt out din doon."
   },
   "dataUnavailable": {
     "message": "hindi available ang data"
@@ -3718,9 +3700,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Nila-lock ang MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Ang lock time ay dapat na isang numero sa pagitan ng 0 at 10080"
-  },
   "logOut": {
     "message": "Mag-log out"
   },
@@ -3946,12 +3925,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Ayon sa aming mga talaan, ang isinumiteng RPC URL value ay hindi tumutugma sa isang kilalang provider para sa ID ng chain na ito."
-  },
-  "missingSetting": {
-    "message": "Hindi makahanap ng setting?"
-  },
-  "missingSettingRequest": {
-    "message": "Humiling dito"
   },
   "month": {
     "message": "buwan"
@@ -6473,12 +6446,6 @@
   "securityChangePassword": {
     "message": "Palitan ang password"
   },
-  "securityChangePasswordDescription": {
-    "message": "Pumili ng password na mahirap hulaan para i-unlock ang MetaMask app sa iyong device. Kung mawawala mo ang password na ito, kakailanganin mo ang iyong Lihim na Parirala sa Pagbawi para muling i-import ang iyong wallet."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordToastError": {
     "message": "Hindi mapalitan ang password. Subukang muli."
   },
@@ -6490,16 +6457,6 @@
   },
   "securityDescription": {
     "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
-  "securityLoginWithSocial": {
-    "message": "Mag-log in gamit ang $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Na-back up ang Lihim na Parirala sa Pagbawi"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "I-back up ang Lihim na Parirala sa Pagbawi"
   },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
@@ -6522,14 +6479,8 @@
     "message": "PAGBAWI SA $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi nang sa gayon ay hindi ka mawalan ng access sa iyong wallet. Tiyaking itago ito sa isang ligtas na lugar na ikaw lamang ang may access at hindi makakalimutan."
-  },
   "securitySrpLabel": {
     "message": "MGA LIHIM NA PARIRALA SA PAGBAWI"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Pamahalaan ang mga paraan ng pagbawi"
   },
   "seeAllPermissions": {
     "message": "Tingnan ang lahat ng pahintulot",
@@ -7476,12 +7427,6 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Hayaan ang dapps na hilingin ang mga feature ng smart account para sa mga standard na account. Hindi nito maaapektuhan ang mga smart account na."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Mga kahilingan na smart account mula sa dapps"
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
   },
@@ -7502,9 +7447,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Maaaring hindi sinusuportahan ng address ng tatanggap ang direktang mga paglilipat ng token, na maaaring magresulta sa pagkalugi ng pondo. Magpatuloy lamang kung tiyak ka na matatanggap ng kontratang ito ang paglilipat mo."
-  },
-  "smartContracts": {
-    "message": "Mga smart na kontrata"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Hindi sapat ang pondo para sa smart swap."
@@ -8518,9 +8460,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."
-  },
-  "tokenAutoDetection": {
-    "message": "Awtomatikong pagtuklas ng token"
   },
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
