@@ -29,12 +29,14 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
 export type ReversePositionModalProps = {
@@ -44,13 +46,6 @@ export type ReversePositionModalProps = {
   currentPrice: number;
 };
 
-/**
- * Builds a position payload for `perpsFlipPosition`. The controller expects
- * `leverage.value`; normalize when the stream sent a primitive leverage.
- *
- * @param pos - UI position from props
- * @returns Position safe to pass to the background flip RPC
- */
 function toFlipPositionPayload(pos: Position): Position {
   if (typeof pos.leverage === 'object' && pos.leverage !== null) {
     return pos;
@@ -62,24 +57,15 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-/**
- * Modal to reverse a position (Long -> Short or Short -> Long).
- * Shows Direction, Est. size, Fees and Cancel/Save.
- * Save calls `perpsFlipPosition` (single venue order via PerpsController; not close+open).
- * @param options0
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.position
- * @param options0.currentPrice
- */
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  currentPrice: _currentPrice,
+  currentPrice,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -111,6 +97,24 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
 
+  const {
+    feeRate,
+    isLoading: isFeeLoading,
+    hasError: hasFeeError,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+
+  const estimatedFees = useMemo(
+    () =>
+      feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
+    [sizeNum, currentPrice, feeRate],
+  );
+
+  const shouldShowFeePlaceholder =
+    isFeeLoading || hasFeeError || estimatedFees === undefined;
+
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),
     [position],
@@ -121,6 +125,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       setIsGeoBlockModalOpen(true);
       return;
     }
+
     setIsSubmitting(true);
     setError(null);
 
@@ -235,8 +240,11 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-fee-value"
                 >
-                  —
+                  {shouldShowFeePlaceholder
+                    ? '--'
+                    : formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
                 </Text>
               </Box>
               {error && (
@@ -265,7 +273,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
             }}
             submitButtonProps={{
               'data-testid': 'perps-reverse-position-modal-save',
-              children: isSubmitting ? t('perpsSubmitting') : t('save'),
+              children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
               disabled: isSubmitting,
             }}
           />

@@ -36,7 +36,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
   getUseNftDetection,
@@ -51,6 +50,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import {
   ClaimSubmitToastType,
   StorageWriteErrorType,
@@ -147,6 +147,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
         <PerpsWithdrawToast />
@@ -423,11 +424,8 @@ function NewSrpAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
+  const walletNumber = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
-
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const latestHdKeyringNumber = hdKeyrings.length;
 
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
@@ -447,10 +445,10 @@ function NewSrpAddedToast() {
   }, [dispatch]);
 
   return (
-    showNewSrpAddedToast && (
+    walletNumber && (
       <Toast
         key="new-srp-added-toast"
-        text={t('importWalletSuccess', [latestHdKeyringNumber])}
+        text={t('importWalletSuccess', [walletNumber])}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }

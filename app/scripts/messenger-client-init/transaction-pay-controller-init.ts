@@ -25,7 +25,9 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
   const { controllerMessenger, initMessenger, persistedState } = request;
 
   const getTransactionController = () =>
-    request.getController('TransactionController') as TransactionController;
+    request.getMessengerClient(
+      'TransactionController',
+    ) as TransactionController;
 
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
@@ -41,32 +43,32 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
       transaction,
     );
 
-  const controller = new TransactionPayController({
+  const messengerClient = new TransactionPayController({
     getDelegationTransaction: getDelegationTransactionCallback,
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
 
-  const api = getApi(controller);
+  const api = getApi(messengerClient);
 
-  return { controller, api };
+  return { messengerClient, api };
 };
 
 function getApi(
-  controller: TransactionPayController,
+  messengerClient: TransactionPayController,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
     ) => {
-      controller.setTransactionConfig(transactionId, (config) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
       });
     },
     updateTransactionPaymentToken:
-      controller.updatePaymentToken.bind(controller),
+      messengerClient.updatePaymentToken.bind(messengerClient),
   };
 }
 

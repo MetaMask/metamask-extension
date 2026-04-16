@@ -113,14 +113,19 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getController - Function to get a controller by name.
+ * @param request.getMessengerClient - Function to get a controller by name.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
   /**
    * Check if the AssetsController feature is enabled based on the remote feature flag.
    *
@@ -128,7 +133,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
    */
   const isEnabled = (): boolean => {
     try {
-      const remoteFeatureFlagController = getController(
+      const remoteFeatureFlagController = getMessengerClient(
         'RemoteFeatureFlagController',
       );
       const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
@@ -182,7 +187,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const controller = new AssetsController({
+  const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
     isEnabled,
@@ -210,5 +215,5 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     },
   });
 
-  return { controller };
+  return { messengerClient };
 };

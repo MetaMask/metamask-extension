@@ -34,12 +34,14 @@ function buildState({
   transaction = TRANSACTION_MOCK,
   selectedNetworkClientId,
   chainId,
+  excludeNativeTokenForFee,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
   selectedNetworkClientId?: string;
   chainId?: string;
+  excludeNativeTokenForFee?: boolean;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
 
@@ -64,7 +66,15 @@ function buildState({
           },
         },
       },
-      transactions: transaction ? [transaction] : [],
+      transactions: transaction
+        ? [
+            {
+              ...transaction,
+              ...(excludeNativeTokenForFee ? { excludeNativeTokenForFee } : {}),
+              ...(chainId ? { chainId } : {}),
+            },
+          ]
+        : [],
     },
   });
 }
@@ -123,5 +133,43 @@ describe('useHasInsufficientBalance', () => {
   it('returns 0x0 if balance missing', () => {
     const result = runHook({ balance: undefined });
     expect(result.hasInsufficientBalance).toBe(true);
+  });
+
+  it('always return true for Tempo if `excludeNativeTokenForFee` is true', () => {
+    const result = runHook({
+      balance: 0,
+      chainId: '0x1079',
+      excludeNativeTokenForFee: true,
+    });
+    expect(result.hasInsufficientBalance).toBe(true);
+    expect(result.nativeCurrency).toBe('pathUSD');
+  });
+
+  it('always return true for Tempo Testnet if `excludeNativeTokenForFee` is true', () => {
+    const result = runHook({
+      balance: 0,
+      chainId: '0xa5bf',
+      excludeNativeTokenForFee: true,
+    });
+    expect(result.hasInsufficientBalance).toBe(true);
+    expect(result.nativeCurrency).toBe('pathUSD');
+  });
+
+  it('always return false for Tempo if `excludeNativeTokenForFee` is unset', () => {
+    const result = runHook({
+      balance: 0,
+      chainId: '0x1079',
+    });
+    expect(result.hasInsufficientBalance).toBe(false);
+    expect(result.nativeCurrency).toBe('pathUSD');
+  });
+
+  it('always return false for Tempo Testnet if `excludeNativeTokenForFee` is unset', () => {
+    const result = runHook({
+      balance: 0,
+      chainId: '0xa5bf',
+    });
+    expect(result.hasInsufficientBalance).toBe(false);
+    expect(result.nativeCurrency).toBe('pathUSD');
   });
 });

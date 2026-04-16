@@ -17,12 +17,12 @@ export const AccountOrderControllerInit: MessengerClientInitFunction<
   AccountOrderController,
   AccountOrderControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new AccountOrderController({
+  const messengerClient = new AccountOrderController({
     messenger: controllerMessenger,
     state: persistedState.AccountOrderController,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

@@ -7,6 +7,28 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
+const mockUsePerpsOrderFees = jest.fn();
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => mockUsePerpsOrderFees(),
+}));
+
+jest.mock('../../../../hooks/perps', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
+}));
+
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+  }),
+}));
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -81,11 +103,6 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
-const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
-jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
-  usePerpsEligibility: () => mockUsePerpsEligibility(),
-}));
-
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     REVERSE_FAILED: 'perpsToastReverseFailed',
@@ -103,8 +120,8 @@ const mockStore = configureStore({
   },
 });
 
-const longPosition = mockPositions[0]; // ETH: size=2.5 (long), leverage.value=3
-const shortPosition = mockPositions[1]; // BTC: size=-0.5 (short), leverage.value=15
+const longPosition = mockPositions[0];
+const shortPosition = mockPositions[1];
 
 const defaultProps = {
   isOpen: true,
@@ -117,6 +134,11 @@ describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsOrderFees.mockReturnValue({
+      feeRate: 0.0001,
+      isLoading: false,
+      hasError: false,
+    });
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsFlipPosition') {
         return Promise.resolve({ success: true });
@@ -152,21 +174,53 @@ describe('ReversePositionModal', () => {
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
 
-    it('shows Cancel and Save buttons', () => {
+    it('shows Cancel and Confirm buttons', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
         screen.getByTestId('perps-reverse-position-modal-cancel'),
       ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-reverse-position-modal-save'),
-      ).toBeInTheDocument();
+      const submitButton = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toHaveTextContent(messages.confirm.message);
     });
 
-    it('shows fees placeholder as em-dash', () => {
+    it('shows computed estimated fee', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('—')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$1.45',
+      );
+    });
+
+    it('shows fee placeholder while fees are unavailable', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        isLoading: true,
+        hasError: false,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
+    });
+
+    it('shows fee placeholder when fee lookup fails', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        isLoading: false,
+        hasError: true,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
     });
   });
 
@@ -399,7 +453,6 @@ describe('ReversePositionModal', () => {
 
   describe('toast emission', () => {
     it('emits reverse in-progress toast on submit', () => {
-      // Never resolve so we can assert the in-progress toast fires
       mockSubmitRequestToBackground.mockImplementation(
         () => new Promise(() => undefined),
       );

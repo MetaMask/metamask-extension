@@ -24,7 +24,7 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
 
   const network = loadWeb3AuthNetwork();
 
-  const controller = new SeedlessOnboardingController<
+  const messengerClient = new SeedlessOnboardingController<
     CryptoKey | EncryptionKey
   >({
     messenger: controllerMessenger,
@@ -47,6 +47,6 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

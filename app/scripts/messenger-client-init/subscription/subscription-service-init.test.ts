@@ -27,7 +27,7 @@ describe('SubscriptionServiceInit', () => {
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(SubscriptionServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(SubscriptionServiceInit(requestMock).messengerClient).toBeInstanceOf(
       SubscriptionService,
     );
   });

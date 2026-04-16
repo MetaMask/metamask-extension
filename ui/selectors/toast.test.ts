@@ -88,6 +88,8 @@ describe('toast selectors', () => {
               time: 7,
               type: TransactionType.shieldSubscriptionApprove,
             },
+            { id: '7', time: 8, type: TransactionType.perpsDeposit },
+            { id: '8', time: 9, type: TransactionType.perpsDepositAndOrder },
           ],
         },
       } as unknown as SelectorState;
@@ -98,6 +100,24 @@ describe('toast selectors', () => {
         { id: '0', time: 1, type: TransactionType.simpleSend },
         { id: '1', time: 2, type: TransactionType.deployContract },
         { id: '2', time: 3, type: TransactionType.swap },
+      ]);
+    });
+
+    it('excludes perps deposit transaction types from toast eligibility', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            { id: '0', time: 1, type: TransactionType.perpsDeposit },
+            { id: '1', time: 2, type: TransactionType.perpsDepositAndOrder },
+            { id: '2', time: 3, type: TransactionType.simpleSend },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      const results = selectEvmTransactionsForToast(state);
+
+      expect(results).toStrictEqual([
+        { id: '2', time: 3, type: TransactionType.simpleSend },
       ]);
     });
 

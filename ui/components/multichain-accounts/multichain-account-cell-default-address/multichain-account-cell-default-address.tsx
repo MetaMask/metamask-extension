@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'clsx';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
   Box,
@@ -88,7 +89,9 @@ export const MultichainAccountCellDefaultAddress = ({
           paddingVertical={1}
           paddingHorizontal={2}
           gap={1}
-          className="rounded-lg h-6 min-w-0"
+          className={classnames('rounded-lg h-6 min-w-0', {
+            'hover:bg-muted-hover': !addressCopied,
+          })}
           data-testid="default-address-container"
         >
           <Text

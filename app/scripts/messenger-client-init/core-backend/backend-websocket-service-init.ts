@@ -27,7 +27,7 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new BackendWebSocketService({
+  const messengerClient = new BackendWebSocketService({
     messenger: controllerMessenger,
     url:
       process.env.MM_BACKEND_WEBSOCKET_URL ||
@@ -69,6 +69,6 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };
