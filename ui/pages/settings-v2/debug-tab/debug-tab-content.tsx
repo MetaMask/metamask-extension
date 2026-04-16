@@ -39,7 +39,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
 import { ConfirmationsDeveloperOptions } from '../../confirmations/components/developer/confirmations-developer-options';
-import ToggleRow from './developer-options-toggle-row-component';
+import ToggleRow from './debug-tab-toggle-row';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
@@ -53,7 +53,7 @@ import MigrateToSplitStateTest from './migrate-to-split-state-test';
  *
  * @returns
  */
-const DeveloperOptionsTab = () => {
+const DebugTabContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -306,4 +306,4 @@ const DeveloperOptionsTab = () => {
   );
 };
 
-export default DeveloperOptionsTab;
+export default DebugTabContent;

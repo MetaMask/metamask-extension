@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import DeveloperOptionsTab from '.';
+import DebugTabContent from '.';
 
 const mockSetServiceWorkerKeepAlivePreference = jest.fn().mockReturnValue({
   type: 'SET_SERVICE_WORKER_KEEP_ALIVE',
@@ -44,12 +44,12 @@ jest.mock('../../../selectors/perps-controller', () => ({
   selectPerpsIsTestnet: jest.fn(() => false),
 }));
 
-describe('Develop options tab', () => {
+describe('Debug tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   it('should match snapshot', () => {
     const { getByTestId, container } = renderWithProvider(
-      <DeveloperOptionsTab />,
+      <DebugTabContent />,
       mockStore,
     );
 
@@ -73,7 +73,7 @@ describe('Develop options tab', () => {
     it('does not render perps-testnet-toggle when METAMASK_DEBUG is not set', () => {
       delete process.env.METAMASK_DEBUG;
       const { queryByTestId } = renderWithProvider(
-        <DeveloperOptionsTab />,
+        <DebugTabContent />,
         mockStore,
       );
       expect(queryByTestId('perps-testnet-toggle')).not.toBeInTheDocument();
@@ -82,7 +82,7 @@ describe('Develop options tab', () => {
     it('renders perps-testnet-toggle when METAMASK_DEBUG is set', () => {
       process.env.METAMASK_DEBUG = 'true';
       const { getByTestId } = renderWithProvider(
-        <DeveloperOptionsTab />,
+        <DebugTabContent />,
         mockStore,
       );
       expect(getByTestId('perps-testnet-toggle')).toBeInTheDocument();
@@ -91,7 +91,7 @@ describe('Develop options tab', () => {
     it('calls perpsToggleTestnet when toggle is clicked', () => {
       process.env.METAMASK_DEBUG = 'true';
       const { getByTestId } = renderWithProvider(
-        <DeveloperOptionsTab />,
+        <DebugTabContent />,
         mockStore,
       );
       fireEvent.click(getByTestId('perps-testnet-toggle'));
@@ -101,7 +101,7 @@ describe('Develop options tab', () => {
 
   it('should toggle Service Worker Keep Alive', async () => {
     const { getByTestId } = renderWithProvider(
-      <DeveloperOptionsTab />,
+      <DebugTabContent />,
       mockStore,
     );
     const triggerButton = getByTestId(
