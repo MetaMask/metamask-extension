@@ -3,7 +3,6 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   Box,
   BoxAlignItems,
-  BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
   ButtonIcon,
@@ -84,11 +83,15 @@ import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
+import { isMusdToken } from '../../../components/app/musd/constants';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
+import { MusdBonusSection } from './musd-bonus-section';
+import { MusdConvertSection } from './musd-convert-section';
+import { MusdPositionSection } from './musd-position-section';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -264,6 +267,10 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  const isMusdAssetPage =
+    type === AssetType.token &&
+    isEvm &&
+    isMusdToken((asset as { address?: Hex }).address);
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = () => {
     setIsMarketClosedModalOpen(true);
@@ -347,29 +354,63 @@ const AssetPage = ({
             <Box
               marginTop={2}
               marginBottom={2}
-              borderColor={BoxBorderColor.BorderMuted}
               className="asset-page__divider"
             />
           </Box>
         )}
-        <Text
-          variant={TextVariant.HeadingSm}
-          className="asset-page__balance-heading"
-        >
-          {t('yourBalance')}
-        </Text>
-        {[AssetType.token, AssetType.native].includes(type) && (
-          <TokenCell
-            key={`${symbol}-${address}`}
-            token={tokenWithFiatAmount as TokenWithFiatAmount}
-            safeChains={safeChains}
-            musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
-          />
+        {isMusdAssetPage ? (
+          <>
+            <MusdPositionSection
+              balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
+              fiatValue={tokenFiatAmount}
+              showFiat={showFiat}
+            />
+            <Box
+              marginTop={5}
+              marginBottom={5}
+              className="asset-page__divider"
+            />
+            <MusdBonusSection
+              chainId={chainId as Hex}
+              tokenAddress={(asset as { address: Hex }).address}
+              positionFiatValue={showFiat ? tokenFiatAmount : null}
+              showFiat={showFiat}
+            />
+            <Box
+              marginTop={5}
+              marginBottom={5}
+              className="asset-page__divider"
+            />
+            <MusdConvertSection />
+            <Box
+              marginTop={5}
+              marginBottom={5}
+              className="asset-page__divider"
+            />
+          </>
+        ) : (
+          <>
+            <Text
+              variant={TextVariant.HeadingSm}
+              className="asset-page__balance-heading"
+            >
+              {t('yourBalance')}
+            </Text>
+            {[AssetType.token, AssetType.native].includes(type) && (
+              <TokenCell
+                key={`${symbol}-${address}`}
+                token={tokenWithFiatAmount as TokenWithFiatAmount}
+                safeChains={safeChains}
+                musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+              />
+            )}
+          </>
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
         {!isNativeAsset(updatedAsset) &&
           type === AssetType.token &&
           isEvm &&
+          !isMusdAssetPage &&
           checkMusdCtaVisibility({
             address: (asset as { address: Hex }).address,
             chainId,
@@ -430,6 +471,17 @@ const AssetPage = ({
                       <AddressCopyButton address={contractAddress} shorten />,
                     )}
                     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                      {isMusdAssetPage
+                        ? renderRow(
+                            t('tokenStandard'),
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              fontWeight={FontWeight.Medium}
+                            >
+                              ERC-20
+                            </Text>,
+                          )
+                        : null}
                       {asset.decimals !== undefined &&
                         renderRow(
                           t('tokenDecimal'),
@@ -482,10 +534,7 @@ const AssetPage = ({
             </Box>
           )}
           <AssetMarketDetails asset={updatedAsset} address={address} />
-          <Box
-            borderColor={BoxBorderColor.BorderMuted}
-            className="asset-page__divider"
-          />
+          <Box className="asset-page__divider" />
           <Box marginBottom={4}>
             <Text
               variant={TextVariant.HeadingSm}

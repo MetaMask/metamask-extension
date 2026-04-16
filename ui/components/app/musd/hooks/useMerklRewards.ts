@@ -52,6 +52,8 @@ type MerklRewardQueryResult = {
   hasClaimedBefore: boolean;
   /** Formatted unclaimed amount for analytics bucketing; null when not claimable */
   claimableRewardDisplay: string | null;
+  /** Total claimed amount in fiat (from on-chain/API claimed × token price) */
+  lifetimeClaimedFiat: number | null;
 };
 
 const EMPTY_RESULT: MerklRewardQueryResult = {
@@ -59,6 +61,7 @@ const EMPTY_RESULT: MerklRewardQueryResult = {
   unclaimedFiat: null,
   hasClaimedBefore: false,
   claimableRewardDisplay: null,
+  lifetimeClaimedFiat: null,
 };
 
 type UseMerklRewardsReturn = {
@@ -67,6 +70,10 @@ type UseMerklRewardsReturn = {
   rewardAmountFiat: number | null;
   hasClaimedBefore: boolean;
   claimableRewardDisplay: string | null;
+  /** Lifetime bonus claimed in fiat (Merkl), null when none or price unavailable */
+  lifetimeClaimedFiat: number | null;
+  /** True while the Merkl rewards query is loading (initial fetch) */
+  isLoading: boolean;
   refetch: () => void;
 };
 
@@ -103,7 +110,11 @@ export const useMerklRewards = ({
     [showMerklBadge, merklRewardsEnabled, isGeoBlocked, chainId, tokenAddress],
   );
 
-  const { data: queryData = EMPTY_RESULT, refetch: refetchQuery } = useQuery({
+  const {
+    data: queryData = EMPTY_RESULT,
+    refetch: refetchQuery,
+    isLoading: isQueryLoading,
+  } = useQuery({
     queryKey: ['merklRewards', selectedAddress, chainId, tokenAddress],
     queryFn: async ({ signal }): Promise<MerklRewardQueryResult> => {
       if (!tokenAddress || !selectedAddress) {
@@ -165,11 +176,27 @@ export const useMerklRewards = ({
           (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
       }
 
+      console.log('merkl rewards hasClaimedBefore', hasClaimedBefore);
+      console.log(
+        'merkl rewards matchingReward.token.price',
+        matchingReward.token.price,
+      );
+      console.log('merkl rewards claimedAmount', claimedAmount);
+
+      let lifetimeClaimedFiat: number | null = null;
+      if (hasClaimedBefore && matchingReward.token.price !== null) {
+        const divisor = 10 ** matchingReward.token.decimals;
+        lifetimeClaimedFiat =
+          (Number(claimedAmount) / divisor) * matchingReward.token.price;
+        console.log('merkl rewards lifetimeClaimedFiat', lifetimeClaimedFiat);
+      }
+
       return {
         hasClaimable,
         unclaimedFiat,
         hasClaimedBefore,
         claimableRewardDisplay,
+        lifetimeClaimedFiat,
       };
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
@@ -195,6 +222,8 @@ export const useMerklRewards = ({
     hasClaimedBefore: hasClaimableRewardData?.hasClaimedBefore ?? false,
     claimableRewardDisplay:
       hasClaimableRewardData?.claimableRewardDisplay ?? null,
+    lifetimeClaimedFiat: hasClaimableRewardData?.lifetimeClaimedFiat ?? null,
+    isLoading: isEligible && isQueryLoading,
     refetch,
   };
 };
