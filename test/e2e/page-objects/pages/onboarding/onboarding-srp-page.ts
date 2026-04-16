@@ -7,24 +7,12 @@ class OnboardingSrpPage {
 
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
 
-  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
-
-  private readonly srpDropdownOptions =
-    '.import-srp__number-of-words-dropdown option';
-
   private readonly srpMessage = {
     text: 'Import a wallet',
     tag: 'h2',
   };
 
   private readonly srpWord0 = '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly srpWords = '.import-srp__srp-word';
-
-  private readonly wrongSrpWarningMessage = {
-    text: 'Secret Recovery Phrase not found.',
-    css: '.import-srp__banner-alert-text',
-  };
 
   private readonly srpError =
     '[data-testid="srp-input-import__invalid-checksum-error"]';
@@ -60,7 +48,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to {@link E2E_SRP}.
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
    */
   async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
@@ -69,7 +57,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase word by word
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to {@link E2E_SRP}.
+  * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
    */
   async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
     const words = seedPhrase.split(' ');
