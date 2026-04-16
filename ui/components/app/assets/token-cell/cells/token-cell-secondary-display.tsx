@@ -20,7 +20,7 @@ import {
 } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { Skeleton } from '../../../../component-library/skeleton';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';

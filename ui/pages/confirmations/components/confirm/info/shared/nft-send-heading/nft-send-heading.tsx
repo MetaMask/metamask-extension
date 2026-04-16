@@ -9,8 +9,8 @@ import {
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../../../../../../../../shared/modules/string-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../../../../../shared/lib/string-utils';
 import { NftItem } from '../../../../../../../components/multichain/nft-item';
 import { getNFTsByChainId } from '../../../../../../../ducks/metamask/metamask';
 import {
@@ -82,9 +82,6 @@ const NFTSendHeading = () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         name={assetName || nameFromTokenURI}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[

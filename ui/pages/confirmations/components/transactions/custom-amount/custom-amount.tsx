@@ -149,8 +149,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
               border: 'none',
               background: 'transparent',
               outline: 'none',
-              fieldSizing: 'content',
-              minWidth: '1ch',
+              width: `${Math.max(1, amountLength)}ch`,
               cursor: disabled ? 'default' : 'text',
             } as React.CSSProperties
           }

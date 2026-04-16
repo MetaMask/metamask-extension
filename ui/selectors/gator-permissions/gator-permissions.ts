@@ -7,7 +7,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import { SubjectType } from '@metamask/permission-controller';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { safeDecodeURIComponent } from '../../components/multichain/pages/gator-permissions/helper';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -42,7 +42,7 @@ const GATOR_PERMISSIONS_MAP_KEYS: (
  * Map structure: permission type -> chainId -> permissions.
  * Maintained for backward compatibility with consumers expecting the legacy format.
  */
-export type GatorPermissionsMap = Partial<
+type GatorPermissionsMap = Partial<
   Record<
     SupportedPermissionType | typeof CUSTOM_PERMISSION_MAP_KEY,
     Partial<Record<Hex, PermissionInfoWithMetadata[]>>
@@ -102,14 +102,12 @@ export type AppState = {
   metamask: GatorPermissionsControllerState;
 };
 
-export type PermissionsGroupMetaDataByChainId = Record<Hex, number>; // chainId -> count
-
-export type PermissionsGroupMetaData = {
+type PermissionsGroupMetaData = {
   chainId: Hex;
   count: number;
 };
 
-export type MetDataByPermissionTypeGroup = Record<
+type MetDataByPermissionTypeGroup = Record<
   'tokenTransfer',
   {
     count: number;
@@ -117,11 +115,11 @@ export type MetDataByPermissionTypeGroup = Record<
   }
 >;
 
-export enum GatorSortOrder {
+enum GatorSortOrder {
   Ascending = 'asc',
   Descending = 'desc',
 }
-export type ConnectionInfo = {
+type ConnectionInfo = {
   addresses: string[];
   addressToNameMap?: Record<string, string>;
   origin: string;

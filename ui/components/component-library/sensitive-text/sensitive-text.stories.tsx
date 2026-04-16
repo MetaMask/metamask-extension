@@ -52,19 +52,19 @@ export const Length: Story = {
   render: (args) => (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
       <SensitiveText {...args} length={SensitiveTextLength.Short}>
-        Length "short" (6 characters)
+        Length &quot;short&quot; (6 characters)
       </SensitiveText>
       <SensitiveText {...args} length={SensitiveTextLength.Medium}>
-        Length "medium" (9 characters)
+        Length &quot;medium&quot; (9 characters)
       </SensitiveText>
       <SensitiveText {...args} length={SensitiveTextLength.Long}>
-        Length "long" (12 characters)
+        Length &quot;long&quot; (12 characters)
       </SensitiveText>
       <SensitiveText {...args} length={SensitiveTextLength.ExtraLong}>
-        Length "extra long" (20 characters)
+        Length &quot;extra long&quot; (20 characters)
       </SensitiveText>
       <SensitiveText {...args} length="15">
-        Length "15" (15 characters)
+        Length &quot;15&quot; (15 characters)
       </SensitiveText>
     </Box>
   ),

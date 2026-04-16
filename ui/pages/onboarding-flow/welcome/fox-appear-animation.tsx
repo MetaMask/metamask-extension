@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -30,6 +30,7 @@ export default function FoxAppearAnimation({
     error: bufferError,
     loading: bufferLoading,
   } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (wasmError) {
@@ -58,9 +59,40 @@ export default function FoxAppearAnimation({
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
-      alignment: Alignment.Center,
+      alignment: Alignment.BottomCenter,
     }),
   });
+
+  useEffect(() => {
+    if (!rive || !containerRef.current) {
+      return undefined;
+    }
+    const canvasEl = containerRef.current.querySelector('canvas');
+    if (!canvasEl) {
+      return undefined;
+    }
+    const syncCanvasSize = () => {
+      const container = containerRef.current;
+      if (!container) {
+        return;
+      }
+      const { clientWidth, clientHeight } = container;
+      const dpr = window.devicePixelRatio || 1;
+      const scaledWidth = Math.round(clientWidth * dpr);
+      const scaledHeight = Math.round(clientHeight * dpr);
+      if (canvasEl.width === scaledWidth && canvasEl.height === scaledHeight) {
+        return;
+      }
+      canvasEl.width = scaledWidth;
+      canvasEl.height = scaledHeight;
+      canvasEl.style.width = `${clientWidth}px`;
+      canvasEl.style.height = `${clientHeight}px`;
+      rive.resizeToCanvas();
+    };
+    syncCanvasSize();
+    window.addEventListener('resize', syncCanvasSize);
+    return () => window.removeEventListener('resize', syncCanvasSize);
+  }, [rive]);
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
@@ -126,6 +158,7 @@ export default function FoxAppearAnimation({
 
   return (
     <Box
+      ref={containerRef}
       className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
     >
       <RiveComponent className="riv-animation__canvas" />

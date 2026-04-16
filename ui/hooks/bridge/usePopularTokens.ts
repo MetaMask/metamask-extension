@@ -37,7 +37,7 @@ export const usePopularTokens = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup.id),
+    getBridgeAssetsByAssetId(state, accountGroup?.id),
   );
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -58,6 +58,7 @@ export const usePopularTokens = ({
         chainIds: Array.from(chainIds),
         assetsWithBalances: assetsToInclude,
         clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       });

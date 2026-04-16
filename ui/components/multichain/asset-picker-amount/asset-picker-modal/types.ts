@@ -63,6 +63,7 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   accountType?: KeyringAccountType; // Bitcoin account type (e.g., P2wpkh for Native SegWit)
+  rwaData?: TokenWithFiatAmount['rwaData'];
 } & Pick<TokenListToken, 'decimals'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
   };

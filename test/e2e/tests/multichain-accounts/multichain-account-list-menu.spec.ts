@@ -7,12 +7,12 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
@@ -37,10 +37,16 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 2',
+          balance: '$0.00',
+        });
         await accountListPage.checkNumberOfAvailableAccounts(2);
       },
     );
@@ -49,12 +55,23 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withShowFiatTestnetEnabled()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+            useCurrencyRateCheck: true,
+          })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withConversionRateEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -67,7 +84,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -80,10 +97,17 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        // The balance is not loaded for a non-selected account (which was never selected before)
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$0.00',
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          balance: '$85,025.00',
+          wallet: 'Ledger',
+          account: 'Ledger 1',
+        });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
         await accountListPage.checkNumberOfAvailableAccounts(2);
@@ -124,11 +148,17 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu(
           'MetaMask Simple Snap Keyring',
         );
-        // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed(
-          '$85,025.00',
-        );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        // Ensure that account balances within each wallet are displayed
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          wallet: 'Wallet 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: 'Snap Account 1',
+          wallet: 'MetaMask Simple Snap Keyring',
+          balance: '$0.00',
+        });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(
           'Snap Account 1',

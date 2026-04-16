@@ -12,7 +12,7 @@ import type { MetaMetricsEventFragment } from '../constants/metametrics';
 import type { TokenStandard } from '../constants/transaction';
 import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
@@ -54,6 +54,8 @@ export type TransactionMetricsRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
   getIsSmartTransaction: (chainId: Hex) => boolean;
+  getSmartTransactionsPreferenceEnabled: () => boolean;
+  getSmartTransactionsEnabled: (chainId: Hex) => boolean;
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;

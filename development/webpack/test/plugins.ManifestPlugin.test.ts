@@ -1,13 +1,35 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join, resolve } from 'node:path';
-import { type Compilation } from 'webpack';
+import { Open } from 'unzipper';
+import { sources, type Compilation } from 'webpack';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
+import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
+import {
+  CHROME_MANIFEST_KEY_NON_PRODUCTION,
+  CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
+  ENVIRONMENTS,
+} from '../utils/constants';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
-import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
+
+const { RawSource } = sources;
+
+const endsWithPath = (value: string, ...segments: string[]) =>
+  value.endsWith(join(...segments));
+
+async function readZipEntries(source: { buffer: () => Buffer }) {
+  const directory = await Open.buffer(source.buffer());
+  const files = directory.files.filter((file) => file.type === 'File');
+
+  return new Map(
+    await Promise.all(
+      files.map(async (file) => [file.path, await file.buffer()] as const),
+    ),
+  );
+}
 
 describe('ManifestPlugin', () => {
   describe('Plugin', () => {
@@ -179,9 +201,7 @@ describe('ManifestPlugin', () => {
           if (testCase.webAccessibleResources) {
             if (baseManifest.manifest_version === 3) {
               // Extend expected resources for manifest version 3
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              expectedWar = baseManifest.web_accessible_resources || [];
+              expectedWar = baseManifest.web_accessible_resources ?? [];
               expectedWar = [
                 {
                   // the manifest plugin only supports `<all_urls>` for manifest version 3
@@ -194,9 +214,7 @@ describe('ManifestPlugin', () => {
                 },
               ];
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              expectedWar = baseManifest.web_accessible_resources || [];
+              expectedWar = baseManifest.web_accessible_resources ?? [];
               // Keep or extend expected resources for manifest version 2
               expectedWar = [
                 ...expectedWar,
@@ -204,15 +222,11 @@ describe('ManifestPlugin', () => {
               ];
             }
           } else {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            expectedWar = baseManifest.web_accessible_resources || [];
+            expectedWar = baseManifest.web_accessible_resources ?? [];
           }
 
           assert.deepStrictEqual(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            json.web_accessible_resources || [],
+            json.web_accessible_resources ?? [],
             expectedWar,
             "should have the correct 'web_accessible_resources' in the manifest",
           );
@@ -263,13 +277,237 @@ describe('ManifestPlugin', () => {
         ]),
       );
     });
+
+    it('writes expected files into emitted zip assets and excludes source maps', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+        {
+          name: 'pixel.png',
+          source: Buffer.from([
+            137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
+            0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 55, 110, 249, 36, 0, 0, 0, 10, 73,
+            68, 65, 84, 120, 1, 99, 96, 0, 0, 0, 2, 0, 1, 115, 117, 1, 24, 0, 0,
+            0, 0, 73, 69, 78, 68, 174, 66, 96, 130,
+          ]),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: true,
+        zipOptions: {
+          level: 0,
+          mtime: 1711141205825,
+          excludeExtensions: ['.map'],
+          outFilePath: '[browser]/extension.zip',
+        },
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      for (const browser of ['chrome', 'firefox'] as const) {
+        const zipEntries = await readZipEntries(
+          compilation.assets[`${browser}/extension.zip`],
+        );
+
+        assert.deepStrictEqual(
+          new Set(zipEntries.keys()),
+          new Set(['manifest.json', 'filename.js', 'pixel.png']),
+        );
+        assert.deepStrictEqual(zipEntries.get('filename.js'), files[0].source);
+        assert.deepStrictEqual(zipEntries.get('pixel.png'), files[2].source);
+        assert.strictEqual(zipEntries.has('filename.js.map'), false);
+        assert.strictEqual(
+          zipEntries.get('manifest.json')?.toString(),
+          compilation.assets[`${browser}/manifest.json`].source().toString(),
+        );
+      }
+    });
+
+    it('moves source maps to the sourcemaps directory when zipping hidden-source-map builds', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+        'hidden-source-map',
+      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: true,
+        zipOptions: {
+          level: 0,
+          mtime: 1711141205825,
+          excludeExtensions: ['.map'],
+          outFilePath: '[browser]/extension.zip',
+        },
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.deepStrictEqual(
+        new Set(Object.keys(compilation.assets)),
+        new Set([
+          'chrome/extension.zip',
+          'chrome/manifest.json',
+          'chrome/filename.js',
+          'firefox/extension.zip',
+          'firefox/manifest.json',
+          'firefox/filename.js',
+          'sourcemaps/filename.js.map',
+        ]),
+      );
+
+      for (const browser of ['chrome', 'firefox'] as const) {
+        const zipEntries = await readZipEntries(
+          compilation.assets[`${browser}/extension.zip`],
+        );
+        assert.strictEqual(zipEntries.has('filename.js.map'), false);
+      }
+    });
+
+    it('sets build_id in the emitted manifest when setBuildId is enabled', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compilation.fullHash = 'test-full-hash';
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+        setBuildId: true,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      for (const browser of ['chrome', 'firefox'] as const) {
+        const manifest = JSON.parse(
+          compilation.assets[`${browser}/manifest.json`].source().toString(),
+        );
+
+        assert.strictEqual(manifest.build_id, 'test-full-hash');
+      }
+    });
+  });
+
+  describe('zip helpers', () => {
+    it('skips excluded extensions when adding assets to a browser zip', async () => {
+      const addedAssets: string[] = [];
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 0 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: (assetName) => addedAssets.push(assetName),
+      });
+
+      builder.addAsset('ignored.js.map', new RawSource('{}'));
+      const zipSource = await builder.finalize();
+      const zipEntries = await readZipEntries(zipSource);
+
+      assert.deepStrictEqual(addedAssets, ['manifest.json']);
+      assert.deepStrictEqual([...zipEntries.keys()], ['manifest.json']);
+    });
+
+    it('compresses javascript assets and reuses the finalized zip source', async () => {
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 9 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: () => undefined,
+      });
+
+      builder.addAsset(
+        'script.js',
+        new RawSource('console.log("compressed");'),
+      );
+
+      const [firstZipSource, secondZipSource] = await Promise.all([
+        builder.finalize(),
+        builder.finalize(),
+      ]);
+      const directory = await Open.buffer(firstZipSource.buffer());
+      const scriptFile = directory.files.find(
+        (file) => file.path === 'script.js',
+      );
+
+      assert.strictEqual(firstZipSource, secondZipSource);
+      assert.ok(scriptFile, 'expected script.js to be included in the zip');
+      assert.strictEqual(scriptFile.compressionMethod, 8);
+      assert.deepStrictEqual(
+        await scriptFile.buffer(),
+        Buffer.from('console.log("compressed");'),
+      );
+    });
+
+    it('throws when assets are added after the zip has been finalized', async () => {
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 0 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: () => undefined,
+      });
+
+      const zipSource = await builder.finalize();
+      assert.throws(
+        () =>
+          builder.addAsset('late.js', new RawSource('console.log("late");')),
+        /Cannot add asset after finalize\(\)/u,
+      );
+
+      const zipEntries = await readZipEntries(zipSource);
+      assert.deepStrictEqual([...zipEntries.keys()], ['manifest.json']);
+    });
   });
 
   describe('should transform the manifest object', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
-      manifest_version: [2, 3] as const,
+      env: [ENVIRONMENTS.PRODUCTION],
     };
     const manifestMatrix = {
       content_scripts: [
@@ -287,12 +525,10 @@ describe('ManifestPlugin', () => {
 
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const hasTabsPermission = (manifest.permissions || []).includes('tabs');
+        const hasTabsPermission = (manifest.permissions ?? []).includes('tabs');
         const transform = transformManifest(args, false);
 
-        if (args.test && args.manifest_version === 2 && hasTabsPermission) {
+        if (args.test && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
             const p = () => {
@@ -304,7 +540,7 @@ describe('ManifestPlugin', () => {
               'should throw when manifest contains tabs already',
             );
           });
-        } else if (args.test && args.manifest_version === 2) {
+        } else if (args.test) {
           it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
@@ -312,9 +548,7 @@ describe('ManifestPlugin', () => {
             if (args.test) {
               assert.deepStrictEqual(
                 transformed.permissions,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                [...(manifest.permissions || []), 'tabs'],
+                [...(manifest.permissions ?? []), 'tabs'],
                 "manifest should have 'tabs' permission",
               );
             }
@@ -331,7 +565,6 @@ describe('ManifestPlugin', () => {
     } as unknown as chrome.runtime.Manifest;
     const mockFlags = {
       _flags: { remoteFeatureFlags: { testFlag: true } },
-      key: MANIFEST_DEV_KEY,
     };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
@@ -347,17 +580,22 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
       assert(transform, 'transform should be truthy');
 
       const transformed = transform(emptyTestManifest, 'chrome');
-      console.log('Transformed:', transformed);
       assert.deepStrictEqual(
         transformed,
-        mockFlags,
+        {
+          ...mockFlags,
+          key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
+        },
         'manifest should have flags in development mode',
       );
     });
@@ -370,7 +608,10 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -386,7 +627,7 @@ describe('ManifestPlugin', () => {
               testFlag: true,
             },
           },
-          key: MANIFEST_DEV_KEY,
+          key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
         },
         'manifest should merge original properties with overrides, with overrides taking precedence',
       );
@@ -400,7 +641,10 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -417,7 +661,10 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -437,6 +684,83 @@ describe('ManifestPlugin', () => {
         transformed._flags,
         undefined,
         'should not have flags when file read fails with non-ENOENT error',
+      );
+    });
+  });
+
+  describe('manifest key behavior', () => {
+    it('adds the default non-production manifest key for non-production builds', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.OTHER, test: false },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        { manifest_version: 3 } as chrome.runtime.Manifest,
+        'chrome',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        CHROME_MANIFEST_KEY_NON_PRODUCTION,
+        'should add the default non-production manifest key outside production',
+      );
+    });
+
+    it('adds the release candidate manifest key for release-candidate builds', () => {
+      const transform = transformManifest(
+        {
+          env: ENVIRONMENTS.RELEASE_CANDIDATE,
+          test: false,
+        },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        { manifest_version: 3 } as chrome.runtime.Manifest,
+        'chrome',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
+        'should add the release-candidate manifest key on release-candidate builds',
+      );
+    });
+
+    it('returns undefined for production builds with no other manifest transforms', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.PRODUCTION, test: false },
+        false,
+      );
+
+      assert.strictEqual(
+        transform,
+        undefined,
+        'should preserve the conditional transform return for production builds',
+      );
+    });
+
+    it('does not add the manifest key for firefox builds based on the browser argument', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.DEVELOPMENT, test: false },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        {
+          manifest_version: 2,
+        } as unknown as chrome.runtime.Manifest,
+        'firefox',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        undefined,
+        'should not add the manifest key for Firefox builds',
       );
     });
   });
@@ -478,6 +802,11 @@ describe('ManifestPlugin', () => {
         json.base_property,
         'overridden_by_beta',
         'should override base property with beta value',
+      );
+      assert.strictEqual(
+        json.build_id,
+        undefined,
+        'should not emit build_id unless setBuildId is enabled',
       );
     });
 
@@ -1266,9 +1595,7 @@ describe('ManifestPlugin', () => {
       );
 
       // Simulate a watch rebuild where no watched files were modified
-      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
-        '/some/unrelated/file.ts',
-      ]);
+      compiler.modifiedFiles = new Set(['/some/unrelated/file.ts']);
 
       // Trigger a second compilation so resolveEntrypoints runs again
       const { compilation: compilation2, promise: promise2 } = mockWebpack(
@@ -1276,9 +1603,9 @@ describe('ManifestPlugin', () => {
         [],
         [],
       );
-      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      compilation2.compiler = compiler;
       // eslint-disable-next-line dot-notation
-      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      plugin['hookIntoPipelines'](compilation2);
       await promise2;
 
       // Manifest reference should be the same since prepareManifests was NOT called
@@ -1309,7 +1636,7 @@ describe('ManifestPlugin', () => {
       // Get the watched files from fileDependencies
       const deps = [...compilation.fileDependencies];
       const baseManifestDep = deps.find((d) =>
-        d.endsWith('manifest/v3/_base.json'),
+        endsWithPath(d, 'manifest', 'v3', '_base.json'),
       );
       assert.ok(baseManifestDep, 'should have base manifest in dependencies');
 
@@ -1319,9 +1646,7 @@ describe('ManifestPlugin', () => {
 
       // Simulate a watch rebuild where the base manifest was modified.
       // resolveEntrypoints checks compiler.modifiedFiles.
-      (compiler as unknown as Record<string, unknown>).modifiedFiles = new Set([
-        baseManifestDep,
-      ]);
+      compiler.modifiedFiles = new Set([baseManifestDep]);
 
       // Run apply again to trigger a new compilation with modifiedFiles set
       const { compilation: compilation2, promise: promise2 } = mockWebpack(
@@ -1329,10 +1654,10 @@ describe('ManifestPlugin', () => {
         [],
         [],
       );
-      (compilation2 as unknown as Record<string, unknown>).compiler = compiler;
+      compilation2.compiler = compiler;
       // hookIntoPipelines registers processAssets which calls resolveEntrypoints
       // eslint-disable-next-line dot-notation
-      plugin['hookIntoPipelines'](compilation2 as unknown as Compilation);
+      plugin['hookIntoPipelines'](compilation2);
       await promise2;
 
       // Should still produce valid output (manifests were re-read from disk)
@@ -1373,22 +1698,22 @@ describe('ManifestPlugin', () => {
       const deps = [...compilation.fileDependencies];
       // Should include base manifest
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', '_base.json')),
         'should watch the base manifest file',
       );
       // Should include browser-specific manifest
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/chrome.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', 'chrome.json')),
         'should watch the browser-specific manifest file',
       );
       // Should include build type base manifest
       assert.ok(
-        deps.some((d) => d.endsWith('beta/manifest/_base.json')),
+        deps.some((d) => endsWithPath(d, 'beta', 'manifest', '_base.json')),
         'should watch the build type base manifest file',
       );
       // Should include build type browser manifest
       assert.ok(
-        deps.some((d) => d.endsWith('beta/manifest/chrome.json')),
+        deps.some((d) => endsWithPath(d, 'beta', 'manifest', 'chrome.json')),
         'should watch the build type browser-specific manifest file',
       );
     });
@@ -1451,7 +1776,7 @@ describe('ManifestPlugin', () => {
       const deps = [...compilation.fileDependencies];
       // Should include base manifest (exists)
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', '_base.json')),
         'should watch the base manifest file',
       );
       // Should NOT include non-existent build type files

@@ -2,7 +2,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
@@ -15,7 +15,7 @@ import {
   MOCK_META_METRICS_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
@@ -26,7 +26,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
@@ -60,7 +60,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new TransactionConfirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -98,7 +98,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
 
@@ -120,8 +120,9 @@ describe('Confirmation Navigation', function (this: Suite) {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         driverOptions: { timeOut: 20000 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withSnapsPrivacyWarningAlreadyShown()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -131,7 +132,7 @@ describe('Confirmation Navigation', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(

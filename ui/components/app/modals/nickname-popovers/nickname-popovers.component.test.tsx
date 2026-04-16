@@ -11,7 +11,7 @@ import {
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../../shared/lib/multichain/networks';
@@ -57,6 +57,10 @@ const render = (
           [mockNonEvmAccount.id]: mockNonEvmAccount,
         },
         selectedAccount: mockAccount.id,
+      },
+      accountIdByAddress: {
+        [mockAccount.address]: mockAccount.id,
+        [mockNonEvmAccount.address]: mockNonEvmAccount.id,
       },
       ...mockNetworkState({
         chainId: '0x5',

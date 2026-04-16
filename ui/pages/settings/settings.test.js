@@ -31,10 +31,8 @@ jest.mock(
 describe('SettingsPage', () => {
   const props = {
     addNewNetwork: false,
-    addressName: '',
     backRoute: '/',
     conversionDate: Date.now(),
-    isAddressEntryPage: false,
     isPopup: false,
     isSnapViewPage: false,
     mostRecentOverviewPage: '/',

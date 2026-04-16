@@ -5,6 +5,7 @@ import {
 import { createAdapterForHardwareWalletType } from './factory';
 import { LedgerAdapter } from './LedgerAdapter';
 import { NonHardwareAdapter } from './NonHardwareAdapter';
+import { QrAdapter } from './QrAdapter';
 
 describe('createAdapterForHardwareWalletType', () => {
   const mockOptions: HardwareWalletAdapterOptions = {
@@ -26,6 +27,14 @@ describe('createAdapterForHardwareWalletType', () => {
         mockOptions,
       );
       expect(adapter).toBeInstanceOf(LedgerAdapter);
+    });
+
+    it('creates QrAdapter for QR wallet type', () => {
+      const adapter = createAdapterForHardwareWalletType(
+        HardwareWalletType.Qr,
+        mockOptions,
+      );
+      expect(adapter).toBeInstanceOf(QrAdapter);
     });
   });
 

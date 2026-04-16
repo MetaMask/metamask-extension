@@ -7,7 +7,10 @@ import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  login,
+} from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
@@ -35,10 +38,10 @@ describe('Unlock wallet - ', function () {
         driver: Driver;
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         // Lock Wallet
+        await lockAndWaitForLoginPage(driver);
         const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage('123456');
         await loginPage.checkIncorrectPasswordMessageIsDisplayed();
@@ -75,10 +78,10 @@ describe('Unlock wallet - ', function () {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
@@ -90,15 +93,12 @@ describe('Unlock wallet - ', function () {
         await changePasswordPage.checkPasswordChangedWarning();
         await changePasswordPage.confirmChangePasswordWarning();
 
-        await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
-
-        await settingsPage.closeSettingsPage();
-
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);
 
-        await headerNavbar.lockMetaMask();
+        await settingsPage.clickBackButton();
 
+        await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage(WALLET_PASSWORD);
         await loginPage.checkConnectionsRemovedModalIsDisplayed();

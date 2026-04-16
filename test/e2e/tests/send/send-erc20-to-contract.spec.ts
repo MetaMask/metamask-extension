@@ -12,7 +12,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Send ERC20 - Contract Warning', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -28,7 +28,7 @@ describe('Send ERC20 - Contract Warning', function () {
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress: string =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.importCustomTokenByChain(

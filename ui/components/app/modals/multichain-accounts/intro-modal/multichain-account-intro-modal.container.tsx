@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
-import { createSentryError } from '../../../../../../shared/modules/error';
+import { createSentryError } from '../../../../../../shared/lib/error';
 
 import {
   setMultichainAccountsIntroModalShown,

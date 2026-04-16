@@ -13,6 +13,8 @@ export const MERKL_API_BASE_URL = 'https://api.merkl.xyz/v4';
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
 
+export const MERKL_CLAIM_METHOD_ID = '0x71ee95c0';
+
 /**
  * The chain where Merkl rewards are claimed (Linea mainnet = 0xe708 = 59144).
  * Even if a user holds mUSD on mainnet, rewards are always claimed on Linea.

@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
@@ -10,14 +11,18 @@ import type {
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../shared/lib/transaction.utils';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
+import { MINUTE } from '../../../../shared/constants/time';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
-import { queries } from '../../../helpers/queries';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
-import { calculateFiatFromMarketRates } from './helpers';
+import { apiClient } from '../../../helpers/api-client';
+import {
+  calculateFiatFromMarketRates,
+  resolveTransactionType,
+} from './helpers';
 import type { ActivityListFilter } from './helpers';
 
 function useTransactionParams(caipChainId?: CaipChainId) {
@@ -62,19 +67,27 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
     [evmAddress, internalTxHashes],
   );
 
-  const queryOptions = useMemo(
-    () =>
-      queries.transactions(
-        { accountAddresses, evmAddress, networks },
-        {
-          enabled: Boolean(useExternalServices) && networks.length > 0,
-          keepPreviousData: true,
-        },
-      ),
-    [evmAddress, accountAddresses, networks, useExternalServices],
-  );
+  const queryOptions =
+    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+      accountAddresses,
+      networks,
+      includeTxMetadata: true,
+    });
 
-  return useInfiniteQuery({ ...queryOptions, select: selectFn });
+  // @ts-expect-error apiClient returns v5 types, repo still in v4
+  return useInfiniteQuery({
+    ...queryOptions,
+    select: selectFn,
+    enabled:
+      Boolean(useExternalServices) &&
+      networks.length > 0 &&
+      accountAddresses.length > 0,
+    retry: false,
+    keepPreviousData: true,
+    staleTime: 5 * MINUTE,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+  });
 }
 
 export function usePrefetchTransactions() {
@@ -83,8 +96,13 @@ export function usePrefetchTransactions() {
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
 
   const queryOptions = useMemo(
-    () => queries.transactions({ accountAddresses, evmAddress, networks }),
-    [evmAddress, accountAddresses, networks],
+    () =>
+      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+        accountAddresses,
+        networks,
+        includeTxMetadata: true,
+      }),
+    [accountAddresses, networks],
   );
 
   return useCallback(() => {
@@ -101,9 +119,16 @@ export function usePrefetchTransactions() {
       return;
     }
 
-    queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
-      // Prefetch is opportunistic
-    });
+    queryClient
+      // @ts-expect-error apiClient returns v5 types, repo still in v4
+      .prefetchInfiniteQuery({
+        ...queryOptions,
+        retry: false,
+        staleTime: 5 * MINUTE,
+      })
+      .catch(() => {
+        // Prefetch is opportunistic
+      });
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
@@ -151,6 +176,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
   });
+
+  const resolvedType = resolveTransactionType(transaction);
+  if (resolvedType === TransactionType.musdClaim) {
+    return t('musdClaimTitle');
+  }
 
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;

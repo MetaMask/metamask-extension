@@ -11,6 +11,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
@@ -21,15 +22,15 @@ async function doPasswordChangeAndLockWallet(
   newPassword: string,
   isSocialLogin: boolean = false,
 ) {
-  // navigate to security & privacy settings
+  // navigate to security and password settings
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToPrivacySettings();
+  await settingsPage.goToSecurityAndPasswordSettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkPageIsLoaded();
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
   await privacySettings.openChangePassword();
 
   const changePasswordPage = new ChangePasswordPage(driver);
@@ -43,14 +44,12 @@ async function doPasswordChangeAndLockWallet(
     await changePasswordPage.confirmChangePasswordWarning();
   }
 
-  await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
-
-  await settingsPage.closeSettingsPage();
-
   // Wait for the password change to be applied
   await driver.delay(2_000);
 
-  await headerNavbar.lockMetaMask();
+  await settingsPage.clickBackButton();
+
+  await lockAndWaitForLoginPage(driver);
 }
 
 describe('Change wallet password', function () {

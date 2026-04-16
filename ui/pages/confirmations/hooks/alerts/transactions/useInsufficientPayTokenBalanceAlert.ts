@@ -18,7 +18,7 @@ import {
   useTransactionPayTotals,
 } from '../../pay/useTransactionPayData';
 import { getNativeTokenInfo } from '../../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { AlertsName } from '../constants';
 
 export function useInsufficientPayTokenBalanceAlert({

@@ -1,15 +1,12 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
-import { DisconnectType } from './disconnect-all-modal';
 import { DisconnectAllModal } from '.';
 
 describe('DisconnectAllModal', () => {
   const onClick = jest.fn();
 
   const args = {
-    type: DisconnectType.Account,
-    hostname: 'app.metamask.io',
     onClose: jest.fn(),
     onClick,
   };

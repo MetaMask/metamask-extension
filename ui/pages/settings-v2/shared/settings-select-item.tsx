@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -8,54 +9,66 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   IconName,
-  ButtonIcon,
-  ButtonIconSize,
+  Icon,
+  IconSize,
   TextColor,
 } from '@metamask/design-system-react';
 
 type SettingsSelectItemProps = {
   label: string;
-  value: string;
-  onPress: () => void;
-  ariaLabel: string;
+  /** Text value to display, or a ReactNode for custom content (e.g., icon + text) */
+  value: string | ReactNode;
+  /** Route to navigate to when the item is selected */
+  to: string;
+  /** Optional test id for the clickable navigation control */
+  dataTestId?: string;
 };
 
 export const SettingsSelectItem = ({
   label,
   value,
-  onPress,
-  ariaLabel,
+  to,
+  dataTestId,
 }: SettingsSelectItemProps) => {
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Center}
-      paddingVertical={3}
+    <Link
+      to={to}
+      className="block hover:bg-background-default-hover"
+      data-testid={dataTestId}
     >
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {label}
-      </Text>
       <Box
         flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
-        gap={1}
+        paddingVertical={3}
+        paddingHorizontal={4}
       >
-        <Text
-          color={TextColor.TextAlternative}
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-        >
-          {value}
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {label}
         </Text>
-        <ButtonIcon
-          iconName={IconName.ArrowRight}
-          size={ButtonIconSize.Sm}
-          className="text-icon-alternative"
-          onClick={onPress}
-          ariaLabel={ariaLabel}
-        />
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
+          {typeof value === 'string' ? (
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
+              {value}
+            </Text>
+          ) : (
+            value
+          )}
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            className="text-icon-alternative"
+          />
+        </Box>
       </Box>
-    </Box>
+    </Link>
   );
 };

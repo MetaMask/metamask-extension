@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -16,11 +16,6 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
@@ -33,6 +28,9 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly dappNetworkButton =
+    '[data-testid="dapp-connection-control-bar__network-button"]';
+
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
   private readonly networkAddressesLink =
@@ -40,6 +38,9 @@ class HeaderNavbar {
 
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
+
+  private readonly selectedNetworkItem = (networkName: string) =>
+    `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
 
   private readonly networkPicker = '.mm-picker-network';
 
@@ -57,6 +58,8 @@ class HeaderNavbar {
     '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
+
+  private readonly contactsButton = '[data-testid="global-menu-contacts"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -83,7 +86,6 @@ class HeaderNavbar {
   async lockMetaMask(): Promise<void> {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
-    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {
@@ -122,7 +124,7 @@ class HeaderNavbar {
       await this.driver.assertElementNotPresent(
         this.notificationCounterMenuIcon,
         {
-          waitAtLeastGuard: regularDelayMs,
+          waitAtLeastGuard: largeDelayMs,
         },
       );
       await this.driver.clickElement(this.globalMenuButton);
@@ -135,34 +137,14 @@ class HeaderNavbar {
   }
 
   /**
-   * Opens the permissions page.
-   * Handles both flows:
-   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
-   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
-   *
-   * @param options - Optional configuration
-   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   * Clicks the "All Permissions" (Connected Sites) button in the header menu.
+   * This may land on the Permissions Page directly, or on the Gator Permissions Page (Flask builds).
+   * Use openPermissionsPageFlow for the full flow that navigates to the Permissions Page.
    */
-  async openPermissionsPage(options?: {
-    skipSitesNavigation?: boolean;
-  }): Promise<void> {
-    console.log('Open permissions page in header navbar');
+  async clickAllPermissionsButton(): Promise<void> {
+    console.log('Click All Permissions button in header navbar');
     await this.openGlobalMenu();
     await this.driver.clickElement(this.allPermissionsButton);
-
-    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
-    // If so, we need to click "Sites" to get to the actual Permissions Page
-    const isGatorPermissionsPage = await this.driver
-      .findElement('[data-testid="gator-permissions-page"]')
-      .then(() => true)
-      .catch(() => false);
-
-    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
-      console.log(
-        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
-      );
-      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
-    }
   }
 
   async openSnapListPage(): Promise<void> {
@@ -175,6 +157,12 @@ class HeaderNavbar {
     console.log('Open settings page');
     await this.openGlobalMenu();
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  async openContactsPage(): Promise<void> {
+    console.log('Open contacts page');
+    await this.openGlobalMenu();
+    await this.driver.clickElement(this.contactsButton);
   }
 
   async enableNotifications(): Promise<void> {
@@ -198,6 +186,14 @@ class HeaderNavbar {
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
     await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+  }
+
+  async clickNotificationCount(count: number): Promise<void> {
+    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.driver.clickElement({
       css: this.notificationCountOption,
       text: count.toString(),
     });
@@ -242,19 +238,29 @@ class HeaderNavbar {
   }
 
   /**
-   * Open the connection menu
+   * Open the dapp network selector from the connection control bar
    */
-  async openConnectionMenu(): Promise<void> {
-    console.log('Opening connection menu');
-    await this.driver.clickElement(this.connectionMenu);
+  async openDappNetworkMenu(): Promise<void> {
+    console.log('Opening dapp network menu from control bar');
+    await this.driver.clickElement(this.dappNetworkButton);
   }
 
   /**
-   * Click the connected site popover network button
+   * Opens the connection menu popover and verifies the network shown for the
+   * connected dapp matches the expected name.
+   *
+   * @param expectedNetwork - The network name expected to appear in the popover.
    */
-  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
-    console.log('Clicking connected site popover network button');
-    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  async checkConnectedSitePopoverNetwork(
+    expectedNetwork: string,
+  ): Promise<void> {
+    console.log(
+      `Verify the connected site popover network is: ${expectedNetwork}`,
+    );
+    await this.openDappNetworkMenu();
+    await this.driver.waitForSelector(
+      this.selectedNetworkItem(expectedNetwork),
+    );
   }
 
   /**

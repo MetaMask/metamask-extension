@@ -1,25 +1,16 @@
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { hasMinimumRequiredVersion } from '../../../shared/lib/feature-flags/version-gating';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
   getAssetsUnifyStateRemoteFeatureFlag,
   getIsAssetsUnifyStateEnabled,
 } from './feature-flags';
 
-jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
-  hasMinimumRequiredVersion: jest.fn(),
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
 }));
 
-const mockHasMinimumRequiredVersion =
-  hasMinimumRequiredVersion as jest.MockedFunction<
-    typeof hasMinimumRequiredVersion
-  >;
-
 describe('Assets Unify State Feature Flags', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    // Default to version check passing
-    mockHasMinimumRequiredVersion.mockReturnValue(true);
-  });
   describe('getAssetsUnifyStateRemoteFeatureFlag', () => {
     it('returns the feature flag when it exists and is valid', () => {
       const state = {
@@ -28,7 +19,6 @@ describe('Assets Unify State Feature Flags', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: '1',
-              minimumVersion: '13.50.0',
             },
           },
         },
@@ -39,7 +29,6 @@ describe('Assets Unify State Feature Flags', () => {
       expect(result).toEqual({
         enabled: true,
         featureVersion: '1',
-        minimumVersion: '13.50.0',
       });
     });
 
@@ -73,14 +62,14 @@ describe('Assets Unify State Feature Flags', () => {
   });
 
   describe('getIsAssetsUnifyStateEnabled', () => {
-    it('returns true when feature is enabled with correct version', () => {
+    it('returns true when build-time flag and remote flag are both enabled', () => {
+      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
       const state = {
         metamask: {
           remoteFeatureFlags: {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: '1',
-              minimumVersion: '13.50.0',
             },
           },
         },
@@ -91,14 +80,34 @@ describe('Assets Unify State Feature Flags', () => {
       expect(result).toBe(true);
     });
 
-    it('returns false when feature is disabled', () => {
+    it('returns false when build-time flag is disabled', () => {
+      jest
+        .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+        .mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: '1',
+            },
+          },
+        },
+      };
+
+      const result = getIsAssetsUnifyStateEnabled(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false when remote feature is disabled', () => {
+      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
       const state = {
         metamask: {
           remoteFeatureFlags: {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: false,
               featureVersion: null,
-              minimumVersion: null,
             },
           },
         },
@@ -110,6 +119,7 @@ describe('Assets Unify State Feature Flags', () => {
     });
 
     it('returns false when feature flag does not exist', () => {
+      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
       const state = {
         metamask: {
           remoteFeatureFlags: {},
@@ -122,13 +132,13 @@ describe('Assets Unify State Feature Flags', () => {
     });
 
     it('returns false when feature version does not match', () => {
+      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
       const state = {
         metamask: {
           remoteFeatureFlags: {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: '2', // Different version
-              minimumVersion: '13.50.0',
             },
           },
         },
@@ -137,68 +147,6 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(false);
-    });
-
-    it('returns false when app version is below minimum required version', () => {
-      mockHasMinimumRequiredVersion.mockReturnValue(false);
-
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: '1',
-              minimumVersion: '14.0.0',
-            },
-          },
-        },
-      };
-
-      const result = getIsAssetsUnifyStateEnabled(state);
-
-      expect(result).toBe(false);
-      expect(mockHasMinimumRequiredVersion).toHaveBeenCalledWith('14.0.0');
-    });
-
-    it('returns true when app version meets minimum required version', () => {
-      mockHasMinimumRequiredVersion.mockReturnValue(true);
-
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: '1',
-              minimumVersion: '13.0.0',
-            },
-          },
-        },
-      };
-
-      const result = getIsAssetsUnifyStateEnabled(state);
-
-      expect(result).toBe(true);
-      expect(mockHasMinimumRequiredVersion).toHaveBeenCalledWith('13.0.0');
-    });
-
-    it('returns true when minimumVersion is null', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: '1',
-              minimumVersion: null,
-            },
-          },
-        },
-      };
-
-      const result = getIsAssetsUnifyStateEnabled(state);
-
-      expect(result).toBe(true);
-      // hasMinimumRequiredVersion should not be called when minimumVersion is null
-      expect(mockHasMinimumRequiredVersion).not.toHaveBeenCalled();
     });
   });
 });

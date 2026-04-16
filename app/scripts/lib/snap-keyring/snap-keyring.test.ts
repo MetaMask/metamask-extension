@@ -38,7 +38,7 @@ const mockGetAccountByAddress = jest.fn();
 const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
 const mockPreferencesControllerGetState = jest.fn();
-const mockSnapControllerGet = jest.fn();
+const mockSnapControllerGetSnap = jest.fn();
 const mockSnapControllerHandleRequest = jest.fn();
 const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
 
@@ -110,7 +110,7 @@ const createControllerMessenger = ({
       'AccountsController:getAccountByAddress',
       'AccountsController:listMultichainAccounts',
       'PreferencesController:getState',
-      'SnapController:get',
+      'SnapController:getSnap',
       'SnapController:handleRequest',
       'RemoteFeatureFlagController:getState',
     ],
@@ -159,8 +159,8 @@ const createControllerMessenger = ({
           locale: mockLocale,
         })(params);
 
-      case 'SnapController:get':
-        return mockSnapControllerGet.mockReturnValue({
+      case 'SnapController:getSnap':
+        return mockSnapControllerGetSnap.mockReturnValue({
           id: mockSnapId,
           manifest: {
             proposedName: mockSnapName,

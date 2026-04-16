@@ -345,9 +345,6 @@
   "links": {
     "message": "Łącza"
   },
-  "loadMore": {
-    "message": "Załaduj więcej"
-  },
   "loading": {
     "message": "Ładowanie..."
   },
@@ -391,9 +388,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nowy kontakt"
   },
   "newContract": {
     "message": "Nowy kontrakt"
@@ -643,12 +637,6 @@
   },
   "usedByClients": {
     "message": "Używany przez różnych klientów"
-  },
-  "userName": {
-    "message": "Nazwa użytkownika"
-  },
-  "viewContact": {
-    "message": "Wyświetl kontakt"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"

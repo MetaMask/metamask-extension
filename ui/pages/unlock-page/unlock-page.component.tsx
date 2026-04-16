@@ -12,28 +12,29 @@ import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
+  TextVariant,
+  TextColor,
+  FontWeight,
   Text,
-  FormTextField,
   Box,
+  TextButton,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+  TextAlign,
   Button,
-  ButtonSize,
   ButtonVariant,
+  ButtonSize,
+} from '@metamask/design-system-react';
+import {
+  FormTextField,
   TextFieldType,
   FormTextFieldSize,
 } from '../../components/component-library';
 import {
-  TextVariant,
-  TextColor,
   BlockSize,
-  BorderRadius,
-  Display,
-  JustifyContent,
-  AlignItems,
-  FlexDirection,
-  TextAlign,
-  BackgroundColor,
   TextTransform,
-  FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
 import {
@@ -486,15 +487,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     return (
       <Box
         className="unlock-page__help-text"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
       >
         {error && (
           <Text
             data-testid="unlock-page-help-text"
-            variant={TextVariant.bodySm}
+            variant={TextVariant.BodySm}
             textAlign={TextAlign.Left}
-            color={TextColor.errorDefault}
+            color={TextColor.ErrorDefault}
           >
             {error}
             {unlockDelayPeriod > 0 && (
@@ -594,12 +594,11 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className="w-full"
         paddingBottom={12} // offset header to center content
       >
         {showResetPasswordModal && (
@@ -618,150 +617,147 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
-          as="form"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           padding={4}
-          width={BlockSize.Full}
-          className="unlock-page"
+          className="unlock-page w-full"
           data-testid="unlock-page"
-          onSubmit={this.handleSubmit}
+          asChild
         >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            alignItems={AlignItems.center}
-          >
+          <form onSubmit={this.handleSubmit}>
             <Box
-              className="unlock-page__mascot-container"
-              marginBottom={isBeta() || isFlask() ? 6 : 0}
+              flexDirection={BoxFlexDirection.Column}
+              className="w-full"
+              alignItems={BoxAlignItems.Center}
             >
-              {isRehydrationFlow ? (
-                this.renderMascot()
-              ) : (
-                <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
-              )}
-              {isBeta() ? (
-                <Text
-                  className="unlock-page__mascot-container__beta"
-                  backgroundColor={BackgroundColor.primaryDefault}
-                  color={TextColor.primaryInverse}
-                  padding={1}
-                  borderRadius={BorderRadius.LG}
-                  textTransform={TextTransform.Uppercase}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('beta')}
-                </Text>
-              ) : null}
-            </Box>
-            {isRehydrationFlow && (
-              <Text
-                data-testid="unlock-page-title"
-                as="h1"
-                variant={TextVariant.displayMd}
-                marginBottom={12}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textDefault}
-                textAlign={TextAlign.Center}
+              <Box
+                className="unlock-page__mascot-container"
+                marginBottom={isBeta() || isFlask() ? 6 : 0}
               >
-                {t('welcomeBack')}
-              </Text>
-            )}
-            <FormTextField
-              id="password"
-              placeholder={
-                this.props.isSocialLoginFlow
-                  ? t('enterYourPasswordSocialLoginFlow')
-                  : t('enterYourPassword')
-              }
-              size={FormTextFieldSize.Lg}
-              inputProps={{
-                'data-testid': 'unlock-password',
-                'aria-label': t('password'),
-              }}
-              textFieldProps={{
-                disabled: isLocked,
-              }}
-              onChange={(event) =>
-                this.handleInputChange(event as ChangeEvent<HTMLInputElement>)
-              }
-              type={TextFieldType.Password}
-              value={password}
-              error={Boolean(error)}
-              helpText={this.renderHelpText()}
-              autoComplete={false}
-              autoFocus
-              width={BlockSize.Full}
-              marginBottom={4}
-            />
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              block
-              type="submit"
-              data-testid="unlock-submit"
-              disabled={!password || isLocked}
-              marginBottom={6}
-            >
-              {this.context.t('unlock')}
-            </Button>
-
-            <Button
-              variant={ButtonVariant.Link}
-              data-testid="unlock-forgot-password-button"
-              key="import-account"
-              type="button"
-              onClick={this.onForgotPasswordOrLoginWithDiffMethods}
-              marginBottom={4}
-              color={
-                isRehydrationFlow
-                  ? TextColor.textDefault
-                  : TextColor.primaryDefault
-              }
-            >
-              {isRehydrationFlow
-                ? t('useDifferentLoginMethod')
-                : t('forgotPassword')}
-            </Button>
-
-            {isRehydrationFlow && (
-              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-                {t('needHelp', [
-                  <Button
-                    variant={ButtonVariant.Link}
-                    color={TextColor.primaryDefault}
-                    href={SUPPORT_LINK}
-                    type="button"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key="need-help-link"
-                    onClick={() => {
-                      this.context.trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.SupportLinkClicked,
-                          properties: {
-                            url: SUPPORT_LINK,
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
+                {isRehydrationFlow ? (
+                  this.renderMascot()
+                ) : (
+                  <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
+                )}
+                {isBeta() ? (
+                  <Text
+                    className="unlock-page__mascot-container__beta bg-primary-default rounded-lg p-1"
+                    color={TextColor.PrimaryInverse}
+                    textTransform={TextTransform.Uppercase}
+                    fontWeight={FontWeight.Medium}
                   >
-                    {needHelpText}
-                  </Button>,
-                ])}
-              </Text>
-            )}
-          </Box>
+                    {t('beta')}
+                  </Text>
+                ) : null}
+              </Box>
+              {isRehydrationFlow && (
+                <Text
+                  data-testid="unlock-page-title"
+                  variant={TextVariant.DisplayMd}
+                  className="mb-12"
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  textAlign={TextAlign.Center}
+                >
+                  {t('welcomeBack')}
+                </Text>
+              )}
+              <FormTextField
+                id="password"
+                placeholder={
+                  this.props.isSocialLoginFlow
+                    ? t('enterYourPasswordSocialLoginFlow')
+                    : t('enterYourPassword')
+                }
+                size={FormTextFieldSize.Lg}
+                inputProps={{
+                  'data-testid': 'unlock-password',
+                  'aria-label': t('password'),
+                }}
+                textFieldProps={{
+                  disabled: isLocked,
+                }}
+                onChange={(event) =>
+                  this.handleInputChange(event as ChangeEvent<HTMLInputElement>)
+                }
+                type={TextFieldType.Password}
+                value={password}
+                error={Boolean(error)}
+                helpText={this.renderHelpText()}
+                autoComplete={false}
+                autoFocus
+                width={BlockSize.Full}
+                marginBottom={4}
+              />
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                className="w-full mb-6"
+                type="submit"
+                data-testid="unlock-submit"
+                disabled={!password || isLocked}
+              >
+                {this.context.t('unlock')}
+              </Button>
+
+              <TextButton
+                data-testid="unlock-forgot-password-button"
+                key="import-account"
+                type="button"
+                onClick={this.onForgotPasswordOrLoginWithDiffMethods}
+                className="mb-4"
+                color={
+                  isRehydrationFlow
+                    ? TextColor.TextDefault
+                    : TextColor.PrimaryDefault
+                }
+              >
+                {isRehydrationFlow
+                  ? t('useDifferentLoginMethod')
+                  : t('forgotPassword')}
+              </TextButton>
+
+              {isRehydrationFlow && (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextDefault}
+                >
+                  {t('needHelp', [
+                    <TextButton
+                      key="need-help-link"
+                      onClick={() => {
+                        this.context.trackEvent(
+                          {
+                            category: MetaMetricsEventCategory.Navigation,
+                            event: MetaMetricsEventName.SupportLinkClicked,
+                            properties: {
+                              url: SUPPORT_LINK,
+                            },
+                          },
+                          {
+                            contextPropsIntoEventProperties: [
+                              MetaMetricsContextProp.PageTitle,
+                            ],
+                          },
+                        );
+                      }}
+                      asChild
+                    >
+                      <a
+                        href={SUPPORT_LINK}
+                        type="button"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {needHelpText}
+                      </a>
+                    </TextButton>,
+                  ])}
+                </Text>
+              )}
+            </Box>
+          </form>
         </Box>
         {!isRehydrationFlow && (
           <Suspense fallback={<Box />}>

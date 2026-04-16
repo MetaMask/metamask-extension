@@ -105,7 +105,7 @@ describe('Settings Tab', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
       },
     };
     const store = configureMockStore([thunk])(stateWithFlagOff);
@@ -123,7 +123,7 @@ describe('Settings Tab', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
       },
     };
     const store = configureMockStore([thunk])(stateWithFlagOn);

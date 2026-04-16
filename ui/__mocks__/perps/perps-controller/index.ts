@@ -490,24 +490,10 @@ export const LEARN_MORE_CONFIG = {
   CtaKey: 'perps.learn_more.cta',
 } as const;
 
-/**
- * Support configuration
- * Contact support button configuration (matches Settings behavior)
- */
-export const SUPPORT_CONFIG = {
-  Url: 'https://support.metamask.io',
-  TitleKey: 'perps.support.title',
-  DescriptionKey: 'perps.support.description',
-} as const;
-
-/**
- * Feedback survey configuration
- * External survey for collecting user feedback on Perps trading experience
- */
-export const FEEDBACK_CONFIG = {
-  Url: 'https://survey.alchemer.com/s3/8649911/MetaMask-Perps-Trading-Feedback',
-  TitleKey: 'perps.feedback.title',
-} as const;
+export {
+  SUPPORT_CONFIG,
+  FEEDBACK_CONFIG,
+} from '../../../../shared/constants/perps';
 
 /**
  * Support article URLs
@@ -875,7 +861,7 @@ export type Position = {
   };
   liquidationPrice: string | null; // Liquidation price (null if no risk)
   maxLeverage: number; // Maximum allowed leverage for this asset
-  returnOnEquity: string; // ROE percentage
+  returnOnEquity: string; // ROE as decimal ratio (e.g. 0.1579 for 15.79%)
   cumulativeFunding: {
     // Funding payments history
     allTime: string; // Total funding since account opening

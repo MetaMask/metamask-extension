@@ -20,7 +20,7 @@ module.exports = {
     // useful for modifying properties of `require`d modules (something `import`ed modules don't allow)
     '@typescript-eslint/no-var-requires': 'off',
     // Fun fact: ESM imports _require_ extensions. So silly.
-    'import/extensions': 'off',
+    'import-x/extensions': 'off',
     // sometimes its nice to do things like `something = else = null;`
     'no-multi-assign': ['error', { ignoreNonDeclaration: true }],
     // Why? What's next, no addition?
@@ -30,7 +30,7 @@ module.exports = {
     // `if (condition) return;` is useful for early returns without adding noise.
     curly: ['error', 'multi-line'],
     // require is required to load dynamic modules (well, JSON, mostly) synchronously (with Node's require cache, too!).
-    'import/no-dynamic-require': 'off',
+    'import-x/no-dynamic-require': 'off',
     // uh, they're bullet points in markdown in a JSDoc comment. Stop this nonsense.
     'jsdoc/no-multi-asterisks': ['error', { allowWhitespace: true }],
     // Really? I was joking about "no addition" above, but its (almost) real!

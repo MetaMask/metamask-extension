@@ -1,18 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
 import {
   AlignItems,
   BlockSize,
@@ -27,39 +16,27 @@ import {
   IconName as IconNameDeprecated,
   Text,
 } from '../../component-library';
-import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
+import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
-import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
-  getOriginOfCurrentTab,
-  getShowDefaultAddress,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -67,13 +44,11 @@ import {
 } from '../../../ducks/app/app';
 import {
   getAccountListStats,
-  getDefaultScopeAndAddressByAccountGroupId,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MultichainAccountNetworkGroupWithDefaultAddress } from '../../multichain-accounts/multichain-account-network-group-with-default-address';
-import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -89,7 +64,6 @@ export const AppHeaderUnlockedContent = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const origin = useSelector(getOriginOfCurrentTab);
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
@@ -97,14 +71,7 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(
-      state,
-      selectedMultichainAccountId,
-    ),
-  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -148,11 +115,6 @@ export const AppHeaderUnlockedContent = ({
     }
   }, [copied, dispatch]);
 
-  const showConnectedStatus =
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin !== browser.runtime.id;
-
   const handleMainMenuToggle = useCallback(() => {
     const isMenuOpen = !accountOptionsMenuOpen;
     if (isMenuOpen) {
@@ -175,10 +137,6 @@ export const AppHeaderUnlockedContent = ({
     });
   }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
-  const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
-  };
-
   const multichainAccountAppContent = useMemo(() => {
     return (
       <BoxDeprecated style={{ overflow: 'hidden' }}>
@@ -199,7 +157,7 @@ export const AppHeaderUnlockedContent = ({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              navigate(ACCOUNT_LIST_PAGE_ROUTE);
+              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,
@@ -229,7 +187,7 @@ export const AppHeaderUnlockedContent = ({
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
-            <MultichainHoveredAddressRowsList
+            <MultichainTriggeredAddressRowsList
               groupId={selectedMultichainAccountId}
               showAccountHeaderAndBalance={false}
               onViewAllClick={() => {
@@ -240,44 +198,19 @@ export const AppHeaderUnlockedContent = ({
               }}
               showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              {isDefaultAddressEnabled &&
-              showDefaultAddress &&
-              defaultAddress ? (
-                <MultichainAccountNetworkGroupWithDefaultAddress
-                  groupId={selectedMultichainAccountId}
-                />
-              ) : (
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                  padding={1}
-                  gap={1}
-                  className="rounded-lg"
-                >
-                  <MultichainAccountNetworkGroup
-                    groupId={selectedMultichainAccountId}
-                    limit={4}
-                  />
-                  <Icon
-                    name={IconName.Copy}
-                    size={IconSize.Sm}
-                    color={IconColor.IconAlternative}
-                  />
-                </Box>
-              )}
-            </MultichainHoveredAddressRowsList>
+              <MultichainAccountNetworkGroupWithCopyIcon
+                groupId={selectedMultichainAccountId}
+              />
+            </MultichainTriggeredAddressRowsList>
           </BoxDeprecated>
         )}
       </BoxDeprecated>
     );
   }, [
     accountName,
-    defaultAddress,
     disableAccountPicker,
     isDefaultAddressEnabled,
     selectedMultichainAccountId,
-    showDefaultAddress,
     navigate,
     trackEvent,
     accountListStats,
@@ -301,13 +234,6 @@ export const AppHeaderUnlockedContent = ({
         style={{ marginLeft: 'auto' }}
       >
         <BoxDeprecated display={Display.Flex} gap={2}>
-          {showConnectedStatus && (
-            <BoxDeprecated data-testid="connection-menu" margin="auto">
-              <ConnectedStatusIndicator
-                onClick={() => handleConnectionsRoute()}
-              />
-            </BoxDeprecated>
-          )}{' '}
           <BoxDeprecated
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}

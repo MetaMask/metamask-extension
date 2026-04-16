@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
@@ -57,7 +57,7 @@ describe('Notification List - View Items and Details', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         await enableNotificationsThroughGlobalMenu(driver, false);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(

@@ -6,7 +6,7 @@ import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
   CONTENT_SCRIPT,

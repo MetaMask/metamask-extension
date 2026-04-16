@@ -5,7 +5,7 @@ import {
   mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../../../../../shared/lib/trust-signals';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getBlockaidMetricsProps } from '../../../../../ui/helpers/utils/metrics';
 import type { TransactionMetricsBuilder } from './types';
 

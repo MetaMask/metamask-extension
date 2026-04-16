@@ -168,7 +168,7 @@ function mockAPICall(
     requestRuleBuilder = server.forDelete(response.url);
   }
 
-  requestRuleBuilder?.thenCallback(() => ({
+  requestRuleBuilder?.always().thenCallback(() => ({
     statusCode: 200,
     json: response.response,
   }));

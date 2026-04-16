@@ -1,11 +1,11 @@
 import { encode } from '@metamask/abi-utils';
 import { isHexString } from '@metamask/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { BURN_ADDRESS } from '../../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../../shared/lib/Numeric';
+import { BURN_ADDRESS } from '../../../../shared/lib/hexstring-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,

@@ -82,6 +82,31 @@ Supported methods in `FixtureBuilderV2`:
   - `⚠️ DEPRECATED: This spec introduces legacy FixtureBuilder usage. Please use FixtureBuilderV2 when supported by the methods used in this test.`
   - `✅ Use instead: import FixtureBuilderV2 from '.../fixtures/fixture-builder-v2' and instantiate new FixtureBuilderV2(...).`
 
+#### 3.2 Snap E2E Tests: Require `withSnapsPrivacyWarningAlreadyShown`
+
+- Analyze only changed lines in the PR diff.
+- Scope: `test/e2e/snaps/**/*.spec.{ts,js}` files.
+- Goal: ensure snap specs that use `FixtureBuilderV2` chain `.withSnapsPrivacyWarningAlreadyShown()` so the snap privacy warning modal is not shown during test runs (reduces flakiness and keeps tests focused on snap behavior).
+
+##### Trigger Signals (changed lines only)
+
+- File path matches: `test/e2e/snaps/**/*.spec.{ts,js}`.
+- FixtureBuilderV2 instantiation in the file: `new FixtureBuilderV2(`.
+
+##### Compatibility Check Before Reporting
+
+When both conditions hold, inspect the fixture builder chain in the same `withFixtures` / test block.
+
+- If the chain includes `.withSnapsPrivacyWarningAlreadyShown()` (anywhere in the chain), do not report.
+- If the chain does **not** include `.withSnapsPrivacyWarningAlreadyShown()`, report this rule.
+
+##### Severity and Message
+
+- Severity: **MEDIUM** (test quality), non-blocking.
+- Suggested comment:
+  - `📋 Snap E2E tests should use \`.withSnapsPrivacyWarningAlreadyShown()\` on the fixture builder so the snap privacy warning is already dismissed. This avoids extra UI steps and reduces flakiness.`
+  - `✅ Add \`.withSnapsPrivacyWarningAlreadyShown()\` to the FixtureBuilderV2 chain, e.g. \`new FixtureBuilderV2().withSnapsPrivacyWarningAlreadyShown().build()\` or chain it with other methods.`
+
 ### 4. Controller Guidelines
 
 - **ALWAYS** load and reference [controller-guidelines](rules/controller-guidelines/RULE.md)

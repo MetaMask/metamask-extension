@@ -79,11 +79,13 @@ jobs:
           # Configure suite shard counts here (suite name -> shard count)
           SUITE_SHARD_COUNTS=$(jq -cn '{
             "test-e2e-chrome-browserify": 20,
-            "test-e2e-chrome-webpack": 20,
             "test-e2e-chrome-flask": 5,
             "test-e2e-firefox-browserify": 20,
+            "test-e2e-firefox-flask": 5,
+            "test-e2e-chrome-webpack": 20,
+            "test-e2e-chrome-flask-webpack": 5,
             "test-e2e-firefox-webpack": 20,
-            "test-e2e-firefox-flask": 5
+            "test-e2e-firefox-flask-webpack": 5
           }')
 
           # Expand counts into the job matrix shape expected by downstream workflows

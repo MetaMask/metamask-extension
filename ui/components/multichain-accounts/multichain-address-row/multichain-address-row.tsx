@@ -24,7 +24,7 @@ import {
 } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type CopyParams = {

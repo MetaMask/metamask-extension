@@ -4,12 +4,12 @@ import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 

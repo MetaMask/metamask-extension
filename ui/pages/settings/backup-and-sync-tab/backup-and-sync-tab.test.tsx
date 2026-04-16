@@ -64,10 +64,4 @@ describe('BackupAndSyncTab', () => {
       queryByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).not.toBeInTheDocument();
   });
-
-  it('renders layout with settings-page__body class', () => {
-    const { container } = render();
-    const body = container.querySelector('.settings-page__body');
-    expect(body).toBeInTheDocument();
-  });
 });

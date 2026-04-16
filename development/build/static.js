@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { getActiveFeatures } = require('./config');
 const { TASKS } = require('./constants');

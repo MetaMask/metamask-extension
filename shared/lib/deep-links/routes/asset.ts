@@ -3,7 +3,7 @@ import {
   KnownCaipNamespace,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { decimalToPrefixedHex } from '../../../modules/conversion.utils';
+import { decimalToPrefixedHex } from '../../conversion.utils';
 import { ASSET_ROUTE, Route } from './route';
 
 export enum AssetQueryParams {

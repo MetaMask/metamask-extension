@@ -17,12 +17,12 @@ import {
   getSelectedInternalAccount,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
-  const { currentCurrency, useBlockie, currentLocale } = metamask;
+  const { currentCurrency, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const {
@@ -39,7 +39,6 @@ const mapStateToProps = (state) => {
     currentLocale,
     currentCurrency,
     nativeCurrency,
-    useBlockie,
     avatarType,
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,

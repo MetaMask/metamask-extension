@@ -2,7 +2,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getDappActiveNetwork } from './dapp';
 import {
   getOrderedConnectedAccountsForActiveTab,
@@ -22,7 +22,7 @@ jest.mock('./selectors', () => ({
   getAllDomains: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 

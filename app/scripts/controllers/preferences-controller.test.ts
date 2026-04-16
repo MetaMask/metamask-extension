@@ -20,7 +20,7 @@ import {
   ThemeType,
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -85,6 +85,7 @@ const setupController = ({
       accounts: {},
       selectedAccount: '',
     },
+    accountIdByAddress: {},
   };
   const accountsController = new AccountsController({
     messenger: accountsControllerMessenger,
@@ -119,19 +120,6 @@ describe('preferences controller', () => {
       });
 
       expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
-    });
-  });
-
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useBlockie).toStrictEqual(false);
-    });
-
-    it('setUseBlockie to true', () => {
-      const { controller } = setupController({});
-      controller.setUseBlockie(true);
-      expect(controller.state.useBlockie).toStrictEqual(true);
     });
   });
 
@@ -466,11 +454,10 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
-        showDefaultAddress: false,
+        useSidePanelAsDefault: true,
+        showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -498,11 +485,10 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
-        showDefaultAddress: false,
+        useSidePanelAsDefault: true,
+        showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -517,6 +503,26 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
       });
+    });
+
+    it('disables side panel default when enabling full screen view', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        true,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+    });
+
+    it('disables full screen default when enabling side panel default', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+      controller.setPreference('useSidePanelAsDefault', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
     });
   });
 
@@ -653,10 +659,9 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
-            "showDefaultAddress": false,
+            "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
@@ -672,12 +677,11 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useMultiAccountBalanceChecker": true,
           "useNftDetection": true,
@@ -724,10 +728,9 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
-            "showDefaultAddress": false,
+            "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
@@ -743,7 +746,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -757,7 +760,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -808,10 +810,9 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
-            "showDefaultAddress": false,
+            "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
@@ -827,7 +828,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -835,13 +836,13 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -892,10 +893,9 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "hideZeroBalanceTokens": false,
-            "petnamesEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
-            "showDefaultAddress": false,
+            "showDefaultAddress": true,
             "showExtensionInFullSizeView": false,
             "showFiatInTestnets": false,
             "showMultiRpcModal": false,
@@ -911,7 +911,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -919,13 +919,13 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1199,7 +1199,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({
         state: {
           currentLocale: 'ja',
-          useBlockie: true,
           theme: ThemeType.dark,
           knownMethodData: { '0x12345678': 'transfer' },
           advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
@@ -1214,10 +1213,9 @@ describe('preferences controller', () => {
             smartTransactionsOptInStatus: true,
             useNativeCurrencyAsPrimaryCurrency: true,
             useSidePanelAsDefault: false,
-            showDefaultAddress: false,
+            showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
-            petnamesEnabled: false,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,
@@ -1236,14 +1234,12 @@ describe('preferences controller', () => {
 
       // Verify state was customized
       expect(controller.state.currentLocale).toBe('ja');
-      expect(controller.state.useBlockie).toBe(true);
       expect(controller.state.theme).toBe(ThemeType.dark);
 
       controller.resetState();
 
       // Verify state was reset to defaults
       expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
-      expect(controller.state.useBlockie).toBe(false);
       expect(controller.state.theme).toBe(ThemeType.os);
       expect(controller.state.knownMethodData).toStrictEqual({});
       expect(controller.state.advancedGasFee).toStrictEqual({});
@@ -1252,7 +1248,6 @@ describe('preferences controller', () => {
       expect(controller.state.preferences.showFiatInTestnets).toBe(false);
       expect(controller.state.preferences.showTestNetworks).toBe(false);
       expect(controller.state.preferences.hideZeroBalanceTokens).toBe(false);
-      expect(controller.state.preferences.petnamesEnabled).toBe(true);
       expect(controller.state.preferences.featureNotificationsEnabled).toBe(
         false,
       );

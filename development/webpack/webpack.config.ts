@@ -23,6 +23,7 @@ import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
   NODE_MODULES_RE,
+  UI_COMPONENT_RE,
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -30,10 +31,10 @@ import {
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
-import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
+import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
@@ -49,7 +50,6 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
-const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -111,7 +111,7 @@ const manifestPlugin = new ManifestPlugin({
   ...(args.zip
     ? {
         zipOptions: {
-          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
           mtime: getLatestCommit().timestamp(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1
@@ -120,6 +120,10 @@ const manifestPlugin = new ManifestPlugin({
       }
     : {}),
   buildType: args.type,
+  // We want to set a build ID for test builds to make it easier for tooling to
+  // know if the build contents have changed. Can be useful during testing or
+  // development.
+  setBuildId: args.test,
 });
 
 const plugins: WebpackPluginInstance[] = [
@@ -231,6 +235,13 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (args.bundleAnalyzer) {
+  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+  plugins.push(
+    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+  );
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
@@ -238,17 +249,14 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const reactCompilerLoader = getReactCompilerLoader(
-  '17',
-  args.reactCompilerVerbose,
-  args.reactCompilerDebug,
-);
-const envValidationLoader = args.validateEnv
-  ? {
-      loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildEnvVarDeclarations },
-    }
-  : null;
+
+const threadLoader = getThreadLoader(args);
+const reactCompiler = getReactCompilerLoader({
+  target: '17',
+  verbose: args.reactCompilerVerbose,
+  debug: args.reactCompilerDebug,
+  threadLoaderEnabled: threadLoader !== null,
+});
 
 const config = {
   // All entries are added dynamically by ManifestPlugin
@@ -268,8 +276,18 @@ const config = {
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
     wasmLoading: 'fetch',
-    // filenames for *initial* files (essentially JS entry points)
-    filename: '[name].[contenthash].js',
+    // At some point we added the contenthash to filenames. People do this for cache
+    // busting in production, but as an extension, that is not relevant for us.
+    // Primarily, we are concerned here with making builds go faster, and it's not
+    // clear how including the contenthash furthers that goal.
+    // Eventually, we discovered that including the contenthash in the filenames
+    // breaks watched builds, because the filenames used by the background service
+    // worker for importScripts() somehow become out of sync with the files on
+    // disk on rebuilds.
+    // Although we aren't certain why we enabled content hashes in the first place,
+    // for now we only disable them in watched builds, and leave resolution of what
+    // to do for production builds to the future.
+    filename: args.watch ? '[name].js' : '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
     // Clean the output directory before emit, so that only the latest build
     // files remain. Nearly 0 performance penalty for this clean up step.
@@ -308,11 +326,6 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-      // Mock perps-controller for minimal POC branch development
-      '@metamask/perps-controller': join(
-        context,
-        '../ui/__mocks__/perps/perps-controller',
-      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
@@ -358,23 +371,37 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
-      {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
+      // Source preprocessing (enforce: 'pre' ensures these run before normal
+      // loaders; options must be JSON-serializable for thread-loader compatibility)
+      args.validateEnv && {
+        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre' as const,
+        use: {
+          loader: require.resolve('./utils/loaders/envValidationLoader'),
+          options: { declarations: [...buildEnvVarDeclarations] },
+        },
+      },
+      // thread-loader pool for UI component files (must appear before SWC rules)
+      threadLoader && {
+        test: UI_COMPONENT_RE,
         include: UI_DIR_RE,
-        use: [reactCompilerLoader],
+        use: threadLoader,
       },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader],
+        use: tsxLoader,
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader],
+        use: jsxLoader,
       },
+      // React Compiler for UI component files (must appear after SWC rules)
+      { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
@@ -454,7 +481,6 @@ const config = {
               },
             },
           },
-          codeFenceLoader,
         ],
       },
       // images, fonts, wasm, riv etc.

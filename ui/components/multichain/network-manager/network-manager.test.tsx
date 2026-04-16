@@ -13,6 +13,7 @@ import { NetworkManager } from './network-manager';
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
   hideModal: jest.fn(),
+  setEditedNetwork: jest.fn(),
 }));
 
 // Mock useDispatch
@@ -101,7 +102,7 @@ const mockNetworkConfigurations = {
 };
 
 describe('NetworkManager Component', () => {
-  const renderNetworkManager = () => {
+  const renderNetworkManager = (pathname = '/') => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -125,7 +126,34 @@ describe('NetworkManager Component', () => {
         },
       },
     });
-    return renderWithProvider(<NetworkManager />, store);
+    return renderWithProvider(<NetworkManager />, store, pathname);
+  };
+
+  const renderNetworkManagerWithEditedNetwork = (pathname = '/') => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+          },
+        },
+      },
+      appState: {
+        ...mockState.appState,
+        editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      },
+    });
+    return renderWithProvider(<NetworkManager />, store, pathname);
   };
 
   const renderNetworkManagerWithNonEvmNetworkSelected = (stateOverrides?: {
@@ -237,5 +265,41 @@ describe('NetworkManager Component', () => {
     expect(
       screen.getByText(messages.addCustomNetwork.message),
     ).toBeInTheDocument();
+  });
+
+  it('submitting a new RPC URL from add-rpc view switches to add view', async () => {
+    renderNetworkManager('/?view=add-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a new RPC URL from edit-rpc view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from add-explorer-url view switches to add view', async () => {
+    renderNetworkManager('/?view=add-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from edit-explorer-url view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
   });
 });

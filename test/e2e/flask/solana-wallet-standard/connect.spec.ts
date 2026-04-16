@@ -1,14 +1,14 @@
-import { strict as assert } from 'assert';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
+import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
-import { regularDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
   account1Short,
   account2Short,
@@ -28,7 +28,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -53,7 +53,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -73,14 +73,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('Should be able to cancel connection and connect again', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -89,13 +89,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const header = await testDapp.getHeader();
           await header.connect();
 
-          // wait to display wallet connect modal
-          await driver.delay(regularDelayMs);
-
           const modal = await testDapp.getWalletModal();
           await modal.connectToMetaMaskWallet();
-
-          await driver.delay(regularDelayMs);
 
           // Cancel the connection
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -125,14 +120,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('Should not create session when Solana permissions are deselected', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -140,10 +135,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           // Start connection
           const header = await testDapp.getHeader();
           await header.connect();
-          await driver.delay(regularDelayMs);
           const modal = await testDapp.getWalletModal();
           await modal.connectToMetaMaskWallet();
-          await driver.delay(regularDelayMs);
 
           // Open the permissions modal
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -182,14 +175,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('Should disconnect', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -214,21 +207,20 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('Switching between 2 accounts should reflect in the dapp', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp);
-          await driver.delay(regularDelayMs);
 
           // Check that we're connected to the last selected account
           const header = await testDapp.getHeader();
@@ -256,14 +248,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('Switching between them should NOT reflect in the dapp', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
@@ -312,7 +304,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -336,14 +328,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it.skip('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
@@ -369,14 +361,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it('Should use the Mainnet scope by default', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -395,16 +387,11 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await signMessageTest.setMessage('Hello, world!');
           await signMessageTest.signMessage();
 
-          await driver.delay(regularDelayMs);
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          // Check that mainnet appears in the dialog
-          const el = await driver.waitForSelector({
-            text: 'Solana Mainnet',
-            tag: 'p',
-          });
-          assert.ok(el);
+          const signMsgConfirmation = new SnapSignMessageConfirmation(driver);
+          const txConfirmation = new SnapTransactionConfirmation(driver);
+          await signMsgConfirmation.checkPageIsLoaded();
+          await txConfirmation.checkNetworkIsDisplayed('Solana Mainnet');
         },
       );
     });

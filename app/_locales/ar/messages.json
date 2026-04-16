@@ -349,9 +349,6 @@
   "links": {
     "message": "الروابط"
   },
-  "loadMore": {
-    "message": "تحميل المزيد"
-  },
   "loading": {
     "message": "جارٍ التحميل..."
   },
@@ -395,9 +392,6 @@
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "جهة اتصال جديدة"
   },
   "newContract": {
     "message": "عقد جديد"
@@ -656,12 +650,6 @@
   },
   "usedByClients": {
     "message": "مستخدمة من قبل مجموعة متنوعة من العملاء المختلفة"
-  },
-  "userName": {
-    "message": "اسم المستخدم"
-  },
-  "viewContact": {
-    "message": "عرض جهة الاتصال"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"

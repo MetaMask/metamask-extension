@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 import {
   Box,
   BoxAlignItems,
@@ -21,21 +20,20 @@ import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   // SETTINGS_V2_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
-  // CONTACTS_ROUTE,
+  CONTACTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
-  setUseSidePanelAsDefault,
+  toggleDefaultView,
 } from '../../../store/actions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
@@ -46,14 +44,14 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -243,57 +241,6 @@ export function useGlobalMenuSections(
     onClose,
   ]);
 
-  const toggleDefaultView = useCallback(async () => {
-    if (!isSidePanelEnabled) {
-      return;
-    }
-
-    try {
-      if (isSidepanel) {
-        await dispatch(setUseSidePanelAsDefault(false));
-        window.close();
-        return;
-      }
-
-      if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
-        if (!browserWithSidePanel?.sidePanel?.open) {
-          return;
-        }
-
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tabs && tabs.length > 0 && tabs[0].windowId) {
-          await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          const contexts = await chrome.runtime.getContexts({
-            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-          });
-
-          if (!contexts || contexts.length === 0) {
-            return;
-          }
-
-          await dispatch(setUseSidePanelAsDefault(true));
-          window.close();
-        }
-      }
-    } catch (error) {
-      console.error('Error toggling default view:', error);
-    }
-  }, [isSidePanelEnabled, isSidepanel, isPopup, dispatch]);
-
   return useMemo(() => {
     const section1: GlobalMenuSection = {
       id: 'global-menu-section-1',
@@ -377,7 +324,7 @@ export function useGlobalMenuSections(
         iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
         label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
         onClick: async () => {
-          await toggleDefaultView();
+          await dispatch(toggleDefaultView());
           trackEvent({
             event: MetaMetricsEventName.ViewportSwitched,
             category: MetaMetricsEventCategory.Navigation,
@@ -397,13 +344,12 @@ export function useGlobalMenuSections(
       id: 'global-menu-section-manage',
       title: t('manage'),
       items: [
-        // TODO: Uncomment when we remove the Contacts tab from Settings
-        // {
-        //   id: 'global-menu-contacts',
-        //   iconName: IconName.Book,
-        //   label: t('contacts'),
-        //   to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
-        // },
+        {
+          id: 'global-menu-contacts',
+          iconName: IconName.Book,
+          label: t('contacts'),
+          to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+        },
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
@@ -447,7 +393,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-settings',
           iconName: IconName.Setting,
           label: t('settings'),
-          to: SETTINGS_ROUTE,
+          to: `${SETTINGS_ROUTE}?drawerOpen=true`,
           onClick: () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
@@ -512,15 +458,15 @@ export function useGlobalMenuSections(
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
-          onClick: () => {
-            navigate(DEFAULT_ROUTE);
-            dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
+          onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],
@@ -562,6 +508,5 @@ export function useGlobalMenuSections(
     supportText,
     handleNotificationsClick,
     handleSupportMenuClick,
-    toggleDefaultView,
   ]);
 }

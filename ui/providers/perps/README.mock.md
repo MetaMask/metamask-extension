@@ -191,7 +191,7 @@ export {
 
 ### Step 3: That's it!
 
-No other code changes needed. The perps-tab-view component imports from:
+No other code changes needed. The perps-view component imports from:
 
 - `ui/providers/perps` - Will now get real implementations
 - `ui/hooks/perps/stream` - Will now get real hooks
@@ -200,7 +200,7 @@ No other code changes needed. The perps-tab-view component imports from:
 
 The existing tests use Jest mocks and will continue to work regardless of mock/real mode.
 
-See: `ui/components/app/perps/perps-tab-view.test.tsx`
+See: `ui/components/app/perps/perps-view.test.tsx`
 
 ## Benefits of This Approach
 

@@ -1,6 +1,10 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  IconName as DesignSystemIconName,
+  TextColor as DesignSystemTextColor,
+} from '@metamask/design-system-react';
 import {
   Box,
   Icon,
@@ -15,7 +19,6 @@ import {
   BorderRadius,
   Display,
   JustifyContent,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -93,13 +96,22 @@ export const MultichainAccountMenu = ({
   };
 
   const menuConfig = useMemo(() => {
-    const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountDetailsClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
-      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      navigate(multichainAccountDetailsPageRoute);
+
+      navigate({
+        pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        search: createSearchParams({
+          accountGroupId,
+        }).toString(),
+      });
     };
 
-    const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountRenameClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
@@ -107,18 +119,22 @@ export const MultichainAccountMenu = ({
       }
     };
 
-    const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountAddressesClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
       trace({
         name: TraceName.ShowAccountAddressList,
         op: TraceOperation.AccountUi,
       });
-      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountAddressesPageRoute);
     };
 
-    const handleAccountPinClick = async (mouseEvent: React.MouseEvent) => {
+    const handleAccountPinClick = async (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
@@ -145,7 +161,9 @@ export const MultichainAccountMenu = ({
       onToggle?.();
     };
 
-    const handleAccountHideClick = async (mouseEvent: React.MouseEvent) => {
+    const handleAccountHideClick = async (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
@@ -172,7 +190,9 @@ export const MultichainAccountMenu = ({
       onToggle?.();
     };
 
-    const handleAccountRemoveClick = (mouseEvent: React.MouseEvent) => {
+    const handleAccountRemoveClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
       // TODO: Implement account remove click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
@@ -181,27 +201,31 @@ export const MultichainAccountMenu = ({
     const baseMenuItems: MenuItemConfig[] = [
       {
         textKey: 'accountDetails',
-        iconName: IconName.Details,
+        iconName: DesignSystemIconName.Details,
         onClick: handleAccountDetailsClick,
       },
       {
         textKey: 'rename',
-        iconName: IconName.Edit,
+        iconName: DesignSystemIconName.Edit,
         onClick: handleAccountRenameClick,
       },
       {
         textKey: 'addresses',
-        iconName: IconName.QrCode,
+        iconName: DesignSystemIconName.QrCode,
         onClick: handleAccountAddressesClick,
       },
       {
         textKey: isPinned ? 'unpin' : 'pinToTop',
-        iconName: isPinned ? IconName.Unpin : IconName.Pin,
+        iconName: isPinned
+          ? DesignSystemIconName.Unpin
+          : DesignSystemIconName.Pin,
         onClick: handleAccountPinClick,
       },
       {
         textKey: isHidden ? 'showAccount' : 'hideAccount',
-        iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
+        iconName: isHidden
+          ? DesignSystemIconName.Eye
+          : DesignSystemIconName.EyeSlash,
         onClick: handleAccountHideClick,
       },
     ];
@@ -209,9 +233,9 @@ export const MultichainAccountMenu = ({
     if (isRemovable) {
       baseMenuItems.push({
         textKey: 'remove',
-        iconName: IconName.Trash,
+        iconName: DesignSystemIconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: TextColor.errorDefault,
+        textColor: DesignSystemTextColor.ErrorDefault,
       });
     }
 

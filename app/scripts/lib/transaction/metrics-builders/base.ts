@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
-import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
+import { isEIP1559Transaction } from '../../../../../shared/lib/transaction.utils';
 import type { TransactionMetricsBuilder } from './types';
 
 export const getBaseMetricsProperties: TransactionMetricsBuilder = async ({

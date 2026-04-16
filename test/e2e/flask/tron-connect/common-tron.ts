@@ -1,8 +1,8 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -48,7 +48,7 @@ export const withTronAccountSnap = async (
   await withFixtures(
     {
       forceBip44Version: false,
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withEnabledNetworks({
           tron: {
             [MultichainNetworks.TRON]: true,
@@ -84,7 +84,7 @@ export const withTronAccountSnap = async (
       ],
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
 
       const accountListPage = new AccountListPage(driver);
       const homepage = new Homepage(driver);

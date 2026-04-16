@@ -32,7 +32,7 @@ jest.mock('webextension-polyfill');
 jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },

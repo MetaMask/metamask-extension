@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -22,7 +22,7 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
-  } = useSelector(getValidationErrors);
+  } = useSelector(getValidationErrors, shallowEqual);
 
   return Boolean(
     fromToken &&

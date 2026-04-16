@@ -1,8 +1,8 @@
 import { version as VERSION } from '../../package.json';
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
 import { buildBundleSizeDiffSection } from './bundle-size';
-import { getDappBenchmarkComment } from './dapp-benchmarks';
 import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
+import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
 
 start().catch(console.error);
@@ -17,8 +17,9 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
-    LAVAMOAT_POLICY_CHANGED,
-    POST_NEW_BUILDS,
+    BUILDS_FROM_SHA,
+    BUILDS_FROM_RUN,
+    TEST_PLAN_VERSION,
   } = process.env;
 
   if (!PR_NUMBER) {
@@ -42,15 +43,21 @@ async function start(): Promise<void> {
     );
   }
 
-  const artifacts = getArtifactLinks(HOST_URL, OWNER, REPOSITORY, RUN_ID);
+  const artifacts = getArtifactLinks(
+    HOST_URL,
+    OWNER,
+    REPOSITORY,
+    BUILDS_FROM_RUN || RUN_ID,
+  );
 
-  const artifactsBody = await buildArtifactsBody({
+  const artifactsBody = buildArtifactsBody({
     hostUrl: HOST_URL,
     version: VERSION,
     shortSha: HEAD_COMMIT_HASH.slice(0, 7),
     artifacts,
-    postNewBuilds: POST_NEW_BUILDS === 'true',
-    lavamoatPolicyChanged: LAVAMOAT_POLICY_CHANGED === 'true',
+    buildsFromSha: BUILDS_FROM_SHA
+      ? BUILDS_FROM_SHA.slice(0, 7)
+      : HEAD_COMMIT_HASH.slice(0, 7),
   });
 
   let commentBody = artifactsBody;
@@ -61,14 +68,17 @@ async function start(): Promise<void> {
   );
 
   commentBody += await buildSectionWithFallback(
-    () => getDappBenchmarkComment(),
-    'Dapp page load benchmarks',
-  );
-
-  commentBody += await buildSectionWithFallback(
     () => buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
     'Bundle size diffs',
   );
+
+  // Add AI-generated test plan section when a test plan was generated.
+  if (TEST_PLAN_VERSION) {
+    commentBody += await buildSectionWithFallback(
+      () => buildTestPlanSection(HOST_URL, TEST_PLAN_VERSION),
+      'AI Test Plan',
+    );
+  }
 
   await postCommentWithMetamaskBot({
     commentBody,
@@ -76,6 +86,5 @@ async function start(): Promise<void> {
     repository: REPOSITORY,
     prNumber: PR_NUMBER,
     commentToken: PR_COMMENT_TOKEN,
-    optionalLog: `Announcement:\n${commentBody}`,
   });
 }

@@ -5,6 +5,8 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  POPUP_FILE,
+  SIDEPANEL_FILE,
 } from '../constants/app';
 
 /**
@@ -12,13 +14,13 @@ import {
  */
 const getEnvironmentTypeMemo = memoize((url: string) => {
   const parsedUrl = new URL(url);
-  if (parsedUrl.pathname === '/popup.html') {
+  if (parsedUrl.pathname === `/${POPUP_FILE}`) {
     return ENVIRONMENT_TYPE_POPUP;
   } else if (['/home.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
-  } else if (parsedUrl.pathname === '/sidepanel.html') {
+  } else if (parsedUrl.pathname === `/${SIDEPANEL_FILE}`) {
     return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
@@ -39,3 +41,13 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  */
 export const getEnvironmentType = (url = window.location.href): string =>
   getEnvironmentTypeMemo(url);
+
+export const isInteractiveUI = (url = globalThis.location.href) => {
+  const environmentType = getEnvironmentType(url);
+
+  return (
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  );
+};

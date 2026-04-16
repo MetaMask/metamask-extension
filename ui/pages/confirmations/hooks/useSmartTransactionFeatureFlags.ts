@@ -6,7 +6,7 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import {
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/lib/selectors';
 import {
   fetchSmartTransactionsLiveness,
   setSmartTransactionsRefreshInterval,

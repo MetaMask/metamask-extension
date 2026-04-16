@@ -4,7 +4,7 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../solana/common-solana';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
@@ -19,10 +19,14 @@ describe('Send Solana', function () {
         }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
+
+        // Switch to Solana via the UI. Enabling it through fixtures causes a redirect
+        // back to the default network because the snap is not yet initialized
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

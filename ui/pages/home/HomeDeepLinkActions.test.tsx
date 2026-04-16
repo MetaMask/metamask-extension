@@ -1,10 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import { HomeQueryParams } from '../../../shared/lib/deep-links/routes/home';
 import { toggleNetworkMenu } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -38,18 +37,10 @@ const createWrapper = (options: {
     },
   });
 
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <Provider store={store}>
-      <MemoryRouter
-        initialEntries={[`${pathname}${search}`]}
-        // TODO: this is to avoid warnings in test, we can remove this post react-router v7 upgrade
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
-      >
-        {children}
-      </MemoryRouter>
-    </Provider>
-  );
+  const Wrapper = createMemoryRouterWrapper({
+    store,
+    initialEntries: [`${pathname}${search}`],
+  });
 
   return { Wrapper, store };
 };

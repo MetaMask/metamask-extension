@@ -19,7 +19,8 @@ import {
 } from '../../../shared/constants/preferences';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
  * Referral status for an account
@@ -43,7 +44,9 @@ export type PreferencesControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link PreferencesController}.
  */
-export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+export type PreferencesControllerActions =
+  | PreferencesControllerGetStateAction
+  | PreferencesControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link PreferencesController} changes.
@@ -83,7 +86,6 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
-  petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
@@ -117,13 +119,8 @@ export type PreferencesControllerState = Omit<
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
-  | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
-  // TODO: Remove identies, lostIdentities and selectedAddress from here once the state type is updated in core
-  | 'identities'
-  | 'lostIdentities'
-  | 'selectedAddress'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -144,8 +141,6 @@ export type PreferencesControllerState = Omit<
   theme: ThemeType;
   use4ByteResolution: boolean;
   useAddressBarEnsResolution: boolean;
-  /** @deprecated Use avatarType instead */
-  useBlockie: boolean;
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
@@ -153,6 +148,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
+  showSidePanelMigrationToast: boolean;
   watchEthereumAccountEnabled: boolean;
 };
 
@@ -186,10 +182,9 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
-      showDefaultAddress: false,
+      showDefaultAddress: true,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
@@ -206,15 +201,15 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      useSidePanelAsDefault: false,
+      useSidePanelAsDefault: true,
     },
     securityAlertsEnabled: true,
+    showSidePanelMigrationToast: false,
     snapRegistryList: {},
     snapsAddSnapAccountModalDismissed: false,
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: false,
     useCurrencyRateCheck: true,
     useExternalNameSources: true,
     // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
@@ -343,6 +338,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showSidePanelMigrationToast: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
   snapRegistryList: {
     includeInStateLogs: true,
     persist: true,
@@ -374,13 +375,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   useAddressBarEnsResolution: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  /** @deprecated Use avatarType instead */
-  useBlockie: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -460,6 +454,51 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setPasswordForgotten',
+  'setUsePhishDetect',
+  'setUseMultiAccountBalanceChecker',
+  'setUseSafeChainsListValidation',
+  'toggleExternalServices',
+  'setUseTokenDetection',
+  'setUseNftDetection',
+  'setUse4ByteResolution',
+  'setUseCurrencyRateCheck',
+  'setOpenSeaEnabled',
+  'setSecurityAlertsEnabled',
+  'setAddSnapAccountEnabled',
+  'setWatchEthereumAccountEnabled',
+  'setUseExternalNameSources',
+  'setUseTransactionSimulations',
+  'setAdvancedGasFee',
+  'setTheme',
+  'addKnownMethodData',
+  'setCurrentLocale',
+  'setAccountLabel',
+  'setFeatureFlag',
+  'setPreference',
+  'getPreferences',
+  'getIpfsGateway',
+  'setIpfsGateway',
+  'setIsIpfsGatewayEnabled',
+  'setUseAddressBarEnsResolution',
+  'setLedgerTransportPreference',
+  'setDismissSeedBackUpReminder',
+  'setOverrideContentSecurityPolicyHeader',
+  'setManageInstitutionalWallets',
+  'setServiceWorkerKeepAlivePreference',
+  'setUseSidePanelAsDefault',
+  'setShowDefaultAddress',
+  'setDefaultAddressScope',
+  'setSnapsAddSnapAccountModalDismissed',
+  'resetState',
+  'addReferralApprovedAccount',
+  'addReferralPassedAccount',
+  'addReferralDeclinedAccount',
+  'removeReferralDeclinedAccount',
+  'setAccountsReferralApproved',
+] as const;
+
 export class PreferencesController extends BaseController<
   typeof controllerName,
   PreferencesControllerState,
@@ -503,6 +542,11 @@ export class PreferencesController extends BaseController<
     globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -513,18 +557,6 @@ export class PreferencesController extends BaseController<
   setPasswordForgotten(forgottenPassword: boolean): void {
     this.update((state) => {
       state.forgottenPassword = forgottenPassword;
-    });
-  }
-
-  /**
-   * Setter for the `useBlockie` property
-   *
-   * @deprecated Use setAvatarType instead
-   * @param val - Whether or not the user prefers blockie indicators
-   */
-  setUseBlockie(val: boolean): void {
-    this.update((state) => {
-      state.useBlockie = val;
     });
   }
 
@@ -819,10 +851,24 @@ export class PreferencesController extends BaseController<
     value: Preferences[typeof preference],
   ): Preferences {
     const currentPreferences = this.getPreferences();
-    const updatedPreferences = {
+    let updatedPreferences: Preferences = {
       ...currentPreferences,
       [preference]: value,
     };
+
+    // Full-screen and default side panel are mutually exclusive when enabled.
+    if (preference === 'showExtensionInFullSizeView' && value === true) {
+      updatedPreferences = {
+        ...updatedPreferences,
+        useSidePanelAsDefault: false,
+      };
+    }
+    if (preference === 'useSidePanelAsDefault' && value === true) {
+      updatedPreferences = {
+        ...updatedPreferences,
+        showExtensionInFullSizeView: false,
+      };
+    }
 
     this.update((state) => {
       state.preferences = updatedPreferences;
@@ -943,9 +989,7 @@ export class PreferencesController extends BaseController<
   }
 
   setUseSidePanelAsDefault(value: boolean): void {
-    this.update((state) => {
-      state.preferences.useSidePanelAsDefault = value;
-    });
+    this.setPreference('useSidePanelAsDefault', value);
   }
 
   setShowDefaultAddress(value: boolean): void {
@@ -963,6 +1007,12 @@ export class PreferencesController extends BaseController<
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
+    });
+  }
+
+  dismissSidePanelMigrationToast(): void {
+    this.update((state) => {
+      state.showSidePanelMigrationToast = false;
     });
   }
 
