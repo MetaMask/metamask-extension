@@ -66,7 +66,7 @@ Copy this checklist and tick items as you go (skip any step the [decision tree](
 - [ ] **Step 1:** Plan — outcome, preconditions, existing coverage, test name
 - [ ] **Step 2:** Page objects — skip if the UI is already covered by existing page objects
 - [ ] **Step 3:** Flows — optional; skip if the journey is not reused across specs
-- [ ] **Step 4:** Spec file — `withFixtures`, `FixtureBuilderV2`, page objects only in the spec body
+- [ ] **Step 4:** Spec file — `withFixtures`, `FixtureBuilderV2`, page objects and flows only in the spec body (no hardcoded selectors)
 - [ ] **Step 5:** Fixtures, mocks, flags — state, `testSpecificMock`, feature flags (registry baseline + optional `manifestFlags` override), local node if needed
 - [ ] **Step 6:** Run and debug — `yarn build:test` / `yarn test:e2e:single`, fix flakes without sleeps
 - [ ] **Pre-submit:** [Checklist below](#pre-submit-checklist) (lint, POM, `title`, snap privacy helper when applicable)

@@ -98,6 +98,246 @@ myNewFeatureFlag: {
 
 Then override per test with `manifestFlags.remoteFeatureFlags` when you need a non-default value. Run the repo’s feature-flag sync / drift checks if your team requires them (see `.github/workflows/check-feature-flag-registry-drift.yml`).
 
+### Spec with custom fixture state
+
+Use `FixtureBuilderV2` chained methods to set up wallet state declaratively instead of clicking through the UI. Browse `test/e2e/fixtures/fixture-builder-v2.ts` for all available `with*` methods.
+
+**Dedicated builder method** — use when the pattern is reused across multiple specs:
+
+```typescript
+fixtures: new FixtureBuilderV2()
+  .withNetworkControllerDoubleNode()
+  .withPermissionControllerConnectedToTestDapp({
+    chainIds: [1337, 1338],
+  })
+  .build(),
+```
+
+**Inline `withXController()` — one-off state** for a single spec. Pass a partial state object directly; no need to create a builder method:
+
+```typescript
+// Seed PreferencesController + CurrencyController for a fiat-display scenario
+fixtures: new FixtureBuilderV2()
+  .withPreferencesController({
+    preferences: { showFiatInTestnets: true },
+    useCurrencyRateCheck: true,
+  })
+  .withCurrencyController({
+    currencyRates: {
+      ETH: {
+        conversionDate: Date.now(),
+        conversionRate: 3401,
+        usdConversionRate: 3401,
+      },
+    },
+  })
+  .build(),
+```
+
+```typescript
+// Inject a large transactions array to stress-test port-stream chunking
+fixtures: new FixtureBuilderV2()
+  .withTransactionController({ transactions: largeTransactions })
+  .withMetaMetricsController({
+    metaMetricsId: 'fake-metrics-id',
+    participateInMetaMetrics: true,
+  })
+  .build(),
+```
+
+**When to add a custom builder method:** If the same fixture setup is reused across multiple specs, add a dedicated `with*` method to `FixtureBuilderV2` (e.g. `.withNetworkControllerDoubleNode()`). For one-off state, use `withXController()` directly to set controller state inline without creating a new method.
+
+### Spec with custom local node(s) setup
+
+By default, `withFixtures` starts a single Anvil node with the default configuration. Override `localNodeOptions` when your test needs multiple nodes or custom node settings (e.g. block time, chain ID, pre-deployed contracts).
+
+**Single node with custom options** (plain object shorthand):
+
+```typescript
+await withFixtures(
+  {
+    fixtures: new FixtureBuilderV2().build(),
+    title: this.test?.fullTitle(),
+    localNodeOptions: {
+      hardfork: 'muirGlacier',
+    },
+  },
+  async ({ driver }) => {
+    /* ... */
+  },
+);
+```
+
+**Multiple nodes** (array form):
+
+```typescript
+await withFixtures(
+  {
+    fixtures: new FixtureBuilderV2().withNetworkControllerTripleNode().build(),
+    title: this.test?.fullTitle(),
+    localNodeOptions: [
+      {
+        type: 'anvil',
+      },
+      {
+        type: 'anvil',
+        options: {
+          blockTime: 2,
+          port: 8546,
+          chainId: 1338,
+        },
+      },
+      {
+        type: 'anvil',
+        options: {
+          port: 7777,
+          chainId: 1000,
+        },
+      },
+    ],
+  },
+  async ({ driver }) => {
+    /* ... */
+  },
+);
+```
+
+### Spec with pre-deployed smart contracts
+
+Use the `smartContract` option in `withFixtures` to deploy a contract on the local node before the test runs. The contract address is available via `contractRegistry.getContractAddress(smartContract)` inside the callback.
+
+**Single contract** (pass an enum value from `SMART_CONTRACTS`):
+
+```typescript
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+
+const smartContract = SMART_CONTRACTS.NFTS;
+
+await withFixtures(
+  {
+    dappOptions: { numberOfTestDapps: 1 },
+    fixtures: new FixtureBuilderV2()
+      .withPermissionControllerConnectedToTestDapp()
+      .build(),
+    smartContract,
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver, contractRegistry }) => {
+    const contractAddress = contractRegistry.getContractAddress(smartContract);
+    // ...
+  },
+);
+```
+
+**Contract with custom deployer** (e.g. deploy from a Ledger account):
+
+```typescript
+await withFixtures(
+  {
+    dappOptions: { numberOfTestDapps: 1 },
+    fixtures: new FixtureBuilderV2()
+      .withLedgerAccount()
+      .withPermissionControllerConnectedToTestDapp({
+        account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+      })
+      .build(),
+    smartContract: [
+      {
+        name: SMART_CONTRACTS.HST,
+        deployerOptions: {
+          fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        },
+      },
+    ],
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver, contractRegistry }) => {
+    /* ... */
+  },
+);
+```
+
+**Contract + custom local node** (e.g. specific mnemonic for an insufficient-funds scenario):
+
+```typescript
+await withFixtures(
+  {
+    dappOptions: { numberOfTestDapps: 1 },
+    fixtures: new FixtureBuilderV2()
+      .withPermissionControllerConnectedToTestDapp()
+      .build(),
+    localNodeOptions: {
+      mnemonic: 'test test test test test test test test test test test junk',
+    },
+    smartContract: SMART_CONTRACTS.NFTS,
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver, contractRegistry }) => {
+    /* ... */
+  },
+);
+```
+
+### Spec with test dapps
+
+Use `dappOptions` to serve one or more test dapps alongside the extension.
+
+**Single test dapp:**
+
+```typescript
+await withFixtures(
+  {
+    dappOptions: { numberOfTestDapps: 1 },
+    fixtures: new FixtureBuilderV2()
+      .withPermissionControllerConnectedToTestDapp()
+      .build(),
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver }) => {
+    /* ... */
+  },
+);
+```
+
+**Multiple test dapps** (e.g. request queueing across origins):
+
+```typescript
+await withFixtures(
+  {
+    dappOptions: { numberOfTestDapps: 2 },
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetworkControllerPerDomain()
+      .build(),
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver }) => {
+    /* ... */
+  },
+);
+```
+
+**Custom dapp path** (e.g. snap simple keyring site):
+
+```typescript
+import { DAPP_PATH } from '../../constants';
+
+await withFixtures(
+  {
+    dappOptions: {
+      customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+    },
+    fixtures: new FixtureBuilderV2()
+      .withSnapsPrivacyWarningAlreadyShown()
+      .build(),
+    testSpecificMock: mockSnapSimpleKeyringAndSite,
+    title: this.test?.fullTitle(),
+  },
+  async ({ driver }) => {
+    /* ... */
+  },
+);
+```
+
 ## Page object (`test/e2e/page-objects/pages/<area>/<name>.ts`)
 
 ```typescript
