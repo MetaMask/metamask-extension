@@ -43,6 +43,7 @@ describe('Name lookup', function () {
         await homePage.checkPageIsLoaded();
 
         await homePage.startSendFlow();
+        await sendPage.checkPageIsLoaded();
 
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient('metamask.domain');
