@@ -1472,10 +1472,12 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation
-  await server
-    .forGet('https://on-ramp.api.cx.metamask.io/geolocation')
-    .thenCallback(() => {
+  // On Ramp: Geolocation (production and dev environments)
+  for (const host of [
+    'on-ramp.api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
       return {
         statusCode: 200,
         body: 'US-TX',
@@ -1484,6 +1486,7 @@ async function setupMocking(
         },
       };
     });
+  }
 
   // Snaps: Execution environment html
   await server

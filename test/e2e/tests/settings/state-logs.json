@@ -26715,6 +26715,20 @@
       "npm:@metamask/message-signing-snap": {
         "blocked": "boolean",
         "enabled": "boolean",
+      "0xaa36a7": {
+        ".": {
+          "address": "string",
+          "chainId": "string",
+          "ensName": "string"
+        }
+      }
+    },
+    "ensResolutionsByAddress": {},
+    "error": "null",
+    "estimatedGasFeeTimeBounds": {},
+    "events": {
+      "cronjob-npm:@metamask/tron-wallet-snap-0": {
+        "date": "string",
         "id": "string",
         "initialConnections": {
           "https://app.metamask.io": {},
@@ -27479,6 +27493,38 @@
           "obtainedAt": "number"
         }
       }
+    ],
+    "knownMethodData": {},
+    "lastCompletedWithdrawalTimestamp": "null",
+    "lastCompletedWithdrawalTxHashes": [],
+    "lastDepositResult": "null",
+    "lastDepositTransactionId": "null",
+    "lastError": "null",
+    "lastFetchedAt": "number",
+    "lastFetchedBlockNumbers": {},
+    "lastUpdateTimestamp": "number",
+    "lastUpdated": "number",
+    "lastUpdatedAt": "null",
+    "lastUpdatedFromVersion": "null",
+    "lastViewedUserSurvey": "null",
+    "latestNonAnonymousEventTimestamp": "number",
+    "ledgerTransportType": "string",
+    "logs": {},
+    "lastWithdrawResult": "null",
+    "manageInstitutionalWallets": "boolean",
+    "marketData": {
+      "0x1": {},
+      "0x2105": {},
+      "0x38": {},
+      "0x539": {},
+      "0x89": {},
+      "0xa": {},
+      "0xa4b1": {},
+      "0xe708": {}
+    },
+    "marketFilterPreferences": {
+      "optionId": "string",
+      "direction": "string"
     },
     "storageMetadata": [],
     "storageWriteErrorType": "null",
@@ -27992,6 +28038,51 @@
             "invoker": "string",
             "parentCapability": "string"
           }
+      ]
+    },
+    "thresholdCache": {
+      "*": "number"
+    },
+    "localOverrides": {},
+    "location": "string",
+    "rewardsAccounts": {},
+    "rewardsActiveAccount": "null",
+    "rewardsPointsEstimateHistory": [],
+    "rewardsSeasons": {},
+    "rewardsSeasonStatuses": {},
+    "rewardsSubscriptions": {},
+    "securityAlertsEnabled": "boolean",
+    "seedPhraseBackedUp": "null",
+    "segmentApiCalls": {},
+    "selectedAccountGroup": "string",
+    "selectedMultichainNetworkChainId": "string",
+    "selectedPaymentToken": "null",
+    "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
+    "shieldEndingToastLastClickedOrClosed": "null",
+    "shieldPausedToastLastClickedOrClosed": "null",
+    "showAccountBanner": "boolean",
+    "showBetaHeader": "boolean",
+    "showDownloadMobileAppSlide": "boolean",
+    "showNetworkBanner": "boolean",
+    "showPermissionsTour": "boolean",
+    "showShieldEntryModalOnce": "null",
+    "showSidePanelMigrationToast": "boolean",
+    "storageWriteErrorType": "null",
+    "showTestnetMessageInDropdown": "boolean",
+    "sidePanelGasPollTokens": [],
+    "signature": "string",
+    "signatureRequests": {},
+    "signatureSecurityAlertResponses": {},
+    "syncQueue": {
+      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
+        {
+          "address": "string",
+          "scopes": ["string"]
+        },
+        {
+          "address": "string",
+          "scopes": ["string", "string", "string"]
         }
       },
       "https://portfolio-builds.metafi-dev.codefi.network": {
@@ -28243,6 +28334,11 @@
           }
         }
       },
+      }
+    },
+    "status": "string",
+    "storageMetadata": [],
+    "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
         "origin": "string",
         "permissions": {

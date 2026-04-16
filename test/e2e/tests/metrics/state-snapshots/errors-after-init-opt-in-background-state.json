@@ -152,6 +152,7 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "GatorPermissionsController": "object",
+  "GeolocationController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "encryptionKey": "string",
