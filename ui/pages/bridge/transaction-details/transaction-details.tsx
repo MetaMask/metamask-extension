@@ -80,6 +80,7 @@ import {
   getIsDelayed,
   STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
+import { formatTokenAmount } from '../utils/quote';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
