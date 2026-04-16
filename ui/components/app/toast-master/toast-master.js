@@ -880,14 +880,14 @@ function SidePanelMigrationToast() {
           <Icon name={IconName.Info} color={IconColor.iconDefault} />
         }
         text={t('sidePanelMigrationToast', [
-          <TextButton
+          <button
             key="side-panel-migration-switch-back"
-            size={TextButtonSize.BodyMd}
+            type="button"
             onClick={handleSwitchBackToPopup}
-            className="inline h-auto min-h-0 p-0 align-baseline text-inherit underline underline-offset-[0.5em] [text-decoration-skip-ink:none] bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit focus-visible:outline-none"
+            className="inline h-auto min-h-0 cursor-pointer bg-transparent p-0 align-baseline text-inherit underline underline-offset-[0.25em]"
           >
             {t('switchBackToPopup')}
-          </TextButton>,
+          </button>,
         ])}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
