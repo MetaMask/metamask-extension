@@ -6,6 +6,7 @@ import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
   REVEAL_SRP_LIST_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import RecoveryPhrase from './review-recovery-phrase';
@@ -186,6 +187,27 @@ describe('Review Recovery Phrase Component', () => {
     fireEvent.click(closeButton);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('onClose should navigate to security and password route when from settings security but not reminder', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromSettingsSecurity=true',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const closeButton = getByTestId(
+      'reveal-recovery-phrase-review-close-button',
+    );
+
+    fireEvent.click(closeButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE, {
       replace: true,
     });
   });

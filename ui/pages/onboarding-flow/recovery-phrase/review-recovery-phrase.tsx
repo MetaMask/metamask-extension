@@ -28,6 +28,7 @@ import {
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -171,8 +172,12 @@ export default function RecoveryPhrase({
   }, [navigate, nextRouteQueryString]);
 
   const onClose = useCallback(() => {
-    navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
-  }, [navigate]);
+    if (isFromSettingsSecurity && !isFromReminder) {
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    } else {
+      navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
+    }
+  }, [navigate, isFromSettingsSecurity, isFromReminder]);
 
   return (
     <Box
@@ -187,7 +192,7 @@ export default function RecoveryPhrase({
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
         )}
-        {isFromReminder && isFromSettingsSecurity ? (
+        {isFromSettingsSecurity ? (
           <Box
             className="recovery-phrase__header grid w-full"
             alignItems={BoxAlignItems.Center}
