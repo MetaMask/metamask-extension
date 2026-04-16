@@ -11,5 +11,7 @@ export const PerpsDepositInfo = () => {
     tokenAddress: ARBITRUM_USDC.address,
   });
 
-  return <CustomAmountInfo currency={PERPS_CURRENCY} hasMax />;
+  return (
+    <CustomAmountInfo currency={PERPS_CURRENCY} hasMax hidePayTokenAmount />
+  );
 };

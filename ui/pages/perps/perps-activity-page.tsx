@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -12,21 +12,34 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { mockTransactions } from '../../components/app/perps/mocks';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
-import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from '../../components/app/perps/types';
+import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
@@ -40,9 +53,27 @@ import {
 const PerpsActivityPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
+  // Fetch real transaction data from the Perps controller
+  const { transactions, isLoading, error, refetch } =
+    usePerpsTransactionHistory();
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
+
+  // Refetch on mount to ensure fresh data
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(
@@ -57,8 +88,8 @@ const PerpsActivityPage: React.FC = () => {
 
   // Filter and group transactions
   const filteredTransactions = useMemo(
-    () => filterTransactionsByType(mockTransactions, activeFilter),
-    [activeFilter],
+    () => filterTransactionsByType(transactions, activeFilter),
+    [transactions, activeFilter],
   );
 
   const groupedTransactions = useMemo(
@@ -72,11 +103,23 @@ const PerpsActivityPage: React.FC = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
+  // Navigate to the market detail page when an order transaction is clicked
+  const handleTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      if (transaction.type === 'order') {
+        navigate(
+          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
+        );
+      }
+    },
+    [navigate],
+  );
+
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
@@ -108,7 +151,29 @@ const PerpsActivityPage: React.FC = () => {
 
         {/* Transaction List */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          {groupedTransactions.length === 0 ? (
+          {/* Loading State */}
+          {isLoading && transactions.length === 0 && (
+            <PerpsActivityPageSkeleton />
+          )}
+
+          {/* Error State */}
+          {!isLoading && error && (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={8}
+              paddingBottom={8}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+            >
+              <Text variant={TextVariant.BodyMd} color={TextColor.ErrorDefault}>
+                {error}
+              </Text>
+            </Box>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && groupedTransactions.length === 0 && (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -124,7 +189,11 @@ const PerpsActivityPage: React.FC = () => {
                 {t('perpsNoTransactions')}
               </Text>
             </Box>
-          ) : (
+          )}
+
+          {/* Transaction Groups */}
+          {!isLoading &&
+            !error &&
             groupedTransactions.map((group) => (
               <Box
                 key={group.date}
@@ -153,12 +222,16 @@ const PerpsActivityPage: React.FC = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
+                      onClick={
+                        transaction.type === 'order'
+                          ? handleTransactionClick
+                          : undefined
+                      }
                     />
                   ))}
                 </Box>
               </Box>
-            ))
-          )}
+            ))}
         </Box>
       </Content>
     </Page>

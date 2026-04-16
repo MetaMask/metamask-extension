@@ -18,7 +18,7 @@ describe('BridgeAsset', () => {
     );
 
     expect(getByText('ETH')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render ERC20 asset', () => {
@@ -32,7 +32,7 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByText('mUSD')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render asset with balance', () => {
@@ -50,7 +50,7 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByText('mUSD')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render asset with accountType', () => {
@@ -66,6 +66,58 @@ describe('BridgeAsset', () => {
     );
     expect(getByText('BTC')).toBeInTheDocument();
     expect(getByText('Native SegWit')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
+  });
+
+  it('should render verified badge when isVerified is true', () => {
+    const { getByTestId } = renderWithProvider(
+      <BridgeAsset
+        asset={{
+          ...toBridgeToken(
+            BRIDGE_CHAINID_COMMON_TOKEN_PAIR['eip155:1'] as never,
+          ),
+          isVerified: true,
+        }}
+        selected={false}
+      />,
+      configureStore(createBridgeMockStore({})),
+    );
+    expect(getByTestId('bridge-asset-verified-badge')).toBeInTheDocument();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
+  });
+
+  it('does not render verified badge when isVerified is false', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <BridgeAsset
+        asset={{
+          ...toBridgeToken(
+            BRIDGE_CHAINID_COMMON_TOKEN_PAIR['eip155:1'] as never,
+          ),
+          isVerified: false,
+        }}
+        selected={false}
+      />,
+      configureStore(createBridgeMockStore({})),
+    );
+    expect(getByTestId('bridge-asset-symbol')).toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-asset-verified-badge'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render verified badge when isVerified is absent', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <BridgeAsset
+        asset={toBridgeToken(
+          BRIDGE_CHAINID_COMMON_TOKEN_PAIR['eip155:1'] as never,
+        )}
+        selected={false}
+      />,
+      configureStore(createBridgeMockStore({})),
+    );
+    expect(getByTestId('bridge-asset-symbol')).toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-asset-verified-badge'),
+    ).not.toBeInTheDocument();
   });
 });

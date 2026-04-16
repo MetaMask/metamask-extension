@@ -1,18 +1,43 @@
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { ControllerGetStateAction } from '@metamask/base-controller';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
-  EstimatedPointsDto,
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
+import {
+  KeyringControllerSignPersonalMessageAction,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/messenger';
+import {
   EstimatePerpsContextDto,
-  EstimatePointsDto,
   EstimateShieldContextDto,
-  OptInStatusDto,
-  OptInStatusInputDto,
   PointsEventEarnType,
-  RewardsGeoMetadata,
   SeasonDtoState,
   SeasonRewardType,
   SeasonStatusState,
 } from '../../../../shared/types/rewards';
+import {
+  RewardsDataServiceGetOptInStatusAction,
+  RewardsDataServiceEstimatePointsAction,
+  RewardsDataServiceGetSeasonStatusAction,
+  RewardsDataServiceLoginAction,
+  RewardsDataServiceSiweLoginAction,
+  RewardsDataServiceMobileJoinAction,
+  RewardsDataServiceSiweJoinAction,
+  RewardsDataServiceMobileOptinAction,
+  RewardsDataServiceValidateReferralCodeAction,
+  RewardsDataServiceFetchGeoLocationAction,
+  RewardsDataServiceGetSeasonMetadataAction,
+  RewardsDataServiceGetDiscoverSeasonsAction,
+  RewardsDataServiceGenerateChallengeAction,
+} from './rewards-data-service-method-action-types';
+import { RewardsControllerMethodActions } from './rewards-controller-method-action-types';
 
 export type LoginResponseDto = {
   sessionId: string;
@@ -409,6 +434,110 @@ export type DiscoverSeasonsDto = {
    * Next season information
    */
   next: SeasonInfoDto | null;
+
+  /**
+   * Previous season information
+   */
+  previous: SeasonInfoDto | null;
+};
+
+/**
+ * Challenge DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type ChallengeDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  id: string;
+
+  /**
+   * The address of the challenge, either ethereum or solana
+   *
+   * @example '0xbd7d160C18b51527fEBd3D6B667143B5C519C32E'
+   */
+  address: string;
+
+  /**
+   * The domain of the challenge
+   *
+   * @example 'example.com'
+   */
+  domain: string;
+
+  /**
+   * The nonce of the challenge
+   *
+   * @example '1234567890'
+   */
+  nonce: bigint;
+
+  /**
+   * The issued at date of the challenge
+   *
+   * @example '2025-01-01T00:00:00.000Z'
+   */
+  issuedAt: string;
+
+  /**
+   * The expiration date of the challenge
+   *
+   * @example '2025-01-01T00:00:00.000Z'
+   */
+  expirationTime: string;
+
+  /**
+   * The SIWE (Sign-In with Ethereum) message to be signed
+   *
+   * @example 'example.com wants you to sign in with your Ethereum account: 0x...'
+   */
+  message: string;
+};
+
+/**
+ * Login DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type SiweLoginDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  challengeId: string;
+
+  /**
+   * The signature of the SIWE message
+   *
+   * @example '0x...'
+   */
+  signature: `0x${string}`;
+
+  /**
+   * Code provided by referrer
+   *
+   * @example '12345'
+   */
+  referralCode?: string;
+};
+
+/**
+ * Join DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type SiweJoinDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  challengeId: string;
+
+  /**
+   * The signature of the SIWE message
+   *
+   * @example '0x...'
+   */
+  signature: `0x${string}`;
 };
 
 export type SubscriptionReferralDetailsDto = {
@@ -657,17 +786,6 @@ export type Patch = {
 };
 
 /**
- * Action for updating state with opt-in response
- */
-export type RewardsControllerOptInAction = {
-  type: 'RewardsController:optIn';
-  handler: (
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ) => Promise<string | null>;
-};
-
-/**
  * Request for getting Perps discount
  */
 export type GetPerpsDiscountDto = {
@@ -696,110 +814,57 @@ export type PerpsDiscountData = {
 };
 
 /**
- * Action for getting opt-in status of multiple addresses with feature flag check
+ * Events that can be emitted by the RewardsController
  */
-export type RewardsControllerGetOptInStatusAction = {
-  type: 'RewardsController:getOptInStatus';
-  handler: (params: OptInStatusInputDto) => Promise<OptInStatusDto>;
-};
+export type RewardsControllerEvents =
+  | {
+      type: 'RewardsController:stateChange';
+      payload: [RewardsControllerState, Patch[]];
+    }
+  | RewardsControllerAccountLinkedEvent;
 
 /**
- * Action for estimating points for a given activity
+ * Action for getting the current state of the RewardsController
  */
-export type RewardsControllerEstimatePointsAction = {
-  type: 'RewardsController:estimatePoints';
-  handler: (request: EstimatePointsDto) => Promise<EstimatedPointsDto>;
-};
+export type RewardsControllerGetStateAction = ControllerGetStateAction<
+  'RewardsController',
+  RewardsControllerState
+>;
 
 /**
- * Action for checking if rewards feature is enabled via feature flag
+ * Actions that can be performed by the RewardsController
  */
-export type RewardsControllerIsRewardsFeatureEnabledAction = {
-  type: 'RewardsController:isRewardsFeatureEnabled';
-  handler: () => boolean;
-};
+export type RewardsControllerActions =
+  | RewardsControllerGetStateAction
+  | RewardsControllerMethodActions;
 
-/**
- * Action for validating referral codes
- */
-export type RewardsControllerValidateReferralCodeAction = {
-  type: 'RewardsController:validateReferralCode';
-  handler: (code: string) => Promise<boolean>;
-};
+// Don't reexport as per guidelines
+type AllowedActions =
+  | AccountsControllerGetSelectedMultichainAccountAction
+  | AccountsControllerListMultichainAccountsAction
+  | KeyringControllerSignPersonalMessageAction
+  | RewardsDataServiceLoginAction
+  | RewardsDataServiceSiweLoginAction
+  | RewardsDataServiceEstimatePointsAction
+  | RewardsDataServiceGetSeasonStatusAction
+  | RewardsDataServiceFetchGeoLocationAction
+  | RewardsDataServiceMobileOptinAction
+  | RewardsDataServiceValidateReferralCodeAction
+  | RewardsDataServiceMobileJoinAction
+  | RewardsDataServiceSiweJoinAction
+  | RewardsDataServiceGetOptInStatusAction
+  | RewardsDataServiceGetSeasonMetadataAction
+  | RewardsDataServiceGetDiscoverSeasonsAction
+  | RewardsDataServiceGenerateChallengeAction
+  | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | SnapControllerHandleRequestAction;
 
-/**
- * Action for checking if an account supports opt-in
- */
-export type RewardsControllerIsOptInSupportedAction = {
-  type: 'RewardsController:isOptInSupported';
-  handler: (account: InternalAccount) => boolean;
-};
+type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-/**
- * Action for linking an account to a subscription
- */
-export type RewardsControllerLinkAccountToSubscriptionAction = {
-  type: 'RewardsController:linkAccountToSubscriptionCandidate';
-  handler: (account: InternalAccount) => Promise<boolean>;
-};
-
-/**
- * Action for linking multiple accounts to a subscription candidate
- */
-export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
-  type: 'RewardsController:linkAccountsToSubscriptionCandidate';
-  handler: (
-    accounts: InternalAccount[],
-  ) => Promise<{ account: InternalAccount; success: boolean }[]>;
-};
-
-/**
- * Action for getting geo rewards metadata
- */
-export type RewardsControllerGetGeoRewardsMetadataAction = {
-  type: 'RewardsController:getGeoRewardsMetadata';
-  handler: () => Promise<RewardsGeoMetadata>;
-};
-
-/**
- * Action for getting candidate subscription ID
- */
-export type RewardsControllerGetCandidateSubscriptionIdAction = {
-  type: 'RewardsController:getCandidateSubscriptionId';
-  handler: () => Promise<string | null>;
-};
-
-/**
- * Action for getting whether the account (caip-10 format) has opted in
- */
-export type RewardsControllerGetHasAccountOptedInAction = {
-  type: 'RewardsController:getHasAccountOptedIn';
-  handler: (account: CaipAccountId) => Promise<boolean>;
-};
-
-/**
- * Action for getting the actual subscription ID for an account
- */
-export type RewardsControllerGetActualSubscriptionIdAction = {
-  type: 'RewardsController:getActualSubscriptionId';
-  handler: (account: CaipAccountId) => string | null;
-};
-
-/**
- * Action for getting season metadata
- */
-export type RewardsControllerGetSeasonMetadataAction = {
-  type: 'RewardsController:getSeasonMetadata';
-  handler: (type?: 'current' | 'next') => Promise<SeasonDtoState>;
-};
-
-/**
- * Action for getting season status
- */
-export type RewardsControllerGetSeasonStatusAction = {
-  type: 'RewardsController:getSeasonStatus';
-  handler: (
-    subscriptionId: string,
-    seasonId: string,
-  ) => Promise<SeasonStatusState | null>;
-};
+export type RewardsControllerMessenger = Messenger<
+  'RewardsController',
+  RewardsControllerActions | AllowedActions,
+  RewardsControllerEvents | AllowedEvents
+>;

@@ -23,7 +23,12 @@ import {
   selectRewardsAccountLinkedTimestamp,
 } from '../../ducks/rewards/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { useRewards, getUsdPricePerToken } from './useRewards';
+import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
+import {
+  useRewards,
+  getUsdPricePerToken,
+  useRewardsWithQuote,
+} from './useRewards';
 
 // Mock dependencies
 jest.mock('../../store/actions', () => ({
@@ -58,6 +63,24 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
   getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(),
   getSelectedAccountGroup: jest.fn(() => 'account-group-1'),
   getInternalAccountsFromGroupById: jest.fn(() => []),
+}));
+
+// Mock for primary wallet group accounts
+const mockPrimaryWalletGroupAccounts = {
+  current: [] as ReturnType<typeof createMockInternalAccount>[],
+};
+jest.mock('../rewards/usePrimaryWalletGroupAccounts', () => ({
+  usePrimaryWalletGroupAccounts: () => ({
+    accountGroupId: 'account-group-1',
+    accounts: mockPrimaryWalletGroupAccounts.current,
+  }),
+}));
+
+// Mock for formatAccountToCaipAccountId
+const mockFormatAccountToCaipAccountId = { current: jest.fn() };
+jest.mock('../../helpers/utils/rewards-utils', () => ({
+  formatAccountToCaipAccountId: (...args: unknown[]) =>
+    mockFormatAccountToCaipAccountId.current(...args),
 }));
 
 jest.mock('loglevel', () => ({
@@ -186,6 +209,15 @@ describe('useRewards', () => {
     );
     mockRewardsIsOptInSupported.mockReturnValue(
       jest.fn().mockResolvedValue(false),
+    );
+
+    // Initialize primary wallet group accounts mock
+    mockPrimaryWalletGroupAccounts.current = [mockSelectedAccount];
+
+    // Initialize formatAccountToCaipAccountId mock to return valid CAIP account
+    mockFormatAccountToCaipAccountId.current = jest.fn(
+      (address: string, chainIdArg: string) =>
+        `eip155:${chainIdArg}:${address}`,
     );
 
     mockUseSelector.mockImplementation(((selector: unknown) => {
@@ -1199,6 +1231,491 @@ describe('useRewards', () => {
       });
 
       expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+    });
+  });
+
+  describe('Hardware Wallet Support', () => {
+    const mockLedgerAccount = createMockInternalAccount({
+      address: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+      id: 'ledger-account-1',
+      name: 'Ledger Account',
+      keyringType: HardwareKeyringType.ledger,
+    });
+
+    const mockTrezorAccount = createMockInternalAccount({
+      address: '0x8888888888888888888888888888888888888888',
+      id: 'trezor-account-1',
+      name: 'Trezor Account',
+      keyringType: HardwareKeyringType.trezor,
+    });
+
+    const mockQrAccount = createMockInternalAccount({
+      address: '0x9999999999999999999999999999999999999999',
+      id: 'qr-account-1',
+      name: 'QR Account',
+      keyringType: HardwareKeyringType.qr,
+    });
+
+    it('should estimate points successfully with Ledger hardware wallet as active account', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 150, bonusBips: 0 };
+
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockLedgerAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.estimatedPoints).toBe(150);
+      expect(result.current.shouldShowRewardsRow).toBe(true);
+      expect(result.current.accountOptedIn).toBe(true);
+      expect(result.current.rewardsAccountScope).toEqual(mockLedgerAccount);
+    });
+
+    it('should estimate points successfully with Trezor hardware wallet as active account', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 200, bonusBips: 0 };
+
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockTrezorAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockTrezorAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.estimatedPoints).toBe(200);
+      expect(result.current.shouldShowRewardsRow).toBe(true);
+      expect(result.current.rewardsAccountScope).toEqual(mockTrezorAccount);
+    });
+
+    it('should estimate points successfully with QR hardware wallet as active account', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 250, bonusBips: 0 };
+
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockQrAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockQrAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.estimatedPoints).toBe(250);
+      expect(result.current.shouldShowRewardsRow).toBe(true);
+      expect(result.current.rewardsAccountScope).toEqual(mockQrAccount);
+    });
+
+    it('should show rewards row for hardware wallet that has not opted in but opt-in is supported', async () => {
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockLedgerAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockRewardsIsOptInSupported).toHaveBeenCalledWith({
+          account: mockLedgerAccount,
+        });
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.shouldShowRewardsRow).toBe(true);
+        expect(result.current.accountOptedIn).toBe(false);
+        expect(result.current.estimatedPoints).toBeNull();
+      });
+    });
+
+    it('should pass primary wallet group accounts to getRewardsCandidateSubscriptionId', async () => {
+      const mockHardwareAccounts = [mockLedgerAccount, mockTrezorAccount];
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = mockHardwareAccounts;
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue({ pointsEstimate: 100, bonusBips: 0 }),
+      );
+
+      renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsCandidateSubscriptionId).toHaveBeenCalledWith(
+          mockHardwareAccounts,
+        );
+      });
+    });
+  });
+
+  describe('useRewardsWithQuote Direct Tests', () => {
+    it('should handle null caipAccount from formatAccountToCaipAccountId', async () => {
+      // Make formatAccountToCaipAccountId return null
+      mockFormatAccountToCaipAccountId.current = jest.fn(() => null);
+
+      mockGetRewardsCandidateSubscriptionId.mockReturnValue(
+        jest.fn().mockResolvedValue('subscription-id'),
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useRewardsWithQuote({
+            quote: mockActiveQuote,
+            fromAddress: mockAddress,
+            fromAddressAccount: mockSelectedAccount,
+            chainId: mockChainId,
+          }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.estimatedPoints).toBeNull();
+      expect(result.current.accountOptedIn).toBeNull();
+      expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
+    });
+
+    it('should handle missing fromAddress gracefully', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useRewardsWithQuote({
+            quote: mockActiveQuote,
+            fromAddress: null,
+            fromAddressAccount: mockSelectedAccount,
+            chainId: mockChainId,
+          }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.estimatedPoints).toBeNull();
+      expect(mockGetRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+    });
+
+    it('should handle missing chainId gracefully', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useRewardsWithQuote({
+            quote: mockActiveQuote,
+            fromAddress: mockAddress,
+            fromAddressAccount: mockSelectedAccount,
+            chainId: null,
+          }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.estimatedPoints).toBeNull();
+      expect(mockGetRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+    });
+
+    it('should handle rewardsEnabled being false', async () => {
+      mockSelectRewardsEnabled.mockReturnValue(false as never);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useRewardsWithQuote({
+            quote: mockActiveQuote,
+            fromAddress: mockAddress,
+            fromAddressAccount: mockSelectedAccount,
+            chainId: mockChainId,
+          }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.accountOptedIn).toBeNull();
+      expect(mockGetRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Primary Wallet Group Accounts', () => {
+    it('should use primary wallet group accounts from usePrimaryWalletGroupAccounts hook', async () => {
+      const mockSoftwareAccount = createMockInternalAccount({
+        address: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        id: 'software-account-1',
+        name: 'Software Account',
+      });
+      const mockLedgerAccount = createMockInternalAccount({
+        address: '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        id: 'ledger-account-1',
+        name: 'Ledger Account',
+        keyringType: HardwareKeyringType.ledger,
+      });
+
+      const mixedAccounts = [mockSoftwareAccount, mockLedgerAccount];
+      mockPrimaryWalletGroupAccounts.current = mixedAccounts;
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockSoftwareAccount,
+      );
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue({ pointsEstimate: 100, bonusBips: 0 }),
+      );
+
+      renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsCandidateSubscriptionId).toHaveBeenCalledWith(
+          mixedAccounts,
+        );
+      });
+    });
+
+    it('should handle empty primary wallet group accounts', async () => {
+      mockPrimaryWalletGroupAccounts.current = [];
+      mockGetRewardsCandidateSubscriptionId.mockReturnValue(
+        jest.fn().mockResolvedValue(null),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.shouldShowRewardsRow).toBe(false);
+      });
+
+      expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Rewards State Management with Hardware Wallet Context', () => {
+    const mockLedgerAccount = createMockInternalAccount({
+      address: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+      id: 'ledger-account-1',
+      name: 'Ledger Account',
+      keyringType: HardwareKeyringType.ledger,
+    });
+
+    it('should return correct rewardsAccountScope for hardware wallet when opted in', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 100, bonusBips: 0 };
+
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockLedgerAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.rewardsAccountScope).toEqual(mockLedgerAccount);
+      expect(result.current.rewardsAccountScope?.metadata.keyring.type).toBe(
+        HardwareKeyringType.ledger,
+      );
+    });
+
+    it('should return null rewardsAccountScope when shouldShowRewardsRow is false', async () => {
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockLedgerAccount];
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.rewardsAccountScope).toBeNull();
+    });
+
+    it('should update state when hardware wallet account links after initial load', async () => {
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        mockLedgerAccount,
+      );
+      mockPrimaryWalletGroupAccounts.current = [mockLedgerAccount];
+
+      // Start with account not opted in
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockSelectRewardsAccountLinkedTimestamp.mockReturnValue(null as never);
+
+      const { result, rerender } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.accountOptedIn).toBe(false);
+        expect(result.current.shouldShowRewardsRow).toBe(true);
+      });
+
+      // Simulate account linking by updating the timestamp
+      mockSelectRewardsAccountLinkedTimestamp.mockReturnValue(
+        Date.now() as never,
+      );
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue({ pointsEstimate: 100, bonusBips: 0 }),
+      );
+
+      mockUseSelector.mockImplementation(((selector: unknown) => {
+        if (selector === mockGetFromToken) {
+          return mockGetFromToken({} as never);
+        }
+        if (selector === mockGetToToken) {
+          return mockGetToToken({} as never);
+        }
+        if (selector === mockGetQuoteRequest) {
+          return mockGetQuoteRequest({} as never);
+        }
+        if (selector === mockSelectRewardsEnabled) {
+          return mockSelectRewardsEnabled({} as never);
+        }
+        if (selector === mockSelectRewardsAccountLinkedTimestamp) {
+          return Date.now();
+        }
+        if (typeof selector === 'function') {
+          try {
+            return selector({} as never);
+          } catch {
+            // Not the account selector
+          }
+        }
+        return null;
+      }) as never);
+
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledTimes(2);
+      });
     });
   });
 });

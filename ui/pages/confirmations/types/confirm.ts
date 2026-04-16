@@ -47,6 +47,9 @@ export type SignatureRequestType = {
   decodedPermission?: DecodedPermission;
 };
 
+/**
+ * @deprecated Use {@link TransactionMeta} or {@link SignatureRequest} from the relevant controller package directly.
+ */
 export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
@@ -54,10 +57,6 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
-    enableEnforcedSimulations: boolean;
-    enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-    enforcedSimulationsSlippage: number;
-    enforcedSimulationsSlippageForTransactions: Record<string, number>;
     dappSwapComparisonData?: Record<
       string,
       { quotes?: QuoteResponse[]; latency?: number }

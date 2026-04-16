@@ -1,4 +1,5 @@
 import { Hex } from '@metamask/utils';
+import { type TokenListToken } from '@metamask/assets-controllers';
 import { AssetType } from '../../../../shared/constants/transaction';
 
 /** Information about a native or token asset */
@@ -28,6 +29,8 @@ export type Asset = (
   image: string;
   /** True if the asset implements ERC721 */
   isERC721?: boolean;
+  /** RWA metadata used for stock token UI */
+  rwaData?: TokenListToken['rwaData'];
   balance?: { value: string; display: string; fiat: string };
 };
 

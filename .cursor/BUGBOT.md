@@ -42,6 +42,71 @@ Use the rules in the [unit testing guidelines](rules/unit-testing-guidelines/RUL
 
 Use the rules in the [e2e-testing-guidelines](rules/e2e-testing-guidelines/RULE.md) to enforce the test quality and bug detection.
 
+#### 3.1 Deprecated Pattern Detection (Non-Blocking): Prefer `FixtureBuilderV2`
+
+- Analyze only changed lines in the PR diff.
+- Scope: `test/e2e/**/*.spec.{ts,js}` files.
+- Goal: discourage new usage of legacy `FixtureBuilder` when `FixtureBuilderV2` can be used.
+
+##### Trigger Signals (changed lines only)
+
+- Legacy import introduced:
+  - `import FixtureBuilder from '.../fixtures/fixture-builder'`
+  - Regex: `import\s+FixtureBuilder\s+from\s+['"].*/fixtures/fixture-builder['"]`
+- Legacy instantiation introduced:
+  - `new FixtureBuilder(...)`
+  - Regex: `new\s+FixtureBuilder\s*\(`
+
+##### Compatibility Check Before Reporting
+
+When a trigger is found, inspect methods chained from `new FixtureBuilder()` in the changed file.
+
+- If there are no custom methods (only `.build()`), report it.
+- If all used methods are supported in `FixtureBuilderV2`, report it.
+- If any required method is not available in `FixtureBuilderV2`, do not report this rule.
+
+Supported methods in `FixtureBuilderV2`:
+
+- `withAddressBookController`
+- `withCurrencyController`
+- `withPermissionController`
+- `withPreferencesController`
+- `withConversionRateDisabled`
+- `withEnabledNetworks`
+- `withPermissionControllerConnectedToTestDapp`
+
+##### Severity and Message
+
+- Severity: **HIGH** (deprecated pattern), non-blocking.
+- Suggested comment:
+  - `⚠️ DEPRECATED: This spec introduces legacy FixtureBuilder usage. Please use FixtureBuilderV2 when supported by the methods used in this test.`
+  - `✅ Use instead: import FixtureBuilderV2 from '.../fixtures/fixture-builder-v2' and instantiate new FixtureBuilderV2(...).`
+
+#### 3.2 Snap E2E Tests: Require `withSnapsPrivacyWarningAlreadyShown`
+
+- Analyze only changed lines in the PR diff.
+- Scope: `test/e2e/snaps/**/*.spec.{ts,js}` files.
+- Goal: ensure snap specs that use `FixtureBuilderV2` chain `.withSnapsPrivacyWarningAlreadyShown()` so the snap privacy warning modal is not shown during test runs (reduces flakiness and keeps tests focused on snap behavior).
+
+##### Trigger Signals (changed lines only)
+
+- File path matches: `test/e2e/snaps/**/*.spec.{ts,js}`.
+- FixtureBuilderV2 instantiation in the file: `new FixtureBuilderV2(`.
+
+##### Compatibility Check Before Reporting
+
+When both conditions hold, inspect the fixture builder chain in the same `withFixtures` / test block.
+
+- If the chain includes `.withSnapsPrivacyWarningAlreadyShown()` (anywhere in the chain), do not report.
+- If the chain does **not** include `.withSnapsPrivacyWarningAlreadyShown()`, report this rule.
+
+##### Severity and Message
+
+- Severity: **MEDIUM** (test quality), non-blocking.
+- Suggested comment:
+  - `📋 Snap E2E tests should use \`.withSnapsPrivacyWarningAlreadyShown()\` on the fixture builder so the snap privacy warning is already dismissed. This avoids extra UI steps and reduces flakiness.`
+  - `✅ Add \`.withSnapsPrivacyWarningAlreadyShown()\` to the FixtureBuilderV2 chain, e.g. \`new FixtureBuilderV2().withSnapsPrivacyWarningAlreadyShown().build()\` or chain it with other methods.`
+
 ### 4. Controller Guidelines
 
 - **ALWAYS** load and reference [controller-guidelines](rules/controller-guidelines/RULE.md)

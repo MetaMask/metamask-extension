@@ -6,7 +6,7 @@ export enum NonEvmQueryParams {
 
 const NONEVM_BALANCE_CHECK_ROUTE = 'nonevm-balance-check';
 
-export default new Route({
+export const nonevm = new Route({
   pathname: '/create-account',
   getTitle: (_: URLSearchParams) => 'deepLink_theSwapsRampsPage',
   handler: function handler(params: URLSearchParams) {

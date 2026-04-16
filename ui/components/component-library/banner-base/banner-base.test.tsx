@@ -39,7 +39,9 @@ describe('BannerBase', () => {
       />,
     );
 
-    expect(getByText('BannerBase title test')).toBeDefined();
+    expect(getByText('BannerBase title test')).toHaveClass(
+      'mm-text--body-md-medium',
+    );
     expect(getByTestId('title')).toBeDefined();
   });
 
@@ -50,7 +52,9 @@ describe('BannerBase', () => {
         descriptionProps={{ 'data-testid': 'description' }}
       />,
     );
-    expect(getByText('BannerBase description test')).toBeDefined();
+    expect(getByText('BannerBase description test')).toHaveClass(
+      'mm-text--body-sm',
+    );
     expect(getByTestId('description')).toBeDefined();
   });
 

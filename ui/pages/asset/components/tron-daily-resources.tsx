@@ -23,6 +23,7 @@ import { useTronResources, TronResource } from '../hooks/useTronResources';
 type TronDailyResourcesProps = {
   account: InternalAccount;
   chainId: string;
+  t: ReturnType<typeof useI18nContext>;
 };
 
 type ResourceCircleProps = {
@@ -171,12 +172,13 @@ const ResourceRow = ({
  * @param options0
  * @param options0.account
  * @param options0.chainId
+ * @param options0.t
  */
 export const TronDailyResources = ({
   account,
   chainId,
+  t,
 }: TronDailyResourcesProps) => {
-  const t = useI18nContext();
   const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations

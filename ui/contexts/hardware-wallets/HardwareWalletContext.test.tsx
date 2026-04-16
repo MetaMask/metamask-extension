@@ -56,7 +56,6 @@ jest.mock('./webConnectionUtils', () => ({
   requestHardwareWalletPermission: jest.fn().mockResolvedValue(false),
   checkWebHidPermission: jest.fn().mockResolvedValue('unknown'),
   checkWebUsbPermission: jest.fn().mockResolvedValue('unknown'),
-  getHardwareWalletDeviceId: jest.fn().mockResolvedValue(null),
   subscribeToHardwareWalletEvents: jest.fn().mockReturnValue(jest.fn()),
 }));
 
@@ -147,7 +146,6 @@ describe('HardwareWalletContext', () => {
       expect(result.current.connectionState.status).toBe(
         ConnectionStatus.Disconnected,
       );
-      expect(result.current.deviceId).toBe(null);
       expect(result.current.hardwareConnectionPermissionState).toBe(
         HardwareConnectionPermissionState.Unknown,
       );
@@ -266,16 +264,6 @@ describe('HardwareWalletContext', () => {
       expect(typeof result.current.isWebHidAvailable).toBe('boolean');
       expect(typeof result.current.isWebUsbAvailable).toBe('boolean');
     });
-
-    it('includes device ID in config', () => {
-      const store = mockStore(createMockState(KeyringTypes.ledger));
-
-      const { result } = renderHook(() => useHardwareWalletConfig(), {
-        wrapper: createWrapper(store),
-      });
-
-      expect(result.current.deviceId).toBeNull();
-    });
   });
 
   describe('useHardwareWalletState hook', () => {
@@ -317,6 +305,7 @@ describe('HardwareWalletContext', () => {
       expect(typeof result.current.connect).toBe('function');
       expect(typeof result.current.disconnect).toBe('function');
       expect(typeof result.current.clearError).toBe('function');
+      expect(typeof result.current.setConnectionReady).toBe('function');
       expect(typeof result.current.checkHardwareWalletPermission).toBe(
         'function',
       );
@@ -336,6 +325,7 @@ describe('HardwareWalletContext', () => {
       expect(result.current).toHaveProperty('connect');
       expect(result.current).toHaveProperty('disconnect');
       expect(result.current).toHaveProperty('clearError');
+      expect(result.current).toHaveProperty('setConnectionReady');
       expect(result.current).toHaveProperty('checkHardwareWalletPermission');
       expect(result.current).toHaveProperty('requestHardwareWalletPermission');
       expect(result.current).toHaveProperty('ensureDeviceReady');
@@ -354,6 +344,7 @@ describe('HardwareWalletContext', () => {
         connect: result.current.connect,
         disconnect: result.current.disconnect,
         clearError: result.current.clearError,
+        setConnectionReady: result.current.setConnectionReady,
       };
 
       rerender();
@@ -362,6 +353,9 @@ describe('HardwareWalletContext', () => {
       expect(result.current.connect).toBe(initialActions.connect);
       expect(result.current.disconnect).toBe(initialActions.disconnect);
       expect(result.current.clearError).toBe(initialActions.clearError);
+      expect(result.current.setConnectionReady).toBe(
+        initialActions.setConnectionReady,
+      );
     });
 
     it('maintains stable actions context references across rerenders', () => {
@@ -378,6 +372,7 @@ describe('HardwareWalletContext', () => {
         connect: result.current.connect,
         disconnect: result.current.disconnect,
         clearError: result.current.clearError,
+        setConnectionReady: result.current.setConnectionReady,
         checkHardwareWalletPermission:
           result.current.checkHardwareWalletPermission,
         requestHardwareWalletPermission:
@@ -390,6 +385,9 @@ describe('HardwareWalletContext', () => {
       expect(result.current.connect).toBe(initialActions.connect);
       expect(result.current.disconnect).toBe(initialActions.disconnect);
       expect(result.current.clearError).toBe(initialActions.clearError);
+      expect(result.current.setConnectionReady).toBe(
+        initialActions.setConnectionReady,
+      );
       expect(result.current.checkHardwareWalletPermission).toBe(
         initialActions.checkHardwareWalletPermission,
       );

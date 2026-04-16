@@ -1,11 +1,4 @@
 .multichain-account-cell {
-  &__account-avatar {
-    width: 40px;
-    height: 40px;
-    border-width: 2.2px;
-    flex-shrink: 0;
-  }
-
   &__account-name {
     min-width: 0;
     overflow: hidden;

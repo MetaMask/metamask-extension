@@ -1,17 +1,20 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
+import {
+  ACCOUNT_1,
+  ACCOUNT_2,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -24,8 +27,8 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerOnMainnet()
+          fixtures: new FixtureBuilderV2()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -37,7 +40,7 @@ describe('Multichain API', function () {
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const scopesToIgnore = ['eip155:1338', 'eip155:1000'];
 
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -79,7 +82,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .withTrezorAccount()
             .build(),
@@ -88,14 +91,14 @@ describe('Multichain API', function () {
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const REQUEST_SCOPE = 'eip155:1337';
           /**
-           * check {@link FixtureBuilder.withTrezorAccount} for second injected account address.
+           * check {@link FixtureBuilderV2.withTrezorAccount} for second injected account address.
            */
           const SECOND_ACCOUNT_IN_WALLET =
             '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
           const ACCOUNT_NOT_IN_WALLET =
             '0x9999999999999999999999999999999999999999';
 
-          await loginWithoutBalanceValidation(driver);
+          await login(driver, { validateBalance: false });
           await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
@@ -143,7 +146,7 @@ describe('Multichain API', function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder().withPopularNetworks().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -154,7 +157,7 @@ describe('Multichain API', function () {
         const requestScopes = Object.keys(requestScopesToNetworkMap);
         const networksToRequest = Object.values(requestScopesToNetworkMap);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -186,14 +189,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
-              .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -262,11 +264,11 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -285,13 +287,10 @@ describe('Multichain API', function () {
           );
           await editConnectedAccountsModal.checkPageIsLoaded();
 
-          const isAccountSelected =
-            await editConnectedAccountsModal.checkIsAccountSelected(1);
-          assert.strictEqual(
-            isAccountSelected,
-            true,
-            'current active account in the wallet should be automatically selected',
-          );
+          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+            accountIndex: 1,
+            status: 'selected',
+          });
         },
       );
     });
@@ -303,19 +302,18 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .withEnabledNetworks({
                 eip155: {
                   '0x539': true,
                 },
               })
-              .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -369,7 +367,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withEnabledNetworks({
                 eip155: {
                   '0x539': true,
@@ -379,7 +377,7 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -421,19 +419,18 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
-            .withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts(
-              {
-                scopes: OLD_SCOPES,
-              },
-            )
+            .withPermissionControllerConnectedToTestDapp({
+              account: [ACCOUNT_1, ACCOUNT_2],
+              chainIds: [1337, 1],
+            })
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithoutBalanceValidation(driver);
+          await login(driver, { validateBalance: false });
           new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
@@ -460,14 +457,9 @@ describe('Multichain API', function () {
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
-          OLD_SCOPES.forEach(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            async (scope) =>
-              await driver.clickElement(`input[name="${scope}"]`),
-          );
+          await testDapp.deselectScopes(OLD_SCOPES);
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [
-            `eip155:0:${TREZOR_ACCOUNT}`,
+            toEvmCaipAccountId(TREZOR_ACCOUNT),
           ]);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(

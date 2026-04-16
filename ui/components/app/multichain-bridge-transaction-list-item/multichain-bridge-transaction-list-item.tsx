@@ -92,7 +92,6 @@ const MultichainBridgeTransactionListItem: React.FC<
   const txIndex = isSourceTxConfirmed ? 2 : 1;
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
     nonEvmTransaction: transaction,
   });
 

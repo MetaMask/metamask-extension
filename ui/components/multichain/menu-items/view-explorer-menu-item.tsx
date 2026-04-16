@@ -32,7 +32,7 @@ import {
   TEST_NETWORK_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 export type ViewExplorerMenuItemProps = {
   /**
@@ -172,7 +172,7 @@ export const ViewExplorerMenuItem = ({
         closeMenu?.();
       }}
       subtitle={blockExplorerUrlSubTitle || null}
-      iconName={IconName.Export}
+      iconNameLegacy={IconName.Export}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

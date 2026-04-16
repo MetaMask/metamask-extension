@@ -2,12 +2,13 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
@@ -21,7 +22,10 @@ describe('Token Details', function () {
   const symbol = 'foo';
 
   const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [chainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
@@ -38,7 +42,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -100,7 +104,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -143,7 +147,7 @@ describe('Token Details', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

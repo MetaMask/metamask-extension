@@ -6,11 +6,9 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import {
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
-import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+} from '../../../../shared/lib/selectors';
 import {
   fetchSmartTransactionsLiveness,
-  setSwapsFeatureFlags,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
@@ -50,13 +48,8 @@ export function useSmartTransactionFeatureFlags() {
       return;
     }
 
-    Promise.all([
-      // TODO: remove this when swaps feature flags are removed.
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness({ chainId: transactionChainId })(),
-    ])
-      .then(([swapsFeatureFlags]) => {
-        dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    fetchSmartTransactionsLiveness({ chainId: transactionChainId })()
+      .then(() => {
         dispatch(
           setSmartTransactionsRefreshInterval(
             featureFlags?.batchStatusPollingInterval ?? 1000,

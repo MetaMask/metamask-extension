@@ -1,9 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, waitFor } from '../../../../test/jest';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CreateEthAccount } from '.';
 
@@ -51,7 +52,7 @@ describe('CreateEthAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Add account'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() => expect(mockAddNewAccount).toHaveBeenCalled());
     await waitFor(() =>
@@ -73,7 +74,7 @@ describe('CreateEthAccount', () => {
       target: { value: usedAccountName },
     });
 
-    const submitButton = getByText('Add account');
+    const submitButton = getByText(messages.addAccount.message);
     expect(submitButton).toHaveAttribute('disabled');
   });
 
@@ -91,7 +92,7 @@ describe('CreateEthAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Add account'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() =>
       expect(mockAddNewAccount).toHaveBeenCalledWith(selectedKeyringId),

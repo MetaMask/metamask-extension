@@ -8,6 +8,12 @@ import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
+// Run these tests as if we were in a Flask build
+jest.mock('../../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../../shared/lib/build-types'),
+  isFlask: jest.fn().mockReturnValue(true),
+}));
+
 describe('isBlockedUrl', () => {
   const messenger = getRootMessenger<
     PhishingControllerActions,

@@ -17,12 +17,8 @@ import {
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -37,6 +33,8 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
   CHAIN_IDS.MONAD,
+  CHAIN_IDS.HYPE,
+  CHAIN_IDS.MEGAETH_MAINNET,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -46,9 +44,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
@@ -115,17 +111,17 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
   [CHAIN_IDS.MONAD]: 'Monad',
   [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'Monad',
+  [CHAIN_IDS.HYPE]: 'HyperEVM',
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: 'HyperEVM',
+  [CHAIN_IDS.MEGAETH_MAINNET]: 'MegaETH',
+  [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: 'Tron',
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -230,6 +226,22 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'USD Coin',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.MONAD)}/erc20:${toChecksumHexAddress('0x754704Bc059F8C67012fEd69BC8A327a5aafb603')}`,
   },
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: {
+    // HYPE -> USDC on HyperEVM
+    address: '0xb88339cb7199b77e23db6e890353e22632ba630f',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.HYPE)}/erc20:${toChecksumHexAddress('0xb88339cb7199b77e23db6e890353e22632ba630f')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: {
+    // ETH -> USDT0 on MegaETH
+    address: '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+    symbol: 'USDT0',
+    decimals: 6,
+    name: 'USDT0',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)}/erc20:${toChecksumHexAddress('0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb')}`,
+  },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -239,7 +251,6 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     assetId: `${MultichainNetworks.SOLANA}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
   },
   [MultichainNetworks.BITCOIN]: getNativeAssetForChainId(CHAIN_IDS.MAINNET),
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: {
     // TRX -> USDT on Tron
     address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
@@ -248,5 +259,4 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'Tether USD',
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
-  ///: END:ONLY_INCLUDE_IF
 } as const;

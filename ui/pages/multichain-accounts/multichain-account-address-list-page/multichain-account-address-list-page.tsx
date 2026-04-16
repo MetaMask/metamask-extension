@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  type Location as RouterLocation,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -23,34 +27,27 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { transitionBack } from '../../../components/ui/transition';
 import {
   AddressListQueryParams,
   AddressListSource,
 } from './multichain-account-address-list-page.types';
 
 type MultichainAccountAddressListPageProps = {
-  params?: { accountGroupId: string };
-  location?: {
-    pathname: string;
-    search: string;
-    hash: string;
-    state: unknown;
-    key: string;
-  };
+  location?: RouterLocation;
 };
 
 export const MultichainAccountAddressListPage = ({
-  params: propsParams,
   location: propsLocation,
 }: MultichainAccountAddressListPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const hookLocation = useLocation();
-  const hookParams = useParams<{ accountGroupId: string }>();
 
   const location = propsLocation || hookLocation;
-  const { accountGroupId } = propsParams || hookParams;
 
+  const searchParams = new URLSearchParams(location.search);
+  const accountGroupId = searchParams.get('accountGroupId');
   const decodedAccountGroupId = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
@@ -61,7 +58,6 @@ export const MultichainAccountAddressListPage = ({
       : null,
   );
 
-  const searchParams = new URLSearchParams(location.search);
   const isReceiveMode =
     searchParams.get(AddressListQueryParams.Source) ===
     AddressListSource.Receive;
@@ -102,6 +98,10 @@ export const MultichainAccountAddressListPage = ({
     endTrace({ name: TraceName.ShowAccountAddressList });
   }, []);
 
+  const handleBack = useCallback(() => {
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  }, [navigate]);
+
   return (
     <Page>
       <Header
@@ -113,7 +113,7 @@ export const MultichainAccountAddressListPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={handleBack}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }

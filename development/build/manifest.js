@@ -1,8 +1,10 @@
+const nodeCrypto = require('node:crypto');
 const { promises: fs } = require('fs');
 const path = require('path');
-const childProcess = require('child_process');
-const { merge, mergeWith, cloneDeep } = require('lodash');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const childProcess = require('node:child_process');
+const watch = require('gulp-watch');
+const { mergeWith, cloneDeep } = require('lodash');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
@@ -52,7 +54,6 @@ function createManifestTasks({
   browserVersionMap,
   buildType,
   entryTask,
-  shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
   const environment = getEnvironment({ buildTarget: entryTask });
@@ -84,10 +85,6 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
-        if (shouldIncludeOcapKernel) {
-          applyOcapKernelChanges(result);
-        }
-
         applyLockdownContentScripts(result);
 
         if (isManifestV3) {
@@ -103,31 +100,43 @@ function createManifestTasks({
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.permissions = [
+      ...new Set([...manifest.permissions, 'webRequestBlocking']),
+    ];
     loadManifestKey(manifest);
   });
 
   // testDev: add perms
-  const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
-    ];
-    loadManifestKey(manifest);
-  });
+  const envTestDev = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.permissions = [
+        ...new Set([
+          ...manifest.permissions,
+          'webRequestBlocking',
+          'http://localhost/*',
+          'tabs', // test builds need tabs permission for switchToWindowWithTitle
+        ]),
+      ];
+      loadManifestKey(manifest);
+    },
+    { setBuildId: true, watch: true },
+  );
 
   // test: add permissions
-  const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
-    ];
-    loadManifestKey(manifest);
-  });
+  const envTest = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.permissions = [
+        ...new Set([
+          ...manifest.permissions,
+          'webRequestBlocking',
+          'http://localhost/*',
+          'tabs', // test builds need tabs permission for switchToWindowWithTitle
+        ]),
+      ];
+      loadManifestKey(manifest);
+    },
+    { setBuildId: true },
+  );
 
   const envScriptDist = createTaskForModifyManifestForEnvironment(
     (manifest) => {
@@ -162,9 +171,16 @@ function createManifestTasks({
   return { prod, dev, testDev, test, scriptDist };
 
   // helper for modifying each platform's manifest.json in place
-  function createTaskForModifyManifestForEnvironment(transformFn) {
-    return () => {
-      return Promise.all(
+  function createTaskForModifyManifestForEnvironment(
+    transformFn,
+    { setBuildId = false, watch: shouldWatch = false } = {},
+  ) {
+    let updateQueue = Promise.resolve();
+
+    const updateManifests = async () => {
+      const buildId = setBuildId ? nodeCrypto.randomUUID() : undefined;
+
+      await Promise.all(
         browserPlatforms.map(async (platform) => {
           const manifestPath = path.join(
             '.',
@@ -174,9 +190,29 @@ function createManifestTasks({
           );
           const manifest = await readJson(manifestPath);
           transformFn(manifest);
+          if (buildId) {
+            manifest.build_id = buildId;
+          }
 
           await writeJson(manifest, manifestPath);
         }),
+      );
+    };
+
+    const queueManifestUpdate = () =>
+      (updateQueue = updateQueue.catch(() => undefined).then(updateManifests));
+
+    return async () => {
+      await queueManifestUpdate();
+
+      if (!shouldWatch) {
+        return;
+      }
+
+      watch(
+        './dist/*/**/*',
+        { ignoreInitial: true, ignored: '**/manifest.json' },
+        () => queueManifestUpdate().catch(console.error),
       );
     };
   }
@@ -211,21 +247,6 @@ function createManifestTasks({
       return [...new Set([...objValue, ...srcValue])];
     }
     return undefined;
-  }
-
-  function applyOcapKernelChanges(manifest) {
-    if (!Array.isArray(manifest.sandbox?.pages)) {
-      merge(manifest, { sandbox: { pages: [] } });
-    }
-    manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
-    manifest.devtools_page = 'devtools/devtools.html';
-    if (manifest.content_security_policy?.extension_pages) {
-      manifest.content_security_policy.extension_pages =
-        manifest.content_security_policy.extension_pages.replace(
-          "frame-ancestors 'none';",
-          "frame-ancestors 'self' devtools://*;",
-        );
-    }
   }
 
   function applyLockdownContentScripts(manifest) {

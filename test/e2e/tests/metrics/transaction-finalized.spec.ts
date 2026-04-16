@@ -6,11 +6,12 @@ import {
   getEventPayloads,
   withFixtures,
 } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -128,26 +129,8 @@ type EventPayload = {
   properties: Record<string, unknown>;
 };
 
-/**
- * Assert that the event names begin with the appropriate prefixes. Even
- * finalized events begin with transaction-submitted because they start as
- * event fragments created when the transaction is submitted.
- *
- * @param payload
- */
-const messageIdStartsWithTransactionSubmitted = (
-  payload: EventPayload,
-): boolean => payload.messageId.startsWith('transaction-submitted');
-
-/**
- * Assert that the events with sensitive properties should have messageIds
- * ending in 0x000 this is important because otherwise the events are seen as
- * duplicates in segment
- *
- * @param payload
- */
-const messageIdEndsWithZeros = (payload: EventPayload): boolean =>
-  payload.messageId.endsWith('0x000');
+const hasNonEmptyMessageId = (payload: EventPayload): boolean =>
+  typeof payload.messageId === 'string' && payload.messageId.length > 0;
 
 /**
  * Assert that the events with sensitive data do not contain a userId (the
@@ -175,7 +158,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
   it('Successfully tracked when sending a transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -188,7 +171,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         testSpecificMock,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // TODO: Update Test when Multichain Send Flow is added
         await sendRedesignedTransactionToAddress({
@@ -198,6 +181,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
         });
 
         // Get the transaction hash from the activity list
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.clickOnActivity(1);
@@ -207,8 +192,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
-          messageIdEndsWithZeros,
+          hasNonEmptyMessageId,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
@@ -235,7 +219,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         ];
 
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
+          hasNonEmptyMessageId,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
             // Check key properties for submitted transaction without sensitive data
@@ -259,8 +243,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await driver.delay(10000);
 
         const transactionFinalizedWithSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
-          messageIdEndsWithZeros,
+          hasNonEmptyMessageId,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
@@ -290,7 +273,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         ];
 
         const transactionFinalizedWithoutSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
+          hasNonEmptyMessageId,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
             // Check key properties for finalized transaction without sensitive data

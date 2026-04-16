@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 const Snackbar = ({ className = '', content }) => {
   return <div className={classnames('snackbar', className)}>{content}</div>;

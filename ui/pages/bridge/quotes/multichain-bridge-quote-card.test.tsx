@@ -7,26 +7,36 @@ import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
+import { act, fireEvent, render } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_LEDGER_ACCOUNT,
+} from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
+import { getToAccounts } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
-import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
+import {
+  MultichainBridgeQuoteCard,
+  MultichainBridgeQuoteCardSkeleton,
+} from './multichain-bridge-quote-card';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
 }));
 
 const mockUseRewards = useRewards as jest.MockedFunction<typeof useRewards>;
+const mockOnOpenPriceImpactWarningModal = jest.fn();
 
 describe('MultichainBridgeQuoteCard', () => {
   const defaultUseRewardsReturn = {
@@ -41,6 +51,19 @@ describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewards.mockReturnValue(defaultUseRewardsReturn);
+  });
+
+  it('renders a four-row skeleton while the quote card is loading', () => {
+    const { getByTestId, getAllByTestId } = render(
+      <MultichainBridgeQuoteCardSkeleton />,
+    );
+
+    expect(
+      getByTestId('multichain-bridge-quote-card-loading'),
+    ).toBeInTheDocument();
+    expect(
+      getAllByTestId('multichain-bridge-quote-card-loading-row'),
+    ).toHaveLength(4);
   });
 
   it('should render the recommended quote (no MM fee)', async () => {
@@ -60,7 +83,9 @@ describe('MultichainBridgeQuoteCard', () => {
         toToken: {
           address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
           chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
-          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          )}`,
         },
         fromTokenInputValue: '1',
       },
@@ -113,6 +138,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />
@@ -209,6 +235,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />
@@ -217,9 +244,108 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(
-      getByText('Includes 0.875% MM fee. Approves token for bridge.'),
+      getByText(
+        `${messages.rateIncludesMMFee.message.replace('$1', '0.875')} ${messages.willApproveAmountForBridging.message}`,
+      ),
     ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders the recipient row for EVM to EVM bridges', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        toToken: {
+          address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+        },
+        fromTokenInputValue: '1',
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+      },
+    });
+    const configuredStore = configureStore(mockStore);
+    const selectedDestinationAccount = getToAccounts(
+      configuredStore.getState(),
+    )[1];
+
+    expect(selectedDestinationAccount).toBeDefined();
+
+    if (!selectedDestinationAccount) {
+      throw new Error('Expected a second destination account');
+    }
+
+    const recipientLabel = `${
+      selectedDestinationAccount.walletName
+        ? `${selectedDestinationAccount.walletName} / `
+        : ''
+    }${selectedDestinationAccount.displayName}`;
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={selectedDestinationAccount}
+      />,
+      configuredStore,
+    );
+
+    expect(getByText(messages.recipient.message)).toBeInTheDocument();
+    expect(getByText(recipientLabel)).toBeInTheDocument();
+    expect(getByTestId('recipient-edit-button')).toBeInTheDocument();
   });
 
   it('should render the recommended quote while loading new quotes', async () => {
@@ -289,6 +415,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -319,6 +446,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -348,6 +476,7 @@ describe('MultichainBridgeQuoteCard', () => {
       <MultichainBridgeQuoteCard
         onOpenSlippageModal={() => {}}
         onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
         selectedDestinationAccount={null}
       />,
       configureStore(mockStore),
@@ -355,6 +484,60 @@ describe('MultichainBridgeQuoteCard', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each(['.26', '.06'])(
+    'should render price impact warnings: %s',
+    async (priceImpact: string) => {
+      const mockStore = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+            ],
+          },
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact,
+              },
+            },
+          })) as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now() - 5000,
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      });
+
+      const { getByText, getByTestId } = renderWithProvider(
+        <>
+          <MultichainBridgeQuoteCard
+            onOpenSlippageModal={() => {}}
+            onOpenRecipientModal={() => {}}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            selectedDestinationAccount={null}
+          />
+        </>,
+        configureStore(mockStore),
+      );
+
+      const priceImpactText = getByText(messages.bridgePriceImpact.message);
+      expect(priceImpactText).toBeInTheDocument();
+      expect(priceImpactText.parentNode?.nextSibling).toMatchSnapshot();
+      expect(getByTestId('price-impact-warning-button')).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByTestId('price-impact-warning-button'));
+      });
+      expect(mockOnOpenPriceImpactWarningModal).toHaveBeenCalledTimes(1);
+    },
+  );
 
   describe('rewards functionality', () => {
     const createMockStoreWithQuote = () =>
@@ -430,6 +613,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -450,6 +634,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -471,6 +656,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -501,6 +687,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -524,6 +711,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -549,6 +737,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -581,6 +770,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />,
         configureStore(mockStore),
@@ -667,6 +857,7 @@ describe('MultichainBridgeQuoteCard', () => {
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
           onOpenRecipientModal={() => {}}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
           selectedDestinationAccount={null}
         />
         <BridgeCTAInfoText />
@@ -679,8 +870,233 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(sponsoredSection).toBeInTheDocument();
 
     // Verify the sponsored text appears
-    expect(getByText('Paid by MetaMask')).toBeInTheDocument();
+    expect(getByText(messages.paidByMetaMask.message)).toBeInTheDocument();
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should not render gas sponsored text for hardware wallets (request-time gating sends gasIncluded7702=false so backend returns gasSponsored=false)', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+  });
+
+  it('should not render gas sponsored text for hardware wallets on the insufficientBal + network-level sponsorship path', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) }],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: true,
+          srcChainId: 10,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAmount: '1000000000000000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+            usdConversionRate: 2524.25,
+          },
+        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+        remoteFeatureFlags: {
+          gasFeesSponsoredNetwork: {
+            [CHAIN_IDS.OPTIMISM]: true,
+          },
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+  });
+
+  it('should render gas-included UI for hardware wallets when quote has gasIncluded=true (STX path works for HW)', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
+          (quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasIncluded: true,
+            },
+          }),
+        ),
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-included')).toBeInTheDocument();
+    expect(queryByTestId('network-fees')).not.toBeInTheDocument();
   });
 });

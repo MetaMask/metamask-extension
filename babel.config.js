@@ -9,12 +9,12 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 89', 'firefox >= 89'],
+      browsers: ['chrome >= 113', 'firefox >= 115'],
     },
     overrides: [
       {
         test: new RegExp(
-          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
+          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
@@ -22,9 +22,12 @@ module.exports = function (api) {
     ],
     plugins: [
       // `browserify` is old and busted, and doesn't support `??=` (and other
-      // logical assignment operators). This plugin lets us target es2020-level
-      // browsers (except we do still end up with transpiled logical assignment
-      // operators 😭)
+      // logical assignment operators) or private class features. Keep these
+      // syntax transforms enabled even when our browser support floor is high
+      // enough to run them natively.
+      '@babel/plugin-transform-class-properties',
+      '@babel/plugin-transform-private-methods',
+      '@babel/plugin-transform-private-property-in-object',
       '@babel/plugin-transform-logical-assignment-operators',
       [
         path.resolve(
@@ -36,6 +39,18 @@ module.exports = function (api) {
             /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
         },
+        'import-meta-url-snaps',
+      ],
+      [
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.js',
+        ),
+        {
+          pattern: /^@rive-app\/canvas\/(rive)\.wasm$/u,
+          rootPath: '/images/',
+        },
+        'import-meta-url-rive',
       ],
     ],
     presets: [

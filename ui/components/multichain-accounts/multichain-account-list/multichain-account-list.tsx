@@ -74,12 +74,21 @@ export type MultichainAccountListProps = {
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
+  showDefaultAddress?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 
 type ListItem =
-  | { type: 'header'; key: string; text: string; testId?: string }
+  | {
+      type: 'header';
+      key: string;
+      text: string;
+      testId?: string;
+      sectionKey?: string;
+      isCollapsible?: boolean;
+      isExpanded?: boolean;
+    }
   | {
       type: 'account';
       key: string;
@@ -99,6 +108,7 @@ export const MultichainAccountList = ({
   displayWalletHeader = true,
   showAccountCheckbox = false,
   showConnectionStatus = false,
+  showDefaultAddress = false,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -151,6 +161,22 @@ export const MultichainAccountList = ({
   const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
+
+  const [collapsedSectionKeys, setCollapsedSectionKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  const toggleSectionExpanded = useCallback((sectionKey: string) => {
+    setCollapsedSectionKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionKey)) {
+        next.delete(sectionKey);
+      } else {
+        next.add(sectionKey);
+      }
+      return next;
+    });
+  }, []);
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -293,6 +319,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
+            showDefaultAddress={showDefaultAddress}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -341,6 +368,7 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
+      showDefaultAddress,
     ],
   );
 
@@ -349,22 +377,29 @@ export const MultichainAccountList = ({
 
     // Render pinned section (if there are any pinned accounts)
     if (pinnedGroups.length > 0) {
+      const pinnedSectionKey = 'pinned';
+      const isPinnedExpanded = !collapsedSectionKeys.has(pinnedSectionKey);
       result.push({
         type: 'header',
         key: 'pinned-header',
         text: t('pinned'),
         testId: 'multichain-account-tree-pinned-header',
+        sectionKey: pinnedSectionKey,
+        isCollapsible: true,
+        isExpanded: isPinnedExpanded,
       });
-      pinnedGroups.forEach(({ groupId, groupData, walletId }) => {
-        result.push({
-          type: 'account',
-          key: `account-${groupId}`,
-          groupId,
-          groupData,
-          walletId,
-          showWalletName: true,
+      if (isPinnedExpanded) {
+        pinnedGroups.forEach(({ groupId, groupData, walletId }) => {
+          result.push({
+            type: 'account',
+            key: `account-${groupId}`,
+            groupId,
+            groupData,
+            walletId,
+            showWalletName: !showDefaultAddress,
+          });
         });
-      });
+      }
     }
 
     // Only show wallet header if we should show headers AND there are accounts to display in this wallet
@@ -399,12 +434,21 @@ export const MultichainAccountList = ({
 
       if (accounts.length > 0) {
         if (shouldShowWalletHeaders) {
+          const walletSectionKey = `wallet-${walletId}`;
+          const isWalletExpanded = !collapsedSectionKeys.has(walletSectionKey);
           result.push({
             type: 'header',
             key: `wallet-${walletId}`,
             text: walletData.metadata?.name || '',
             testId: 'multichain-account-tree-wallet-header',
+            sectionKey: walletSectionKey,
+            isCollapsible: true,
+            isExpanded: isWalletExpanded,
           });
+          if (isWalletExpanded) {
+            result.push(...accounts);
+          }
+          return;
         }
         result.push(...accounts);
       }
@@ -426,7 +470,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: true,
+            showWalletName: !showDefaultAddress,
           });
         });
       }
@@ -440,6 +484,8 @@ export const MultichainAccountList = ({
     isInSearchMode,
     displayWalletHeader,
     isHiddenAccountsExpanded,
+    collapsedSectionKeys,
+    showDefaultAddress,
     t,
   ]);
 
@@ -455,6 +501,35 @@ export const MultichainAccountList = ({
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => {
           if (item.type === 'header') {
+            if (item.isCollapsible && item.sectionKey) {
+              const isExpanded = item.isExpanded ?? true;
+              return (
+                <Box
+                  as="button"
+                  onClick={() =>
+                    toggleSectionExpanded(item.sectionKey as string)
+                  }
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  width={BlockSize.Full}
+                  className="flex px-4 py-2 justify-between items-center"
+                  data-testid={item.testId}
+                  aria-expanded={isExpanded}
+                >
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textAlternative}
+                  >
+                    {item.text}
+                  </Text>
+                  <Icon
+                    name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                    size={IconSize.Md}
+                    color={IconColor.iconAlternative}
+                  />
+                </Box>
+              );
+            }
+
             return (
               <Box data-testid={item.testId} className="flex px-4 py-2">
                 <Text

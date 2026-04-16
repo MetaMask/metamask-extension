@@ -11,14 +11,14 @@ class OnboardingMetricsPage {
   private readonly dataParticipateInMetaMetricsCheckbox =
     '[data-testid="metametrics-checkbox"]';
 
-  private readonly dataCollectionForMarketingCheckedState =
-    '.mm-checkbox__input--checked#metametrics-datacollection-opt-in';
+  private readonly participateChecked =
+    '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
-  private readonly dataParticipateInMetaMetricsCheckedState =
-    '.mm-checkbox__input--checked#metametrics-opt-in';
+  private readonly participateUnchecked =
+    '[data-testid="metametrics-checkbox"][data-checked="false"]';
 
-  private readonly dataParticipateInMetaMetricsUncheckedState =
-    '.mm-checkbox__input#metametrics-opt-in';
+  private readonly marketingChecked =
+    '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',
@@ -58,21 +58,30 @@ class OnboardingMetricsPage {
   }
 
   async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataCollectionForMarketingCheckedState,
-    );
+    await this.driver.waitForSelector(this.marketingChecked);
   }
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsCheckedState,
-    );
+    await this.driver.waitForSelector(this.participateChecked);
   }
 
   async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataParticipateInMetaMetricsUncheckedState,
+    await this.driver.waitForSelector(this.participateUnchecked);
+  }
+
+  /**
+   * Ensures the "Participate in MetaMetrics" checkbox is unchecked.
+   * If it is already unchecked (e.g. state restored from a previous session
+   * during vault recovery), the click is skipped to avoid toggling it back on.
+   */
+  async ensureParticipateInMetaMetricsIsUnchecked(): Promise<void> {
+    const isAlreadyUnchecked = await this.driver.isElementPresent(
+      this.participateUnchecked,
     );
+    if (!isAlreadyUnchecked) {
+      await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
+      await this.driver.waitForSelector(this.participateUnchecked);
+    }
   }
 
   async skipMetricAndContinue(): Promise<void> {

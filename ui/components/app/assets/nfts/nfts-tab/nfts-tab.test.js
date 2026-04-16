@@ -9,6 +9,7 @@ import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import NftsTab from '.';
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
@@ -240,7 +241,9 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
@@ -249,7 +252,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is ON', () => {
       render({
@@ -257,7 +262,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
       render({
@@ -265,7 +272,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      fireEvent.click(
+        screen.queryByText(messages.selectNFTPrivacyPreference.message),
+      );
       expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
       expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
       expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
@@ -277,14 +286,18 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should not render the NFTs Detection Notice when currently selected network is NOT Mainnet', () => {
@@ -294,7 +307,9 @@ describe('NFT Items', () => {
         useNftDetection: false,
         chainId: '0x4',
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
   });
 });

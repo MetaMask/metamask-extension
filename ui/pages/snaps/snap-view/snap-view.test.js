@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SnapView from './snap-view';
 
 jest.mock('../../../store/actions.ts', () => {
@@ -22,12 +23,15 @@ jest.mock('../../../store/actions.ts', () => {
 
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
+  const snapId = 'npm:@metamask/test-snap-bip44';
   return {
     ...original,
+    useSearchParams: jest.fn(() => [
+      new URLSearchParams(`snapId=${encodeURIComponent(snapId)}`),
+    ]),
     useLocation: jest.fn(() => ({
-      pathname: `/snaps/view/${encodeURIComponent(
-        'npm:@metamask/test-snap-bip44',
-      )}`,
+      pathname: `/snaps/view`,
+      search: `?snapId=${encodeURIComponent(snapId)}`,
     })),
   };
 });
@@ -57,27 +61,25 @@ describe('SnapView', () => {
     // Snap version info
     expect(getByText('5.1.2')).toBeDefined();
     // Enable Snap
-    expect(getByText('Enabled')).toBeDefined();
+    expect(getByText(messages.enabled.message)).toBeDefined();
     expect(container.getElementsByClassName('toggle-button')?.length).toBe(1);
     // Permissions
-    expect(getByText('Permissions')).toBeDefined();
+    expect(getByText(messages.permissions.message)).toBeDefined();
     expect(
       container.getElementsByClassName('snap-permissions-list')?.length,
     ).toBe(1);
     // Connected sites
-    expect(getByText('Connected sites')).toBeDefined();
+    expect(getByText(messages.connectedSites.message)).toBeDefined();
     expect(
       container.getElementsByClassName('connected-sites-list__content-rows')
         ?.length,
     ).toBe(1);
     // Remove snap
-    expect(getByText('Remove Snap')).toBeDefined();
+    expect(getByText(messages.removeSnap.message)).toBeDefined();
+    expect(getByText(messages.removeSnapDescription.message)).toBeDefined();
     expect(
-      getByText(
-        'This action will delete the snap, its data and revoke your given permissions.',
-      ),
+      getByText(`${messages.remove.message} BIP-44 Test Snap`),
     ).toBeDefined();
-    expect(getByText('Remove BIP-44 Test Snap')).toBeDefined();
     expect(getByTestId('remove-snap-button')).toHaveClass(
       'snap-view__content__remove-button',
     );

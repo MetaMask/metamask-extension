@@ -3,7 +3,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
 import { Anvil } from '../../../seeder/anvil';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -61,7 +61,7 @@ async function createTransactionAssertDetailsAndConfirm(
   contractRegistry?: ContractAddressRegistry,
   localNode?: Anvil,
 ) {
-  await loginWithBalanceValidation(driver, localNode);
+  await login(driver, { localNode });
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry

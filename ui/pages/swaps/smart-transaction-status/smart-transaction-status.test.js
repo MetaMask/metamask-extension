@@ -1,10 +1,12 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore, fireEvent } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SmartTransactionStatusLabel from '.';
 
 const middleware = [thunk];
@@ -32,8 +34,10 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(
+      getByText(messages.stxPendingPubliclySubmittingSwap.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the "success" STX status', () => {
@@ -48,10 +52,12 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Swap complete!')).toBeInTheDocument();
-    expect(getByText('Your USDC is now available.')).toBeInTheDocument();
-    expect(getByText('Create a new swap')).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(getByText(messages.stxSuccess.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.stxSuccessDescription.message.replace('$1', 'USDC')),
+    ).toBeInTheDocument();
+    expect(getByText(messages.makeAnotherSwap.message)).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the "reverted" STX status', () => {
@@ -66,9 +72,9 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Swap failed')).toBeInTheDocument();
-    expect(getByText('customer support')).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(getByText(messages.stxFailure.message)).toBeInTheDocument();
+    expect(getByText(messages.customerSupport.message)).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the "cancelled_user_cancelled" STX status', () => {
@@ -83,13 +89,11 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Swap cancelled')).toBeInTheDocument();
+    expect(getByText(messages.stxUserCancelled.message)).toBeInTheDocument();
     expect(
-      getByText(
-        'Your transaction has been cancelled and you did not pay any unnecessary gas fees.',
-      ),
+      getByText(messages.stxUserCancelledDescription.message),
     ).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the "deadline_missed" STX status', () => {
@@ -104,13 +108,11 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Swap would have failed')).toBeInTheDocument();
+    expect(getByText(messages.stxCancelled.message)).toBeInTheDocument();
     expect(
-      getByText(
-        'Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees.',
-      ),
+      getByText(messages.stxCancelledDescription.message),
     ).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the "unknown" STX status', () => {
@@ -125,13 +127,11 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Status unknown')).toBeInTheDocument();
+    expect(getByText(messages.stxUnknown.message)).toBeInTheDocument();
     expect(
-      getByText(
-        'A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing.',
-      ),
+      getByText(messages.stxUnknownDescription.message),
     ).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('cancels a transaction', () => {
@@ -140,13 +140,13 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
-    const cancelLink = getByText('Attempt to cancel swap for free');
+    expect(
+      getByText(messages.stxPendingPubliclySubmittingSwap.message),
+    ).toBeInTheDocument();
+    const cancelLink = getByText(messages.attemptToCancelSwapForFree.message);
     expect(cancelLink).toBeInTheDocument();
     fireEvent.click(cancelLink);
-    expect(
-      getByText('Trying to cancel your transaction...'),
-    ).toBeInTheDocument();
+    expect(getByText(messages.stxTryingToCancel.message)).toBeInTheDocument();
     expect(cancelLink).not.toBeInTheDocument();
   });
 
@@ -156,8 +156,10 @@ describe('SmartTransactionStatusLabel', () => {
       <SmartTransactionStatusLabel />,
       store,
     );
-    expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
-    const closeButton = getByText('Close');
+    expect(
+      getByText(messages.stxPendingPubliclySubmittingSwap.message),
+    ).toBeInTheDocument();
+    const closeButton = getByText(messages.close.message);
     expect(closeButton).toBeInTheDocument();
     fireEvent.click(closeButton);
   });

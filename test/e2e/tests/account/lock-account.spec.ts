@@ -1,25 +1,26 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import HomePage from '../../page-objects/pages/home/homepage';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  login,
+} from '../../page-objects/flows/login.flow';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver);
+        await lockAndWaitForLoginPage(driver);
+        await login(driver);
       },
     );
   });

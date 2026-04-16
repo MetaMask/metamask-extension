@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,6 +18,7 @@ const TooltipStyle = { display: 'flex' };
 
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   className = '',
+  hideTooltip = false,
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,
   badgeBorderColor = BorderColor.borderMuted,
   address,
@@ -74,7 +75,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       backgroundColor={BackgroundColor.transparent}
       {...(props as BoxProps<'div'>)}
     >
-      {showConnectedStatus ? (
+      {showConnectedStatus && !hideTooltip ? (
         <Tooltip
           style={TooltipStyle}
           title={text}

@@ -2,16 +2,21 @@ import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import {
+  AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
-import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { ButtonIcon, IconName, IconSize } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 const NicknamePopover = ({
   address,
@@ -31,6 +36,7 @@ const NicknamePopover = ({
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const tokenList = useSelector(getTokenList);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+  const iconUrl = tokenList[address.toLowerCase()]?.iconUrl;
 
   const routeToAddBlockExplorerUrl = () => {
     navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -45,12 +51,20 @@ const NicknamePopover = ({
   return (
     <div className="nickname-popover">
       <Popover onClose={onClose} className="nickname-popover__popover-wrap">
-        <Identicon
-          address={address}
-          diameter={36}
-          className="nickname-popover__identicon"
-          image={tokenList[address.toLowerCase()]?.iconUrl}
-        />
+        {iconUrl ? (
+          <AvatarToken
+            src={iconUrl}
+            name={nickname || address}
+            size={AvatarTokenSize.Lg}
+            className="nickname-popover__identicon"
+          />
+        ) : (
+          <PreferredAvatar
+            address={address}
+            size={AvatarAccountSize.Lg}
+            className="nickname-popover__identicon"
+          />
+        )}
         <div className="nickname-popover__address">
           {nickname || shortenAddress(address)}
         </div>

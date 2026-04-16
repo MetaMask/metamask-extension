@@ -7,6 +7,7 @@ import {
   ONBOARDING_METAMETRICS,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import RecoveryPhrase from './review-recovery-phrase';
 
 const mockUseNavigate = jest.fn();
@@ -103,7 +104,7 @@ describe('Review Recovery Phrase Component', () => {
     );
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
-    const revealButton = queryByText('Tap to reveal');
+    const revealButton = queryByText(messages.tapToReveal.message);
 
     fireEvent.click(revealRecoveryPhraseButton as HTMLElement);
 

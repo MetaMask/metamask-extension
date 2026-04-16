@@ -24,7 +24,7 @@ describe(`migration #${version}`, () => {
   });
 
   describe(`migration #${version}`, () => {
-    it('logs an error and returns the original state if TokensController is missing', async () => {
+    it('returns the original state if TokensController is missing', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {},
@@ -32,13 +32,11 @@ describe(`migration #${version}`, () => {
 
       const newStorage = await migrate(oldStorage);
 
-      expect(global.sentry.captureException).toHaveBeenCalledWith(
-        new Error(`Migration ${version}: TokensController not found.`),
-      );
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
-    it('logs an error and returns the original state if AccountsController is missing', async () => {
+    it('returns the original state if AccountsController is missing', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
@@ -48,9 +46,7 @@ describe(`migration #${version}`, () => {
 
       const newStorage = await migrate(oldStorage);
 
-      expect(global.sentry.captureException).toHaveBeenCalledWith(
-        new Error(`Migration ${version}: AccountsController not found.`),
-      );
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
@@ -65,6 +61,7 @@ describe(`migration #${version}`, () => {
 
       const newStorage = await migrate(oldStorage);
 
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 

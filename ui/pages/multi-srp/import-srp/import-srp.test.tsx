@@ -3,8 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
@@ -25,10 +24,12 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../components/app/toast-master/utils', () => ({
-  setShowNewSrpAddedToast: jest.fn().mockImplementation((value: boolean) => ({
-    type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
-    payload: value,
-  })),
+  setShowNewSrpAddedToast: jest
+    .fn()
+    .mockImplementation((value: number | false) => ({
+      type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
+      payload: value,
+    })),
 }));
 
 const mockNavigate = jest.fn();
@@ -58,7 +59,9 @@ describe('ImportSrp', () => {
 
   it('renders header with correct title', () => {
     const { getByText } = renderWithProvider(<ImportSrp />, store);
-    expect(getByText('Import Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      getByText(messages.importSecretRecoveryPhrase.message),
+    ).toBeInTheDocument();
   });
 
   it('renders import srp and disable confirm srp button', () => {
@@ -98,7 +101,7 @@ describe('ImportSrp', () => {
       expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(true);
+      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(2);
     });
   });
 
