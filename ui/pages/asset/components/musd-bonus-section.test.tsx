@@ -11,6 +11,21 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { MusdBonusSection } from './musd-bonus-section';
 
+const mockUseMerklRewards = jest.fn().mockReturnValue({
+  hasClaimableReward: false,
+  rewardAmountFiat: null,
+  lifetimeClaimedFiat: 5,
+  isLoading: false,
+  isEligible: true,
+});
+
+const mockClaimRewards = jest.fn();
+const mockUseMerklClaim = jest.fn().mockReturnValue({
+  claimRewards: mockClaimRewards,
+  isClaiming: false,
+  error: null,
+});
+
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -23,21 +38,11 @@ jest.mock('../../../hooks/useFiatFormatter', () => ({
 }));
 
 jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
-  useMerklRewards: () => ({
-    hasClaimableReward: false,
-    rewardAmountFiat: null,
-    lifetimeClaimedFiat: 5,
-    isLoading: false,
-    isEligible: true,
-  }),
+  useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
 }));
 
 jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
-  useMerklClaim: () => ({
-    claimRewards: jest.fn(),
-    isClaiming: false,
-    error: null,
-  }),
+  useMerklClaim: (...args: unknown[]) => mockUseMerklClaim(...args),
 }));
 
 jest.mock('../../../selectors/musd', () => {
@@ -64,6 +69,22 @@ const renderWithProviders = (component: React.ReactElement) =>
   );
 
 describe('MusdBonusSection', () => {
+  beforeEach(() => {
+    mockUseMerklRewards.mockReturnValue({
+      hasClaimableReward: false,
+      rewardAmountFiat: null,
+      lifetimeClaimedFiat: 5,
+      isLoading: false,
+      isEligible: true,
+    });
+    mockUseMerklClaim.mockReturnValue({
+      claimRewards: mockClaimRewards,
+      isClaiming: false,
+      error: null,
+    });
+    mockClaimRewards.mockClear();
+  });
+
   it('renders section title and bonus rows', () => {
     renderWithProviders(
       <MusdBonusSection
@@ -107,5 +128,130 @@ describe('MusdBonusSection', () => {
     expect(
       screen.getByText(messages.musdAssetBonusInfoLearnMore.message),
     ).toBeInTheDocument();
+  });
+
+  describe('claim button states', () => {
+    it('shows "Claim $X bonus" and is enabled when reward is claimable', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 10.27,
+        lifetimeClaimedFiat: 5,
+        isLoading: false,
+        isEligible: true,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent('Claim $10.27 bonus');
+      expect(button).not.toBeDisabled();
+    });
+
+    it('calls claimRewards when the claim button is clicked', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 5,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      fireEvent.click(screen.getByTestId('musd-claim-bonus-button'));
+      expect(mockClaimRewards).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows disabled "Accruing next bonus" when user has mUSD but no claimable reward', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: false,
+        rewardAmountFiat: null,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toHaveTextContent(
+        messages.musdAssetBonusAccruing.message,
+      );
+      expect(button).toBeDisabled();
+    });
+
+    it('shows disabled "No accruing bonus" when user has no mUSD and no claimable reward', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: false,
+        rewardAmountFiat: null,
+        lifetimeClaimedFiat: 0,
+        isLoading: false,
+        isEligible: true,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={0}
+          showFiat
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toHaveTextContent(
+        messages.musdAssetBonusNoAccruing.message,
+      );
+      expect(button).toBeDisabled();
+    });
+
+    it('disables the button and shows loading when claim is in progress', () => {
+      mockUseMerklRewards.mockReturnValue({
+        hasClaimableReward: true,
+        rewardAmountFiat: 10,
+        lifetimeClaimedFiat: 5,
+        isLoading: false,
+        isEligible: true,
+      });
+      mockUseMerklClaim.mockReturnValue({
+        claimRewards: mockClaimRewards,
+        isClaiming: true,
+        error: null,
+      });
+
+      renderWithProviders(
+        <MusdBonusSection
+          chainId="0x1"
+          tokenAddress={MUSD_TOKEN_ADDRESS}
+          positionFiatValue={1000}
+          showFiat
+        />,
+      );
+
+      const button = screen.getByTestId('musd-claim-bonus-button');
+      expect(button).toBeDisabled();
+    });
   });
 });
