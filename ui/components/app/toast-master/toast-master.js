@@ -7,8 +7,6 @@ import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-perm
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  TextButton,
-  TextButtonSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
