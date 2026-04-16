@@ -375,10 +375,12 @@ export class PerpsStreamBridge {
   }
 
   /**
-   * Fetches fresh data via REST after a WebSocket reconnection so the UI
-   * doesn't show stale values while waiting for the first stream push.
-   * Market data is fetched first (highest UI priority), then user data
-   * after a short stagger to reduce burst pressure on the rate limiter.
+   * Emits controller-cached data immediately so the UI recovers without
+   * waiting for REST round-trips, then fetches fresh data in the background.
+   *
+   * This two-phase approach reduces rate-limit pressure: the UI gets instant
+   * (possibly slightly stale) data from the controller's persisted cache,
+   * and the REST refresh follows with staggered calls.
    */
   async #hydrateAfterReconnect(): Promise<void> {
     if (this.#isHydrating || !this.#isConnectionAlive()) {
@@ -389,6 +391,10 @@ export class PerpsStreamBridge {
     const hydrationToken = this.#hydrationSeq;
 
     try {
+      // Phase 1 — emit cached data synchronously for instant UI recovery
+      this.#emitCachedControllerState();
+
+      // Phase 2 — fetch fresh data via REST (staggered to reduce burst pressure)
       const marketsResult = await this.#controller
         .getMarketDataWithPrices()
         .catch(() => null);
@@ -423,6 +429,38 @@ export class PerpsStreamBridge {
       if (hydrationToken === this.#hydrationSeq) {
         this.#isHydrating = false;
       }
+    }
+  }
+
+  /**
+   * Reads the controller's persisted cache (populated by background
+   * preloading) and emits any available data to the UI immediately.
+   * No network calls are made — this is a synchronous cache read.
+   */
+  #emitCachedControllerState(): void {
+    try {
+      const cachedMarkets =
+        this.#controller.getCachedMarketDataForActiveProvider();
+      if (cachedMarkets && cachedMarkets.length > 0) {
+        this.#emit('markets', cachedMarkets);
+      }
+
+      const cachedUser =
+        this.#controller.getCachedUserDataForActiveProvider();
+      if (cachedUser) {
+        if (cachedUser.positions) {
+          this.#emit('positions', cachedUser.positions);
+        }
+        if (cachedUser.orders) {
+          this.#emit('orders', cachedUser.orders);
+        }
+        this.#emit('account', cachedUser.accountState ?? null);
+      }
+    } catch (err) {
+      console.debug(
+        '[PerpsStreamBridge] cached state emission failed',
+        err,
+      );
     }
   }
 

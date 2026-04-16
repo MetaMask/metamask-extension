@@ -34,6 +34,8 @@ function createMockController(): jest.Mocked<
     | 'getPositions'
     | 'getOpenOrders'
     | 'getAccountState'
+    | 'getCachedMarketDataForActiveProvider'
+    | 'getCachedUserDataForActiveProvider'
   >
 > {
   return {
@@ -53,6 +55,8 @@ function createMockController(): jest.Mocked<
     getPositions: jest.fn().mockResolvedValue([]),
     getOpenOrders: jest.fn().mockResolvedValue([]),
     getAccountState: jest.fn().mockResolvedValue(null),
+    getCachedMarketDataForActiveProvider: jest.fn().mockReturnValue(null),
+    getCachedUserDataForActiveProvider: jest.fn().mockReturnValue(null),
   };
 }
 
@@ -1423,6 +1427,125 @@ describe('PerpsStreamBridge', () => {
         listener(WebSocketConnectionState.Connected);
         await jest.advanceTimersByTimeAsync(300);
       }).not.toThrow();
+
+      jest.useRealTimers();
+    });
+
+    it('emits cached controller state before REST calls on reconnect', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+
+      const cachedMarkets = [{ symbol: 'CACHED_ETH' }];
+      const cachedUser = {
+        positions: [{ symbol: 'CACHED_BTC', size: '2' }],
+        orders: [{ orderId: 'cached-1' }],
+        accountState: { equity: '500' },
+      };
+      controller.getCachedMarketDataForActiveProvider.mockReturnValue(
+        cachedMarkets as never,
+      );
+      controller.getCachedUserDataForActiveProvider.mockReturnValue(
+        cachedUser as never,
+      );
+
+      const freshMarkets = [{ symbol: 'FRESH_ETH' }];
+      controller.getMarketDataWithPrices.mockResolvedValue(
+        freshMarkets as never,
+      );
+      controller.getPositions.mockResolvedValue([] as never);
+      controller.getOpenOrders.mockResolvedValue([] as never);
+      controller.getAccountState.mockResolvedValue(null as never);
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      // Cached data should be emitted synchronously before any REST call
+      expect(emit).toHaveBeenCalledWith('markets', cachedMarkets);
+      expect(emit).toHaveBeenCalledWith('positions', cachedUser.positions);
+      expect(emit).toHaveBeenCalledWith('orders', cachedUser.orders);
+      expect(emit).toHaveBeenCalledWith('account', cachedUser.accountState);
+
+      // REST calls have not fired yet (they are async)
+      expect(controller.getMarketDataWithPrices).not.toHaveBeenCalled();
+
+      // Let REST hydration complete
+      await jest.advanceTimersByTimeAsync(300);
+
+      // Fresh data should arrive after REST resolves
+      expect(emit).toHaveBeenCalledWith('markets', freshMarkets);
+
+      jest.useRealTimers();
+    });
+
+    it('skips cached emission when controller caches are empty', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+
+      controller.getCachedMarketDataForActiveProvider.mockReturnValue(null);
+      controller.getCachedUserDataForActiveProvider.mockReturnValue(null);
+
+      const freshMarkets = [{ symbol: 'ETH' }];
+      controller.getMarketDataWithPrices.mockResolvedValue(
+        freshMarkets as never,
+      );
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      // No cached data should be emitted synchronously
+      const synchronousCalls = emit.mock.calls.filter(
+        (call) => call[0] !== 'connectionState',
+      );
+      expect(synchronousCalls).toHaveLength(0);
+
+      await jest.advanceTimersByTimeAsync(300);
+      expect(emit).toHaveBeenCalledWith('markets', freshMarkets);
+
+      jest.useRealTimers();
+    });
+
+    it('handles errors from cached state methods gracefully', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+
+      controller.getCachedMarketDataForActiveProvider.mockImplementation(
+        () => {
+          throw new Error('cache read failed');
+        },
+      );
+
+      const freshMarkets = [{ symbol: 'ETH' }];
+      controller.getMarketDataWithPrices.mockResolvedValue(
+        freshMarkets as never,
+      );
+
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const listener = getConnectionStateListener(controller);
+      listener(WebSocketConnectionState.Disconnected);
+      listener(WebSocketConnectionState.Connected);
+
+      // Should not throw — REST hydration proceeds normally
+      await jest.advanceTimersByTimeAsync(300);
+      expect(emit).toHaveBeenCalledWith('markets', freshMarkets);
 
       jest.useRealTimers();
     });
