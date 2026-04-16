@@ -82,7 +82,11 @@ const DEFAULT_PAY_TOKEN_HOOK_RETURN = {
   setPayToken: jest.fn(),
 };
 
-const DEFAULT_ALERTS_HOOK_RETURN = {
+const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertMessage?: string;
+  hideResults: boolean;
+  disableUpdate: boolean;
+} = {
   alertMessage: undefined,
   hideResults: false,
   disableUpdate: false,
@@ -318,10 +322,10 @@ describe('CustomAmountInfo', () => {
     });
   });
 
-  it('does not render alert message text in the body', () => {
+  it('does not render alert body text when reason and message are the same', () => {
     const { queryByText } = render({
       alertsHookReturn: {
-        alertMessage: messages.alertInsufficientPayTokenBalance.message,
+        alertMessage: undefined,
         hideResults: true,
         disableUpdate: false,
       },
@@ -330,6 +334,20 @@ describe('CustomAmountInfo', () => {
     expect(
       queryByText(messages.alertInsufficientPayTokenBalance.message),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders alert message as body text when reason differs from message', () => {
+    const { getByText } = render({
+      alertsHookReturn: {
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      getByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).toBeInTheDocument();
   });
 
   describe('overrideCenterContent', () => {
