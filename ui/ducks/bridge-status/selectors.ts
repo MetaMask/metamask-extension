@@ -256,7 +256,8 @@ const selectBridgeHistoryItemForTxHash = createSelector(
 
     const historyItem = Object.values(bridgeHistory).find(
       (item) =>
-        item.status.srcChain?.txHash?.toLowerCase() === txHash?.toLowerCase(),
+        txHash &&
+        item.status.srcChain?.txHash?.toLowerCase() === txHash.toLowerCase(),
     );
     if (historyItem) {
       return historyItem;
