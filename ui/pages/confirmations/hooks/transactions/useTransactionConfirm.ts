@@ -94,18 +94,9 @@ export function useTransactionConfirm() {
 
     updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
 
-    // Persist correct `isGasFeeSponsored` for the activity list. Sentinel may set
-    // sponsorship on the unapproved tx, but hardware wallets and other
-    // non-gasless flows never run the STX / 7702 handlers below—those handlers
-    // were the only code clearing the flag, so activity briefly showed
-    // "paid by MetaMask" until state caught up (e.g. Monad send on HW).
-    if (!isGaslessSupported) {
-      newTransactionMeta.isGasFeeSponsored = false;
-    }
-
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
-    } else if (isGaslessSupported && selectedGasFeeToken) {
+    } else if (selectedGasFeeToken) {
       handleGasless7702();
     }
 
@@ -145,7 +136,6 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,
     updateSwapWithQuoteDetailsIfRequired,
-    isGaslessSupported,
   ]);
 
   return {
