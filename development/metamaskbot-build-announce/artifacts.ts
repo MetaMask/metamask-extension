@@ -10,7 +10,7 @@ import { BUNDLE_SIZE_SUMMARY_FILE } from '../webpack/utils/bundle-size';
 
 type ArtifactLink = { url: string; label: string };
 
-type FlatArtifactLinkMap = {
+type ArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
   bundleSizeStats: ArtifactLink;
   interactionStats: ArtifactLink;
@@ -19,10 +19,8 @@ type FlatArtifactLinkMap = {
   allArtifacts: ArtifactLink;
 };
 
-type FlatArtifactLinkKey = keyof FlatArtifactLinkMap;
-
-export type ArtifactLinks = FlatArtifactLinkMap & {
-  link: (key: FlatArtifactLinkKey) => string;
+export type ArtifactLinks = ArtifactLinkMap & {
+  link: (key: keyof ArtifactLinkMap) => string;
 };
 
 /**
@@ -40,7 +38,7 @@ export function getArtifactLinks(
   repository: string,
   runId: string,
 ): ArtifactLinks {
-  const ARTIFACT_LINK_MAP: FlatArtifactLinkMap = {
+  const ARTIFACT_LINK_MAP: ArtifactLinkMap = {
     bundleSizeData: {
       url: 'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json',
       label: 'Bundle Size Data',
@@ -67,7 +65,7 @@ export function getArtifactLinks(
     },
   };
 
-  const link = (key: FlatArtifactLinkKey) =>
+  const link = (key: keyof ArtifactLinkMap) =>
     `<a href="${ARTIFACT_LINK_MAP[key].url}">${ARTIFACT_LINK_MAP[key].label}</a>`;
 
   return { ...ARTIFACT_LINK_MAP, link };
