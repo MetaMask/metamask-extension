@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
+import { createSentryError } from '../../../../../../shared/modules/error';
 
 import {
   setMultichainAccountsIntroModalShown,
@@ -40,8 +41,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const alignmentPromise = useMemo(
     () =>
       alignMultichainWallets().catch((err) => {
-        console.error('Wallet alignment failed:', err);
-        captureException(err);
+        captureException(createSentryError('Wallet alignment failed', err));
         // Even if alignment fails, we continue
         return Promise.resolve();
       }),

@@ -20,12 +20,14 @@ type ApiErrorHandlerProps = {
   className?: string;
   error: Error;
   location: ShieldUnexpectedErrorEventLocationEnum;
+  message?: string;
 };
 
 const ApiErrorHandler = ({
   className = '',
   error,
   location,
+  message,
 }: ApiErrorHandlerProps) => {
   const t = useI18nContext();
   const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
@@ -50,7 +52,9 @@ const ApiErrorHandler = ({
         name={IconName.Error}
         color={IconColor.IconAlternative}
       />
-      <Text variant={TextVariant.BodyMd}>{t('shieldPlanErrorText')}</Text>
+      <Text variant={TextVariant.BodyMd}>
+        {message ?? t('shieldPlanErrorText')}
+      </Text>
       <Button
         className="w-full"
         size={ButtonSize.Lg}

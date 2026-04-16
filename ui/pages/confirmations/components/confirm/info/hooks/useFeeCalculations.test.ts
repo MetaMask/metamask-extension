@@ -109,8 +109,8 @@ describe('useFeeCalculations', () => {
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
-        "estimatedFeeFiat": "< $0.01",
-        "estimatedFeeFiatWith18SignificantDigits": "0.000065843",
+        "estimatedFeeFiat": "",
+        "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
         "estimatedFeeNativeHex": "0x3be226d2d900",
         "l1FeeFiat": "",
@@ -119,8 +119,8 @@ describe('useFeeCalculations', () => {
         "l2FeeFiat": "",
         "l2FeeFiatWith18SignificantDigits": "",
         "l2FeeNative": "",
-        "maxFeeFiat": "< $0.01",
-        "maxFeeFiatWith18SignificantDigits": "0.000125347",
+        "maxFeeFiat": "",
+        "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001",
       }
     `);

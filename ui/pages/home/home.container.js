@@ -15,6 +15,7 @@ import {
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
+  getIsHardwareWalletErrorModalVisible,
   getNewNftAddedMessage,
   getNewTokensImported,
   getRemoveNftMessage,
@@ -154,6 +155,8 @@ const mapStateToProps = (state) => {
     newNetworkAddedName: getNewNetworkAdded(state),
     editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
+    isHardwareWalletErrorModalVisible:
+      getIsHardwareWalletErrorModalVisible(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),

@@ -27,6 +27,8 @@ import {
   getUnapprovedDappSwapTransaction,
 } from './transactionDataHelpers';
 
+jest.setTimeout(30_000);
+
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),

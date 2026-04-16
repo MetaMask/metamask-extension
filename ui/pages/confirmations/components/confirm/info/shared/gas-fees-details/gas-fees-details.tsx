@@ -18,6 +18,7 @@ import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 
 export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
@@ -51,6 +52,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
     selectConfirmationAdvancedDetailsOpen,
   );
 
+  const estimationFailed = useEstimationFailed();
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -64,7 +67,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
       />
       {showAdvancedDetails &&
         hasLayer1GasFee &&
-        !transactionMeta.isGasFeeSponsored && (
+        !transactionMeta.isGasFeeSponsored &&
+        !estimationFailed && (
           <>
             <GasFeesRow
               data-testid="gas-fee-details-l1"
@@ -104,7 +108,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
         )}
       {showAdvancedDetails &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !transactionMeta.isGasFeeSponsored &&
+        !estimationFailed && (
           <GasFeesRow
             data-testid="gas-fee-details-max-fee"
             label={t('maxFee')}

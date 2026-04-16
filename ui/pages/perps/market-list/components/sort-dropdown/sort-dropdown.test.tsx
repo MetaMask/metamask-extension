@@ -13,7 +13,7 @@ const mockStore = configureStore({
 
 describe('SortDropdown', () => {
   const defaultProps = {
-    selectedOptionId: 'volume' as const,
+    selectedOptionId: 'volumeHigh' as const,
     onOptionChange: jest.fn(),
   };
 
@@ -98,14 +98,21 @@ describe('SortDropdown', () => {
 
   describe('SORT_OPTIONS configuration', () => {
     it('has correct number of sort options', () => {
-      expect(SORT_OPTIONS).toHaveLength(5);
+      expect(SORT_OPTIONS).toHaveLength(8);
     });
 
-    it('includes volume option', () => {
-      const volumeOption = SORT_OPTIONS.find((opt) => opt.id === 'volume');
-      expect(volumeOption).toBeDefined();
-      expect(volumeOption?.field).toBe('volume');
-      expect(volumeOption?.direction).toBe('desc');
+    it('includes volume high to low option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'volumeHigh');
+      expect(option).toBeDefined();
+      expect(option?.field).toBe('volume');
+      expect(option?.direction).toBe('desc');
+    });
+
+    it('includes volume low to high option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'volumeLow');
+      expect(option).toBeDefined();
+      expect(option?.field).toBe('volume');
+      expect(option?.direction).toBe('asc');
     });
 
     it('includes price change high to low option', () => {
@@ -122,18 +129,32 @@ describe('SortDropdown', () => {
       expect(option?.direction).toBe('asc');
     });
 
-    it('includes open interest option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'openInterest');
+    it('includes open interest high to low option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'openInterestHigh');
       expect(option).toBeDefined();
       expect(option?.field).toBe('openInterest');
       expect(option?.direction).toBe('desc');
     });
 
-    it('includes funding rate option', () => {
-      const option = SORT_OPTIONS.find((opt) => opt.id === 'fundingRate');
+    it('includes open interest low to high option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'openInterestLow');
+      expect(option).toBeDefined();
+      expect(option?.field).toBe('openInterest');
+      expect(option?.direction).toBe('asc');
+    });
+
+    it('includes funding rate high to low option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'fundingRateHigh');
       expect(option).toBeDefined();
       expect(option?.field).toBe('fundingRate');
       expect(option?.direction).toBe('desc');
+    });
+
+    it('includes funding rate low to high option', () => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === 'fundingRateLow');
+      expect(option).toBeDefined();
+      expect(option?.field).toBe('fundingRate');
+      expect(option?.direction).toBe('asc');
     });
 
     it('all options have labelKey for i18n', () => {

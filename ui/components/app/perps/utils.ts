@@ -7,7 +7,6 @@ import type {
   PerpsTransactionFilter,
 } from './types';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
-import { mockCryptoMarkets, mockHip3Markets } from './mocks';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -166,25 +165,6 @@ export const getAssetIconUrl = (symbol: string): string => {
 };
 
 /**
- * Finds market data by symbol from mock data
- * Searches both crypto and HIP-3 markets
- *
- * @param symbol - The market symbol to search for
- * @returns The market data if found, undefined otherwise
- * @example
- * findMarketBySymbol('BTC') => { symbol: 'BTC', name: 'Bitcoin', ... }
- * findMarketBySymbol('xyz:TSLA') => { symbol: 'xyz:TSLA', name: 'Tesla', ... }
- */
-export const findMarketBySymbol = (
-  symbol: string,
-): PerpsMarketData | undefined => {
-  const allMarkets = [...mockCryptoMarkets, ...mockHip3Markets];
-  return allMarkets.find(
-    (market) => market.symbol.toLowerCase() === symbol.toLowerCase(),
-  );
-};
-
-/**
  * Safely decode a URI component, returning undefined if decoding fails
  * Handles malformed percent-encoding sequences that would throw URIError
  *
@@ -289,18 +269,30 @@ export const filterTransactionsByType = (
 };
 
 /**
- * Get the appropriate text color for transaction status
+ * Transaction status type for deposit/withdrawal operations.
+ */
+type TransactionStatus =
+  | 'confirmed'
+  | 'pending'
+  | 'failed'
+  | 'completed'
+  | 'bridging';
+
+/**
+ * Get the appropriate text color for transaction status.
  *
  * @param status - The transaction status
  * @returns The appropriate text color
  */
 export const getTransactionStatusColor = (
-  status: PerpsTransaction['status'],
+  status: TransactionStatus,
 ): TextColor => {
   switch (status) {
     case 'confirmed':
+    case 'completed':
       return TextColor.SuccessDefault;
     case 'pending':
+    case 'bridging':
       return TextColor.WarningDefault;
     case 'failed':
       return TextColor.ErrorDefault;
@@ -356,4 +348,41 @@ export const filterMarketsByQuery = (
       market.symbol?.toLowerCase().includes(lowerQuery) ||
       market.name?.toLowerCase().includes(lowerQuery),
   );
+};
+
+/**
+ * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ *
+ * HIP-3 markets are identified by having a marketSource that matches one of
+ * the allowed HIP-3 DEX providers from the feature flag.
+ *
+ * @param market - The market data to check
+ * @param allowedSources - Set of allowed HIP-3 source identifiers from the selector
+ * @returns True if the market is from an allowed HIP-3 source
+ * @example
+ * const allowedSources = new Set(['xyz']);
+ * isHip3Market({ symbol: 'xyz:TSLA', marketSource: 'xyz' }, allowedSources) // → true
+ * isHip3Market({ symbol: 'BTC', marketSource: undefined }, allowedSources) // → false
+ * isHip3Market({ symbol: 'abc:AAPL', marketSource: 'abc' }, allowedSources) // → false
+ */
+export const isHip3Market = (
+  market: PerpsMarketData,
+  allowedSources: Set<string>,
+): boolean => {
+  return Boolean(
+    market.marketSource && allowedSources.has(market.marketSource),
+  );
+};
+
+/**
+ * Check if a market is a crypto market (main DEX, no marketSource)
+ *
+ * @param market - The market data to check
+ * @returns True if the market is a crypto market
+ * @example
+ * isCryptoMarket({ symbol: 'BTC', marketSource: undefined }) // → true
+ * isCryptoMarket({ symbol: 'xyz:TSLA', marketSource: 'xyz' }) // → false
+ */
+export const isCryptoMarket = (market: PerpsMarketData): boolean => {
+  return !market.marketSource;
 };

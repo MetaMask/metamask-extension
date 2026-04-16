@@ -413,9 +413,6 @@
   "next": {
     "message": "Toliau"
   },
-  "noConversionRateAvailable": {
-    "message": "Nėra keitimo kurso"
-  },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
   },

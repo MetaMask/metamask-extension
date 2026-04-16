@@ -140,7 +140,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         recoveryPhraseReminderHasBeenShown: true,
-        pna25Acknowledged: false,
+        pna25Acknowledged: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,

@@ -16,12 +16,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
-  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { shortenAddress as utilShortenAddress } from '../../../helpers/utils/util';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -131,8 +129,25 @@ const mockSwapTransaction = {
 const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
-  userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+};
+
+const mockStateWithBitcoin = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    isEvmSelected: false,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      bitcoinAccounts: true,
+    },
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+      },
+    },
+  },
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -157,11 +172,9 @@ describe('MultichainTransactionDetailsModal', () => {
     props: {
       transaction: Transaction;
       onClose: jest.Mock;
-      userAddress: string;
-      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
-    const store = configureStore(mockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
@@ -320,12 +333,9 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('renders Solana swap transaction details correctly', () => {
-    const userAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
     const swapProps = {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
-      userAddress,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
@@ -335,7 +345,7 @@ describe('MultichainTransactionDetailsModal', () => {
       '-2.5 SOL',
     );
 
-    const addressStart = userAddress.substring(0, 6);
+    const addressStart = MOCK_ACCOUNT_SOLANA_MAINNET.address.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -356,31 +366,25 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('displays the correct from address for Bitcoin send transaction', () => {
-    const btcTransaction = {
+    const btcTransaction: Transaction = {
       ...mockTransaction,
       account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-    };
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
-            [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+      from: [
+        {
+          address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+          asset: {
+            fungible: true,
+            type: 'native' as CaipAssetType,
+            amount: '1.0',
+            unit: 'BTC',
           },
         },
-      },
+      ],
     };
-
-    const store = configureStore(modifiedMockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     const props = {
       transaction: btcTransaction,
       onClose: jest.fn(),
-      userAddress: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
     };
 
     renderWithProvider(
@@ -393,10 +397,9 @@ describe('MultichainTransactionDetailsModal', () => {
     const fromLabel = screen.getByText('from');
     expect(fromLabel).toBeInTheDocument();
 
-    const shortenedFromAddress = utilShortenAddress(
-      MOCK_ACCOUNT_BIP122_P2WPKH.address,
+    const fromAddressElement = screen.getByText(
+      MOCK_ACCOUNT_BIP122_P2WPKH.metadata.name,
     );
-    const fromAddressElement = screen.getByText(shortenedFromAddress);
     expect(fromAddressElement).toBeInTheDocument();
 
     const expectedHref = getAddressUrl(

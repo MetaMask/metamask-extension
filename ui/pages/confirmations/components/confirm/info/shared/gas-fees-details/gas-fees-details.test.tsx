@@ -1,6 +1,10 @@
 import { act } from '@testing-library/react';
 import React from 'react';
 
+import {
+  SimulationError,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
@@ -26,11 +30,20 @@ jest.mock(
 function getStore({
   isAdvanced,
   selectedGasFeeToken,
-}: { isAdvanced?: boolean; selectedGasFeeToken?: Hex } = {}) {
+  simulationFails,
+  userFeeLevel,
+}: {
+  isAdvanced?: boolean;
+  selectedGasFeeToken?: Hex;
+  simulationFails?: SimulationError;
+  userFeeLevel?: UserFeeLevel;
+} = {}) {
   return configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
         selectedGasFeeToken,
+        simulationFails,
+        userFeeLevel,
       }),
       {
         metamask: {
@@ -103,5 +116,57 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(queryByText('Speed')).not.toBeInTheDocument();
+  });
+
+  describe('when estimation failed', () => {
+    it('does not render max fee if advanced and estimation failed', async () => {
+      const { queryByTestId } = renderWithConfirmContextProvider(
+        <GasFeesDetails />,
+        getStore({
+          isAdvanced: true,
+          simulationFails: { debug: {} } as SimulationError,
+          userFeeLevel: UserFeeLevel.MEDIUM,
+        }),
+      );
+
+      await act(async () => {
+        // Intentionally empty
+      });
+
+      expect(queryByTestId('gas-fee-details-max-fee')).toBeNull();
+    });
+
+    it('renders max fee if advanced and userFeeLevel is CUSTOM even with simulation failure', async () => {
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <GasFeesDetails />,
+        getStore({
+          isAdvanced: true,
+          simulationFails: { debug: {} } as SimulationError,
+          userFeeLevel: UserFeeLevel.CUSTOM,
+        }),
+      );
+
+      await act(async () => {
+        // Intentionally empty
+      });
+
+      expect(getByTestId('gas-fee-details-max-fee')).toBeInTheDocument();
+    });
+
+    it('renders gas timing even when estimation failed', async () => {
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <GasFeesDetails />,
+        getStore({
+          simulationFails: { debug: {} } as SimulationError,
+          userFeeLevel: UserFeeLevel.MEDIUM,
+        }),
+      );
+
+      await act(async () => {
+        // Intentionally empty
+      });
+
+      expect(getByTestId('gas-fee-details-speed')).toBeInTheDocument();
+    });
   });
 });

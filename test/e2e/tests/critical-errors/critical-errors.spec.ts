@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -12,7 +12,7 @@ describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background is unresponsive', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {
@@ -41,7 +41,7 @@ describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background takes over 15 seconds to respond', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {
@@ -79,7 +79,7 @@ describe('Critical errors', function (this: Suite) {
     const timeoutValue = 5000;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {

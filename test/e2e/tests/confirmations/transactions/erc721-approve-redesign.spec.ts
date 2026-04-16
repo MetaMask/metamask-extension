@@ -2,14 +2,13 @@
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
-
-const FixtureBuilder = require('../../../fixtures/fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -19,7 +18,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,

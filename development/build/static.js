@@ -124,7 +124,7 @@ function getCopyTargets(
     },
     {
       src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
-      dest: `images/riv_animations/rive.wasm`,
+      dest: 'images/rive.wasm',
       pattern: '',
     },
     {

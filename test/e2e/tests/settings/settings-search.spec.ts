@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AboutPage from '../../page-objects/pages/settings/about-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import ContactsSettings from '../../page-objects/pages/settings/contacts-settings';
@@ -23,7 +23,7 @@ describe('Settings Search', function () {
   it('should find element inside the General tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -44,7 +44,7 @@ describe('Settings Search', function () {
   it('should find element inside the Advanced tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -65,7 +65,7 @@ describe('Settings Search', function () {
   it('should find element inside the Contacts tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -86,7 +86,7 @@ describe('Settings Search', function () {
   it('should find element inside the "Security & privacy" tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -107,7 +107,7 @@ describe('Settings Search', function () {
   it('should find element inside the Experimental tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -128,7 +128,7 @@ describe('Settings Search', function () {
   it('should find element inside the About tab', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -149,7 +149,7 @@ describe('Settings Search', function () {
   it('should display "No matching results found" for a non-existing element', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

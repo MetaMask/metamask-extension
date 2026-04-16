@@ -61,8 +61,37 @@
   }
 
   .mascot-background-animation__animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
     margin-top: 24px;
     margin-bottom: 16px;
+  }
+
+  .mascot-background-animation__background-1,
+  .mascot-background-animation__background-2 {
+    width: 120px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    -webkit-animation: bridge-loader-spin 38s linear infinite;
+    -moz-animation: bridge-loader-spin 38s linear infinite;
+    animation: bridge-loader-spin 38s linear infinite;
+  }
+
+  .mascot-background-animation__background-2 {
+    width: 120px;
+    height: 128px;
+    -webkit-animation: bridge-loader-spin 42s linear infinite;
+    -moz-animation: bridge-loader-spin 42s linear infinite;
+    animation: bridge-loader-spin 42s linear infinite;
+  }
+
+  .mascot-background-animation__mascot-container {
+    position: relative;
   }
 
   .highlight {
@@ -91,6 +120,13 @@
       box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
     }
     /* stylelint-enable color-no-hex */
+  }
+}
+
+@keyframes bridge-loader-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 

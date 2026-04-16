@@ -401,9 +401,6 @@
   "next": {
     "message": "Següent"
   },
-  "noConversionRateAvailable": {
-    "message": "No hi ha cap tarifa de conversió disponible"
-  },
   "noWebcamFound": {
     "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."
   },

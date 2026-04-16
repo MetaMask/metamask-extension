@@ -6,21 +6,31 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
-import SendPage from '../../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { WITH_STATE_POWER_USER } from '../../utils';
+import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+} from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
 export const testTitle = 'benchmark-send-transactions-power-user';
-export const persona = 'powerUser';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -36,9 +46,10 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
@@ -48,15 +59,20 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-
+        const accountListPage = new AccountListPage(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.switchToAccount('Account 1');
+        // Wait for Solana balance to load before starting the send flow
+        if (shouldUseMockedRequests()) {
+          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        } else {
+          await assetListPage.waitForTokenToBeDisplayed('SOL');
+        }
         // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
@@ -88,12 +104,17 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

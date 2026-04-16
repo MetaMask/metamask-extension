@@ -27,8 +27,14 @@ const SAME_CHAIN_DURATION_SECONDS = '< 10';
 
 const HIDE_TYPES: TransactionType[] = [];
 
+export type BridgeTimeRowProps = {
+  rowVariant?: ConfirmInfoRowSize;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function BridgeTimeRow() {
+export function BridgeTimeRow({
+  rowVariant = ConfirmInfoRowSize.Default,
+}: BridgeTimeRowProps) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isLoading = useIsTransactionPayLoading();
@@ -41,12 +47,21 @@ export function BridgeTimeRow() {
     !hasTransactionType(currentConfirmation, HIDE_TYPES) &&
     (isLoading || Boolean(quotes?.length));
 
+  const isSmall = rowVariant === ConfirmInfoRowSize.Small;
+  const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+
   if (!showEstimate) {
     return null;
   }
 
   if (isLoading) {
-    return <ConfirmInfoRowSkeleton data-testid="bridge-time-row-skeleton" />;
+    return (
+      <ConfirmInfoRowSkeleton
+        data-testid="bridge-time-row-skeleton"
+        label={t('estimatedTime')}
+        rowVariant={rowVariant}
+      />
+    );
   }
 
   const isSameChain = payToken?.chainId === chainId;
@@ -60,10 +75,10 @@ export function BridgeTimeRow() {
     <ConfirmInfoRow
       data-testid="bridge-time-row"
       label={t('estimatedTime')}
-      rowVariant={ConfirmInfoRowSize.Small}
+      rowVariant={rowVariant}
     >
       <Text
-        variant={TextVariant.bodyMd}
+        variant={textVariant}
         color={TextColor.textAlternative}
         data-testid="bridge-time-value"
       >

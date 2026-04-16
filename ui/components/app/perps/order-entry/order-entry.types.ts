@@ -1,4 +1,4 @@
-import type { OrderType } from '../types';
+import { OrderType } from '../types';
 
 /**
  * Order direction for perps trading
@@ -27,6 +27,8 @@ export type OrderMode = 'new' | 'modify' | 'close';
  * Used in 'modify' and 'close' modes
  */
 export type ExistingPositionData = {
+  /** Asset symbol (e.g., 'ETH', 'BTC') - used for tracking position identity */
+  symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
   /** Current leverage multiplier */
@@ -109,6 +111,12 @@ export type OrderEntryProps = {
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /** Mid price from top-of-book for limit order presets */
+  midPrice?: number;
+  /** Best bid price from top-of-book for limit order presets */
+  bidPrice?: number;
+  /** Best ask price from top-of-book for limit order presets */
+  askPrice?: number;
 };
 
 /**
@@ -187,8 +195,10 @@ export type AutoCloseSectionProps = {
   onStopLossPriceChange: (price: string) => void;
   /** Current order direction (affects TP/SL validation) */
   direction: OrderDirection;
-  /** Current asset price (for TP/SL calculations) */
+  /** Current asset price (for TP/SL calculations and new orders) */
   currentPrice: number;
+  /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
+  entryPrice?: number;
 };
 
 /**

@@ -17,6 +17,7 @@ import {
   isBtcTestnetAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
+import { toEvmCaipAccountId } from '../../../../shared/lib/multichain/scope-utils';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
@@ -463,10 +464,11 @@ export class RewardsController extends BaseController<
   #getAccountState(account: CaipAccountId): RewardsAccountState | null {
     let accState = null;
     if (account?.startsWith('eip155')) {
+      const address = account.split(':')[2];
       accState =
         this.state.rewardsAccounts[
-          `eip155:0:${account.split(':')[2]?.toLowerCase()}`
-        ] || this.state.rewardsAccounts[`eip155:0:${account.split(':')[2]}`];
+          toEvmCaipAccountId(address?.toLowerCase())
+        ] || this.state.rewardsAccounts[toEvmCaipAccountId(address)];
     }
     if (!accState) {
       accState = this.state.rewardsAccounts[account];
@@ -591,7 +593,7 @@ export class RewardsController extends BaseController<
     try {
       const accounts = this.messenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      );
+      ) as InternalAccount[];
 
       if (!accounts || accounts.length === 0) {
         await this.performSilentAuth(null, true, true);

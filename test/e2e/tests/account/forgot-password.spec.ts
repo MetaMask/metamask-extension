@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { Anvil } from '../../seeder/anvil';
@@ -15,7 +15,7 @@ describe('Forgot password', function () {
   it('resets password and then unlock wallet with new password', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',

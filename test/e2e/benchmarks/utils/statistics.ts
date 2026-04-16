@@ -39,6 +39,12 @@ export const Z_SCORE_THRESHOLD = 3;
 export const MAX_METRIC_DURATION_MS = 120_000;
 
 /**
+ * Maximum allowed duration (ms) for per-run total (sum of all timers in a run).
+ * Totals can legitimately exceed MAX_METRIC_DURATION_MS since they aggregate many steps.
+ */
+export const MAX_TOTAL_DURATION_MS = 600_000; // 10 minutes
+
+/**
  * Minimum allowed duration (ms) - metrics below this are suspicious
  * Default: 1ms (anything lower is likely a measurement error)
  */
@@ -316,11 +322,18 @@ export const filterBySanityChecks = (
   return { filtered, excludedCount, reasons };
 };
 
+export type TimerStatisticsOptions = {
+  /** Override max duration (ms) for sanity check; used for per-run totals. */
+  maxDurationMs?: number;
+};
+
 export const calculateTimerStatistics = (
   timerId: string,
   durations: number[],
+  options?: TimerStatisticsOptions,
 ): TimerStatistics => {
-  const sanityResult = filterBySanityChecks(durations);
+  const maxDuration = options?.maxDurationMs ?? MAX_METRIC_DURATION_MS;
+  const sanityResult = filterBySanityChecks(durations, maxDuration);
   const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);

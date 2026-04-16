@@ -20,7 +20,7 @@ export enum BridgeQueryParams {
    */
 }
 
-export default new Route({
+export const swap = new Route({
   pathname: '/swap',
   getTitle: (_: URLSearchParams) => 'deepLink_theSwapsPage',
   handler: function handler(params: URLSearchParams) {

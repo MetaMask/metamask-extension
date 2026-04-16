@@ -6,10 +6,10 @@ import {
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
@@ -39,7 +39,7 @@ type AggregatedMovement = {
 
 export function useMultichainTransactionDisplay(
   transaction: Transaction,
-  networkConfig: MultichainProviderConfig,
+  networkConfig: { chainId: CaipChainId },
 ) {
   const locale = useSelector(getIntlLocale);
   const { chainId } = networkConfig;

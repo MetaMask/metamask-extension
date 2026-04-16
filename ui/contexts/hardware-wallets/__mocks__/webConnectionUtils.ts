@@ -16,8 +16,7 @@ export const checkHardwareWalletPermission = jest.fn();
 export const requestWebHidPermission = jest.fn();
 export const requestWebUsbPermission = jest.fn();
 export const requestHardwareWalletPermission = jest.fn();
-export const getDeviceId = jest.fn();
-export const getHardwareWalletDeviceId = jest.fn();
+export const getConnectedDevices = jest.fn();
 export const subscribeToWebHidEvents = jest.fn();
 export const subscribeToWebUsbEvents = jest.fn();
 export const subscribeToHardwareWalletEvents = jest.fn();
@@ -56,8 +55,7 @@ requestHardwareWalletPermission.mockImplementation(
     }
   },
 );
-getDeviceId.mockResolvedValue('test-device-id');
-getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
+getConnectedDevices.mockResolvedValue([]);
 subscribeToWebHidEvents.mockReturnValue(jest.fn());
 subscribeToWebUsbEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
@@ -97,8 +95,7 @@ export const resetwebConnectionUtilsMocks = () => {
       }
     },
   );
-  getDeviceId.mockResolvedValue('test-device-id');
-  getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
+  getConnectedDevices.mockResolvedValue([]);
   subscribeToWebHidEvents.mockReturnValue(jest.fn());
   subscribeToWebUsbEvents.mockReturnValue(jest.fn());
   subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
@@ -157,14 +154,5 @@ export const mockWebUsbUnavailable = () => {
 
 // Helper to mock device discovery failures
 export const mockNoDevicesFound = () => {
-  getDeviceId.mockResolvedValue(null);
-  getHardwareWalletDeviceId.mockResolvedValue(null);
-};
-
-// Helper to mock device discovery errors
-export const mockDeviceDiscoveryError = () => {
-  getDeviceId.mockRejectedValue(new Error('Device discovery failed'));
-  getHardwareWalletDeviceId.mockRejectedValue(
-    new Error('Device discovery failed'),
-  );
+  getConnectedDevices.mockResolvedValue([]);
 };

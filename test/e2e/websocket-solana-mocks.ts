@@ -29,7 +29,7 @@ export async function setupSolanaWebsocketMocks(
     // Handle messages from the client
     socket.on('message', (data) => {
       const message = data.toString();
-      console.log('Message received from client:', message);
+      console.log('Message received from client:', message, false);
 
       // Check each mock configuration
       for (const mock of mergedMocks) {
@@ -44,7 +44,7 @@ export async function setupSolanaWebsocketMocks(
 
         if (matches) {
           if (mock.logMessage) {
-            console.log(mock.logMessage);
+            console.log(mock.logMessage, false);
           }
 
           const delay = mock.delay || 500;
@@ -52,6 +52,7 @@ export async function setupSolanaWebsocketMocks(
             socket.send(JSON.stringify(mock.response));
             console.log(
               `Simulated message sent to the client for: ${includes.join(' + ')}`,
+              false,
             );
           }, delay);
 

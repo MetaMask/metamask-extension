@@ -2,7 +2,6 @@ import { ControllerInitFunction } from '../types';
 import { SubscriptionService } from '../../services/subscription/subscription-service';
 import { SubscriptionServiceMessenger } from '../../services/subscription/types';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
-import { captureException as captureExceptionWithSentry } from '../../../../shared/lib/sentry';
 
 export const SubscriptionServiceInit: ControllerInitFunction<
   SubscriptionService,
@@ -14,7 +13,6 @@ export const SubscriptionServiceInit: ControllerInitFunction<
     messenger: controllerMessenger,
     platform,
     webAuthenticator: webAuthenticatorFactory(),
-    captureException: captureExceptionWithSentry,
   });
 
   return {

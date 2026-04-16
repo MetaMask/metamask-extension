@@ -413,9 +413,6 @@
   "next": {
     "message": "بعدی"
   },
-  "noConversionRateAvailable": {
-    "message": "هیچ نرخ تغییر موجود نمیباشد"
-  },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."
   },

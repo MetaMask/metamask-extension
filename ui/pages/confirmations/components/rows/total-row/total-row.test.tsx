@@ -8,16 +8,20 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { TotalRow } from './total-row';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { TotalRow, TotalRowProps } from './total-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../../../hooks/useI18nContext');
 
 const mockStore = configureMockStore([]);
 
-function render() {
+function render(props: TotalRowProps = {}) {
   const state = getMockPersonalSignConfirmState();
-  return renderWithConfirmContextProvider(<TotalRow />, mockStore(state));
+  return renderWithConfirmContextProvider(
+    <TotalRow {...props} />,
+    mockStore(state),
+  );
 }
 
 describe('TotalRow', () => {
@@ -44,16 +48,41 @@ describe('TotalRow', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(false);
   });
 
-  it('renders the total amount', () => {
-    const { getByText } = render();
-    expect(getByText('$123.46')).toBeInTheDocument();
-  });
-
-  it('renders skeleton when quotes are loading', () => {
+  it('renders skeleton with label when loading (Default variant)', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
 
-    const { getByTestId } = render();
+    const { getByTestId, getByText } = render();
 
     expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
+    expect(getByText('Total')).toBeInTheDocument();
+  });
+
+  it('renders full skeleton without label when loading (Small variant)', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    const { getByTestId, queryByText } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
+
+    expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
+    expect(queryByText('Total')).not.toBeInTheDocument();
+  });
+
+  it('renders total value with ConfirmInfoRowText for Default variant', () => {
+    const { getByTestId } = render();
+
+    const totalValue = getByTestId('total-value');
+    expect(totalValue).toBeInTheDocument();
+    expect(totalValue).toHaveTextContent('$123.46');
+  });
+
+  it('renders total value with Text component for Small variant', () => {
+    const { getByTestId } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
+
+    const totalValue = getByTestId('total-value');
+    expect(totalValue).toBeInTheDocument();
+    expect(totalValue).toHaveTextContent('$123.46');
   });
 });

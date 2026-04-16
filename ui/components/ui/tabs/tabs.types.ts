@@ -17,6 +17,8 @@ export type TabProps<TKey extends string = string> = Omit<
   tabKey: TKey;
   /** Click handler called with the tab index (set by parent Tabs component) */
   onClick?: (tabIndex: number) => void;
+  /** Mouse enter handler for the underlying tab button */
+  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement>;
   /** Tab index in the list (set by parent Tabs component) */
   tabIndex?: number;
   /** Content to render when this tab is active */

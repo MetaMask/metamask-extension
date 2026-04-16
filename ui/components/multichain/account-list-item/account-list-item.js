@@ -19,7 +19,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Color,
   Display,
   FlexDirection,
@@ -88,7 +87,6 @@ const AccountListItem = ({
   showConnectedStatus = true,
   privacyMode = false,
   showAccountLabels = true,
-  showSelectionIndicator = true,
 }) => {
   const t = useI18nContext();
 
@@ -202,7 +200,9 @@ const AccountListItem = ({
     <Box
       display={Display.Flex}
       padding={4}
-      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
+      backgroundColor={
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
+      }
       className={classnames('multichain-account-list-item items-center', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
@@ -223,14 +223,6 @@ const AccountListItem = ({
           {startAccessory}
         </Box>
       ) : null}
-      {selected && showSelectionIndicator && (
-        <Box
-          className="multichain-account-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={Color.primaryDefault}
-          data-testid="account-list-item-selected-indicator"
-        />
-      )}
 
       <Box className="flex w-full gap-2 items-center">
         <Box
@@ -496,10 +488,6 @@ AccountListItem.propTypes = {
    * Determines if account labels should be shown
    */
   showAccountLabels: PropTypes.bool,
-  /**
-   * Determines if left dark blue selection indicator is displayed or not
-   */
-  showSelectionIndicator: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

@@ -20,10 +20,11 @@ export async function getFirstAddress(
   driver: Driver,
   headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
 ): Promise<string> {
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkPageIsLoaded(20000);
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });

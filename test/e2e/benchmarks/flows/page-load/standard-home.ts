@@ -11,6 +11,7 @@ import type {
   Metrics,
   PageLoadBenchmarkOptions,
 } from '../../utils/types';
+import { BENCHMARK_PERSONA } from '../../utils/constants';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
 
 async function measurePageStandard(
@@ -19,7 +20,7 @@ async function measurePageStandard(
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
   const title = 'measurePageStandard';
-  const persona = 'standard';
+  const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),

@@ -5,10 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import {
-  SMART_ACCOUNT_LEARN_MORE_URL,
-  SMART_TRANSACTIONS_LEARN_MORE_URL,
-} from '../../../../shared/constants/smartTransactions';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   Box,
   Button,
@@ -64,8 +61,6 @@ export default class AdvancedTab extends PureComponent {
     setManageInstitutionalWallets: PropTypes.func.isRequired,
     dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
     setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
-    smartAccountOptIn: PropTypes.bool.isRequired,
-    setSmartAccountOptIn: PropTypes.func.isRequired,
   };
 
   state = {
@@ -205,60 +200,6 @@ export default class AdvancedTab extends PureComponent {
               {t('clearActivityButton')}
             </Button>
           </div>
-        </div>
-      </Box>
-    );
-  }
-
-  renderToggleSmartAccountOptIn() {
-    const { t } = this.context;
-    const { smartAccountOptIn, setSmartAccountOptIn } = this.props;
-
-    const learMoreLink = (
-      <ButtonLink
-        size={ButtonLinkSize.Inherit}
-        textProps={{
-          variant: TextVariant.bodyMd,
-          alignItems: AlignItems.flexStart,
-        }}
-        as="a"
-        href={SMART_ACCOUNT_LEARN_MORE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('learnMoreUpperCase')}
-      </ButtonLink>
-    );
-
-    return (
-      <Box
-        ref={this.settingsRefs[2]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-smart-account-optin"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={[null, 4]}
-      >
-        <div className="settings-page__content-item">
-          <span> {t('useSmartAccountTitle')}</span>
-          <div className="settings-page__content-description">
-            {`${t('useSmartAccountDescription')} `}
-            {learMoreLink}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={smartAccountOptIn}
-            onToggle={(oldValue) => {
-              const newValue = !oldValue;
-              setSmartAccountOptIn(newValue);
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="settings-page-smart-account-optin"
-          />
         </div>
       </Box>
     );
@@ -705,7 +646,6 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
-        {this.renderToggleSmartAccountOptIn()}
         {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}

@@ -331,6 +331,13 @@
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true
       }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
     }
   }
 }

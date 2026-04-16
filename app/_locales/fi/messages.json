@@ -413,9 +413,6 @@
   "next": {
     "message": "Seuraava"
   },
-  "noConversionRateAvailable": {
-    "message": "Vaihtokurssi ei saatavilla"
-  },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
   },

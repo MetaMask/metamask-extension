@@ -398,9 +398,6 @@
   "next": {
     "message": "ቀጣይ"
   },
-  "noConversionRateAvailable": {
-    "message": "ምንም የልወጣ ተመን አይገኝም"
-  },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
   },

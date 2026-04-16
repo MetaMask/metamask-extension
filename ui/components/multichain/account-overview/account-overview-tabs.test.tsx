@@ -48,6 +48,10 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   default: () => null,
 }));
 
+jest.mock('../activity-v2/activity-list', () => ({
+  ActivityList: () => null,
+}));
+
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
   const mockMetaMetricsContext = {

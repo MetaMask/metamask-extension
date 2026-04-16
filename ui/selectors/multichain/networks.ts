@@ -340,6 +340,34 @@ export const getAllEnabledNetworksForAllNamespaces = createSelector(
     ),
 );
 
+export const selectEnabledNetworksAsCaipChainIds = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap): CaipChainId[] =>
+    Object.entries(enabledNetworkMap)
+      .flatMap(([namespace, namespaceNetworks]) =>
+        Object.entries(namespaceNetworks)
+          .filter(([, enabled]) => enabled)
+          .map(([chainId]) =>
+            namespace === KnownCaipNamespace.Eip155
+              ? toEvmCaipChainId(chainId as Hex)
+              : (chainId as CaipChainId),
+          ),
+      )
+      .sort(),
+);
+
+export const selectNonEvmChainIds = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap) =>
+    Object.entries(enabledNetworkMap)
+      .filter(([namespace]) => namespace !== 'eip155')
+      .flatMap(([, chains]) =>
+        Object.entries(chains)
+          .filter(([, enabled]) => enabled)
+          .map(([id]) => id),
+      ),
+);
+
 export const getEnabledChainIds = createSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,

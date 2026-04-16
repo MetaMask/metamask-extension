@@ -5,7 +5,7 @@ import {
 } from '../../../../ui/helpers/constants/routes';
 import { Route } from './route';
 
-export default new Route({
+export const notifications = new Route({
   pathname: '/notifications',
   getTitle: (_: URLSearchParams) => 'deepLink_theNotificationsPage',
   handler: function handler(_: URLSearchParams) {

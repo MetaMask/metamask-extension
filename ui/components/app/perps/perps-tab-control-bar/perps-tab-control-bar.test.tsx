@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { mockAccountState } from '../mocks';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -14,6 +15,14 @@ jest.mock('../../../../hooks/useFormatters', () => ({
       })}`,
     formatPercentWithMinThreshold: (value: number) =>
       `${(value * 100).toFixed(2)}%`,
+  }),
+}));
+
+// Mock the perps stream hooks
+jest.mock('../../../../hooks/perps/stream', () => ({
+  usePerpsLiveAccount: () => ({
+    account: mockAccountState,
+    isInitialLoading: false,
   }),
 }));
 
@@ -39,8 +48,8 @@ describe('PerpsTabControlBar', () => {
   it('displays the formatted total balance from mock data', () => {
     renderWithProvider(<PerpsTabControlBar />, mockStore);
 
-    // Mock account state has totalBalance: '15250.00'
-    expect(screen.getByText('$15,250.00')).toBeInTheDocument();
+    // Mock account state has totalBalance: '15250.00' + unrealizedPnl: '375.00' = 15625.00
+    expect(screen.getByText('$15,625.00')).toBeInTheDocument();
   });
 
   it('renders the balance row as clickable', () => {

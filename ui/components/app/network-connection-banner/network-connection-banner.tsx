@@ -266,7 +266,7 @@ export const NetworkConnectionBanner = () => {
       networkConnectionBanner.trackNetworkBannerEvent({
         bannerType: networkConnectionBanner.status,
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
         networkClientId: networkConnectionBanner.networkClientId,
       });
 

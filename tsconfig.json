@@ -22,7 +22,13 @@
     "resolveJsonModule": true,
     // sets output file location for the `incremental` setting
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
+    // baseUrl is required for path mappings
+    "baseUrl": ".",
+    // Path mappings for module resolution
+    "paths": {
+      "@metamask/perps-controller": ["ui/__mocks__/perps/perps-controller"]
+    }
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.

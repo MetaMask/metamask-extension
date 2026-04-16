@@ -347,8 +347,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>

@@ -61,24 +61,33 @@ describe('AutoCloseSection', () => {
       expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
     });
 
-    it('shows gain/loss inputs when enabled', () => {
+    it('shows percent inputs when enabled', () => {
       renderWithProvider(
         <AutoCloseSection {...defaultProps} enabled={true} />,
         mockStore,
       );
 
-      expect(screen.getByTestId('tp-gain-input')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-loss-input')).toBeInTheDocument();
+      expect(screen.getByTestId('tp-percent-input')).toBeInTheDocument();
+      expect(screen.getByTestId('sl-percent-input')).toBeInTheDocument();
     });
 
-    it('shows unit toggle buttons when enabled', () => {
+    it('shows preset buttons when enabled', () => {
       renderWithProvider(
         <AutoCloseSection {...defaultProps} enabled={true} />,
         mockStore,
       );
 
-      expect(screen.getByTestId('tp-unit-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('sl-unit-toggle')).toBeInTheDocument();
+      // TP presets: +10%, +25%, +50%, +100%
+      expect(screen.getByTestId('tp-preset-10')).toBeInTheDocument();
+      expect(screen.getByTestId('tp-preset-25')).toBeInTheDocument();
+      expect(screen.getByTestId('tp-preset-50')).toBeInTheDocument();
+      expect(screen.getByTestId('tp-preset-100')).toBeInTheDocument();
+
+      // SL presets: -10%, -25%, -50%, -75%
+      expect(screen.getByTestId('sl-preset-10')).toBeInTheDocument();
+      expect(screen.getByTestId('sl-preset-25')).toBeInTheDocument();
+      expect(screen.getByTestId('sl-preset-50')).toBeInTheDocument();
+      expect(screen.getByTestId('sl-preset-75')).toBeInTheDocument();
     });
   });
 
@@ -196,8 +205,8 @@ describe('AutoCloseSection', () => {
     });
   });
 
-  describe('gain/loss calculation', () => {
-    it('calculates gain for long position', () => {
+  describe('percentage calculation', () => {
+    it('calculates percent for long TP position', () => {
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -209,13 +218,13 @@ describe('AutoCloseSection', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('tp-gain-input');
-      const gainInput = container.querySelector('input');
+      const container = screen.getByTestId('tp-percent-input');
+      const percentInput = container.querySelector('input');
       // (49500 - 45000) / 45000 * 100 = 10%
-      expect(gainInput).toHaveValue('10.00');
+      expect(percentInput).toHaveValue('10.0');
     });
 
-    it('calculates loss for long position', () => {
+    it('calculates percent for long SL position', () => {
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -227,13 +236,13 @@ describe('AutoCloseSection', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('sl-loss-input');
-      const lossInput = container.querySelector('input');
-      // (40500 - 45000) / 45000 * 100 = -10%, absolute = 10%
-      expect(lossInput).toHaveValue('10.00');
+      const container = screen.getByTestId('sl-percent-input');
+      const percentInput = container.querySelector('input');
+      // (40500 - 45000) / 45000 * 100 = -10%, shown as positive 10%
+      expect(percentInput).toHaveValue('10.0');
     });
 
-    it('shows empty gain when TP price is empty', () => {
+    it('shows empty percent when TP price is empty', () => {
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -243,46 +252,141 @@ describe('AutoCloseSection', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('tp-gain-input');
-      const gainInput = container.querySelector('input');
-      expect(gainInput).toHaveValue('');
+      const container = screen.getByTestId('tp-percent-input');
+      const percentInput = container.querySelector('input');
+      expect(percentInput).toHaveValue('');
     });
   });
 
-  describe('unit toggle', () => {
-    it('displays % symbol by default for TP', () => {
+  describe('preset buttons', () => {
+    it('sets TP price when preset is clicked for long position', () => {
+      const onTakeProfitPriceChange = jest.fn();
       renderWithProvider(
-        <AutoCloseSection {...defaultProps} enabled={true} />,
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
         mockStore,
       );
 
-      const tpToggle = screen.getByTestId('tp-unit-toggle');
-      expect(tpToggle).toHaveTextContent('%');
+      const preset10 = screen.getByTestId('tp-preset-10');
+      fireEvent.click(preset10);
+
+      // For long +10%: 45000 * 1.10 = 49500
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49,500.00');
     });
 
-    it('toggles to $ when clicked for TP', () => {
+    it('sets SL price when preset is clicked for long position', () => {
+      const onStopLossPriceChange = jest.fn();
       renderWithProvider(
-        <AutoCloseSection {...defaultProps} enabled={true} />,
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
         mockStore,
       );
 
-      const tpToggle = screen.getByTestId('tp-unit-toggle');
-      fireEvent.click(tpToggle);
+      const preset10 = screen.getByTestId('sl-preset-10');
+      fireEvent.click(preset10);
 
-      expect(tpToggle).toHaveTextContent('$');
+      // For long -10%: 45000 * 0.90 = 40500
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40,500.00');
     });
 
-    it('toggles back to % when clicked again for TP', () => {
+    it('sets TP price when preset is clicked for short position', () => {
+      const onTakeProfitPriceChange = jest.fn();
       renderWithProvider(
-        <AutoCloseSection {...defaultProps} enabled={true} />,
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="short"
+          currentPrice={45000}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
         mockStore,
       );
 
-      const tpToggle = screen.getByTestId('tp-unit-toggle');
-      fireEvent.click(tpToggle);
-      fireEvent.click(tpToggle);
+      const preset10 = screen.getByTestId('tp-preset-10');
+      fireEvent.click(preset10);
 
-      expect(tpToggle).toHaveTextContent('%');
+      // For short +10% profit: 45000 * 0.90 = 40500
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('40,500.00');
+    });
+
+    it('sets SL price when preset is clicked for short position', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="short"
+          currentPrice={45000}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const preset10 = screen.getByTestId('sl-preset-10');
+      fireEvent.click(preset10);
+
+      // For short -10% loss: 45000 * 1.10 = 49500
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('49,500.00');
+    });
+  });
+
+  describe('bidirectional input', () => {
+    it('updates price when percent is entered for TP', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '10' },
+      });
+
+      // For long +10%: 45000 * 1.10 = 49500
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49,500.00');
+    });
+
+    it('updates price when percent is entered for SL', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '10' },
+      });
+
+      // For long -10%: 45000 * 0.90 = 40500
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40,500.00');
     });
   });
 });

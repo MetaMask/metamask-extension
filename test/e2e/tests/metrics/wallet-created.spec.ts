@@ -230,10 +230,10 @@ describe('Wallet Created Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
-          oAuthMockttpService.setup(server);
+          await oAuthMockttpService.setup(server);
 
           return mockSegment(server);
         },

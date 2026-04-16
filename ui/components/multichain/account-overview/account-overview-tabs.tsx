@@ -20,7 +20,6 @@ import { useSafeChains } from '../../../pages/settings/networks-tab/networks-for
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
@@ -31,11 +30,11 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../activity-v2/activity-list';
+import { usePrefetchTransactions } from '../activity-v2/hooks';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -63,6 +62,7 @@ export const AccountOverviewTabs = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+  const prefetchTransactions = usePrefetchTransactions();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -142,11 +142,6 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   return (
@@ -221,13 +216,10 @@ export const AccountOverviewTabs = ({
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
+            onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              {showUnifiedTransactionList ? (
-                <UnifiedTransactionList />
-              ) : (
-                <TransactionList />
-              )}
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}

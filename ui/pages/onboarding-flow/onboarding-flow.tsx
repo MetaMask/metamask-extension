@@ -132,10 +132,27 @@ export default function OnboardingFlow() {
   }, []);
 
   useEffect(() => {
-    if (completedOnboarding && !isFromReminder && !openedWithSidepanel) {
+    // Redirect to default when onboarding is complete, except when on the completion
+    // route: CreationSuccessful handles navigation there (e.g., deferred deep links).
+    // Only redirect while still in onboarding to avoid breaking deferred deep link handling.
+    const isOnOnboardingRoute = pathname?.startsWith(ONBOARDING_ROUTE) ?? false;
+    const isOnCompletionRoute = pathname === ONBOARDING_COMPLETION_ROUTE;
+    if (
+      completedOnboarding &&
+      !isFromReminder &&
+      !openedWithSidepanel &&
+      isOnOnboardingRoute &&
+      !isOnCompletionRoute
+    ) {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [navigate, completedOnboarding, isFromReminder, openedWithSidepanel]);
+  }, [
+    navigate,
+    completedOnboarding,
+    isFromReminder,
+    openedWithSidepanel,
+    pathname,
+  ]);
 
   useEffect(() => {
     const isSRPBackupRoute = [

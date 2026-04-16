@@ -2,6 +2,8 @@
 import { Mockttp } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -15,6 +17,7 @@ import AdvancedSettings from '../../../page-objects/pages/settings/advanced-sett
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
   assertAdvancedGasDetails,
+  assertAdvancedGasDetailsWithFewerFields,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
@@ -23,7 +26,7 @@ const { hexToNumber } = require('@metamask/utils');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
-const FixtureBuilder = require('../../../fixtures/fixture-builder');
+
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
@@ -35,7 +38,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: {
@@ -69,7 +72,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
@@ -194,7 +197,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await toggleAdvancedDetails(driver);
 
-          await assertAdvancedGasDetails(driver);
+          await assertAdvancedGasDetailsWithFewerFields(driver);
         },
       );
     });
@@ -205,7 +208,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
@@ -235,7 +238,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
@@ -269,7 +272,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
@@ -300,7 +303,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,

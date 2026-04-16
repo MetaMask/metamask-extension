@@ -404,9 +404,6 @@
   "next": {
     "message": "Даље"
   },
-  "noConversionRateAvailable": {
-    "message": "Nije dostupan kurs za konverziju"
-  },
   "noWebcamFound": {
     "message": "Nije pronađena veb kamera na vašem kompjuteru. Molimo vas pokušajte ponovo."
   },

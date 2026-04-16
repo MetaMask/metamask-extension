@@ -1177,9 +1177,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a busca efetuada"
   },
-  "noConversionRateAvailable": {
-    "message": "Não há uma taxa de conversão disponível"
-  },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
   },

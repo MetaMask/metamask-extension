@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate } from 'react-router-dom';
 import {
@@ -17,17 +17,21 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
 import {
-  mockCryptoMarkets,
-  mockHip3Markets,
-} from '../../../components/app/perps/mocks';
-import type { PerpsMarketData } from '../../../components/app/perps/types';
-import { filterMarketsByQuery } from '../../../components/app/perps/utils';
+  filterMarketsByQuery,
+  isHip3Market,
+  isCryptoMarket,
+} from '../../../components/app/perps/utils';
+import { getHip3MarketType } from '../../../components/app/perps/constants';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getIsPerpsEnabled } from '../../../selectors/perps/feature-flags';
+import {
+  getIsPerpsEnabled,
+  getHip3AllowedSourcesSet,
+} from '../../../selectors/perps/feature-flags';
 import {
   sortMarkets,
   type SortField,
@@ -42,58 +46,87 @@ import {
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect, type MarketFilter } from './components/filter-select';
-import {
-  StockSubFilterSelect,
-  type StockSubFilter,
-} from './components/stock-sub-filter';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 
-// Combine all markets
-const allMarkets: PerpsMarketData[] = [
-  ...mockCryptoMarkets,
-  ...mockHip3Markets,
-];
+/**
+ * Get the resolved market type for a market.
+ * Uses the HIP3_ASSET_MARKET_TYPES mapping first, then falls back to the market's own marketType.
+ *
+ * @param market - The market data
+ * @returns The resolved market type
+ */
+const getResolvedMarketType = (market: PerpsMarketData): string | undefined => {
+  return getHip3MarketType(market.symbol, market.marketType);
+};
 
-type StockMarketType = 'equity' | 'commodity';
-
-const STOCK_SUB_FILTER_ALLOWED_TYPES = {
-  all: new Set<StockMarketType>(['equity', 'commodity']),
-  stocks: new Set<StockMarketType>(['equity']),
-  commodities: new Set<StockMarketType>(['commodity']),
-} satisfies Record<StockSubFilter, ReadonlySet<StockMarketType>>;
-
-const isStockMarketType = (
-  marketType: PerpsMarketData['marketType'],
-): marketType is StockMarketType =>
-  marketType === 'equity' || marketType === 'commodity';
+/**
+ * Check if a market is an uncategorized HIP-3 market (no market type mapping).
+ * These are HIP-3 assets that haven't been classified as equity, commodity, or forex.
+ *
+ * @param market - The market data
+ * @param allowedHip3Sources - Set of allowed HIP-3 market sources
+ * @returns True if the market is HIP-3 but has no category
+ */
+const isUncategorizedHip3Market = (
+  market: PerpsMarketData,
+  allowedHip3Sources: Set<string>,
+): boolean => {
+  return (
+    isHip3Market(market, allowedHip3Sources) && !getResolvedMarketType(market)
+  );
+};
 
 /**
  * Filter markets by market type
  *
+ * Crypto markets have no marketSource (main DEX).
+ * HIP-3 markets (stocks, commodities, forex) come from allowed DEX providers.
+ * Market type is resolved using HIP3_ASSET_MARKET_TYPES mapping first,
+ * then falls back to the market's own marketType property.
+ * "New" category shows HIP-3 assets that haven't been categorized yet.
+ *
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
- * @param stockSubFilter - Stock sub-filter (only used when filter is 'stocks')
+ * @param allowedHip3Sources - Set of allowed HIP-3 market sources from feature flag
  * @returns Filtered array of markets
  */
 const filterByType = (
   markets: PerpsMarketData[],
   filter: MarketFilter,
-  stockSubFilter: StockSubFilter,
+  allowedHip3Sources: Set<string>,
 ): PerpsMarketData[] => {
   switch (filter) {
     case 'all': {
       return markets;
     }
     case 'crypto': {
-      return markets.filter((m) => !m.marketType || m.marketType === 'crypto');
+      return markets.filter(isCryptoMarket);
     }
     case 'stocks': {
-      const allowedMarketTypes = STOCK_SUB_FILTER_ALLOWED_TYPES[stockSubFilter];
-      return markets.filter((m) => {
-        if (!isStockMarketType(m.marketType)) {
-          return false;
-        }
-        return allowedMarketTypes.has(m.marketType);
-      });
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'equity',
+      );
+    }
+    case 'commodities': {
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'commodity',
+      );
+    }
+    case 'forex': {
+      return markets.filter(
+        (m) =>
+          isHip3Market(m, allowedHip3Sources) &&
+          getResolvedMarketType(m) === 'forex',
+      );
+    }
+    case 'new': {
+      return markets.filter((m) =>
+        isUncategorizedHip3Market(m, allowedHip3Sources),
+      );
     }
     default: {
       return markets;
@@ -108,26 +141,32 @@ export const MarketListView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+
+  // Use stream hooks for real-time market data
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
 
   // State
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volume');
+  const [selectedSortId, setSelectedSortId] =
+    useState<SortOptionId>('volumeHigh');
   const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
-  const [stockSubFilter, setStockSubFilter] = useState<StockSubFilter>('all');
 
   // Get current sort option
   const currentSortOption = SORT_OPTIONS.find(
     (option) => option.id === selectedSortId,
   );
 
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Use stream loading state
+  const isLoading = marketsLoading;
+
+  // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
+  const hasUncategorizedMarkets = useMemo(() => {
+    return allMarkets.some((m) =>
+      isUncategorizedHip3Market(m, allowedHip3Sources),
+    );
+  }, [allMarkets, allowedHip3Sources]);
 
   // Filter and sort markets
   // When searching, bypass filters and search ALL markets (like mobile)
@@ -140,7 +179,7 @@ export const MarketListView: React.FC = () => {
       markets = filterMarketsByQuery(allMarkets, searchQuery);
     } else {
       // Not searching: apply filters
-      markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
+      markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
     }
 
     if (currentSortOption) {
@@ -151,7 +190,13 @@ export const MarketListView: React.FC = () => {
       });
     }
     return markets;
-  }, [selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
+  }, [
+    allMarkets,
+    selectedFilter,
+    allowedHip3Sources,
+    searchQuery,
+    currentSortOption,
+  ]);
 
   // Handlers
   const handleBack = useCallback(() => {
@@ -175,7 +220,6 @@ export const MarketListView: React.FC = () => {
 
   const handleFilterChange = useCallback((filter: MarketFilter) => {
     setSelectedFilter(filter);
-    setStockSubFilter('all'); // Reset sub-filter when main filter changes
   }, []);
 
   const handleMarketSelect = useCallback(
@@ -244,17 +288,15 @@ export const MarketListView: React.FC = () => {
           gap={3}
           data-testid="market-list-filter-sort-row"
         >
-          <FilterSelect value={selectedFilter} onChange={handleFilterChange} />
+          <FilterSelect
+            value={selectedFilter}
+            onChange={handleFilterChange}
+            showNewFilter={hasUncategorizedMarkets}
+          />
           <SortDropdown
             selectedOptionId={selectedSortId}
             onOptionChange={handleSortChange}
           />
-          {selectedFilter === 'stocks' && (
-            <StockSubFilterSelect
-              value={stockSubFilter}
-              onChange={setStockSubFilter}
-            />
-          )}
         </Box>
       )}
 

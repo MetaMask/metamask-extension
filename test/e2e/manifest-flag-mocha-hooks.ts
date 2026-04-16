@@ -16,6 +16,45 @@ import fs from 'fs';
 import { hasProperty } from '@metamask/utils';
 import { folder, getManifestVersion } from './set-manifest-flags';
 
+// Override console.log to support color control via boolean parameter
+// Usage: console.log("message", true) - green (default)
+//        console.log("message", false) - white
+//        console.log("message") - green (default)
+const originalConsoleLog = console.log;
+const greenColor = '\x1b[32m';
+const resetColor = '\x1b[0m';
+
+console.log = (...args: unknown[]) => {
+  // Check if last argument is a boolean (color flag)
+  const lastArg = args[args.length - 1];
+  const enableColor = typeof lastArg === 'boolean' ? lastArg : true; // default to true (green)
+  const argsToFormat = typeof lastArg === 'boolean' ? args.slice(0, -1) : args;
+
+  // Format all arguments (excluding the boolean flag) into a single string
+  const message = argsToFormat
+    .map((arg) => {
+      if (typeof arg === 'string') {
+        return arg;
+      }
+      if (typeof arg === 'object' && arg !== null) {
+        try {
+          return JSON.stringify(arg);
+        } catch {
+          return String(arg);
+        }
+      }
+      return String(arg);
+    })
+    .join(' ');
+
+  // Apply green color if enabled, otherwise use default (white)
+  if (enableColor) {
+    originalConsoleLog(`${greenColor}${message}${resetColor}`);
+  } else {
+    originalConsoleLog(message);
+  }
+};
+
 process.env.ENABLE_MV3 = getManifestVersion() === 3 ? 'true' : 'false';
 
 // Global beforeEach hook to backup the manifest.json file

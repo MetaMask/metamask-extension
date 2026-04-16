@@ -49,7 +49,7 @@ jobs:
 
       - name: Checkout repository
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
@@ -81,7 +81,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -97,7 +97,7 @@ jobs:
         run: yarn lavamoat:build:auto
 
       - name: Cache build policy
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -115,7 +115,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -128,7 +128,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Restore build policy
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -138,7 +138,7 @@ jobs:
         run: yarn lavamoat:webapp:auto
 
       - name: Cache webapp application policy
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: lavamoat/browserify
           key: cache-webapp-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -155,7 +155,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -171,7 +171,7 @@ jobs:
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
 
       - name: Cache webpack build policy
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: lavamoat/webpack/build
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -189,7 +189,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -202,7 +202,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Restore webpack build policy
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/webpack/build
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -212,7 +212,7 @@ jobs:
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
 
       - name: Cache webpack MV2 policy
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: lavamoat/webpack/mv2
           key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -230,7 +230,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -243,7 +243,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Restore webpack build policy
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/webpack/build
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -253,7 +253,7 @@ jobs:
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
 
       - name: Cache webpack MV3 policy
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: lavamoat/webpack/mv3
           key: cache-webpack-mv3-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -279,7 +279,7 @@ jobs:
     steps:
       - name: Checkout repository
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -290,7 +290,7 @@ jobs:
 
       - name: Restore browserify build policy
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -298,7 +298,7 @@ jobs:
 
       - name: Restore browserify webapp policy
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/browserify
           key: cache-webapp-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -306,7 +306,7 @@ jobs:
 
       - name: Restore webpack build policy
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/webpack/build
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -314,7 +314,7 @@ jobs:
 
       - name: Restore webpack MV2 policy
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/webpack/mv2
           key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -322,7 +322,7 @@ jobs:
 
       - name: Restore webpack MV3 policy
         if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: lavamoat/webpack/mv3
           key: cache-webpack-mv3-${{ needs.prepare.outputs.COMMIT_SHA }}

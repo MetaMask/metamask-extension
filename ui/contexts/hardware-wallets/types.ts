@@ -74,6 +74,18 @@ export type DeviceEventPayload = {
 export type Unsubscribe = () => void;
 
 /**
+ * Options for ensureDeviceReady
+ */
+export type EnsureDeviceReadyOptions = {
+  /**
+   * Whether the operation requires blind signing to be enabled on the device.
+   * Defaults to true. Set to false for simple sends (plain native asset transfers)
+   * that don't involve contract interactions.
+   */
+  requireBlindSigning?: boolean;
+};
+
+/**
  * Adapter interface
  *
  * Note: This adapter manages connection state only.
@@ -82,7 +94,7 @@ export type Unsubscribe = () => void;
  * KeyringController's hardware wallet keyrings.
  */
 export type HardwareWalletAdapter = {
-  connect(deviceId: string): Promise<void>;
+  connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
   destroy(): void;
@@ -91,10 +103,27 @@ export type HardwareWalletAdapter = {
    * Ensure the device is ready for operations
    * (e.g., Ledger requires the Ethereum app to be open)
    *
+   * @param options - Optional settings to control readiness checks
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  ensureDeviceReady?(deviceId: string): Promise<boolean>;
+  ensureDeviceReady?(options?: EnsureDeviceReadyOptions): Promise<boolean>;
+
+  /**
+   * Check the current permission state for device access.
+   * Does NOT require a user gesture.
+   *
+   * @returns The current permission state
+   */
+  checkPermission?(): Promise<HardwareConnectionPermissionState>;
+
+  /**
+   * Request permission to access the hardware device.
+   * MUST be called from within a user gesture handler (e.g., button click).
+   *
+   * @returns true if permission was granted
+   */
+  requestPermission?(): Promise<boolean>;
 };
 
 /**
@@ -106,31 +135,4 @@ export type HardwareWalletAdapterOptions = {
   onDeviceLocked: () => void;
   onAppNotOpen: () => void;
   onDeviceEvent: (payload: DeviceEventPayload) => void;
-};
-
-/**
- * Context type
- */
-export type HardwareWalletContextType = {
-  // State
-  isHardwareWalletAccount: boolean;
-  walletType: HardwareWalletType | null;
-  connectionState: HardwareWalletConnectionState;
-  deviceId: string | null;
-  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
-  isWebHidAvailable: boolean;
-  isWebUsbAvailable: boolean;
-
-  // Actions
-  connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
-  disconnect: () => Promise<void>;
-  clearError: () => void;
-  retry: () => Promise<void>;
-  checkHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<HardwareConnectionPermissionState>;
-  requestHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
 };

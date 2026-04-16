@@ -1,5 +1,3 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
@@ -15,12 +13,12 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getPermissions,
-  isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
@@ -52,7 +50,7 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
-      | 'showStorageErrorToast'
+      | 'storageWriteErrorType'
       | 'isUnlocked'
     >
   >;
@@ -110,33 +108,6 @@ export function selectNftDetectionEnablementToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showNftDetectionEnablementToast);
-}
-
-// If there is more than one connected account to activeTabOrigin,
-// *BUT* the current account is not one of them, show the banner
-export function selectShowConnectAccountToast(
-  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
-  account: InternalAccount,
-): boolean {
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const activeTabOrigin = getOriginOfCurrentTab(state);
-  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
-
-  // We only support connection with EVM or Solana accounts
-  // This check prevents Bitcoin snap accounts from showing the toast
-  const isEvmAccount = isEvmAccountType(account?.type);
-  const isSolanaAccountSelected = isSolanaAccount(account);
-  const isConnectableAccount = isEvmAccount || isSolanaAccountSelected;
-
-  const showConnectAccountToast =
-    allowShowAccountSetting &&
-    account &&
-    activeTabOrigin &&
-    isConnectableAccount &&
-    connectedAccounts.length > 0 &&
-    !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
-
-  return Boolean(showConnectAccountToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
@@ -257,7 +228,7 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the storage error toast should be shown based on:
- * - showStorageErrorToast flag is true
+ * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
  * - User has completed onboarding
  * - Wallet is unlocked
  *
@@ -267,10 +238,24 @@ export function selectShowShieldEndingToast(
 export function selectShowStorageErrorToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
-  const { showStorageErrorToast, completedOnboarding, isUnlocked } =
+  const { storageWriteErrorType, completedOnboarding, isUnlocked } =
     state.metamask || {};
 
-  return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
+  // Check for truthy value to handle both null and undefined as "no error"
+  return Boolean(storageWriteErrorType && completedOnboarding && isUnlocked);
+}
+
+/**
+ * Returns the type of storage write error that occurred.
+ * Used to show specific error messages (e.g., disk space vs default error).
+ *
+ * @param state - Redux state object.
+ * @returns The storage write error type or null if no error
+ */
+export function selectStorageWriteErrorType(
+  state: Pick<State, 'metamask'>,
+): StorageWriteErrorType | null {
+  return state.metamask?.storageWriteErrorType ?? null;
 }
 
 /**

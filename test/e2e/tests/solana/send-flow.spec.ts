@@ -176,6 +176,7 @@ describe('Send flow', function (this: Suite) {
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
+        await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterConfirmButton();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();

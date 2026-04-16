@@ -29,6 +29,11 @@ export async function assertAdvancedGasDetails(driver: Driver) {
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
 }
 
+export async function assertAdvancedGasDetailsWithFewerFields(driver: Driver) {
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Speed' });
+}
+
 export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
   await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'L1 fee' });

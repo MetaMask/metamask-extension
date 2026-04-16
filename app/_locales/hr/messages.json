@@ -410,9 +410,6 @@
   "next": {
     "message": "Sljedeće"
   },
-  "noConversionRateAvailable": {
-    "message": "Nijedan konverzijski tečaj nije dostupan"
-  },
   "noWebcamFound": {
     "message": "Mrežna kamera vašeg računala nije pronađena. Pokušajte ponovno."
   },

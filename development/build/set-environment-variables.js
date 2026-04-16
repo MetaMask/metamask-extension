@@ -318,7 +318,7 @@ function getPhishingWarningPageUrl({ variables, testing }) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${
-          // eslint-disable-next-line node/global-require
+          // eslint-disable-next-line n/global-require
           require('@metamask/phishing-warning/package.json').version
         }/`;
   }

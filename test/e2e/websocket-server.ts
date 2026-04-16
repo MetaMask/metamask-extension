@@ -56,7 +56,7 @@ class LocalWebSocketServer {
       });
 
       socket.on('message', (data) => {
-        console.log('Message received from client:', data.toString());
+        console.log('Message received from client:', data.toString(), false);
         // Echo the message back to the client (pure WebSocket server behavior)
         socket.send(data.toString());
       });
