@@ -181,11 +181,7 @@ export function usePerpsTransactionHistory({
     }
     initialFetchDone.current = true;
 
-    const timer = setTimeout(() => {
-      fetchAllTransactions();
-    }, 3_000);
-
-    return () => clearTimeout(timer);
+    fetchAllTransactions();
   }, [skipInitialFetch, fetchAllTransactions]);
 
   const combinedIsLoading = useMemo(

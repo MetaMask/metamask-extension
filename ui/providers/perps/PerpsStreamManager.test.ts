@@ -68,7 +68,6 @@ describe('PerpsStreamManager', () => {
       expect(manager.prices.getCachedData()).toEqual([]);
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
-      expect(manager.userHistory.getCachedData()).toEqual([]);
     });
   });
 
@@ -523,147 +522,6 @@ describe('PerpsStreamManager', () => {
       } finally {
         jest.useRealTimers();
       }
-    });
-  });
-
-  describe('userHistory channel', () => {
-    it('fetches user history via REST after grace period on first subscribe', async () => {
-      const mockHistory = [
-        { id: 'h1', type: 'deposit', amount: '100', asset: 'USDC' },
-      ];
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetUserHistory') {
-          return Promise.resolve(mockHistory);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const cb = jest.fn();
-      manager.userHistory.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(3_000);
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsGetUserHistory',
-        [{}],
-      );
-      expect(cb).toHaveBeenCalledWith(mockHistory);
-    });
-
-    it('does not fetch user history before grace period expires', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetUserHistory') {
-          return Promise.resolve([]);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const cb = jest.fn();
-      manager.userHistory.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(2_000);
-
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsGetUserHistory',
-        expect.anything(),
-      );
-      expect(cb).not.toHaveBeenCalled();
-    });
-
-    it('skips REST fetch when WS pushes data before grace period', async () => {
-      const cb = jest.fn();
-      manager.userHistory.subscribe(cb);
-
-      const wsHistory = [
-        { id: 'ws-h1', type: 'deposit', amount: '50', asset: 'USDC' },
-      ];
-      manager.userHistory.pushData(wsHistory as never);
-      expect(cb).toHaveBeenCalledWith(wsHistory);
-
-      mockSubmitRequestToBackground.mockClear();
-      await jest.advanceTimersByTimeAsync(3_000);
-
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsGetUserHistory',
-        expect.anything(),
-      );
-    });
-
-    it('returns empty array when REST fetch fails and no cache exists', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetUserHistory') {
-          return Promise.reject(new Error('network'));
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const cb = jest.fn();
-      manager.userHistory.subscribe(cb);
-
-      await jest.advanceTimersByTimeAsync(3_000);
-
-      expect(cb).toHaveBeenCalledWith([]);
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('preserves cached data when REST fetch fails after prior successful fetch', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      const mockHistory = [
-        { id: 'h1', type: 'deposit', amount: '100', asset: 'USDC' },
-      ];
-
-      manager.userHistory.pushData(mockHistory as never);
-
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetUserHistory') {
-          return Promise.reject(new Error('network'));
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const cb = jest.fn();
-      manager.userHistory.subscribe(cb);
-
-      expect(cb).toHaveBeenCalledWith(mockHistory);
-
-      cb.mockClear();
-      await jest.advanceTimersByTimeAsync(100);
-
-      expect(cb).not.toHaveBeenCalledWith([]);
-
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('preserves cached data across unsubscribe/resubscribe', async () => {
-      const mockHistory = [
-        { id: 'h1', type: 'deposit', amount: '100', asset: 'USDC' },
-      ];
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetUserHistory') {
-          return Promise.resolve(mockHistory);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      const cb1 = jest.fn();
-      const unsub = manager.userHistory.subscribe(cb1);
-
-      await jest.advanceTimersByTimeAsync(3_000);
-
-      unsub();
-      mockSubmitRequestToBackground.mockClear();
-
-      const cb2 = jest.fn();
-      manager.userHistory.subscribe(cb2);
-
-      expect(cb2).toHaveBeenCalledWith(mockHistory);
     });
   });
 
@@ -1565,7 +1423,6 @@ describe('PerpsStreamManager', () => {
       expect(manager.prices.getCachedData()).toEqual([]);
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
-      expect(manager.userHistory.getCachedData()).toEqual([]);
     });
 
     it('resets lastStreamUpdateAt to 0', () => {

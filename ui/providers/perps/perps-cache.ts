@@ -1,4 +1,8 @@
-import type { MarketInfo, OrderFill } from '@metamask/perps-controller';
+import type {
+  MarketInfo,
+  OrderFill,
+  UserHistoryItem,
+} from '@metamask/perps-controller';
 import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { submitRequestToBackground } from '../../store/background-connection';
 
@@ -178,4 +182,123 @@ export function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
  */
 export function clearPerpsMarketFillsModuleCache(): void {
   fillsCacheByKey.clear();
+}
+
+// ---------------------------------------------------------------------------
+// User history cache (perpsGetUserHistory)
+// ---------------------------------------------------------------------------
+
+const USER_HISTORY_CACHE_TTL_MS = 30_000; // 30 seconds
+
+type UserHistoryCacheEntry = {
+  cached: UserHistoryItem[] | null;
+  fetchedAt: number;
+  inflight: Promise<UserHistoryItem[]> | null;
+};
+
+const userHistoryCacheByKey = new Map<string, UserHistoryCacheEntry>();
+
+/**
+ * Builds a cache key that captures the exact request inputs so that
+ * different (startTime, endTime, accountId) tuples get independent
+ * cache entries. This prevents one caller's parameterless fetch from
+ * serving stale data to a caller that needs a specific time window.
+ *
+ * @param startTime - start of the requested window (ms epoch)
+ * @param endTime - end of the requested window (ms epoch)
+ * @param accountId - CAIP account identifier
+ * @returns stable string key
+ */
+function buildUserHistoryCacheKey(
+  startTime?: number,
+  endTime?: number,
+  accountId?: string,
+): string {
+  return `${accountId ?? 'default'}:${startTime ?? 0}:${endTime ?? 0}`;
+}
+
+function getUserHistoryCacheEntry(key: string): UserHistoryCacheEntry {
+  let entry = userHistoryCacheByKey.get(key);
+  if (!entry) {
+    entry = { cached: null, fetchedAt: 0, inflight: null };
+    userHistoryCacheByKey.set(key, entry);
+  }
+  return entry;
+}
+
+/**
+ * Returns a warm cache hit for the given request inputs, or `undefined`
+ * if the entry is missing / expired.
+ *
+ * @param startTime - start of the requested window (ms epoch)
+ * @param endTime - end of the requested window (ms epoch)
+ * @param accountId - CAIP account identifier
+ * @returns cached items or undefined
+ */
+export function peekCachedUserHistory(
+  startTime?: number,
+  endTime?: number,
+  accountId?: string,
+): UserHistoryItem[] | undefined {
+  const key = buildUserHistoryCacheKey(startTime, endTime, accountId);
+  const entry = userHistoryCacheByKey.get(key);
+  if (
+    entry &&
+    entry.cached !== null &&
+    Date.now() - entry.fetchedAt < USER_HISTORY_CACHE_TTL_MS
+  ) {
+    return entry.cached;
+  }
+  return undefined;
+}
+
+/**
+ * Fetches user history for the given request inputs, deduplicating
+ * concurrent calls with the same params through a shared inflight promise.
+ * Results are cached per (startTime, endTime, accountId) tuple.
+ *
+ * @param startTime - start of the requested window (ms epoch)
+ * @param endTime - end of the requested window (ms epoch)
+ * @param accountId - CAIP account identifier
+ * @returns resolved user history items
+ */
+export function fetchUserHistory(
+  startTime?: number,
+  endTime?: number,
+  accountId?: string,
+): Promise<UserHistoryItem[]> {
+  const key = buildUserHistoryCacheKey(startTime, endTime, accountId);
+  const warm = peekCachedUserHistory(startTime, endTime, accountId);
+  if (warm !== undefined) {
+    return Promise.resolve(warm);
+  }
+
+  const entry = getUserHistoryCacheEntry(key);
+  if (!entry.inflight) {
+    entry.inflight = submitRequestToBackground<UserHistoryItem[]>(
+      'perpsGetUserHistory',
+      [{ startTime, endTime, accountId }],
+    )
+      .then((result) => {
+        const items = Array.isArray(result) ? result : [];
+        entry.cached = items;
+        entry.fetchedAt = Date.now();
+        entry.inflight = null;
+        return items;
+      })
+      .catch(() => {
+        entry.inflight = null;
+        return entry.cached ?? ([] as UserHistoryItem[]);
+      });
+  }
+  return entry.inflight;
+}
+
+/**
+ * Clears the module-level user history cache. Invoked on account switch,
+ * network change, or full reset so UI never reads cross-account stale
+ * deposit/withdrawal data.
+ */
+export function clearUserHistoryModuleCache(): void {
+  userHistoryCacheByKey.clear();
 }

@@ -3,48 +3,36 @@ import { waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { useUserHistory } from './useUserHistory';
 
-const mockSubmitRequestToBackground = jest.fn();
+const mockFetchUserHistory = jest.fn();
+const mockPeekCachedUserHistory = jest.fn();
 
-jest.mock('../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
-}));
-
-const mockSubscribe = jest.fn();
-const mockPushData = jest.fn();
-const mockGetCachedData = jest.fn();
-const mockHasCachedData = jest.fn();
-
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => ({
-    userHistory: {
-      subscribe: mockSubscribe,
-      pushData: mockPushData,
-      getCachedData: mockGetCachedData,
-      hasCachedData: mockHasCachedData,
-    },
-  }),
+jest.mock('../../providers/perps/perps-cache', () => ({
+  fetchUserHistory: (...args: unknown[]) => mockFetchUserHistory(...args),
+  peekCachedUserHistory: (...args: unknown[]) =>
+    mockPeekCachedUserHistory(...args),
 }));
 
 describe('useUserHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSubmitRequestToBackground.mockResolvedValue([]);
-    mockSubscribe.mockReturnValue(jest.fn());
-    mockGetCachedData.mockReturnValue([]);
-    mockHasCachedData.mockReturnValue(false);
+    mockFetchUserHistory.mockResolvedValue([]);
+    mockPeekCachedUserHistory.mockReturnValue(undefined);
   });
 
-  it('initializes with empty state when no cached data', () => {
+  it('initializes with empty state when no cached data', async () => {
     const { result } = renderHook(() => useUserHistory());
 
     expect(result.current.userHistory).toEqual([]);
-    expect(result.current.isLoading).toBe(false);
+    expect(result.current.isLoading).toBe(true);
     expect(result.current.error).toBeNull();
     expect(typeof result.current.refetch).toBe('function');
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
-  it('initializes with cached data when available', () => {
+  it('initializes with cached data when available', async () => {
     const cachedHistory: UserHistoryItem[] = [
       {
         id: 'cached-001',
@@ -57,63 +45,19 @@ describe('useUserHistory', () => {
         details: { source: '0xaaa' },
       },
     ];
-    mockHasCachedData.mockReturnValue(true);
-    mockGetCachedData.mockReturnValue(cachedHistory);
+    mockPeekCachedUserHistory.mockReturnValue(cachedHistory);
+    mockFetchUserHistory.mockResolvedValue(cachedHistory);
 
     const { result } = renderHook(() => useUserHistory());
 
     expect(result.current.userHistory).toEqual(cachedHistory);
-  });
 
-  it('subscribes to the userHistory channel on mount', () => {
-    renderHook(() => useUserHistory());
-
-    expect(mockSubscribe).toHaveBeenCalledTimes(1);
-    expect(mockSubscribe).toHaveBeenCalledWith(expect.any(Function));
-  });
-
-  it('unsubscribes from the channel on unmount', () => {
-    const unsubscribe = jest.fn();
-    mockSubscribe.mockReturnValue(unsubscribe);
-
-    const { unmount } = renderHook(() => useUserHistory());
-    unmount();
-
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
-  });
-
-  it('updates state when channel pushes new data', () => {
-    let channelCallback: ((data: UserHistoryItem[]) => void) | undefined;
-    mockSubscribe.mockImplementation(
-      (cb: (data: UserHistoryItem[]) => void) => {
-        channelCallback = cb;
-        return jest.fn();
-      },
-    );
-
-    const { result } = renderHook(() => useUserHistory());
-
-    const newHistory: UserHistoryItem[] = [
-      {
-        id: 'pushed-001',
-        timestamp: Date.now(),
-        type: 'withdrawal',
-        amount: '200.00',
-        asset: 'USDC',
-        txHash: '0xpushed',
-        status: 'completed',
-        details: { source: '0xbbb' },
-      },
-    ];
-
-    act(() => {
-      channelCallback?.(newHistory);
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
-
-    expect(result.current.userHistory).toEqual(newHistory);
   });
 
-  it('fetches user history on refetch and pushes to channel', async () => {
+  it('fetches on mount via the keyed cache', async () => {
     const mockHistory: UserHistoryItem[] = [
       {
         id: 'history-001',
@@ -126,20 +70,26 @@ describe('useUserHistory', () => {
         details: { source: '0xabc' },
       },
     ];
-    mockSubmitRequestToBackground.mockResolvedValue(mockHistory);
+    mockFetchUserHistory.mockResolvedValue(mockHistory);
 
     const { result } = renderHook(() => useUserHistory());
 
-    await act(async () => {
-      await result.current.refetch();
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockPushData).toHaveBeenCalledWith(mockHistory);
-    expect(result.current.isLoading).toBe(false);
+    expect(mockFetchUserHistory).toHaveBeenCalledWith(
+      undefined,
+      undefined,
+      undefined,
+    );
+    expect(result.current.userHistory).toEqual(mockHistory);
     expect(result.current.error).toBeNull();
   });
 
-  it('passes params to getUserHistory', async () => {
+  it('passes params to fetchUserHistory', async () => {
+    mockFetchUserHistory.mockResolvedValue([]);
+
     const { result } = renderHook(() =>
       useUserHistory({
         startTime: 1000,
@@ -148,18 +98,46 @@ describe('useUserHistory', () => {
       }),
     );
 
-    await act(async () => {
-      await result.current.refetch();
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsGetUserHistory',
-      [{ startTime: 1000, endTime: 2000, accountId: 'eip155:1:0xabc' }],
+    expect(mockFetchUserHistory).toHaveBeenCalledWith(
+      1000,
+      2000,
+      'eip155:1:0xabc',
     );
   });
 
+  it('refetches when params change', async () => {
+    mockFetchUserHistory.mockResolvedValue([]);
+
+    const { result, rerender } = renderHook(
+      (props: { startTime?: number }) =>
+        useUserHistory({ startTime: props.startTime }),
+      { initialProps: { startTime: 1000 } },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockFetchUserHistory).toHaveBeenCalledWith(1000, undefined, undefined);
+
+    mockFetchUserHistory.mockClear();
+    rerender({ startTime: 2000 });
+
+    await waitFor(() => {
+      expect(mockFetchUserHistory).toHaveBeenCalledWith(
+        2000,
+        undefined,
+        undefined,
+      );
+    });
+  });
+
   it('sets loading state during fetch', async () => {
-    mockSubmitRequestToBackground.mockImplementation(
+    mockFetchUserHistory.mockImplementation(
       () =>
         new Promise((resolve) => {
           setTimeout(() => resolve([]), 100);
@@ -167,10 +145,6 @@ describe('useUserHistory', () => {
     );
 
     const { result } = renderHook(() => useUserHistory());
-
-    act(() => {
-      result.current.refetch();
-    });
 
     expect(result.current.isLoading).toBe(true);
 
@@ -180,25 +154,24 @@ describe('useUserHistory', () => {
   });
 
   it('handles errors gracefully', async () => {
-    mockSubmitRequestToBackground.mockRejectedValue(new Error('Network error'));
+    mockFetchUserHistory.mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useUserHistory());
 
-    await act(async () => {
-      await result.current.refetch();
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
 
     expect(result.current.error).toBe('Network error');
-    expect(result.current.isLoading).toBe(false);
   });
 
   it('handles non-Error rejections', async () => {
-    mockSubmitRequestToBackground.mockRejectedValue('String error');
+    mockFetchUserHistory.mockRejectedValue('String error');
 
     const { result } = renderHook(() => useUserHistory());
 
-    await act(async () => {
-      await result.current.refetch();
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
 
     expect(result.current.error).toBe('Failed to fetch user history');
@@ -217,9 +190,13 @@ describe('useUserHistory', () => {
         details: { source: '0xdef' },
       },
     ];
-    mockSubmitRequestToBackground.mockResolvedValue(mockHistory);
+    mockFetchUserHistory.mockResolvedValue(mockHistory);
 
     const { result } = renderHook(() => useUserHistory());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
 
     let returnedHistory: UserHistoryItem[] = [];
     await act(async () => {
