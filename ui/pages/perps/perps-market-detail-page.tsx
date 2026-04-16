@@ -533,14 +533,13 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Current price derived from the last candle's close price.
   // Updates on every live tick (~1000ms), keeping the price line in sync with the chart.
   // This is the single source of truth for price display on the detail page.
-  // const chartCurrentPrice = useMemo(() => {
-  //   if (!candleData?.candles?.length) {
-  //     return 0;
-  //   }
-  //   const lastCandle = candleData.candles.at(-1);
-  //   return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
-  // }, [candleData]);
-  const chartCurrentPrice = 0;
+  const chartCurrentPrice = useMemo(() => {
+    if (!candleData?.candles?.length) {
+      return 0;
+    }
+    const lastCandle = candleData.candles.at(-1);
+    return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
+  }, [candleData]);
 
   // Current price for calculations (orders, margin, slippage).
   // Prefers the live candle price, falls back to market data during initial load.
