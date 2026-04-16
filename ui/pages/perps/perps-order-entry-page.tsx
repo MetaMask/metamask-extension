@@ -806,6 +806,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       inProgressToastDescription = isPartialClose
         ? closePartialToastDescription
         : tradeActionToastDescription;
+    } else {
+      inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
     }
     if (inProgressToastKey) {
       replacePerpsToastByKey({
