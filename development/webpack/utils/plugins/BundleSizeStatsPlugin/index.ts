@@ -5,7 +5,7 @@ import {
   createWebpackBundleStats,
   type FileStat,
   type WebpackEntrypointFiles,
-} from '../../../../lib/bundle-size';
+} from '../../bundle-size';
 
 const NAME = 'BundleSizeStatsPlugin';
 const { RawSource } = sources;

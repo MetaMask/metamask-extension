@@ -12,7 +12,7 @@ import {
   type FileStat,
   type WebpackEntrypointFiles,
   type WebpackBundleStats,
-} from '../../../development/lib/bundle-size';
+} from '../../../development/webpack/utils/bundle-size';
 import { exitWithError } from '../../../development/lib/exit-with-error';
 import {
   getFirstParentDirectoryThatExists,

@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import {
   WEBPACK_BUNDLE_STATS_FILE,
   type WebpackBundleStats,
-} from '../../lib/bundle-size';
+} from '../utils/bundle-size';
 import { BundleSizeStatsPlugin } from '../utils/plugins/BundleSizeStatsPlugin';
 import { mockWebpack } from './helpers';
 

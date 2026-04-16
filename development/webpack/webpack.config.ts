@@ -20,7 +20,7 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { WEBPACK_BUNDLE_ANALYZER_REPORT } from '../lib/bundle-size';
+import { WEBPACK_BUNDLE_ANALYZER_REPORT } from './utils/bundle-size';
 import {
   getMinimizers,
   NODE_MODULES_RE,

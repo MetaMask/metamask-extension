@@ -9,7 +9,7 @@ import {
 import {
   BUNDLE_SIZE_SUMMARY_FILE,
   WEBPACK_BUNDLE_ANALYZER_REPORT,
-} from '../lib/bundle-size';
+} from '../webpack/utils/bundle-size';
 
 type ArtifactLink = { url: string; label: string };
 

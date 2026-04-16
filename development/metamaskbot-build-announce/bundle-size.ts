@@ -5,7 +5,7 @@ import {
   type BundlePart,
   type BundleSizeSummary,
   type StoredBundleSizeData,
-} from '../lib/bundle-size';
+} from '../webpack/utils/bundle-size';
 import type { ArtifactLinks } from './artifacts';
 
 const bundlePartLabels: Record<BundlePart, string> = {
