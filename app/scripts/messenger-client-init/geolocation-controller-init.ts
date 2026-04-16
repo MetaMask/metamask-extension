@@ -1,13 +1,15 @@
 import {
   GeolocationController,
   getDefaultGeolocationControllerState,
-  UNKNOWN_LOCATION,
   type GeolocationControllerMessenger,
 } from '@metamask/geolocation-controller';
 import type { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the GeolocationController.
+ *
+ * Geolocation is fetched on demand by consumers (e.g. PerpsController) via the
+ * messenger, so this init does not trigger an eager fetch.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
@@ -18,24 +20,12 @@ export const GeolocationControllerInit: MessengerClientInitFunction<
   GeolocationController,
   GeolocationControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const geolocationControllerState =
-    persistedState.GeolocationController ??
-    getDefaultGeolocationControllerState();
-
   const messengerClient = new GeolocationController({
     messenger: controllerMessenger,
-    state: geolocationControllerState,
+    state:
+      persistedState.GeolocationController ??
+      getDefaultGeolocationControllerState(),
   });
-
-  const hasKnownLocation =
-    geolocationControllerState.location !== UNKNOWN_LOCATION &&
-    geolocationControllerState.location !== '';
-
-  if (!hasKnownLocation) {
-    messengerClient.getGeolocation().catch(() => {
-      // Best-effort fetch; errors are surfaced via controller state.
-    });
-  }
 
   return { messengerClient };
 };

@@ -1,7 +1,6 @@
 import {
   GeolocationController,
   getDefaultGeolocationControllerState,
-  UNKNOWN_LOCATION,
   type GeolocationControllerMessenger,
   type GeolocationControllerState,
 } from '@metamask/geolocation-controller';
@@ -74,46 +73,8 @@ describe('GeolocationControllerInit', () => {
     });
   });
 
-  describe('when location is unknown or empty', () => {
-    it('fetches geolocation for UNKNOWN_LOCATION', () => {
-      jest
-        .mocked(getDefaultGeolocationControllerState)
-        .mockReturnValue({ ...DEFAULT_STATE, location: UNKNOWN_LOCATION });
-
-      const { messengerClient } =
-        GeolocationControllerInit(getInitRequestMock());
-      expect(messengerClient.getGeolocation).toHaveBeenCalled();
-    });
-
-    it('fetches geolocation for empty string', () => {
-      const { messengerClient } =
-        GeolocationControllerInit(getInitRequestMock());
-      expect(messengerClient.getGeolocation).toHaveBeenCalled();
-    });
-  });
-
-  describe('when location is already known', () => {
-    it('does not fetch geolocation', () => {
-      const request = getInitRequestMock();
-      request.persistedState.GeolocationController = {
-        location: 'US',
-      };
-
-      const { messengerClient } = GeolocationControllerInit(request);
-      expect(messengerClient.getGeolocation).not.toHaveBeenCalled();
-    });
-  });
-
-  it('does not throw when getGeolocation rejects', () => {
-    GeolocationControllerMock.mockImplementationOnce(
-      () =>
-        ({
-          getGeolocation: jest
-            .fn()
-            .mockRejectedValue(new Error('network error')),
-        }) as unknown as GeolocationController,
-    );
-
-    expect(() => GeolocationControllerInit(getInitRequestMock())).not.toThrow();
+  it('does not eagerly fetch geolocation', () => {
+    const { messengerClient } = GeolocationControllerInit(getInitRequestMock());
+    expect(messengerClient.getGeolocation).not.toHaveBeenCalled();
   });
 });
