@@ -1,7 +1,7 @@
 import {
-  BackgroundApiService,
-  BackgroundApiServiceMessenger,
-} from '../services/background-api-service';
+  LegacyBackgroundApiService,
+  LegacyBackgroundApiServiceMessenger,
+} from '../services/legacy-background-api-service';
 import { MessengerClientInitFunction } from './types';
 
 /**
@@ -11,11 +11,11 @@ import { MessengerClientInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the service.
  * @returns The initialized service.
  */
-export const BackgroundApiServiceInit: MessengerClientInitFunction<
-  BackgroundApiService,
-  BackgroundApiServiceMessenger
+export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
+  LegacyBackgroundApiService,
+  LegacyBackgroundApiServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new BackgroundApiService({
+  const controller = new LegacyBackgroundApiService({
     messenger: controllerMessenger,
   });
 

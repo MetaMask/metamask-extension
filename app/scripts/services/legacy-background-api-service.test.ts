@@ -6,14 +6,14 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
-  BackgroundApiService,
-  BackgroundApiServiceMessenger,
-} from './background-api-service';
+  LegacyBackgroundApiService,
+  LegacyBackgroundApiServiceMessenger,
+} from './legacy-background-api-service';
 
-describe('BackgroundApiService', () => {
-  it('initializes a new instance of BackgroundApiService', async () => {
+describe('LegacyBackgroundApiService', () => {
+  it('initializes a new instance of LegacyBackgroundApiService', async () => {
     await withService(async ({ service }) => {
-      expect(service).toBeInstanceOf(BackgroundApiService);
+      expect(service).toBeInstanceOf(LegacyBackgroundApiService);
     });
   });
 });
@@ -24,24 +24,24 @@ describe('BackgroundApiService', () => {
  */
 type RootMessenger = Messenger<
   MockAnyNamespace,
-  MessengerActions<BackgroundApiServiceMessenger>,
-  MessengerEvents<BackgroundApiServiceMessenger>
+  MessengerActions<LegacyBackgroundApiServiceMessenger>,
+  MessengerEvents<LegacyBackgroundApiServiceMessenger>
 >;
 
 /**
  * The callback that `withService` calls.
  */
 type WithServiceCallback<ReturnValue> = (payload: {
-  service: BackgroundApiService;
+  service: LegacyBackgroundApiService;
   rootMessenger: RootMessenger;
-  serviceMessenger: BackgroundApiServiceMessenger;
+  serviceMessenger: LegacyBackgroundApiServiceMessenger;
 }) => Promise<ReturnValue> | ReturnValue;
 
 /**
  * The options that `withService` takes.
  */
 type WithServiceOptions = {
-  options: Partial<ConstructorParameters<typeof BackgroundApiService>[0]>;
+  options: Partial<ConstructorParameters<typeof LegacyBackgroundApiService>[0]>;
 };
 
 /**
@@ -63,9 +63,9 @@ function getRootMessenger(): RootMessenger {
  */
 function getMessenger(
   rootMessenger: RootMessenger,
-): BackgroundApiServiceMessenger {
+): LegacyBackgroundApiServiceMessenger {
   return new Messenger({
-    namespace: 'BackgroundApiService',
+    namespace: 'LegacyBackgroundApiService',
     parent: rootMessenger,
   });
 }
@@ -90,7 +90,7 @@ async function withService<ReturnValue>(
     args.length === 2 ? args : [{}, args[0]];
   const rootMessenger = getRootMessenger();
   const serviceMessenger = getMessenger(rootMessenger);
-  const service = new BackgroundApiService({
+  const service = new LegacyBackgroundApiService({
     messenger: serviceMessenger,
     ...options,
   });
