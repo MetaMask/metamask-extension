@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import { v4 as uuidv4 } from 'uuid';
 import log from 'loglevel';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -72,7 +71,7 @@ export async function clearCriticalErrorRestoreSession(
 export async function openRestoringTabAndReload(
   requestSafeReload: () => Promise<void>,
 ): Promise<void> {
-  const fragment = uuidv4();
+  const fragment = crypto.randomUUID();
   const url = `${METAMASK_RESTORING_PAGE_URL}#${fragment}`;
 
   let tabId: number | undefined;
