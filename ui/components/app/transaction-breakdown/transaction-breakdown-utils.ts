@@ -111,7 +111,8 @@ export const getTransactionBreakdownData = ({
   );
 
   const isGasActuallySponsored =
-    isGasFeeSponsored && !isHardwareWalletAccount &&
+    isGasFeeSponsored &&
+    !isHardwareWalletAccount &&
     status !== TransactionStatus.rejected &&
     !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed);
 
