@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import type { PriceUpdate } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
+import { usePerpsChannel } from './usePerpsChannel';
 
 type StreamPriceUpdate = PriceUpdate & {
   timestamp?: number;

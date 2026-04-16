@@ -297,9 +297,8 @@ describe('PerpsDataChannel', () => {
     });
 
     it('connects an idle channel without clearing cached data first', () => {
-      const connectFn = jest.fn<() => void, [(data: TestData) => void]>(
-        () => jest.fn(),
-      );
+      const connectFn = jest.fn<() => void, [(data: TestData) => void]>();
+      connectFn.mockImplementation(() => jest.fn());
       const channel = createChannel(connectFn);
 
       channel.pushData({ value: 7 });

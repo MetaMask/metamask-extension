@@ -1,5 +1,5 @@
-import type { PriceUpdate } from '@metamask/perps-controller';
 import { useEffect, useMemo } from 'react';
+import type { PriceUpdate } from '@metamask/perps-controller';
 import type { PerpsStreamManager } from '../../../providers/perps';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
@@ -74,7 +74,10 @@ export function usePerpsLivePrices(
     includeMarketData = false,
   } = options;
   const symbolsKey = useMemo(
-    () => Array.from(new Set(symbols)).sort().join('|'),
+    () =>
+      Array.from(new Set(symbols))
+        .sort((left, right) => left.localeCompare(right))
+        .join('|'),
     [symbols],
   );
 

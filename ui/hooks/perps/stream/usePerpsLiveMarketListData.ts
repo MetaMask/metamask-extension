@@ -33,7 +33,10 @@ export function usePerpsLiveMarketListData(
   } = usePerpsLiveMarketData();
 
   const marketSymbols = useMemo(
-    () => Array.from(new Set(markets.map((market) => market.symbol))).sort(),
+    () =>
+      Array.from(new Set(markets.map((market) => market.symbol))).sort(
+        (left, right) => left.localeCompare(right),
+      ),
     [markets],
   );
   // Use a stable key so the refresh effect only resets when the symbol set changes.
@@ -53,11 +56,11 @@ export function usePerpsLiveMarketListData(
       return undefined;
     }
 
-    const intervalId = window.setInterval(() => {
+    const intervalId = globalThis.setInterval(() => {
       refresh();
     }, refreshIntervalMs);
 
-    return () => window.clearInterval(intervalId);
+    return () => globalThis.clearInterval(intervalId);
   }, [marketSymbolsKey, refresh, refreshIntervalMs]);
 
   const liveMarkets = useMemo(() => {
