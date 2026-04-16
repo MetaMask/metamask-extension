@@ -5,6 +5,12 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import {
+  createERC1155BalanceChangeTerms,
+  createERC20BalanceChangeTerms,
+  createERC721BalanceChangeTerms,
+  createNativeBalanceChangeTerms,
+} from '@metamask/delegation-core';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
@@ -16,7 +22,6 @@ import {
   type DelegationMessenger,
   convertTransactionToRedeemDelegations,
 } from '../delegation';
-import { createERC1155BalanceChangeTerms, createERC20BalanceChangeTerms, createERC721BalanceChangeTerms, createNativeBalanceChangeTerms } from '@metamask/delegation-core';
 
 const log = createProjectLogger('enforced-simulations');
 const args: Hex = '0x';
@@ -106,7 +111,7 @@ function generateCaveats(
         balance: delta,
         changeType: getChangeType(enforceDecrease),
       }),
-      args
+      args,
     });
   }
 
@@ -148,7 +153,7 @@ function generateCaveats(
             balance: deltaWithSlippage,
             changeType: getChangeType(enforceDecrease),
           }),
-          args
+          args,
         });
 
         break;
@@ -162,7 +167,7 @@ function generateCaveats(
             amount: delta,
             changeType: getChangeType(enforceDecrease),
           }),
-          args
+          args,
         });
         break;
 
@@ -176,7 +181,7 @@ function generateCaveats(
             balance: delta,
             changeType: getChangeType(enforceDecrease),
           }),
-          args
+          args,
         });
         break;
 

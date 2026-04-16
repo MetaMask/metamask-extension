@@ -1,12 +1,11 @@
 import type { Caveat as CoreCaveat, Hex } from '@metamask/delegation-core';
+
 export type Caveat = CoreCaveat<Hex>;
 export {
   getDeleGatorEnvironment,
   type DeleGatorEnvironment,
 } from './environment';
 export {
-  ANY_BENEFICIARY,
-  ROOT_AUTHORITY,
   createDelegation,
   createOpenDelegation,
   encodeDelegation,

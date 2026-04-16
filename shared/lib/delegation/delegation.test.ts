@@ -1,22 +1,21 @@
+import { ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 import {
   toDelegationStruct,
   type Delegation,
   type DelegationStruct,
-  ROOT_AUTHORITY,
   createDelegation,
   createOpenDelegation,
   resolveAuthority,
-  ANY_BENEFICIARY,
   encodeDisableDelegation,
   encodeRedeemDelegations,
 } from './delegation';
-import { type Caveat } from './';
 import { type Hex, toFunctionSelector } from './utils';
 import {
   ExecutionMode,
   type ExecutionStruct,
   SINGLE_DEFAULT_MODE,
 } from './execution';
+import { type Caveat } from '.';
 
 const mockDelegate = '0x1234567890123456789012345678901234567890' as Hex;
 const mockDelegator = '0x0987654321098765432109876543210987654321' as Hex;

@@ -6,19 +6,13 @@ import {
   ANY_BENEFICIARY,
   hashDelegation,
 } from '@metamask/delegation-core';
-import type { Caveat } from './';
 import { concat, toFunctionSelector, toHex } from './utils';
 import {
   encodeExecutionCalldatas,
   ExecutionMode,
   ExecutionStruct,
 } from './execution';
-
-export {
-  ROOT_AUTHORITY,
-  ANY_BENEFICIARY,
-  DELEGATION_TYPEHASH,
-} from '@metamask/delegation-core';
+import type { Caveat } from '.';
 
 /**
  * The function selector for the redeemDelegations function

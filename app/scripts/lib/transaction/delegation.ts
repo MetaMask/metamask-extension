@@ -11,6 +11,13 @@ import type { DelegationControllerSignDelegationAction } from '@metamask/delegat
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
 import {
+  createExactExecutionBatchTerms,
+  createExactExecutionTerms,
+  createLimitedCallsTerms,
+  ROOT_AUTHORITY,
+  ANY_BENEFICIARY,
+} from '@metamask/delegation-core';
+import {
   ExecutionMode,
   getDeleGatorEnvironment,
   encodeRedeemDelegations,
@@ -22,12 +29,11 @@ import {
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
 import { stripSingleLeadingZero } from './util';
-import { createExactExecutionBatchTerms, createExactExecutionTerms, createLimitedCallsTerms, ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 
 const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
-const DELEGATION_SALT = "0x00";
+const DELEGATION_SALT = '0x00';
 
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
@@ -254,21 +260,23 @@ function buildDefaultCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   executions: ExecutionStruct[],
 ): Caveat[] {
-  const caveats: Caveat[] = [{
-    enforcer: environment.caveatEnforcers.limitedCalls,
-    terms: createLimitedCallsTerms({
-      limit: 1
-    }),
-    args: "0x"
-  }];
+  const caveats: Caveat[] = [
+    {
+      enforcer: environment.caveatEnforcers.limitedCalls,
+      terms: createLimitedCallsTerms({
+        limit: 1,
+      }),
+      args: '0x',
+    },
+  ];
 
   if (executions.length > 1) {
     caveats.push({
       enforcer: environment.caveatEnforcers.exactExecutionBatch,
       terms: createExactExecutionBatchTerms({
-        executions
+        executions,
       }),
-      args: "0x"
+      args: '0x',
     });
   } else {
     const execution = executions[0];
@@ -276,13 +284,11 @@ function buildDefaultCaveats(
     caveats.push({
       enforcer: environment.caveatEnforcers.exactExecution,
       terms: createExactExecutionTerms({
-        execution
+        execution,
       }),
-      args: "0x"
+      args: '0x',
     });
-
   }
-
 
   return caveats;
 }
@@ -305,7 +311,7 @@ async function signAndWrapDelegation({
     delegate: delegatee ?? ANY_BENEFICIARY,
     authority: ROOT_AUTHORITY,
     salt: DELEGATION_SALT,
-    caveats
+    caveats,
   };
 
   log('Signing delegation', unsignedDelegation);
