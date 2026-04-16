@@ -1,17 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
-import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import {
-  selectPerpsActiveProvider,
-  selectPerpsIsTestnet,
-} from '../../selectors/perps-controller';
 import {
   clearPerpsMarketFillsModuleCache,
   fetchFillsForCacheKey,
   peekWarmFills,
 } from '../../providers/perps/perps-cache';
 import { usePerpsLiveFills } from './stream';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketFillsModuleCache };
 
@@ -45,16 +40,7 @@ export function usePerpsMarketFills({
   symbol,
   throttleMs = 0,
 }: UsePerpsMarketFillsParams): UsePerpsMarketFillsReturn {
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-  const activeProvider = useSelector(selectPerpsActiveProvider);
-  const isTestnet = useSelector(selectPerpsIsTestnet);
-
-  const fillsCacheKey = useMemo(() => {
-    const net = isTestnet ? 'testnet' : 'mainnet';
-    const addressKey = (selectedAddress ?? '').toLowerCase();
-    return `${activeProvider}:${net}:${addressKey}`;
-  }, [activeProvider, isTestnet, selectedAddress]);
+  const fillsCacheKey = usePerpsCacheKey();
 
   const { fills: liveFills, isInitialLoading: wsLoading } = usePerpsLiveFills({
     throttleMs,

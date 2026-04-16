@@ -3,6 +3,25 @@ import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 // ---------------------------------------------------------------------------
+// Shared cache key builder
+// ---------------------------------------------------------------------------
+
+/**
+ * Builds the cache key used by both MarketInfo and OrderFills caches.
+ * Centralised here so every consumer derives keys in the same format;
+ * adding a new scope dimension only requires a change in one place.
+ */
+export function buildPerpsCacheKey(
+  activeProvider: string,
+  isTestnet: boolean,
+  address: string | undefined,
+): string {
+  const net = isTestnet ? 'testnet' : 'mainnet';
+  const addressKey = (address ?? '').toLowerCase();
+  return `${activeProvider}:${net}:${addressKey}`;
+}
+
+// ---------------------------------------------------------------------------
 // MarketInfo cache (perpsGetMarkets)
 // ---------------------------------------------------------------------------
 

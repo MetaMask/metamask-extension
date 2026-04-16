@@ -1,16 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import type { MarketInfo } from '@metamask/perps-controller';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import {
-  selectPerpsActiveProvider,
-  selectPerpsIsTestnet,
-} from '../../selectors/perps-controller';
 import {
   clearPerpsMarketInfoModuleCache,
   fetchMarketInfos,
   peekCachedMarketInfos,
 } from '../../providers/perps/perps-cache';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketInfoModuleCache };
 
@@ -33,16 +28,7 @@ export { clearPerpsMarketInfoModuleCache };
  * @returns The matching MarketInfo, or undefined while loading / on error
  */
 export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
-  const activeProvider = useSelector(selectPerpsActiveProvider);
-  const isTestnet = useSelector(selectPerpsIsTestnet);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  const marketInfoCacheKey = useMemo(() => {
-    const net = isTestnet ? 'testnet' : 'mainnet';
-    const addressKey = (selectedAddress ?? '').toLowerCase();
-    return `${activeProvider}:${net}:${addressKey}`;
-  }, [activeProvider, isTestnet, selectedAddress]);
+  const marketInfoCacheKey = usePerpsCacheKey();
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
     () => peekCachedMarketInfos(marketInfoCacheKey) ?? [],
