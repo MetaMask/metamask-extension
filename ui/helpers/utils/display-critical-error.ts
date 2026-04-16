@@ -261,23 +261,21 @@ export async function displayCriticalErrorMessage(
           '#critical-error-restore-link',
         );
 
-      if (restoreLink) {
-        restoreLink.addEventListener('click', (event: Event) => {
-          event.preventDefault();
-          // eslint-disable-next-line no-alert
-          const confirmed = confirm(
-            localeContext.t('stateCorruptionAreYouSure') ?? '',
-          );
-          if (confirmed) {
-            (port as browser.Runtime.Port).postMessage({
-              data: {
-                method: METHOD_REPAIR_DATABASE_TIMEOUT,
-                params: { criticalErrorType, backup },
-              },
-            });
-          }
-        });
-      }
+      restoreLink?.addEventListener('click', (event: Event) => {
+        event.preventDefault();
+        // eslint-disable-next-line no-alert
+        const confirmed = confirm(
+          localeContext.t('stateCorruptionAreYouSure') ?? '',
+        );
+        if (confirmed) {
+          (port as browser.Runtime.Port).postMessage({
+            data: {
+              method: METHOD_REPAIR_DATABASE_TIMEOUT,
+              params: { criticalErrorType, backup },
+            },
+          });
+        }
+      });
     }
   }
 
