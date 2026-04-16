@@ -120,7 +120,7 @@ export class CriticalErrorHandler {
 
     // only allow the restore process once, unregister
     // listeners from all UI windows
-    for (const connectedPort of [...this.connectedPorts]) {
+    for (const connectedPort of this.connectedPorts) {
       this.removeListenersForPort(connectedPort);
     }
 
