@@ -90,9 +90,10 @@ export const RewardsControllerInit: MessengerClientInitFunction<
       const { remoteFeatureFlags } = initMessenger.call(
         'RemoteFeatureFlagController:getState',
       );
-      const tronFeatureFlag = remoteFeatureFlags?.rewardsTronEnabledExtension as
-        | VersionGatedFeatureFlag
-        | undefined;
+      const tronFeatureFlag =
+        remoteFeatureFlags?.rewardsTronEnabledExtension as
+          | VersionGatedFeatureFlag
+          | undefined;
 
       // Seed with manifest override first; fallback to remote flag
       const manifestFlag =
