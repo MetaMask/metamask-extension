@@ -3,10 +3,8 @@ import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { parse as parseTransaction } from '@ethersproject/transactions';
 import {
-  ERC20_WRITE_SELECTORS,
   getTransactionSelector,
   LedgerSignTypedDataParams,
-  NFT_ONLY_SELECTORS,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TypedDataUtils, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import {
@@ -249,21 +247,7 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
-    // The nft parameter resolution is selector-based only: approve() uses
-    // the same selector (0x095ea7b3) for both ERC20 and ERC721
-    // (see @ledgerhq/evm-tools selectors and hw-app-eth resolveTransaction).
-    //
-    // The nft parameter will be set to true only for the selectors defined in
-    // NFT_ONLY_SELECTORS, that way we can tell "token allowance" from "NFT allowance"
-    // for every operation except approve().
-    const selector = getSelectorWithLegacyFallback(tx);
-    const isNftTx = Boolean(selector && NFT_ONLY_SELECTORS.has(selector));
-    const isERC20Tx = Boolean(selector && ERC20_WRITE_SELECTORS.has(selector));
-    const result = await app.clearSignTransaction(hdPath, tx, {
-      externalPlugins: true,
-      erc20: isERC20Tx,
-      nft: isNftTx,
-    });
+    const result = await app.signTransaction(hdPath, tx);
     return {
       v: result.v,
       r: result.r,
