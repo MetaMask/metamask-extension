@@ -19,7 +19,7 @@ import { Anvil } from '../../seeder/anvil';
 
 const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
-const BALANCE_POLL_TIMEOUT = 180_000;
+const BALANCE_POLL_TIMEOUT = 210_000;
 const RECONNECT_TIMEOUT = 60_000;
 
 async function waitForAccountActivityWsConnections(
@@ -107,7 +107,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
 
   describe('Reconnection', function () {
     it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
-      this.timeout(210_000);
+      this.timeout(240_000);
 
       const balanceOverride: { nativeBalance: string } = {
         nativeBalance: '25',

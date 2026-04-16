@@ -1366,12 +1366,12 @@ async function setupMocking(
         }
         const parts = id.split(':');
         const chainRef = parts[1];
-        const nativeBalance =
-          chainRef === '1' && mainnetNativeOverride !== null
-            ? mainnetNativeOverride
-            : defaultNativeOverride !== null
-              ? defaultNativeOverride
-              : '25';
+        let nativeBalance = '25';
+        if (chainRef === '1' && mainnetNativeOverride !== null) {
+          nativeBalance = mainnetNativeOverride;
+        } else if (defaultNativeOverride !== null) {
+          nativeBalance = defaultNativeOverride;
+        }
 
         // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
         const slip44 = chainRef === '1337' ? '1' : '60';
