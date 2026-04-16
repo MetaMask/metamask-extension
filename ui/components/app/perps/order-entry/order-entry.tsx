@@ -341,8 +341,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
-        {mode !== 'close' && (
+        {/* New Mode Only: Show Auto Close (TP/SL) Section */}
+        {mode === 'new' && (
           <AutoCloseSection
             enabled={formState.autoCloseEnabled}
             onEnabledChange={handleAutoCloseEnabledChange}
@@ -352,21 +352,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
-            leverage={
-              mode === 'modify' && existingPosition?.leverage
-                ? existingPosition.leverage
-                : formState.leverage
-            }
-            entryPrice={
-              mode === 'modify' && existingPosition?.entryPrice
-                ? (() => {
-                    const p = parseFloat(
-                      existingPosition.entryPrice.replace(/,/gu, ''),
-                    );
-                    return Number.isNaN(p) ? undefined : p;
-                  })()
-                : undefined
-            }
+            leverage={formState.leverage}
+            entryPrice={undefined}
             estimatedSize={estimatedSize}
             orderType={formState.type}
             limitPrice={formState.limitPrice}

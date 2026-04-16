@@ -341,6 +341,42 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByText(messages.perpsLong.message)).toBeInTheDocument();
       expect(screen.getByText(messages.perpsShort.message)).toBeInTheDocument();
     });
+
+    it('does not render direction tabs in modify mode', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('direction-tabs')).not.toBeInTheDocument();
+    });
+
+    it('does not render direction tabs in close mode', () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('direction-tabs')).not.toBeInTheDocument();
+    });
+
+    it('hides the auto-close section in modify mode', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
   });
 
   describe('redirects', () => {
@@ -1093,7 +1129,7 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
-    it('submits normalized TP/SL values when modified', async () => {
+    it('submits existing position TP/SL values unchanged in modify mode', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1103,20 +1139,12 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const tpContainer = screen.getByTestId('tp-price-input');
-      const tpInput = tpContainer.querySelector('input');
-      fireEvent.change(tpInput as HTMLInputElement, {
-        target: { value: '3300.1' },
-      });
-      fireEvent.blur(tpInput as HTMLInputElement);
+      // Auto-close section is hidden in modify mode; TP/SL inputs are not accessible
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
 
-      const slContainer = screen.getByTestId('sl-price-input');
-      const slInput = slContainer.querySelector('input');
-      fireEvent.change(slInput as HTMLInputElement, {
-        target: { value: '2500' },
-      });
-      fireEvent.blur(slInput as HTMLInputElement);
-
+      // Submitting with no additional amount calls perpsUpdatePositionTPSL
+      // with the pre-loaded TP/SL values from the existing position
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
@@ -1126,15 +1154,23 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             symbol: 'ETH',
-            takeProfitPrice: '3300.1',
-            stopLossPrice: '2500',
+            takeProfitPrice: mockPositions[0].takeProfitPrice,
+            stopLossPrice: mockPositions[0].stopLossPrice,
           }),
         ],
       );
     });
 
-    it('submits undefined TP/SL values when fields are cleared', async () => {
+    it('does not disable submit in modify mode when pre-loaded TP has crossed market price', async () => {
       mockSearchParams.set('mode', 'modify');
+      // Market has run above the existing TP ($3,200) — stale TP is now on the wrong
+      // side of the current price for a long, which previously silently blocked submit.
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((m) =>
+          m.symbol === 'ETH' ? { ...m, price: '$3,500.00' } : m,
+        ),
+        isInitialLoading: false,
+      });
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
         isInitialLoading: false,
@@ -1143,37 +1179,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const tpContainer = screen.getByTestId('tp-price-input');
-      const tpInput = tpContainer.querySelector('input');
-      fireEvent.change(tpInput as HTMLInputElement, {
-        target: { value: '' },
-      });
-      fireEvent.blur(tpInput as HTMLInputElement);
-
-      const slContainer = screen.getByTestId('sl-price-input');
-      const slInput = slContainer.querySelector('input');
-      fireEvent.change(slInput as HTMLInputElement, {
-        target: { value: '' },
-      });
-      fireEvent.blur(slInput as HTMLInputElement);
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      const updateCall = mockSubmitRequestToBackground.mock.calls.find(
-        ([method]) => method === 'perpsUpdatePositionTPSL',
-      );
-      expect(updateCall).toBeDefined();
-
-      const payload = updateCall?.[1]?.[0] as {
-        symbol?: string;
-        takeProfitPrice?: string;
-        stopLossPrice?: string;
-      };
-      expect(payload.symbol).toBe('ETH');
-      expect(payload.takeProfitPrice).toBeUndefined();
-      expect(payload.stopLossPrice).toBeUndefined();
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
     });
 
     it('does not submit when currentPrice is 0', async () => {
