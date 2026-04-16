@@ -138,7 +138,6 @@
     "database": "object",
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": null,
-    "delegations": "object",
     "depositInProgress": "boolean",
     "depositRequests": "object",
     "dismissSeedBackUpReminder": false,
