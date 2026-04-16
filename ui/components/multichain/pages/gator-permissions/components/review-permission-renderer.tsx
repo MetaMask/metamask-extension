@@ -25,14 +25,11 @@ import {
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
-  AddressField,
   AmountField,
-  DividerElement,
   ExpiryField,
-  FieldView,
   I18nFunction,
-  OriginField,
   PermissionRenderContext,
+  ReviewFieldView,
   SchemaElement,
   SchemaSection,
 } from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
@@ -48,7 +45,6 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getInternalAccountByAddress } from '../../../../../selectors';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
-import { ConfirmInfoRowDivider } from '../../../../app/confirm/info/row';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import {
   GatorPermissionDetailRow,
@@ -193,45 +189,6 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-// Confirmation-only schema elements (divider / origin / address). Review views must not
-// use these without adding explicit rendering below; otherwise renderElement throws.
-function renderConfirmationDividerOriginAddressElement(
-  rowKey: string,
-  element: DividerElement | OriginField | AddressField,
-  ctx: PermissionRenderContext,
-  t: I18nFunction,
-): React.ReactNode {
-  switch (element.type) {
-    case 'divider':
-      return <ConfirmInfoRowDivider key={rowKey} />;
-    case 'origin':
-      return (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t('requestFrom')}
-          value={ctx.origin ?? ''}
-          testId={element.testId}
-        />
-      );
-    case 'address': {
-      const address = element.getValue(ctx);
-      if (!address) {
-        return null;
-      }
-      return (
-        <GatorPermissionDetailRow
-          key={rowKey}
-          label={t(element.labelKey)}
-          value={shortenAddress(address)}
-          testId={element.testId}
-        />
-      );
-    }
-    default:
-      return throwUnhandledPermissionSchemaElement(element);
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Element renderer
 // ---------------------------------------------------------------------------
@@ -245,7 +202,7 @@ type RenderElementOptions = {
   tokenDecimals: number | undefined;
   isLoading: boolean;
   index: number;
-  viewMode: FieldView;
+  viewMode: ReviewFieldView;
   extraProps: {
     permissionAccount?: string;
     networkName?: string;
@@ -343,18 +300,8 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-      if (viewMode !== 'confirmation') {
-        return throwUnhandledPermissionSchemaElement(element as never);
-      }
-      return renderConfirmationDividerOriginAddressElement(
-        rowKey,
-        element,
-        ctx,
-        t,
-      );
-
     default:
-      return throwUnhandledPermissionSchemaElement(element);
+      return throwUnhandledPermissionSchemaElement(element as never);
   }
 }
 
@@ -419,7 +366,7 @@ type RenderSectionOptions = {
   tokenSymbol: string;
   tokenDecimals: number | undefined;
   isLoading: boolean;
-  viewMode: FieldView;
+  viewMode: ReviewFieldView;
   extraProps: {
     permissionAccount?: string;
     networkName?: string;
@@ -467,9 +414,9 @@ export type ReviewPermissionRendererProps = {
   rules?: Rule[] | null;
   tokenInfo: Pick<GatorTokenInfo, 'symbol' | 'decimals'>;
   tokenLoading: boolean;
-  /** Which view to filter fields by. Defaults to 'reviewDetail'. */
-  viewMode?: FieldView;
-  /** Request origin; set when using `viewMode="confirmation"` (e.g. tests). */
+  /** Which review surface to filter fields by. Defaults to 'reviewDetail'. */
+  viewMode?: ReviewFieldView;
+  /** Optional request origin for schema fields that read `ctx.origin` in review (rare). */
   origin?: string;
   /** Account address for rendering account fields. */
   permissionAccount?: string;
@@ -478,9 +425,10 @@ export type ReviewPermissionRendererProps = {
 };
 
 /**
- * Review-page renderer that interprets the shared permission schema.
+ * Gator review-page renderer (`reviewDetail` / `reviewSummary` only). Confirmation UI uses
+ * `PermissionDetailRenderer` with `includeInViews: ['confirmation']` instead.
  * Renders each schema element as a detail row with string-formatted values.
- * Does not run schema `validate` (signing flow only); tolerates imperfect stored data.
+ * Does not run schema `validate`; tolerates imperfect stored data.
  * @param options0
  * @param options0.permissionType
  * @param options0.permissionData
@@ -526,9 +474,7 @@ export const ReviewPermissionRenderer: React.FC<
       symbol: tokenInfo.symbol,
       decimals: tokenInfo.decimals,
     },
-    ...(viewMode === 'confirmation' || origin !== undefined
-      ? { origin: origin ?? '' }
-      : {}),
+    ...(origin === undefined ? {} : { origin: origin ?? '' }),
     ...(isPermissionDataWithTotalExposure(permissionData)
       ? {
           streamTotalExposure: computeTotalExposureForPermission(

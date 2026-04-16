@@ -20,6 +20,9 @@ export type I18nValue = {
 /** Views in which a schema element can appear. */
 export type FieldView = 'confirmation' | 'reviewDetail' | 'reviewSummary';
 
+/** Gator review surfaces only (`reviewDetail` / `reviewSummary`). Confirmation uses `FieldView`'s `confirmation` in the signing flow renderer. */
+export type ReviewFieldView = Exclude<FieldView, 'confirmation'>;
+
 /**
  * The context object passed to all accessor functions in the schema.
  * Built by each renderer from decoded permission data plus pre-resolved async data.

@@ -1,5 +1,6 @@
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
@@ -142,6 +143,36 @@ describe('PermissionDetailRenderer', () => {
       expect(
         getByTestId('native-token-stream-details-section'),
       ).toBeInTheDocument();
+    });
+
+    it('shows finite total exposure from expiry (capped by maxAmount), not unlimited', async () => {
+      const permissionCapped = {
+        type: 'native-token-stream' as const,
+        data: {
+          initialAmount: '0x0',
+          maxAmount: '0x100',
+          amountPerSecond: '0x1',
+          startTime: 1000,
+        },
+      };
+      const { getByTestId, getByText, queryByText } =
+        renderWithConfirmContextProvider(
+          <PermissionDetailRenderer
+            permission={permissionCapped}
+            expiry={1100}
+            chainId="0x1"
+            origin="https://example.com"
+            ownerId="test-id"
+          />,
+          getMockStore(),
+        );
+      expect(
+        getByTestId('native-token-stream-stream-rate-section'),
+      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(getByText('Total exposure')).toBeInTheDocument();
+      });
+      expect(queryByText('Unlimited')).not.toBeInTheDocument();
     });
   });
 
