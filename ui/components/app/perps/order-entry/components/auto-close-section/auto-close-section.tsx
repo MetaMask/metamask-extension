@@ -49,10 +49,10 @@ import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
  * @param props.onStopLossPriceChange - Callback when SL price changes
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
- * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
+ * @param props.entryPrice - Position entry price (modify mode). When provided, overrides limit/current price for % calc.
  * @param props.estimatedSize - Signed position size in asset units for estimated PnL
  * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
- * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
+ * @param props.limitPrice - Limit price string; used as the baseline for both validation and % ↔ price conversions on limit orders
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
@@ -80,8 +80,20 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     orderType: 'market',
   });
 
-  // In modify mode use position's entry price; otherwise use current price
-  const entryPrice = entryPriceProp ?? currentPrice;
+  // Priority: explicit entry price (modify mode) > limit price (limit orders) > current price.
+  // This ensures % ↔ price conversions are anchored to the price the user will actually fill at.
+  const entryPrice = useMemo(() => {
+    if (entryPriceProp !== undefined) {
+      return entryPriceProp;
+    }
+    if (orderType === 'limit' && limitPrice?.trim()) {
+      const parsed = Number.parseFloat(limitPrice.replaceAll(/[$,]/gu, ''));
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+    return currentPrice;
+  }, [entryPriceProp, orderType, limitPrice, currentPrice]);
 
   // Raw percent strings preserved while the user is actively typing in percent fields.
   // When focused, these strings are shown verbatim to prevent mid-keystroke reformatting.
