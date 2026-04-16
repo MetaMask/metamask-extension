@@ -39,7 +39,7 @@ import {
  * @param request.keyringOverrides - Optional overrides for keyring classes and
  * bridges.
  * @param request.encryptor - Optional encryptor to use for the controller.
- * @param request.getController - Function to get other controllers.
+ * @param request.getMessengerClient - Function to get other controllers.
  * @returns The initialized controller.
  */
 export const KeyringControllerInit: MessengerClientInitFunction<
@@ -52,7 +52,7 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   initMessenger,
   keyringOverrides,
   encryptor,
-  getController,
+  getMessengerClient,
 }) => {
   const additionalKeyrings = [
     qrKeyringBuilderFactory(
@@ -102,12 +102,12 @@ export const KeyringControllerInit: MessengerClientInitFunction<
     );
   }
 
-  const snapKeyringBuilder = getController('SnapKeyringBuilder');
+  const snapKeyringBuilder = getMessengerClient('SnapKeyringBuilder');
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
 
-  const controller = new KeyringController({
+  const messengerClient = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
@@ -115,6 +115,6 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

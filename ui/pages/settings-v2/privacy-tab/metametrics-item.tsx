@@ -65,7 +65,6 @@ export const MetametricsToggleItem = () => {
         dispatch(setDataCollectionForMarketing(false));
       }
 
-      await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
@@ -86,6 +85,8 @@ export const MetametricsToggleItem = () => {
           location: 'Settings',
         },
       });
+
+      await disableMetametrics();
     }
   };
 

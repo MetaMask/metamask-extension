@@ -19,7 +19,7 @@ export const ProfileMetricsServiceInit: MessengerClientInitFunction<
   // The environment must be the same used by AuthenticationController.
   const env = loadAuthenticationConfig();
 
-  const controller = new ProfileMetricsService({
+  const messengerClient = new ProfileMetricsService({
     messenger: controllerMessenger,
     fetch: fetch.bind(globalThis),
     env,
@@ -28,6 +28,6 @@ export const ProfileMetricsServiceInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };

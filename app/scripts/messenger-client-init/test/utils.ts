@@ -22,7 +22,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     extension: {},
     platform: new ExtensionPlatform(),
     getCronjobControllerStorageManager: jest.fn(),
-    getController: jest.fn(),
+    getMessengerClient: jest.fn(),
     getFlatState: jest.fn(),
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),

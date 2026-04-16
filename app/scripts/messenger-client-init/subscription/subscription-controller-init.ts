@@ -26,13 +26,13 @@ export const SubscriptionControllerInit: MessengerClientInitFunction<
     captureException: captureExceptionWithSentry,
   });
 
-  const controller = new SubscriptionController({
+  const messengerClient = new SubscriptionController({
     messenger: controllerMessenger,
     state: persistedState.SubscriptionController,
     subscriptionService,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

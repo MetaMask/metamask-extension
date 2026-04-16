@@ -129,7 +129,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: boolean;
+  showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;

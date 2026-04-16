@@ -17,7 +17,7 @@ export const ApprovalControllerInit: MessengerClientInitFunction<
   ApprovalController,
   ApprovalControllerMessenger
 > = ({ controllerMessenger, showUserConfirmation }) => {
-  const controller = new ApprovalController({
+  const messengerClient = new ApprovalController({
     messenger: controllerMessenger,
     showApprovalRequest: showUserConfirmation,
     typesExcludedFromRateLimiting: [
@@ -40,6 +40,6 @@ export const ApprovalControllerInit: MessengerClientInitFunction<
   return {
     persistedStateKey: null,
     memStateKey: null,
-    controller,
+    messengerClient,
   };
 };
