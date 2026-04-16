@@ -3,7 +3,7 @@ import {
   ShieldRemoteBackend,
 } from '@metamask/shield-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
@@ -16,7 +16,7 @@ import { ShieldControllerInit } from './shield-controller-init';
 jest.mock('@metamask/shield-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     ShieldControllerMessengerType,
     ShieldControllerInitMessenger
   >
@@ -35,7 +35,9 @@ describe('ShieldControllerInit', () => {
     const request = buildInitRequestMock();
     const controllerInitResult = ShieldControllerInit(request);
     expect(controllerInitResult).toBeDefined();
-    expect(controllerInitResult.controller).toBeInstanceOf(ShieldController);
+    expect(controllerInitResult.messengerClient).toBeInstanceOf(
+      ShieldController,
+    );
   });
 
   it('initializes with correct messenger, state and normalizeSignatureRequest function', () => {

@@ -4,7 +4,7 @@ import {
 } from '@metamask/assets-controllers';
 import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { getNftDetectionControllerMessenger } from '../messengers/assets';
 import { getRootMessenger } from '../../lib/messenger';
 import { NftDetectionControllerInit } from './nft-detection-controller-init';
@@ -33,7 +33,7 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<NftDetectionControllerMessenger>
+  MessengerClientInitRequest<NftDetectionControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -45,7 +45,7 @@ function buildInitRequestMock(): jest.Mocked<
     initMessenger: undefined,
   };
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -59,9 +59,9 @@ describe('NftDetectionControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(NftDetectionControllerInit(requestMock).controller).toBeInstanceOf(
-      NftDetectionController,
-    );
+    expect(
+      NftDetectionControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(NftDetectionController);
   });
 
   it('initializes with correct messenger and state', () => {

@@ -61,10 +61,10 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       }
       padding={1}
       gap={1}
-      className={classnames(
-        'rounded-lg h-6',
-        displayDefaultAddress && 'cursor-pointer',
-      )}
+      className={classnames('rounded-lg h-6', {
+        'cursor-pointer': displayDefaultAddress,
+        'hover:bg-muted-hover': !addressCopied,
+      })}
       data-testid="network-group-with-copy-icon"
     >
       <MultichainAccountNetworkGroup

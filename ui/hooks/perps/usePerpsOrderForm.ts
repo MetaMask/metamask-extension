@@ -1,11 +1,10 @@
 import type { OrderType } from '@metamask/perps-controller';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
-  calculateMarginRequired,
-  estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
 import type {
   OrderFormState,
@@ -13,6 +12,52 @@ import type {
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { useFormatters } from '../useFormatters';
+import { formatPerpsPrice } from '../../../shared/lib/perps-formatters';
+import { getDisplaySymbol } from '../../components/app/perps/utils';
+import { getIntlLocale } from '../../ducks/locale/locale';
+
+/**
+ * Calculate the estimated liquidation price for an isolated-margin position.
+ *
+ * Implements the same formula as HyperLiquidProvider.calculateLiquidationPrice,
+ * but synchronously — maxLeverage is already available from market data.
+ *
+ * @param entryPrice - Position entry price
+ * @param leverage - User-selected leverage
+ * @param direction - 'long' or 'short'
+ * @param maxLeverage - Maximum leverage allowed for the asset (from market data)
+ * @returns Estimated liquidation price (0 if inputs are invalid)
+ */
+function calculateLiquidationPrice(
+  entryPrice: number,
+  leverage: number,
+  direction: 'long' | 'short',
+  maxLeverage: number,
+): number {
+  if (entryPrice <= 0 || leverage <= 0 || maxLeverage <= 0) {
+    return 0;
+  }
+
+  const maintenanceMarginRate = 1 / (2 * maxLeverage);
+  const side = direction === 'long' ? 1 : -1;
+
+  const initialMarginRate = 1 / leverage;
+
+  if (initialMarginRate < maintenanceMarginRate) {
+    return 0;
+  }
+
+  const marginAvailable = initialMarginRate - maintenanceMarginRate;
+  const denominator = 1 - maintenanceMarginRate * side;
+
+  if (Math.abs(denominator) < 0.0001) {
+    return entryPrice;
+  }
+
+  const liquidationPrice =
+    entryPrice - (side * marginAvailable * entryPrice) / denominator;
+  return Math.max(0, liquidationPrice);
+}
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -35,6 +80,40 @@ export type UsePerpsOrderFormOptions = {
   orderType?: OrderType;
   /** Initial leverage for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /**
+   * Maximum leverage allowed for this asset (from market data).
+   * Used in the HyperLiquid liquidation price formula.
+   * Defaults to 50 when market data is unavailable.
+   */
+  maxLeverage?: number;
+  /**
+   * HyperLiquid size decimals for this asset (from MarketInfo.szDecimals).
+   * Controls how position size is rounded before computing notional and margin,
+   * mirroring mobile's calculatePositionSize → markPrice × roundedSize → / leverage chain.
+   * Defaults to 0 (no rounding) when market info is unavailable.
+   */
+  szDecimals?: number;
+  /**
+   * Oracle mark price for this asset (oraclePx from HyperLiquid's activeAssetCtx feed).
+   * Used exclusively for margin calculation (position-size rounding + notional + marginRequired).
+   * This is the price HyperLiquid itself uses to assess margin requirements, so using it
+   * here matches what mobile shows for pre-trade margin estimates.
+   *
+   * For limit orders the user-supplied limit price is used instead (that is the expected
+   * fill price, making it more accurate than the oracle price for margin on limit orders).
+   *
+   * Falls back to currentPrice when not yet available.
+   */
+  markPrice?: number;
+  /**
+   * Combined fee rate (protocol + MetaMask builder) from usePerpsOrderFees.
+   * Includes user-specific volume-tier discounts, referral/staking discounts,
+   * HIP-3 multipliers, and MetaMask Rewards discounts.
+   *
+   * `undefined` while usePerpsOrderFees is loading or in an error state;
+   * fee estimates will show $0.00 until a real rate arrives (mobile parity).
+   */
+  feeRate?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -90,6 +169,10 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
  * @param options.initialLeverage
+ * @param options.maxLeverage - Maximum leverage for the asset (used in liquidation price formula)
+ * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
+ * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
+ * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -103,12 +186,14 @@ export function usePerpsOrderForm({
   onSubmit,
   orderType = 'market',
   initialLeverage,
+  maxLeverage = 50,
+  szDecimals,
+  markPrice,
+  feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
+  const locale = useSelector(getIntlLocale);
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
-
-  // Close percentage state (for 'close' mode, defaults to 100%)
-  const [closePercent, setClosePercent] = useState<number>(100);
 
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
@@ -208,8 +293,6 @@ export function usePerpsOrderForm({
       initialLeverage,
     };
 
-    setClosePercent(100);
-
     const pos = existingPositionRef.current;
     const typeForReset = orderTypeRef.current;
     if (mode === 'modify' && pos) {
@@ -241,14 +324,13 @@ export function usePerpsOrderForm({
     // For close mode, calculate based on close amount
     if (mode === 'close' && existingPosition) {
       const positionSize = Math.abs(parseFloat(existingPosition.size)) || 0;
-      const closeAmount = (positionSize * closePercent) / 100;
+      const closeAmount = (positionSize * formState.closePercent) / 100;
       const closeValueUsd = closeAmount * currentPrice;
 
-      // Mock fee calculation: 0.05% of close value
-      const estimatedFees = closeValueUsd * 0.0005;
+      const estimatedFees = closeValueUsd * (feeRate ?? 0);
 
       return {
-        positionSize: formatTokenQuantity(closeAmount, asset),
+        positionSize: formatTokenQuantity(closeAmount, getDisplaySymbol(asset)),
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
         liquidationPriceRaw: null,
@@ -286,22 +368,48 @@ export function usePerpsOrderForm({
       }
     }
 
-    // User enters SIZE (position notional value). Margin = size / leverage
-    const positionSize = calculatePositionSize(amount, effectivePrice);
-    const marginRequired = calculateMarginRequired(amount, formState.leverage);
-    const liquidationPrice = estimateLiquidationPrice(
-      effectivePrice,
-      formState.leverage,
-      formState.direction === 'long',
+    // For margin/position-size calculation, prefer the oracle mark price (oraclePx
+    // from HyperLiquid's activeAssetCtx) because that is what the exchange uses to
+    // assess margin requirements — matching what mobile shows for pre-trade estimates.
+    // Limit orders use the limit price (the expected fill price) for accuracy.
+    // Falls back to effectivePrice when the oracle price is not yet available.
+    const safeMarkPrice =
+      markPrice !== undefined && Number.isFinite(markPrice) && markPrice > 0
+        ? markPrice
+        : undefined;
+    const effectiveMarginPrice =
+      formState.type === 'limit'
+        ? effectivePrice
+        : (safeMarkPrice ?? effectivePrice);
+
+    const positionSize = calculatePositionSize(
+      amount,
+      effectiveMarginPrice,
+      szDecimals,
     );
-    // Mock fee calculation: 0.05% of position size
-    const estimatedFees = amount * 0.0005;
+    // Notional is the actual USD value of the rounded position (may differ slightly
+    // from the user's input amount due to szDecimals quantisation).
+    const notional = positionSize * effectiveMarginPrice;
+    // Margin = initial margin only (fees are a separate line item, not added to margin)
+    const marginRequired = notional / formState.leverage;
+    // Fees are charged on the actual execution notional, matching the close-mode path
+    // and the exchange's own calculation.
+    const estimatedFees = notional * (feeRate ?? 0);
+    const liquidationPriceValue = calculateLiquidationPrice(
+      effectiveMarginPrice,
+      formState.leverage,
+      formState.direction,
+      maxLeverage,
+    );
 
     return {
-      positionSize: formatTokenQuantity(positionSize, asset),
+      positionSize: formatTokenQuantity(positionSize, getDisplaySymbol(asset)),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
-      liquidationPriceRaw: liquidationPrice,
+      liquidationPrice:
+        liquidationPriceValue > 0
+          ? formatPerpsPrice(liquidationPriceValue, locale)
+          : null,
+      liquidationPriceRaw: liquidationPriceValue,
       orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
@@ -314,8 +422,13 @@ export function usePerpsOrderForm({
     currentPrice,
     mode,
     existingPosition,
-    closePercent,
+    formState.closePercent,
     asset,
+    maxLeverage,
+    szDecimals,
+    markPrice,
+    feeRate,
+    locale,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
   ]);
@@ -356,7 +469,7 @@ export function usePerpsOrderForm({
 
   // Close percent change handler (for close mode)
   const handleClosePercentChange = useCallback((percent: number) => {
-    setClosePercent(percent);
+    setFormState((prev) => ({ ...prev, closePercent: percent }));
   }, []);
 
   // Limit price change handler (for limit order mode)
@@ -375,7 +488,7 @@ export function usePerpsOrderForm({
 
   return {
     formState,
-    closePercent,
+    closePercent: formState.closePercent,
     calculations,
     handleAmountChange,
     handleBalancePercentChange,

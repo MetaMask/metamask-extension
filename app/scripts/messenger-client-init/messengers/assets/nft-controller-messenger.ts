@@ -19,7 +19,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =

@@ -1,12 +1,12 @@
 import { TokenBalancesController } from '@metamask/assets-controllers';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './messengers';
 
-export const TokenBalancesControllerInit: ControllerInitFunction<
+export const TokenBalancesControllerInit: MessengerClientInitFunction<
   TokenBalancesController,
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger
@@ -18,7 +18,7 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
     ) as unknown as PreferencesControllerState;
   const { useMultiAccountBalanceChecker } = getRetypedPrefState();
 
-  const controller = new TokenBalancesController({
+  const messengerClient = new TokenBalancesController({
     messenger: controllerMessenger,
     state: persistedState.TokenBalancesController,
     queryMultipleAccounts: Boolean(useMultiAccountBalanceChecker),
@@ -45,6 +45,6 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

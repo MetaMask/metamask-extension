@@ -3,14 +3,14 @@ import {
   SubscriptionControllerMessenger,
   SubscriptionService,
 } from '@metamask/subscription-controller';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { SubscriptionControllerInitMessenger } from '../messengers/subscription';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
 import { captureException as captureExceptionWithSentry } from '../../../../shared/lib/sentry';
 
 const shieldConfig = loadShieldConfig();
 
-export const SubscriptionControllerInit: ControllerInitFunction<
+export const SubscriptionControllerInit: MessengerClientInitFunction<
   SubscriptionController,
   SubscriptionControllerMessenger,
   SubscriptionControllerInitMessenger
@@ -26,13 +26,13 @@ export const SubscriptionControllerInit: ControllerInitFunction<
     captureException: captureExceptionWithSentry,
   });
 
-  const controller = new SubscriptionController({
+  const messengerClient = new SubscriptionController({
     messenger: controllerMessenger,
     state: persistedState.SubscriptionController,
     subscriptionService,
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

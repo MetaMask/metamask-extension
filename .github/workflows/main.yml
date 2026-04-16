@@ -40,6 +40,7 @@ env:
 permissions:
   contents: write # required for releases
   id-token: write # required for s3 uploads
+  statuses: write # required for build-source-hash and ci-status-gate
 
 jobs:
   get-requirements:
@@ -387,7 +388,11 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements
@@ -443,6 +448,7 @@ jobs:
     needs:
       - get-requirements
       - build-dist-browserify
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -461,7 +467,7 @@ jobs:
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
 
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
@@ -476,6 +482,9 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          # We use env.RUN_ID here, not builds-from-run.
+          # This job would never actually run if `builds-from-run != github.run_id`,
+          # but if it did anyway, we want to upload *this run's* analysis output, not the build run's output.
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
@@ -525,7 +534,7 @@ jobs:
 
   build-storybook:
     name: Build storybook
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-storybook.yml
@@ -533,7 +542,7 @@ jobs:
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
-    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
@@ -605,7 +614,8 @@ jobs:
       - build-ts-migration-dashboard
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      builds-from-sha: ${{ needs.get-requirements.outputs.builds-from-sha }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
@@ -614,9 +624,12 @@ jobs:
 
   trigger-regression-validation:
     name: Trigger Regression Validation
-    # Only run for release branches, not forks
+    # Only run for release branches, not forks.
+    # Build reuse is banned on release/* branches (in get-requirements.yml),
+    # so build-dist-browserify always runs here — no !cancelled() needed.
     if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
+      - get-requirements
       - build-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -625,13 +638,14 @@ jobs:
       - name: Trigger regression validation in external repo
         env:
           DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
           # Use BRANCH env var which correctly handles both push and pull_request events
           VERSION="${BRANCH#release/}"
 
           echo "Triggering regression validation..."
-          echo "Run ID: $RUN_ID"
+          echo "Run ID (builds): $BUILDS_FROM_RUN"
           echo "Branch: $BRANCH"
           echo "Version: $VERSION"
           echo "Commit SHA: $HEAD_COMMIT_HASH"
@@ -643,7 +657,7 @@ jobs:
             -d '{
               "event_type": "release_pr_updated",
               "client_payload": {
-                "run_id": "'"$RUN_ID"'",
+                "run_id": "'"$BUILDS_FROM_RUN"'",
                 "version": "'"$VERSION"'",
                 "branch": "'"$BRANCH"'",
                 "commit_sha": "'"$HEAD_COMMIT_HASH"'"
@@ -707,5 +721,5 @@ jobs:
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      skip-builds: ${{ needs.get-requirements.outputs.skip-builds }}
     secrets: inherit

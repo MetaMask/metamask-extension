@@ -1,6 +1,6 @@
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { AnnouncementControllerMessenger } from './messengers';
 
 /**
@@ -12,11 +12,11 @@ import { AnnouncementControllerMessenger } from './messengers';
  * controller.
  * @returns The initialized controller.
  */
-export const AnnouncementControllerInit: ControllerInitFunction<
+export const AnnouncementControllerInit: MessengerClientInitFunction<
   AnnouncementController,
   AnnouncementControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new AnnouncementController({
+  const messengerClient = new AnnouncementController({
     messenger: controllerMessenger,
     allAnnouncements: UI_NOTIFICATIONS,
     // @ts-expect-error: Announcement controller does not accept partial state.
@@ -24,6 +24,6 @@ export const AnnouncementControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

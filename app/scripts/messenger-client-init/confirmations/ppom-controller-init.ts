@@ -4,24 +4,29 @@ import {
 } from '@metamask/ppom-validator';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';
 import { getGlobalChainId } from '../init-utils';
 
-export const PPOMControllerInit: ControllerInitFunction<
+export const PPOMControllerInit: MessengerClientInitFunction<
   PPOMController,
   PPOMControllerMessenger,
   PPOMControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, initMessenger, getController, persistedState } =
-    request;
+  const {
+    controllerMessenger,
+    initMessenger,
+    getMessengerClient,
+    persistedState,
+  } = request;
 
-  const preferencesController = () => getController('PreferencesController');
+  const preferencesController = () =>
+    getMessengerClient('PreferencesController');
 
   const { provider } =
     initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
 
-  const controller = new PPOMController({
+  const messengerClient = new PPOMController({
     messenger: controllerMessenger,
     storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
     // @ts-expect-error: PPOMController expects `provider` to be defined, but it
@@ -47,6 +52,6 @@ export const PPOMControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

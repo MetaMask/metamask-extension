@@ -1,15 +1,13 @@
-import { ControllerInitRequest } from '../types';
-import {
-  getOAuthServiceMessenger,
-  OAuthServiceMessenger,
-} from '../messengers/seedless-onboarding';
+import { MessengerClientInitRequest } from '../types';
+import { getOAuthServiceMessenger } from '../messengers/seedless-onboarding';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import OAuthService from '../../services/oauth/oauth-service';
+import { OAuthService } from '../../services/oauth/oauth-service';
+import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { OAuthServiceInit } from './oauth-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<OAuthServiceMessenger>
+  MessengerClientInitRequest<OAuthServiceMessenger>
 > {
   const baseControllerMessenger = getRootMessenger<never, never>();
 
@@ -25,7 +23,7 @@ describe('OAuthServiceInit', () => {
     const requestMock = buildInitRequestMock();
 
     // @ts-expect-error: Partial mock for testing.
-    requestMock.getController.mockImplementation(() => {
+    requestMock.getMessengerClient.mockImplementation(() => {
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
@@ -35,7 +33,7 @@ describe('OAuthServiceInit', () => {
       };
     });
 
-    expect(OAuthServiceInit(requestMock).controller).toBeInstanceOf(
+    expect(OAuthServiceInit(requestMock).messengerClient).toBeInstanceOf(
       OAuthService,
     );
   });

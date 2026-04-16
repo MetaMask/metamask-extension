@@ -6,7 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
@@ -21,7 +21,7 @@ jest.mock('@metamask/multichain-account-service');
 const PREFERENCES_STATE = { useExternalServices: false };
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     MultichainAccountServiceMessenger,
     MultichainAccountServiceInitMessenger
   >
@@ -62,7 +62,7 @@ describe('MultichainAccountServiceInit', () => {
       const requestMock = buildInitRequestMock();
       const result = MultichainAccountServiceInit(requestMock);
 
-      expect(result.controller).toBeInstanceOf(MultichainAccountService);
+      expect(result.messengerClient).toBeInstanceOf(MultichainAccountService);
     });
 
     it('returns null memStateKey and persistedStateKey', () => {
@@ -155,7 +155,7 @@ describe('MultichainAccountServiceInit', () => {
 
       const result = MultichainAccountServiceInit(requestMock);
       const setBasicFunctionalitySpy = jest
-        .spyOn(result.controller, 'setBasicFunctionality')
+        .spyOn(result.messengerClient, 'setBasicFunctionality')
         .mockResolvedValue(undefined as never);
 
       const handler = subscribeSpy.mock.calls.find(
@@ -176,7 +176,7 @@ describe('MultichainAccountServiceInit', () => {
 
       const result = MultichainAccountServiceInit(requestMock);
       const setBasicFunctionalitySpy = jest
-        .spyOn(result.controller, 'setBasicFunctionality')
+        .spyOn(result.messengerClient, 'setBasicFunctionality')
         .mockResolvedValue(undefined as never);
 
       const handler = subscribeSpy.mock.calls.find(

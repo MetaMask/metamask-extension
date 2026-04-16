@@ -1,18 +1,71 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import { withBtcAccountSnap } from './common-btc';
+import {
+  mockAllBridgeEndpoints,
+  mockBtcSpotPrices,
+  mockExchangeRates,
+  mockCurrencyExchangeRates,
+  mockFiatExchangeRates,
+  mockInitialFullScan,
+  mockSolanaSpotPrices,
+  mockSupportedVsCurrencies,
+} from './mocks';
+import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+
+async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
+  return [
+    await mockInitialFullScan(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockCurrencyExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    await mockSolanaSpotPrices(mockServer),
+    await mockSupportedVsCurrencies(mockServer),
+    await mockPriceMulti(mockServer),
+    await mockPriceMultiBtcAndSol(mockServer),
+  ];
+}
+
+async function mockBtcSwapMocks(mockServer: Mockttp) {
+  const baseMocks = await buildBtcSwapBaseMocks(mockServer);
+  return [
+    ...baseMocks,
+    await mockBtcSpotPrices(mockServer),
+    ...(await mockAllBridgeEndpoints(mockServer, { returnQuotes: true })),
+  ];
+}
+
+async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
+  const baseMocks = await buildBtcSwapBaseMocks(mockServer);
+  return [
+    ...baseMocks,
+    await mockBtcSpotPrices(mockServer),
+    ...(await mockAllBridgeEndpoints(mockServer, { returnQuotes: false })),
+  ];
+}
 
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
-  this.timeout(180000); // Bridge tests need longer timeout
-
   it('can open the swap/bridge page from Bitcoin account', async function () {
-    await withBtcAccountSnap(
-      async (driver) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -29,15 +82,22 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.checkPageIsLoaded();
       },
-      this.test?.fullTitle(),
-      { mockSwap: true },
     );
   });
 
   it('can select destination token and see quote', async function () {
-    await withBtcAccountSnap(
-      async (driver) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -63,15 +123,22 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         console.log('Quote received successfully for BTC to ETH swap');
       },
-      this.test?.fullTitle(),
-      { mockSwap: true },
     );
   });
 
   it('shows insufficient funds error when amount exceeds balance', async function () {
-    await withBtcAccountSnap(
-      async (driver) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -94,14 +161,21 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkInsufficientFundsButtonIsDisplayed();
         console.log('Insufficient funds error displayed correctly');
       },
-      this.test?.fullTitle(),
-      { mockSwap: true },
     );
   });
   it('shows no trade route available when no quotes are returned', async function () {
-    await withBtcAccountSnap(
-      async (driver) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSwapMocksNoQuotes,
+      },
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -124,15 +198,22 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkNoTradeRouteMessageIsDisplayed();
         console.log('No trade route message displayed correctly');
       },
-      this.test?.fullTitle(),
-      { mockSwap: true, mockSwapQuotes: false },
     );
   });
 
   it('can complete a swap from BTC to ETH', async function () {
-    await withBtcAccountSnap(
-      async (driver) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -158,7 +239,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
 
         // Submit the swap quote
-        await bridgePage.submitQuote({ dismissStatusPage: false });
+        await bridgePage.submitQuote();
 
         // Navigate to activity list and verify the bridge transaction
         await homePage.goToActivityList();
@@ -171,8 +252,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
           confirmedTx: 1,
         });
       },
-      this.test?.fullTitle(),
-      { mockSwap: true },
     );
   });
 });

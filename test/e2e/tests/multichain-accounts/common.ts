@@ -1,6 +1,5 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -52,9 +51,10 @@ export async function withMultichainAccountsDesignEnabled(
         .build();
       break;
     default:
-      fixture = new FixtureBuilder()
+      fixture = new FixtureBuilderV2()
         .withKeyringControllerMultiSRP()
-        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withSnapsPrivacyWarningAlreadyShown()
+        .withShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
         .withCurrencyController({
           currencyRates: {

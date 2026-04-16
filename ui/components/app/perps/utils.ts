@@ -98,8 +98,69 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Normalizes a 24h percentage change string to always include the '%' suffix.
+ * The live price stream may omit '%' while market data always includes it.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - already contains '%'
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' (e.g., "+2.84" or "+2.84%")
+ * @returns The normalized percentage string with '%' appended if missing
+ * @example
+ * formatChangePercent('+2.84')  => '+2.84%'
+ * formatChangePercent('+2.84%') => '+2.84%'
+ * formatChangePercent('')       => ''
+ * formatChangePercent('—')      => '—'
+ */
+export const formatChangePercent = (value: string): string => {
+  if (!value || value.includes('%') || !/\d/u.test(value)) {
+    return value;
+  }
+  return `${value}%`;
+};
+
+/**
+ * Normalizes a 24h percentage change string for UI display.
+ * Positive numeric values are always shown with an explicit '+' prefix,
+ * matching mobile behavior. Negative values and zero keep their natural sign.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' or '+' (e.g., "2.84", "+2.84%", "-1.23%")
+ * @returns The normalized percentage string for display
+ * @example
+ * formatSignedChangePercent('2.84') => '+2.84%'
+ * formatSignedChangePercent('2.84%') => '+2.84%'
+ * formatSignedChangePercent('+2.84%') => '+2.84%'
+ * formatSignedChangePercent('-1.23%') => '-1.23%'
+ * formatSignedChangePercent('0.00%') => '0.00%'
+ */
+export const formatSignedChangePercent = (value: string): string => {
+  const formattedValue = formatChangePercent(value);
+
+  if (!formattedValue || !/\d/u.test(formattedValue)) {
+    return formattedValue;
+  }
+
+  if (
+    formattedValue.startsWith('+') ||
+    formattedValue.startsWith('-') ||
+    Number.parseFloat(formattedValue.replace('%', '')) <= 0
+  ) {
+    return formattedValue;
+  }
+
+  return `+${formattedValue}`;
+};
+
+/**
  * Get the appropriate text color for a percentage change value
- * Non-negative values (≥ 0) → green, negative → red
+ * Non-negative values (≥ 0) → green, negative → red,
+ * non-numeric / fallback values → alternative text color
  *
  * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
  * @returns The appropriate text color
@@ -108,9 +169,13 @@ export const getStatusColor = (status: Order['status']): TextColor => {
  * getChangeColor('2.84%') => TextColor.SuccessDefault
  * getChangeColor('0.00%') => TextColor.SuccessDefault
  * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ * getChangeColor('N/A') => TextColor.TextAlternative
  */
 export const getChangeColor = (percentString: string): TextColor => {
-  const value = parseFloat(percentString.replace('%', ''));
+  const value = Number.parseFloat(percentString.replace('%', ''));
+  if (Number.isNaN(value)) {
+    return TextColor.TextAlternative;
+  }
   if (value < 0) {
     return TextColor.ErrorDefault;
   }
@@ -417,6 +482,33 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
 
+export function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
+
+/**
+ * Format a RoE% value for display in TP/SL inputs.
+ * Always returns the absolute value: integers with no decimal ("25"),
+ * non-integers with 2 decimal places ("25.50").
+ *
+ * @param value - The numeric percentage value to format
+ * @returns The formatted percentage string
+ * @example
+ * formatRoePercent(10) => '10'
+ * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(0) => '0'
+ */
+export const formatRoePercent = (value: number): string => {
+  const rounded = Math.round(Math.abs(value) * 100) / 100;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
+};
+
 const volumeMultipliers: Record<string, number> = {
   K: 1e3,
   M: 1e6,
@@ -491,12 +583,12 @@ export const hasVolume = (market: PerpsMarketData): boolean => {
  * cannot be determined.
  *
  * Primary: unrealizedPnl / marginUsed.
- * Fallback: returnOnEquity (percent) converted to a ratio.
+ * Fallback: returnOnEquity, which is already a ratio (e.g. 0.1579 for 15.79%).
  *
  * @param position - Position values used to compute the PnL ratio.
  * @param position.unrealizedPnl - Unrealized profit and loss as a string.
  * @param position.marginUsed - Margin used as a string.
- * @param position.returnOnEquity - Return on equity percentage as a string.
+ * @param position.returnOnEquity - Return on equity as a decimal ratio string (e.g. "0.1579").
  * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
  */
 export const getPositionPnlRatio = (position: {
@@ -517,9 +609,41 @@ export const getPositionPnlRatio = (position: {
 
   const returnOnEquity = parseFloat(position.returnOnEquity);
   if (!Number.isNaN(returnOnEquity)) {
-    // Controller/mobile ROE is a percent value (e.g. 15.79); formatter expects a ratio.
-    return returnOnEquity / 100;
+    // position.returnOnEquity is a decimal ratio (e.g. 0.1579); pass directly to formatter.
+    return returnOnEquity;
   }
 
   return undefined;
+};
+
+/**
+ * Derives the TP/SL risk management type string for analytics.
+ * Returns a value like 'create_tpsl', 'update_tp', 'create_sl', etc.
+ *
+ * @param options - Input values used to determine the type string.
+ * @param options.takeProfitPrice - The take profit price, if set.
+ * @param options.stopLossPrice - The stop loss price, if set.
+ * @param options.hasExistingTpsl - Whether the position already has a TP or SL set.
+ * @returns A type string such as 'create_tpsl', 'update_tp', or 'create_sl'.
+ */
+export const deriveTpslType = ({
+  takeProfitPrice,
+  stopLossPrice,
+  hasExistingTpsl,
+}: {
+  takeProfitPrice: string | null | undefined;
+  stopLossPrice: string | null | undefined;
+  hasExistingTpsl: boolean;
+}): string => {
+  const prefix = hasExistingTpsl ? 'update' : 'create';
+  if (takeProfitPrice && stopLossPrice) {
+    return `${prefix}_tpsl`;
+  }
+  if (takeProfitPrice) {
+    return `${prefix}_tp`;
+  }
+  if (stopLossPrice) {
+    return `${prefix}_sl`;
+  }
+  return `${prefix}_tpsl`;
 };

@@ -6,7 +6,7 @@ import {
 } from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getKeyringControllerMessenger,
@@ -19,7 +19,7 @@ import { KeyringControllerInit } from './keyring-controller-init';
 jest.mock('@metamask/keyring-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     KeyringControllerMessenger,
     KeyringControllerInitMessenger
   >
@@ -54,8 +54,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('KeyringControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = KeyringControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(KeyringController);
+    const { messengerClient } = KeyringControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(KeyringController);
   });
 
   it('passes the proper arguments to the controller', () => {
