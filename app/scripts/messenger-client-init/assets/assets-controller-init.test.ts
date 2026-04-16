@@ -351,76 +351,86 @@ describe('AssetsControllerInit', () => {
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isBasicFunctionality = constructorCall.isBasicFunctionality as () => boolean;
+      const isBasicFunctionality =
+        constructorCall.isBasicFunctionality as () => boolean;
 
       expect(isBasicFunctionality()).toBe(false);
     });
 
     it('returns useExternalServices value after onboarding completes', () => {
       const requestMock = getInitRequestMock({ completedOnboarding: true });
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'OnboardingController:getState') {
-          return { completedOnboarding: true };
-        }
-        if (action === 'PreferencesController:getState') {
-          return { useExternalServices: false };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            return { completedOnboarding: true };
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useExternalServices: false };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isBasicFunctionality = constructorCall.isBasicFunctionality as () => boolean;
+      const isBasicFunctionality =
+        constructorCall.isBasicFunctionality as () => boolean;
 
       expect(isBasicFunctionality()).toBe(false);
     });
 
     it('returns true when useExternalServices is true after onboarding', () => {
       const requestMock = getInitRequestMock({ completedOnboarding: true });
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'OnboardingController:getState') {
-          return { completedOnboarding: true };
-        }
-        if (action === 'PreferencesController:getState') {
-          return { useExternalServices: true };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            return { completedOnboarding: true };
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useExternalServices: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isBasicFunctionality = constructorCall.isBasicFunctionality as () => boolean;
+      const isBasicFunctionality =
+        constructorCall.isBasicFunctionality as () => boolean;
 
       expect(isBasicFunctionality()).toBe(true);
     });
 
     it('defaults to true when OnboardingController call throws', () => {
       const requestMock = getInitRequestMock();
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'OnboardingController:getState') {
-          throw new Error('Failed to get onboarding state');
-        }
-        if (action === 'PreferencesController:getState') {
-          return { useExternalServices: false };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            throw new Error('Failed to get onboarding state');
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useExternalServices: false };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isBasicFunctionality = constructorCall.isBasicFunctionality as () => boolean;
+      const isBasicFunctionality =
+        constructorCall.isBasicFunctionality as () => boolean;
 
       expect(isBasicFunctionality()).toBe(true);
     });
@@ -449,18 +459,20 @@ describe('AssetsControllerInit', () => {
 
     it('returns false when OnboardingController call throws', () => {
       const requestMock = getInitRequestMock();
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'OnboardingController:getState') {
-          throw new Error('Failed to get onboarding state');
-        }
-        if (action === 'PreferencesController:getState') {
-          return { useTokenDetection: true };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            throw new Error('Failed to get onboarding state');
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useTokenDetection: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
