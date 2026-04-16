@@ -163,14 +163,13 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   ): void => {
     controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      (useExternalServices: boolean) => {
-        onChange(useExternalServices);
+      (_useExternalServices: boolean) => {
+        onChange(isBasicFunctionality());
       },
       (state: PreferencesState) =>
         (state as PreferencesState & { useExternalServices?: boolean })
           .useExternalServices ?? true,
     );
-
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
     // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
@@ -208,10 +207,14 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     },
     trace: traceAsControllerCallback,
     isOnboarded: () => {
-      const { completedOnboarding } = initMessenger.call(
-        'OnboardingController:getState',
-      );
-      return completedOnboarding;
+      try {
+        const { completedOnboarding } = initMessenger.call(
+          'OnboardingController:getState',
+        );
+        return completedOnboarding;
+      } catch {
+        return false;
+      }
     },
   });
 
