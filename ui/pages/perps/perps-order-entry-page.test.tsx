@@ -76,11 +76,13 @@ const mockGetPerpsStreamManager = jest.fn(() => mockStreamManagerBase);
 const mockSubmitRequestToBackground = jest
   .fn()
   .mockImplementation((method: string, ...args: unknown[]) => {
-    const immediate = <T,>(value: T): Promise<T> =>
-      ({
-        then(onFulfilled: (resolved: T) => unknown) {
+    function immediate<ResolvedValue>(
+      value: ResolvedValue,
+    ): Promise<ResolvedValue> {
+      return {
+        then(onFulfilled: (resolved: ResolvedValue) => unknown) {
           const result = onFulfilled(value);
-          return immediate(result as T);
+          return immediate(result as ResolvedValue);
         },
         catch() {
           return immediate(value);
@@ -89,7 +91,8 @@ const mockSubmitRequestToBackground = jest
           onFinally();
           return immediate(value);
         },
-      }) as Promise<T>;
+      } as Promise<ResolvedValue>;
+    }
 
     if (method === 'perpsCalculateLiquidationPrice') {
       const params = args[0] as [{ direction?: 'long' | 'short' }] | undefined;

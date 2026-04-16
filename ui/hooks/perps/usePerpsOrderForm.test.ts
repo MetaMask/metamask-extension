@@ -25,11 +25,13 @@ describe('usePerpsOrderForm', () => {
 
   beforeEach(() => {
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
-      const immediate = <T,>(value: T): Promise<T> =>
+      const immediate = <ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> =>
         ({
-          then(onFulfilled: (resolved: T) => unknown) {
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
             const result = onFulfilled(value);
-            return immediate(result as T);
+            return immediate(result as ResolvedValue);
           },
           catch() {
             return immediate(value);

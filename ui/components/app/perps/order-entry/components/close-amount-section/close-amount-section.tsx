@@ -76,7 +76,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsAvailableToClose')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {`${formatPositionSize(totalPositionSize, sizeDecimals)} ${asset}`}
+          {`${formatPositionSize(totalPositionSize, sizeDecimals)} ${getDisplaySymbol(asset)}`}
         </Text>
       </Box>
 
