@@ -598,7 +598,11 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleBackClick = useCallback(
-    (perpsToastKey?: PerpsToastKey, perpsToastDescription?: string) => {
+    (
+      perpsToastKey?: PerpsToastKey,
+      perpsToastDescription?: string,
+      extraState?: Partial<PerpsToastRouteState>,
+    ) => {
       if (!decodedSymbol) {
         return;
       }
@@ -615,6 +619,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       const toastRouteState: PerpsToastRouteState = {
         perpsToastKey,
         ...(perpsToastDescription ? { perpsToastDescription } : {}),
+        ...extraState,
       };
       navigate(marketDetailPath, { state: toastRouteState });
     },
@@ -993,6 +998,12 @@ const PerpsOrderEntryPage: React.FC = () => {
       handleBackClick(
         PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
         tradeActionToastDescription,
+        orderFormState.type === 'market'
+          ? {
+              pendingOrderSymbol: orderFormState.asset,
+              pendingOrderFilledDescription: tradeActionToastDescription,
+            }
+          : undefined,
       );
 
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
