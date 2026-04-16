@@ -28,13 +28,8 @@ export type UsePerpsLivePricesReturn = {
   isInitialLoading: boolean;
 };
 
-type StreamPriceUpdate = Omit<PriceUpdate, 'timestamp'> & {
-  timestamp?: number;
-  markPrice?: string;
-};
-
 // Stable empty object reference to prevent re-renders
-const EMPTY_PRICES: StreamPriceUpdate[] = [];
+const EMPTY_PRICES: PriceUpdate[] = [];
 const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
 
 const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
@@ -112,9 +107,10 @@ export function usePerpsLivePrices(
     };
   }, [activateStream, symbolsKey, includeMarketData]);
 
-  const { data: priceArray, isInitialLoading } = usePerpsChannel<
-    StreamPriceUpdate[]
-  >(getPricesChannel, EMPTY_PRICES);
+  const { data: priceArray, isInitialLoading } = usePerpsChannel<PriceUpdate[]>(
+    getPricesChannel,
+    EMPTY_PRICES,
+  );
 
   if (isInitialLoading || priceArray.length === 0) {
     return { prices: EMPTY_PRICES_RECORD, isInitialLoading };
@@ -124,11 +120,7 @@ export function usePerpsLivePrices(
   const priceRecord: Record<string, PriceUpdate> = {};
   priceArray.forEach((update) => {
     if (symbols.length === 0 || symbols.includes(update.symbol)) {
-      priceRecord[update.symbol] = {
-        ...update,
-        timestamp: update.timestamp ?? Date.now(),
-        markPrice: update.markPrice,
-      };
+      priceRecord[update.symbol] = update;
     }
   });
 
