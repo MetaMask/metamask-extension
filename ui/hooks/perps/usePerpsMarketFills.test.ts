@@ -474,10 +474,12 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([
         makeFill({ orderId: 'main-rest', timestamp: 1000 }),
       ]);
-      const { result, waitForNextUpdate, rerender } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitForNextUpdate();
+      const {
+        result,
+        waitForNextUpdate: waitFirst,
+        rerender,
+      } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await waitFirst();
 
       // Switch to testnet with an in-flight REST request
       mockSelectPerpsIsTestnet.mockReturnValue(true);
@@ -506,7 +508,6 @@ describe('usePerpsMarketFills', () => {
           makeFill({ orderId: 'test-rest', timestamp: 2000 }),
         ]);
       });
-      await waitForNextUpdate();
 
       expect(
         result.current.fills.some((f) => f.orderId === 'mainnet-live'),
