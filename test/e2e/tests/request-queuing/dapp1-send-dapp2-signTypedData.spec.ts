@@ -138,6 +138,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the signTypedData confirmation.
         const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
+        await signTypedDataConfirmation.verifyConfirmationHeadingTitle();
         await signTypedDataConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );
