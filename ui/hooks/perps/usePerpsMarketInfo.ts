@@ -63,11 +63,6 @@ export function clearPerpsMarketInfoModuleCache(): void {
   cacheByKey.clear();
 }
 
-/** @internal Alias for unit tests. */
-export function resetPerpsMarketInfoModuleCacheForTesting(): void {
-  clearPerpsMarketInfoModuleCache();
-}
-
 /**
  * Fetches the full MarketInfo for a specific asset symbol.
  *

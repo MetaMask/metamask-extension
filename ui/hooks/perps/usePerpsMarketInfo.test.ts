@@ -9,7 +9,6 @@ import {
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import {
   clearPerpsMarketInfoModuleCache,
-  resetPerpsMarketInfoModuleCacheForTesting,
   usePerpsMarketInfo,
 } from './usePerpsMarketInfo';
 
@@ -45,7 +44,7 @@ const defaultPerpsMetamask = {
 describe('usePerpsMarketInfo', () => {
   beforeEach(() => {
     mockSubmitRequestToBackground.mockReset();
-    resetPerpsMarketInfoModuleCacheForTesting();
+    clearPerpsMarketInfoModuleCache();
   });
 
   it('returns undefined before the fetch resolves', () => {
