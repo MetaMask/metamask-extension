@@ -5,7 +5,7 @@ import {
   TextVariant,
   TextColor,
 } from '@metamask/design-system-react';
-import type { Order, Position } from '@metamask/perps-controller';
+import type { Order } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,7 +16,10 @@ import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransac
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../providers/perps';
+import {
+  getPerpsStreamManager,
+  refetchPositionsAfterWrite,
+} from '../../../providers/perps';
 import {
   selectPerpsIsFirstTimeUser,
   selectPerpsIsTestnet,
@@ -117,12 +120,6 @@ export const PerpsView: React.FC = () => {
     );
   }, [allOrders]);
 
-  const applyPositionsSnapshot = useCallback((next: Position[]) => {
-    const streamManager = getPerpsStreamManager();
-    streamManager.clearAllOptimisticTPSL();
-    streamManager.pushPositionsWithOverrides(next);
-  }, []);
-
   const applyOrdersSnapshot = useCallback((next: Order[]) => {
     getPerpsStreamManager().orders.pushData(next);
   }, []);
@@ -146,17 +143,13 @@ export const PerpsView: React.FC = () => {
         setBatchActionError(t('somethingWentWrong'));
         return;
       }
-      const fresh = await submitRequestToBackground<Position[]>(
-        'perpsGetPositions',
-        [],
-      );
-      applyPositionsSnapshot(fresh ?? []);
+      refetchPositionsAfterWrite({ clearOptimistic: true });
     } catch {
       setBatchActionError(t('somethingWentWrong'));
     } finally {
       setIsCloseAllPending(false);
     }
-  }, [isEligible, applyPositionsSnapshot, positions.length, t]);
+  }, [isEligible, positions.length, t]);
 
   const handleCancelAllOrders = useCallback(async () => {
     if (!isEligible) {

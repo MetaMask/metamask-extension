@@ -31,6 +31,9 @@ export {
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
 
+// Post-mutation helper — waits for WS before falling back to REST
+export { refetchPositionsAfterWrite } from './refetchPositionsAfterWrite';
+
 // REST cache helpers (shared between hooks and PerpsStreamManager)
 export {
   clearPerpsMarketInfoModuleCache,

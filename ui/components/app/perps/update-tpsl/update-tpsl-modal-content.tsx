@@ -16,7 +16,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -35,7 +35,10 @@ import {
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
+import {
+  getPerpsStreamManager,
+  refetchPositionsAfterWrite,
+} from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
@@ -451,16 +454,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       );
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
 
-      setTimeout(async () => {
-        try {
-          const freshPositions = await submitRequestToBackground<
-            PerpsPosition[]
-          >('perpsGetPositions', [{ skipCache: true }]);
-          streamManager.pushPositionsWithOverrides(freshPositions);
-        } catch (e) {
-          console.warn('[Perps] Delayed TP/SL refetch failed:', e);
-        }
-      }, 2500);
+      refetchPositionsAfterWrite();
 
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,

@@ -9,7 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+
 import {
   Modal,
   ModalContent,
@@ -31,7 +31,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
+import { refetchPositionsAfterWrite } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
@@ -141,12 +141,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       if (flipResult?.success !== true) {
         throw new Error(flipResult?.error || 'Failed to flip position');
       }
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
+      refetchPositionsAfterWrite();
 
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
       onClose();
