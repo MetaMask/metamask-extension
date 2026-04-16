@@ -56,6 +56,7 @@ function peekWarmFills(cacheKey: string): OrderFill[] | undefined {
  * Ensures REST fills for `cacheKey` are loading or loaded; updates module cache
  * when the request completes even if no component is still mounted (same idea
  * as `fetchMarketInfos` in usePerpsMarketInfo).
+ * @param cacheKey
  */
 function fetchFillsForCacheKey(cacheKey: string): Promise<OrderFill[]> {
   const warm = peekWarmFills(cacheKey);
