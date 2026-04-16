@@ -247,7 +247,7 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
-    const result = await app.signTransaction(hdPath, tx);
+    const result = await app.signTransaction(hdPath, tx, null);
     return {
       v: result.v,
       r: result.r,
