@@ -124,6 +124,7 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       trace: expect.any(Function),
+      isOnboarded: expect.any(Function),
     });
   });
 
@@ -159,6 +160,7 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       trace: expect.any(Function),
+      isOnboarded: expect.any(Function),
     });
   });
 
