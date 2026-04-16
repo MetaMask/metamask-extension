@@ -12,7 +12,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { tEn, enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
-import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { MANAGE_WALLET_RECOVERY_V2_ROUTE, SECURITY_PASSWORD_CHANGE_ROUTE } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.container';
 
@@ -170,33 +170,28 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
-  it('redirects to srp list upon clicking "Reveal Secret Recovery Phrase"', async () => {
-    const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        keyrings: [
-          ...mockState.metamask.keyrings,
-          {
-            type: 'HD Key Tree',
-            accounts: ['0x'],
-            metadata: {
-              id: '01JM1XSBQ78YXY1NNT003HT74V',
-              name: '',
-            },
-          },
-        ],
-      },
-    });
-    renderWithProviders(<SecurityTab />, mockStoreWithMultipleSRPs);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
+  it('redirects to wallet recovery upon clicking "Reveal Secret Recovery Phrase"', async () => {
+    renderWithProviders(<SecurityTab />, mockStore);
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(MANAGE_WALLET_RECOVERY_V2_ROUTE);
+  });
+
+  it('redirects to password change upon clicking "Change Password"', async () => {
+    const mockStoreWithSeedless = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: 'social',
+      },
+    });
+    
+    renderWithProviders(<SecurityTab />, mockStoreWithSeedless);
+
+    fireEvent.click(screen.getByTestId('change-password-button'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_PASSWORD_CHANGE_ROUTE);
   });
 
   it('sets IPFS gateway', async () => {
