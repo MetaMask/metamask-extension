@@ -143,4 +143,42 @@ describe('usePerpsLivePrices', () => {
       [],
     );
   });
+
+  it('logs debug output when stream activation or cleanup fails', async () => {
+    const debugSpy = jest
+      .spyOn(console, 'debug')
+      .mockImplementation(() => undefined);
+
+    mockUsePerpsChannel.mockReturnValue({
+      data: [],
+      isInitialLoading: false,
+    });
+    mockSubmitRequestToBackground
+      .mockRejectedValueOnce(new Error('activate failed'))
+      .mockRejectedValueOnce(new Error('deactivate failed'));
+
+    const { unmount } = renderHook(() =>
+      usePerpsLivePrices({
+        symbols: ['BTC'],
+        activateStream: true,
+      }),
+    );
+
+    await Promise.resolve();
+
+    expect(debugSpy).toHaveBeenCalledWith(
+      '[usePerpsLivePrices] perpsActivatePriceStream failed:',
+      expect.any(Error),
+    );
+
+    unmount();
+    await Promise.resolve();
+
+    expect(debugSpy).toHaveBeenCalledWith(
+      '[usePerpsLivePrices] perpsDeactivatePriceStream failed:',
+      expect.any(Error),
+    );
+
+    debugSpy.mockRestore();
+  });
 });

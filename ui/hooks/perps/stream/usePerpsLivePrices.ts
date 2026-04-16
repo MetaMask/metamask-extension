@@ -82,11 +82,21 @@ export function usePerpsLivePrices(
 
     submitRequestToBackground('perpsActivatePriceStream', [
       { symbols: activeSymbols, includeMarketData },
-    ]).catch(() => undefined);
+    ]).catch((err) => {
+      // Background may not be ready yet; keep this best-effort and rely on
+      // later retries or future consumers to react to stream data.
+      console.debug('[usePerpsLivePrices] perpsActivatePriceStream failed:', err);
+    });
 
     return () => {
       submitRequestToBackground('perpsDeactivatePriceStream', []).catch(
-        () => undefined,
+        (err) => {
+          // Expected when the port closes before cleanup completes.
+          console.debug(
+            '[usePerpsLivePrices] perpsDeactivatePriceStream failed:',
+            err,
+          );
+        },
       );
     };
   }, [activateStream, symbolsKey, includeMarketData]);

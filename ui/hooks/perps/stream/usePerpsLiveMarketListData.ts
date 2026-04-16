@@ -36,6 +36,7 @@ export function usePerpsLiveMarketListData(
     () => Array.from(new Set(markets.map((market) => market.symbol))).sort(),
     [markets],
   );
+  // Use a stable key so the refresh effect only resets when the symbol set changes.
   const marketSymbolsKey = useMemo(
     () => marketSymbols.join('|'),
     [marketSymbols],
@@ -83,15 +84,21 @@ export function usePerpsLiveMarketListData(
     () => new Map(liveMarkets.map((market) => [market.symbol, market])),
     [liveMarkets],
   );
+  const liveCryptoMarkets = useMemo(
+    () =>
+      cryptoMarkets.map((market) => liveMarketMap.get(market.symbol) ?? market),
+    [cryptoMarkets, liveMarketMap],
+  );
+  const liveHip3Markets = useMemo(
+    () =>
+      hip3Markets.map((market) => liveMarketMap.get(market.symbol) ?? market),
+    [hip3Markets, liveMarketMap],
+  );
 
   return {
     markets: liveMarkets,
-    cryptoMarkets: cryptoMarkets.map(
-      (market) => liveMarketMap.get(market.symbol) ?? market,
-    ),
-    hip3Markets: hip3Markets.map(
-      (market) => liveMarketMap.get(market.symbol) ?? market,
-    ),
+    cryptoMarkets: liveCryptoMarkets,
+    hip3Markets: liveHip3Markets,
     isInitialLoading,
     error,
     refresh,

@@ -123,4 +123,36 @@ describe('usePerpsLiveMarketListData', () => {
 
     expect(refresh).toHaveBeenCalledTimes(1);
   });
+
+  it('keeps derived market arrays stable when inputs are unchanged', () => {
+    const refresh = jest.fn();
+    const cryptoMarket = createMockMarket({ symbol: 'BTC' });
+    const hip3Market = createMockMarket({
+      symbol: 'xyz:TSLA',
+      marketSource: 'xyz',
+    });
+
+    mockUsePerpsLiveMarketData.mockReturnValue({
+      markets: [cryptoMarket, hip3Market],
+      cryptoMarkets: [cryptoMarket],
+      hip3Markets: [hip3Market],
+      isInitialLoading: false,
+      error: null,
+      refresh,
+    });
+    mockUsePerpsLivePrices.mockReturnValue({
+      prices: {},
+      isInitialLoading: false,
+    });
+
+    const { result, rerender } = renderHook(() => usePerpsLiveMarketListData());
+
+    const firstCryptoMarkets = result.current.cryptoMarkets;
+    const firstHip3Markets = result.current.hip3Markets;
+
+    rerender();
+
+    expect(result.current.cryptoMarkets).toBe(firstCryptoMarkets);
+    expect(result.current.hip3Markets).toBe(firstHip3Markets);
+  });
 });
