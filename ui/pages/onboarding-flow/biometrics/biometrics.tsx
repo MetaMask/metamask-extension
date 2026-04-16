@@ -21,7 +21,10 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { startPasskeyRegistration } from '../../../../shared/lib/passkey';
+import {
+  startPasskeyRegistration,
+  checkPasskeyCapabilities,
+} from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -53,7 +56,14 @@ export default function Biometrics() {
   const handleSetUpBiometrics = async () => {
     setIsEnrolling(true);
     try {
-      const options = await generatePasskeyRegistrationOptions();
+      const { webAuthnSupported, prfSupported } =
+        await checkPasskeyCapabilities();
+      if (!webAuthnSupported) {
+        return;
+      }
+      const options = await generatePasskeyRegistrationOptions({
+        prfAvailable: prfSupported !== false,
+      });
       const registrationResponse = await startPasskeyRegistration(options);
       await protectVaultKeyWithPasskey(registrationResponse);
     } catch {

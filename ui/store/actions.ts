@@ -1159,8 +1159,12 @@ export function submitEncryptionKey(
   ]);
 }
 
-export function generatePasskeyRegistrationOptions(): Promise<PasskeyRegitrationOptions> {
-  return submitRequestToBackground('generatePasskeyRegistrationOptions');
+export function generatePasskeyRegistrationOptions(opts?: {
+  prfAvailable?: boolean;
+}): Promise<PasskeyRegistrationOptions> {
+  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
+    opts,
+  ]);
 }
 
 export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {

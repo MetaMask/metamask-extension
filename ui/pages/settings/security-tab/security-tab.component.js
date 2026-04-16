@@ -67,6 +67,7 @@ import {
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
+  checkPasskeyCapabilities,
 } from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
@@ -235,7 +236,14 @@ export default class SecurityTab extends PureComponent {
     if (wantsOn) {
       this.setState({ passkeyToggleBusy: true });
       try {
-        const options = await generatePasskeyRegistrationOptions();
+        const { webAuthnSupported, prfSupported } =
+          await checkPasskeyCapabilities();
+        if (!webAuthnSupported) {
+          return;
+        }
+        const options = await generatePasskeyRegistrationOptions({
+          prfAvailable: prfSupported !== false,
+        });
         const registrationResponse = await startPasskeyRegistration(options);
         await protectVaultKeyWithPasskey(registrationResponse);
         await forceUpdateMetamaskState();

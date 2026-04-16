@@ -39,7 +39,9 @@ export async function startPasskeyRegistration(
   const response = await startRegistration({ optionsJSON });
   return {
     ...response,
-    clientExtensionResults: preparePrfForTransport(response.clientExtensionResults),
+    clientExtensionResults: preparePrfForTransport(
+      response.clientExtensionResults,
+    ),
   };
 }
 
@@ -59,7 +61,9 @@ export async function startPasskeyAuthentication(
   const response = await startAuthentication({ optionsJSON });
   return {
     ...response,
-    clientExtensionResults: preparePrfForTransport(response.clientExtensionResults),
+    clientExtensionResults: preparePrfForTransport(
+      response.clientExtensionResults,
+    ),
   };
 }
 
@@ -86,7 +90,7 @@ function preparePrfForTransport(
 ): PasskeyRegistrationResponse['clientExtensionResults'] {
   const { prf } = results as PrfExtensionClient;
   if (!prf) {
-    return results;
+    return results as PasskeyRegistrationResponse['clientExtensionResults'];
   }
   const first = prf.results?.first;
   return {

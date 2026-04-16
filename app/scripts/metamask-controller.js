@@ -4270,10 +4270,13 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Starts passkey registration: stores a registration session and returns creation options.
    *
+   * @param {object} [opts] - Optional configuration.
+   * @param {boolean} [opts.prfAvailable] - Whether the client supports the
+   *   WebAuthn PRF extension. When `false`, PRF is omitted from the options.
    * @returns {Promise<import('@metamask/passkey-controller').PublicKeyCredentialCreationOptionsJSON>}
    */
-  async generatePasskeyRegistrationOptions() {
-    return this.passkeyController.generateRegistrationOptions();
+  async generatePasskeyRegistrationOptions({ prfAvailable } = {}) {
+    return this.passkeyController.generateRegistrationOptions({ prfAvailable });
   }
 
   /**
