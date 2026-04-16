@@ -74,10 +74,10 @@ export const PerpsControllerInit: MessengerClientInitFunction<
       fallbackBlockedRegions,
       ...(hyperLiquidBuilderAddresses
         ? {
-          providerCredentials: {
-            hyperliquid: hyperLiquidBuilderAddresses,
-          },
-        }
+            providerCredentials: {
+              hyperliquid: hyperLiquidBuilderAddresses,
+            },
+          }
         : {}),
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
@@ -170,10 +170,10 @@ type PerpsBackgroundApi = {
     PerpsActionName,
     PerpsCustomApiNames
   >]: ActionName extends `perps${infer firstLetter}${infer remainingLetters}`
-  ? `${Lowercase<firstLetter>}${remainingLetters}` extends keyof PerpsController
-  ? PerpsController[`${Lowercase<firstLetter>}${remainingLetters}`]
-  : never
-  : never;
+    ? `${Lowercase<firstLetter>}${remainingLetters}` extends keyof PerpsController
+      ? PerpsController[`${Lowercase<firstLetter>}${remainingLetters}`]
+      : never
+    : never;
 } & {
   perpsDepositWithConfirmation: (
     ...args: Parameters<PerpsController['depositWithConfirmation']>
