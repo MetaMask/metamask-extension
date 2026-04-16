@@ -4,11 +4,8 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
 import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
-import { WALLET_PASSWORD } from '../../../test/e2e/constants';
-import {
-  E2E_SRP,
-  defaultFixture,
-} from '../../../test/e2e/fixtures/default-fixture';
+import { E2E_SRP, WALLET_PASSWORD } from '../../../test/e2e/constants';
+import defaultFixtureJson from '../../../test/e2e/fixtures/default-fixture.json';
 import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
@@ -117,7 +114,7 @@ function generateKeyringControllerState(vault) {
   console.log('Generating KeyringController state');
 
   return {
-    ...defaultFixture().data.KeyringController,
+    ...defaultFixtureJson.data.KeyringController,
     vault,
   };
 }
@@ -230,7 +227,7 @@ function generateNetworkControllerState() {
   console.log('Generating NetworkController state');
 
   const defaultNetworkState = {
-    ...defaultFixture().data.NetworkController,
+    ...defaultFixtureJson.data.NetworkController,
     networkConfigurations: {},
     networksMetadata: {
       sepolia: {

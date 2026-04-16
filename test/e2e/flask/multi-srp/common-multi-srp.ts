@@ -11,7 +11,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
-export const SECOND_TEST_E2E_SRP =
+export const SECOND_TEST_MNEMONIC =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
 
 export async function withMultiSrp(
@@ -23,7 +23,7 @@ export async function withMultiSrp(
     testSpecificMock: (mockServer: Mockttp) => Promise<MockedEndpoint>;
   },
   test: (driver: Driver) => Promise<void>,
-  srpToUse: string = SECOND_TEST_E2E_SRP,
+  srpToUse: string = SECOND_TEST_MNEMONIC,
 ) {
   await withFixtures(
     {

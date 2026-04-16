@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { E2E_SRP } from '../../../fixtures/default-fixture';
+import { E2E_SRP } from '../../../constants';
 
 class OnboardingSrpPage {
   private driver: Driver;
@@ -60,7 +60,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
+   * @param seedPhrase - The seed phrase to fill. Defaults to {@link E2E_SRP}.
    */
   async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
@@ -69,7 +69,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase word by word
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
+   * @param seedPhrase - The seed phrase to fill. Defaults to {@link E2E_SRP}.
    */
   async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
     const words = seedPhrase.split(' ');

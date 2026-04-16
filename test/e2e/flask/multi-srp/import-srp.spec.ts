@@ -12,7 +12,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import {
-  SECOND_TEST_E2E_SRP,
+  SECOND_TEST_MNEMONIC,
   mockActiveNetworks,
   withMultiSrp,
 } from './common-multi-srp';
@@ -66,7 +66,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
-        await privacySettings.checkSrpTextIsDisplayed(SECOND_TEST_E2E_SRP);
+        await privacySettings.checkSrpTextIsDisplayed(SECOND_TEST_MNEMONIC);
       },
     );
   });

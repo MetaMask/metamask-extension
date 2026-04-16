@@ -1,9 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../fixtures/default-fixture';
+import { E2E_SRP } from '../../constants';
 import {
   mockActiveNetworks,
-  SECOND_TEST_E2E_SRP,
+  SECOND_TEST_MNEMONIC,
   withMultiSrp,
   verifySrp,
 } from './common-multi-srp';
@@ -19,7 +19,7 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
         testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
-        await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
+        await verifySrp(driver, E2E_SRP, firstSrpIndex);
       },
     );
   });
@@ -31,7 +31,7 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
         testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
-        await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
+        await verifySrp(driver, SECOND_TEST_MNEMONIC, secondSrpIndex);
       },
     );
   });

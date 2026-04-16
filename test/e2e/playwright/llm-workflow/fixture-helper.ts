@@ -1,12 +1,8 @@
+import { cloneDeep } from 'lodash';
+import defaultFixtureJson from '../../fixtures/default-fixture.json';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import type { FixtureData } from './launcher-types';
-
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
-const {
-  defaultFixture,
-  FIXTURE_STATE_METADATA_VERSION,
-} = require('../../fixtures/default-fixture');
-/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;
@@ -20,10 +16,8 @@ export function createFixtureBuilder(
   });
 }
 
-export function buildDefaultFixture(chainId?: string): FixtureData {
-  const fixture = defaultFixture(chainId);
-  fixture.meta = { version: FIXTURE_STATE_METADATA_VERSION };
-  return fixture as FixtureData;
+export function buildDefaultFixture(): FixtureData {
+  return cloneDeep(defaultFixtureJson) as FixtureData;
 }
 
 export function buildOnboardingFixture(): FixtureData {

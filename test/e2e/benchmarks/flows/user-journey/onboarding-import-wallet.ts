@@ -7,7 +7,7 @@ import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { E2E_SRP } from '../../../fixtures/default-fixture';
+import { E2E_SRP } from '../../../constants';
 import { WALLET_PASSWORD } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import {

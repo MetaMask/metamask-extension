@@ -65,6 +65,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2({ onboarding: true })
+            // Add mock accounts to subscriptionAccountsSeen for second device too
             .withNotificationServicesController({
               subscriptionAccountsSeen: notificationsMockAccounts.map(
                 (account) => account.a,
@@ -113,6 +114,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2({ onboarding: true })
+            // Add mock accounts to subscriptionAccountsSeen for second device too
             .withNotificationServicesController({
               subscriptionAccountsSeen: notificationsMockAccounts.map(
                 (account) => account.a,

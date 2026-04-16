@@ -1,7 +1,7 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
 import {
-  LOCAL_NODE_MNEMONIC,
+  E2E_SRP,
   WALLET_PASSWORD,
   WINDOW_TITLES,
 } from '../constants';
@@ -129,7 +129,7 @@ describe('Wallet State', function () {
         // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
         await importSRPOnboardingFlow({
           driver,
-          seedPhrase: LOCAL_NODE_MNEMONIC,
+          seedPhrase: E2E_SRP,
           password: WALLET_PASSWORD,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
