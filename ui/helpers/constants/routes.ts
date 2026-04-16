@@ -79,7 +79,7 @@ export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 export const REVEAL_SRP_LIST_ROUTE =
-  '/settings/security-and-privacy/reveal-srp-list';
+  '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
