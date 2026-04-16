@@ -5,6 +5,7 @@ import {
   selectCrossChainBridgeSourceTxIds,
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
+  selectSmartTransactions,
 } from './toast';
 
 type SelectorState = Parameters<typeof selectTransactionIds>[0];
@@ -352,6 +353,47 @@ describe('toast selectors', () => {
         {} as unknown as SelectorState,
       );
       expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('selectSmartTransactions', () => {
+    it('returns only smart transaction status page approvals with tx ids', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: {
+                  status: 'pending',
+                },
+              },
+            },
+            'approval-2': {
+              id: 'approval-2',
+              type: 'wallet_addEthereumChain',
+              requestState: {
+                txId: 'tx-2',
+              },
+            },
+            'approval-3': {
+              id: 'approval-3',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {},
+            },
+          },
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+        },
+      ]);
     });
   });
 });
