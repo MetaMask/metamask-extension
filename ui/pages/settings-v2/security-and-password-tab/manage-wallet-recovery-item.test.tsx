@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MANAGE_WALLET_RECOVERY_V2_ROUTE } from '../../../helpers/constants/routes';
+import { MANAGE_WALLET_RECOVERY_ROUTE } from '../../../helpers/constants/routes';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
 
 const createMockStore = (overrides = {}) =>
@@ -21,7 +21,7 @@ describe('ManageWalletRecoveryItem', () => {
   it('renders the label', () => {
     const store = createMockStore();
     renderWithProvider(
-      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />,
       store,
     );
 
@@ -33,12 +33,12 @@ describe('ManageWalletRecoveryItem', () => {
   it('renders the arrow link to reveal SRP page', () => {
     const store = createMockStore();
     renderWithProvider(
-      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />,
       store,
     );
 
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', MANAGE_WALLET_RECOVERY_V2_ROUTE);
+    expect(link).toHaveAttribute('href', MANAGE_WALLET_RECOVERY_ROUTE);
   });
 
   it('shows "Back up incomplete" tag when SRP is not backed up', () => {
@@ -47,7 +47,7 @@ describe('ManageWalletRecoveryItem', () => {
       seedPhraseBackedUp: false,
     });
     renderWithProvider(
-      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />,
       store,
     );
 
@@ -63,7 +63,7 @@ describe('ManageWalletRecoveryItem', () => {
       seedPhraseBackedUp: true,
     });
     renderWithProvider(
-      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />,
       store,
     );
 
@@ -78,7 +78,7 @@ describe('ManageWalletRecoveryItem', () => {
       seedPhraseBackedUp: false,
     });
     renderWithProvider(
-      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />,
       store,
     );
 

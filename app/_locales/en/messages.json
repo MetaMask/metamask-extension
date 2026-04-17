@@ -7827,7 +7827,7 @@
     "message": "Select this to show test networks in network list"
   },
   "sidePanelMigrationToast": {
-    "message": "MetaMask now opens in the side panel by default. $1 (or switch any time from the menu).",
+    "message": "MetaMask now opens in the side panel by default. $1 any time from the menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
   },
   "sign": {
