@@ -201,11 +201,24 @@ describe('CandleStreamChannel', () => {
       expect(cb).not.toHaveBeenCalled();
     });
 
-    it('passes duration in perpsActivateCandleStream call', () => {
+    it('reports whether cached candles exist for a symbol and interval', () => {
+      expect(channel.hasCachedCandles('BTC', CandlePeriod.OneHour)).toBe(false);
+
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      expect(channel.hasCachedCandles('BTC', CandlePeriod.OneHour)).toBe(true);
+      expect(channel.hasCachedCandles('ETH', CandlePeriod.OneHour)).toBe(false);
+    });
+
+    it('uses a light cold-start duration for a brand-new chart open', () => {
       channel.subscribe({
         symbol: 'BTC',
         interval: CandlePeriod.OneHour,
-        duration: TimeDuration.OneDay,
+        duration: TimeDuration.YearToDate,
         callback: jest.fn(),
       });
 
@@ -218,6 +231,34 @@ describe('CandleStreamChannel', () => {
             symbol: 'BTC',
             interval: CandlePeriod.OneHour,
             duration: TimeDuration.OneDay,
+          }),
+        ],
+      );
+    });
+
+    it('uses an even lighter duration when cached candles already exist', () => {
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([100, 200]),
+      });
+
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        duration: TimeDuration.YearToDate,
+        callback: jest.fn(),
+      });
+
+      jest.advanceTimersByTime(DEBOUNCE_MS);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateCandleStream',
+        [
+          expect.objectContaining({
+            symbol: 'BTC',
+            interval: CandlePeriod.OneHour,
+            duration: TimeDuration.OneHour,
           }),
         ],
       );

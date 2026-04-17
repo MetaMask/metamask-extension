@@ -145,6 +145,28 @@ const mockSubmitRequestToBackground = jest
 let latestPriceSubscriber:
   | ((updates: { symbol: string; percentChange24h?: string }[]) => void)
   | undefined;
+const mockHasCachedCandles = jest.fn(() => false);
+const mockUsePerpsLiveCandles = jest.fn(() => ({
+  candleData: {
+    symbol: 'ETH',
+    interval: '5m',
+    candles: [
+      {
+        time: 1768188300000,
+        open: '2880.0',
+        high: '2920.0',
+        low: '2870.0',
+        close: '2900.0',
+        volume: '100.0',
+      },
+    ],
+  },
+  isInitialLoading: false,
+  isLoadingMore: false,
+  hasHistoricalData: true,
+  error: null,
+  fetchMoreHistory: jest.fn(),
+}));
 const mockPriceSubscribe = jest.fn((callback) => {
   latestPriceSubscriber = callback;
   return jest.fn();
@@ -188,6 +210,9 @@ jest.mock('../../providers/perps', () => ({
     pushPositionsWithOverrides: jest.fn(),
     prewarm: jest.fn(),
     cleanupPrewarm: jest.fn(),
+    candles: {
+      hasCachedCandles: (...args: unknown[]) => mockHasCachedCandles(...args),
+    },
     isInitialized: () => true,
     init: jest.fn(),
   }),
@@ -255,27 +280,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     markets: [...mockCryptoMarkets, ...mockHip3Markets],
     isInitialLoading: false,
   }),
-  usePerpsLiveCandles: () => ({
-    candleData: {
-      symbol: 'ETH',
-      interval: '5m',
-      candles: [
-        {
-          time: 1768188300000,
-          open: '2880.0',
-          high: '2920.0',
-          low: '2870.0',
-          close: '2900.0',
-          volume: '100.0',
-        },
-      ],
-    },
-    isInitialLoading: false,
-    isLoadingMore: false,
-    hasHistoricalData: true,
-    error: null,
-    fetchMoreHistory: jest.fn(),
-  }),
+  usePerpsLiveCandles: (...args: unknown[]) => mockUsePerpsLiveCandles(...args),
 }));
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
@@ -353,9 +358,31 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockHasCachedCandles.mockReturnValue(false);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
+    mockUsePerpsLiveCandles.mockReturnValue({
+      candleData: {
+        symbol: 'ETH',
+        interval: '5m',
+        candles: [
+          {
+            time: 1768188300000,
+            open: '2880.0',
+            high: '2920.0',
+            low: '2870.0',
+            close: '2900.0',
+            volume: '100.0',
+          },
+        ],
+      },
+      isInitialLoading: false,
+      isLoadingMore: false,
+      hasHistoricalData: true,
+      error: null,
+      fetchMoreHistory: jest.fn(),
+    });
     mockLiveAccount.mockReturnValue({
       account: mockAccountState,
       isInitialLoading: false,
@@ -375,6 +402,10 @@ describe('PerpsMarketDetailPage', () => {
       search: '',
       state: null,
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('when perps feature is enabled', () => {
@@ -634,6 +665,60 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-market-detail-chart')).toBeInTheDocument();
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+    });
+
+    it('delays cold chart startup until the detail page has been stable', async () => {
+      jest.useFakeTimers();
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockUsePerpsLiveCandles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: '',
+          interval: '5m',
+        }),
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(1999);
+      });
+
+      expect(mockUsePerpsLiveCandles).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'ETH',
+          interval: '5m',
+        }),
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(1);
+      });
+
+      await waitFor(() => {
+        expect(mockUsePerpsLiveCandles).toHaveBeenCalledWith(
+          expect.objectContaining({
+            symbol: 'ETH',
+            interval: '5m',
+          }),
+        );
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('starts the chart immediately when cached candles already exist', async () => {
+      mockHasCachedCandles.mockReturnValue(true);
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockUsePerpsLiveCandles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'ETH',
+          interval: '5m',
+        }),
+      );
     });
 
     it('displays favorite button', async () => {

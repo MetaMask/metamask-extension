@@ -16,7 +16,8 @@
 import type { CandleData } from '@metamask/perps-controller';
 import {
   type CandlePeriod,
-  type TimeDuration,
+  TimeDuration,
+  type TimeDuration as TimeDurationType,
   calculateCandleCount,
 } from '../../components/app/perps/constants/chartConfig';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -33,11 +34,19 @@ const LOAD_MORE_MAX = 500;
 /** Debounce delay before firing perpsActivateCandleStream */
 const CONNECT_DEBOUNCE_MS = 500;
 
-/** Grace period before actually tearing down a candle stream after the last
- *  subscriber leaves. Covers brief navigation gaps (tab switch, route
- *  transition) so we don't destroy and re-create the same subscription,
- *  which would trigger a redundant fetchHistoricalCandles and risk 429s. */
+/**
+ * Grace period before actually tearing down a candle stream after the last
+ * subscriber leaves. Covers brief navigation gaps (tab switch, route
+ * transition) so we don't destroy and re-create the same subscription,
+ * which would trigger a redundant fetchHistoricalCandles and risk 429s.
+ */
 const DISCONNECT_GRACE_MS = 5_000;
+
+/** Initial history to request for a brand-new chart open */
+const COLD_START_DURATION = TimeDuration.OneDay;
+
+/** Initial history to request when revisiting a warm chart */
+const WARM_START_DURATION = TimeDuration.OneHour;
 
 /** Per-subscriber state */
 type SubscriberEntry = {
@@ -91,8 +100,20 @@ function parseCacheKey(key: string): {
   };
 }
 
+function getInitialActivationDuration(
+  cache: CandleData | null,
+): TimeDurationType {
+  return cache?.candles?.length ? WARM_START_DURATION : COLD_START_DURATION;
+}
+
 export class CandleStreamChannel {
   private readonly channels = new Map<string, ChannelEntry>();
+
+  hasCachedCandles(symbol: string, interval: CandlePeriod): boolean {
+    return Boolean(
+      this.channels.get(cacheKey(symbol, interval))?.cache?.candles?.length,
+    );
+  }
 
   /**
    * Subscribe to candle data for a symbol+interval pair.
@@ -419,10 +440,11 @@ export class CandleStreamChannel {
       }
 
       const { symbol, interval } = parseCacheKey(key);
+      const initialDuration = getInitialActivationDuration(entry.cache);
       entry.isConnected = true;
 
       submitRequestToBackground('perpsActivateCandleStream', [
-        { symbol, interval, duration: entry.duration },
+        { symbol, interval, duration: initialDuration },
       ]).catch((err) => {
         console.warn(
           '[CandleStreamChannel] Failed to activate streaming for key:',

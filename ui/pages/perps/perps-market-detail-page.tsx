@@ -113,6 +113,8 @@ import {
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
 
+const CHART_COLD_START_DELAY_MS = 2000;
+
 /**
  * Calculate the funding countdown string (time until next UTC hour).
  * Funding on HyperLiquid is paid every hour on the hour (UTC).
@@ -471,19 +473,54 @@ const PerpsMarketDetailPage: React.FC = () => {
     CandlePeriod.FiveMinutes,
   );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
+  const selectedPeriodRef = useRef(selectedPeriod);
+  selectedPeriodRef.current = selectedPeriod;
+  const [isChartReady, setIsChartReady] = useState(false);
+
+  useEffect(() => {
+    if (!decodedSymbol) {
+      setIsChartReady(false);
+      return undefined;
+    }
+
+    const streamManager = getPerpsStreamManager();
+    if (
+      streamManager.candles.hasCachedCandles(
+        decodedSymbol,
+        selectedPeriodRef.current,
+      )
+    ) {
+      setIsChartReady(true);
+      return undefined;
+    }
+
+    setIsChartReady(false);
+
+    const timer = setTimeout(() => {
+      setIsChartReady(true);
+    }, CHART_COLD_START_DELAY_MS);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [decodedSymbol]);
+
+  const candleSymbol = isChartReady ? (decodedSymbol ?? '') : '';
 
   // Live candle data from CandleStreamChannel
   const {
     candleData,
-    isInitialLoading: isCandleLoading,
+    isInitialLoading: isLiveCandleLoading,
     error: candleError,
     fetchMoreHistory,
   } = usePerpsLiveCandles({
-    symbol: decodedSymbol ?? '',
+    symbol: candleSymbol,
     interval: selectedPeriod,
     duration: TimeDuration.YearToDate,
     throttleMs: 1000,
   });
+  const isChartStarting = Boolean(decodedSymbol) && !isChartReady;
+  const isCandleLoading = isChartStarting || isLiveCandleLoading;
 
   // Fetch market-specific fills (WebSocket + REST) for Recent Activity
   const { fills: marketFills, isInitialLoading: fillsLoading } =
