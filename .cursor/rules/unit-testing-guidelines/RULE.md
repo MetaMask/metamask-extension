@@ -1,10 +1,12 @@
 ---
 description: Project Guidelines for Unit Testing
-globs: *.test.*
+globs: '*.test.*'
 alwaysApply: false
 ---
 
 Reference: [MetaMask Unit Testing Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/unit-testing.md)
+
+**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
 
 # MetaMask Extension - Cursor Rules
 
