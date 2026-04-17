@@ -187,6 +187,78 @@ describe('RecipientInput', () => {
     expect(queryByText('0x1234567890abcdefghijkl')).toBeNull();
   });
 
+  describe('error and warning styling', () => {
+    const renderWithValidation = (
+      overrides: Partial<ReturnType<typeof useRecipientValidation>>,
+    ) => {
+      mockUseSendContext.mockReturnValue({
+        to: '0x1234567890abcdef',
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      return renderComponent({
+        recipientValidationResult: {
+          recipientConfusableCharacters: [],
+          recipientError: null,
+          recipientErrorAllowAcknowledge: false,
+          hasUnacknowledgedAlerts: false,
+          recipientWarning: null,
+          recipientResolvedLookup: undefined,
+          ...overrides,
+        } as unknown as ReturnType<typeof useRecipientValidation>,
+      });
+    };
+
+    it('marks the input as invalid when a hard recipient error is present', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: 'Invalid address',
+        recipientErrorAllowAcknowledge: false,
+        hasUnacknowledgedAlerts: false,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input.parentElement).not.toHaveClass('!border-warning-default');
+    });
+
+    it('keeps error styling when a hard recipient error coexists with unacknowledged send alerts', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: 'Invalid address',
+        recipientErrorAllowAcknowledge: false,
+        hasUnacknowledgedAlerts: true,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input.parentElement).not.toHaveClass('!border-warning-default');
+    });
+
+    it('applies warning styling when the recipient error is acknowledgeable', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: 'Token contract',
+        recipientErrorAllowAcknowledge: true,
+        hasUnacknowledgedAlerts: false,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).not.toHaveAttribute('aria-invalid');
+      expect(input.parentElement).toHaveClass('!border-warning-default');
+    });
+
+    it('applies warning styling when only unacknowledged send alerts are present', () => {
+      const { getByTestId } = renderWithValidation({
+        recipientError: null,
+        recipientErrorAllowAcknowledge: false,
+        hasUnacknowledgedAlerts: true,
+      });
+
+      const input = getByTestId('recipient-address-input');
+      expect(input).not.toHaveAttribute('aria-invalid');
+      expect(input.parentElement).toHaveClass('!border-warning-default');
+    });
+  });
+
   describe('metrics', () => {
     it('sets recipient input method to manual', async () => {
       mockUseSendContext.mockReturnValue({
