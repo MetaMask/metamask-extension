@@ -238,20 +238,36 @@ export async function requestHardwareWalletPermission(
 }
 
 /**
+ * Opens a temporary video stream for permission or capability checks.
+ * Call {@link stopMediaStreamTracks} when finished.
+ *
+ * @returns Stream from `getUserMedia({ video: true })`.
+ * @throws When camera APIs are unavailable or `getUserMedia` rejects (e.g. `NotAllowedError`).
+ */
+export async function openCameraVideoStream(): Promise<MediaStream> {
+  if (!isCameraAvailable()) {
+    throw new Error('Camera capture is not available in this context');
+  }
+  const { navigator } = globalThis;
+  return await navigator.mediaDevices.getUserMedia({ video: true });
+}
+
+/**
+ * Stops every track on a media stream (e.g. after a probe or permission request).
+ *
+ * @param stream - Stream returned from {@link openCameraVideoStream}.
+ */
+export function stopMediaStreamTracks(stream: MediaStream): void {
+  stream.getTracks().forEach((track) => track.stop());
+}
+
+/**
  * Request camera permission from the user.
  */
 export async function requestCameraPermission(): Promise<boolean> {
-  if (!isCameraAvailable()) {
-    return false;
-  }
-
   try {
-    const { navigator } = globalThis;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-    });
-
-    stream.getTracks().forEach((track) => track.stop());
+    const stream = await openCameraVideoStream();
+    stopMediaStreamTracks(stream);
     return true;
   } catch {
     return false;

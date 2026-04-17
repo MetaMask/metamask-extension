@@ -1,4 +1,5 @@
 import React from 'react';
+import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 
 import {
   BannerAlert,
@@ -10,16 +11,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   Display,
   FlexDirection,
-  FontWeight,
   JustifyContent,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AddressCopyButton } from '../../multichain';
@@ -55,9 +53,9 @@ export const AccountRemoveModal = ({
           >
             <PreferredAvatar address={accountAddress} />
             <Text
-              variant={TextVariant.bodyLgMedium}
-              marginTop={2}
-              marginBottom={2}
+              variant={TextVariant.BodyLg}
+              fontWeight={FontWeight.Medium}
+              className="mt-2 mb-2"
             >
               {accountName}
             </Text>
@@ -68,10 +66,10 @@ export const AccountRemoveModal = ({
             marginTop={6}
             marginBottom={2}
           >
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Bold}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold}>
               {t('removeAccountModalBannerTitle')}
             </Text>
-            <Text variant={TextVariant.bodyMd}>
+            <Text variant={TextVariant.BodyMd}>
               {t('removeAccountModalBannerDescription')}
             </Text>
           </BannerAlert>
