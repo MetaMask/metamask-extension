@@ -247,7 +247,7 @@ export class TestSnaps {
       },
       {
         interval: 200,
-        timeout: 30000,
+        timeout: veryLargeDelayMs,
       },
     );
   }
