@@ -633,5 +633,42 @@ describe('createPerpsInfrastructure', () => {
         'diskCache:anotherKey',
       );
     });
+
+    it('does not update memory cache when setItem persistence fails', async () => {
+      mockSetStorageItem.mockRejectedValueOnce(new Error('write failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(
+        diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value'),
+      ).rejects.toThrow('write failed');
+
+      await expect(
+        diskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBeNull();
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('does not clear memory cache when removeItem persistence fails', async () => {
+      mockGetStorageItem.mockResolvedValueOnce({ result: 'persisted-value' });
+      mockRemoveStorageItem.mockRejectedValueOnce(new Error('delete failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+
+      await expect(
+        diskCache.removeItem('PERPS_DISK_CACHE_MARKETS'),
+      ).rejects.toThrow('delete failed');
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+      expect(mockGetStorageItem).toHaveBeenCalledTimes(1);
+    });
   });
 });
