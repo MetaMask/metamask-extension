@@ -4,10 +4,24 @@ import {
   PerpsAnalyticsEvent,
 } from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+
 import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
 } from './infrastructure';
+
+jest.mock('@metamask/perps-controller', () => ({
+  formatPerpsFiat: jest.fn((value: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value),
+  ),
+  formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+  PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+}));
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({

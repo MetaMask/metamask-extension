@@ -68,9 +68,6 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(?:@metamask/perps-controller|@nktkas/hyperliquid|@noble|micro-eth-signer|micro-packed|@scure)/)',
-  ],
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
   verbose: false,
