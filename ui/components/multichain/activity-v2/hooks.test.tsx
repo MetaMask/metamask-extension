@@ -58,6 +58,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
 
 const store = configureMockStore()({
+  localeMessages: {
+    currentLocale: 'en_GB',
+  },
   metamask: {
     internalAccounts: {
       selectedAccount: '1',
@@ -621,6 +624,9 @@ describe('Query hooks', () => {
   const expectedEvmAddress = selectedAddress;
   const expectedNetworks = ['eip155:1'];
   const mockStore = configureMockStore()({
+    localeMessages: {
+      currentLocale: 'en_GB',
+    },
     metamask: {
       useExternalServices: true,
       enabledNetworkMap: {
@@ -677,6 +683,7 @@ describe('Query hooks', () => {
       accountAddresses: [`eip155:0:${expectedEvmAddress}`],
       networks: expectedNetworks,
       includeTxMetadata: true,
+      lang: 'en',
     });
     expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
       expect.objectContaining({
