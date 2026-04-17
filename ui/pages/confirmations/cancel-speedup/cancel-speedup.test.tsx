@@ -328,6 +328,77 @@ describe('CancelSpeedup Component', () => {
     });
   });
 
+  it('renders error toast when cancelTransaction rejects', async () => {
+    (createCancelTransaction as jest.Mock).mockImplementation(
+      () => () =>
+        Promise.reject(new Error('Previous transaction is already confirmed')),
+    );
+
+    render({ editGasMode: EditGasModes.cancel });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders error toast when speedUpTransaction rejects', async () => {
+    (createSpeedUpTransaction as jest.Mock).mockImplementation(
+      () => () => Promise.reject(new Error('gas estimation failed')),
+    );
+
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('speedUpTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('opens the edit gas modal when the edit icon is clicked', async () => {
     render({ editGasMode: EditGasModes.speedUp });
 

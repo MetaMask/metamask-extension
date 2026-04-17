@@ -12,7 +12,7 @@ import {
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   DEVELOPER_TOOLS_ROUTE,
-  MANAGE_WALLET_RECOVERY_V2_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
@@ -150,7 +150,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
     ),
   },
-  [MANAGE_WALLET_RECOVERY_V2_ROUTE]: {
+  [MANAGE_WALLET_RECOVERY_ROUTE]: {
     labelKey: 'manageWalletRecovery',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(

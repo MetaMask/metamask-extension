@@ -21,7 +21,7 @@ import {
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
 } from '../messengers/assets';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -133,18 +133,23 @@ const generateDefaultNetworkEnablementControllerState = (
   };
 };
 
-export const NetworkEnablementControllerInit: ControllerInitFunction<
+export const NetworkEnablementControllerInit: MessengerClientInitFunction<
   NetworkEnablementController,
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
-  const multichainNetworkControllerState = getController(
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const multichainNetworkControllerState = getMessengerClient(
     'MultichainNetworkController',
   ).state;
 
-  const networkControllerState = getController('NetworkController').state;
+  const networkControllerState = getMessengerClient('NetworkController').state;
 
-  const controller = new NetworkEnablementController({
+  const messengerClient = new NetworkEnablementController({
     messenger: controllerMessenger,
     state: {
       ...generateDefaultNetworkEnablementControllerState(
@@ -159,14 +164,14 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
   // This reads from NetworkController and MultichainNetworkController to populate
   // the nativeAssetIdentifiers state with CAIP-19-like identifiers for each network.
   // We intentionally don't await this - it will complete in the background.
-  controller.init();
+  messengerClient.init();
 
   // TODO: Remove this after BIP-44 rollout.
   initMessenger.subscribe(
     'AccountsController:selectedAccountChange',
     (account) => {
       if (account.type === SolAccountType.DataAccount) {
-        controller.enableNetworkInNamespace(
+        messengerClient.enableNetworkInNamespace(
           SolScope.Mainnet,
           KnownCaipNamespace.Solana,
         );
@@ -198,7 +203,9 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
 
       const allEnabledNetworks = {};
 
-      for (const network of Object.values(controller.state.enabledNetworkMap)) {
+      for (const network of Object.values(
+        messengerClient.state.enabledNetworkMap,
+      )) {
         Object.assign(allEnabledNetworks, network);
       }
 
@@ -216,13 +223,13 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           shouldEnableMainnetNetworks = true;
         }
         if (shouldEnableMainnetNetworks) {
-          controller.enableNetwork('0x1');
+          messengerClient.enableNetwork('0x1');
         }
       }
     },
   );
 
   return {
-    controller,
+    messengerClient,
   };
 };

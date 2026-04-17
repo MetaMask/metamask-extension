@@ -4,7 +4,7 @@ import {
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
@@ -21,7 +21,7 @@ import { trace } from '../../../../shared/lib/trace';
  * @param request.ensureOnboardingComplete - Ensure onboarding is complete before initializing.
  * @returns The initialized service.
  */
-export const MultichainAccountServiceInit: ControllerInitFunction<
+export const MultichainAccountServiceInit: MessengerClientInitFunction<
   MultichainAccountService,
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger
@@ -46,7 +46,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     },
   };
 
-  const controller = new MultichainAccountService({
+  const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: {
@@ -76,7 +76,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       if (prevUseExternalServices !== currUseExternalServices) {
         // Set basic functionality and trigger alignment when enabled
         // This single call handles both provider disable/enable and alignment.
-        controller
+        messengerClient
           .setBasicFunctionality(currUseExternalServices)
           .catch((error) => {
             console.error(
@@ -93,6 +93,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

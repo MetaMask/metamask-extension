@@ -21,7 +21,7 @@ import {
 } from '../messengers/transaction-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
-import { ControllerInitRequest, ControllerName } from '../types';
+import { MessengerClientInitRequest, MessengerClientName } from '../types';
 import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
@@ -60,7 +60,7 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >
@@ -77,7 +77,7 @@ function buildInitRequestMock(): jest.Mocked<
     ),
   };
 
-  requestMock.getController.mockReturnValue(buildControllerMock());
+  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
 
   return requestMock;
 }
@@ -104,7 +104,7 @@ describe('Transaction Controller Init', () => {
   ): TransactionControllerOptions[T] {
     const requestMock = buildInitRequestMock();
 
-    requestMock.getController.mockReturnValue(
+    requestMock.getMessengerClient.mockReturnValue(
       buildControllerMock(dependencyProperties),
     );
 
@@ -154,9 +154,9 @@ describe('Transaction Controller Init', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(TransactionControllerInit(requestMock).controller).toBeInstanceOf(
-      TransactionController,
-    );
+    expect(
+      TransactionControllerInit(requestMock).messengerClient,
+    ).toBeInstanceOf(TransactionController);
   });
 
   it('retrieves saved gas fees from preferences', () => {
@@ -438,7 +438,9 @@ describe('Transaction Controller Init', () => {
 
     it('skips Delegation7702PublishHook for hardware wallet accounts', async () => {
       const requestMock = buildInitRequestMock();
-      requestMock.getController.mockImplementation(((name: ControllerName) => {
+      requestMock.getMessengerClient.mockImplementation(((
+        name: MessengerClientName,
+      ) => {
         if (name === 'KeyringController') {
           return {
             getKeyringForAccount: jest.fn().mockResolvedValue({
@@ -447,10 +449,10 @@ describe('Transaction Controller Init', () => {
           };
         }
         return buildControllerMock();
-      }) as unknown as ControllerInitRequest<
+      }) as unknown as MessengerClientInitRequest<
         TransactionControllerMessenger,
         TransactionControllerInitMessenger
-      >['getController']);
+      >['getMessengerClient']);
 
       TransactionControllerInit(requestMock);
 
@@ -463,7 +465,9 @@ describe('Transaction Controller Init', () => {
 
     it('calls Delegation7702PublishHook for HD keyring accounts', async () => {
       const requestMock = buildInitRequestMock();
-      requestMock.getController.mockImplementation(((name: ControllerName) => {
+      requestMock.getMessengerClient.mockImplementation(((
+        name: MessengerClientName,
+      ) => {
         if (name === 'KeyringController') {
           return {
             getKeyringForAccount: jest.fn().mockResolvedValue({
@@ -472,10 +476,10 @@ describe('Transaction Controller Init', () => {
           };
         }
         return buildControllerMock();
-      }) as unknown as ControllerInitRequest<
+      }) as unknown as MessengerClientInitRequest<
         TransactionControllerMessenger,
         TransactionControllerInitMessenger
-      >['getController']);
+      >['getMessengerClient']);
 
       TransactionControllerInit(requestMock);
 
