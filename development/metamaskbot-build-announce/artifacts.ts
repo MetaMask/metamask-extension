@@ -43,7 +43,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Data',
     },
     bundleSizeStats: {
-      url: `${hostUrl}/bundle-size/bundle_size.json`,
+      url: `${hostUrl}/bundle-size/bundle_size_stats.json`,
       label: 'Bundle Size Stats',
     },
     interactionStats: {

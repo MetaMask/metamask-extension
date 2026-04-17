@@ -1,4 +1,9 @@
+import { isBundleSizeSummary } from '../webpack/utils/bundle-size';
 import type { ArtifactLinks } from './artifacts';
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
 
 /**
  * Converts a byte count to a human-readable string (e.g. "1.5 KiB").
@@ -59,9 +64,10 @@ export async function buildBundleSizeDiffSection(
       `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
     );
   }
-  // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
-  const prBundleSizeStats: Record<string, { size: number }> =
-    await prBundleSizeStatsResponse.json();
+  const prBundleSizeStats = await prBundleSizeStatsResponse.json();
+  if (!isBundleSizeSummary(prBundleSizeStats)) {
+    throw new Error('Invalid prBundleSizeStats payload');
+  }
 
   const devBundleSizeStatsResponse = await fetch(artifacts.bundleSizeData.url);
   if (!devBundleSizeStatsResponse.ok) {
@@ -69,29 +75,29 @@ export async function buildBundleSizeDiffSection(
       `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
     );
   }
-  // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
-  const devBundleSizeStats: Record<
-    string,
-    Record<string, number>
-  > = await devBundleSizeStatsResponse.json();
+  const devBundleSizeStats =
+    (await devBundleSizeStatsResponse.json()) as Record<string, unknown>;
+  const baselineCandidate = devBundleSizeStats[mergeBaseCommitHash];
+
+  const getBaselineSize = (part: BundlePart) =>
+    isRecord(baselineCandidate) && typeof baselineCandidate[part] === 'number'
+      ? baselineCandidate[part]
+      : 0;
 
   const bundleParts = ['background', 'ui', 'common'] as const;
   type BundlePart = (typeof bundleParts)[number];
 
   const prSizes: Record<BundlePart, number> = {
-    background: prBundleSizeStats.background.size,
-    ui: prBundleSizeStats.ui.size,
-    common: prBundleSizeStats.common.size,
+    background: prBundleSizeStats.background,
+    ui: prBundleSizeStats.ui,
+    common: prBundleSizeStats.common,
   };
 
   const devSizes: Record<BundlePart, number> = {
-    background: 0,
-    ui: 0,
-    common: 0,
+    background: getBaselineSize('background'),
+    ui: getBaselineSize('ui'),
+    common: getBaselineSize('common'),
   };
-  for (const part of bundleParts) {
-    devSizes[part] = devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
-  }
 
   const diffs: Record<BundlePart, number> = {
     background: 0,

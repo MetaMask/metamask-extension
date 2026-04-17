@@ -447,7 +447,7 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-browserify
+      - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -462,15 +462,18 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-browserify
+          name: build-dist-webpack
+          path: artifacts/build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
-      - name: Measure bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
+      - name: Copy bundle size summary
+        run: >-
+          mkdir -p test-artifacts/chrome &&
+          cp artifacts/build-dist-webpack/dist/chrome/bundle_size_stats.json test-artifacts/chrome/
 
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
