@@ -146,11 +146,6 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
-  /**
-   * When true, the unlock page must not auto-start WebAuthn after a UI-initiated
-   * lock in this document. Cleared when the unlock page consumes it (one shot).
-   */
-  skipPasskeyAutoOnNextUnlock: boolean;
 };
 
 export type AppSliceState = {
@@ -253,7 +248,6 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
-  skipPasskeyAutoOnNextUnlock: false,
 };
 
 export default function reduceApp(
@@ -492,12 +486,6 @@ export default function reduceApp(
       return {
         ...appState,
         warning: null,
-      };
-
-    case actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK:
-      return {
-        ...appState,
-        skipPasskeyAutoOnNextUnlock: Boolean(action.payload),
       };
 
     // accounts
@@ -936,19 +924,6 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
 
 export function getShowCopyAddressToast(state: AppSliceState): boolean {
   return state.appState.showCopyAddressToast;
-}
-
-export function getSkipPasskeyAutoOnNextUnlock(state: AppSliceState): boolean {
-  return Boolean(state.appState?.skipPasskeyAutoOnNextUnlock);
-}
-
-export function setSkipPasskeyAutoOnNextUnlock(
-  skip: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
-    payload: skip,
-  };
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

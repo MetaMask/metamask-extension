@@ -530,6 +530,9 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one seedless onboarding operation is running at once
     this.seedlessOperationMutex = new Mutex();
 
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this.skipPasskeyAutoUnlockResetTimeoutId = null;
+
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
         if (version === '8.1.0') {
@@ -8699,13 +8702,35 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Clears the timer that resets {@link AppStateController} `skipPasskeyAutoUnlock`.
+   */
+  clearSkipPasskeyAutoUnlockResetTimeout() {
+    if (this.skipPasskeyAutoUnlockResetTimeoutId !== null) {
+      clearTimeout(this.skipPasskeyAutoUnlockResetTimeoutId);
+      this.skipPasskeyAutoUnlockResetTimeoutId = null;
+    }
+  }
+
+  /**
+   * After any lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+   */
+  scheduleSkipPasskeyAutoUnlockResetAfterLock() {
+    this.clearSkipPasskeyAutoUnlockResetTimeout();
+    this.appStateController.setSkipPasskeyAutoUnlock(true);
+    this.skipPasskeyAutoUnlockResetTimeoutId = setTimeout(() => {
+      this.skipPasskeyAutoUnlockResetTimeoutId = null;
+      this.appStateController.setSkipPasskeyAutoUnlock(false);
+    }, 3000);
+  }
+
+  /**
    * Locks MetaMask
    *
-   * @param {object} options - The options for setting the locked state.
-   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
+   * @param {object} [options] - The options for setting the locked state.
+   * @param {boolean} [options.skipSeedlessOperationLock] - If true, the seedless operation mutex will not be locked.
    */
-  async setLocked(options = { skipSeedlessOperationLock: false }) {
-    const { skipSeedlessOperationLock } = options;
+  async setLocked(options = {}) {
+    const { skipSeedlessOperationLock = false } = options;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     let releaseLock;
@@ -8729,6 +8754,8 @@ export default class MetamaskController extends EventEmitter {
       if (isSignedIn) {
         this.authenticationController.performSignOut();
       }
+
+      this.scheduleSkipPasskeyAutoUnlockResetAfterLock();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;

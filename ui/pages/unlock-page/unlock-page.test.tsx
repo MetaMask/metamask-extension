@@ -11,7 +11,6 @@ import {
   generatePasskeyAuthenticationOptions,
   unlockWithPasskey,
 } from '../../store/actions';
-import * as actionConstants from '../../store/actionConstants';
 import UnlockPageImport from '.';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
@@ -317,7 +316,7 @@ describe('Unlock Page', () => {
     });
   });
 
-  it('does not start passkey unlock on mount when skipPasskeyAutoOnNextUnlock is set', async () => {
+  it('does not start passkey unlock on mount when skipPasskeyAutoUnlock is set', async () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
     const store = configureMockStore([thunk])({
       metamask: {
@@ -327,9 +326,7 @@ describe('Unlock Page', () => {
           wrappedEncryptionKey: 'e30',
           iv: 'e30',
         },
-      },
-      appState: {
-        skipPasskeyAutoOnNextUnlock: true,
+        skipPasskeyAutoUnlock: true,
       },
     });
 
@@ -342,11 +339,6 @@ describe('Unlock Page', () => {
     await waitFor(() => {
       expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
       expect(unlockWithPasskey).not.toHaveBeenCalled();
-    });
-
-    expect(store.getActions()).toContainEqual({
-      type: actionConstants.SET_SKIP_PASSKEY_AUTO_ON_NEXT_UNLOCK,
-      payload: false,
     });
   });
 });

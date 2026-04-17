@@ -98,8 +98,7 @@ type UnlockPageProps = {
   isWalletResetInProgress: boolean;
   isPasskeyRegistered: boolean;
   isPasskeyFeatureAvailable: boolean;
-  skipPasskeyAutoOnNextUnlock: boolean;
-  setSkipPasskeyAutoOnNextUnlock: (skip: boolean) => void;
+  skipPasskeyAutoUnlock: boolean;
 };
 
 type UnlockPageState = {
@@ -224,13 +223,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      */
     isPasskeyFeatureAvailable: PropTypes.bool,
     /**
-     * When true, do not auto-start WebAuthn once (after UI-initiated lock).
+     * When true, do not auto-start WebAuthn (after UI-initiated lock; background + timer).
      */
-    skipPasskeyAutoOnNextUnlock: PropTypes.bool,
-    /**
-     * Sets skipPasskeyAutoOnNextUnlock (e.g. false after one-shot consumption).
-     */
-    setSkipPasskeyAutoOnNextUnlock: PropTypes.func,
+    skipPasskeyAutoUnlock: PropTypes.bool,
   };
 
   private isUnlockViewMounted = true;
@@ -318,18 +313,16 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   }
 
   /**
-   * Starts WebAuthn automatically when a passkey is registered, except once
-   * after a UI-initiated lock (skipPasskeyAutoOnNextUnlock) in this session.
+   * Starts WebAuthn automatically when a passkey is registered, unless the
+   * background requests suppression (e.g. shortly after a UI-initiated lock).
    */
   maybeAutoPasskeyUnlock() {
-    const { skipPasskeyAutoOnNextUnlock, setSkipPasskeyAutoOnNextUnlock } =
-      this.props;
+    const { skipPasskeyAutoUnlock } = this.props;
 
     if (!this.isPasskeyActive) {
       return;
     }
-    if (skipPasskeyAutoOnNextUnlock) {
-      setSkipPasskeyAutoOnNextUnlock(false);
+    if (skipPasskeyAutoUnlock) {
       return;
     }
     Promise.resolve().then(() => this.handlePasskeyUnlock());
@@ -364,7 +357,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
 
     // Auto WebAuthn when the unlock screen loads and a passkey is registered,
-    // unless the user just locked from this UI (one shot; new popup clears Redux).
+    // unless background skipPasskeyAutoUnlock is set (cross-surface).
     if (this.isPasskeyActive) {
       this.maybeAutoPasskeyUnlock();
     }

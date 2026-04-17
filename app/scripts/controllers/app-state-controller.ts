@@ -181,6 +181,12 @@ export type AppStateControllerState = {
    * Used to show specific error messages (e.g., disk space vs general error).
    */
   storageWriteErrorType: StorageWriteErrorType | null;
+
+  /**
+   * When true, unlock UI must not auto-start WebAuthn passkey unlock (cross-surface).
+   * Set on lock; cleared after a short delay (see MetamaskController).
+   */
+  skipPasskeyAutoUnlock: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -355,6 +361,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
+  skipPasskeyAutoUnlock: false,
   ...getInitialStateOverrides(),
 });
 
@@ -746,6 +753,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  skipPasskeyAutoUnlock: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
@@ -956,6 +969,17 @@ export class AppStateController extends BaseController<
   setRampCardClosed(): void {
     this.update((state) => {
       state.isRampCardClosed = true;
+    });
+  }
+
+  /**
+   * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+   *
+   * @param skip - When true, auto passkey unlock is suppressed.
+   */
+  setSkipPasskeyAutoUnlock(skip: boolean): void {
+    this.update((state) => {
+      state.skipPasskeyAutoUnlock = skip;
     });
   }
 

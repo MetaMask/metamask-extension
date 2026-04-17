@@ -652,3 +652,13 @@ export function getOpenedWithSidepanel(state) {
 export function getIsPasskeyRegistered(state) {
   return Boolean(state.metamask.passkeyRecord);
 }
+
+/**
+ * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
+ *
+ * @param {object} state - Redux root state
+ * @returns {boolean}
+ */
+export function getSkipPasskeyAutoUnlock(state) {
+  return Boolean(state.metamask.skipPasskeyAutoUnlock);
+}

@@ -1139,6 +1139,45 @@ describe('MetaMaskController', () => {
           metamaskController.keyringController.state.isUnlocked,
         ).toStrictEqual(false);
       });
+
+      it('sets skipPasskeyAutoUnlock on lock and clears after 3s', async () => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
+        try {
+          await metamaskController.createNewVaultAndKeychain('password');
+          await metamaskController.setLocked();
+          expect(
+            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+          ).toStrictEqual(true);
+          jest.advanceTimersByTime(3000);
+          expect(
+            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+          ).toStrictEqual(false);
+        } finally {
+          jest.useRealTimers();
+        }
+      });
+
+      it('keeps skipPasskeyAutoUnlock true until 3s after lock even if user unlocks sooner', async () => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
+        try {
+          const password = 'password';
+          await metamaskController.createNewVaultAndKeychain(password);
+          await metamaskController.setLocked();
+          expect(
+            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+          ).toStrictEqual(true);
+          await metamaskController.submitPasswordOrEncryptionKey({ password });
+          expect(
+            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+          ).toStrictEqual(true);
+          jest.advanceTimersByTime(3000);
+          expect(
+            metamaskController.appStateController.state.skipPasskeyAutoUnlock,
+          ).toStrictEqual(false);
+        } finally {
+          jest.useRealTimers();
+        }
+      });
     });
 
     describe('#createNewVaultAndKeychain', () => {

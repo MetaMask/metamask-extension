@@ -50,6 +50,18 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
+  describe('setSkipPasskeyAutoUnlock', () => {
+    it('updates skipPasskeyAutoUnlock', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(false);
+        controller.setSkipPasskeyAutoUnlock(true);
+        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(true);
+        controller.setSkipPasskeyAutoUnlock(false);
+        expect(controller.state.skipPasskeyAutoUnlock).toStrictEqual(false);
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
