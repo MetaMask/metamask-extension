@@ -1,8 +1,7 @@
 import { Mockttp } from 'mockttp';
-import { E2E_SRP } from '../../fixtures/default-fixture';
-import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
+import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import {
   login,
