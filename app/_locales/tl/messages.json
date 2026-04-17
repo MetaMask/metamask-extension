@@ -114,9 +114,6 @@
   "accountIdenticonDescription": {
     "message": "Pumili mula sa tatlong iba’t ibang estilo ng kakaibang mga icon na makakatulong para madaling makilala ang mga account sa isang tingin."
   },
-  "accountIsntConnectedToastText": {
-    "message": "Hindi nakakoneka ang $1 sa $2"
-  },
   "accountName": {
     "message": "Pangalan ng account"
   },

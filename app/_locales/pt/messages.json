@@ -114,9 +114,6 @@
   "accountIdenticonDescription": {
     "message": "Escolha entre três estilos diferentes de ícones exclusivos que podem ajudar você a identificar as contas rapidamente."
   },
-  "accountIsntConnectedToastText": {
-    "message": "$1 não está conectado a $2"
-  },
   "accountName": {
     "message": "Nome da conta"
   },
