@@ -18,6 +18,49 @@ import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { Skeleton } from '../../../component-library/skeleton';
+import type { PerpsTransaction } from '../types';
+
+const SKELETON_ITEMS = [1, 2, 3];
+
+const RecentActivitySkeleton: React.FC = () => (
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    className="overflow-hidden rounded-xl"
+  >
+    {SKELETON_ITEMS.map((i) => (
+      <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+    ))}
+  </Box>
+);
+
+const RecentActivityEmpty: React.FC = () => {
+  const t = useI18nContext();
+  return (
+    <Box paddingBottom={4}>
+      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        {t('perpsNoTransactions')}
+      </Text>
+    </Box>
+  );
+};
+
+const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
+  transactions,
+}) => (
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    className="overflow-hidden rounded-xl"
+  >
+    {transactions.map((transaction, index) => (
+      <TransactionCard
+        key={transaction.id}
+        transaction={transaction}
+        variant="muted"
+        showTopBorder={index > 0}
+      />
+    ))}
+  </Box>
+);
 
 export type PerpsMarketRecentActivityProps = {
   symbol: string;
@@ -41,47 +84,6 @@ export const PerpsMarketRecentActivity: React.FC<
 
   const hasTransactions = transactions.length > 0;
   const showSkeleton = isInitialLoading && !hasTransactions;
-
-  const renderContent = () => {
-    if (showSkeleton) {
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="overflow-hidden rounded-xl"
-        >
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
-          ))}
-        </Box>
-      );
-    }
-
-    if (!hasTransactions) {
-      return (
-        <Box paddingBottom={4}>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsNoTransactions')}
-          </Text>
-        </Box>
-      );
-    }
-
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        className="overflow-hidden rounded-xl"
-      >
-        {transactions.map((transaction, index) => (
-          <TransactionCard
-            key={transaction.id}
-            transaction={transaction}
-            variant="muted"
-            showTopBorder={index > 0}
-          />
-        ))}
-      </Box>
-    );
-  };
 
   return (
     <>
@@ -110,7 +112,11 @@ export const PerpsMarketRecentActivity: React.FC<
           </ButtonBase>
         )}
       </Box>
-      {renderContent()}
+      {showSkeleton && <RecentActivitySkeleton />}
+      {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
+      {!showSkeleton && hasTransactions && (
+        <RecentActivityList transactions={transactions} />
+      )}
     </>
   );
 };
