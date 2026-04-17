@@ -298,6 +298,40 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
+
+  const orderFilledToastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (orderFilledToastShownRef.current) {
+      return;
+    }
+
+    const routeState = location.state as Record<string, unknown> | null;
+    const pendingSymbol =
+      typeof routeState?.pendingOrderSymbol === 'string'
+        ? routeState.pendingOrderSymbol
+        : null;
+
+    if (!pendingSymbol) {
+      return;
+    }
+
+    const hasPosition = allPositions.some((p) => p.symbol === pendingSymbol);
+    if (hasPosition) {
+      orderFilledToastShownRef.current = true;
+
+      const filledDescription =
+        typeof routeState?.pendingOrderFilledDescription === 'string'
+          ? routeState.pendingOrderFilledDescription
+          : undefined;
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.ORDER_FILLED,
+        ...(filledDescription ? { description: filledDescription } : {}),
+      });
+    }
+  }, [location.state, allPositions, replacePerpsToastByKey]);
+
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -836,26 +870,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       console.warn('[Perps] Toggle watchlist failed:', e);
     });
   }, [decodedSymbol, track]);
-
-  // Refetch positions when tab becomes visible (catch changes made elsewhere)
-  useEffect(() => {
-    const handleVisibility = async () => {
-      if (document.visibilityState === 'visible' && selectedAddress) {
-        try {
-          const positions = await submitRequestToBackground<Position[]>(
-            'perpsGetPositions',
-            [{ skipCache: true }],
-          );
-          getPerpsStreamManager().pushPositionsWithOverrides(positions);
-        } catch (e) {
-          console.warn('[Perps] Visibility refetch failed:', e);
-        }
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () =>
-      document.removeEventListener('visibilitychange', handleVisibility);
-  }, [selectedAddress]);
 
   // Opens the cancel order modal for the selected order
   const handleOrderClick = useCallback((order: Order) => {

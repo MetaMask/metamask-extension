@@ -524,6 +524,26 @@ describe('preferences controller', () => {
         false,
       );
     });
+
+    it('enables side panel default when disabling full screen view', () => {
+      const { controller: defaultController } = setupController({});
+      const { controller } = setupController({
+        state: {
+          preferences: {
+            ...defaultController.getPreferences(),
+            showExtensionInFullSizeView: true,
+            useSidePanelAsDefault: false,
+          },
+        },
+      });
+
+      controller.setPreference('showExtensionInFullSizeView', false);
+
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+    });
   });
 
   describe('ipfsGateway', () => {

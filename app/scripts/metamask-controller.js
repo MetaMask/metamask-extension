@@ -346,6 +346,8 @@ import {
 } from './messenger-client-init/assets';
 import { TransactionControllerInit } from './messenger-client-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
+import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
+import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
@@ -629,6 +631,8 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      GeolocationApiService: GeolocationApiServiceInit,
+      GeolocationController: GeolocationControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
@@ -6974,6 +6978,28 @@ export default class MetamaskController extends EventEmitter {
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
+          onControllerStateChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'PerpsController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'PerpsController:stateChange',
+                cb,
+              );
+          },
+          onConnectivityChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'ConnectivityController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'ConnectivityController:stateChange',
+                cb,
+              );
+          },
           perpsInit: this.messengerClientApi.perpsInit,
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
