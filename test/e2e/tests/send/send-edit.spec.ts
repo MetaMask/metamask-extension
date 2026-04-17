@@ -42,7 +42,7 @@ describe('Send - Edit Transaction', function () {
           .withAssetsController({
             assetsPrice: {
               'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-              'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
             },
           })
           .build(),
@@ -104,7 +104,7 @@ describe('Send - Edit Transaction', function () {
           .withAssetsController({
             assetsPrice: {
               'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-              'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
             },
           })
           .build(),
