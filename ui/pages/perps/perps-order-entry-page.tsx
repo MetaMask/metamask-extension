@@ -86,6 +86,11 @@ import {
   formatSignedChangePercent,
 } from '../../components/app/perps/utils';
 import {
+  parsePerpsDisplayPrice,
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
+} from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
   isNearLiquidationPrice as checkNearLiquidationPrice,
 } from '../../components/app/perps/order-entry/limit-price-warnings';

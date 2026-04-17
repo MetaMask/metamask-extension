@@ -88,10 +88,12 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+} from '../../components/app/perps/utils';
+import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
-} from '../../components/app/perps/utils';
+} from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { transformFillsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
