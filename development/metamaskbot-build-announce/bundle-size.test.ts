@@ -69,147 +69,102 @@ describe('buildBundleSizeDiffSection', () => {
     '1',
   );
 
-  const prStats = {
-    background: 1100,
-    ui: 2200,
-    common: 300,
-    other: 400,
-    contentScripts: 500,
-    zip: 600,
+  const webpackSummary = {
+    background: 1600,
+    ui: 2500,
+    common: 400,
+    other: 100,
+    contentScripts: 60,
+    zip: 4200,
     timestamp: 2,
   };
-  const devStats = {
-    [MERGE_BASE]: {
-      background: 1000,
-      ui: 2000,
-      common: 300,
-    },
-  };
 
-  function mockSuccessfulFetches() {
+  function mockSuccessfulFetches(
+    storedData: Record<string, unknown> = {
+      [MERGE_BASE]: { background: 1500, ui: 2400, common: 400 },
+    },
+  ) {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(prStats),
+        json: () => Promise.resolve(webpackSummary),
       } as unknown as Response)
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(devStats),
+        json: () => Promise.resolve(storedData),
       } as unknown as Response);
   }
 
-  it('returns a collapsible details section with size diff rows', async () => {
+  it('renders rows for other, content scripts, and zip', async () => {
     mockSuccessfulFetches();
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain('<details>');
     expect(result).toContain('Bundle size diffs');
-    expect(result).toContain('background:');
-    expect(result).toContain('ui:');
-    expect(result).toContain('common:');
-    expect(result).toContain('other:');
-    expect(result).toContain('contentScripts:');
-    expect(result).toContain('zip:');
+    expect(result).toContain('other: total 100 Bytes');
+    expect(result).toContain('content scripts: total 60 Bytes');
+    expect(result).toContain('zip: total 4.1 KiB');
   });
 
-  it('shows a warning when the background bundle increases beyond the threshold', async () => {
-    const bigIncrease = {
-      background: 3000,
-      ui: 2000,
-      common: 300,
-      other: 0,
-      contentScripts: 0,
-      timestamp: 2,
-    };
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(bigIncrease),
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(devStats),
-      } as unknown as Response);
+  it('shows n/a for missing baseline fields during the cutover', async () => {
+    mockSuccessfulFetches({
+      [MERGE_BASE]: { background: 1500, ui: 2400, common: 400 },
+    });
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('Warning! Bundle size has increased!');
+    expect(result).toContain('other: total 100 Bytes, diff n/a');
+    expect(result).toContain('content scripts: total 60 Bytes, diff n/a');
+    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
   });
 
-  it('shows a reduction notice when the bundle shrinks beyond the threshold', async () => {
-    const bigDecrease = {
-      background: 100,
-      ui: 100,
-      common: 100,
-      other: 0,
-      contentScripts: 0,
-      timestamp: 2,
-    };
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(bigDecrease),
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(devStats),
-      } as unknown as Response);
+  it('renders comparison unavailable when the merge base baseline is missing', async () => {
+    mockSuccessfulFetches({});
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('Bundle size reduced!');
+    expect(result).toContain('Comparison unavailable.');
+    expect(result).toContain('background: total 1.56 KiB, diff n/a');
+    expect(result).toContain('zip: total 4.1 KiB, diff n/a');
   });
 
-  it('shows no warning when diffs are within threshold', async () => {
-    mockSuccessfulFetches();
-
-    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
-
-    expect(result).not.toContain('Warning!');
-    expect(result).not.toContain('Bundle size reduced!');
-  });
-
-  it('throws when the PR bundle size stats fetch fails', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      statusText: 'Not Found',
-    } as Response);
-
-    await expect(
-      buildBundleSizeDiffSection(artifacts, MERGE_BASE),
-    ).rejects.toThrow('Failed to fetch prBundleSizeStats');
-  });
-
-  it('throws when the dev bundle size data fetch fails', async () => {
+  it('renders bundle size unavailable when the current summary fetch fails', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(prStats),
-      } as unknown as Response)
       .mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
-      } as Response);
-
-    await expect(
-      buildBundleSizeDiffSection(artifacts, MERGE_BASE),
-    ).rejects.toThrow('Failed to fetch devBundleSizeStats');
-  });
-
-  it('uses 0 for dev sizes when the merge base hash is not in the data', async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(prStats),
-      } as unknown as Response)
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({}),
       } as unknown as Response);
 
-    const result = await buildBundleSizeDiffSection(artifacts, 'unknown-hash');
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('Bundle size diffs');
+    expect(result).toContain('Bundle size data unavailable.');
+  });
+
+  it('shows a warning when the background diff exceeds the threshold', async () => {
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            ...webpackSummary,
+            background: 3000,
+          }),
+      } as unknown as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            [MERGE_BASE]: { background: 1500, ui: 2400, common: 400 },
+          }),
+      } as unknown as Response);
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('Warning! Bundle size has increased!');
   });
 });
