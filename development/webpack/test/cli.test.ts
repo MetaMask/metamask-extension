@@ -33,7 +33,6 @@ describe('./utils/cli.ts', () => {
     snow: false,
     dryRun: false,
     stats: false,
-    bundleAnalyzer: false,
   };
 
   it('should return defaults', () => {

@@ -668,14 +668,7 @@ function getOptions(
     stats: {
       array: false,
       default: false,
-      description: 'Display build stats after building',
-      group: toOrange('Options:'),
-      type: 'boolean',
-    },
-    bundleAnalyzer: {
-      array: false,
-      default: false,
-      description: 'Generate a bundle analyzer report',
+      description: 'Emit the bundle-size summary artifact',
       group: toOrange('Options:'),
       type: 'boolean',
     },
