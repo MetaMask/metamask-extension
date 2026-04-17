@@ -97,14 +97,9 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue(transactions);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      expect(
-        screen.getByTestId('transaction-card-tx-1'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-1')).toBeInTheDocument();
     });
   });
 
@@ -116,10 +111,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
         screen.getByText(messages.perpsNoTransactions.message),
@@ -133,10 +125,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
         screen.queryByText(messages.perpsSeeAll.message),
@@ -156,21 +145,15 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue(transactions);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      expect(
-        screen.getByTestId('transaction-card-tx-1'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('transaction-card-tx-2'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-1')).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-2')).toBeInTheDocument();
     });
 
-    it('limits displayed transactions to RECENT_ACTIVITY_LIMIT', () => {
-      const transactions = Array.from({ length: 5 }, (_, i) =>
+    it('renders all transactions returned by the transform', () => {
+      const limit = PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT;
+      const transactions = Array.from({ length: limit }, (_, i) =>
         createTransaction(`tx-${i}`),
       );
       mockUsePerpsMarketFills.mockReturnValue({
@@ -179,20 +162,13 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue(transactions);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      const limit = PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT;
       for (let i = 0; i < limit; i++) {
         expect(
           screen.getByTestId(`transaction-card-tx-${i}`),
         ).toBeInTheDocument();
       }
-      expect(
-        screen.queryByTestId(`transaction-card-tx-${limit}`),
-      ).not.toBeInTheDocument();
     });
 
     it('shows "Recent Activity" header', () => {
@@ -202,10 +178,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
         screen.getByText(messages.perpsRecentActivity.message),
@@ -219,10 +192,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
         screen.getByText(messages.perpsSeeAll.message),
@@ -236,10 +206,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       fireEvent.click(screen.getByText(messages.perpsSeeAll.message));
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
@@ -254,10 +221,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
       mockTransformFills.mockReturnValue([]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="ETH" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="ETH" />, mockStore);
 
       expect(mockUsePerpsMarketFills).toHaveBeenCalledWith({
         symbol: 'ETH',
@@ -265,20 +229,22 @@ describe('PerpsMarketRecentActivity', () => {
       });
     });
 
-    it('passes fills from hook to transformFillsToTransactions', () => {
-      const fakeFills = [{ orderId: '1' }] as any;
+    it('slices fills to RECENT_ACTIVITY_LIMIT before transforming', () => {
+      const limit = PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT;
+      const fakeFills = Array.from({ length: limit + 2 }, (_, i) => ({
+        orderId: String(i),
+      })) as unknown as ReturnType<typeof usePerpsMarketFills>['fills'];
       mockUsePerpsMarketFills.mockReturnValue({
         fills: fakeFills,
         isInitialLoading: false,
       });
       mockTransformFills.mockReturnValue([]);
 
-      renderWithProvider(
-        <PerpsMarketRecentActivity symbol="BTC" />,
-        mockStore,
-      );
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      expect(mockTransformFills).toHaveBeenCalledWith(fakeFills);
+      expect(mockTransformFills).toHaveBeenCalledWith(
+        fakeFills.slice(0, limit),
+      );
     });
   });
 });
