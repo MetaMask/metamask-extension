@@ -1690,9 +1690,6 @@
   "connect": {
     "message": "接続"
   },
-  "connectAccount": {
-    "message": "アカウントの接続"
-  },
   "connectAccounts": {
     "message": "アカウントの接続"
   },

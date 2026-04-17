@@ -1690,9 +1690,6 @@
   "connect": {
     "message": "Kumonekta"
   },
-  "connectAccount": {
-    "message": "Ikonekta ang account"
-  },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },

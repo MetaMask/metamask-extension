@@ -1748,9 +1748,6 @@
   "connect": {
     "message": "Connect"
   },
-  "connectAccount": {
-    "message": "Connect account"
-  },
   "connectAccounts": {
     "message": "Connect accounts"
   },

@@ -1690,9 +1690,6 @@
   "connect": {
     "message": "연결"
   },
-  "connectAccount": {
-    "message": "계정 연결"
-  },
   "connectAccounts": {
     "message": "계정 연결"
   },

@@ -1690,9 +1690,6 @@
   "connect": {
     "message": "连接"
   },
-  "connectAccount": {
-    "message": "连接账户"
-  },
   "connectAccounts": {
     "message": "连接账户"
   },

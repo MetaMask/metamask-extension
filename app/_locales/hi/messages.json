@@ -1690,9 +1690,6 @@
   "connect": {
     "message": "कनेक्ट करें"
   },
-  "connectAccount": {
-    "message": "खाता कनेक्ट करें"
-  },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
