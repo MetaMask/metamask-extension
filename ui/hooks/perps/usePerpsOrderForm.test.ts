@@ -389,11 +389,10 @@ describe('usePerpsOrderForm', () => {
     });
 
     it('uses markPrice (oracle) for margin calculation when provided', () => {
-      // Simulates the HYPE example from mobile:
-      // amount=$15, leverage=3x, oracle price=$25.65, szDecimals=1
-      // positionSize = round(15/25.65, 1) = 0.6
-      // notional = 0.6 × 25.65 = $15.39
-      // margin   = $15.39 / 3 = $5.13
+      // amount=$15, leverage=3x, currentPrice=$24.95, markPrice=$25.65, szDecimals=1
+      // positionSize = round(15/24.95, 1) = 0.6, but 0.6 * 24.95 = 14.97 < 15,
+      // so calculatePositionSize bumps up to 0.7.
+      // notional = 0.7 × 25.65 = $17.955, margin = $17.955 / 3 ≈ $5.98 (float truncation)
       const { result } = renderHookWithProvider(
         () =>
           usePerpsOrderForm({
@@ -410,8 +409,7 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(3);
       });
 
-      // Controller/mobile helper rounds 15 / 25.65 to 0.6 with szDecimals=1.
-      // notional = 0.6 * 25.65 = 15.39, margin = 15.39 / 3 = 5.13.
+      // Assertion verified: '5.98' matches the bumped-position-size calculation above.
       expect(result.current.calculations.marginRequired).toContain('5.98');
     });
 
