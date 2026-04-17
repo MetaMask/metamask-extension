@@ -100,6 +100,8 @@ The `mm` CLI is the primary interface. It automatically manages a background HTT
 
 Mutating actions (`click`, `type`, `navigate`, etc.) return **compacted observations** in their response. Option subtrees with 3 or more `option` nodes under a `combobox` or `listbox` are collapsed into a single summary node (e.g., `"55 options (refs e2–e56)"`).
 
+After the first mutating action sets a baseline, subsequent mutations return a **diff-based** observation. The `observations.a11y.diff` field (when present) shows what changed (`added`, `removed`, `unchanged`). Calling `mm describe-screen` resets the baseline — the next mutation returns a full compact observation again (good time to re-orient).
+
 **Recommended usage:**
 
 - Use `observations.state` for quick checks: current screen name, `isUnlocked`, network, etc.
