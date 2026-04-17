@@ -233,8 +233,12 @@ export function buildArtifactsBody({
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
 
-  const reusedTag =
-    buildsFromSha === shortSha ? '' : ` [reused from ${buildsFromSha}]`;
+  const isReused = buildsFromSha !== shortSha;
+  const reusedTag = isReused ? ` [reused from ${buildsFromSha}]` : '';
 
-  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>\n\n`;
+  const warning = isReused
+    ? `\n\n> ⚠️ **REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.**`
+    : `\n\n> ⚠️ Please do not use these builds with accounts that contain significant real money, they might not be safe.`;
+
+  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>${warning}\n\n`;
 }

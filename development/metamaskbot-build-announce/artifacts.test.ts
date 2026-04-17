@@ -47,6 +47,10 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('build-dist-webpack');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
+    expect(result).toContain(
+      'Please do not use these builds with accounts that contain significant real money, they might not be safe.',
+    );
+    expect(result).not.toContain('REALLY');
   });
 
   it('includes build links and reused tag when builds are reused', () => {
@@ -60,6 +64,9 @@ describe('buildArtifactsBody', () => {
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('Builds ready [def5678] [reused from abc1234]');
+    expect(result).toContain(
+      'REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.',
+    );
   });
 
   it('wraps everything in a collapsible details element with the sha', () => {
