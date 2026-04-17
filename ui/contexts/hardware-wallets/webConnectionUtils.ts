@@ -429,7 +429,7 @@ export function subscribeToWebHidEvents(
  * Subscribe to native WebUSB connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
- * @param onConnect - Callback when a device is connected
+ * @param onConnect - Synchronous callback when a device is connected; schedule async work inside the callback and attach `.catch()` as needed (no Promise return).
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */

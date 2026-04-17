@@ -1166,6 +1166,30 @@ describe('webConnectionUtils', () => {
       expect(mockOnConnect).toHaveBeenCalledTimes(1);
     });
 
+    it('propagates synchronous errors from onConnect', () => {
+      const thrownError = new Error('connect failed');
+      mockOnConnect.mockImplementation(() => {
+        throw thrownError;
+      });
+
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
+      const trezorDevice = createMockUSBDevice() as USBDevice;
+
+      const connectHandler = getMockEventHandler(
+        getMockedUsb().addEventListener.mock.calls,
+        'connect',
+      );
+
+      expect(() => connectHandler({ device: trezorDevice })).toThrow(
+        thrownError,
+      );
+      expect(mockOnConnect).toHaveBeenCalledWith(trezorDevice);
+    });
+
     it('ignores non-Trezor devices on connect', () => {
       unsubscribe = subscribeToWebUsbEvents(
         HardwareWalletType.Trezor,
