@@ -79,7 +79,7 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
-  formatChangePercent,
+  formatSignedChangePercent,
 } from '../../components/app/perps/utils';
 import { formatPerpsPrice } from '../../components/app/perps/utils/formatPerpsPrice';
 import { getIntlLocale } from '../../ducks/locale/locale';
@@ -555,7 +555,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [chartCurrentPrice, market, formatNumber]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
-  const displayChange = formatChangePercent(
+  const displayChange = formatSignedChangePercent(
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
@@ -1054,9 +1054,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content: symbol-USD, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.HeadingMd}>
-            {displayName}-USD
-          </Text>
+          <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Baseline}
@@ -1075,7 +1073,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               color={getChangeColor(displayChange)}
               data-testid="perps-market-detail-change"
             >
-              {displayChange && !displayChange.startsWith('+') && !displayChange.startsWith('-') ? `+${displayChange}` : displayChange}
+              {displayChange}
             </Text>
           </Box>
         </Box>
