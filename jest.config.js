@@ -77,9 +77,6 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(?:@metamask/perps-controller|@nktkas/hyperliquid|@noble|micro-eth-signer|micro-packed|@scure)/)',
-  ],
   workerIdleMemoryLimit: '500MB',
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering

@@ -1021,7 +1021,7 @@
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
-    "lastFetchedAt": "number",
+    "lastFetchedAt": "null",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",

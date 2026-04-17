@@ -283,12 +283,12 @@ function createDiskCache(
       return result;
     },
     setItem: async (key: string, value: string) => {
-      memoryCache.set(key, value);
       await deps.setStorageItem(getDiskCacheStorageKey(key), value);
+      memoryCache.set(key, value);
     },
     removeItem: async (key: string) => {
-      memoryCache.delete(key);
       await deps.removeStorageItem(getDiskCacheStorageKey(key));
+      memoryCache.delete(key);
     },
   };
 }
