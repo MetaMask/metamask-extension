@@ -28,7 +28,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   SNAP_SETTINGS_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -56,10 +56,10 @@ const ROUTES_TO_I18N_KEYS = {
   [DEVELOPER_OPTIONS_ROUTE]: 'developerOptions',
   [EXPERIMENTAL_ROUTE]: 'experimental',
   [GENERAL_ROUTE]: 'general',
+  [MANAGE_WALLET_RECOVERY_ROUTE]: 'revealSecretRecoveryPhrase',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
   [NOTIFICATIONS_SETTINGS_ROUTE]: 'notifications',
-  [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
@@ -86,7 +86,9 @@ const mapStateToProps = (state, ownProps) => {
     searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
   const snapIdFromSearch = searchParams.get('snapId');
 
-  const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
+  const isRevealSrpListPage = Boolean(
+    pathname.match(MANAGE_WALLET_RECOVERY_ROUTE),
+  );
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
   );
@@ -131,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
 
   let pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
 
-  // if pathname is `REVEAL_SRP_LIST_ROUTE` and socialLoginEnabled rename the tab title to "Manage recovery methods"
+  // if pathname is `MANAGE_WALLET_RECOVERY_ROUTE` and socialLoginEnabled rename the tab title to "Manage recovery methods"
   if (isRevealSrpListPage && socialLoginEnabled) {
     pathnameI18nKey = 'securitySrpWalletRecovery';
   }

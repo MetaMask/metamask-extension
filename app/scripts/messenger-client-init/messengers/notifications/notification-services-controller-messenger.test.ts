@@ -10,4 +10,19 @@ describe('getAuthenticationControllerMessenger', () => {
 
     expect(authenticationControllerMessenger).toBeInstanceOf(Messenger);
   });
+
+  it('delegates the add push notification links action', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getNotificationServicesControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'NotificationServicesPushController:addPushNotificationLinks',
+        ]),
+      }),
+    );
+  });
 });

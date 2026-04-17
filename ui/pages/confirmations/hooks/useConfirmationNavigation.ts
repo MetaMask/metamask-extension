@@ -23,6 +23,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import { useSuppressNavigation } from '../../../hooks/useSuppressConfirmNavigate';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -46,6 +47,7 @@ export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const navigate = useNavigate();
+  const suppressNavigation = useSuppressNavigation();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
 
@@ -62,6 +64,10 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
+      if (suppressNavigation(confirmationId, confirmations)) {
+        return;
+      }
+
       const url = getConfirmationRoute(
         confirmationId,
         confirmations,
@@ -73,7 +79,13 @@ export function useConfirmationNavigation() {
         navigate(url, { replace: true });
       }
     },
-    [approvalFlows?.length, confirmations, navigate, queryString],
+    [
+      approvalFlows?.length,
+      confirmations,
+      navigate,
+      queryString,
+      suppressNavigation,
+    ],
   );
 
   const navigateToIndex = useCallback(
