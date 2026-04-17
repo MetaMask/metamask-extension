@@ -32,6 +32,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
@@ -94,6 +95,9 @@ const mapStateToProps = (state, ownProps) => {
   );
   const isTurnOffPasskeyPage = Boolean(
     pathname.match(SECURITY_TURN_OFF_PASSKEY_ROUTE),
+  );
+  const isRegisterPasskeyPage = Boolean(
+    pathname.match(SECURITY_REGISTER_PASSKEY_ROUTE),
   );
   const isTransactionShieldPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_ROUTE),
@@ -158,7 +162,8 @@ const mapStateToProps = (state, ownProps) => {
   } else if (
     isRevealSrpListPage ||
     isPasswordChangePage ||
-    isTurnOffPasskeyPage
+    isTurnOffPasskeyPage ||
+    isRegisterPasskeyPage
   ) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
@@ -199,6 +204,7 @@ const mapStateToProps = (state, ownProps) => {
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
     isPopup,
+    isRegisterPasskeyPage,
     isRevealSrpListPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isTransactionShieldPage,

@@ -29,6 +29,8 @@ import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
 } from '../../../../../shared/lib/passkey';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
 import {
   changePassword,
   changePasswordWithPasskeyVerification,
@@ -41,7 +43,10 @@ import {
   verifyPassword,
 } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
 import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
 import {
@@ -174,10 +179,23 @@ const ChangePassword = () => {
         setPasskeyAuthenticationResponse(null);
         await forceUpdateMetamaskState(dispatch);
       } else if (enableBiometrics && !isPasskeyRegistered) {
-        // change password
         await dispatch(changePassword(newPassword, currentPassword));
 
-        // register passkey
+        if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+          trackEvent({
+            category: MetaMetricsEventCategory.Settings,
+            event: MetaMetricsEventName.PasswordChanged,
+            properties: {
+              biometrics_enabled: true,
+            },
+          });
+          global.platform?.openExtensionInBrowser?.(
+            SECURITY_REGISTER_PASSKEY_ROUTE,
+            'from=change-password',
+          );
+          return;
+        }
+
         const regOptions = await generatePasskeyRegistrationOptions();
         const registrationResponse = await startPasskeyRegistration(regOptions);
         await protectVaultKeyWithPasskey(registrationResponse);

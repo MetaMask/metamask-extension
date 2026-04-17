@@ -8,7 +8,10 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -58,6 +61,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -234,6 +238,13 @@ export default class SecurityTab extends PureComponent {
     const wantsOn = !currentValue;
 
     if (wantsOn) {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+        global.platform?.openExtensionInBrowser?.(
+          SECURITY_REGISTER_PASSKEY_ROUTE,
+        );
+        return;
+      }
+
       this.setState({ passkeyToggleBusy: true });
       try {
         const options = await generatePasskeyRegistrationOptions();

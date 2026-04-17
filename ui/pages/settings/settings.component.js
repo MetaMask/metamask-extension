@@ -27,6 +27,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
@@ -75,6 +76,7 @@ import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
 import TurnOffPasskey from './security-tab/turn-off-passkey';
+import RegisterPasskey from './security-tab/register-passkey';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
@@ -103,6 +105,7 @@ class SettingsPage extends PureComponent {
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isRegisterPasskeyPage: PropTypes.bool,
     isRevealSrpListPage: PropTypes.bool,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isTransactionShieldPage: PropTypes.bool,
@@ -176,6 +179,7 @@ class SettingsPage extends PureComponent {
       addNewNetwork,
       isPasswordChangePage,
       isTurnOffPasskeyPage,
+      isRegisterPasskeyPage,
       isRevealSrpListPage,
       isSeedlessPasswordOutdated,
       isTransactionShieldPage,
@@ -191,6 +195,7 @@ class SettingsPage extends PureComponent {
       isRevealSrpListPage ||
       isPasswordChangePage ||
       isTurnOffPasskeyPage ||
+      isRegisterPasskeyPage ||
       isTransactionShieldPage;
 
     return (
@@ -298,6 +303,7 @@ class SettingsPage extends PureComponent {
       isRevealSrpListPage,
       isPasswordChangePage,
       isTurnOffPasskeyPage,
+      isRegisterPasskeyPage,
       isTransactionShieldPage,
     } = this.props;
 
@@ -305,6 +311,7 @@ class SettingsPage extends PureComponent {
       isRevealSrpListPage ||
       isPasswordChangePage ||
       isTurnOffPasskeyPage ||
+      isRegisterPasskeyPage ||
       isTransactionShieldPage
     ) {
       return null;
@@ -594,6 +601,13 @@ class SettingsPage extends PureComponent {
             SETTINGS_ROUTE,
           )}
           element={<TurnOffPasskey />}
+        />
+        <Route
+          path={toRelativeRoutePath(
+            SECURITY_REGISTER_PASSKEY_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<RegisterPasskey />}
         />
         <Route
           path="*"
