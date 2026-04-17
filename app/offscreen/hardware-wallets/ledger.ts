@@ -1,11 +1,7 @@
 import LedgerEth from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { parse as parseTransaction } from '@ethersproject/transactions';
-import {
-  getTransactionSelector,
-  LedgerSignTypedDataParams,
-} from '@metamask/eth-ledger-bridge-keyring';
+import { LedgerSignTypedDataParams } from '@metamask/eth-ledger-bridge-keyring';
 import { TypedDataUtils, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import {
   Category,
@@ -13,7 +9,6 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
-import { add0x } from '@metamask/utils';
 
 import {
   LedgerAction,
@@ -60,34 +55,6 @@ function serializeError(error: unknown): {
     return serialized;
   }
   return { message: String(error) };
-}
-
-/**
- * Returns the 4-byte selector for transactions that expose calldata in `data`.
- * Falls back to parsing the transaction directly for legacy unsigned payloads
- * that the shared Ledger selector helper does not currently recognize.
- *
- * @param tx - The raw serialized transaction hex string.
- * @returns The selector if calldata is present.
- */
-function getSelectorWithLegacyFallback(tx: string): string | undefined {
-  const selector = getTransactionSelector(tx);
-
-  if (selector) {
-    return selector;
-  }
-
-  try {
-    const { data } = parseTransaction(add0x(tx));
-
-    if (typeof data === 'string' && data.length >= 10) {
-      return data.slice(0, 10).toLowerCase();
-    }
-  } catch {
-    // Ignore parse failures and fall through to undefined.
-  }
-
-  return undefined;
 }
 
 /**
@@ -231,8 +198,7 @@ export class LedgerOffscreenHandler {
   }
 
   /**
-   * Signs a transaction using clear signing, which displays human-readable
-   * token/NFT information on the Ledger device screen.
+   * Signs a serialized transaction via the Ledger Ethereum app.
    *
    * @param hdPath - The HD derivation path.
    * @param tx - The raw transaction hex string.

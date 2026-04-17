@@ -1,4 +1,3 @@
-import { serialize } from '@ethersproject/transactions';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -14,66 +13,10 @@ const mockOpenConnected = jest.fn();
 const mockCreate = jest.fn();
 const mockGetAppConfiguration = jest.fn();
 const mockGetAddress = jest.fn();
-const mockClearSignTransaction = jest.fn();
+const mockSignTransaction = jest.fn();
 const mockSignPersonalMessage = jest.fn();
 const mockSignEIP712Message = jest.fn();
 const mockSignEIP712HashedMessage = jest.fn();
-const mockGetTransactionSelector = jest.fn();
-
-const { getTransactionSelector: actualGetTransactionSelector } =
-  jest.requireActual(
-    '@metamask/eth-ledger-bridge-keyring',
-  ) as typeof import('@metamask/eth-ledger-bridge-keyring');
-
-const ERC20_APPROVE_SELECTOR = '0x095ea7b3';
-const SET_APPROVAL_FOR_ALL_SELECTOR = '0xa22cb465';
-const ERC20_APPROVE_DATA = `${ERC20_APPROVE_SELECTOR}${'00'.repeat(64)}`;
-const SET_APPROVAL_FOR_ALL_DATA = `${SET_APPROVAL_FOR_ALL_SELECTOR}${'00'.repeat(
-  64,
-)}`;
-
-function createRawApproveTransaction(
-  type: 'legacy' | 'legacy-unsigned' | 'eip1559',
-  data = ERC20_APPROVE_DATA,
-): string {
-  const common = {
-    chainId: 1,
-    nonce: 0,
-    gasLimit: 21000,
-    to: '0x0000000000000000000000000000000000000001',
-    value: 0,
-    data,
-  };
-
-  if (type === 'legacy') {
-    return serialize(
-      {
-        ...common,
-        gasPrice: 1,
-      },
-      {
-        v: 27,
-        r: `0x${'11'.repeat(32)}`,
-        s: `0x${'22'.repeat(32)}`,
-      },
-    );
-  }
-
-  if (type === 'legacy-unsigned') {
-    return serialize({
-      ...common,
-      gasPrice: 1,
-    }).slice(2);
-  }
-
-  return serialize({
-    ...common,
-    type: 2,
-    maxPriorityFeePerGas: 1,
-    maxFeePerGas: 1,
-    accessList: [],
-  });
-}
 
 const mockTransport = {
   close: mockTransportClose,
@@ -96,23 +39,11 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
     default: jest.fn().mockImplementation(() => ({
       getAppConfiguration: mockGetAppConfiguration,
       getAddress: mockGetAddress,
-      clearSignTransaction: mockClearSignTransaction,
+      signTransaction: mockSignTransaction,
       signPersonalMessage: mockSignPersonalMessage,
       signEIP712Message: mockSignEIP712Message,
       signEIP712HashedMessage: mockSignEIP712HashedMessage,
     })),
-  };
-});
-
-jest.mock('@metamask/eth-ledger-bridge-keyring', () => {
-  const actual = jest.requireActual('@metamask/eth-ledger-bridge-keyring');
-
-  return {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    ...actual,
-    getTransactionSelector: (...args: unknown[]) =>
-      mockGetTransactionSelector(...args),
   };
 });
 
@@ -145,7 +76,6 @@ describe('Ledger Offscreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetTransactionSelector.mockReset();
 
     // Set up navigator.hid mock
     mockAddEventListener = jest.fn((event, callback) => {
@@ -363,9 +293,7 @@ describe('Ledger Offscreen', () => {
       };
 
       beforeEach(() => {
-        mockClearSignTransaction.mockResolvedValue(defaultSignature);
-        // approve() is shared by ERC20 and ERC721, so it should only set erc20.
-        mockGetTransactionSelector.mockReturnValue(ERC20_APPROVE_SELECTOR);
+        mockSignTransaction.mockResolvedValue(defaultSignature);
       });
 
       it('signs transaction and returns signature', async () => {
@@ -378,162 +306,16 @@ describe('Ledger Offscreen', () => {
         expect(response.payload).toEqual(defaultSignature);
       });
 
-      it('calls clearSignTransaction with "erc20: true" for ERC20 approve selector', async () => {
+      it('calls signTransaction with hdPath, tx, and null chain resolution', async () => {
         await sendAction(LedgerAction.signTransaction, {
           hdPath: "m/44'/60'/0'/0/0",
           tx: '0xdeadbeef',
         });
 
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
+        expect(mockSignTransaction).toHaveBeenCalledWith(
           "m/44'/60'/0'/0/0",
           '0xdeadbeef',
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: true,
-            nft: false,
-          }),
-        );
-      });
-
-      it('detects ERC20 approve selector from a legacy serialized transaction', async () => {
-        mockGetTransactionSelector.mockImplementation(
-          actualGetTransactionSelector,
-        );
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: createRawApproveTransaction('legacy'),
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          expect.any(String),
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: true,
-            nft: false,
-          }),
-        );
-      });
-
-      it('detects ERC20 approve selector from an unsigned legacy serialized transaction', async () => {
-        mockGetTransactionSelector.mockImplementation(
-          actualGetTransactionSelector,
-        );
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: createRawApproveTransaction('legacy-unsigned'),
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          expect.any(String),
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: true,
-            nft: false,
-          }),
-        );
-      });
-
-      it('detects NFT-only selector from an unsigned legacy serialized transaction', async () => {
-        mockGetTransactionSelector.mockImplementation(
-          actualGetTransactionSelector,
-        );
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: createRawApproveTransaction(
-            'legacy-unsigned',
-            SET_APPROVAL_FOR_ALL_DATA,
-          ),
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          expect.any(String),
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: false,
-            nft: true,
-          }),
-        );
-      });
-
-      it('detects ERC20 approve selector from an EIP-1559 serialized transaction', async () => {
-        mockGetTransactionSelector.mockImplementation(
-          actualGetTransactionSelector,
-        );
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: createRawApproveTransaction('eip1559'),
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          expect.any(String),
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: true,
-            nft: false,
-          }),
-        );
-      });
-
-      it('calls clearSignTransaction with "nft: true" for setApprovalForAll selector', async () => {
-        mockGetTransactionSelector.mockReturnValue(
-          SET_APPROVAL_FOR_ALL_SELECTOR,
-        );
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: '0xabc',
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          '0xabc',
-          expect.objectContaining({ erc20: false, nft: true }),
-        );
-      });
-
-      it('calls clearSignTransaction with "erc20: false" for non-ERC20 selectors', async () => {
-        mockGetTransactionSelector.mockReturnValue('0xdeadbeef');
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: '0xfeedbeef',
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          '0xfeedbeef',
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: false,
-            nft: false,
-          }),
-        );
-      });
-
-      it('calls clearSignTransaction with "erc20: false" when no selector is detected', async () => {
-        mockGetTransactionSelector.mockReturnValue(undefined);
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: '0x1234',
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          '0x1234',
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: false,
-            nft: false,
-          }),
+          null,
         );
       });
     });
