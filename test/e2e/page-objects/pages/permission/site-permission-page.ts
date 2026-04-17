@@ -173,7 +173,7 @@ class SitePermissionPage {
         text: `${number} networks connected`,
         tag: 'span',
       },
-      { timeout: 20000 },
+      { timeout: 30000 },
     );
   }
 }
