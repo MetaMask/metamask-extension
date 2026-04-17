@@ -55,14 +55,18 @@ export function createMetaMaskE2EContext(
   const config: E2EEnvironmentConfig = {
     ...DEFAULT_E2E_CONFIG,
     ...options.config,
+    ports: {
+      ...options.config?.ports,
+      ...options.ports,
+    },
   };
 
   const fixture = new MetaMaskFixtureCapability({
-    port: options.ports?.fixtureServer,
+    port: config.ports?.fixtureServer,
   });
 
   const chain = new MetaMaskChainCapability({
-    port: options.ports?.anvil,
+    port: config.ports?.anvil,
     chainId: config.defaultChainId,
     forkUrl: options.forkUrl,
     forkBlockNumber: options.forkBlockNumber,

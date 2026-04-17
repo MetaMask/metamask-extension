@@ -16,7 +16,7 @@ describe('resolveRepoRoot', () => {
   });
 
   it('resolves correctly from a deeply nested directory', () => {
-    const deepDir = path.join(__dirname, 'mcp-server');
+    const deepDir = path.join(__dirname, 'capabilities');
     const root = resolveRepoRoot(deepDir);
 
     expect(readPackageName(root)).toBe('metamask-crx');

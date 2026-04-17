@@ -80,6 +80,50 @@ describe('Capability Factory', () => {
       expect(context.fixture).toBeInstanceOf(MetaMaskFixtureCapability);
     });
 
+    it('wires ports from config into capabilities', () => {
+      const context = createMetaMaskE2EContext({
+        ports: {
+          anvil: 9545,
+          fixtureServer: 23456,
+        },
+      });
+
+      const chain = context.chain as unknown as { port: number };
+      const fixture = context.fixture as unknown as { port: number };
+
+      expect(chain.port).toBe(9545);
+      expect(fixture.port).toBe(23456);
+    });
+
+    it('stores ports in config.ports for downstream consumers', () => {
+      const context = createMetaMaskE2EContext({
+        ports: {
+          anvil: 9545,
+          fixtureServer: 23456,
+        },
+      });
+
+      const e2eConfig = context.config as { ports?: Record<string, number> };
+      expect(e2eConfig.ports?.anvil).toBe(9545);
+      expect(e2eConfig.ports?.fixtureServer).toBe(23456);
+    });
+
+    it('keeps config.ports and capability ports in sync', () => {
+      const context = createMetaMaskE2EContext({
+        ports: {
+          anvil: 7777,
+          fixtureServer: 8888,
+        },
+      });
+
+      const chain = context.chain as unknown as { port: number };
+      const fixture = context.fixture as unknown as { port: number };
+      const e2eConfig = context.config as { ports?: Record<string, number> };
+
+      expect(chain.port).toBe(e2eConfig.ports?.anvil);
+      expect(fixture.port).toBe(e2eConfig.ports?.fixtureServer);
+    });
+
     it('merges custom config with defaults', () => {
       const context = createMetaMaskE2EContext({
         config: {
@@ -228,12 +272,11 @@ describe('Capability Factory', () => {
   });
 
   describe('MetaMaskSessionManager context switching', () => {
-    let sessionManager: typeof import('../mcp-server/metamask-provider').metaMaskSessionManager;
+    let sessionManager: typeof import('../metamask-provider').metaMaskSessionManager;
 
     beforeEach(() => {
       /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-      sessionManager =
-        require('../mcp-server/metamask-provider').metaMaskSessionManager;
+      sessionManager = require('../metamask-provider').metaMaskSessionManager;
       sessionManager.setWorkflowContext(
         createMetaMaskE2EContext() as import('@metamask/client-mcp-core').WorkflowContext,
       );

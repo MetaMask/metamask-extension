@@ -25,7 +25,7 @@ export type DeployedContract = {
 };
 
 /**
- * TypeScript wrapper around the existing JS AnvilSeeder for MCP server integration.
+ * TypeScript wrapper around the existing JS AnvilSeeder for daemon integration.
  * Provides typed contract deployment and tracking for LLM agents.
  */
 export class AnvilSeederWrapper {
