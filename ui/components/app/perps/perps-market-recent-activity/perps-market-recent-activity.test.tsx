@@ -229,7 +229,7 @@ describe('PerpsMarketRecentActivity', () => {
       });
     });
 
-    it('slices fills to RECENT_ACTIVITY_LIMIT before transforming', () => {
+    it('transforms all fills before slicing to RECENT_ACTIVITY_LIMIT', () => {
       const limit = PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT;
       const fakeFills = Array.from({ length: limit + 2 }, (_, i) => ({
         orderId: String(i),
@@ -238,13 +238,23 @@ describe('PerpsMarketRecentActivity', () => {
         fills: fakeFills,
         isInitialLoading: false,
       });
-      mockTransformFills.mockReturnValue([]);
+      const allTransactions = Array.from({ length: limit + 2 }, (_, i) =>
+        createTransaction(`tx-${i}`),
+      );
+      mockTransformFills.mockReturnValue(allTransactions);
 
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      expect(mockTransformFills).toHaveBeenCalledWith(
-        fakeFills.slice(0, limit),
-      );
+      expect(mockTransformFills).toHaveBeenCalledWith(fakeFills);
+
+      for (let i = 0; i < limit; i++) {
+        expect(
+          screen.getByTestId(`transaction-card-tx-${i}`),
+        ).toBeInTheDocument();
+      }
+      expect(
+        screen.queryByTestId(`transaction-card-tx-${limit}`),
+      ).not.toBeInTheDocument();
     });
   });
 });

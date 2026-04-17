@@ -78,8 +78,10 @@ export const PerpsMarketRecentActivity: React.FC<
   });
 
   const transactions = useMemo(() => {
-    const recent = fills.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
-    return transformFillsToTransactions(recent);
+    return transformFillsToTransactions(fills).slice(
+      0,
+      PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT,
+    );
   }, [fills]);
 
   const hasTransactions = transactions.length > 0;
