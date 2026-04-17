@@ -48,9 +48,10 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(
-      'Please do not use these builds with accounts that contain significant real money, they might not be safe.',
+      'Please do not use these builds with accounts that contain significant real money.',
     );
-    expect(result).not.toContain('REALLY');
+    expect(result).toContain('cache poisoning</a>');
+    expect(result).not.toContain('reused, so they are even more suspect');
   });
 
   it('includes build links and reused tag when builds are reused', () => {
@@ -65,7 +66,7 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('Builds ready [def5678] [reused from abc1234]');
     expect(result).toContain(
-      'REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.',
+      'Please do not use these builds with accounts that contain significant real money.',
     );
   });
 

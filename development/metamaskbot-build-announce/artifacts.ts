@@ -232,11 +232,12 @@ export function buildArtifactsBody({
   const isReused = buildsFromSha !== shortSha;
   const reusedTag = isReused ? ` [reused from ${buildsFromSha}]` : '';
 
-  const warning = isReused
-    ? `⚠️ <b>REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.</b>`
-    : `⚠️ Please do not use these builds with accounts that contain significant real money, they might not be safe.`;
+  const warningItem =
+    `<li>⚠️ Make sure the build is safe before downloading and running this build.` +
+    `<ul><li>Please do not use these builds with accounts that contain significant real money.</li>\n` +
+    `<li>Beware the security risks of <a href="https://adnanthekhan.com/2024/05/06/the-monsters-in-your-build-cache-github-actions-cache-poisoning/">cache poisoning</a>.</li></ul></li>`;
 
-  const hiddenContent = `<p>${warning}</p><ul>${contentRows
+  const hiddenContent = `<ul>${warningItem}\n${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
 
