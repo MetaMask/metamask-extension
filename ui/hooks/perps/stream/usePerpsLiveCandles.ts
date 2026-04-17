@@ -110,6 +110,7 @@ export function usePerpsLiveCandles(
     }
 
     const streamManager = getPerpsStreamManager();
+
     const unsubscribe = streamManager.candles.subscribe({
       symbol,
       interval,
