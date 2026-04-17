@@ -1,15 +1,10 @@
 ---
 description: Guidelines for Writing E2E Tests
-globs: 'test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts'
+globs: test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts
 alwaysApply: false
 ---
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
-
-**See also:**
-
-- [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
-- [Extension CI Flakiness Patterns](../extension-flakiness-patterns/RULE.md) - Known flakiness patterns and anti-patterns to avoid
 
 # MetaMask Extension E2E Testing Guidelines
 
@@ -76,88 +71,14 @@ Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/
 - Use fixtures to set up test prerequisites instead of UI steps
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
-- Prefer `FixtureBuilderV2` for new or updated specs
-- Use legacy `FixtureBuilder` only when a required method is not yet available in `FixtureBuilderV2`
-
-### Fixture Builder Migration Guidance
-
-For new test code, use `FixtureBuilderV2` by default.
-
-`FixtureBuilderV2` currently supports:
-
-**General controller methods**:
-
-- `withAccountsController`
-- `withAddressBookController`
-- `withAppStateController`
-- `withCurrencyController`
-- `withKeyringController`
-- `withMetaMetricsController`
-- `withMultichainAssetsRatesController`
-- `withMultichainRatesController`
-- `withNameController`
-- `withNetworkController`
-- `withNetworkEnablementController`
-- `withNftController`
-- `withOnboardingController`
-- `withPermissionController`
-- `withPreferencesController`
-- `withSelectedNetworkController`
-- `withTokenBalancesController`
-- `withTokenListController`
-- `withTokensController`
-- `withTransactionController`
-
-**Custom convenience methods**:
-
-- `withAccountsControllerAdditionalAccountVault`
-- `withAccountsControllerImportedAccount`
-- `withBadPreferencesControllerState`
-- `withConversionRateDisabled`
-- `withConversionRates`
-- `withCurrencyRates`
-- `withKeyringControllerAdditionalAccountVault`
-- `withKeyringControllerMultiSRP`
-- `withKeyringControllerOldVault`
-- `withEnabledNetworks`
-- `withLedgerAccount`
-- `withNetworkControllerDoubleNode`
-- `withNetworkControllerTripleNode`
-- `withNetworkRpcUrlOnLocalhost`
-- `withNftControllerERC1155`
-- `withNftControllerERC721`
-- `withNoNames`
-- `withPermissionControllerConnectedToMultichainTestDapp`
-- `withPermissionControllerConnectedToTestDapp`
-- `withPreferencesControllerTxSimulationsDisabled`
-- `withSelectedNetwork`
-- `withSelectedNetworkControllerPerDomain`
-- `withShowNativeTokenAsMainBalanceDisabled`
-- `withShowNativeTokenAsMainBalanceEnabled`
-- `withSmartTransactionsOptedOut`
-- `withSnapController`
-- `withSnapControllerOnStartLifecycleSnap`
-- `withSnapControllerStorageServiceSourceCode`
-- `withSnapsPrivacyWarningAlreadyShown`
-- `withStorageServiceData`
-- `withTokensControllerERC20`
-- `withTokenListControllerStorageServiceData`
-- `withTransactionControllerApprovedTransaction`
-- `withTransactionControllerCompletedAndIncomingTransaction`
-- `withTransactionControllerCompletedTransaction`
-- `withTransactionControllerIncomingTransaction`
-- `withTrezorAccount`
-- `withUseBasicFunctionalityDisabled`
-
-If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 
 ### Example:
 
 ```typescript
 // GOOD: Use fixture to set up prerequisites
-new FixtureBuilderV2()
-  .withPreferencesController({ useCurrencyRateCheck: false })
-  .withPermissionControllerConnectedToTestDapp()
+new FixtureBuilder()
+  .withAddressBookControllerContactBob()
+  .withTokensControllerERC20()
   .build();
 
 // Then test only the essential steps:
@@ -166,7 +87,7 @@ new FixtureBuilderV2()
 // Assertion
 
 // BAD: Building all state through UI
-new FixtureBuilderV2().build();
+new FixtureBuilder().build();
 // Login
 // Add Contact
 // Open test dapp
@@ -496,7 +417,7 @@ async function mockTokenPriceApi(
 
 await withFixtures(
   {
-    fixtures: new FixtureBuilderV2().build(),
+    fixtures: new FixtureBuilder().build(),
     title: this.test?.fullTitle(),
     testSpecificMock: mockTokenPriceApi, // Layered on top of global mocks
   },
@@ -529,7 +450,6 @@ Before submitting E2E tests, ensure:
 - [ ] Proper waiting strategies used (waitForSelector, waitForMultipleSelectors)
 - [ ] Mock responses used for network calls instead of real API dependencies
 - [ ] Use fixtures to set up test state instead of UI interactions
-- [ ] Prefer `FixtureBuilderV2` when the required fixture methods are supported
 - [ ] Error handling for expected failure scenarios
 
 ## Debugging Failed Tests
