@@ -160,21 +160,42 @@ describe('buildBundleSizeDiffSection', () => {
     );
   });
 
-  it('does not use content scripts increases to trigger warnings', async () => {
+  it('uses content scripts increases to trigger warnings', async () => {
     mockSuccessfulFetches({
       webpack: {
         ...webpackSummary,
         background: 1500,
         ui: 2400,
         common: 400,
-        contentScripts: 50,
+        contentScripts: 1100,
       },
     });
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).not.toContain('Warning!');
-    expect(result).not.toContain('Bundle size reduced!');
+    expect(result).toContain('Warning!');
+  });
+
+  it('uses content scripts reductions to trigger reduced warnings', async () => {
+    mockSuccessfulFetches({
+      webpack: {
+        ...webpackSummary,
+        background: 1500,
+        ui: 2400,
+        common: 400,
+        contentScripts: 0,
+      },
+      storedData: {
+        [MERGE_BASE]: {
+          ...bundleSizeData[MERGE_BASE],
+          contentScripts: 2000,
+        },
+      },
+    });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('Bundle size reduced!');
   });
 
   it('renders comparison unavailable when the merge base baseline is missing', async () => {

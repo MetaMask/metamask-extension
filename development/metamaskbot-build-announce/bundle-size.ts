@@ -320,16 +320,19 @@ function buildBundleSizeSection({
 
   const sizeDiffBackground = diffs.background + diffs.common;
   const sizeDiffUi = diffs.ui + diffs.common;
+  const sizeDiffContentScripts = diffs.contentScripts;
 
   let sizeDiffWarning: string | undefined;
   if (
     sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
-    sizeDiffUi > BUNDLE_SIZE_THRESHOLD
+    sizeDiffUi > BUNDLE_SIZE_THRESHOLD ||
+    sizeDiffContentScripts > BUNDLE_SIZE_THRESHOLD
   ) {
     sizeDiffWarning = '[🚨 Warning! Bundle size has increased!]';
   } else if (
     sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
-    sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
+    sizeDiffUi < -BUNDLE_SIZE_THRESHOLD ||
+    sizeDiffContentScripts < -BUNDLE_SIZE_THRESHOLD
   ) {
     sizeDiffWarning = '[🚀 Bundle size reduced!]';
   }
