@@ -100,7 +100,7 @@ export const DappConnectionControlBar: React.FC = () => {
   const isActiveAccountConnected = useMemo(() => {
     if (
       permittedAccounts.length === 0 ||
-      accountGroupInternalAccounts.length === 0
+      accountGroupInternalAccounts?.length === 0
     ) {
       return false;
     }
