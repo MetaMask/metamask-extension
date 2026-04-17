@@ -60,7 +60,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+              href="https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -129,7 +129,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
+              href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -196,7 +196,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             Turn on Smart Transactions for more reliable and secure transactions. 
             <a
               class="font-medium text-primary-default"
-              href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/"
+              href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/?utm_source=extension"
               rel="noopener noreferrer"
               target="_blank"
             >
