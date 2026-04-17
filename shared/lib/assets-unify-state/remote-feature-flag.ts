@@ -18,16 +18,4 @@ export type AssetsUnifyStateFeatureFlag = {
 export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
-): boolean => {
-  if (
-    process.env.IN_TEST &&
-    process.env.METAMASK_ENVIRONMENT === 'development'
-  ) {
-    return true;
-  }
-
-  return (
-    Boolean(featureFlag?.enabled) &&
-    featureFlag?.featureVersion === featureVersion
-  );
-};
+): boolean => true;
