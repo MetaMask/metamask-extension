@@ -16,6 +16,14 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+
+const DEFAULT_E2E_WALLET_BALANCE_PROFILE = JSON.parse(
+  readFileSync(
+    path.join(__dirname, 'default-wallet-balance-profile.json'),
+    'utf8',
+  ),
+);
+
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -148,6 +156,10 @@ function normalizeSmartContracts(smartContract) {
  * Use with `withFixtures({ unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: getUnifiedMainnetNativeEthHumanForFiatTotal(...) } })`
  * when calling `login(driver, { expectedBalance: '$…' })` with assets-unify-state enabled.
  *
+ * Prefer `ethConversionInUsd` equal to `ethConversionRateUsd` in
+ * `test/e2e/default-wallet-balance-profile.json` (the default when `withFixtures` omits
+ * `ethConversionInUsd`) so mocks stay aligned.
+ *
  * @param {number} expectedFiatUsd
  * @param {number} ethConversionInUsd
  * @returns {string}
@@ -190,6 +202,10 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
   } = options;
+
+  const ethConversionInUsdResolved =
+    ethConversionInUsd ??
+    DEFAULT_E2E_WALLET_BALANCE_PROFILE.ethConversionRateUsd;
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -371,7 +387,7 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
+      ethConversionInUsd: ethConversionInUsdResolved,
       monConversionInUsd,
       unifiedEvmAccountsApiBalances,
     });

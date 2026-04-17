@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 2,
+  "description": "Scalar inputs for default E2E wallet mocks. Derived values (Accounts API v5 native string, homepage aggregated fiat) are computed in default-wallet-balance-profile.ts and mock-e2e.js — do not duplicate totals here.",
+  "ethConversionRateUsd": 3010,
+  "nativeEthHumanPerChain": 25,
+  "evmChainCountForAggregatedHomepageFiat": 3
+}

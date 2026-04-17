@@ -30,6 +30,17 @@ const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
 
+const DEFAULT_WALLET_BALANCE_PROFILE_PATH = path.join(
+  __dirname,
+  'default-wallet-balance-profile.json',
+);
+const defaultWalletBalanceProfile = JSON.parse(
+  fs.readFileSync(DEFAULT_WALLET_BALANCE_PROFILE_PATH, 'utf8'),
+);
+const DEFAULT_ACCOUNTS_API_V5_NATIVE_ETH_HUMAN = String(
+  defaultWalletBalanceProfile.nativeEthHumanPerChain,
+);
+
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
@@ -168,7 +179,7 @@ async function setupMocking(
   testSpecificMock,
   {
     chainId,
-    ethConversionInUsd = 1700,
+    ethConversionInUsd = defaultWalletBalanceProfile.ethConversionRateUsd,
     unifiedEvmAccountsApiBalances = {},
   } = {},
 ) {
@@ -1335,8 +1346,8 @@ async function setupMocking(
     });
 
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
-  // Default: 25 ETH native per requested chain for the default fixture account. Override via
-  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
+  // Default native per chain: `default-wallet-balance-profile.json` (shared with TS assertion helpers).
+  // Override via withFixtures({ unifiedEvmAccountsApiBalances }) for custom totals.
   await server
     .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
     .always()
@@ -1366,7 +1377,7 @@ async function setupMocking(
         }
         const parts = id.split(':');
         const chainRef = parts[1];
-        let nativeBalance = '25';
+        let nativeBalance = DEFAULT_ACCOUNTS_API_V5_NATIVE_ETH_HUMAN;
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (defaultNativeOverride !== null) {

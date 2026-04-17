@@ -4,6 +4,8 @@ import {
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
 
+import { defaultE2EWalletBalanceProfile } from '../../../default-wallet-balance-profile';
+
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
 export const BRIDGE_REFRESH_RATE = 5000;
 
@@ -55,7 +57,9 @@ export const LOCATOR = {
     `[data-testid="import-tokens-modal-${suffix}"]`,
 };
 
-export const ETH_CONVERSION_RATE_USD = 3010;
+/** Same as `ethConversionRateUsd` in `test/e2e/default-wallet-balance-profile.json`. */
+export const ETH_CONVERSION_RATE_USD =
+  defaultE2EWalletBalanceProfile.ethConversionRateUsd;
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {

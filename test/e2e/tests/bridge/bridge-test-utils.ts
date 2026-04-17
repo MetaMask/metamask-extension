@@ -1333,9 +1333,9 @@ export const getBridgeFixtures = ({
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: {
-      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
-    },
+    // Omit unifiedEvmAccountsApiBalances so Accounts API v5 uses values from
+    // `default-wallet-balance-profile.json` scalars (see mock-e2e.js); fiat totals derive from
+    // `nativeEthHumanPerChain × evmChainCount × ethConversionRateUsd` in default-wallet-balance-profile.ts.
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
