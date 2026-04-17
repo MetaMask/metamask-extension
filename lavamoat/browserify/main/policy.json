@@ -1962,6 +1962,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "WebSocket": true,
         "__import__": true,
         "clearInterval": true,
