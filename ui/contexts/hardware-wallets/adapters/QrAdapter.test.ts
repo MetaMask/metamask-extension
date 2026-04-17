@@ -99,13 +99,13 @@ describe('QrAdapter', () => {
     expect(adapter.isConnected()).toBe(false);
   });
 
-  it('ensureDeviceReady returns true when permission is granted and getUserMedia succeeds', async () => {
+  it('ensureDeviceReady returns true immediately when permission is already granted without opening getUserMedia', async () => {
     mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
 
     await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
 
-    expect(mockOpenCameraVideoStream).toHaveBeenCalledTimes(1);
-    expect(mockStopMediaStreamTracks).toHaveBeenCalledWith(mockStream);
+    expect(mockOpenCameraVideoStream).not.toHaveBeenCalled();
+    expect(mockStopMediaStreamTracks).not.toHaveBeenCalled();
   });
 
   it('ensureDeviceReady does not call connect again when already connected', async () => {
