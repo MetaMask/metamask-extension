@@ -52,6 +52,7 @@ const mockPasskeyStartAuthentication = jest
 jest.mock('../../../../../shared/lib/passkey', () => ({
   startPasskeyAuthentication: (...args: unknown[]) =>
     mockPasskeyStartAuthentication(...args),
+  cancelPasskeyCeremony: jest.fn(),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AAEC',
     rawId: 'AAEC',
@@ -352,7 +353,7 @@ describe('ChangePassword', () => {
         new Error('NotAllowedError'),
       );
 
-      const { getByTestId, queryByTestId } = renderWithProvider(
+      const { getByTestId, getByText, queryByTestId } = renderWithProvider(
         <ChangePassword />,
         mockStore,
       );
@@ -376,11 +377,12 @@ describe('ChangePassword', () => {
         queryByTestId('change-password-current-wallet-password-input'),
       ).not.toBeInTheDocument();
 
-      const biometricsInput = getByTestId(
-        'change-password-enable-biometrics',
-      ).querySelector('input[type="checkbox"]');
-      expect(biometricsInput).toBeTruthy();
-      expect(biometricsInput).toBeChecked();
+      expect(
+        getByText(messages.unlockWithBiometricsToggle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('change-password-enable-biometrics'),
+      ).toBeInTheDocument();
     });
 
     it('skips verify current password and shows change password after passkey verification', async () => {

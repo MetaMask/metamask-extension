@@ -28,6 +28,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
+  cancelPasskeyCeremony,
 } from '../../../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../../shared/constants/app';
@@ -46,6 +47,7 @@ import PasswordForm from '../../../../components/app/password-form/password-form
 import {
   SECURITY_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
 import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
@@ -60,6 +62,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { SettingsToggleItem } from '../../settings-toggle-item';
 import { applyChangePasswordBiometricsToggle } from './change-password-biometrics';
 import ChangePasswordWarning from './change-password-warning';
 
@@ -80,7 +83,7 @@ const ChangePassword = () => {
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const animationEventEmitter = useRef(new EventEmitter());
   const autoPasskeyPromptStartedRef = useRef(false);
-  /** After first passkey auth or password verify, do not show the full-screen passkey gate again (e.g. checkbox toggles). */
+  /** After first passkey auth or password verify, do not show the full-screen passkey gate again (e.g. biometrics toggle). */
   const initialPasskeyGateDoneRef = useRef(false);
 
   const shouldSkipCurrentPasswordStep = isPasskeyActive;
@@ -186,6 +189,8 @@ const ChangePassword = () => {
             category: MetaMetricsEventCategory.Settings,
             event: MetaMetricsEventName.PasswordChanged,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               biometrics_enabled: true,
             },
           });
@@ -305,6 +310,7 @@ const ChangePassword = () => {
 
     return () => {
       cancelled = true;
+      cancelPasskeyCeremony();
       // Allow a follow-up effect run (e.g. React Strict Mode remount) to start WebAuthn again.
       autoPasskeyPromptStartedRef.current = false;
       setIsAwaitingPasskeyVerification(false);
@@ -333,6 +339,14 @@ const ChangePassword = () => {
 
   const isPasskeyVerificationLayout =
     step === ChangePasswordSteps.ChangePassword && isPasskeyFirstGateActive;
+
+  const openChangePasswordInFullScreen = () => {
+    cancelPasskeyCeremony();
+    global.platform?.openExtensionInBrowser?.(
+      SECURITY_PASSWORD_CHANGE_ROUTE,
+      'from=sidepanel',
+    );
+  };
 
   return (
     <Box
@@ -447,6 +461,25 @@ const ChangePassword = () => {
                     {t('changePasswordVerifyingPasskey')}
                   </Text>
                 </Box>
+                {isPasskeyVerificationLayout &&
+                getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
+                  <button
+                    type="button"
+                    data-testid="change-password-trouble-continue-full-screen"
+                    onClick={openChangePasswordInFullScreen}
+                    className="mt-4 w-full shrink-0 cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.PrimaryDefault}
+                      asChild
+                    >
+                      <span className="block w-full text-center no-underline hover:no-underline">
+                        {t('passkeyTroubleContinueFullScreen')}
+                      </span>
+                    </Text>
+                  </button>
+                ) : null}
               </Box>
             ) : (
               <>
@@ -489,38 +522,18 @@ const ChangePassword = () => {
                   ) : null}
                   {isSocialLoginFlow || !isPasskeyFeatureAvailable ? null : (
                     <Box marginTop={6}>
-                      <Checkbox
-                        id="change-password-enable-biometrics"
-                        data-testid="change-password-enable-biometrics"
-                        isSelected={enableBiometrics}
-                        onChange={(
-                          next: boolean | React.FormEvent<HTMLLabelElement>,
-                        ) => {
-                          if (typeof next === 'boolean') {
-                            applyChangePasswordBiometricsToggle({
-                              nextChecked: next,
-                              setEnableBiometrics,
-                            });
-                          }
+                      <SettingsToggleItem
+                        title={t('unlockWithBiometricsToggle')}
+                        description={t('biometricsToggleDescription')}
+                        value={enableBiometrics}
+                        onToggle={(current) => {
+                          applyChangePasswordBiometricsToggle({
+                            nextChecked: !current,
+                            setEnableBiometrics,
+                          });
                         }}
-                        label={
-                          <Text
-                            variant={TextVariant.BodyMd}
-                            color={TextColor.TextDefault}
-                          >
-                            {t('unlockWithBiometricsToggle')}
-                          </Text>
-                        }
-                        className="items-start flex"
+                        dataTestId="change-password-enable-biometrics"
                       />
-                      <Box marginTop={2}>
-                        <Text
-                          variant={TextVariant.BodySm}
-                          color={TextColor.TextAlternative}
-                        >
-                          {t('biometricsToggleDescription')}
-                        </Text>
-                      </Box>
                     </Box>
                   )}
                   <Box

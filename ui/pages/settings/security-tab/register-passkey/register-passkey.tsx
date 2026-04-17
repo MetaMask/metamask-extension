@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -20,7 +20,10 @@ import {
 } from '@metamask/design-system-react';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { startPasskeyRegistration } from '../../../../../shared/lib/passkey';
+import {
+  startPasskeyRegistration,
+  cancelPasskeyCeremony,
+} from '../../../../../shared/lib/passkey';
 import { PasskeySettingsToastType } from '../../../../../shared/constants/app-state';
 import { setShowPasskeySettingsToast } from '../../../../components/app/toast-master/utils';
 import {
@@ -42,7 +45,15 @@ export default function RegisterPasskey() {
   const { trackEvent } = useContext(MetaMetricsContext);
   const [isEnrolling, setIsEnrolling] = useState(false);
 
-  const fromChangePassword = new URLSearchParams(location.search).get('from') === 'change-password';
+  const fromChangePassword =
+    new URLSearchParams(location.search).get('from') === 'change-password';
+
+  useEffect(
+    () => () => {
+      cancelPasskeyCeremony();
+    },
+    [],
+  );
 
   const goToSettings = () => {
     navigate(SECURITY_ROUTE, { replace: true });
@@ -59,22 +70,28 @@ export default function RegisterPasskey() {
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
-        properties: { passkey_unlock_registered: true },
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_unlock_registered: true,
+        },
       });
+      goToSettings();
     } catch {
-      // User cancelled or authenticator unavailable
+      // User cancelled or authenticator unavailable — stay on this screen
     } finally {
       setIsEnrolling(false);
-      goToSettings();
     }
   };
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      gap={4}
+      justifyContent={BoxJustifyContent.Start}
+      alignItems={BoxAlignItems.Stretch}
+      gap={6}
       padding={4}
-      className="h-full"
+      className="h-full min-h-0"
     >
       {fromChangePassword && (
         <Box
@@ -82,7 +99,7 @@ export default function RegisterPasskey() {
           alignItems={BoxAlignItems.Center}
           gap={2}
           padding={3}
-          className="rounded-lg"
+          className="shrink-0 rounded-lg"
           style={{ backgroundColor: 'var(--color-success-muted)' }}
           data-testid="register-passkey-password-changed-banner"
         >
@@ -101,35 +118,18 @@ export default function RegisterPasskey() {
         </Box>
       )}
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Center}
-        alignItems={BoxAlignItems.Center}
-        className="my-8"
-      >
-        <img
-          src="images/biometric.png"
-          alt="Biometrics"
-          width={200}
-          height={200}
-        />
-      </Box>
-
       <Text
-        variant={TextVariant.HeadingLg}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextDefault}
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        data-testid="register-passkey-description"
       >
-        {t('unlockWithBiometrics')}
-      </Text>
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('biometricsDescription')}
       </Text>
 
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        className="w-full mt-auto"
+        className="w-full shrink-0"
       >
         <Button
           variant={ButtonVariant.Primary}
@@ -137,7 +137,9 @@ export default function RegisterPasskey() {
           className="w-full"
           data-testid="register-passkey-set-up-button"
           disabled={isEnrolling}
-          onClick={() => void handleSetUpBiometrics()}
+          onClick={() => {
+            handleSetUpBiometrics();
+          }}
         >
           {isEnrolling ? t('unlocking') : t('setUpBiometrics')}
         </Button>

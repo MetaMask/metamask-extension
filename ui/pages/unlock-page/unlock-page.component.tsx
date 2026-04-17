@@ -32,6 +32,7 @@ import {
   ButtonIconSize,
   IconColor,
   IconSize,
+  Icon,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -46,6 +47,7 @@ import Mascot from '../../components/ui/mascot';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -61,7 +63,13 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
-import { startPasskeyAuthentication } from '../../../shared/lib/passkey';
+import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  PasskeyCeremonyTimeoutError,
+} from '../../../shared/lib/passkey';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import {
   generatePasskeyAuthenticationOptions,
   unlockWithPasskey,
@@ -275,8 +283,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   }
 
   componentWillUnmount() {
+    cancelPasskeyCeremony();
     this.isUnlockViewMounted = false;
   }
+
+  openPasskeyContinueInFullScreen = () => {
+    cancelPasskeyCeremony();
+    global.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE, 'from=sidepanel');
+  };
 
   get isPasskeyActive(): boolean {
     const {
@@ -289,7 +303,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     );
   }
 
-  componentDidUpdate(prevProps: UnlockPageProps) {
+  componentDidUpdate(prevProps: UnlockPageProps, prevState: UnlockPageState) {
     const wasActive =
       prevProps.isPasskeyRegistered &&
       prevProps.isPasskeyFeatureAvailable &&
@@ -641,12 +655,23 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         return;
       }
       const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse = await startPasskeyAuthentication(
-        authOptions,
-      ).catch((error) => {
-        // TODO: handle error message correctly
-        throw new Error(t('passkeyUnlockFailed'));
-      });
+      let authenticationResponse;
+      try {
+        authenticationResponse = await startPasskeyAuthentication(authOptions);
+      } catch (error) {
+        if (error instanceof PasskeyCeremonyTimeoutError) {
+          throw error;
+        }
+        const name = error instanceof Error ? error.name : '';
+        if (name === 'NotAllowedError' || name === 'AbortError') {
+          this.setState({
+            error: null,
+            showPasswordForm: false,
+          });
+          return;
+        }
+        throw new Error(UnlockPage.getPasskeyUnlockErrorMessage(error, t));
+      }
 
       await unlockWithPasskey(authenticationResponse);
       await this.props.forceUpdateMetamaskState();
@@ -665,11 +690,19 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         properties: { method: 'passkey' },
       });
     } catch (err) {
-      // TODO: handle error message correctly
-      this.setState({
-        error: t('passkeyUnlockFailed'),
-        showPasswordForm: true,
-      });
+      if (err instanceof PasskeyCeremonyTimeoutError) {
+        this.setState({
+          error: null,
+          showPasswordForm: false,
+        });
+      } else {
+        const message =
+          err instanceof Error ? err.message : t('passkeyUnlockFailed');
+        this.setState({
+          error: message,
+          showPasswordForm: false,
+        });
+      }
     } finally {
       if (this.isUnlockViewMounted) {
         this.setState({ passkeyInProgress: false });
@@ -740,8 +773,21 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handlePasswordForm = () => {
-    this.setState({ showPasswordForm: true });
+    cancelPasskeyCeremony();
+    this.setState({
+      showPasswordForm: true,
+    });
   };
+
+  static getPasskeyUnlockErrorMessage(
+    error: unknown,
+    t: UnlockPageContext['t'],
+  ): string {
+    if (error instanceof PasskeyCeremonyTimeoutError) {
+      return t('passkeyUnlockTimedOut');
+    }
+    return t('passkeyUnlockFailed');
+  }
 
   renderLogoSection(isRehydrationFlow: boolean) {
     const { t } = this.context as UnlockPageContext;
@@ -887,7 +933,11 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                           : t('unlockWithPasskey')
                       }
                       data-testid="unlock-with-passkey"
-                      iconName={IconName.Fingerprint}
+                      iconName={
+                        this.state.passkeyInProgress
+                          ? IconName.Loading
+                          : IconName.Fingerprint
+                      }
                       size={ButtonIconSize.Lg}
                       color={IconColor.IconAlternative}
                       iconProps={{
@@ -976,21 +1026,78 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 alignItems={BoxAlignItems.Center}
                 gap={4}
               >
+                {!showPasswordForm && error ? (
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                    textAlign={TextAlign.Center}
+                    data-testid="unlock-passkey-error-banner"
+                    className="w-full"
+                  >
+                    {error}
+                  </Text>
+                ) : null}
                 <Button
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}
                   className="w-full"
                   type="button"
                   data-testid="unlock-biometrics"
-                  disabled={
-                    isLocked || isSubmitting || this.state.passkeyInProgress
-                  }
+                  disabled={isLocked || isSubmitting}
                   onClick={this.handlePasskeyUnlock}
+                  aria-busy={this.state.passkeyInProgress}
+                  aria-label={
+                    this.state.passkeyInProgress
+                      ? t('unlockingWithBiometrics')
+                      : t('unlockWithBiometrics')
+                  }
+                  endIconName={
+                    this.state.passkeyInProgress
+                      ? undefined
+                      : IconName.Fingerprint
+                  }
+                  endIconProps={{
+                    size: IconSize.Lg,
+                  }}
                 >
-                  {this.state.passkeyInProgress
-                    ? t('unlocking')
-                    : t('unlockWithBiometrics')}
+                  {this.state.passkeyInProgress ? (
+                    <span className="inline-flex items-center justify-center gap-2 text-inherit">
+                      <Text
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.Inherit}
+                        asChild
+                      >
+                        <span>{t('unlockingWithBiometrics')}</span>
+                      </Text>
+                      <Icon
+                        name={IconName.Loading}
+                        size={IconSize.Lg}
+                        className="shrink-0 animate-spin text-inherit"
+                      />
+                    </span>
+                  ) : (
+                    t('unlockWithBiometrics')
+                  )}
                 </Button>
+                {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+                this.isPasskeyActive ? (
+                  <button
+                    type="button"
+                    data-testid="unlock-trouble-continue-full-screen"
+                    onClick={this.openPasskeyContinueInFullScreen}
+                    className="w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.PrimaryDefault}
+                      asChild
+                    >
+                      <span className="block w-full text-center no-underline hover:no-underline">
+                        {t('passkeyTroubleContinueFullScreen')}
+                      </span>
+                    </Text>
+                  </button>
+                ) : null}
                 <Button
                   variant={ButtonVariant.Tertiary}
                   data-testid="unlock-use-password-button"

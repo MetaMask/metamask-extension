@@ -3,6 +3,7 @@ import {
   startAuthentication,
   base64URLStringToBuffer,
   bufferToBase64URLString,
+  WebAuthnAbortService,
 } from '@simplewebauthn/browser';
 import type {
   PasskeyAuthenticationOptions,
@@ -11,6 +12,31 @@ import type {
   PasskeyRegistrationResponse,
   PrfEvalExtension,
 } from '@metamask/passkey-controller';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../constants/app';
+import { getEnvironmentType } from '../environment-type';
+
+/**
+ * Wall-clock cap for WebAuthn in the **side panel** only (where ceremonies often hang).
+ * Popup/fullscreen rely on the browser/OS without an extra app timeout.
+ */
+export const PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS = 30_000;
+
+export class PasskeyCeremonyTimeoutError extends Error {
+  override readonly name = 'PasskeyCeremonyTimeoutError';
+
+  constructor() {
+    super('Passkey ceremony timed out');
+    Object.setPrototypeOf(this, PasskeyCeremonyTimeoutError.prototype);
+  }
+}
+
+/**
+ * Aborts the in-flight WebAuthn request without starting a new ceremony.
+ * Call from unmount, “use password”, or when leaving the passkey step.
+ */
+export function cancelPasskeyCeremony(): void {
+  WebAuthnAbortService.cancelCeremony();
+}
 
 type ExtensionsWithPrf = AuthenticationExtensionsClientInputs & {
   prf?: PrfEvalExtension;
@@ -22,6 +48,38 @@ type PrfExtensionClient = {
     results?: { first?: ArrayBuffer };
   };
 };
+
+async function withPasskeyCeremonyTimeout<TResult>(
+  ceremony: () => Promise<TResult>,
+  timeoutMs: number,
+): Promise<TResult> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      WebAuthnAbortService.cancelCeremony();
+      reject(new PasskeyCeremonyTimeoutError());
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([ceremony(), timeoutPromise]);
+  } finally {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
+async function runPasskeyCeremony<TResult>(
+  ceremony: () => Promise<TResult>,
+): Promise<TResult> {
+  if (getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL) {
+    return ceremony();
+  }
+  return withPasskeyCeremonyTimeout(
+    ceremony,
+    PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS,
+  );
+}
 
 /**
  * Starts the WebAuthn registration ceremony.
@@ -35,14 +93,16 @@ type PrfExtensionClient = {
 export async function startPasskeyRegistration(
   options: PasskeyRegistrationOptions,
 ): Promise<PasskeyRegistrationResponse> {
-  const optionsJSON = preparePrfForBrowser(options);
-  const response = await startRegistration({ optionsJSON });
-  return {
-    ...response,
-    clientExtensionResults: preparePrfForTransport(
-      response.clientExtensionResults,
-    ),
-  };
+  return runPasskeyCeremony(async () => {
+    const optionsJSON = preparePrfForBrowser(options);
+    const response = await startRegistration({ optionsJSON });
+    return {
+      ...response,
+      clientExtensionResults: preparePrfForTransport(
+        response.clientExtensionResults,
+      ),
+    };
+  });
 }
 
 /**
@@ -57,14 +117,16 @@ export async function startPasskeyRegistration(
 export async function startPasskeyAuthentication(
   options: PasskeyAuthenticationOptions,
 ): Promise<PasskeyAuthenticationResponse> {
-  const optionsJSON = preparePrfForBrowser(options);
-  const response = await startAuthentication({ optionsJSON });
-  return {
-    ...response,
-    clientExtensionResults: preparePrfForTransport(
-      response.clientExtensionResults,
-    ),
-  };
+  return runPasskeyCeremony(async () => {
+    const optionsJSON = preparePrfForBrowser(options);
+    const response = await startAuthentication({ optionsJSON });
+    return {
+      ...response,
+      clientExtensionResults: preparePrfForTransport(
+        response.clientExtensionResults,
+      ),
+    };
+  });
 }
 
 function preparePrfForBrowser<

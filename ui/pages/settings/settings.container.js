@@ -63,6 +63,7 @@ const ROUTES_TO_I18N_KEYS = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: 'notifications',
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
+  [SECURITY_REGISTER_PASSKEY_ROUTE]: 'unlockWithBiometrics',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [SECURITY_TURN_OFF_PASSKEY_ROUTE]: 'turnOffPasskeysTitle',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',

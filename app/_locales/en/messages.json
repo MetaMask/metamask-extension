@@ -9121,8 +9121,15 @@
   "passkeyUnlockFailed": {
     "message": "Passkey unlock failed. Try your password."
   },
+  "passkeyTroubleContinueFullScreen": {
+    "message": "Having trouble with biometrics?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
   "unlockWithBiometrics": {
     "message": "Unlock with biometrics"
+  },
+  "unlockingWithBiometrics": {
+    "message": "Unlocking with biometrics"
   },
   "unlockWithBiometricsToggle": {
     "message": "Unlock with biometrics"

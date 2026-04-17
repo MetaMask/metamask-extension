@@ -71,6 +71,8 @@ import {
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  PasskeyCeremonyTimeoutError,
 } from '../../../../shared/lib/passkey';
 import {
   protectVaultKeyWithPasskey,
@@ -192,6 +194,18 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    cancelPasskeyCeremony();
+  }
+
+  openPasskeyTurnOffInFullScreen = () => {
+    cancelPasskeyCeremony();
+    global.platform?.openExtensionInBrowser?.(
+      SECURITY_TURN_OFF_PASSKEY_ROUTE,
+      'from=sidepanel',
+    );
+  };
+
   toggleSetting(value, toggleMethod) {
     toggleMethod(!value);
   }
@@ -290,7 +304,11 @@ export default class SecurityTab extends PureComponent {
         'Passkey verification for disable failed; offering password fallback',
         error,
       );
-      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE);
+      if (!(error instanceof PasskeyCeremonyTimeoutError)) {
+        if (error?.name !== 'NotAllowedError' && error?.name !== 'AbortError') {
+          navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE);
+        }
+      }
     } finally {
       this.setState({ passkeyToggleBusy: false });
     }
@@ -1421,6 +1439,22 @@ export default class SecurityTab extends PureComponent {
           <Text marginBottom={2} color={TextColor.textAlternative}>
             {t('biometricsToggleDescription')}
           </Text>
+          {passkeyToggleBusy &&
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
+            <button
+              type="button"
+              data-testid="security-passkey-sidepanel-continue-full-screen"
+              className="w-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none hover:bg-transparent hover:shadow-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-primary-default focus-visible:ring-offset-2"
+              onClick={this.openPasskeyTurnOffInFullScreen}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.primaryDefault}
+              >
+                {t('passkeyTroubleContinueFullScreen')}
+              </Text>
+            </button>
+          ) : null}
         </div>
 
         <div className="settings-page__content-item-col"></div>

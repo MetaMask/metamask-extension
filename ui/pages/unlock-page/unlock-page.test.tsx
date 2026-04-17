@@ -45,6 +45,7 @@ jest.mock('../../../shared/lib/passkey', () => ({
       signature: 'AQ',
     },
   }),
+  cancelPasskeyCeremony: jest.fn(),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 

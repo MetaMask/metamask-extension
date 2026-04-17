@@ -42,6 +42,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../../../../shared/lib/passkey', () => ({
+  cancelPasskeyCeremony: jest.fn(),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AQ',
     rawId: 'AQ',
@@ -71,21 +72,15 @@ describe('RegisterPasskey', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the biometrics heading and setup button', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <RegisterPasskey />,
-      mockStore,
-    );
+  it('renders the biometrics description and setup button', () => {
+    const { getByTestId } = renderWithProvider(<RegisterPasskey />, mockStore);
 
-    expect(getByText('Unlock with biometrics')).toBeInTheDocument();
+    expect(getByTestId('register-passkey-description')).toBeInTheDocument();
     expect(getByTestId('register-passkey-set-up-button')).toBeInTheDocument();
   });
 
   it('renders cancel button when not from change-password', () => {
-    const { getByTestId } = renderWithProvider(
-      <RegisterPasskey />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<RegisterPasskey />, mockStore);
 
     expect(getByTestId('register-passkey-cancel-button')).toHaveTextContent(
       'Cancel',
@@ -129,10 +124,7 @@ describe('RegisterPasskey', () => {
   });
 
   it('navigates to security settings on cancel', () => {
-    const { getByTestId } = renderWithProvider(
-      <RegisterPasskey />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<RegisterPasskey />, mockStore);
 
     fireEvent.click(getByTestId('register-passkey-cancel-button'));
 
@@ -142,10 +134,7 @@ describe('RegisterPasskey', () => {
   });
 
   it('completes passkey registration and navigates to security settings', async () => {
-    const { getByTestId } = renderWithProvider(
-      <RegisterPasskey />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<RegisterPasskey />, mockStore);
 
     fireEvent.click(getByTestId('register-passkey-set-up-button'));
 
@@ -163,22 +152,19 @@ describe('RegisterPasskey', () => {
     });
   });
 
-  it('navigates to security settings even on registration failure', async () => {
+  it('stays on register passkey when registration fails', async () => {
     mockProtectVaultKeyWithPasskey.mockRejectedValueOnce(
       new Error('cancelled'),
     );
 
-    const { getByTestId } = renderWithProvider(
-      <RegisterPasskey />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<RegisterPasskey />, mockStore);
 
     fireEvent.click(getByTestId('register-passkey-set-up-button'));
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE, {
-        replace: true,
-      });
+      expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalled();
     });
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });
