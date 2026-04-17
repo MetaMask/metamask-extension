@@ -790,7 +790,7 @@
   "previewBuilds": {
     "@metamask/assets-controllers": {
       "type": "non-breaking",
-      "previewVersion": "104.0.0-preview-f45136cd3"
+      "previewVersion": "104.0.0-preview-d363b2d74"
     }
   },
   "engines": {
