@@ -1335,20 +1335,25 @@ function trackAppOpened(environment) {
 }
 
 /**
- * Helper function to refresh appActiveTab by querying the current active tab
- * This is used when the sidepanel opens to ensure it has the current tab info
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ *
+ * @param {number} [windowId] - If provided, queries the active tab in this
+ * specific window. Otherwise queries the active tab in the current window.
  */
-const refreshAppActiveTab = async () => {
+const refreshAppActiveTab = async (windowId) => {
   await isInitialized;
   if (!controller) {
     return;
   }
 
   try {
-    const tabs = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+    const queryOptions = windowId
+      ? { active: true, windowId }
+      : { active: true, currentWindow: true };
+
+    const tabs = await browser.tabs.query(queryOptions);
     if (!tabs || tabs.length === 0) {
       return;
     }
@@ -2350,6 +2355,22 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   return {};
+});
+
+// Window focus listener to keep appActiveTab in sync across browser windows.
+// Without this, switching between Chrome windows can leave appActiveTab pointing
+// at the previously focused window's tab, causing
+// the connection bar [ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.tsx]
+// to disappear or appear on the wrong window.
+browser.windows.onFocusChanged.addListener(async (windowId) => {
+  // WINDOW_ID_NONE means all browser windows lost focus (e.g., user switched
+  // to another application). Keep appActiveTab unchanged so it stays correct
+  // when the user returns to Chrome.
+  if (windowId === browser.windows.WINDOW_ID_NONE) {
+    return;
+  }
+
+  await refreshAppActiveTab(windowId);
 });
 
 function setupSentryGetStateGlobal(store) {

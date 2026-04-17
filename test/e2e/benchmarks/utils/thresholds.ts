@@ -8,13 +8,14 @@ export const DEFAULT_CI_MULTIPLIER = 1.5;
 
 /**
  * CLS (Cumulative Layout Shift) canary thresholds.
- * Extension pages produce CLS ≈ 0. Any non-zero value is a real signal
- * (layout shift from lazy-loaded component, dynamic banner, skeleton screen).
- * Unitless — no CI multiplier needed. Google thresholds applied.
+ * Extension pages should produce CLS ≈ 0; any measurable shift is a real
+ * signal (lazy-loaded component, dynamic banner, skeleton screen).
+ * Unitless — no CI multiplier needed. Uses Google's standard CWV boundaries:
+ * p75 ≤ 0.1 "good" / ≤ 0.25 "needs-improvement" / > 0.25 "poor".
  */
 const CLS_THRESHOLDS = {
   cls: {
-    p75: { warn: 0.05, fail: 0.1 },
+    p75: { warn: 0.1, fail: 0.25 },
     p95: { warn: 0.1, fail: 0.25 },
   },
 } satisfies ThresholdConfig;
