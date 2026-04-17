@@ -508,7 +508,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('shows an add funds CTA when new order balance is zero', async () => {
+    it('disables submit button and shows add funds label when balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
