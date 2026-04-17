@@ -104,6 +104,31 @@ describe('TrezorAdapter', () => {
     it('initializes disconnected state', () => {
       expect(adapter.isConnected()).toBe(false);
     });
+
+    it('does not subscribe to WebUSB events in the adapter', () => {
+      const originalUsb = navigator.usb;
+      const addEventListener = jest.fn();
+      const removeEventListener = jest.fn();
+
+      Object.defineProperty(navigator, 'usb', {
+        configurable: true,
+        value: {
+          ...originalUsb,
+          addEventListener,
+          removeEventListener,
+        },
+      });
+
+      const testAdapter = new TrezorAdapter(mockOptions);
+
+      expect(addEventListener).not.toHaveBeenCalled();
+
+      testAdapter.destroy();
+      Object.defineProperty(navigator, 'usb', {
+        configurable: true,
+        value: originalUsb,
+      });
+    });
   });
 
   describe('connect', () => {

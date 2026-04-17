@@ -34150,7 +34150,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^6.0.0"
-    "@metamask/assets-controllers": "npm:^103.1.0"
+    "@metamask/assets-controllers": "npm:^104.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
