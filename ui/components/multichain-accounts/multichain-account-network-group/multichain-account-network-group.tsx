@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
+  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -10,7 +11,6 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarTokenSize } from '../../component-library';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 
 export type MultichainAccountNetworkGroupProps = {
