@@ -541,6 +541,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isDepositLoading ||
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
+    hasNoAvailableBalance ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
