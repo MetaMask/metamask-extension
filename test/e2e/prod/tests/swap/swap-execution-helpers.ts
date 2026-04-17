@@ -82,13 +82,34 @@ export async function importSingleFundedAccount(
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
 
-  // Import the funded account; keep the default name assigned by MetaMask
-  await accountListPage.addNewImportedAccount(privateKey, undefined, {
-    isMultichainAccountsState2Enabled: true,
-  });
-  console.log('[EXEC] Funded account imported successfully');
+  // Import the funded account; keep the default name assigned by MetaMask.
+  // The final confirm click can intermittently time out waiting for the
+  // button to become stale even when the import actually succeeded.
+  try {
+    await accountListPage.addNewImportedAccount(privateKey, undefined, {
+      isMultichainAccountsState2Enabled: true,
+    });
+    console.log('[EXEC] Funded account imported successfully');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isRecoverableStaleTimeout =
+      errorMessage.includes('Waiting element to become stale') ||
+      errorMessage.includes('Wait timed out');
 
-  await accountListPage.closeMultichainAccountsPage();
+    if (!isRecoverableStaleTimeout) {
+      throw error;
+    }
+
+    console.warn(
+      '[EXEC] ⚠️  Import confirm stale-timeout encountered; continuing with recovery close.',
+    );
+  }
+
+  try {
+    await accountListPage.closeMultichainAccountsPage();
+  } catch (_error) {
+    // Best-effort close; if already closed, continue.
+  }
 
   // Allow account state to settle before proceeding
   await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
