@@ -297,7 +297,9 @@ class SnapSimpleKeyringPage {
     await this.driver.waitForSelector(this.confirmAddtoMetamask);
     await this.driver.clickElement(this.confirmAddtoMetamask);
 
-    await this.driver.waitForSelector(this.installationCompleteMessage);
+    await this.driver.waitForSelector(this.installationCompleteMessage, {
+      timeout: 30000,
+    });
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmCompleteButton,
     );

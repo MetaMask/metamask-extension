@@ -311,6 +311,59 @@
     },
     "approvalFlows": [],
     "assetExchangeRates": {},
+    "assetPreferences": {},
+    "assetsBalance": {
+      "*": {
+        "*": {
+          "amount": "string"
+        }
+      }
+    },
+    "assetsInfo": {
+      "eip155:1/slip44:60": {
+        "type": "string",
+        "name": "string",
+        "symbol": "string",
+        "decimals": "number"
+      },
+      "eip155:10/slip44:60": {
+        "aggregators": [],
+        "decimals": "number",
+        "image": "string",
+        "name": "string",
+        "symbol": "string",
+        "type": "string"
+      },
+      "eip155:1337/slip44:1": {
+        "type": "string",
+        "name": "string",
+        "symbol": "string",
+        "decimals": "number"
+      },
+      "eip155:42161/slip44:60": {
+        "aggregators": [],
+        "decimals": "number",
+        "image": "string",
+        "name": "string",
+        "symbol": "string",
+        "type": "string"
+      },
+      "eip155:59144/slip44:60": {
+        "aggregators": [],
+        "decimals": "number",
+        "image": "string",
+        "name": "string",
+        "symbol": "string",
+        "type": "string"
+      },
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+        "decimals": "number",
+        "image": "string",
+        "name": "string",
+        "symbol": "string",
+        "type": "string"
+      }
+    },
     "assetsMetadata": {
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
         "name": "string",
@@ -469,6 +522,37 @@
         ]
       }
     },
+    "assetsPrice": {
+      "eip155:1/slip44:60": {
+        "id": "string",
+        "price": "number",
+        "marketCap": "number",
+        "totalVolume": "number",
+        "dilutedMarketCap": "number",
+        "pricePercentChange1d": "number",
+        "assetPriceType": "string",
+        "usdPrice": "number",
+        "lastUpdated": "number"
+      },
+      "eip155:1337/slip44:1": {
+        "assetPriceType": "string",
+        "id": "string",
+        "price": "number",
+        "usdPrice": "number"
+      },
+      "eip155:42161/slip44:60": {
+        "assetPriceType": "string",
+        "id": "string",
+        "price": "number",
+        "usdPrice": "number"
+      },
+      "eip155:59144/slip44:60": {
+        "assetPriceType": "string",
+        "id": "string",
+        "price": "number",
+        "usdPrice": "number"
+      }
+    },
     "balances": {
       "<solana-account-1>": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
@@ -621,23 +705,37 @@
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {},
+    "conversionRates": {
+      "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+        "currency": "string",
+        "rate": "string",
+        "conversionTime": "number",
+        "expirationTime": "number",
+        "marketData": {
+          "fungible": "boolean",
+          "allTimeHigh": "string",
+          "allTimeLow": "string",
+          "circulatingSupply": "string",
+          "marketCap": "string",
+          "totalVolume": "string",
+          "pricePercentChange": {
+            "PT1H": "number",
+            "P1D": "number",
+            "P7D": "number",
+            "P14D": "number",
+            "P30D": "number",
+            "P200D": "number",
+            "P1Y": "number"
+          }
+        }
+      }
+    },
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
-      "BNB": {
-        "conversionDate": "null",
-        "conversionRate": "null",
-        "usdConversionRate": "null"
-      },
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": "number",
-        "usdConversionRate": "number"
-      },
-      "POL": {
         "conversionDate": "null",
-        "conversionRate": "null",
+        "conversionRate": "number",
         "usdConversionRate": "null"
       }
     },
@@ -647,6 +745,7 @@
     "dappSwapComparisonData": {},
     "currentLocale": "string",
     "currentMigrationVersion": "number",
+    "customAssets": {},
     "database": {
       "blockedSnaps": [
         {
@@ -665,6 +764,7 @@
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
     "drafts": [],
+    "error": "null",
     "enabledNetworkMap": {
       "bip122": {
         "bip122:000000000019d6689c085ae165831e93": "boolean",
@@ -1020,6 +1120,7 @@
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
+    "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -1031,16 +1132,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
-    "marketData": {
-      "0x1": {},
-      "0x2105": {},
-      "0x38": {},
-      "0x539": {},
-      "0x89": {},
-      "0xa": {},
-      "0xa4b1": {},
-      "0xe708": {}
-    },
+    "marketData": {},
     "marketFilterPreferences": {
       "optionId": "string",
       "direction": "string"
@@ -1270,6 +1362,7 @@
       "*": "number"
     },
     "localOverrides": {},
+    "location": "string",
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
@@ -1282,6 +1375,7 @@
     "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedPaymentToken": "null",
+    "selectedCurrency": "string",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
@@ -1293,6 +1387,7 @@
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "null",
     "showSidePanelMigrationToast": "boolean",
+    "status": "string",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
@@ -1438,13 +1533,7 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
-    "tokenBalances": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "0x539": {
-          "0x0000000000000000000000000000000000000000": "string"
-        }
-      }
-    },
+    "tokenBalances": {},
     "tokenScanCache": {},
     "tokensChainsCache": {
       "0x539": {

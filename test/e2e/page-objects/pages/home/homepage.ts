@@ -423,7 +423,7 @@ class HomePage {
     timeout: number = 30000,
   ): Promise<void> {
     if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
