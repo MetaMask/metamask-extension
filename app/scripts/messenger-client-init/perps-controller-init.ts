@@ -4,6 +4,7 @@ import {
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
+import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { MessengerClientInitFunction } from './types';
@@ -48,10 +49,32 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsController,
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
+  const storageNamespace = 'PerpsController';
   const trackEvent = (payload: MetaMetricsEventPayload) => {
     controllerMessenger.call('MetaMetricsController:trackEvent', payload);
   };
-  const infrastructure = createPerpsInfrastructure({ trackEvent });
+  const infrastructure = createPerpsInfrastructure({
+    trackEvent,
+    getStorageItem: (key: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:getItem`,
+        storageNamespace,
+        key,
+      ),
+    setStorageItem: (key: string, value: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:setItem`,
+        storageNamespace,
+        key,
+        value,
+      ),
+    removeStorageItem: (key: string) =>
+      controllerMessenger.call(
+        `${STORAGE_SERVICE_NAME}:removeItem`,
+        storageNamespace,
+        key,
+      ),
+  });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
   const completedOnboarding =
@@ -123,6 +146,7 @@ type PerpsActionName =
   | 'perpsGetHistoricalPortfolio'
   | 'perpsFetchHistoricalCandles'
   | 'perpsCalculateFees'
+  | 'perpsCalculateLiquidationPrice'
   | 'perpsGetAvailableDexs'
   | 'perpsRefreshEligibility'
   | 'perpsStartEligibilityMonitoring'
@@ -307,6 +331,9 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
     ),
     perpsCalculateFees: guard(
       messengerClient.calculateFees.bind(messengerClient),
+    ),
+    perpsCalculateLiquidationPrice: guard(
+      messengerClient.calculateLiquidationPrice.bind(messengerClient),
     ),
     perpsGetAvailableDexs: guard(
       messengerClient.getAvailableDexs.bind(messengerClient),
