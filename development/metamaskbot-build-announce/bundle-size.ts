@@ -12,7 +12,7 @@ const bundlePartLabels: Record<BundlePart, string> = {
   background: 'background',
   ui: 'ui',
   common: 'common',
-  auxiliaryPages: 'auxiliary pages',
+  other: 'other',
   contentScripts: 'content scripts',
 };
 

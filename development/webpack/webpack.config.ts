@@ -36,8 +36,10 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
+import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/bundle-size';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -59,6 +61,48 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+const bundleSizeUiEntrypoints = new Set([
+  'home',
+  'loading',
+  'notification',
+  'popup-init',
+  'popup',
+  'sidepanel',
+]);
+const bundleSizeOtherEntrypoints = new Set([
+  'offscreen',
+  'trezor-usb-permissions',
+  'usb-permissions',
+]);
+const bundleSizeContentScriptEntrypoints = new Set([
+  'scripts/contentscript.js',
+  'scripts/inpage.js',
+  'vendor/trezor/content-script.js',
+]);
+
+// TODO(#41847): Move HTML entrypoints into ownership-specific locations so
+// this classifier no longer needs to know about the current mixed page layout.
+const classifyBundleSizeEntrypoint = (
+  entrypointName: string,
+): BundleSizeCategory | null => {
+  if (entrypointName === 'service-worker.ts') {
+    return 'background';
+  }
+
+  if (bundleSizeUiEntrypoints.has(entrypointName)) {
+    return 'ui';
+  }
+
+  if (bundleSizeOtherEntrypoints.has(entrypointName)) {
+    return 'other';
+  }
+
+  if (bundleSizeContentScriptEntrypoints.has(entrypointName)) {
+    return 'contentScripts';
+  }
+
+  return null;
+};
 
 // #region cache
 const cache = args.cache
@@ -124,6 +168,12 @@ const manifestPlugin = new ManifestPlugin({
   // know if the build contents have changed. Can be useful during testing or
   // development.
   setBuildId: args.test,
+  stats: args.stats
+    ? {
+        outFile: BUNDLE_SIZE_SUMMARY_FILE,
+        classifyEntrypoint: classifyBundleSizeEntrypoint,
+      }
+    : undefined,
 });
 
 const plugins: WebpackPluginInstance[] = [
@@ -233,17 +283,6 @@ if (args.reactCompilerVerbose) {
     ReactCompilerPlugin,
   } = require('./utils/plugins/ReactCompilerPlugin');
   plugins.push(new ReactCompilerPlugin());
-}
-
-if (args.stats) {
-  const {
-    BundleSizeStatsPlugin,
-  } = require('./utils/plugins/BundleSizeStatsPlugin');
-  plugins.push(
-    new BundleSizeStatsPlugin({
-      browsers: args.browser,
-    }),
-  );
 }
 
 // #endregion plugins

@@ -16,6 +16,7 @@ import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/bundle-size';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -176,7 +177,7 @@ ${Object.entries(env)
     assert.strictEqual(
       runtimeChunk.name({ name: 'offscreen' }),
       'runtime',
-      'auxiliary pages should share the runtime chunk',
+      'other pages should share the runtime chunk',
     );
     assert.strictEqual(
       runtimeChunk.name({ name: '< random >' }),
@@ -236,6 +237,7 @@ ${Object.entries(env)
     });
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
+    assert.strictEqual(manifestPlugin.options.stats, undefined);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
 
@@ -307,6 +309,33 @@ ${Object.entries(env)
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
+    assert(manifestPlugin.options.stats, 'Stats options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.stats.outFile,
+      BUNDLE_SIZE_SUMMARY_FILE,
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
+      'background',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('home'),
+      'ui',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
+      'other',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint(
+        'scripts/contentscript.js',
+      ),
+      'contentScripts',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
+      null,
+    );
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -316,11 +345,6 @@ ${Object.entries(env)
       undefined,
       'Progress plugin should be absent',
     );
-
-    const bundleSizeStatsPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'BundleSizeStatsPlugin',
-    );
-    assert.ok(bundleSizeStatsPlugin, 'BundleSizeStatsPlugin should be present');
   });
 
   it('should allow disabling source maps', () => {

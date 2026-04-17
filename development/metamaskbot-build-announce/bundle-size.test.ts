@@ -73,7 +73,7 @@ describe('buildBundleSizeDiffSection', () => {
     background: 1600,
     ui: 2500,
     common: 400,
-    auxiliaryPages: 100,
+    other: 100,
     contentScripts: 60,
     zip: 4200,
     timestamp: 2,
@@ -84,7 +84,7 @@ describe('buildBundleSizeDiffSection', () => {
       background: 1500,
       ui: 2400,
       common: 400,
-      auxiliaryPages: 90,
+      other: 90,
       contentScripts: 50,
       zip: 4000,
       timestamp: 1,
@@ -109,7 +109,7 @@ describe('buildBundleSizeDiffSection', () => {
       } as unknown as Response);
   }
 
-  it('renders the webpack section with auxiliary pages and content scripts rows', async () => {
+  it('renders the webpack section with other and content scripts rows', async () => {
     mockSuccessfulFetches();
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
@@ -122,7 +122,7 @@ describe('buildBundleSizeDiffSection', () => {
       '\n\n<br>\n\n| Status | Bundle | Total | Diff | Change |',
     );
     expect(result).toContain('| Status | Bundle | Total | Diff | Change |');
-    expect(result).toContain('| ✅ | auxiliary pages |');
+    expect(result).toContain('| ✅ | other |');
     expect(result).toContain('| ✅ | content scripts |');
     expect(result).toContain('| ✅ | zip |');
   });
@@ -137,7 +137,7 @@ describe('buildBundleSizeDiffSection', () => {
     );
     expect(result).toContain('| ✅ | ui | 2.44 KiB | +100 Bytes | +4.17% |');
     expect(result).toContain(
-      '| ✅ | auxiliary pages | 100 Bytes | +10 Bytes | +11.11% |',
+      '| ✅ | other | 100 Bytes | +10 Bytes | +11.11% |',
     );
     expect(result).toContain(
       '| ✅ | content scripts | 60 Bytes | +10 Bytes | +20.00% |',
@@ -203,7 +203,7 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('|  | auxiliary pages | 100 Bytes | - | - |');
+    expect(result).toContain('|  | other | 100 Bytes | - | - |');
     expect(result).toContain('|  | content scripts | 60 Bytes | - | - |');
     expect(result).toContain('|  | zip | 4.1 KiB | - | - |');
   });

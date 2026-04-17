@@ -19,7 +19,7 @@ on:
     # Run the full suite "overnight," once every hour from 2:00am UTC until 5:59am UTC.
     # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
     # especially the Monday morning list, which is otherwise usually a fake empty.
-    - cron: '0 2-6 * * *'
+    - cron: "0 2-6 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
@@ -470,11 +470,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
-      - name: Measure webpack bundle size
+      - name: Copy bundle size summary
         run: >-
-          yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts
-          --dist-dir artifacts/build-dist-webpack/dist/chrome
-          --out test-artifacts/chrome
+          mkdir -p test-artifacts/chrome &&
+          cp artifacts/build-dist-webpack/dist/chrome/bundle_size_stats.json test-artifacts/chrome/
 
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}

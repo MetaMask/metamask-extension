@@ -6,6 +6,7 @@ import {
   type Compilation,
   type Compiler,
   type Asset,
+  type Chunk,
   type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
@@ -15,13 +16,28 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
+import { createBundleSizeSummary } from '../../bundle-size';
 import { schema } from './schema';
-import type { ManifestPluginOptions } from './types';
+import type { BundleSizeCategory, ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
 const { CachedSource, RawSource } = sources;
 
 type Assets = Compilation['assets'];
+type Entrypoint =
+  Compilation['entrypoints'] extends Map<string, infer T> ? T : never;
+type BundleSizeAssetStat = {
+  name: string;
+  size: number;
+};
+type BundleSizeDebugEntrypoint = {
+  category: BundleSizeCategory;
+  initialFiles: BundleSizeAssetStat[];
+  asyncFiles: BundleSizeAssetStat[];
+};
+type BundleSizeDebugArtifact = {
+  entrypoints: Record<string, BundleSizeDebugEntrypoint>;
+};
 
 export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
@@ -30,6 +46,102 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+const bundleSizeCategories = [
+  'background',
+  'ui',
+  'other',
+  'contentScripts',
+] as const satisfies readonly BundleSizeCategory[];
+
+function isJavaScriptAsset(assetName: string): boolean {
+  return (
+    assetName.endsWith('.js') ||
+    assetName.endsWith('.mjs') ||
+    assetName.endsWith('.cjs')
+  );
+}
+
+function normalizeRelativePath(filePath: string): string {
+  return filePath.split(path.sep).join(path.posix.sep);
+}
+
+function stripBrowserPrefix(
+  assetName: string,
+  browsers: readonly Browser[],
+): string {
+  for (const browser of browsers) {
+    const prefix = `${browser}/`;
+    if (assetName.startsWith(prefix)) {
+      return assetName.slice(prefix.length);
+    }
+  }
+
+  return assetName;
+}
+
+function getAssetStats(
+  compilation: Compilation,
+  assetNames: string[],
+  browsers: readonly Browser[],
+): BundleSizeAssetStat[] {
+  const seenAssets = new Set<string>();
+
+  return assetNames.flatMap((assetName) => {
+    if (!isJavaScriptAsset(assetName)) {
+      return [];
+    }
+
+    const normalizedName = normalizeRelativePath(
+      stripBrowserPrefix(assetName, browsers),
+    );
+    if (seenAssets.has(normalizedName)) {
+      return [];
+    }
+
+    seenAssets.add(normalizedName);
+    const asset = compilation.getAsset(assetName);
+    if (!asset) {
+      throw new Error(`Missing emitted asset "${assetName}"`);
+    }
+
+    return [{ name: normalizedName, size: asset.source.size() }];
+  });
+}
+
+function getChunkAssets(
+  compilation: Compilation,
+  chunks: Iterable<Chunk>,
+  browsers: readonly Browser[],
+): BundleSizeAssetStat[] {
+  return getAssetStats(
+    compilation,
+    Array.from(chunks, (chunk) => Array.from(chunk.files)).flat(),
+    browsers,
+  );
+}
+
+function getEntrypointAssets(
+  compilation: Compilation,
+  entrypoint: Entrypoint,
+  browsers: readonly Browser[],
+): Pick<BundleSizeDebugEntrypoint, 'initialFiles' | 'asyncFiles'> {
+  return {
+    initialFiles: getAssetStats(compilation, entrypoint.getFiles(), browsers),
+    asyncFiles: getChunkAssets(
+      compilation,
+      entrypoint.getEntrypointChunk().getAllAsyncChunks(),
+      browsers,
+    ),
+  };
+}
+
+function getBundleSizeDebugFilePath(outFile: string): string {
+  const parsed = path.posix.parse(outFile);
+  const baseName = parsed.ext ? parsed.name : parsed.base;
+  const extension = parsed.ext || '.json';
+
+  return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
+}
 
 /**
  * A webpack plugin that generates extension manifests for browsers and organizes
@@ -116,6 +228,166 @@ export class ManifestPlugin<Z extends boolean> {
         },
       );
     });
+  }
+
+  private getBundleZipSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (!this.options.zip) {
+      return undefined;
+    }
+
+    const { outFilePath } = (this.options as ManifestPluginOptions<true>)
+      .zipOptions;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    const zipAsset = compilation.getAsset(zipAssetPath);
+
+    if (!zipAsset) {
+      throw new Error(`Missing emitted zip asset "${zipAssetPath}"`);
+    }
+
+    return zipAsset.source.size();
+  }
+
+  private emitBundleSizeStatsAssets(compilation: Compilation): void {
+    const statsOptions = this.options.stats;
+
+    if (!statsOptions) {
+      return;
+    }
+
+    const categoryAssets = Object.fromEntries(
+      bundleSizeCategories.map((category) => [category, new Set<string>()]),
+    ) as Record<BundleSizeCategory, Set<string>>;
+    const assetSizeMap = new Map<string, number>();
+    const debugEntrypoints: Record<string, BundleSizeDebugEntrypoint> = {};
+
+    Array.from(compilation.entrypoints)
+      .toSorted(([left], [right]) => left.localeCompare(right))
+      .forEach(([name, entrypoint]) => {
+        const category = statsOptions.classifyEntrypoint(name);
+
+        if (!category) {
+          return;
+        }
+
+        const files = getEntrypointAssets(
+          compilation,
+          entrypoint,
+          this.options.browsers,
+        );
+
+        if (files.initialFiles.length === 0 && files.asyncFiles.length === 0) {
+          return;
+        }
+
+        debugEntrypoints[name] = {
+          category,
+          ...files,
+        };
+
+        for (const file of [...files.initialFiles, ...files.asyncFiles]) {
+          categoryAssets[category].add(file.name);
+          assetSizeMap.set(file.name, file.size);
+        }
+      });
+
+    const commonAssets: Set<string> =
+      // @ts-expect-error Node 24 supports Set.prototype.intersection, but the repo TS lib config does not type it yet.
+      categoryAssets.background
+        .intersection(categoryAssets.ui)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(categoryAssets.contentScripts);
+    const backgroundAssets: Set<string> =
+      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+      categoryAssets.background
+        .difference(commonAssets)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(categoryAssets.contentScripts);
+    const uiAssets: Set<string> =
+      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+      categoryAssets.ui
+        .difference(commonAssets)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(categoryAssets.contentScripts);
+    const otherAssets: Set<string> =
+      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+      categoryAssets.other
+        .difference(categoryAssets.contentScripts)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(commonAssets)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(backgroundAssets)
+        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
+        .difference(uiAssets);
+    const sumAssetSizes = (assetNames: Iterable<string>): number => {
+      let total = 0;
+
+      for (const assetName of assetNames) {
+        const size = assetSizeMap.get(assetName);
+
+        if (size === undefined) {
+          throw new Error(
+            `Missing size for normalized emitted asset "${assetName}"`,
+          );
+        }
+
+        total += size;
+      }
+
+      return total;
+    };
+    const partSizes = {
+      background: sumAssetSizes(backgroundAssets),
+      ui: sumAssetSizes(uiAssets),
+      common: sumAssetSizes(commonAssets),
+      other: sumAssetSizes(otherAssets),
+      contentScripts: sumAssetSizes(categoryAssets.contentScripts),
+    };
+    const timestamp = Date.now();
+    for (const browser of this.options.browsers) {
+      const summaryAssetPath = path.posix.join(browser, statsOptions.outFile);
+      const summarySource = new RawSource(
+        JSON.stringify(
+          createBundleSizeSummary(partSizes, {
+            zip: this.getBundleZipSize(compilation, browser),
+            timestamp,
+          }),
+          null,
+          2,
+        ),
+      );
+
+      if (compilation.getAsset(summaryAssetPath)) {
+        compilation.updateAsset(summaryAssetPath, summarySource);
+      } else {
+        compilation.emitAsset(summaryAssetPath, summarySource, {
+          javascriptModule: false,
+          contentType: 'application/json',
+        });
+      }
+
+      if (!statsOptions.debug) {
+        continue;
+      }
+
+      const debugFilePath = getBundleSizeDebugFilePath(statsOptions.outFile);
+      const debugAssetPath = path.posix.join(browser, debugFilePath);
+      const debugArtifact: BundleSizeDebugArtifact = {
+        entrypoints: debugEntrypoints,
+      };
+      const debugSource = new RawSource(JSON.stringify(debugArtifact, null, 2));
+
+      if (compilation.getAsset(debugAssetPath)) {
+        compilation.updateAsset(debugAssetPath, debugSource);
+      } else {
+        compilation.emitAsset(debugAssetPath, debugSource, {
+          javascriptModule: false,
+          contentType: 'application/json',
+        });
+      }
+    }
   }
 
   /**
@@ -655,6 +927,7 @@ export class ManifestPlugin<Z extends boolean> {
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
+          this.emitBundleSizeStatsAssets(compilation);
         },
       );
     } else {
@@ -662,6 +935,7 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
         this.moveAssets(compilation, assets, options);
+        this.emitBundleSizeStatsAssets(compilation);
       });
     }
   }

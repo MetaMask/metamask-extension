@@ -13,7 +13,7 @@ describe('getArtifactLinks', () => {
     );
 
     expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size.json`,
+      `${HOST}/bundle-size/bundle_size_stats.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -87,7 +87,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/bundle_size.json">Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/bundle_size_stats.json">Bundle Size Stats</a>`,
     );
   });
 
