@@ -5409,9 +5409,6 @@
   "perpsFundingRateTooltip": {
     "message": "Fiyatları piyasa ile uyumlu tutmak için yatırımcılar arasında saatlik bir işlem ücreti ödenir. Oran pozitifse uzunlar kısalara ödeme yapar. Negatifse kısalar uzunlara ödeme yapar."
   },
-  "perpsGeoBlockedTooltip": {
-    "message": "Sürekli vadeli işlemler bölgenizde kullanılamıyor"
-  },
   "perpsGiveFeedback": {
     "message": "Bize geri bildirim gönder"
   },

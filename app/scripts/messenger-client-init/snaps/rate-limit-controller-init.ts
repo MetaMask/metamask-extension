@@ -4,7 +4,7 @@ import {
 } from '@metamask/rate-limit-controller';
 import log from 'loglevel';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
@@ -23,7 +23,7 @@ import {
  * @param request.showNotification - Function to show a notification.
  * @returns The initialized controller.
  */
-export const RateLimitControllerInit: ControllerInitFunction<
+export const RateLimitControllerInit: MessengerClientInitFunction<
   RateLimitController<RateLimitedApiMap>,
   RateLimitControllerMessenger,
   RateLimitControllerInitMessenger
@@ -33,7 +33,7 @@ export const RateLimitControllerInit: ControllerInitFunction<
   persistedState,
   showNotification,
 }) => {
-  const controller = new RateLimitController({
+  const messengerClient = new RateLimitController({
     state: persistedState.RateLimitController,
     messenger: controllerMessenger,
 
@@ -99,7 +99,7 @@ export const RateLimitControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
     memStateKey: null,
     persistedStateKey: null,
   };

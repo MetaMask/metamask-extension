@@ -4,7 +4,7 @@ import {
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getBridgeControllerMessenger,
@@ -21,7 +21,7 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     BridgeControllerMessenger,
     BridgeControllerInitMessenger
   >
@@ -43,8 +43,8 @@ describe('BridgeControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = BridgeControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(BridgeController);
+    const { messengerClient } = BridgeControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(BridgeController);
   });
 
   it('passes the proper arguments to the controller', () => {

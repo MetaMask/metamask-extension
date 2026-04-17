@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../identity/constants';
@@ -64,9 +64,8 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
       // First device setup
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true })
-            .withMetaMetricsController()
-            // Add mock accounts to subscriptionAccountsSeen so notification toggles appear
+          fixtures: new FixtureBuilderV2({ onboarding: true })
+            // Add mock accounts to subscriptionAccountsSeen for second device too
             .withNotificationServicesController({
               subscriptionAccountsSeen: notificationsMockAccounts.map(
                 (account) => account.a,
@@ -114,7 +113,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
       // Second device setup
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true })
+          fixtures: new FixtureBuilderV2({ onboarding: true })
             // Add mock accounts to subscriptionAccountsSeen for second device too
             .withNotificationServicesController({
               subscriptionAccountsSeen: notificationsMockAccounts.map(

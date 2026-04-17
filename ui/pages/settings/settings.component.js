@@ -23,7 +23,7 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -569,7 +569,10 @@ class SettingsPage extends PureComponent {
           element={<NotificationsSettingsContent />}
         />
         <Route
-          path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}
+          path={toRelativeRoutePath(
+            MANAGE_WALLET_RECOVERY_ROUTE,
+            SETTINGS_ROUTE,
+          )}
           element={<RevealSrpList />}
         />
         <Route

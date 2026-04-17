@@ -5,10 +5,12 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
-import { ControllerApi, ControllerName } from './types';
-import { initControllers } from './utils';
+import { MessengerClientApi, MessengerClientName } from './types';
+import { initMessengerClients } from './utils';
 
-type InitFunctions = Parameters<typeof initControllers>[0]['initFunctions'];
+type InitFunctions = Parameters<
+  typeof initMessengerClients
+>[0]['initFunctions'];
 
 const CONTROLLER_NAME_MOCK = 'PPOMController';
 const CONTROLLER_NAME_2_MOCK = 'TransactionController';
@@ -24,12 +26,12 @@ function buildControllerInitResultMock({
   memStateKey,
 }: {
   name?: string;
-  api?: Record<string, ControllerApi>;
+  api?: Record<string, MessengerClientApi>;
   persistedStateKey?: string | null;
   memStateKey?: string | null;
 } = {}) {
   return {
-    controller: buildControllerMock(name),
+    messengerClient: buildControllerMock(name),
     api,
     persistedStateKey,
     memStateKey,
@@ -44,15 +46,15 @@ function buildInitRequestMock() {
   return buildControllerInitRequestMock();
 }
 
-function buildControllerMessenger() {
+function buildBaseControllerMessenger() {
   return new Messenger<MockAnyNamespace, never, never>({
     namespace: MOCK_ANY_NAMESPACE,
   });
 }
 
-describe('Controller Init Utils', () => {
-  describe('initControllers', () => {
-    it('returns controllers by name', () => {
+describe('Messenger Client Init Utils', () => {
+  describe('initMessengerClients', () => {
+    it('returns messenger clients by name', () => {
       const requestMock = buildInitRequestMock();
       const init1Mock = buildControllerFunctionMock();
       const init2Mock = buildControllerFunctionMock();
@@ -61,8 +63,8 @@ describe('Controller Init Utils', () => {
         buildControllerInitResultMock({ name: CONTROLLER_NAME_2_MOCK }),
       );
 
-      const { controllersByName } = initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      const { messengerClientsByName } = initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -70,7 +72,7 @@ describe('Controller Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(controllersByName).toStrictEqual({
+      expect(messengerClientsByName).toStrictEqual({
         [CONTROLLER_NAME_MOCK]: { name: CONTROLLER_NAME_MOCK },
         [CONTROLLER_NAME_2_MOCK]: { name: CONTROLLER_NAME_2_MOCK },
       });
@@ -85,8 +87,8 @@ describe('Controller Init Utils', () => {
         buildControllerInitResultMock({ name: CONTROLLER_NAME_2_MOCK }),
       );
 
-      initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -98,65 +100,45 @@ describe('Controller Init Utils', () => {
       expect(init2Mock).toHaveBeenCalledTimes(1);
     });
 
-    describe('provides getController method', () => {
+    describe('provides getMessengerClient method', () => {
       it('that returns initialized controller', () => {
         const requestMock = buildControllerInitRequestMock();
         const initMock = buildControllerFunctionMock();
 
-        initControllers({
-          baseControllerMessenger: buildControllerMessenger(),
+        initMessengerClients({
+          baseControllerMessenger: buildBaseControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
           },
           initRequest: requestMock,
         });
 
-        const { getController } = initMock.mock.calls[0][0];
+        const { getMessengerClient } = initMock.mock.calls[0][0];
 
         expect(
-          getController(CONTROLLER_NAME_MOCK as ControllerName),
+          getMessengerClient(CONTROLLER_NAME_MOCK as MessengerClientName),
         ).toStrictEqual({ name: CONTROLLER_NAME_MOCK });
       });
 
-      it('that throws if controller not found', () => {
+      it('that throws if messenger client not found', () => {
         const requestMock = buildControllerInitRequestMock();
         const initMock = buildControllerFunctionMock();
 
-        initControllers({
-          baseControllerMessenger: buildControllerMessenger(),
+        initMessengerClients({
+          baseControllerMessenger: buildBaseControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
           },
           initRequest: requestMock,
         });
 
-        const { getController } = initMock.mock.calls[0][0];
+        const { getMessengerClient } = initMock.mock.calls[0][0];
 
         expect(() =>
-          getController('InvalidController' as ControllerName),
+          getMessengerClient('InvalidController' as MessengerClientName),
         ).toThrow(
-          'Controller requested before it was initialized: InvalidController',
+          'Messenger client requested before it was initialized: InvalidController',
         );
-      });
-
-      it('that returns existing controllers', () => {
-        const requestMock = buildControllerInitRequestMock();
-        const initMock = buildControllerFunctionMock();
-
-        initControllers({
-          baseControllerMessenger: buildControllerMessenger(),
-          existingControllers: [buildControllerMock(CONTROLLER_NAME_2_MOCK)],
-          initFunctions: {
-            [CONTROLLER_NAME_MOCK]: initMock,
-          },
-          initRequest: requestMock,
-        });
-
-        const { getController } = initMock.mock.calls[0][0];
-
-        expect(
-          getController(CONTROLLER_NAME_2_MOCK as ControllerName),
-        ).toStrictEqual({ name: CONTROLLER_NAME_2_MOCK });
       });
     });
 
@@ -175,8 +157,8 @@ describe('Controller Init Utils', () => {
         buildControllerInitResultMock({ api: { test3: jest.fn() } }),
       );
 
-      const { controllerApi } = initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      const { messengerClientApi } = initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -184,7 +166,7 @@ describe('Controller Init Utils', () => {
         initRequest: requestMock,
       });
 
-      expect(controllerApi).toStrictEqual({
+      expect(messengerClientApi).toStrictEqual({
         test1: expect.any(Function),
         test2: expect.any(Function),
         test3: expect.any(Function),
@@ -215,8 +197,8 @@ describe('Controller Init Utils', () => {
         }),
       );
 
-      const { controllerPersistedState } = initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      const { controllerPersistedState } = initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -255,8 +237,8 @@ describe('Controller Init Utils', () => {
         }),
       );
 
-      const { controllerMemState } = initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      const { controllerMemState } = initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -275,8 +257,8 @@ describe('Controller Init Utils', () => {
       const requestMock = buildControllerInitRequestMock();
       const initMock = buildControllerFunctionMock();
 
-      initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
         },
@@ -292,8 +274,8 @@ describe('Controller Init Utils', () => {
       const requestMock = buildControllerInitRequestMock();
       const initMock = buildControllerFunctionMock();
 
-      initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           TestName: initMock,
         } as InitFunctions,
@@ -309,8 +291,8 @@ describe('Controller Init Utils', () => {
       const requestMock = buildControllerInitRequestMock();
       const initMock = buildControllerFunctionMock();
 
-      initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
         },
@@ -326,8 +308,8 @@ describe('Controller Init Utils', () => {
       const requestMock = buildControllerInitRequestMock();
       const initMock = buildControllerFunctionMock();
 
-      initControllers({
-        baseControllerMessenger: buildControllerMessenger(),
+      initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
         initFunctions: {
           TestName: initMock,
         } as InitFunctions,

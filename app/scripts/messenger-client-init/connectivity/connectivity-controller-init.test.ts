@@ -9,13 +9,13 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { getConnectivityControllerMessenger } from '../messengers/connectivity';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ConnectivityControllerInit } from './connectivity-controller-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<ConnectivityControllerMessenger>
+  MessengerClientInitRequest<ConnectivityControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger<
     MockAnyNamespace,
@@ -41,14 +41,14 @@ describe('ConnectivityControllerInit', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
 
-    expect(result.controller).toBeInstanceOf(ConnectivityController);
+    expect(result.messengerClient).toBeInstanceOf(ConnectivityController);
   });
 
   it('initializes with online status by default', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
 
-    expect(result.controller.state.connectivityStatus).toBe('online');
+    expect(result.messengerClient.state.connectivityStatus).toBe('online');
   });
 
   it('uses default memStateKey (controller name)', () => {
@@ -78,24 +78,24 @@ describe('ConnectivityControllerInit', () => {
   it('API setConnectivityStatus updates controller state via service', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
-    const { controller } = result;
+    const { messengerClient } = result;
 
-    expect(controller.state.connectivityStatus).toBe('online');
+    expect(messengerClient.state.connectivityStatus).toBe('online');
 
     result.api?.setConnectivityStatus('offline');
 
-    expect(controller.state.connectivityStatus).toBe('offline');
+    expect(messengerClient.state.connectivityStatus).toBe('offline');
   });
 
   it('API setConnectivityStatus handles online status', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
-    const { controller } = result;
+    const { messengerClient } = result;
 
     result.api?.setConnectivityStatus('offline');
-    expect(controller.state.connectivityStatus).toBe('offline');
+    expect(messengerClient.state.connectivityStatus).toBe('offline');
 
     result.api?.setConnectivityStatus('online');
-    expect(controller.state.connectivityStatus).toBe('online');
+    expect(messengerClient.state.connectivityStatus).toBe('online');
   });
 });
