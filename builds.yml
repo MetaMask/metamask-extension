@@ -386,7 +386,7 @@ env:
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: false
+  - ASSETS_UNIFIED_STATE_ENABLED: true
 
   ###
   # Meta variables
