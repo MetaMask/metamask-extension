@@ -23,11 +23,7 @@ export {
   isOrderAssociatedWithFullPosition,
 } from './orderUtils';
 
-export {
-  formatPerpsPrice,
-  PRICE_RANGES_UNIVERSAL,
-  type PerpsPriceRange,
-} from './formatPerpsPrice';
+export { formatPerpsPrice, type PerpsPriceRange } from './formatPerpsPrice';
 
 export {
   parsePerpsDisplayPrice,
