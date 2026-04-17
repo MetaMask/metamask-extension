@@ -35,7 +35,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          return [await mockPriceApi(mockServer)];
+          return await mockPriceApi(mockServer);
         },
       },
       async ({ driver }: { driver: Driver }) => {
@@ -97,7 +97,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSnapSimpleKeyringAndSite(mockServer);
-          return [await mockPriceApi(mockServer)];
+          return await mockPriceApi(mockServer);
         },
       },
       async ({ driver, localNodes }) => {
