@@ -5810,9 +5810,6 @@
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
-  "perpsSeeAll": {
-    "message": "See All"
-  },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."
   },
