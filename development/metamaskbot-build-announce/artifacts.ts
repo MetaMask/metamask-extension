@@ -229,16 +229,16 @@ export function buildArtifactsBody({
     artifacts.link('allArtifacts'),
   );
 
-  const hiddenContent = `<ul>${contentRows
-    .map((row) => `<li>${row}</li>`)
-    .join('\n')}</ul>`;
-
   const isReused = buildsFromSha !== shortSha;
   const reusedTag = isReused ? ` [reused from ${buildsFromSha}]` : '';
 
   const warning = isReused
-    ? `\n\n> ⚠️ **REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.**`
-    : `\n\n> ⚠️ Please do not use these builds with accounts that contain significant real money, they might not be safe.`;
+    ? `⚠️ <b>REALLY please do not use these builds with accounts that contain significant real money, they are extra questionable because they are reused builds.</b>`
+    : `⚠️ Please do not use these builds with accounts that contain significant real money, they might not be safe.`;
 
-  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>${warning}\n\n`;
+  const hiddenContent = `<p>${warning}</p><ul>${contentRows
+    .map((row) => `<li>${row}</li>`)
+    .join('\n')}</ul>`;
+
+  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>\n\n`;
 }
