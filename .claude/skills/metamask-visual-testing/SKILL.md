@@ -96,6 +96,19 @@ The `mm` CLI is the primary interface. It automatically manages a background HTT
 | `mm list-testids`            | List visible `data-testid` attributes                                        |
 | `mm clipboard <action>`      | Read from or write to browser clipboard                                      |
 
+### Observation Efficiency
+
+Mutating actions (`click`, `type`, `navigate`, etc.) return **compacted observations** in their response. Option subtrees with 3 or more `option` nodes under a `combobox` or `listbox` are collapsed into a single summary node (e.g., `"55 options (refs e2–e56)"`).
+
+**Recommended usage:**
+
+- Use `observations.state` for quick checks: current screen name, `isUnlocked`, network, etc.
+- Use `observations.a11y.nodes` with the compact refs for the next interaction — no `mm describe-screen` needed.
+- Call `mm describe-screen` when you need:
+  - The full, unfiltered a11y tree (e.g., to see all options in a dropdown)
+  - `priorKnowledge` from historical sessions
+  - Screenshots
+
 ### Navigation & Tabs
 
 | Command                   | Description                                                            |
