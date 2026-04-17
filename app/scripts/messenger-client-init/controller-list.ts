@@ -90,6 +90,10 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import {
+  GeolocationApiService,
+  GeolocationController,
+} from '@metamask/geolocation-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -113,9 +117,9 @@ import { StaticAssetsController } from '../controllers/static-assets-controller'
 import { DataDeletionService } from '../services/data-deletion-service';
 
 /**
- * Union of all controllers supporting or required by modular initialization.
+ * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
  */
-export type Controller =
+export type MessengerClient =
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
@@ -144,6 +148,8 @@ export type Controller =
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
+  | GeolocationApiService
+  | GeolocationController
   | KeyringController
   | LoggingController
   | MetaMetricsController
@@ -216,10 +222,10 @@ export type Controller =
   | ConnectivityController;
 
 /**
- * Flat state object for all controllers supporting or required by modular initialization.
+ * Flat state object for all messenger clients supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type ControllerFlatState = AccountOrderController['state'] &
+export type MessengerClientFlatState = AccountOrderController['state'] &
   AccountsController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &
@@ -241,6 +247,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
+  GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &

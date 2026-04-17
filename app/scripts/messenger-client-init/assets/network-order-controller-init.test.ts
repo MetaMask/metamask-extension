@@ -26,7 +26,7 @@ function buildInitRequestMock() {
       baseControllerMessenger,
     ),
     initMessenger: undefined,
-    getController: jest.fn(),
+    getMessengerClient: jest.fn(),
   };
 }
 
@@ -52,7 +52,7 @@ describe('NetworkOrderControllerInit', () => {
     };
 
     // Happy path: network controller with some featured networks configured
-    requestMock.getController.mockReturnValue({
+    requestMock.getMessengerClient.mockReturnValue({
       state: mockNetworkConfigState,
     } as MockVar);
 
@@ -80,7 +80,7 @@ describe('NetworkOrderControllerInit', () => {
     const requestMock = buildInitRequestMock();
     const result = NetworkOrderControllerInit(requestMock);
 
-    expect(result.controller).toBeInstanceOf(NetworkOrderController);
+    expect(result.messengerClient).toBeInstanceOf(NetworkOrderController);
   });
 
   it('initializes controller with correct messenger and merged state', () => {

@@ -11,6 +11,7 @@ import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransacti
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
+import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
@@ -33,6 +34,12 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/musd/useMusdConversionQuoteTrace', () => ({
+  useMusdConversionQuoteTrace: jest.fn(),
+}));
+jest.mock('../../../../../hooks/musd', () => ({
+  useMusdConversionTokens: jest.fn(),
+}));
 
 jest.mock('./musd-override-content', () => ({
   MusdOverrideContent: ({ amountHuman }: { amountHuman: string }) => (
@@ -72,6 +79,16 @@ jest.mock('../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
 
+const PERSISTED_PAYMENT_TOKEN = {
+  address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  chainId: '0x14a33' as const,
+};
+
+const DEFAULT_HOOK_PAYMENT_TOKEN = {
+  address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+  chainId: '0x1' as const,
+};
+
 const MOCK_AVAILABLE_TOKEN = {
   address: '0x123' as const,
   chainId: '0x1' as const,
@@ -89,10 +106,15 @@ function setupDefaultMocks({
   isQuotesLoading = false,
   hasQuotes = false,
   hideResults = false,
+  defaultPaymentToken = null as {
+    address: string;
+    chainId: `0x${string}`;
+  } | null,
 }: {
   isQuotesLoading?: boolean;
   hasQuotes?: boolean;
   hideResults?: boolean;
+  defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
@@ -148,12 +170,32 @@ function setupDefaultMocks({
       payToken: undefined,
       setPayToken: jest.fn(),
     });
+  jest
+    .mocked(useMusdConversionTokensModule.useMusdConversionTokens)
+    .mockReturnValue({
+      filterAllowedTokens: (tokens) => tokens,
+      filterTokens: (tokens) => tokens,
+      isConversionToken: () => false,
+      isMusdSupportedOnChain: () => false,
+      hasConvertibleTokensByChainId: () => false,
+      tokens: [],
+      defaultPaymentToken,
+    });
 }
 
-function render(mockOptions: Parameters<typeof setupDefaultMocks>[0] = {}) {
+type MockConfirmStateArgs = NonNullable<
+  Parameters<typeof getMockConfirmStateForTransaction>[1]
+>;
+
+function render(
+  mockOptions: Parameters<typeof setupDefaultMocks>[0] = {},
+  stateArgs?: MockConfirmStateArgs,
+) {
   setupDefaultMocks(mockOptions);
 
-  const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
+  const state = stateArgs
+    ? getMockConfirmStateForTransaction(MOCK_TRANSACTION_META, stateArgs)
+    : getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
   return renderWithConfirmContextProvider(
     <MusdConversionInfo />,
@@ -167,16 +209,38 @@ describe('MusdConversionInfo', () => {
     mockEndTrace.mockClear();
   });
 
-  it('ends navigation trace with paymentTokenChainId and paymentTokenAddress on mount', () => {
+  it('ends navigation trace with unknown payment token when none is persisted', () => {
     render();
 
     expect(mockEndTrace).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'MusdConversionNavigation',
-        data: expect.objectContaining({
-          paymentTokenChainId: expect.any(String),
-          paymentTokenAddress: expect.any(String),
-        }),
+        data: {
+          paymentTokenChainId: 'unknown',
+          paymentTokenAddress: 'unknown',
+        },
+      }),
+    );
+  });
+
+  it('ends navigation trace with persisted payment token from TransactionPay state', () => {
+    render(undefined, {
+      metamask: {
+        transactionData: {
+          [MOCK_TRANSACTION_META.id]: {
+            paymentToken: PERSISTED_PAYMENT_TOKEN,
+          },
+        },
+      },
+    });
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionNavigation',
+        data: {
+          paymentTokenChainId: PERSISTED_PAYMENT_TOKEN.chainId,
+          paymentTokenAddress: PERSISTED_PAYMENT_TOKEN.address,
+        },
       }),
     );
   });
@@ -192,6 +256,63 @@ describe('MusdConversionInfo', () => {
 
     expect(getByTestId('musd-override-content')).toBeInTheDocument();
     expect(getByTestId('musd-override-content')).toHaveTextContent('50');
+  });
+
+  describe('preferredToken and automatic transaction pay token', () => {
+    it('calls useAutomaticTransactionPayToken with disable true when no preferred token', () => {
+      render();
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: undefined,
+        }),
+      );
+    });
+
+    it('calls useAutomaticTransactionPayToken with disable true and token from TransactionPay state', () => {
+      render(undefined, {
+        metamask: {
+          transactionData: {
+            [MOCK_TRANSACTION_META.id]: {
+              paymentToken: PERSISTED_PAYMENT_TOKEN,
+            },
+          },
+        },
+      });
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: {
+            address: PERSISTED_PAYMENT_TOKEN.address,
+            chainId: PERSISTED_PAYMENT_TOKEN.chainId,
+          },
+        }),
+      );
+    });
+
+    it('calls useAutomaticTransactionPayToken with disable true and default payment token when not persisted', () => {
+      render({
+        defaultPaymentToken: DEFAULT_HOOK_PAYMENT_TOKEN,
+      });
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: {
+            address: DEFAULT_HOOK_PAYMENT_TOKEN.address as `0x${string}`,
+            chainId: DEFAULT_HOOK_PAYMENT_TOKEN.chainId,
+          },
+        }),
+      );
+    });
   });
 
   describe('MusdBottomContent', () => {

@@ -3,7 +3,7 @@ import {
   MultichainRoutingService,
   MultichainRoutingServiceMessenger,
 } from '@metamask/snaps-controllers';
-import { ControllerInitFunction } from '../types';
+import { MessengerClientInitFunction } from '../types';
 import { KeyringType } from '../../../../shared/constants/keyring';
 
 /**
@@ -11,15 +11,15 @@ import { KeyringType } from '../../../../shared/constants/keyring';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.
- * @param request.getController
+ * @param request.getMessengerClient
  * @returns The initialized service.
  */
-export const MultichainRoutingServiceInit: ControllerInitFunction<
+export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   MultichainRoutingService,
   MultichainRoutingServiceMessenger
-> = ({ controllerMessenger, getController }) => {
-  const keyringController = getController('KeyringController');
-  const appStateController = getController('AppStateController');
+> = ({ controllerMessenger, getMessengerClient }) => {
+  const keyringController = getMessengerClient('KeyringController');
+  const appStateController = getMessengerClient('AppStateController');
 
   const getSnapKeyring = async (): Promise<SnapKeyring> => {
     // Ensure the client is unlocked before attempting to access keyrings.
@@ -55,7 +55,7 @@ export const MultichainRoutingServiceInit: ControllerInitFunction<
     return operation({ keyring });
   };
 
-  const controller = new MultichainRoutingService({
+  const messengerClient = new MultichainRoutingService({
     messenger: controllerMessenger,
     withSnapKeyring,
   });
@@ -63,6 +63,6 @@ export const MultichainRoutingServiceInit: ControllerInitFunction<
   return {
     memStateKey: null,
     persistedStateKey: null,
-    controller,
+    messengerClient,
   };
 };

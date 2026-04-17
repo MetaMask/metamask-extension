@@ -379,6 +379,9 @@ env:
 
   # Perps geoblock fallback (comma-separated region codes when remote flag unavailable)
   - MM_PERPS_BLOCKED_REGIONS: null
+  # Hyperliquid builder fee wallet addresses (public on-chain addresses, not secrets)
+  - MM_PERPS_HL_BUILDER_ADDRESS_MAINNET: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3'
+  - MM_PERPS_HL_BUILDER_ADDRESS_TESTNET: null
   # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.

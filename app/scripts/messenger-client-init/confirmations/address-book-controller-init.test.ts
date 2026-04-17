@@ -1,5 +1,5 @@
 import { AddressBookController } from '@metamask/address-book-controller';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getAddressBookControllerMessenger,
@@ -11,7 +11,7 @@ import { AddressBookControllerInit } from './address-book-controller-init';
 jest.mock('@metamask/address-book-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AddressBookControllerMessenger>
+  MessengerClientInitRequest<AddressBookControllerMessenger>
 > {
   const baseMessenger = getRootMessenger();
 
@@ -26,8 +26,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('AddressBookControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = AddressBookControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AddressBookController);
+    const { messengerClient } = AddressBookControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AddressBookController);
   });
 
   it('passes the proper arguments to the controller', () => {

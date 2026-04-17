@@ -110,6 +110,9 @@ For new test code, use `FixtureBuilderV2` by default.
 
 **Custom convenience methods**:
 
+- `withAccountsControllerAdditionalAccountVault`
+- `withAccountsControllerImportedAccount`
+- `withBadPreferencesControllerState`
 - `withConversionRateDisabled`
 - `withConversionRates`
 - `withCurrencyRates`
@@ -120,9 +123,11 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNetworkRpcUrlOnLocalhost`
 - `withNftControllerERC1155`
 - `withNftControllerERC721`
 - `withNoNames`
+- `withPermissionControllerConnectedToMultichainTestDapp`
 - `withPermissionControllerConnectedToTestDapp`
 - `withPreferencesControllerTxSimulationsDisabled`
 - `withSelectedNetwork`
@@ -132,6 +137,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withSmartTransactionsOptedOut`
 - `withSnapController`
 - `withSnapControllerOnStartLifecycleSnap`
+- `withSnapControllerStorageServiceSourceCode`
 - `withSnapsPrivacyWarningAlreadyShown`
 - `withStorageServiceData`
 - `withTokensControllerERC20`

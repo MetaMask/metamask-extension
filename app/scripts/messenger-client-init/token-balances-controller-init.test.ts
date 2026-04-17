@@ -6,7 +6,7 @@ import {
 } from '@metamask/messenger';
 import { TokenBalancesController } from '@metamask/assets-controllers';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTokenBalancesControllerInitMessenger,
@@ -19,7 +19,7 @@ import { TokenBalancesControllerInit } from './token-balances-controller-init';
 jest.mock('@metamask/assets-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokenBalancesControllerMessenger,
     TokenBalancesControllerInitMessenger
   >
@@ -65,8 +65,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('TokenBalancesControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = TokenBalancesControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(TokenBalancesController);
+    const { messengerClient } =
+      TokenBalancesControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(TokenBalancesController);
   });
 
   it('passes the proper arguments to the controller', () => {

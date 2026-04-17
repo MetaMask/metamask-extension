@@ -36,10 +36,10 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
         class="mm-box"
       >
         <div
-          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="flex flex-row justify-between mt-4"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
             Ethereum Mainnet
           </p>
@@ -76,10 +76,10 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
           </label>
         </div>
         <div
-          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="flex flex-row justify-between mt-4"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
             Sepolia
           </p>
@@ -278,10 +278,10 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
         class="mm-box"
       >
         <div
-          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="flex flex-row justify-between mt-4"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
             Ethereum Mainnet
           </p>
@@ -318,10 +318,10 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
           </label>
         </div>
         <div
-          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="flex flex-row justify-between mt-4"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
             Sepolia
           </p>

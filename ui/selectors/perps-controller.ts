@@ -92,17 +92,27 @@ export const selectPerpsLastError = (state: PerpsState) =>
 export const selectPerpsSelectedPaymentToken = (state: PerpsState) =>
   state.metamask.selectedPaymentToken ?? null;
 
-export const selectPerpsCachedMarketData = (state: PerpsState) =>
-  state.metamask.cachedMarketData ?? null;
+export const selectPerpsCachedMarketData = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedMarketDataByProvider?.[provider]?.data ?? null;
+};
 
-export const selectPerpsCachedPositions = (state: PerpsState) =>
-  state.metamask.cachedPositions ?? null;
+export const selectPerpsCachedPositions = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider]?.positions ?? null;
+};
 
-export const selectPerpsCachedOrders = (state: PerpsState) =>
-  state.metamask.cachedOrders ?? null;
+export const selectPerpsCachedOrders = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider]?.orders ?? null;
+};
 
-export const selectPerpsCachedAccountState = (state: PerpsState) =>
-  state.metamask.cachedAccountState ?? null;
+export const selectPerpsCachedAccountState = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return (
+    state.metamask.cachedUserDataByProvider?.[provider]?.accountState ?? null
+  );
+};
 
 export const selectPerpsPerpsBalances = (state: PerpsState) =>
   state.metamask.perpsBalances ?? {};

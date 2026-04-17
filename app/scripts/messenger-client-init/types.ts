@@ -18,24 +18,24 @@ import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
-import { Controller, ControllerFlatState } from './controller-list';
+import { MessengerClient, MessengerClientFlatState } from './controller-list';
 
-/** The supported controller names. */
-export type ControllerName = Controller['name'];
+/** The supported messenger client names. */
+export type MessengerClientName = MessengerClient['name'];
 
-/** All controller types by name. */
-export type ControllerByName = {
-  [name in ControllerName]: Controller & { name: name };
+/** All messenger client types by name. */
+export type MessengerClientByName = {
+  [name in MessengerClientName]: MessengerClient & { name: name };
 };
 
 /**
- * Persisted state for all controllers.
+ * Persisted state for all messenger clients.
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
-export type ControllerPersistedState = Partial<{
-  [name in ControllerName]: Partial<
-    ControllerByName[name] extends { state: unknown }
-      ? ControllerByName[name]['state']
+export type MessengerClientPersistedState = Partial<{
+  [name in MessengerClientName]: Partial<
+    MessengerClientByName[name] extends { state: unknown }
+      ? MessengerClientByName[name]['state']
       : never
   >;
 }>;
@@ -61,10 +61,10 @@ type SnapSender = {
 type Sender = MessageSender | SnapSender;
 
 /**
- * Request to initialize and return a controller instance.
- * Includes standard data and methods not coupled to any specific controller.
+ * Request to initialize and return a messenger client instance.
+ * Includes standard data and methods not coupled to any specific messenger client.
  */
-export type ControllerInitRequest<
+export type MessengerClientInitRequest<
   ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > = {
@@ -101,22 +101,22 @@ export type ControllerInitRequest<
   platform: ExtensionPlatform;
 
   /**
-   * Retrieve a controller instance by name.
-   * Throws an error if the controller is not yet initialized.
+   * Retrieve a messenger client instance by name.
+   * Throws an error if the messenger client is not yet initialized.
    *
-   * @param name - The name of the controller to retrieve.
+   * @param name - The name of the messenger client to retrieve.
    */
-  getController<Name extends ControllerName>(
+  getMessengerClient<Name extends MessengerClientName>(
     name: Name,
-  ): ControllerByName[Name];
+  ): MessengerClientByName[Name];
 
   /**
-   * Retrieve the flat state for all controllers.
+   * Retrieve the flat state for all messenger clients.
    * For example: `{ transactions: [] }`.
    *
    * @deprecated Subscribe to other controller state via the messenger.
    */
-  getFlatState: () => ControllerFlatState;
+  getFlatState: () => MessengerClientFlatState;
 
   /**
    * Retrieve the permitted accounts for a given origin.
@@ -164,11 +164,11 @@ export type ControllerInitRequest<
   offscreenPromise: Promise<void>;
 
   /**
-   * The full persisted state for all controllers.
-   * Includes controller name properties.
+   * The full persisted state for all messenger clients.
+   * Includes messenger client name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
-  persistedState: ControllerPersistedState;
+  persistedState: MessengerClientPersistedState;
 
   /**
    * Remove an account from keyring state.
@@ -255,44 +255,49 @@ export type ControllerInitRequest<
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ControllerApi = (...args: any[]) => unknown;
+export type MessengerClientApi = (...args: any[]) => unknown;
 
 /**
- * Result of initializing a controller instance.
+ * Result of initializing a messenger client instance.
  */
-export type ControllerInitResult<ControllerType extends Controller> = {
+export type MessengerClientInitResult<
+  MessengerClientType extends MessengerClient,
+> = {
   /**
-   * The initialized controller instance.
+   * The initialized messenger client instance.
    */
-  controller: ControllerType;
+  messengerClient: MessengerClientType;
 
   /**
-   * The background API methods available for the controller.
+   * The background API methods available for the messenger client.
    */
-  api?: Record<string, ControllerApi>;
+  api?: Record<string, MessengerClientApi>;
 
   /**
-   * The key used to store the controller state in the persisted store.
-   * Defaults to the controller `name` property if `undefined`.
-   * If `null`, the controller state will not be persisted.
+   * The key used to store the messenger client state in the persisted store.
+   * Defaults to the messenger client `name` property if `undefined`.
+   * If `null`, the messenger client state will not be persisted.
    */
   persistedStateKey?: string | null;
 
   /**
-   * The key used to store the controller state in the memory-only store.
-   * Defaults to the controller `name` property if `undefined`.
-   * If `null`, the controller state will not be synchronized with the UI state.
+   * The key used to store the messenger client state in the memory-only store.
+   * Defaults to the messenger client `name` property if `undefined`.
+   * If `null`, the messenger client state will not be synchronized with the UI state.
    */
   memStateKey?: string | null;
 };
 
 /**
- * Function to initialize a controller instance and return associated data.
+ * Function to initialize a messenger client instance and return associated data.
  */
-export type ControllerInitFunction<
-  ControllerType extends Controller,
+export type MessengerClientInitFunction<
+  MessengerClientType extends MessengerClient,
   ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > = (
-  request: ControllerInitRequest<ControllerMessengerType, InitMessengerType>,
-) => ControllerInitResult<ControllerType>;
+  request: MessengerClientInitRequest<
+    ControllerMessengerType,
+    InitMessengerType
+  >,
+) => MessengerClientInitResult<MessengerClientType>;

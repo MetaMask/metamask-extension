@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WALLET_PASSWORD as testPassword } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -74,7 +74,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
   it('should show one word once pasted in textarea', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockActiveNetworks,
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },

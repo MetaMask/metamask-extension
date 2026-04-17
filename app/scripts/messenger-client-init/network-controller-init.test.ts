@@ -13,7 +13,7 @@ import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   NetworkControllerInitMessenger,
@@ -51,7 +51,7 @@ function getInitRequestMock(
     >
   >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     NetworkControllerMessenger,
     NetworkControllerInitMessenger
   >
@@ -80,8 +80,8 @@ describe('NetworkControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = NetworkControllerInit(getInitRequestMock());
-    expect(controller).toStrictEqual({
+    const { messengerClient } = NetworkControllerInit(getInitRequestMock());
+    expect(messengerClient).toStrictEqual({
       initializeProvider: expect.any(Function),
       enableRpcFailover: expect.any(Function),
       disableRpcFailover: expect.any(Function),
@@ -343,8 +343,8 @@ describe('NetworkControllerInit', () => {
 
     const request = getInitRequestMock(messenger);
 
-    const { controller } = NetworkControllerInit(request);
-    expect(controller.enableRpcFailover).not.toHaveBeenCalled();
+    const { messengerClient } = NetworkControllerInit(request);
+    expect(messengerClient.enableRpcFailover).not.toHaveBeenCalled();
 
     messenger.publish(
       'RemoteFeatureFlagController:stateChange',
@@ -357,7 +357,7 @@ describe('NetworkControllerInit', () => {
       [],
     );
 
-    expect(controller.enableRpcFailover).toHaveBeenCalled();
+    expect(messengerClient.enableRpcFailover).toHaveBeenCalled();
   });
 
   it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
@@ -372,8 +372,8 @@ describe('NetworkControllerInit', () => {
 
     const request = getInitRequestMock(messenger);
 
-    const { controller } = NetworkControllerInit(request);
-    expect(controller.disableRpcFailover).not.toHaveBeenCalled();
+    const { messengerClient } = NetworkControllerInit(request);
+    expect(messengerClient.disableRpcFailover).not.toHaveBeenCalled();
 
     messenger.publish(
       'RemoteFeatureFlagController:stateChange',
@@ -386,6 +386,6 @@ describe('NetworkControllerInit', () => {
       [],
     );
 
-    expect(controller.disableRpcFailover).toHaveBeenCalled();
+    expect(messengerClient.disableRpcFailover).toHaveBeenCalled();
   });
 });

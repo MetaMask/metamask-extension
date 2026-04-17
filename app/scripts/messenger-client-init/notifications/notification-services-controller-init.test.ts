@@ -1,6 +1,6 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import {
   getNotificationServicesControllerMessenger,
   type NotificationServicesControllerMessenger,
@@ -14,7 +14,7 @@ jest.mock('../../../../package.json', () => ({
 }));
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<NotificationServicesControllerMessenger>
+  MessengerClientInitRequest<NotificationServicesControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -48,7 +48,9 @@ describe('NotificationServicesControllerInit', () => {
   it('returns controller instance', () => {
     const { requestMock } = arrange();
     const result = NotificationServicesControllerInit(requestMock);
-    expect(result.controller).toBeInstanceOf(NotificationServicesController);
+    expect(result.messengerClient).toBeInstanceOf(
+      NotificationServicesController,
+    );
   });
 
   it('initializes with correct messenger and state', () => {

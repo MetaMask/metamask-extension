@@ -1,6 +1,6 @@
 import { TokenDetectionController } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTokenDetectionControllerInitMessenger,
@@ -13,7 +13,7 @@ import { TokenDetectionControllerInit } from './token-detection-controller-init'
 jest.mock('@metamask/assets-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokenDetectionControllerMessenger,
     TokenDetectionControllerInitMessenger
   >
@@ -31,8 +31,9 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('TokenDetectionControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = TokenDetectionControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(TokenDetectionController);
+    const { messengerClient } =
+      TokenDetectionControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(TokenDetectionController);
   });
 
   it('passes the proper arguments to the controller', () => {

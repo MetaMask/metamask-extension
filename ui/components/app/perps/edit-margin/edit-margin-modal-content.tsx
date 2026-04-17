@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -26,6 +27,7 @@ import {
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -37,9 +39,11 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
+import { formatPerpsPrice } from '../utils/formatPerpsPrice';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -93,9 +97,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
+  const locale = useSelector(getIntlLocale);
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [marginAmount, setMarginAmount] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
@@ -148,11 +154,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            $
-            {formatNumber(anchorLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatPerpsPrice(anchorLiquidationPrice, locale)}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
@@ -162,11 +164,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
           >
-            $
-            {formatNumber(estimatedLiquidationPrice, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatPerpsPrice(estimatedLiquidationPrice ?? 0, locale)}
           </Text>
         </Box>
       );
@@ -177,28 +175,18 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
       >
-        $
-        {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatPerpsPrice(
+          estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
+          locale,
+        )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
     showLiquidationComparison,
-    formatNumber,
+    locale,
   ]);
-
-  const formatAmount = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
 
   const marginPercent = useMemo(() => {
     if (maxAmount <= 0) {
@@ -241,13 +229,17 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         setMarginAmount('');
         return;
       }
-      setMarginAmount(formatAmount(floored));
+      setMarginAmount(floored.toFixed(2));
     },
-    [maxAmount, formatAmount],
+    [maxAmount],
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !isValid) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!isValid) {
       return;
     }
 
@@ -365,7 +357,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible ||
     !isValid ||
     isSaving ||
     Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
@@ -434,7 +425,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               disabled={maxAmount <= 0 || isSaving}
             />
           </Box>
-          <Box className="w-[5.5rem] shrink-0">
+          <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
               value={marginAmount}
@@ -443,9 +434,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
               disabled={isSaving}
-              inputProps={{ inputMode: 'decimal' }}
+              inputProps={{ inputMode: 'decimal', size: 10 }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -565,6 +555,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           {getConfirmButtonLabel()}
         </Button>
       )}
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

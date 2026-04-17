@@ -3,7 +3,7 @@ import {
   AccountActivityServiceMessenger,
 } from '@metamask/core-backend';
 import { getRootMessenger } from '../../lib/messenger';
-import { ControllerInitRequest } from '../types';
+import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getAccountActivityServiceMessenger } from '../messengers/core-backend';
 import { AccountActivityServiceInit } from './account-activity-service-init';
@@ -12,7 +12,7 @@ jest.mock('@metamask/core-backend');
 jest.mock('../../../../shared/lib/trace');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AccountActivityServiceMessenger>
+  MessengerClientInitRequest<AccountActivityServiceMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -31,8 +31,9 @@ describe('AccountActivityServiceInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = AccountActivityServiceInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(AccountActivityService);
+    const { messengerClient } =
+      AccountActivityServiceInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(AccountActivityService);
   });
 
   it('passes the messenger and traceFn to the controller', () => {
@@ -53,9 +54,10 @@ describe('AccountActivityServiceInit', () => {
   });
 
   it('returns the controller instance', () => {
-    const { controller } = AccountActivityServiceInit(getInitRequestMock());
+    const { messengerClient } =
+      AccountActivityServiceInit(getInitRequestMock());
 
-    expect(controller).toBeDefined();
-    expect(controller).toBeInstanceOf(AccountActivityService);
+    expect(messengerClient).toBeDefined();
+    expect(messengerClient).toBeInstanceOf(AccountActivityService);
   });
 });

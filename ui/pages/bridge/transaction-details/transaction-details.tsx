@@ -51,7 +51,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNativeTokenInfo } from '../../../selectors';
+import { getNativeTokenInfo, isHardwareWallet } from '../../../selectors';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
@@ -85,6 +85,7 @@ const CrossChainSwapTxDetails = () => {
   const locale = useSelector(getIntlLocale);
   const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   const { txHash } = useParams<{ txHash: string }>();
   const location = useLocation() as {
@@ -166,6 +167,7 @@ const CrossChainSwapTxDetails = () => {
         state: rootState as MetaMaskReduxState,
         transaction: srcChainTxMeta,
         isTokenApprove: false,
+        isHardwareWalletAccount,
       })
     : undefined;
 

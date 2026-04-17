@@ -32,6 +32,7 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
@@ -42,25 +43,19 @@ import {
   normalizeTpslPrices,
   deriveTpslType,
   formatRoePercent,
+  getPnlDisplayColor,
 } from '../utils';
-
-// HyperLiquid taker fee rate (0.045%) - applied when a TP/SL order executes.
-// Source: FEE_RATES.taker in @metamask/perps-controller/constants/hyperLiquidConfig
-const HYPERLIQUID_TAKER_FEE_RATE = 0.00045;
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from '../utils/tpslValidation';
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
-
-function getPnlDisplayColor(pnl: number): TextColor {
-  if (pnl > 0) {
-    return TextColor.SuccessDefault;
-  }
-  if (pnl < 0) {
-    return TextColor.ErrorDefault;
-  }
-  return TextColor.TextDefault;
-}
 
 export type UpdateTPSLSubmitState = {
   onSubmit: () => void;
@@ -96,9 +91,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 }) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
-  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+  });
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [editingTpPrice, setEditingTpPrice] = useState(
     () => position.takeProfitPrice ?? '',
@@ -138,12 +138,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [position]);
 
   const formatEditPrice = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
+    (value: number): string => value.toFixed(2),
+    [],
   );
 
   /**
@@ -208,6 +204,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const estimatedPnlAtTp = useMemo(() => {
+    if (closingFeeRate === undefined) {
+      return null;
+    }
     const clean = editingTpPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
@@ -217,12 +216,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee =
-      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    const closingFee = Math.abs(signedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
-  }, [editingTpPrice, signedSize, entryPriceForEdit]);
+  }, [editingTpPrice, signedSize, entryPriceForEdit, closingFeeRate]);
 
   const estimatedPnlAtSl = useMemo(() => {
+    if (closingFeeRate === undefined) {
+      return null;
+    }
     const clean = editingSlPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
@@ -232,10 +233,37 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return null;
     }
     const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
-    const closingFee =
-      Math.abs(signedSize) * exitPrice * HYPERLIQUID_TAKER_FEE_RATE;
+    const closingFee = Math.abs(signedSize) * exitPrice * closingFeeRate;
     return grossPnl - closingFee;
-  }, [editingSlPrice, signedSize, entryPriceForEdit]);
+  }, [editingSlPrice, signedSize, entryPriceForEdit, closingFeeRate]);
+
+  const isTpInvalid = useMemo(
+    () =>
+      Boolean(
+        editingTpPrice.replaceAll(',', '').trim() &&
+          currentPrice > 0 &&
+          !isValidTakeProfitPrice(editingTpPrice, {
+            currentPrice,
+            direction: positionDirection,
+          }),
+      ),
+    [editingTpPrice, currentPrice, positionDirection],
+  );
+
+  const isSlInvalid = useMemo(
+    () =>
+      Boolean(
+        editingSlPrice.replaceAll(',', '').trim() &&
+          currentPrice > 0 &&
+          !isValidStopLossPrice(editingSlPrice, {
+            currentPrice,
+            direction: positionDirection,
+          }),
+      ),
+    [editingSlPrice, currentPrice, positionDirection],
+  );
+
+  const hasInvalidTPSL = isTpInvalid || isSlInvalid;
 
   useEffect(() => {
     return () => {
@@ -344,7 +372,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, formatEditPrice]);
 
   const handleSave = useCallback(async () => {
-    if (!isEligible || !position) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!position) {
       return;
     }
     setIsSaving(true);
@@ -464,10 +496,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: !isEligible || isSaving,
-      submitButtonTitle: isEligible ? undefined : t('perpsGeoBlockedTooltip'),
+      submitDisabled: isSaving || hasInvalidTPSL,
+      submitButtonTitle: undefined,
     });
-  }, [onSubmitStateChange, handleSave, isSaving, isEligible, t]);
+  }, [onSubmitStateChange, handleSave, isSaving, hasInvalidTPSL, t]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -587,6 +619,18 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             </Text>
           </Box>
         )}
+        {isTpInvalid && (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.ErrorDefault}
+            data-testid="tp-validation-error"
+          >
+            {t('perpsTakeProfitInvalidPrice', [
+              getTakeProfitErrorDirection(positionDirection),
+              'current',
+            ])}
+          </Text>
+        )}
       </Box>
 
       {/* Stop Loss */}
@@ -705,7 +749,23 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             </Text>
           </Box>
         )}
+        {isSlInvalid && (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.ErrorDefault}
+            data-testid="sl-validation-error"
+          >
+            {t('perpsStopLossInvalidPrice', [
+              getStopLossErrorDirection(positionDirection),
+              'current',
+            ])}
+          </Text>
+        )}
       </Box>
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };
