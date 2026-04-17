@@ -6857,6 +6857,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/geolocation-controller@npm:^0.1.1":
+  version: 0.1.2
+  resolution: "@metamask/geolocation-controller@npm:0.1.2"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/messenger": "npm:^1.0.0"
+  checksum: 10/f11c22450ca97b688c075c705c3ca0196af6a2532522060c74c156a52f4eecba3216a5c3d63a18d1efa8d09cba0af03ef8dd9d74a892633a62995a6666889aa4
+  languageName: node
+  linkType: hard
+
 "@metamask/hw-wallet-sdk@npm:^0.6.0":
   version: 0.6.0
   resolution: "@metamask/hw-wallet-sdk@npm:0.6.0"
@@ -7666,9 +7677,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@metamask/profile-metrics-controller@npm:3.0.3"
+"@metamask/profile-metrics-controller@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@metamask/profile-metrics-controller@npm:3.0.4"
   dependencies:
     "@metamask/accounts-controller": "npm:^37.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7680,7 +7691,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.21.0"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/19076756e1b100038fb058b0cd1e226690fd77857a802f7966b9fd53493997aab5826e84a1b4a85fe6f7bc650582beab6bb3cd6fef83c68fdb4eb0cc07233f24
+  checksum: 10/8f08113c6808611d88ff3464bf2593cb37d68130f2c0b034bcf081c6781a9705d0b9580eb394f133207ebacf030940d78a162125c6b7b8955a3901fdab89ae69
   languageName: node
   linkType: hard
 
@@ -34189,6 +34200,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^26.1.0"
     "@metamask/gator-permissions-controller": "npm:^3.0.0"
     "@metamask/gator-permissions-snap": "npm:^1.3.1"
+    "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
@@ -34229,7 +34241,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.1"
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
-    "@metamask/profile-metrics-controller": "npm:^3.0.3"
+    "@metamask/profile-metrics-controller": "npm:^3.0.4"
     "@metamask/profile-sync-controller": "npm:^28.0.2"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
