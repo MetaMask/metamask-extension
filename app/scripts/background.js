@@ -1031,8 +1031,7 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-        require('../../test/e2e/fixtures/fixture-builder')
-          .FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });
 

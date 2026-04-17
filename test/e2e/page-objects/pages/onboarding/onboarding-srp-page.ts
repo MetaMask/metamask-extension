@@ -1,16 +1,11 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { E2E_SRP } from '../../../fixtures/default-fixture';
+import { E2E_SRP } from '../../../constants';
 
 class OnboardingSrpPage {
   private driver: Driver;
 
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
-
-  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
-
-  private readonly srpDropdownOptions =
-    '.import-srp__number-of-words-dropdown option';
 
   private readonly srpMessage = {
     text: 'Import a wallet',
@@ -18,13 +13,6 @@ class OnboardingSrpPage {
   };
 
   private readonly srpWord0 = '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly srpWords = '.import-srp__srp-word';
-
-  private readonly wrongSrpWarningMessage = {
-    text: 'Secret Recovery Phrase not found.',
-    css: '.import-srp__banner-alert-text',
-  };
 
   private readonly srpError =
     '[data-testid="srp-input-import__invalid-checksum-error"]';
