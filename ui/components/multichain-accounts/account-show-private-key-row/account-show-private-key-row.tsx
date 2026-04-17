@@ -66,7 +66,7 @@ export const AccountShowPrivateKeyRow = ({
           <ButtonIcon
             iconName={IconName.ArrowRight}
             ariaLabel={t('next')}
-            iconProps={{ color: IconColor.IconAlternative }}
+            color={IconColor.IconAlternative}
             size={ButtonIconSize.Md}
           />
         }
