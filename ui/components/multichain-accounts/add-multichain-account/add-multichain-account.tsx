@@ -1,17 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import { AccountWalletId } from '@metamask/account-api';
 import { useDispatch } from 'react-redux';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Icon,
   IconColor,
-  JustifyContent,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
@@ -81,9 +85,9 @@ export const AddMultichainAccount = ({
   return (
     <Box
       className="add-multichain-account"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.flexStart}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Start}
       style={{
         cursor: isLoadingState ? 'not-allowed' : 'pointer',
       }}
@@ -93,24 +97,22 @@ export const AddMultichainAccount = ({
       key={`add-multichain-account-button-${walletId}`}
     >
       <Box
-        className="add-multichain-account__icon-box"
+        className="add-multichain-account__icon-box ml-1 mr-4 rounded-md"
+        data-testid="add-multichain-account-icon-box"
         backgroundColor={
           isLoadingState
-            ? BackgroundColor.transparent
-            : BackgroundColor.infoMuted
+            ? BoxBackgroundColor.Transparent
+            : BoxBackgroundColor.InfoMuted
         }
-        borderRadius={BorderRadius.MD}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        marginLeft={1}
-        marginRight={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
       >
         {!isLoadingState && (
           <Icon
             className="add-multichain-account__icon-box__icon"
             name={IconName.Add}
-            color={IconColor.infoDefault}
+            color={IconColor.InfoDefault}
             size={IconSize.Lg}
           />
         )}
@@ -118,15 +120,16 @@ export const AddMultichainAccount = ({
           <Icon
             className="add-multichain-account__icon-box__icon-loading"
             name={IconName.Loading}
-            color={IconColor.iconMuted}
+            color={IconColor.IconMuted}
             size={IconSize.Lg}
           />
         )}
       </Box>
       <Text
         className="add-multichain-account__text"
-        color={isLoadingState ? TextColor.textMuted : TextColor.infoDefault}
-        variant={TextVariant.bodyMdMedium}
+        color={isLoadingState ? TextColor.TextMuted : TextColor.InfoDefault}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
       >
         {actionLabel}
       </Text>

@@ -161,6 +161,7 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "GatorPermissionsController": "object",
+  "GeolocationController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "encryptionKey": "string",
@@ -220,9 +221,7 @@
     },
     "nativeAssetIdentifiers": "object"
   },
-  "NetworkOrderController": {
-    "orderedNetworkList": "object"
-  },
+  "NetworkOrderController": { "orderedNetworkList": "object" },
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
@@ -303,6 +302,7 @@
     },
     "referrals": "object",
     "securityAlertsEnabled": "boolean",
+    "showSidePanelMigrationToast": "boolean",
     "snapRegistryList": "object",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "theme": "os",

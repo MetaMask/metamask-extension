@@ -217,12 +217,16 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
+  estimatedSize?: number;
   /** Order type – used to pick the correct validation reference price */
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
   limitPrice?: string;
   /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
   leverage: number;
+  /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
+  asset: string;
 };
 
 /**

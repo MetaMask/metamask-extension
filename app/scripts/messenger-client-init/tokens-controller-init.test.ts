@@ -10,7 +10,7 @@ import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { ControllerInitRequest } from './types';
+import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getTokensControllerInitMessenger,
@@ -25,7 +25,7 @@ jest.mock('@metamask/assets-controllers');
 const MOCK_PROVIDER = jest.fn();
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
+  MessengerClientInitRequest<
     TokensControllerMessenger,
     TokensControllerInitMessenger
   >
@@ -80,8 +80,8 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('TokensControllerInit', () => {
   it('initializes the controller', () => {
-    const { controller } = TokensControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(TokensController);
+    const { messengerClient } = TokensControllerInit(getInitRequestMock());
+    expect(messengerClient).toBeInstanceOf(TokensController);
   });
 
   it('passes the proper arguments to the controller', () => {

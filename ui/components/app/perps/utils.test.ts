@@ -6,6 +6,7 @@ import {
   formatStatus,
   getStatusColor,
   formatChangePercent,
+  formatSignedChangePercent,
   getChangeColor,
   getDisplaySymbol,
   getAssetIconUrl,
@@ -16,6 +17,7 @@ import {
   filterTransactionsByType,
   getTransactionStatusColor,
   getTransactionAmountColor,
+  getPnlDisplayColor,
   parseVolume,
   hasVolume,
 } from './utils';
@@ -155,6 +157,41 @@ describe('Perps Utils', () => {
       expect(getChangeColor('0.00%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('+0%')).toBe(TextColor.SuccessDefault);
       expect(getChangeColor('-0%')).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns TextAlternative for non-numeric fallback values', () => {
+      expect(getChangeColor('N/A')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('—')).toBe(TextColor.TextAlternative);
+      expect(getChangeColor('')).toBe(TextColor.TextAlternative);
+    });
+  });
+
+  describe('formatSignedChangePercent', () => {
+    it('preserves explicit positive prefixes', () => {
+      expect(formatSignedChangePercent('+2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('+2.84')).toBe('+2.84%');
+    });
+
+    it('adds a plus prefix to unsigned positive values', () => {
+      expect(formatSignedChangePercent('2.84%')).toBe('+2.84%');
+      expect(formatSignedChangePercent('2.84')).toBe('+2.84%');
+    });
+
+    it('preserves negative values', () => {
+      expect(formatSignedChangePercent('-1.23%')).toBe('-1.23%');
+      expect(formatSignedChangePercent('-1.23')).toBe('-1.23%');
+    });
+
+    it('preserves zero values without adding a plus prefix', () => {
+      expect(formatSignedChangePercent('0%')).toBe('0%');
+      expect(formatSignedChangePercent('0.00')).toBe('0.00%');
+      expect(formatSignedChangePercent('0.00%')).toBe('0.00%');
+    });
+
+    it('returns non-numeric strings unchanged', () => {
+      expect(formatSignedChangePercent('—')).toBe('—');
+      expect(formatSignedChangePercent('N/A')).toBe('N/A');
+      expect(formatSignedChangePercent('')).toBe('');
     });
   });
 
@@ -543,6 +580,22 @@ describe('Perps Utils', () => {
     it('returns TextDefault for amounts without prefix', () => {
       expect(getTransactionAmountColor('100.00')).toBe(TextColor.TextDefault);
       expect(getTransactionAmountColor('0')).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('getPnlDisplayColor', () => {
+    it('returns SuccessDefault for positive PnL', () => {
+      expect(getPnlDisplayColor(100)).toBe(TextColor.SuccessDefault);
+      expect(getPnlDisplayColor(0.01)).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns ErrorDefault for negative PnL', () => {
+      expect(getPnlDisplayColor(-50)).toBe(TextColor.ErrorDefault);
+      expect(getPnlDisplayColor(-0.01)).toBe(TextColor.ErrorDefault);
+    });
+
+    it('returns TextDefault for zero PnL', () => {
+      expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
     });
   });
 

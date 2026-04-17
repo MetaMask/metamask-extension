@@ -2,7 +2,7 @@ import {
   PreferencesController,
   PreferencesControllerMessenger,
 } from '../controllers/preferences-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the preferences controller.
@@ -13,11 +13,11 @@ import { ControllerInitFunction } from './types';
  * @param request.initLangCode
  * @returns The initialized controller.
  */
-export const PreferencesControllerInit: ControllerInitFunction<
+export const PreferencesControllerInit: MessengerClientInitFunction<
   PreferencesController,
   PreferencesControllerMessenger
 > = ({ controllerMessenger, persistedState, initLangCode }) => {
-  const controller = new PreferencesController({
+  const messengerClient = new PreferencesController({
     state: {
       currentLocale: initLangCode ?? '',
       ...persistedState.PreferencesController,
@@ -26,6 +26,6 @@ export const PreferencesControllerInit: ControllerInitFunction<
   });
 
   return {
-    controller,
+    messengerClient,
   };
 };

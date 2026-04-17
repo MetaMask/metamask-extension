@@ -94,6 +94,7 @@ import { ReversePositionModal } from '../../components/app/perps/reverse-positio
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
@@ -268,6 +269,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
     const parsedRouteState = parsePerpsToastRouteState(location.state);
@@ -296,6 +298,40 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
+
+  const orderFilledToastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (orderFilledToastShownRef.current) {
+      return;
+    }
+
+    const routeState = location.state as Record<string, unknown> | null;
+    const pendingSymbol =
+      typeof routeState?.pendingOrderSymbol === 'string'
+        ? routeState.pendingOrderSymbol
+        : null;
+
+    if (!pendingSymbol) {
+      return;
+    }
+
+    const hasPosition = allPositions.some((p) => p.symbol === pendingSymbol);
+    if (hasPosition) {
+      orderFilledToastShownRef.current = true;
+
+      const filledDescription =
+        typeof routeState?.pendingOrderFilledDescription === 'string'
+          ? routeState.pendingOrderFilledDescription
+          : undefined;
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.ORDER_FILLED,
+        ...(filledDescription ? { description: filledDescription } : {}),
+      });
+    }
+  }, [location.state, allPositions, replacePerpsToastByKey]);
+
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -637,7 +673,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
-    (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
+    (direction: 'long' | 'short', mode: 'new' | 'modify') => {
       if (!decodedSymbol) {
         return '#';
       }
@@ -649,7 +685,11 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible || !decodedSymbol || isLoadingAccount) {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!decodedSymbol || isLoadingAccount) {
         return;
       }
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -675,7 +715,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
 
   const handleAddFunds = useCallback(() => {
-    if (!isEligible || !selectedAddress || isDepositLoading) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!selectedAddress || isDepositLoading) {
       return;
     }
 
@@ -700,7 +744,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   ]);
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible || !position) {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (!position) {
       return;
     }
     setIsCloseModalOpen(true);
@@ -757,6 +805,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
 
   const handleReduceExposure = useCallback(() => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     if (!position || !decodedSymbol) {
       return;
     }
@@ -769,9 +821,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
     setIsModifyMenuOpen(false);
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'close'));
-  }, [position, decodedSymbol, navigate, buildOrderEntryUrl, track]);
+    setIsCloseModalOpen(true);
+  }, [isEligible, position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -819,26 +870,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       console.warn('[Perps] Toggle watchlist failed:', e);
     });
   }, [decodedSymbol, track]);
-
-  // Refetch positions when tab becomes visible (catch changes made elsewhere)
-  useEffect(() => {
-    const handleVisibility = async () => {
-      if (document.visibilityState === 'visible' && selectedAddress) {
-        try {
-          const positions = await submitRequestToBackground<Position[]>(
-            'perpsGetPositions',
-            [{ skipCache: true }],
-          );
-          getPerpsStreamManager().pushPositionsWithOverrides(positions);
-        } catch (e) {
-          console.warn('[Perps] Visibility refetch failed:', e);
-        }
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () =>
-      document.removeEventListener('visibilitychange', handleVisibility);
-  }, [selectedAddress]);
 
   // Opens the cancel order modal for the selected order
   const handleOrderClick = useCallback((order: Order) => {
@@ -1768,9 +1799,13 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
-                onClick={() => setIsModifyMenuOpen((prev) => !prev)}
-                disabled={!isEligible}
-                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+                onClick={() => {
+                  if (!isEligible) {
+                    setIsGeoBlockModalOpen(true);
+                    return;
+                  }
+                  setIsModifyMenuOpen((prev) => !prev);
+                }}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
@@ -1844,8 +1879,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 onClick={handleClosePosition}
-                disabled={!isEligible}
-                title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
                 className="w-full"
                 data-testid="perps-close-cta-button"
               >
@@ -1863,8 +1896,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
-            disabled={!isEligible || !selectedAddress || isDepositLoading}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+            disabled={!selectedAddress || isDepositLoading}
             className="w-full"
             data-testid="perps-add-funds-cta-button"
           >
@@ -1883,8 +1915,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              disabled={!isEligible || isLoadingAccount}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              disabled={isLoadingAccount}
               className="flex-1"
               data-testid="perps-long-cta-button"
             >
@@ -1896,8 +1927,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              disabled={!isEligible || isLoadingAccount}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              disabled={isLoadingAccount}
               className="flex-1"
               data-testid="perps-short-cta-button"
             >
@@ -1961,6 +1991,11 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       {/* Tutorial modal — opened via "Learn the basics of perps" */}
       <PerpsTutorialModal />
+
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };
