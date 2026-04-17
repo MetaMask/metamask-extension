@@ -1,7 +1,7 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import {
   type SupportedCaipChainId,
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -23,6 +23,8 @@ import {
   MOCK_ACCOUNT_TRON_MAINNET,
   MOCK_ACCOUNT_TRON_NILE,
   MOCK_ACCOUNT_TRON_SHASTA,
+  MOCK_ACCOUNT_STELLAR_PUBNET,
+  MOCK_ACCOUNT_STELLAR_TESTNET,
   MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import {
@@ -137,6 +139,18 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             unit: 'TRX',
           },
         },
+        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+          [MultichainNativeAssets.STELLAR]: {
+            amount: '42.0000000',
+            unit: 'XLM',
+          },
+        },
+        [MOCK_ACCOUNT_STELLAR_TESTNET.id]: {
+          [MultichainNativeAssets.STELLAR_TESTNET]: {
+            amount: '10.0000000',
+            unit: 'tXLM',
+          },
+        },
       },
       fiatCurrency: 'usd',
       cryptocurrencies: [Cryptocurrency.Btc],
@@ -202,6 +216,26 @@ function getTronState(
           [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
           [MOCK_ACCOUNT_TRON_NILE.id]: MOCK_ACCOUNT_TRON_NILE,
           [MOCK_ACCOUNT_TRON_SHASTA.id]: MOCK_ACCOUNT_TRON_SHASTA,
+        },
+      },
+      selectedMultichainNetworkChainId: selectedChainId,
+    },
+  };
+}
+
+function getStellarState(
+  account = MOCK_ACCOUNT_STELLAR_PUBNET,
+  selectedChainId: SupportedCaipChainId = XlmScope.Pubnet,
+): TestState {
+  return {
+    metamask: {
+      ...getEvmState().metamask,
+      internalAccounts: {
+        selectedAccount: account.id,
+        accounts: {
+          ...MOCK_ACCOUNTS,
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+          [MOCK_ACCOUNT_STELLAR_TESTNET.id]: MOCK_ACCOUNT_STELLAR_TESTNET,
         },
       },
       selectedMultichainNetworkChainId: selectedChainId,
@@ -644,6 +678,19 @@ describe('Multichain Selectors', () => {
       const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
       expect(getMultichainIsTestnet(state)).toBe(true);
     });
+
+    it('returns false for Stellar pubnet account', () => {
+      const state = getStellarState(MOCK_ACCOUNT_STELLAR_PUBNET, XlmScope.Pubnet);
+      expect(getMultichainIsTestnet(state)).toBe(false);
+    });
+
+    it('returns true for Stellar testnet account', () => {
+      const state = getStellarState(
+        MOCK_ACCOUNT_STELLAR_TESTNET,
+        XlmScope.Testnet,
+      );
+      expect(getMultichainIsTestnet(state)).toBe(true);
+    });
   });
 
   describe('getMultichainSelectedAccountCachedBalance', () => {
@@ -720,6 +767,39 @@ describe('Multichain Selectors', () => {
         chainId: SupportedCaipChainId;
       }) => {
         const state = getTronState(account, chainId);
+        const balance = state.metamask.balances[account.id][asset].amount;
+
+        state.metamask.internalAccounts.selectedAccount = account.id;
+        expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      {
+        network: 'Stellar pubnet',
+        account: MOCK_ACCOUNT_STELLAR_PUBNET,
+        asset: MultichainNativeAssets.STELLAR,
+        chainId: XlmScope.Pubnet,
+      },
+      {
+        network: 'Stellar testnet',
+        account: MOCK_ACCOUNT_STELLAR_TESTNET,
+        asset: MultichainNativeAssets.STELLAR_TESTNET,
+        chainId: XlmScope.Testnet,
+      },
+    ] as const)(
+      'returns cached balance if account is Stellar: $network',
+      ({
+        account,
+        asset,
+        chainId,
+      }: {
+        account: InternalAccount;
+        asset: MultichainNativeAssets;
+        chainId: SupportedCaipChainId;
+      }) => {
+        const state = getStellarState(account, chainId);
         const balance = state.metamask.balances[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
