@@ -1,0 +1,116 @@
+import React, { useMemo } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  ButtonBase,
+} from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsMarketFills } from '../../../../hooks/perps';
+import { transformFillsToTransactions } from '../utils/transactionTransforms';
+import { TransactionCard } from '../transaction-card';
+import { PERPS_CONSTANTS } from '../constants';
+import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
+import { Skeleton } from '../../../component-library/skeleton';
+
+export type PerpsMarketRecentActivityProps = {
+  symbol: string;
+};
+
+export const PerpsMarketRecentActivity: React.FC<
+  PerpsMarketRecentActivityProps
+> = ({ symbol }) => {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+
+  const { fills, isInitialLoading } = usePerpsMarketFills({
+    symbol,
+    throttleMs: 0,
+  });
+
+  const transactions = useMemo(() => {
+    const all = transformFillsToTransactions(fills);
+    return all.slice(0, PERPS_CONSTANTS.RECENT_ACTIVITY_LIMIT);
+  }, [fills]);
+
+  const hasTransactions = transactions.length > 0;
+  const showSkeleton = isInitialLoading && !hasTransactions;
+
+  const renderContent = () => {
+    if (showSkeleton) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="overflow-hidden rounded-xl"
+        >
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+          ))}
+        </Box>
+      );
+    }
+
+    if (!hasTransactions) {
+      return (
+        <Box paddingBottom={4}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsNoTransactions')}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="overflow-hidden rounded-xl"
+      >
+        {transactions.map((transaction, index) => (
+          <TransactionCard
+            key={transaction.id}
+            transaction={transaction}
+            variant="muted"
+            showTopBorder={index > 0}
+          />
+        ))}
+      </Box>
+    );
+  };
+
+  return (
+    <>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        paddingTop={4}
+        paddingBottom={2}
+      >
+        <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
+          {t('perpsRecentActivity')}
+        </Text>
+        {hasTransactions && (
+          <ButtonBase
+            onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
+            className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
+            data-testid="perps-market-detail-view-all-activity"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsSeeAll')}
+            </Text>
+          </ButtonBase>
+        )}
+      </Box>
+      {renderContent()}
+    </>
+  );
+};
