@@ -304,5 +304,4 @@ describe('toast display', () => {
 
     expect(toastContainer).not.toBeInTheDocument();
   });
-
 });
