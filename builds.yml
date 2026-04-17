@@ -387,6 +387,8 @@ env:
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
   - ASSETS_UNIFIED_STATE_ENABLED: false
+  # Build-time gate: when true, hardware wallet onboarding uses the new flow.
+  - NEW_HARDWARE_WALLET_ONBOARDING: false
 
   ###
   # Meta variables
