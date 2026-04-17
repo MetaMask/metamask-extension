@@ -5504,6 +5504,10 @@
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   },
+  "perpsMinimumOrderAmount": {
+    "message": "Minimum order size is $1",
+    "description": "$1 is the minimum USD amount (e.g. $10)"
+  },
   "perpsClosePosition": {
     "message": "Close position"
   },

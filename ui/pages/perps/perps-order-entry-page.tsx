@@ -106,6 +106,7 @@ import {
   type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
 
 const ORDER_MODE_TOAST_KEYS: Record<
@@ -536,6 +537,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
+  const isBelowMinimumOrder = useMemo(() => {
+    if (!orderFormState || orderMode === 'close') {
+      return false;
+    }
+    const amount =
+      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    return amount > 0 && amount < PERPS_MIN_MARKET_ORDER_USD;
+  }, [orderFormState, orderMode]);
+
   const isSubmitDisabled =
     !selectedAddress ||
     isDepositLoading ||
@@ -547,6 +557,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
+        isBelowMinimumOrder ||
         currentPrice <= 0 ||
         (orderMode === 'close' &&
           (orderFormState?.closePercent ?? FULL_CLOSE_PERCENT) <= 0)));
@@ -1188,10 +1199,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
-  const resolvedButtonText =
-    isPrimaryTradeAction && isInsufficientFunds
-      ? t('insufficientFundsSend')
-      : submitButtonText;
+  const resolvedButtonText = (() => {
+    if (!isPrimaryTradeAction) {
+      return submitButtonText;
+    }
+    if (isBelowMinimumOrder) {
+      return t('perpsMinimumOrderAmount', [`$${PERPS_MIN_MARKET_ORDER_USD}`]);
+    }
+    if (isInsufficientFunds) {
+      return t('insufficientFundsSend');
+    }
+    return submitButtonText;
+  })();
 
   return (
     <Box
