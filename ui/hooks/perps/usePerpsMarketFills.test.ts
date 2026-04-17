@@ -82,10 +82,33 @@ describe('usePerpsMarketFills', () => {
       );
     });
 
-    it('reports isInitialLoading while REST fetch is still in-flight', () => {
+    it('is not loading when only REST is in-flight but WS already resolved', () => {
       setLiveFills([], false);
       mockSubmitRequestToBackground.mockReturnValue(
-        // Intentionally never-resolving promise to simulate in-flight request
+        new Promise(() => undefined),
+      );
+
+      const { result } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+
+      expect(result.current.isInitialLoading).toBe(false);
+    });
+
+    it('is not loading when only WebSocket is loading but REST already resolved', async () => {
+      setLiveFills([], true);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(result.current.isInitialLoading).toBe(false);
+    });
+
+    it('reports isInitialLoading only when both sources are still loading', async () => {
+      setLiveFills([], true);
+      mockSubmitRequestToBackground.mockReturnValue(
         new Promise(() => undefined),
       );
 
@@ -96,19 +119,8 @@ describe('usePerpsMarketFills', () => {
       expect(result.current.isInitialLoading).toBe(true);
     });
 
-    it('reports isInitialLoading when WebSocket is still loading', async () => {
+    it('clears isInitialLoading once either source completes', async () => {
       setLiveFills([], true);
-
-      const { result, waitForNextUpdate } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitForNextUpdate();
-
-      expect(result.current.isInitialLoading).toBe(true);
-    });
-
-    it('clears isInitialLoading once both WebSocket and REST complete', async () => {
-      setLiveFills([], false);
       setRestFillsResponse([]);
 
       const { result, waitForNextUpdate } = renderHook(() =>
