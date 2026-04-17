@@ -257,6 +257,19 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
   };
 }
 
+function createDiskCache(): PerpsPlatformDependencies['diskCache'] {
+  return {
+    getItem: async (key: string) => localStorage.getItem(key),
+    getItemSync: (key: string) => localStorage.getItem(key),
+    setItem: async (key: string, value: string) => {
+      localStorage.setItem(key, value);
+    },
+    removeItem: async (key: string) => {
+      localStorage.removeItem(key);
+    },
+  };
+}
+
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
@@ -276,6 +289,7 @@ export function createPerpsInfrastructure(
     featureFlags: createFeatureFlags(),
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
+    diskCache: createDiskCache(),
     rewards: {
       getPerpsDiscountForAccount: async (
         _caipAccountId: `${string}:${string}:${string}`,
