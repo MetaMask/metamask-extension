@@ -27,7 +27,6 @@ describe('Capability Integration', () => {
 
       expect(context.config.extensionName).toBe('MetaMask');
       expect(context.config.environment).toBe('e2e');
-      expect(context.config.toolPrefix).toBe('mm');
     });
   });
 

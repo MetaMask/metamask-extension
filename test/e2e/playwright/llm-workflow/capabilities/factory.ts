@@ -33,7 +33,6 @@ export type CreateMetaMaskContextOptions = {
 const DEFAULT_BASE_CONFIG: BaseEnvironmentConfig = {
   extensionName: 'MetaMask',
   defaultPassword: 'correct horse battery staple',
-  toolPrefix: 'mm',
   artifactsDir: 'test-artifacts',
 };
 

@@ -24,7 +24,6 @@ jest.mock('./capabilities/factory', () => ({
     config: {
       environment: 'e2e',
       extensionName: 'MetaMask',
-      toolPrefix: 'mm',
       defaultChainId: 1337,
       defaultPassword: 'correct horse battery staple',
     },
@@ -40,7 +39,6 @@ jest.mock('./capabilities/factory', () => ({
     config: {
       environment: 'prod',
       extensionName: 'MetaMask',
-      toolPrefix: 'mm',
       defaultChainId: 1337,
       defaultPassword: 'correct horse battery staple',
     },

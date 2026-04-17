@@ -51,7 +51,6 @@ describe('Capability Factory', () => {
 
       expect(context.config.environment).toBe('e2e');
       expect(context.config.extensionName).toBe('MetaMask');
-      expect(context.config.toolPrefix).toBe('mm');
     });
 
     it('uses default password', () => {
@@ -128,12 +127,10 @@ describe('Capability Factory', () => {
       const context = createMetaMaskE2EContext({
         config: {
           extensionName: 'CustomWallet',
-          toolPrefix: 'cw',
         },
       });
 
       expect(context.config.extensionName).toBe('CustomWallet');
-      expect(context.config.toolPrefix).toBe('cw');
       expect(context.config.environment).toBe('e2e');
     });
   });
