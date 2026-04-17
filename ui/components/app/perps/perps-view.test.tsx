@@ -7,6 +7,7 @@ import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransac
 import * as streamHooks from '../../../hooks/perps/stream';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
@@ -56,17 +57,21 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
-    usePerpsLiveMarketData: jest.fn(() => ({
-      markets: [
-        ...streamMocks.mockCryptoMarkets,
-        ...streamMocks.mockHip3Markets,
-      ],
-      cryptoMarkets: streamMocks.mockCryptoMarkets,
-      hip3Markets: streamMocks.mockHip3Markets,
-      isInitialLoading: false,
-    })),
   };
 });
+
+jest.mock('./hooks/usePerpsTabExploreData', () => ({
+  usePerpsTabExploreData: jest.fn(() => ({
+    exploreMarkets: [
+      ...mocks.mockCryptoMarkets,
+      ...mocks.mockHip3Markets,
+    ].slice(0, 5),
+    watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+      ['BTC', 'ETH'].includes(market.symbol),
+    ),
+    isInitialLoading: false,
+  })),
+}));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
@@ -100,6 +105,13 @@ describe('PerpsView', () => {
     });
     jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
       orders: mocks.mockOrders,
+      isInitialLoading: false,
+    });
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
+      watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
+        ['BTC', 'ETH'].includes(market.symbol),
+      ),
       isInitialLoading: false,
     });
     mockGetPerpsStreamManager.mockReturnValue({
@@ -474,5 +486,20 @@ describe('PerpsView', () => {
 
       expect(screen.getByTestId('perps-view')).toBeInTheDocument();
     });
+  });
+
+  it('passes tab explore and watchlist markets from the tab hook', () => {
+    jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      exploreMarkets: [mocks.mockCryptoMarkets[0]],
+      watchlistMarkets: [mocks.mockCryptoMarkets[1]],
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsView />, mockStore);
+
+    expect(screen.getByTestId('explore-markets-BTC')).toBeInTheDocument();
+    expect(screen.queryByTestId('explore-markets-ETH')).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
+    expect(screen.queryByTestId('perps-watchlist-BTC')).not.toBeInTheDocument();
   });
 });

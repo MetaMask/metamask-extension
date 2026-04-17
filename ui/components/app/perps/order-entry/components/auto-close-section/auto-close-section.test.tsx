@@ -407,6 +407,106 @@ describe('AutoCloseSection', () => {
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
     });
+
+    it('uses limit price as baseline when typing SL % on a limit order', () => {
+      // currentPrice=$3,000 but limitPrice=$2,000 (below-market limit buy).
+      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> $2,000 * 0.99 = $1,980 (not $2,970)
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('1980');
+    });
+
+    it('uses limit price as baseline when typing TP % on a limit order', () => {
+      // currentPrice=$3,000 but limitPrice=$2,000.
+      // 10% RoE at leverage=10: priceChange = 1% -> $2,000 * 1.01 = $2,020 (not $3,030)
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('2020');
+    });
+
+    it('displays SL % relative to limit price when a price is pre-set on a limit order', () => {
+      // SL at $1,980 with limit entry $2,000 at 10x leverage:
+      // RoE% = (2000 - 1980) / 2000 * 10 * 100 = 10%  (not relative to $3,000)
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice="2000"
+          leverage={10}
+          stopLossPrice="1980"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const percentInput = container.querySelector('input');
+      expect(percentInput).toHaveValue('10');
+    });
+
+    it('falls back to current price for % calculation when limit price is empty', () => {
+      // Same as regular market order when limitPrice is empty
+      // 10% RoE at 10x from $3,000: SL = $3,000 * 0.99 = $2,970
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={3000}
+          orderType="limit"
+          limitPrice=""
+          leverage={10}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('2970');
+    });
   });
 
   describe('percent input focus/blur behavior (no decimal insertion)', () => {
