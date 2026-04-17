@@ -143,6 +143,22 @@ function getBundleSizeDebugFilePath(outFile: string): string {
   return path.posix.join(parsed.dir, `${baseName}.debug${extension}`);
 }
 
+function getSetIntersection<T>(left: Set<T>, right: Set<T>): Set<T> {
+  return (
+    left as Set<T> & {
+      intersection: (other: Set<T>) => Set<T>;
+    }
+  ).intersection(right);
+}
+
+function getSetDifference<T>(left: Set<T>, right: Set<T>): Set<T> {
+  return (
+    left as Set<T> & {
+      difference: (other: Set<T>) => Set<T>;
+    }
+  ).difference(right);
+}
+
 /**
  * A webpack plugin that generates extension manifests for browsers and organizes
  * assets into browser-specific directories and optionally zips them.
@@ -293,34 +309,28 @@ export class ManifestPlugin<Z extends boolean> {
         }
       });
 
-    const commonAssets: Set<string> =
-      // @ts-expect-error Node 24 supports Set.prototype.intersection, but the repo TS lib config does not type it yet.
-      categoryAssets.background
-        .intersection(categoryAssets.ui)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(categoryAssets.contentScripts);
-    const backgroundAssets: Set<string> =
-      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-      categoryAssets.background
-        .difference(commonAssets)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(categoryAssets.contentScripts);
-    const uiAssets: Set<string> =
-      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-      categoryAssets.ui
-        .difference(commonAssets)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(categoryAssets.contentScripts);
-    const otherAssets: Set<string> =
-      // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-      categoryAssets.other
-        .difference(categoryAssets.contentScripts)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(commonAssets)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(backgroundAssets)
-        // @ts-expect-error Node 24 supports Set.prototype.difference, but the repo TS lib config does not type it yet.
-        .difference(uiAssets);
+    const commonAssets = getSetDifference(
+      getSetIntersection(categoryAssets.background, categoryAssets.ui),
+      categoryAssets.contentScripts,
+    );
+    const backgroundAssets = getSetDifference(
+      getSetDifference(categoryAssets.background, commonAssets),
+      categoryAssets.contentScripts,
+    );
+    const uiAssets = getSetDifference(
+      getSetDifference(categoryAssets.ui, commonAssets),
+      categoryAssets.contentScripts,
+    );
+    const otherAssets = getSetDifference(
+      getSetDifference(
+        getSetDifference(
+          getSetDifference(categoryAssets.other, categoryAssets.contentScripts),
+          commonAssets,
+        ),
+        backgroundAssets,
+      ),
+      uiAssets,
+    );
     const sumAssetSizes = (assetNames: Iterable<string>): number => {
       let total = 0;
 
