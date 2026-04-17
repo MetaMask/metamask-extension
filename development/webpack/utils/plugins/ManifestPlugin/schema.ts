@@ -116,6 +116,31 @@ export const schema = {
         'Whether to set a build ID in the emitted manifest. The build ID is a hash of the build contents that can be used to identify the build and detect when it has changed.',
       type: 'boolean',
     },
+    stats: {
+      description: 'Optional bundle-size reporting configuration.',
+      type: 'object',
+      required: ['outFile', 'classifyEntrypoint'],
+      properties: {
+        outFile: {
+          description:
+            'Output file path for the emitted bundle-size summary relative to each browser root.',
+          type: 'string',
+        },
+        debug: {
+          description:
+            'Whether to emit a sibling debug artifact with the classified entrypoint graph.',
+          type: 'boolean',
+        },
+        classifyEntrypoint: {
+          description:
+            'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
+          instanceof: 'Function',
+          tsType:
+            "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
+        },
+      },
+      additionalProperties: false,
+    },
   },
   additionalProperties: false,
   if: {
