@@ -267,6 +267,7 @@
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
+    "protobufjs": "7.5.5",
     "@metamask/snaps-controllers": "^19.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1"
   },
@@ -796,7 +797,7 @@
       "@sentry/cli": true,
       "@storybook/test-runner>@storybook/core-common>esbuild": false,
       "@swc/core": true,
-      "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
+      "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
@@ -819,7 +820,6 @@
       "tsx>esbuild": true,
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
-      "@google/genai>protobufjs": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "eslint-import-resolver-typescript>unrs-resolver": false
     }
