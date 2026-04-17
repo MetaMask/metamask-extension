@@ -1756,10 +1756,10 @@ class FixtureBuilder {
     return this.withAssetsController({
       assetsBalance: {
         'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-          'eip155:1337/slip44:60': { amount: '25' },
+          'eip155:1337/slip44:1': { amount: '25' },
         },
         '221ecb67-0d29-4c04-83b2-dff07c263634': {
-          'eip155:1337/slip44:60': { amount: '100' },
+          'eip155:1337/slip44:1': { amount: '100' },
         },
       },
     })

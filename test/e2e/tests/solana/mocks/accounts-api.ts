@@ -35,7 +35,7 @@ export function mockAccountsApiV5MultiaccountBalances(mockServer: Mockttp) {
   const balances = [
     {
       accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:60',
+      assetId: 'eip155:1337/slip44:1',
       balance: '25',
     },
     {
