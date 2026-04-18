@@ -93,6 +93,11 @@ export class PerpsStreamBridge {
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
 
+  readonly #pendingCandleTeardowns = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
+
   #activated = false;
 
   #wasDisconnected = false;
@@ -187,6 +192,22 @@ export class PerpsStreamBridge {
         interval: CandlePeriod;
         duration?: TimeDuration;
       }) => {
+        const key = this.#candleSubscriptionKey(symbol, interval);
+
+        const pendingTimer = this.#pendingCandleTeardowns.get(key);
+        if (pendingTimer !== undefined) {
+          clearTimeout(pendingTimer);
+          this.#pendingCandleTeardowns.delete(key);
+          console.debug(
+            '[PerpsStreamBridge] deferred teardown cancelled for',
+            key,
+          );
+        }
+
+        if (this.#dynamicUnsubs[key]) {
+          return 'ok';
+        }
+
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
           this.#activateCandleStream({ symbol, interval, duration });
@@ -203,7 +224,20 @@ export class PerpsStreamBridge {
         if (!symbol || !interval) {
           return;
         }
-        this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
+        const key = this.#candleSubscriptionKey(symbol, interval);
+
+        const existing = this.#pendingCandleTeardowns.get(key);
+        if (existing !== undefined) {
+          clearTimeout(existing);
+        }
+
+        this.#pendingCandleTeardowns.set(
+          key,
+          setTimeout(() => {
+            this.#pendingCandleTeardowns.delete(key);
+            this.#tearDownDynamicKey(key);
+          }, 150),
+        );
       },
       perpsCheckHealth: () => {
         if (!this.#activated) {
@@ -536,6 +570,11 @@ export class PerpsStreamBridge {
   }
 
   #tearDownAllDynamic(): void {
+    for (const handle of this.#pendingCandleTeardowns.values()) {
+      clearTimeout(handle);
+    }
+    this.#pendingCandleTeardowns.clear();
+
     for (const unsub of Object.values(this.#dynamicUnsubs)) {
       this.#callAndClearUnsub(unsub);
     }

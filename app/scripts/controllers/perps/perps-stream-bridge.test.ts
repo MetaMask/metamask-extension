@@ -742,6 +742,7 @@ describe('PerpsStreamBridge', () => {
     });
 
     it('deactivateCandleStream tears down candle subscription', async () => {
+      jest.useFakeTimers();
       const controller = createMockController();
       const unsub = jest.fn();
       controller.subscribeToCandles.mockReturnValue(unsub);
@@ -762,10 +763,14 @@ describe('PerpsStreamBridge', () => {
         }) => void
       )({ symbol: 'ETH', interval: '1h' });
 
+      jest.advanceTimersByTime(150);
+
       expect(unsub).toHaveBeenCalledTimes(1);
+      jest.useRealTimers();
     });
 
     it('keeps other candle streams when deactivating one symbol+interval', async () => {
+      jest.useFakeTimers();
       const controller = createMockController();
       const unsubBtc = jest.fn();
       const unsubEth = jest.fn();
@@ -796,8 +801,89 @@ describe('PerpsStreamBridge', () => {
 
       deactivate({ symbol: 'BTC', interval: '1h' });
 
+      jest.advanceTimersByTime(150);
+
       expect(unsubBtc).toHaveBeenCalledTimes(1);
       expect(unsubEth).not.toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+
+    it('short-circuits when the same candle stream is already active', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<string>;
+
+      await activate({ symbol: 'BTC', interval: '5m' });
+      await activate({ symbol: 'BTC', interval: '5m' });
+
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+    });
+
+    it('cancels deferred teardown when matching activate arrives within 150ms', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToCandles.mockReturnValue(unsub);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<string>;
+      const deactivate = api.perpsDeactivateCandleStream as (p: {
+        symbol: string;
+        interval: string;
+      }) => void;
+
+      await activate({ symbol: 'BTC', interval: '5m' });
+      deactivate({ symbol: 'BTC', interval: '5m' });
+
+      await activate({ symbol: 'BTC', interval: '5m' });
+
+      jest.advanceTimersByTime(200);
+
+      expect(unsub).not.toHaveBeenCalled();
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+    });
+
+    it('clears pending candle teardown timers on destroy', async () => {
+      jest.useFakeTimers();
+      const controller = createMockController();
+      const unsub = jest.fn();
+      controller.subscribeToCandles.mockReturnValue(unsub);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<string>;
+      const deactivate = api.perpsDeactivateCandleStream as (p: {
+        symbol: string;
+        interval: string;
+      }) => void;
+
+      await activate({ symbol: 'BTC', interval: '5m' });
+      deactivate({ symbol: 'BTC', interval: '5m' });
+
+      bridge.destroy();
+
+      jest.advanceTimersByTime(200);
+
+      expect(unsub).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
     });
   });
 

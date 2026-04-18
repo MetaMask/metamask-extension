@@ -30,6 +30,9 @@ const LOAD_MORE_MIN = 50;
 /** Maximum candles to fetch on load-more */
 const LOAD_MORE_MAX = 500;
 
+/** Debounce window for connect() -- coalesces React unmount/remount bursts */
+const CONNECT_DEBOUNCE_MS = 120;
+
 /** Per-subscriber state */
 type SubscriberEntry = {
   callback: (data: CandleData) => void;
@@ -46,6 +49,10 @@ type ChannelEntry = {
   isConnected: boolean;
   /** The duration used for the initial subscription */
   duration: TimeDuration | undefined;
+  /** Pending leading-edge debounce timer for connect() */
+  pendingConnectTimer?: ReturnType<typeof setTimeout>;
+  /** Timestamp of the last connect() call that actually fired */
+  lastConnectAt?: number;
 };
 
 /**
@@ -342,13 +349,39 @@ export class CandleStreamChannel {
       return;
     }
 
+    const now = Date.now();
+    const elapsed = now - (entry.lastConnectAt ?? 0);
+
+    if (elapsed >= CONNECT_DEBOUNCE_MS) {
+      this.fireConnect(key, entry);
+      return;
+    }
+
+    if (entry.pendingConnectTimer !== undefined) {
+      clearTimeout(entry.pendingConnectTimer);
+    }
+
+    entry.pendingConnectTimer = setTimeout(() => {
+      entry.pendingConnectTimer = undefined;
+      if (entry.subscribers.size > 0 && !entry.isConnected) {
+        this.fireConnect(key, entry);
+      }
+    }, CONNECT_DEBOUNCE_MS);
+  }
+
+  /**
+   * Execute the actual background activate call.
+   * Extracted from connect() to support leading-edge debounce.
+   *
+   * @param key - Cache key
+   * @param entry - Channel entry
+   */
+  private fireConnect(key: string, entry: ChannelEntry): void {
     const { symbol, interval } = parseCacheKey(key);
 
     entry.isConnected = true;
+    entry.lastConnectAt = Date.now();
 
-    // Tell the background to start emitting candle updates for this key.
-    // Data arrives via perpsStreamUpdate { channel: 'candles', symbol, interval, data }
-    // which is routed to CandleStreamChannel.pushFromBackground().
     submitRequestToBackground('perpsActivateCandleStream', [
       { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
@@ -360,7 +393,6 @@ export class CandleStreamChannel {
       entry.isConnected = false;
     });
 
-    // Set a no-op unsubscribe (background handles cleanup on stream close)
     // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
     entry.unsubscribeFromSource = () => {};
   }
@@ -373,6 +405,11 @@ export class CandleStreamChannel {
    * @param entry - Channel entry
    */
   private disconnect(key: string, entry: ChannelEntry): void {
+    if (entry.pendingConnectTimer !== undefined) {
+      clearTimeout(entry.pendingConnectTimer);
+      entry.pendingConnectTimer = undefined;
+    }
+
     if (entry.unsubscribeFromSource) {
       entry.unsubscribeFromSource();
       entry.unsubscribeFromSource = null;
