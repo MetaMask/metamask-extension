@@ -510,7 +510,7 @@ export const formatRoePercent = (value: number): string => {
   const formatted = Number.isInteger(rounded)
     ? rounded.toFixed(0)
     : rounded.toFixed(2);
-  return value < 0 ? `-${formatted}` : formatted;
+  return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
 };
 
 const volumeMultipliers: Record<string, number> = {
