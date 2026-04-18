@@ -432,4 +432,66 @@ describe('PerpsDepositToast', () => {
       screen.getByText(messages.perpsDepositToastSuccessTitle.message),
     ).toBeInTheDocument();
   });
+
+  it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
+    jest.useFakeTimers();
+
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'stale-deposit',
+            status: TransactionStatus.submitted,
+          }),
+          buildPendingDepositTransaction({
+            id: 'current-deposit',
+            status: TransactionStatus.approved,
+          }),
+        ],
+        lastDepositTransactionId: 'current-deposit',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(
+      screen.getByText(messages.perpsDepositToastPendingTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show pending when active id is confirmed even if another perps deposit stays submitted', () => {
+    jest.useFakeTimers();
+
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'stale-deposit',
+            status: TransactionStatus.submitted,
+          }),
+          buildPendingDepositTransaction({
+            id: 'current-deposit',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'current-deposit',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+  });
 });

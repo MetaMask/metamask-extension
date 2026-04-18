@@ -67,28 +67,43 @@ export const selectPerpsActiveProvider = (state: PerpsState) =>
  * `TransactionControllerState` contract.
  */
 type PerpsDepositPendingState = {
-  metamask: { transactions?: TransactionMeta[] };
+  metamask: {
+    transactions?: TransactionMeta[];
+    lastDepositTransactionId?: string | null;
+  };
 };
 
 /**
- * Whether a Perps deposit transaction is currently in its pending window
- * (post-confirm, pre-completion). Derived from TransactionController state
- * rather than `depositInProgress`, which the perps controller only sets
- * briefly alongside the success result and therefore cannot drive the
- * pending toast on its own.
+ * Whether the **active** Perps deposit (identified by `lastDepositTransactionId`)
+ * is in its pending window (post-confirm, pre-completion). Scoped to that id so
+ * unrelated perps deposit rows left in `approved` / `signed` / `submitted` do
+ * not keep the deposit toast alive — aligned with `PerpsDepositToast` dismissal
+ * keyed on `lastDepositTransactionId`.
+ *
+ * Derived from TransactionController + PerpsController flattened state rather
+ * than `depositInProgress`, which the perps controller only sets briefly
+ * alongside the success result.
  *
  * @param state - Combined Perps + TransactionController state.
  */
 export const selectPerpsDepositPending = createSelector(
   (state: PerpsDepositPendingState): TransactionMeta[] =>
     state.metamask.transactions ?? EMPTY_ARRAY,
-  (transactions) =>
-    transactions.some(
-      (tx) =>
-        tx.type !== undefined &&
-        PERPS_DEPOSIT_TRANSACTION_TYPES.has(tx.type) &&
-        PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status),
-    ),
+  (state: PerpsDepositPendingState) =>
+    state.metamask.lastDepositTransactionId ?? null,
+  (transactions, lastDepositTransactionId) => {
+    if (!lastDepositTransactionId) {
+      return false;
+    }
+    const tx = transactions.find((t) => t.id === lastDepositTransactionId);
+    if (tx?.type === undefined) {
+      return false;
+    }
+    return (
+      PERPS_DEPOSIT_TRANSACTION_TYPES.has(tx.type) &&
+      PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status)
+    );
+  },
 );
 
 export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>

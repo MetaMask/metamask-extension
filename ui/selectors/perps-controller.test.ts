@@ -100,6 +100,8 @@ describe('perps-controller selectors', () => {
   });
 
   describe('selectPerpsDepositPending', () => {
+    const activeDepositId = 'tx-1';
+
     function buildTx(
       overrides: Partial<{
         id: string;
@@ -108,22 +110,33 @@ describe('perps-controller selectors', () => {
       }> = {},
     ) {
       return {
-        id: overrides.id ?? 'tx-1',
+        id: overrides.id ?? activeDepositId,
         type: overrides.type ?? TransactionType.perpsDeposit,
         status: overrides.status ?? TransactionStatus.approved,
       };
     }
 
+    function buildStateWithActiveDeposit(
+      overrides: Record<string, unknown> = {},
+    ) {
+      return buildState({
+        lastDepositTransactionId: activeDepositId,
+        ...overrides,
+      });
+    }
+
     it('returns true when a perpsDeposit transaction is approved', () => {
       expect(
-        selectPerpsDepositPending(buildState({ transactions: [buildTx()] })),
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [buildTx()] }),
+        ),
       ).toBe(true);
     });
 
     it('returns true when a perpsDepositAndOrder transaction is approved', () => {
       expect(
         selectPerpsDepositPending(
-          buildState({
+          buildStateWithActiveDeposit({
             transactions: [
               buildTx({ type: TransactionType.perpsDepositAndOrder }),
             ],
@@ -140,7 +153,9 @@ describe('perps-controller selectors', () => {
     ])('returns true when status is %s', (status: TransactionStatus) => {
       expect(
         selectPerpsDepositPending(
-          buildState({ transactions: [buildTx({ status })] }),
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
         ),
       ).toBe(true);
     });
@@ -155,7 +170,9 @@ describe('perps-controller selectors', () => {
     ])('returns false when status is %s', (status: TransactionStatus) => {
       expect(
         selectPerpsDepositPending(
-          buildState({ transactions: [buildTx({ status })] }),
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
         ),
       ).toBe(false);
     });
@@ -163,7 +180,7 @@ describe('perps-controller selectors', () => {
     it('returns false for unrelated transaction types in a pending status', () => {
       expect(
         selectPerpsDepositPending(
-          buildState({
+          buildStateWithActiveDeposit({
             transactions: [buildTx({ type: TransactionType.bridge })],
           }),
         ),
@@ -171,19 +188,71 @@ describe('perps-controller selectors', () => {
     });
 
     it('returns false when there are no transactions', () => {
-      expect(selectPerpsDepositPending(buildState({ transactions: [] }))).toBe(
-        false,
-      );
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [] }),
+        ),
+      ).toBe(false);
     });
 
     it('returns false when the transactions slice is missing', () => {
-      expect(selectPerpsDepositPending(buildState())).toBe(false);
+      expect(
+        selectPerpsDepositPending(
+          buildState({ lastDepositTransactionId: activeDepositId }),
+        ),
+      ).toBe(false);
     });
 
-    it('returns true when any transaction in the list matches', () => {
+    it('returns false when lastDepositTransactionId is null despite a pending perps tx', () => {
       expect(
         selectPerpsDepositPending(
           buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+            lastDepositTransactionId: null,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when lastDepositTransactionId is absent despite a pending perps tx', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when active id points to a confirmed tx while another perps tx is stuck submitted', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'current-deposit',
+            transactions: [
+              buildTx({
+                id: 'stale-deposit',
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'current-deposit',
+                status: TransactionStatus.confirmed,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true only for the transaction matching lastDepositTransactionId', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'tx-b',
             transactions: [
               buildTx({
                 id: 'tx-a',
@@ -199,6 +268,21 @@ describe('perps-controller selectors', () => {
           }),
         ),
       ).toBe(true);
+    });
+
+    it('returns false when lastDepositTransactionId does not match any transaction', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [
+              buildTx({
+                id: 'other-id',
+                status: TransactionStatus.approved,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
     });
   });
 
