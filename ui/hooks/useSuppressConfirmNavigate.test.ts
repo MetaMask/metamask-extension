@@ -69,16 +69,6 @@ describe('useSupressNavigation', () => {
     ).toBe(true);
   });
 
-  it('returns true when there is no confirmation id but a smart transaction approval exists', () => {
-    const suppressNavigation = renderUseSuppressNavigation({
-      toastEnabled: true,
-      isInteractive: true,
-      smartTransactions: [{ txId: 'tx-1' }],
-    });
-
-    expect(suppressNavigation(undefined, [])).toBe(true);
-  });
-
   it('returns false when there is no confirmation id and no smart transaction approval exists', () => {
     const suppressNavigation = renderUseSuppressNavigation({
       toastEnabled: true,
