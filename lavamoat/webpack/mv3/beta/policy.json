@@ -1309,11 +1309,6 @@
         "nanoid": true
       }
     },
-    "@metamask/perps-controller": {
-      "globals": {
-        "Intl.NumberFormat": true
-      }
-    },
     "@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2149,7 +2144,7 @@
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "buffer": true,
         "@google/genai>protobufjs>long": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
+        "@google/genai>protobufjs": true,
         "tslib": true
       }
     },
@@ -3769,7 +3764,7 @@
         "watchify>xtend": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
+    "@google/genai>protobufjs": {
       "globals": {
         "process": true,
         "setTimeout": true
