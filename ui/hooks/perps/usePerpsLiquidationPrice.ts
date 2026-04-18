@@ -1,8 +1,8 @@
 import { PERPS_CONSTANTS } from '@metamask/perps-controller';
-import { useEffect, useRef } from 'react';
+import { debounce } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 
 import { submitRequestToBackground } from '../../store/background-connection';
-import { useAsyncResult } from '../useAsync';
 
 type UsePerpsLiquidationPriceParams = {
   asset: string;
@@ -12,67 +12,82 @@ type UsePerpsLiquidationPriceParams = {
   enabled: boolean;
 };
 
+type UsePerpsLiquidationPriceOptions = {
+  debounceMs?: number;
+};
+
 type UsePerpsLiquidationPriceResult = {
   isCalculating: boolean;
   liquidationPrice: string;
 };
 
 const DEFAULT_LIQUIDATION_PRICE = '0.00';
+const DEFAULT_DEBOUNCE_MS = 300;
 
-export const usePerpsLiquidationPrice = ({
-  asset,
-  direction,
-  entryPrice,
-  leverage,
-  enabled,
-}: UsePerpsLiquidationPriceParams): UsePerpsLiquidationPriceResult => {
+export const usePerpsLiquidationPrice = (
+  {
+    asset,
+    direction,
+    entryPrice,
+    leverage,
+    enabled,
+  }: UsePerpsLiquidationPriceParams,
+  options?: UsePerpsLiquidationPriceOptions,
+): UsePerpsLiquidationPriceResult => {
+  const debounceMs = options?.debounceMs ?? DEFAULT_DEBOUNCE_MS;
   const hasValidInputs =
     enabled && entryPrice > 0 && leverage > 0 && Boolean(asset);
-  const lastResolvedPriceRef = useRef(DEFAULT_LIQUIDATION_PRICE);
-  const result = useAsyncResult(async () => {
-    if (!hasValidInputs) {
-      return DEFAULT_LIQUIDATION_PRICE;
-    }
 
-    try {
-      const price = await submitRequestToBackground<string>(
-        'perpsCalculateLiquidationPrice',
-        [
-          {
-            asset,
-            direction,
-            entryPrice,
-            leverage,
-            marginType: 'isolated',
-          },
-        ],
-      );
+  const [liquidationPrice, setLiquidationPrice] = useState<string>(
+    DEFAULT_LIQUIDATION_PRICE,
+  );
+  const [isCalculating, setIsCalculating] = useState(false);
 
-      return price || DEFAULT_LIQUIDATION_PRICE;
-    } catch {
-      return PERPS_CONSTANTS.FallbackPriceDisplay;
-    }
-  }, [asset, direction, entryPrice, leverage, hasValidInputs]);
+  const calculatePrice = useMemo(
+    () =>
+      debounce(async () => {
+        if (!hasValidInputs) {
+          setIsCalculating(false);
+          return;
+        }
+
+        try {
+          const price = await submitRequestToBackground<string>(
+            'perpsCalculateLiquidationPrice',
+            [
+              {
+                asset,
+                direction,
+                entryPrice,
+                leverage,
+                marginType: 'isolated',
+              },
+            ],
+          );
+          setLiquidationPrice(price || DEFAULT_LIQUIDATION_PRICE);
+        } catch {
+          setLiquidationPrice(PERPS_CONSTANTS.FallbackPriceDisplay);
+        } finally {
+          setIsCalculating(false);
+        }
+      }, debounceMs),
+    [asset, direction, entryPrice, leverage, hasValidInputs, debounceMs],
+  );
 
   useEffect(() => {
-    if (!hasValidInputs) {
-      lastResolvedPriceRef.current = DEFAULT_LIQUIDATION_PRICE;
-      return;
+    if (hasValidInputs) {
+      setIsCalculating(true);
     }
-
-    if (result.status === 'success') {
-      lastResolvedPriceRef.current = result.value;
-    }
-  }, [hasValidInputs, result]);
-
-  let liquidationPrice = DEFAULT_LIQUIDATION_PRICE;
-  if (hasValidInputs) {
-    liquidationPrice =
-      result.status === 'success' ? result.value : lastResolvedPriceRef.current;
-  }
+    calculatePrice();
+    return () => {
+      calculatePrice.cancel();
+    };
+  }, [calculatePrice, hasValidInputs]);
 
   return {
-    isCalculating: hasValidInputs && result.pending,
-    liquidationPrice,
+    isCalculating: hasValidInputs && isCalculating,
+    liquidationPrice: hasValidInputs
+      ? liquidationPrice
+      : DEFAULT_LIQUIDATION_PRICE,
   };
 };
