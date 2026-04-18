@@ -2039,7 +2039,6 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
           [MetaMetricsUserTrait.NumberOfAccountGroups]: 2,
           [MetaMetricsUserTrait.NumberOfImportedAccounts]: 0,
-          [MetaMetricsUserTrait.NumberOfSnapAccounts]: 0,
           [MetaMetricsUserTrait.NumberOfLedgerAccounts]: 0,
           [MetaMetricsUserTrait.NumberOfTrezorAccounts]: 0,
           [MetaMetricsUserTrait.NumberOfLatticeAccounts]: 0,
@@ -2466,8 +2465,6 @@ describe('MetaMetricsController', function () {
 
         // 6 internal accounts but only 2 unique {srp, groupIndex} pairs → 2 groups.
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(2);
-        // BTC + SOL accounts (3 per group × 2 groups - EVM accounts) = 4 snap accounts.
-        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(4);
         expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
         // 1 unique entropy id → 1 HD entropy.
@@ -2476,7 +2473,7 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should correctly count imported, snap, and hardware wallet account types', async function () {
+    it('should correctly count imported and hardware wallet account types', async function () {
       const mockAccounts = {
         'hd-acc': {
           id: 'hd-acc',
@@ -2563,11 +2560,10 @@ describe('MetaMetricsController', function () {
           keyrings: [],
         });
 
-        // 8 accounts: 1 HD group + 1 imported + 1 standalone snap + 1 ledger +
+        // 8 accounts: 1 HD group + 1 imported + 1 snap + 1 ledger +
         //             1 trezor + 1 lattice + 1 qr + 1 onekey = 8 distinct groups.
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(8);
         expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(1);
-        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(1);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(1);
         expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(1);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
@@ -2779,7 +2775,6 @@ describe('MetaMetricsController', function () {
         expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
-        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(0);

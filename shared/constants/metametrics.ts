@@ -605,12 +605,6 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_imported_accounts?: number;
   /**
-   * Number of accounts managed by MetaMask Snaps.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  number_of_snap_accounts?: number;
-  /**
    * Number of account groups from Ledger hardware wallet.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -786,10 +780,6 @@ export enum MetaMetricsUserTrait {
    * Number of accounts added via raw private key (Simple Key Pair keyring).
    */
   NumberOfImportedAccounts = 'number_of_imported_accounts',
-  /**
-   * Number of accounts managed by MetaMask Snaps.
-   */
-  NumberOfSnapAccounts = 'number_of_snap_accounts',
   /**
    * Number of account groups from Ledger hardware wallet.
    */
