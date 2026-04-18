@@ -2577,8 +2577,8 @@ describe('MetaMetricsController', function () {
         );
         // 1 mnemonic entropy id → 1 HD entropy; hardware wallets don't contribute.
         expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
-        // ledger(1) + trezor(1) + lattice(1) + qr(2) = 5.
-        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(5);
+        // 1 of each type paired → 4 distinct hardware wallets (one per type).
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
       });
     });
   });
@@ -2897,8 +2897,8 @@ describe('MetaMetricsController', function () {
         expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(
           2,
         );
-        // ledger(2) + trezor(1) + lattice(1) + qr(2) = 6.
-        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(6);
+        // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (OneKey) = 4 distinct hardware wallets.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
       });
     });
 
@@ -2965,8 +2965,8 @@ describe('MetaMetricsController', function () {
             },
           }),
         );
-        // ledger(2) + trezor(1) + lattice(2) + qr(1) + onekey(1) = 7.
-        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(7);
+        // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (includes OneKey) = 4 distinct hardware wallets.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
       });
     });
 

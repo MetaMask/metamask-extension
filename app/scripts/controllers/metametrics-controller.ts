@@ -1645,11 +1645,13 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
       [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
         numberOfQrHardwareAccounts,
+      // MetaMask enforces one paired device per hardware wallet type, so
+      // "types in use" equals "distinct devices".
       [MetaMetricsUserTrait.NumberOfHardwareWallets]:
-        numberOfLedgerAccounts +
-        numberOfTrezorAccounts +
-        numberOfLatticeAccounts +
-        numberOfQrHardwareAccounts,
+        (numberOfLedgerAccounts > 0 ? 1 : 0) +
+        (numberOfTrezorAccounts > 0 ? 1 : 0) +
+        (numberOfLatticeAccounts > 0 ? 1 : 0) +
+        (numberOfQrHardwareAccounts > 0 ? 1 : 0),
     };
   }
 
