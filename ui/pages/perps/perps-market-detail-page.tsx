@@ -65,6 +65,7 @@ import {
   usePerpsEligibility,
   usePerpsMarketFills,
   usePerpsEventTracking,
+  usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -426,6 +427,8 @@ const PerpsMarketDetailPage: React.FC = () => {
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
+
+  const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
 
   // Find position for this market (if exists)
   const position = useMemo(() => {
@@ -1280,7 +1283,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                         )
                       : `${formatPositionSize(
                           Math.abs(parseFloat(position.size)),
-                          undefined,
+                          marketInfo?.szDecimals,
                         )} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
@@ -1979,6 +1982,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={handleCloseReverseModal}
           position={position}
           currentPrice={currentPrice}
+          sizeDecimals={marketInfo?.szDecimals}
         />
       )}
 
@@ -2000,6 +2004,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+          sizeDecimals={marketInfo?.szDecimals}
         />
       )}
 
