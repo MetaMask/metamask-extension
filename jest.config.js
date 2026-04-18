@@ -77,6 +77,19 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
+  // TEMPORARY: `@metamask/perps-controller`'s main entry statically imports
+  // `@nktkas/hyperliquid`, which in turn imports ESM-only `@noble/hashes`
+  // (bare `import` statements). Jest ignores `node_modules` by default, so
+  // any test that transitively renders perps UI (including bridge, settings,
+  // notifications, account-overview, etc.) fails with
+  // "SyntaxError: Cannot use import statement outside a module".
+  //
+  // Allow Babel to transpile that narrow ESM chain during tests. Remove this
+  // once the controller lazy-loads the HyperLiquid SDK upstream so the main
+  // entry is CJS-safe again. Tracked: TAT-2990.
+  transformIgnorePatterns: [
+    '/node_modules/(?!(?:@metamask/perps-controller|@nktkas/hyperliquid|@noble|micro-eth-signer|micro-packed|@scure)/)',
+  ],
   workerIdleMemoryLimit: '500MB',
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
