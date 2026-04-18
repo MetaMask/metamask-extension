@@ -1593,23 +1593,23 @@ export class MetaMetricsController extends BaseController<
 
       switch (keyringType) {
         case KeyringType.imported:
-          numberOfImportedAccounts++;
+          numberOfImportedAccounts += 1;
           break;
         case KeyringType.snap:
-          numberOfSnapAccounts++;
+          numberOfSnapAccounts += 1;
           break;
         case KeyringType.ledger:
-          numberOfLedgerAccounts++;
+          numberOfLedgerAccounts += 1;
           break;
         case KeyringType.trezor:
-          numberOfTrezorAccounts++;
+          numberOfTrezorAccounts += 1;
           break;
         case KeyringType.lattice:
-          numberOfLatticeAccounts++;
+          numberOfLatticeAccounts += 1;
           break;
         case KeyringType.qr:
         case KeyringType.oneKey:
-          numberOfQrHardwareAccounts++;
+          numberOfQrHardwareAccounts += 1;
           break;
         default:
           break;
