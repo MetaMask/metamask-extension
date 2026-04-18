@@ -2044,6 +2044,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTrezorAccounts]: 0,
           [MetaMetricsUserTrait.NumberOfLatticeAccounts]: 0,
           [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfHardwareWallets]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: 'default',
@@ -2423,6 +2424,9 @@ describe('MetaMetricsController', function () {
         expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(4);
         expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
         expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
+        // 1 unique entropy id → 1 HD entropy.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
       });
     });
 
@@ -2512,6 +2516,10 @@ describe('MetaMetricsController', function () {
         expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
         // QR hardware includes both 'QR Hardware Wallet Device' and 'OneKey Hardware'.
         expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(2);
+        // 1 mnemonic entropy id → 1 HD entropy; hardware wallets don't contribute.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        // ledger(1) + trezor(1) + lattice(1) + qr(2) = 5.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(5);
       });
     });
   });
@@ -2664,59 +2672,266 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('getNumberOfHDEntropies', function () {
-    it('counts HD entropies correctly across various keyring configurations', async function () {
-      await withController(({ controller: _ }) => {
-        const testScenarios = [
-          {
-            name: 'with undefined keyrings',
-            state: { keyrings: undefined },
-            expectedCount: 0,
-          },
-          {
-            name: 'with empty keyrings array',
-            state: { keyrings: [] },
-            expectedCount: 0,
-          },
-          {
-            name: 'with one HD keyring',
-            state: {
-              keyrings: [{ type: KeyringType.hdKeyTree, accounts: ['0x123'] }],
-            },
-            expectedCount: 1,
-          },
-          {
-            name: 'with two HD keyrings',
-            state: {
-              keyrings: [
-                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
-                { type: KeyringType.hdKeyTree, accounts: ['0x456'] },
-              ],
-            },
-            expectedCount: 2,
-          },
-          {
-            name: 'with mixed keyring types',
-            state: {
-              keyrings: [
-                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
-                { type: KeyringType.imported, accounts: ['0x456'] },
-                { type: KeyringType.ledger, accounts: ['0x789'] },
-                { type: KeyringType.hdKeyTree, accounts: ['0xabc'] },
-              ],
-            },
-            expectedCount: 2,
-          },
-        ];
+  describe('#getAccountCompositionTraits', function () {
+    function buildStateWithAccounts(
+      accounts: Record<string, unknown>,
+    ): Parameters<MetaMetricsController['_buildUserTraitsObject']>[0] {
+      return {
+        addressBook: {},
+        allNfts: {},
+        allTokens: {},
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        internalAccounts: {
+          accounts: accounts as MetaMaskState['internalAccounts']['accounts'],
+          selectedAccount: Object.keys(accounts)[0] ?? '',
+        },
+        multichainNetworkConfigurationsByChainId: {},
+        ledgerTransportType: LedgerTransportTypes.webhid,
+        openSeaEnabled: false,
+        useNftDetection: false,
+        theme: 'default' as ThemeType,
+        useTokenDetection: false,
+        names: {},
+        currentCurrency: 'usd',
+        securityAlertsEnabled: false,
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: false,
+        preferences: {
+          privacyMode: false,
+          tokenNetworkFilter: {},
+          tokenSortConfig: { key: '', order: 'dsc', sortCallback: 'stringNumeric' },
+          showNativeTokenAsMainBalance: false,
+        } as Preferences,
+        srpSessionData: undefined,
+        keyrings: [],
+      };
+    }
 
-        testScenarios.forEach((scenario) => {
-          // Implement the same logic as the private method
-          const hdKeyringCount =
-            scenario.state.keyrings?.filter(
-              (keyring) => keyring.type === KeyringType.hdKeyTree,
-            ).length ?? 0;
-          expect(hdKeyringCount).toBe(scenario.expectedCount);
-        });
+    it('returns zeros for an empty accounts object', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({}),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(0);
+      });
+    });
+
+    it('counts a single SRP with multiple account groups as one HD entropy', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'evm-0': {
+              id: 'evm-0',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 } },
+            },
+            'evm-1': {
+              id: 'evm-1',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 1 } },
+            },
+            'evm-2': {
+              id: 'evm-2',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 2 } },
+            },
+          }),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+      });
+    });
+
+    it('counts multiple distinct SRPs as separate HD entropies', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'evm-srp1': {
+              id: 'evm-srp1',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 } },
+            },
+            'evm-srp2': {
+              id: 'evm-srp2',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 } },
+            },
+            'evm-srp3': {
+              id: 'evm-srp3',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp3', groupIndex: 0 } },
+            },
+          }),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(3);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
+      });
+    });
+
+    it('does not count hardware wallets toward HD entropies', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'ledger-1': {
+              id: 'ledger-1',
+              metadata: { keyring: { type: KeyringType.ledger } },
+              options: {},
+            },
+            'ledger-2': {
+              id: 'ledger-2',
+              metadata: { keyring: { type: KeyringType.ledger } },
+              options: {},
+            },
+            'trezor-1': {
+              id: 'trezor-1',
+              metadata: { keyring: { type: KeyringType.trezor } },
+              options: {},
+            },
+            'lattice-1': {
+              id: 'lattice-1',
+              metadata: { keyring: { type: KeyringType.lattice } },
+              options: {},
+            },
+            'qr-1': {
+              id: 'qr-1',
+              metadata: { keyring: { type: KeyringType.qr } },
+              options: {},
+            },
+            'onekey-1': {
+              id: 'onekey-1',
+              metadata: { keyring: { type: KeyringType.oneKey } },
+              options: {},
+            },
+          }),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(2);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(2);
+        // ledger(2) + trezor(1) + lattice(1) + qr(2) = 6.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(6);
+      });
+    });
+
+    it('does not count imported accounts toward HD entropies or hardware wallets', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'imported-1': {
+              id: 'imported-1',
+              metadata: { keyring: { type: KeyringType.imported } },
+              options: {},
+            },
+            'imported-2': {
+              id: 'imported-2',
+              metadata: { keyring: { type: KeyringType.imported } },
+              options: {},
+            },
+          }),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(2);
+      });
+    });
+
+    it('computes number_of_hardware_wallets as the sum of all hardware wallet types', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'ledger-1': { id: 'ledger-1', metadata: { keyring: { type: KeyringType.ledger } }, options: {} },
+            'ledger-2': { id: 'ledger-2', metadata: { keyring: { type: KeyringType.ledger } }, options: {} },
+            'trezor-1': { id: 'trezor-1', metadata: { keyring: { type: KeyringType.trezor } }, options: {} },
+            'lattice-1': { id: 'lattice-1', metadata: { keyring: { type: KeyringType.lattice } }, options: {} },
+            'lattice-2': { id: 'lattice-2', metadata: { keyring: { type: KeyringType.lattice } }, options: {} },
+            'qr-1': { id: 'qr-1', metadata: { keyring: { type: KeyringType.qr } }, options: {} },
+            'onekey-1': { id: 'onekey-1', metadata: { keyring: { type: KeyringType.oneKey } }, options: {} },
+          }),
+        );
+        // ledger(2) + trezor(1) + lattice(2) + qr(1) + onekey(1) = 7.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(7);
+      });
+    });
+
+    it('handles accounts with unknown keyring type without throwing', async function () {
+      await withController(({ controller }) => {
+        expect(() =>
+          controller._buildUserTraitsObject(
+            buildStateWithAccounts({
+              'unknown-acc': {
+                id: 'unknown-acc',
+                metadata: { keyring: { type: 'SomeUnknownKeyring' } },
+                options: {},
+              },
+            }),
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('handles accounts with missing metadata without throwing', async function () {
+      await withController(({ controller }) => {
+        expect(() =>
+          controller._buildUserTraitsObject(
+            buildStateWithAccounts({
+              'no-metadata-acc': {
+                id: 'no-metadata-acc',
+                metadata: undefined,
+                options: {},
+              },
+            }),
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('derives total wallets from hd_entropies + hardware_wallets + imported_accounts', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({
+            'evm-0': {
+              id: 'evm-0',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0 } },
+            },
+            'evm-1': {
+              id: 'evm-1',
+              metadata: { keyring: { type: KeyringType.hdKeyTree } },
+              options: { entropy: { type: 'mnemonic', id: 'srp2', groupIndex: 0 } },
+            },
+            'ledger-1': {
+              id: 'ledger-1',
+              metadata: { keyring: { type: KeyringType.ledger } },
+              options: {},
+            },
+            'imported-1': {
+              id: 'imported-1',
+              metadata: { keyring: { type: KeyringType.imported } },
+              options: {},
+            },
+            // Snap accounts are excluded from total wallet count.
+            'snap-1': {
+              id: 'snap-1',
+              metadata: { keyring: { type: KeyringType.snap } },
+              options: {},
+            },
+          }),
+        );
+        const hdEntropies = traits?.[MetaMetricsUserTrait.NumberOfHDEntropies] ?? 0;
+        const hardwareWallets = traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets] ?? 0;
+        const importedAccounts = traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts] ?? 0;
+        // 2 SRPs + 1 hardware + 1 imported = 4 total wallets.
+        expect(hdEntropies + hardwareWallets + importedAccounts).toBe(4);
       });
     });
   });

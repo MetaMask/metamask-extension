@@ -635,6 +635,14 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_qr_hardware_accounts?: number;
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_hardware_wallets?: number;
 };
 
 export enum MetaMetricsUserTrait {
@@ -799,6 +807,12 @@ export enum MetaMetricsUserTrait {
    * AirGap Vault, CoolWallet, DCent, Ngrave, imToken, Keycard Shell).
    */
   NumberOfQrHardwareAccounts = 'number_of_qr_hardware_accounts',
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  NumberOfHardwareWallets = 'number_of_hardware_wallets',
 }
 
 /**

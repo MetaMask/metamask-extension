@@ -1441,9 +1441,6 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
-      [MetaMetricsUserTrait.NumberOfHDEntropies]:
-        this.#getNumberOfHDEntropies(metamaskState) ??
-        this.previousUserTraits?.number_of_hd_entropies,
       ...this.#getAccountCompositionTraits(metamaskState),
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
@@ -1567,19 +1564,6 @@ export class MetaMetricsController extends BaseController<
   }
 
   /**
-   * Returns the number of HD Entropies the user has.
-   *
-   * @param metamaskState
-   */
-  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
-    return (
-      metamaskState.keyrings?.filter(
-        (keyring) => keyring.type === KeyringType.hdKeyTree,
-      ).length ?? 0
-    );
-  }
-
-  /**
    * Computes wallet composition traits from internalAccounts, which is always
    * available regardless of lock state (unlike keyrings).
    *
@@ -1592,6 +1576,7 @@ export class MetaMetricsController extends BaseController<
    */
   #getAccountCompositionTraits(metamaskState: MetaMaskState): Partial<MetaMetricsUserTraits> {
     const accountGroupKeys = new Set<string>();
+    const hdEntropyIds = new Set<string>();
     let numberOfImportedAccounts = 0;
     let numberOfSnapAccounts = 0;
     let numberOfLedgerAccounts = 0;
@@ -1638,12 +1623,14 @@ export class MetaMetricsController extends BaseController<
 
       if (entropy?.type === 'mnemonic' && 'id' in entropy && 'groupIndex' in entropy) {
         accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
+        hdEntropyIds.add(entropy.id);
       } else {
         accountGroupKeys.add(accountId);
       }
     }
 
     return {
+      [MetaMetricsUserTrait.NumberOfHDEntropies]: hdEntropyIds.size,
       [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
       [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
       [MetaMetricsUserTrait.NumberOfSnapAccounts]: numberOfSnapAccounts,
@@ -1651,6 +1638,11 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
       [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
       [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: numberOfQrHardwareAccounts,
+      [MetaMetricsUserTrait.NumberOfHardwareWallets]:
+        numberOfLedgerAccounts +
+        numberOfTrezorAccounts +
+        numberOfLatticeAccounts +
+        numberOfQrHardwareAccounts,
     };
   }
 
