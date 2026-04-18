@@ -314,6 +314,7 @@
     "@metamask/kernel-utils": "portal:ocap-kernel/packages/kernel-utils",
     "@metamask/logger": "portal:ocap-kernel/packages/logger",
     "@metamask/ocap-kernel": "portal:ocap-kernel/packages/ocap-kernel",
+    "@metamask/service-discovery-types": "portal:ocap-kernel/packages/service-discovery-types",
     "@metamask/streams": "portal:ocap-kernel/packages/streams",
     "@metamask/kernel-cli": "portal:ocap-kernel/packages/kernel-cli"
   },
@@ -445,6 +446,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^9.0.0",
     "@metamask/selected-network-controller": "^26.0.3",
+    "@metamask/service-discovery-types": "^0.0.0",
     "@metamask/shield-controller": "^5.0.1",
     "@metamask/signature-controller": "^39.2.0",
     "@metamask/smart-transactions-controller": "^24.1.0",

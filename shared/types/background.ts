@@ -328,7 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
-  capabilityVendorUrl: OcapKernelControllerState['capabilityVendorUrl'];
+  serviceContacts: OcapKernelControllerState['serviceContacts'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &

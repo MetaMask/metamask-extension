@@ -12,38 +12,6 @@ export type HostApiProxyResponse = {
   error?: { message: string; stack?: string };
 };
 
-export type LlmResponse = {
-  capabilityName: string;
-  sourceCode: string;
-  description: string;
-  methodNames: string[];
-};
-
-export type CapabilityRecord = {
-  id: string;
-  name: string;
-  description: string;
-  methodNames: string[];
-  exo: unknown;
-  sourceCode: string;
-};
-
-export type CapabilityApprovalResult = {
-  approved: boolean;
-  capabilityName?: string;
-  description?: string;
-  methodNames?: string[];
-  sourceCode?: string;
-};
-
 export type HostApiProxy = {
   invoke: (method: string, args?: unknown[]) => Promise<unknown>;
-};
-
-export type LlmService = {
-  prompt: (request: string) => Promise<LlmResponse>;
-};
-
-export type OcapURLIssuerService = {
-  issue: (obj: unknown) => Promise<string>;
 };

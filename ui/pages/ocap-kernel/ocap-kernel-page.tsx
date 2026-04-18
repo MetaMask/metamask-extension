@@ -6,6 +6,7 @@ import {
   Box,
   Text,
   ButtonBase,
+  ButtonBaseSize,
   Icon,
   IconName,
   IconSize,
@@ -17,20 +18,67 @@ import {
   JustifyContent,
   TextVariant,
   TextColor,
-  BlockSize,
   BackgroundColor,
   BorderRadius,
   IconColor,
 } from '../../helpers/constants/design-system';
 
-const getCapabilityVendorUrl = (state: {
-  metamask: { capabilityVendorUrl: string | null };
-}) => state.metamask.capabilityVendorUrl;
+type ServiceContactEntry = {
+  name: string;
+  contactUrl: string;
+};
+
+const getServiceContacts = (state: {
+  metamask: { serviceContacts?: ServiceContactEntry[] };
+}): ServiceContactEntry[] => state.metamask.serviceContacts ?? [];
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function ContactUrlRow({ entry }: { entry: ServiceContactEntry }) {
+  const t = useI18nContext();
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={1}
+      paddingBottom={2}
+    >
+      <Text variant={TextVariant.bodyMdBold}>{entry.name}</Text>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={2}
+      >
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          ellipsis
+          style={{ flex: 1, minWidth: 0 }}
+        >
+          {entry.contactUrl}
+        </Text>
+        <ButtonBase
+          onClick={() => handleCopy(entry.contactUrl)}
+          size={ButtonBaseSize.Sm}
+          backgroundColor={BackgroundColor.transparent}
+          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+        >
+          <Icon
+            name={copied ? IconName.CopySuccess : IconName.Copy}
+            size={IconSize.Sm}
+            color={IconColor.iconDefault}
+          />
+        </ButtonBase>
+      </Box>
+    </Box>
+  );
+}
 
 export default function OcapKernelPage() {
   const t = useI18nContext();
-  const capabilityVendorUrl = useSelector(getCapabilityVendorUrl);
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const serviceContacts = useSelector(getServiceContacts);
 
   return (
     <Box
@@ -49,36 +97,14 @@ export default function OcapKernelPage() {
         flexDirection={FlexDirection.Column}
         gap={2}
       >
-        <Text variant={TextVariant.bodyMdBold}>{t('capabilityVendorUrl')}</Text>
+        <Text variant={TextVariant.bodyMdBold}>
+          {t('serviceContactUrls') ?? 'Service contact URLs'}
+        </Text>
 
-        {capabilityVendorUrl ? (
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            gap={2}
-          >
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              ellipsis
-              style={{ flex: 1, minWidth: 0 }}
-            >
-              {capabilityVendorUrl}
-            </Text>
-            <ButtonBase
-              onClick={() => handleCopy(capabilityVendorUrl)}
-              size={BlockSize.Min}
-              backgroundColor={BackgroundColor.transparent}
-              title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-            >
-              <Icon
-                name={copied ? IconName.CopySuccess : IconName.Copy}
-                size={IconSize.Sm}
-                color={IconColor.iconDefault}
-              />
-            </ButtonBase>
-          </Box>
+        {serviceContacts.length > 0 ? (
+          serviceContacts.map((entry) => (
+            <ContactUrlRow key={entry.name} entry={entry} />
+          ))
         ) : (
           <Text variant={TextVariant.bodySm} color={TextColor.textMuted}>
             {t('notAvailable')}

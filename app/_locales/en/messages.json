@@ -1536,8 +1536,8 @@
     "message": "You're all caught up!",
     "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
-  "capabilityVendorUrl": {
-    "message": "Capability Vendor URL"
+  "serviceContactUrls": {
+    "message": "Service contact URLs"
   },
   "chainId": {
     "message": "Chain ID"

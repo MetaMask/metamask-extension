@@ -9,8 +9,13 @@ import type { Patch } from 'immer';
 
 const controllerName = 'OcapKernelController';
 
+export type ServiceContactEntry = {
+  name: string;
+  contactUrl: string;
+};
+
 export type OcapKernelControllerState = {
-  capabilityVendorUrl: string | null;
+  serviceContacts: ServiceContactEntry[];
 };
 
 export type OcapKernelControllerGetStateAction = ControllerGetStateAction<
@@ -18,14 +23,14 @@ export type OcapKernelControllerGetStateAction = ControllerGetStateAction<
   OcapKernelControllerState
 >;
 
-export type OcapKernelControllerSetCapabilityVendorUrlAction = {
-  type: `${typeof controllerName}:setCapabilityVendorUrl`;
-  handler: OcapKernelController['setCapabilityVendorUrl'];
+export type OcapKernelControllerSetServiceContactsAction = {
+  type: `${typeof controllerName}:setServiceContacts`;
+  handler: OcapKernelController['setServiceContacts'];
 };
 
 export type OcapKernelControllerActions =
   | OcapKernelControllerGetStateAction
-  | OcapKernelControllerSetCapabilityVendorUrlAction;
+  | OcapKernelControllerSetServiceContactsAction;
 
 export type OcapKernelControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
@@ -41,9 +46,9 @@ export type OcapKernelControllerMessenger = Messenger<
 >;
 
 const stateMetadata: StateMetadata<OcapKernelControllerState> = {
-  capabilityVendorUrl: {
+  serviceContacts: {
     persist: false,
-    anonymous: true,
+    includeInDebugSnapshot: false,
     includeInStateLogs: false,
     usedInUi: true,
   },
@@ -51,7 +56,7 @@ const stateMetadata: StateMetadata<OcapKernelControllerState> = {
 
 function getDefaultState(): OcapKernelControllerState {
   return {
-    capabilityVendorUrl: null,
+    serviceContacts: [],
   };
 }
 
@@ -75,14 +80,14 @@ export class OcapKernelController extends BaseController<
     });
 
     this.messenger.registerActionHandler(
-      `${controllerName}:setCapabilityVendorUrl`,
-      this.setCapabilityVendorUrl.bind(this),
+      `${controllerName}:setServiceContacts`,
+      this.setServiceContacts.bind(this),
     );
   }
 
-  setCapabilityVendorUrl(url: string): void {
+  setServiceContacts(contacts: ServiceContactEntry[]): void {
     this.update((state) => {
-      state.capabilityVendorUrl = url;
+      state.serviceContacts = contacts;
     });
   }
 }

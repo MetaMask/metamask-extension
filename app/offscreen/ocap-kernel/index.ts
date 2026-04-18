@@ -23,8 +23,6 @@ import {
 } from '@metamask/streams/browser';
 import type { PostMessageTarget } from '@metamask/streams/browser';
 import { makeHostApiProxy } from './services/host-api-proxy';
-import { makeMethodCatalog } from './services/method-catalog';
-import { makeLlmService } from './services/llm-service';
 
 const logger = new Logger('offscreen');
 
@@ -76,69 +74,101 @@ export async function runKernel(): Promise<never> {
     kernelStream.throw(error as Error).catch(logger.error);
   }
 
-  // Register kernel services and launch the capability vendor subcluster
+  // Register kernel services and launch the per-service subclusters.
+  //
+  // Each service runs in its own independent subcluster to mimic a
+  // heterogeneous service ecosystem where each provider publishes its own
+  // vat. The shared `hostApiProxy` kernel service is registered once and
+  // only granted to services that need it (currently the
+  // PersonalMessageSigner).
   try {
     const hostApiProxy = makeHostApiProxy();
-    const methodCatalog = makeMethodCatalog();
-    const llmService = makeLlmService();
 
     await E(kernelP).registerKernelServiceObject('hostApiProxy', hostApiProxy);
-    await E(kernelP).registerKernelServiceObject(
-      'methodCatalog',
-      methodCatalog,
-    );
-    await E(kernelP).registerKernelServiceObject('llmService', llmService);
 
     console.log('~~~ Kernel services registered ~~~');
 
-    // Resolve the bundle path to a full chrome-extension:// URL so the
-    // vat supervisor's fetch() can load it from any extension context.
-    const bundleUrl = chrome.runtime.getURL(
-      'ocap-kernel/vats/capability-vendor/index.bundle',
-    );
+    const matcherUrl = (process.env.OCAP_MATCHER_URL ?? '').trim();
 
-    const subclusterResult = await E(kernelP).launchSubcluster({
-      bootstrap: 'vendor',
-      services: [
-        'hostApiProxy',
-        'methodCatalog',
-        'llmService',
-        'ocapURLIssuerService',
-      ],
-      vats: {
-        vendor: {
-          bundleSpec: bundleUrl,
-        },
+    const serviceSubclusters: {
+      vatName: string;
+      bundlePath: string;
+      services: string[];
+    }[] = [
+      {
+        vatName: 'personalMessageSigner',
+        bundlePath: 'ocap-kernel/vats/personal-message-signer/index.bundle',
+        services: [
+          'hostApiProxy',
+          'ocapURLIssuerService',
+          'ocapURLRedemptionService',
+        ],
       },
-    });
+      {
+        vatName: 'echoService',
+        bundlePath: 'ocap-kernel/vats/echo-service/index.bundle',
+        services: ['ocapURLIssuerService', 'ocapURLRedemptionService'],
+      },
+      {
+        vatName: 'randomNumberService',
+        bundlePath: 'ocap-kernel/vats/random-number-service/index.bundle',
+        services: ['ocapURLIssuerService', 'ocapURLRedemptionService'],
+      },
+    ];
 
-    console.log('~~~ Vendor subcluster launched ~~~', subclusterResult);
+    const serviceContacts: { name: string; contactUrl: string }[] = [];
+    const rootKrefs: Record<string, string> = {};
 
-    // Extract and log the OCAP URL from the bootstrap result
-    const { bootstrapResult } = subclusterResult;
-    if (bootstrapResult) {
-      const bodyJson = (bootstrapResult as { body: string }).body.replace(
-        /^#/u,
-        '',
-      );
-      const parsed = JSON.parse(bodyJson);
-      if (parsed.ocapURL) {
-        console.log('='.repeat(60));
-        console.log('OCAP URL for remote kernel connection:');
-        console.log(parsed.ocapURL);
-        console.log('='.repeat(60));
+    for (const subcluster of serviceSubclusters) {
+      const bundleUrl = chrome.runtime.getURL(subcluster.bundlePath);
+      const result = await E(kernelP).launchSubcluster({
+        bootstrap: subcluster.vatName,
+        services: subcluster.services,
+        vats: {
+          [subcluster.vatName]: {
+            bundleSpec: bundleUrl,
+            parameters: { matcherUrl },
+          },
+        },
+      });
 
-        await E(hostApiProxy).invoke(
-          'OcapKernelController:setCapabilityVendorUrl',
-          [parsed.ocapURL],
+      const { bootstrapResult, rootKref } = result;
+      rootKrefs[subcluster.vatName] = rootKref;
+
+      if (bootstrapResult) {
+        const bodyJson = (bootstrapResult as { body: string }).body.replace(
+          /^#/u,
+          '',
         );
+        const parsed = JSON.parse(bodyJson) as {
+          name?: string;
+          contactUrl?: string;
+        };
+        if (parsed.name && parsed.contactUrl) {
+          serviceContacts.push({
+            name: parsed.name,
+            contactUrl: parsed.contactUrl,
+          });
+        }
       }
     }
 
-    const { rootKref } = subclusterResult;
-    globalThis.runSmokeTest = makeSmokeTest(rootKref);
+    if (serviceContacts.length > 0) {
+      console.log('='.repeat(60));
+      console.log('Service contact URLs:');
+      for (const entry of serviceContacts) {
+        console.log(`  ${entry.name}: ${entry.contactUrl}`);
+      }
+      console.log('='.repeat(60));
+    }
+
+    await E(hostApiProxy).invoke('OcapKernelController:setServiceContacts', [
+      serviceContacts,
+    ]);
+
+    globalThis.runSmokeTest = makeSmokeTest(rootKrefs);
   } catch (serviceError) {
-    console.error('Failed to set up capability vendor:', serviceError);
+    console.error('Failed to launch service subclusters:', serviceError);
   }
 
   const error = new Error('Kernel connection closed unexpectedly');
@@ -242,38 +272,19 @@ function defineGlobals(): void {
 /**
  * Makes a smoke test for the kernel.
  *
- * @param rootKref - The root kref of the vendor subcluster.
+ * Hits each service vat's `getContactUrl` to verify the vat is alive and
+ * has issued its contact URL.
+ *
+ * @param rootKrefs - A map from vat name to the root kref of each service
+ * subcluster's bootstrap vat.
  */
-function makeSmokeTest(rootKref: string): () => Promise<void> {
+function makeSmokeTest(rootKrefs: Record<string, string>): () => Promise<void> {
   return async () => {
     console.log('~~~ Running smoke test ~~~');
-    // 1. Request a capability via the admin facet (delegates to public facet)
-    const capRecord = await E(kernel).queueMessage(
-      rootKref,
-      'requestCapability',
-      ['list accounts'],
-    );
-    console.log('~~~ Requested capability ~~~', capRecord);
-
-    // 2. List capabilities via admin facet
-    const capabilities = await E(kernel).queueMessage(
-      rootKref,
-      'getCapabilities',
-      [],
-    );
-    console.log('~~~ All capabilities ~~~', capabilities);
-
-    // 3. Extract the capability exo kref from CapData and test it
-    const capExoKref = (capRecord as { slots: string[] }).slots[0];
-    console.log('~~~ Capability exo kref ~~~', capExoKref);
-
-    // 4. Call getAccounts() on the vended capability
-    const accounts = await E(kernel).queueMessage(
-      capExoKref,
-      'getAccounts',
-      [],
-    );
-    console.log('~~~ getAccounts() result ~~~', accounts);
+    for (const [vatName, rootKref] of Object.entries(rootKrefs)) {
+      const url = await E(kernel).queueMessage(rootKref, 'getContactUrl', []);
+      console.log(`~~~ ${vatName} contact URL ~~~`, url);
+    }
     console.log('~~~ Smoke test completed successfully ~~~');
   };
 }
