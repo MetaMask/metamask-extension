@@ -10,7 +10,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
   selectPerpsLastDepositResult,
   selectPerpsLastDepositTransactionId,
 } from '../../../selectors/perps-controller';
@@ -18,7 +18,7 @@ import { Toast } from '../../multichain/toast';
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
-  const depositInProgress = useSelector(selectPerpsDepositInProgress);
+  const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const lastDepositTransactionId = useSelector(
     selectPerpsLastDepositTransactionId,

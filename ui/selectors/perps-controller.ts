@@ -1,3 +1,9 @@
+import { createSelector } from 'reselect';
+import {
+  TransactionStatus,
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 
 /**
@@ -8,6 +14,26 @@ import type { PerpsControllerState } from '@metamask/perps-controller';
 export type PerpsState = {
   metamask: Partial<PerpsControllerState>;
 };
+
+/**
+ * Transaction statuses that represent the "deposit is pending" window on the
+ * extension. We start showing the pending toast once the user has confirmed
+ * the transaction (it reaches `approved`) and keep it up through `signed` and
+ * `submitted` until `lastDepositResult` populates and the completion branch
+ * takes over. `unapproved` (confirmation screen open) and `rejected` (user
+ * cancel) are intentionally excluded so we don't toast before confirm or on
+ * cancel, matching mobile's behavior in `usePerpsDepositStatus`.
+ */
+const PERPS_DEPOSIT_PENDING_STATUSES: ReadonlySet<TransactionStatus> = new Set([
+  TransactionStatus.approved,
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+]);
+
+const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
+  TransactionType.perpsDeposit,
+  TransactionType.perpsDepositAndOrder,
+]);
 
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
@@ -35,8 +61,35 @@ export const selectPerpsIsTestnet = (state: PerpsState): boolean =>
 export const selectPerpsActiveProvider = (state: PerpsState) =>
   state.metamask.activeProvider ?? 'hyperliquid';
 
-export const selectPerpsDepositInProgress = (state: PerpsState): boolean =>
-  state.metamask.depositInProgress ?? false;
+/**
+ * State shape consumed by `selectPerpsDepositPending`. Kept narrow so tests
+ * can supply a partial `metamask` slice without satisfying the full
+ * `TransactionControllerState` contract.
+ */
+type PerpsDepositPendingState = {
+  metamask: { transactions?: TransactionMeta[] };
+};
+
+/**
+ * Whether a Perps deposit transaction is currently in its pending window
+ * (post-confirm, pre-completion). Derived from TransactionController state
+ * rather than `depositInProgress`, which the perps controller only sets
+ * briefly alongside the success result and therefore cannot drive the
+ * pending toast on its own.
+ *
+ * @param state - Combined Perps + TransactionController state.
+ */
+export const selectPerpsDepositPending = createSelector(
+  (state: PerpsDepositPendingState): TransactionMeta[] =>
+    state.metamask.transactions ?? EMPTY_ARRAY,
+  (transactions) =>
+    transactions.some(
+      (tx) =>
+        tx.type !== undefined &&
+        PERPS_DEPOSIT_TRANSACTION_TYPES.has(tx.type) &&
+        PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status),
+    ),
+);
 
 export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>
   state.metamask.lastDepositTransactionId ?? null;

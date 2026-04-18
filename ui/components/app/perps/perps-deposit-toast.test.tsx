@@ -1,6 +1,10 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -11,6 +15,23 @@ import { PerpsDepositToast } from './perps-deposit-toast';
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
+
+function buildPendingDepositTransaction(
+  overrides: {
+    id?: string;
+    type?: TransactionType;
+    status?: TransactionStatus;
+  } = {},
+) {
+  return {
+    id: overrides.id ?? 'pending-tx-1',
+    time: 1_700_000_000_000,
+    chainId: '0xa4b1',
+    type: overrides.type ?? TransactionType.perpsDeposit,
+    status: overrides.status ?? TransactionStatus.approved,
+    txParams: { from: '0x0' },
+  };
+}
 
 describe('PerpsDepositToast', () => {
   const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
@@ -28,7 +49,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: null,
       },
     });
@@ -42,7 +63,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: true,
+        transactions: [buildPendingDepositTransaction()],
         lastDepositTransactionId: 'pending-tx-1',
         lastDepositResult: null,
       },
@@ -58,11 +79,51 @@ describe('PerpsDepositToast', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders in-progress toast for perpsDepositAndOrder transactions', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            type: TransactionType.perpsDepositAndOrder,
+          }),
+        ],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(
+      screen.getByText(messages.perpsDepositToastSubmittedTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the pending toast when the transaction is still unapproved', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            status: TransactionStatus.unapproved,
+          }),
+        ],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+  });
+
   it('renders success toast when lastDepositResult is successful', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: true,
           error: '',
@@ -83,7 +144,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
@@ -106,7 +167,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: true,
           error: '',
@@ -133,7 +194,7 @@ describe('PerpsDepositToast', () => {
     const initialStore = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: true,
           error: '',
@@ -155,7 +216,7 @@ describe('PerpsDepositToast', () => {
     const nextStore = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: true,
           error: '',
@@ -174,7 +235,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: true,
           error: '',
@@ -200,7 +261,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
@@ -225,7 +286,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: true,
+        transactions: [buildPendingDepositTransaction()],
         lastDepositTransactionId: 'pending-tx-1',
         lastDepositResult: {
           success: true,
@@ -249,7 +310,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositTransactionId: null,
         lastDepositResult: null,
       },
@@ -265,7 +326,7 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          depositInProgress: true,
+          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
@@ -286,7 +347,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositTransactionId: null,
         lastDepositResult: null,
       },
@@ -298,7 +359,7 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          depositInProgress: true,
+          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
@@ -326,7 +387,7 @@ describe('PerpsDepositToast', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        depositInProgress: false,
+        transactions: [],
         lastDepositTransactionId: null,
         lastDepositResult: null,
       },
@@ -338,7 +399,7 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          depositInProgress: true,
+          transactions: [buildPendingDepositTransaction({ id: 'submitted-tx-1' })],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: null,
         },
@@ -353,7 +414,7 @@ describe('PerpsDepositToast', () => {
       store.dispatch({
         type: 'UPDATE_METAMASK_STATE',
         value: {
-          depositInProgress: false,
+          transactions: [],
           lastDepositTransactionId: 'submitted-tx-1',
           lastDepositResult: {
             success: true,

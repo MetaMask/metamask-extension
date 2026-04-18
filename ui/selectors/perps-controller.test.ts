@@ -1,10 +1,14 @@
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   selectPerpsIsEligible,
   selectPerpsInitializationState,
   selectPerpsInitializationError,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
   selectPerpsLastDepositTransactionId,
   selectPerpsLastDepositResult,
   selectPerpsWithdrawInProgress,
@@ -95,15 +99,106 @@ describe('perps-controller selectors', () => {
     });
   });
 
-  describe('selectPerpsDepositInProgress', () => {
-    it('returns value from state', () => {
+  describe('selectPerpsDepositPending', () => {
+    function buildTx(
+      overrides: Partial<{
+        id: string;
+        type: TransactionType | string;
+        status: TransactionStatus | string;
+      }> = {},
+    ) {
+      return {
+        id: overrides.id ?? 'tx-1',
+        type: overrides.type ?? TransactionType.perpsDeposit,
+        status: overrides.status ?? TransactionStatus.approved,
+      };
+    }
+
+    it('returns true when a perpsDeposit transaction is approved', () => {
       expect(
-        selectPerpsDepositInProgress(buildState({ depositInProgress: true })),
+        selectPerpsDepositPending(buildState({ transactions: [buildTx()] })),
       ).toBe(true);
     });
 
-    it('defaults to false', () => {
-      expect(selectPerpsDepositInProgress(buildState())).toBe(false);
+    it('returns true when a perpsDepositAndOrder transaction is approved', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ type: TransactionType.perpsDepositAndOrder }),
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.approved,
+      TransactionStatus.signed,
+      TransactionStatus.submitted,
+    ])('returns true when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({ transactions: [buildTx({ status })] }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.unapproved,
+      TransactionStatus.confirmed,
+      TransactionStatus.failed,
+      TransactionStatus.dropped,
+      TransactionStatus.rejected,
+    ])('returns false when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({ transactions: [buildTx({ status })] }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for unrelated transaction types in a pending status', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [buildTx({ type: TransactionType.bridge })],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when there are no transactions', () => {
+      expect(selectPerpsDepositPending(buildState({ transactions: [] }))).toBe(
+        false,
+      );
+    });
+
+    it('returns false when the transactions slice is missing', () => {
+      expect(selectPerpsDepositPending(buildState())).toBe(false);
+    });
+
+    it('returns true when any transaction in the list matches', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({
+                id: 'tx-a',
+                type: TransactionType.simpleSend,
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'tx-b',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.submitted,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(true);
     });
   });
 
