@@ -1,0 +1,41 @@
+diff --git a/package.json b/package.json
+index fa971ca64a78998a3abe96d0c98ad8f0c5e1a38b..e12b9aa03af1930d8dad7961474b4f7706d8f79a 100644
+--- a/package.json
++++ b/package.json
+@@ -35,6 +35,36 @@
+         "default": "./dist/index.cjs"
+       }
+     },
++    "./formatters": {
++      "import": {
++        "types": "./dist/utils/perpsFormatters.d.mts",
++        "default": "./dist/utils/perpsFormatters.mjs"
++      },
++      "require": {
++        "types": "./dist/utils/perpsFormatters.d.cts",
++        "default": "./dist/utils/perpsFormatters.cjs"
++      }
++    },
++    "./calculations": {
++      "import": {
++        "types": "./dist/utils/orderCalculations.d.mts",
++        "default": "./dist/utils/orderCalculations.mjs"
++      },
++      "require": {
++        "types": "./dist/utils/orderCalculations.d.cts",
++        "default": "./dist/utils/orderCalculations.cjs"
++      }
++    },
++    "./constants": {
++      "import": {
++        "types": "./dist/constants/perpsConfig.d.mts",
++        "default": "./dist/constants/perpsConfig.mjs"
++      },
++      "require": {
++        "types": "./dist/constants/perpsConfig.d.cts",
++        "default": "./dist/constants/perpsConfig.cjs"
++      }
++    },
+     "./package.json": "./package.json"
+   },
+   "publishConfig": {
