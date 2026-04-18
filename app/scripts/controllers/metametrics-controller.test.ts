@@ -2037,6 +2037,13 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfNfts]: 4,
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
           [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
+          [MetaMetricsUserTrait.NumberOfAccountGroups]: 2,
+          [MetaMetricsUserTrait.NumberOfImportedAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfSnapAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfLedgerAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfTrezorAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfLatticeAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: 'default',
@@ -2195,6 +2202,7 @@ describe('MetaMetricsController', function () {
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,
           [MetaMetricsUserTrait.NumberOfAccounts]: 3,
+          [MetaMetricsUserTrait.NumberOfAccountGroups]: 3,
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
@@ -2339,6 +2347,171 @@ describe('MetaMetricsController', function () {
           multichainNetworkConfigurationsByChainId: {},
         });
         expect(updatedTraits).toStrictEqual(null);
+      });
+    });
+
+    it('should count BIP44 multichain accounts as one account group per entropy+index pair', async function () {
+      // Simulate 2 account groups from 1 SRP, each with EVM + BTC + SOL addresses.
+      const srp1 = 'entropy-source-id-1';
+      const mockAccounts = {
+        'evm-0': {
+          id: 'evm-0',
+          metadata: { keyring: { type: KeyringType.hdKeyTree } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 0, derivationPath: "m/44'/60'/0'/0/0" } },
+        } as unknown as InternalAccount,
+        'btc-0': {
+          id: 'btc-0',
+          metadata: { keyring: { type: KeyringType.snap } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 0, derivationPath: "m/44'/0'/0'/0/0" } },
+        } as unknown as InternalAccount,
+        'sol-0': {
+          id: 'sol-0',
+          metadata: { keyring: { type: KeyringType.snap } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 0, derivationPath: "m/44'/501'/0'/0'" } },
+        } as unknown as InternalAccount,
+        'evm-1': {
+          id: 'evm-1',
+          metadata: { keyring: { type: KeyringType.hdKeyTree } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 1, derivationPath: "m/44'/60'/1'/0/0" } },
+        } as unknown as InternalAccount,
+        'btc-1': {
+          id: 'btc-1',
+          metadata: { keyring: { type: KeyringType.snap } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 1, derivationPath: "m/44'/0'/1'/0/0" } },
+        } as unknown as InternalAccount,
+        'sol-1': {
+          id: 'sol-1',
+          metadata: { keyring: { type: KeyringType.snap } },
+          options: { entropy: { type: 'mnemonic', id: srp1, groupIndex: 1, derivationPath: "m/44'/501'/1'/0'" } },
+        } as unknown as InternalAccount,
+      };
+      const networkState = mockNetworkState({ chainId: CHAIN_IDS.MAINNET });
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject({
+          addressBook: {},
+          allNfts: {},
+          allTokens: {},
+          ...networkState,
+          internalAccounts: {
+            accounts: mockAccounts,
+            selectedAccount: 'evm-0',
+          },
+          multichainNetworkConfigurationsByChainId: {},
+          ledgerTransportType: LedgerTransportTypes.webhid,
+          openSeaEnabled: false,
+          useNftDetection: false,
+          theme: 'default' as ThemeType,
+          useTokenDetection: false,
+          names: {},
+          currentCurrency: 'usd',
+          securityAlertsEnabled: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+          preferences: {
+            privacyMode: false,
+            tokenNetworkFilter: {},
+            tokenSortConfig: { key: '', order: 'dsc', sortCallback: 'stringNumeric' },
+            showNativeTokenAsMainBalance: false,
+          } as Preferences,
+          srpSessionData: undefined,
+          keyrings: [],
+        });
+
+        // 6 internal accounts but only 2 unique {srp, groupIndex} pairs → 2 groups.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(2);
+        // BTC + SOL accounts (3 per group × 2 groups - EVM accounts) = 4 snap accounts.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(4);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
+      });
+    });
+
+    it('should correctly count imported, snap, and hardware wallet account types', async function () {
+      const mockAccounts = {
+        'hd-acc': {
+          id: 'hd-acc',
+          metadata: { keyring: { type: KeyringType.hdKeyTree } },
+          options: { entropy: { type: 'mnemonic', id: 'srp1', groupIndex: 0, derivationPath: "m/44'/60'/0'/0/0" } },
+        } as unknown as InternalAccount,
+        'imported-acc': {
+          id: 'imported-acc',
+          metadata: { keyring: { type: KeyringType.imported } },
+          options: {},
+        } as unknown as InternalAccount,
+        'snap-acc': {
+          id: 'snap-acc',
+          metadata: { keyring: { type: KeyringType.snap } },
+          options: {},
+        } as unknown as InternalAccount,
+        'ledger-acc': {
+          id: 'ledger-acc',
+          metadata: { keyring: { type: KeyringType.ledger } },
+          options: {},
+        } as unknown as InternalAccount,
+        'trezor-acc': {
+          id: 'trezor-acc',
+          metadata: { keyring: { type: KeyringType.trezor } },
+          options: {},
+        } as unknown as InternalAccount,
+        'lattice-acc': {
+          id: 'lattice-acc',
+          metadata: { keyring: { type: KeyringType.lattice } },
+          options: {},
+        } as unknown as InternalAccount,
+        'qr-acc': {
+          id: 'qr-acc',
+          metadata: { keyring: { type: KeyringType.qr } },
+          options: {},
+        } as unknown as InternalAccount,
+        'onekey-acc': {
+          id: 'onekey-acc',
+          metadata: { keyring: { type: KeyringType.oneKey } },
+          options: {},
+        } as unknown as InternalAccount,
+      };
+
+      const networkState = mockNetworkState({ chainId: CHAIN_IDS.MAINNET });
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject({
+          addressBook: {},
+          allNfts: {},
+          allTokens: {},
+          ...networkState,
+          internalAccounts: {
+            accounts: mockAccounts,
+            selectedAccount: 'hd-acc',
+          },
+          multichainNetworkConfigurationsByChainId: {},
+          ledgerTransportType: LedgerTransportTypes.webhid,
+          openSeaEnabled: false,
+          useNftDetection: false,
+          theme: 'default' as ThemeType,
+          useTokenDetection: false,
+          names: {},
+          currentCurrency: 'usd',
+          securityAlertsEnabled: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+          preferences: {
+            privacyMode: false,
+            tokenNetworkFilter: {},
+            tokenSortConfig: { key: '', order: 'dsc', sortCallback: 'stringNumeric' },
+            showNativeTokenAsMainBalance: false,
+          } as Preferences,
+          srpSessionData: undefined,
+          keyrings: [],
+        });
+
+        // 8 accounts: 1 HD group + 1 imported + 1 standalone snap + 1 ledger +
+        //             1 trezor + 1 lattice + 1 qr + 1 onekey = 8 distinct groups.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(8);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfSnapAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
+        // QR hardware includes both 'QR Hardware Wallet Device' and 'OneKey Hardware'.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(2);
       });
     });
   });

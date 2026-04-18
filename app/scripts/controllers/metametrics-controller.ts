@@ -1444,6 +1444,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??
         this.previousUserTraits?.number_of_hd_entropies,
+      ...this.#getAccountCompositionTraits(metamaskState),
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1576,6 +1577,81 @@ export class MetaMetricsController extends BaseController<
         (keyring) => keyring.type === KeyringType.hdKeyTree,
       ).length ?? 0
     );
+  }
+
+  /**
+   * Computes wallet composition traits from internalAccounts, which is always
+   * available regardless of lock state (unlike keyrings).
+   *
+   * number_of_account_groups deduplicates BIP44 multichain accounts by their
+   * entropy source and group index so that EVM + BTC + SOL addresses derived
+   * from the same SRP slot count as one account group, matching what users see
+   * in the Account Management UI.
+   *
+   * @param metamaskState
+   */
+  #getAccountCompositionTraits(metamaskState: MetaMaskState): Partial<MetaMetricsUserTraits> {
+    const accountGroupKeys = new Set<string>();
+    let numberOfImportedAccounts = 0;
+    let numberOfSnapAccounts = 0;
+    let numberOfLedgerAccounts = 0;
+    let numberOfTrezorAccounts = 0;
+    let numberOfLatticeAccounts = 0;
+    let numberOfQrHardwareAccounts = 0;
+
+    for (const [accountId, account] of Object.entries(
+      metamaskState.internalAccounts.accounts,
+    )) {
+      const keyringType = account.metadata?.keyring?.type;
+
+      switch (keyringType) {
+        case KeyringType.imported:
+          numberOfImportedAccounts++;
+          break;
+        case KeyringType.snap:
+          numberOfSnapAccounts++;
+          break;
+        case KeyringType.ledger:
+          numberOfLedgerAccounts++;
+          break;
+        case KeyringType.trezor:
+          numberOfTrezorAccounts++;
+          break;
+        case KeyringType.lattice:
+          numberOfLatticeAccounts++;
+          break;
+        case KeyringType.qr:
+        case KeyringType.oneKey:
+          numberOfQrHardwareAccounts++;
+          break;
+        default:
+          break;
+      }
+
+      // BIP44 multichain accounts share an entropy source id and group index
+      // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
+      // the count of account groups rather than individual chain addresses.
+      const entropy = account.options?.entropy as
+        | { type: 'mnemonic'; id: string; groupIndex: number }
+        | { type: string }
+        | undefined;
+
+      if (entropy?.type === 'mnemonic' && 'id' in entropy && 'groupIndex' in entropy) {
+        accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
+      } else {
+        accountGroupKeys.add(accountId);
+      }
+    }
+
+    return {
+      [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
+      [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
+      [MetaMetricsUserTrait.NumberOfSnapAccounts]: numberOfSnapAccounts,
+      [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
+      [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
+      [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
+      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: numberOfQrHardwareAccounts,
+    };
   }
 
   /**
