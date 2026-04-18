@@ -1574,7 +1574,9 @@ export class MetaMetricsController extends BaseController<
    *
    * @param metamaskState
    */
-  #getAccountCompositionTraits(metamaskState: MetaMaskState): Partial<MetaMetricsUserTraits> {
+  #getAccountCompositionTraits(
+    metamaskState: MetaMaskState,
+  ): Partial<MetaMetricsUserTraits> {
     const accountGroupKeys = new Set<string>();
     const hdEntropyIds = new Set<string>();
     let numberOfImportedAccounts = 0;
@@ -1621,7 +1623,11 @@ export class MetaMetricsController extends BaseController<
         | { type: string }
         | undefined;
 
-      if (entropy?.type === 'mnemonic' && 'id' in entropy && 'groupIndex' in entropy) {
+      if (
+        entropy?.type === 'mnemonic' &&
+        'id' in entropy &&
+        'groupIndex' in entropy
+      ) {
         accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
         hdEntropyIds.add(entropy.id);
       } else {
@@ -1637,7 +1643,8 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
       [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
       [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
-      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: numberOfQrHardwareAccounts,
+      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
+        numberOfQrHardwareAccounts,
       [MetaMetricsUserTrait.NumberOfHardwareWallets]:
         numberOfLedgerAccounts +
         numberOfTrezorAccounts +
