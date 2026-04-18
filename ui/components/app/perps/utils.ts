@@ -494,19 +494,21 @@ export function getPnlDisplayColor(pnl: number): TextColor {
 
 /**
  * Format a RoE% value for display in TP/SL inputs.
- * Always returns the absolute value: integers with no decimal ("25"),
- * non-integers with 2 decimal places ("25.50").
+ * Preserves the sign: negative values are prefixed with "-".
+ * Integers have no decimal ("25"), non-integers use 2 decimal places ("25.50").
  *
  * @param value - The numeric percentage value to format
  * @returns The formatted percentage string
  * @example
  * formatRoePercent(10) => '10'
- * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(-25.5) => '-25.50'
  * formatRoePercent(0) => '0'
  */
 export const formatRoePercent = (value: number): string => {
-  const rounded = Math.round(Math.abs(value) * 100) / 100;
-  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
+  const rounded = Math.round(value * 100) / 100;
+  const abs = Math.abs(rounded);
+  const formatted = Number.isInteger(abs) ? abs.toFixed(0) : abs.toFixed(2);
+  return rounded < 0 ? `-${formatted}` : formatted;
 };
 
 const volumeMultipliers: Record<string, number> = {

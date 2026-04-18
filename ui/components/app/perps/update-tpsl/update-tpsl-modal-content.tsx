@@ -143,11 +143,13 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   /**
-   * Convert a target price to a RoE% for display.
-   * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   * Convert a target price to a signed RoE% for display.
+   * Positive = profit territory, negative = loss territory.
+   * Long: RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   * Short: RoE% = -((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
   const priceToPercentForEdit = useCallback(
-    (price: string, isTP: boolean): string => {
+    (price: string): string => {
       if (!price || !entryPriceForEdit) {
         return '';
       }
@@ -158,43 +160,42 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       }
       const diff = priceNum - entryPriceForEdit;
       const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
-      if (positionDirection === 'long') {
-        return formatRoePercent(isTP ? percentChange : -percentChange);
-      }
-      return formatRoePercent(isTP ? -percentChange : percentChange);
+      const signedRoe =
+        positionDirection === 'long' ? percentChange : -percentChange;
+      return formatRoePercent(signedRoe);
     },
     [entryPriceForEdit, leverageForEdit, positionDirection],
   );
 
   /**
-   * Convert a RoE% to a target price.
-   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
+   * Convert a signed RoE% to a target price.
+   * Positive signedRoe = profit territory, negative = loss territory.
+   * long:  targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))
+   * short: targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))
    */
   const percentToPriceForEdit = useCallback(
-    (percent: number, isTP: boolean): string => {
-      if (!entryPriceForEdit || percent === 0) {
+    (signedRoe: number): string => {
+      if (!entryPriceForEdit || signedRoe === 0) {
         return '';
       }
-      const priceChangeRatio = percent / (leverageForEdit * 100);
-      let multiplier: number;
-      if (positionDirection === 'long') {
-        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-      } else {
-        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
-      }
+      const priceChangeRatio = signedRoe / (leverageForEdit * 100);
+      const multiplier =
+        positionDirection === 'long'
+          ? 1 + priceChangeRatio
+          : 1 - priceChangeRatio;
       const price = entryPriceForEdit * multiplier;
-      return formatEditPrice(price);
+      return price > 0 ? formatEditPrice(price) : '';
     },
     [entryPriceForEdit, leverageForEdit, positionDirection, formatEditPrice],
   );
 
   const editingTpPercent = useMemo(
-    () => priceToPercentForEdit(editingTpPrice, true),
+    () => priceToPercentForEdit(editingTpPrice),
     [priceToPercentForEdit, editingTpPrice],
   );
 
   const editingSlPercent = useMemo(
-    () => priceToPercentForEdit(editingSlPrice, false),
+    () => priceToPercentForEdit(editingSlPrice),
     [priceToPercentForEdit, editingSlPrice],
   );
 
@@ -273,7 +274,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleTpPresetClick = useCallback(
     (percent: number) => {
-      const newPrice = percentToPriceForEdit(percent, true);
+      const newPrice = percentToPriceForEdit(percent);
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
@@ -286,9 +287,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPresetClick = useCallback(
     (percent: number) => {
-      const newPrice = percentToPriceForEdit(percent, false);
+      // SL presets represent loss percentages — negate to get negative RoE
+      const newPrice = percentToPriceForEdit(-percent);
       setEditingSlPrice(newPrice);
-      const presetStr = String(percent);
+      const presetStr = String(-percent);
       setRawSlPercent(presetStr);
       setSlPresetPercent(presetStr);
     },
@@ -298,14 +300,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
         setRawTpPercent(value);
         setTpPresetPercent(null);
         const numValue = Number.parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           setEditingTpPrice('');
         } else if (!Number.isNaN(numValue)) {
-          const newPrice = percentToPriceForEdit(numValue, true);
+          const newPrice = percentToPriceForEdit(numValue);
           setEditingTpPrice(newPrice);
         }
       }
@@ -327,14 +329,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || /^[+-]?\d*(?:\.\d*)?$/u.test(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
         const numValue = Number.parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           setEditingSlPrice('');
         } else if (!Number.isNaN(numValue)) {
-          const newPrice = percentToPriceForEdit(numValue, false);
+          const newPrice = percentToPriceForEdit(numValue);
           setEditingSlPrice(newPrice);
         }
       }
@@ -537,7 +539,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           gap={2}
           alignItems={BoxAlignItems.Center}
         >
-          <Box className="flex-1">
+          <Box className="flex-1" data-testid="tpsl-tp-price-input">
             <TextField
               size={TextFieldSize.Md}
               value={editingTpPrice}
@@ -565,7 +567,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               }
             />
           </Box>
-          <Box className="flex-1">
+          <Box className="flex-1" data-testid="tpsl-tp-percent-input">
             <TextField
               size={TextFieldSize.Md}
               value={
@@ -667,7 +669,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           gap={2}
           alignItems={BoxAlignItems.Center}
         >
-          <Box className="flex-1">
+          <Box className="flex-1" data-testid="tpsl-sl-price-input">
             <TextField
               size={TextFieldSize.Md}
               value={editingSlPrice}
@@ -695,7 +697,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               }
             />
           </Box>
-          <Box className="flex-1">
+          <Box className="flex-1" data-testid="tpsl-sl-percent-input">
             <TextField
               size={TextFieldSize.Md}
               value={

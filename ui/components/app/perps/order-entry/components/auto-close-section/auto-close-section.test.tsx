@@ -300,7 +300,7 @@ describe('AutoCloseSection', () => {
     });
 
     it('calculates RoE% for long SL position', () => {
-      // (45000 - 40500) / 45000 * 10 * 100 = 100%
+      // (40500 - 45000) / 45000 * 10 * 100 = -100% (loss zone, sign preserved)
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -315,7 +315,7 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-percent-input');
       const percentInput = container.querySelector('input');
-      expect(percentInput).toHaveValue('100');
+      expect(percentInput).toHaveValue('-100');
     });
 
     it('shows empty percent when TP price is empty', () => {
@@ -384,7 +384,7 @@ describe('AutoCloseSection', () => {
     });
 
     it('updates price when RoE% is entered for SL (long)', () => {
-      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> 45000 * 0.99 = 44550
+      // -10% RoE at leverage=10: priceChange = -10/(10*100) = -1% -> 45000 * 0.99 = 44550
       const onStopLossPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -402,7 +402,7 @@ describe('AutoCloseSection', () => {
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
       fireEvent.change(input as HTMLInputElement, {
-        target: { value: '10' },
+        target: { value: '-10' },
       });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
@@ -410,7 +410,7 @@ describe('AutoCloseSection', () => {
 
     it('uses limit price as baseline when typing SL % on a limit order', () => {
       // currentPrice=$3,000 but limitPrice=$2,000 (below-market limit buy).
-      // 10% RoE at leverage=10: priceChange = 10/(10*100) = 1% -> $2,000 * 0.99 = $1,980 (not $2,970)
+      // -10% RoE at leverage=10: priceChange = -10/(10*100) = -1% -> $2,000 * 0.99 = $1,980 (not $2,970)
       const onStopLossPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -429,7 +429,7 @@ describe('AutoCloseSection', () => {
       const container = screen.getByTestId('sl-percent-input');
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
-      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+      fireEvent.change(input as HTMLInputElement, { target: { value: '-10' } });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('1980');
     });
@@ -462,7 +462,7 @@ describe('AutoCloseSection', () => {
 
     it('displays SL % relative to limit price when a price is pre-set on a limit order', () => {
       // SL at $1,980 with limit entry $2,000 at 10x leverage:
-      // RoE% = (2000 - 1980) / 2000 * 10 * 100 = 10%  (not relative to $3,000)
+      // RoE% = (1980 - 2000) / 2000 * 10 * 100 = -10% (loss zone, sign preserved)
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -479,12 +479,12 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-percent-input');
       const percentInput = container.querySelector('input');
-      expect(percentInput).toHaveValue('10');
+      expect(percentInput).toHaveValue('-10');
     });
 
     it('falls back to current price for % calculation when limit price is empty', () => {
       // Same as regular market order when limitPrice is empty
-      // 10% RoE at 10x from $3,000: SL = $3,000 * 0.99 = $2,970
+      // -10% RoE at 10x from $3,000: SL = $3,000 * 0.99 = $2,970
       const onStopLossPriceChange = jest.fn();
       renderWithProvider(
         <AutoCloseSection
@@ -503,7 +503,7 @@ describe('AutoCloseSection', () => {
       const container = screen.getByTestId('sl-percent-input');
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
-      fireEvent.change(input as HTMLInputElement, { target: { value: '10' } });
+      fireEvent.change(input as HTMLInputElement, { target: { value: '-10' } });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('2970');
     });

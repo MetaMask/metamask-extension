@@ -395,20 +395,36 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(3325, 0);
     });
 
-    it('updates SL price when a RoE% value is typed', () => {
-      // ETH: entry=2850, leverage=3, -50% RoE -> 2850 * (1 - 50/300) = 2850 * 0.8333 = 2375
+    it('updates SL price when a negative RoE% value is typed', () => {
+      // ETH: entry=2850, leverage=3, -50% RoE -> 2850 * (1 + (-50)/300) = 2850 * 0.8333 = 2375
       renderTpslModalContent();
 
       const percentInputs = screen.getAllByPlaceholderText('0');
       const slPercentInput = percentInputs[1];
       fireEvent.focus(slPercentInput);
-      fireEvent.change(slPercentInput, { target: { value: '50' } });
+      fireEvent.change(slPercentInput, { target: { value: '-50' } });
 
       const slPriceInput = screen.getAllByPlaceholderText(
         '0.00',
       )[1] as HTMLInputElement;
       const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
       expect(numValue).toBeCloseTo(2375, 0);
+    });
+
+    it('updates SL price when a positive RoE% is typed (SL in profit zone)', () => {
+      // ETH: entry=2850, leverage=3, +15% RoE -> 2850 * (1 + 15/300) = 2850 * 1.05 = 2992.5
+      renderTpslModalContent();
+
+      const percentInputs = screen.getAllByPlaceholderText('0');
+      const slPercentInput = percentInputs[1];
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '15' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      const numValue = parseFloat(slPriceInput.value.replace(/,/gu, ''));
+      expect(numValue).toBeCloseTo(2992.5, 0);
     });
 
     it('clears TP price when percent input is cleared', () => {
