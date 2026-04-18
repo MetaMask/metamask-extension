@@ -183,6 +183,16 @@ export const isMusdToken = (address?: string | null): boolean => {
 };
 
 /**
+ * Chain IDs where mUSD is Merkl-eligible (derived from {@link ELIGIBLE_TOKENS}).
+ * Used to aggregate projected bonus fiat across the same chains that earn the reward.
+ */
+export const MERKL_ELIGIBLE_MUSD_CHAIN_IDS: Hex[] = Object.entries(
+  ELIGIBLE_TOKENS,
+)
+  .filter(([, addrs]) => addrs.some((a) => isMusdToken(a)))
+  .map(([chainId]) => chainId as Hex);
+
+/**
  * Get the mUSD token address for a specific chain
  *
  * @param chainId - The chain ID in hex format

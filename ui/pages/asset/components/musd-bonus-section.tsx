@@ -48,13 +48,16 @@ const MUSD_SUPPORT_ARTICLE_URL =
 export type MusdBonusSectionProps = {
   chainId: Hex;
   tokenAddress: Hex;
-  /** Fiat value of mUSD position on this chain (for estimated annual bonus) */
+  /**
+   * Combined fiat value of mUSD held across Merkl-eligible chains (Mainnet + Linea
+   * per `ELIGIBLE_TOKENS`), used for estimated annual bonus (3% APY of this total).
+   */
   positionFiatValue: number | null;
   showFiat: boolean;
   /**
-   * Whether the account holds a positive mUSD balance on this chain. Must reflect
-   * actual token balance (e.g. raw hex), not fiat prefs — `positionFiatValue` is
-   * omitted when `showFiat` is false.
+   * Whether the account holds a positive mUSD balance on any Merkl-eligible chain.
+   * Must reflect actual token balance (e.g. raw hex), not fiat prefs —
+   * `positionFiatValue` is omitted when `showFiat` is false.
    */
   hasPositiveBalance: boolean;
 };
@@ -140,6 +143,10 @@ export function MusdBonusSection({
   const bonusButtonDisabled = !hasClaimable || isClaiming || isGeoBlocked;
 
   if (!isMusdFlowEnabled) {
+    return null;
+  }
+
+  if (!isMerklClaimingEnabled) {
     return null;
   }
 

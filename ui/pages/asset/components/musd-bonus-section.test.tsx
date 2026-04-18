@@ -9,6 +9,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import { getMessage } from '../../../helpers/utils/i18n-helper';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
+import { selectIsMerklClaimingEnabled } from '../../../selectors/musd';
 import { MusdBonusSection } from './musd-bonus-section';
 
 const mockRefetchRewards = jest.fn();
@@ -65,7 +66,7 @@ jest.mock('../../../selectors/musd', () => {
   return {
     ...actual,
     selectIsMusdConversionFlowEnabled: () => true,
-    selectIsMerklClaimingEnabled: () => true,
+    selectIsMerklClaimingEnabled: jest.fn(() => true),
   };
 });
 
@@ -85,6 +86,7 @@ const renderWithProviders = (component: React.ReactElement) =>
 
 describe('MusdBonusSection', () => {
   beforeEach(() => {
+    (selectIsMerklClaimingEnabled as jest.Mock).mockReturnValue(true);
     capturedOnConfirmed = null;
     mockRefetchRewards.mockClear();
     mockUseMerklRewards.mockReturnValue({
@@ -101,6 +103,22 @@ describe('MusdBonusSection', () => {
       error: null,
     });
     mockClaimRewards.mockClear();
+  });
+
+  it('returns null when Merkl claiming is disabled', () => {
+    (selectIsMerklClaimingEnabled as jest.Mock).mockReturnValue(false);
+
+    renderWithProviders(
+      <MusdBonusSection
+        chainId="0x1"
+        tokenAddress={MUSD_TOKEN_ADDRESS}
+        positionFiatValue={1000}
+        showFiat
+        hasPositiveBalance
+      />,
+    );
+
+    expect(screen.queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
   });
 
   it('renders section title and bonus rows', () => {

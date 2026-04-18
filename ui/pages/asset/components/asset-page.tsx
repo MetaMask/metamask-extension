@@ -38,10 +38,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
-import {
-  isEmptyHexString,
-  toChecksumHexAddress,
-} from '../../../../shared/lib/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
@@ -56,7 +53,6 @@ import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
@@ -81,11 +77,18 @@ import {
   getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  selectIsMerklClaimingEnabled,
+  selectIsMusdConversionFlowEnabled,
+} from '../../../selectors/musd';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
-import { useMusdCtaVisibility } from '../../../hooks/musd';
+import {
+  useMusdCtaVisibility,
+  useMusdMerklPosition,
+} from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { AssetMarketDetails } from './asset-market-details';
@@ -148,6 +151,9 @@ const AssetPage = ({
   const { shouldShowAssetOverviewCta: checkMusdCtaVisibility } =
     useMusdCtaVisibility();
 
+  const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
+  const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
+
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -188,10 +194,6 @@ const AssetPage = ({
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
-  const hasPositiveMusdBalance =
-    typeof tokenHexBalance === 'string' && tokenHexBalance.length > 0
-      ? !isEmptyHexString(tokenHexBalance)
-      : !isZeroAmount(balance);
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -278,7 +280,14 @@ const AssetPage = ({
   const isMusdAssetPage =
     type === AssetType.token &&
     isEvm &&
-    isMusdToken((asset as { address?: Hex }).address);
+    isMusdToken((asset as { address?: Hex }).address) &&
+    isMusdFlowEnabled;
+
+  const {
+    aggregatedFiat: aggregatedMusdFiat,
+    hasAnyBalance: hasAnyMusdBalance,
+  } = useMusdMerklPosition(isMusdAssetPage);
+
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = () => {
     setIsMarketClosedModalOpen(true);
@@ -373,23 +382,33 @@ const AssetPage = ({
               fiatValue={tokenFiatAmount}
               showFiat={showFiat}
             />
-            <Box
-              marginTop={5}
-              marginBottom={5}
-              className="asset-page__divider"
-            />
-            <MusdBonusSection
-              chainId={chainId as Hex}
-              tokenAddress={(asset as { address: Hex }).address}
-              positionFiatValue={showFiat ? tokenFiatAmount : null}
-              showFiat={showFiat}
-              hasPositiveBalance={hasPositiveMusdBalance}
-            />
-            <Box
-              marginTop={5}
-              marginBottom={5}
-              className="asset-page__divider"
-            />
+            {isMerklClaimingEnabled ? (
+              <>
+                <Box
+                  marginTop={5}
+                  marginBottom={5}
+                  className="asset-page__divider"
+                />
+                <MusdBonusSection
+                  chainId={chainId as Hex}
+                  tokenAddress={(asset as { address: Hex }).address}
+                  positionFiatValue={showFiat ? aggregatedMusdFiat : null}
+                  showFiat={showFiat}
+                  hasPositiveBalance={hasAnyMusdBalance}
+                />
+                <Box
+                  marginTop={5}
+                  marginBottom={5}
+                  className="asset-page__divider"
+                />
+              </>
+            ) : (
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
+            )}
             <MusdConvertSection />
             <Box
               marginTop={5}
