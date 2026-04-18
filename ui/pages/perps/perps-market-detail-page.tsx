@@ -95,7 +95,6 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -336,8 +335,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
-  const { trigger: triggerDeposit, isLoading: isDepositLoading } =
-    usePerpsDepositConfirmation();
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
@@ -427,8 +424,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
-  const hasNoAvailableBalance =
-    !position && !isLoadingAccount && !hasPerpBalance;
 
   // Ref to track current position - avoids stale data in callbacks
   // This follows mobile's pattern (currentPositionRef) to ensure we always
@@ -713,35 +708,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       track,
     ],
   );
-
-  const handleAddFunds = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!selectedAddress || isDepositLoading) {
-      return;
-    }
-
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
-    });
-
-    triggerDeposit();
-  }, [
-    decodedSymbol,
-    isDepositLoading,
-    isEligible,
-    selectedAddress,
-    track,
-    triggerDeposit,
-  ]);
 
   const handleClosePosition = useCallback(() => {
     if (!isEligible) {
@@ -1891,20 +1857,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         )}
 
         {/* Without Position: Show Long and Short buttons */}
-        {!position && hasNoAvailableBalance && (
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleAddFunds}
-            disabled={!selectedAddress || isDepositLoading}
-            className="w-full"
-            data-testid="perps-add-funds-cta-button"
-          >
-            {t('addFunds')}
-          </Button>
-        )}
-
-        {!position && !hasNoAvailableBalance && (
+        {!position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}

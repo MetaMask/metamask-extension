@@ -1181,7 +1181,7 @@ describe('PerpsMarketDetailPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows an add funds CTA instead of Long/Short when balance is zero', async () => {
+    it('shows Long/Short buttons even when balance is zero', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1195,33 +1195,9 @@ describe('PerpsMarketDetailPage', () => {
 
       await renderPage(store);
 
-      expect(
-        screen.queryByTestId('perps-trade-cta-buttons'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-add-funds-cta-button'),
-      ).toHaveTextContent(messages.addFunds.message);
-    });
-
-    it('starts deposit flow from add funds CTA when balance is zero', async () => {
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('perps-add-funds-cta-button'));
-      });
-
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('perps-trade-cta-buttons')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-long-cta-button')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-short-cta-button')).toBeInTheDocument();
     });
 
     it('navigates to order entry when Long button is clicked', async () => {
@@ -1464,29 +1440,6 @@ describe('PerpsMarketDetailPage', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
-    });
-
-    it('shows geo-block modal when clicking Add Funds while not eligible', async () => {
-      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
-      mockUseParams.mockReturnValue({ symbol: 'xyz:AAPL' });
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          availableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-      await renderPage(store);
-
-      const addFundsButton = screen.getByTestId('perps-add-funds-cta-button');
-      fireEvent.click(addFundsButton);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
-      });
-      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal when clicking Close while not eligible', async () => {
