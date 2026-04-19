@@ -1694,6 +1694,34 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Disconnect an active Perps session without affecting non-Perps users.
+   *
+   * Perps is an optional feature, so guard on build inclusion, controller
+   * presence, and active connection state before calling into the controller.
+   */
+  async #disconnectPerpsIfActive() {
+    if (
+      !getIsPerpsIncludedInBuild() ||
+      !this.messengerClientsByName.PerpsController ||
+      typeof this.messengerClientApi.perpsDisconnect !== 'function'
+    ) {
+      return;
+    }
+
+    if (
+      this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+    ) {
+      return;
+    }
+
+    try {
+      await this.messengerClientApi.perpsDisconnect();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
       try {
@@ -7071,6 +7099,9 @@ export default class MetamaskController extends EventEmitter {
       );
       messengerSubscriptions.clear();
       perpsStream?.destroy();
+      if (this.activeControllerConnections === 0) {
+        this.#disconnectPerpsIfActive();
+      }
     });
   }
 
@@ -8277,6 +8308,7 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'lock'
     // event of the MetaMaskController itself.
     this.emit('lock');
+    this.#disconnectPerpsIfActive();
   }
 
   /**
