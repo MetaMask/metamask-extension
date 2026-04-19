@@ -784,6 +784,33 @@ describe('PerpsOrderEntryPage', () => {
         expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       });
     });
+
+    it('disables submit when auto-close stop loss crosses liquidation price', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '1' },
+      });
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        /liquidation/iu,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+    });
   });
 
   describe('order submission', () => {

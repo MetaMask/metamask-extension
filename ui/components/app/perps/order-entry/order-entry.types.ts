@@ -215,6 +215,8 @@ export type AutoCloseSectionProps = {
   direction: OrderDirection;
   /** Current asset price (for TP/SL calculations and new orders) */
   currentPrice: number;
+  /** Estimated liquidation price as a raw number for stop-loss boundary validation */
+  liquidationPrice?: number | null;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
   /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
