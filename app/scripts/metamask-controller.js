@@ -3925,142 +3925,20 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  // getTokenStandardAndDetailsByChain — TODO: extract to token-resolution module.
+  // Currently still needed by getApi(); keeping as thin delegator until extracted.
   async getTokenStandardAndDetailsByChain(
     address,
     userAddress,
     tokenId,
     chainId,
   ) {
-    const { tokensChainsCache } = this.tokenListController.state;
-    const tokenList = tokensChainsCache?.[chainId]?.data || {};
-
-    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
-
-    let staticTokenListDetails = {};
-    if (chainId === CHAIN_IDS.MAINNET) {
-      staticTokenListDetails =
-        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    }
-
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
-    const userDefinedTokenDetails =
-      tokens.find(({ address: _address }) =>
-        isEqualCaseInsensitive(_address, address),
-      ) || {};
-    const tokenDetails = {
-      ...staticTokenListDetails,
-      ...tokenListDetails,
-      ...userDefinedTokenDetails,
-    };
-
-    const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
-      tokenDetails.erc20 === true;
-
-    const noEvidenceThatTokenIsAnNFT =
-      !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
-      !tokenDetails.erc721;
-
-    const otherDetailsAreERC20Like =
-      tokenDetails.decimals !== undefined && tokenDetails.symbol;
-
-    // boolean to check if the token can be treated as an ERC20
-    const tokenCanBeTreatedAsAnERC20 =
-      tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
-
-    let details;
-    if (tokenCanBeTreatedAsAnERC20) {
-      try {
-        let balance = 0;
-        if (this.#getGlobalChainId() === chainId) {
-          balance = await fetchTokenBalance(
-            address,
-            userAddress,
-            this.provider,
-          );
-        }
-
-        details = {
-          address,
-          balance,
-          standard: ERC20,
-          decimals: tokenDetails.decimals,
-          symbol: tokenDetails.symbol,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn(`Failed to get token balance. Error: ${e}`);
-      }
-    }
-
-    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
-    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
-    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
-    if (details === undefined) {
-      try {
-        const networkClientId =
-          this.networkController?.state?.networkConfigurationsByChainId?.[
-            chainId
-          ]?.rpcEndpoints[
-            this.networkController?.state?.networkConfigurationsByChainId?.[
-              chainId
-            ]?.defaultRpcEndpointIndex
-          ]?.networkClientId;
-
-        details =
-          await this.assetsContractController.getTokenStandardAndDetails(
-            address,
-            userAddress,
-            tokenId,
-            networkClientId,
-          );
-      } catch (e) {
-        log.warn(`Failed to get token standard and details. Error: ${e}`);
-      }
-    }
-
-    if (details) {
-      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-        details.standard,
-        ERC1155,
-      );
-
-      if (tokenDetailsStandardIsERC1155) {
-        try {
-          const balance = await fetchERC1155Balance(
-            address,
-            userAddress,
-            tokenId,
-            this.provider,
-          );
-
-          const balanceToUse = balance?._hex
-            ? parseInt(balance._hex, 16).toString()
-            : null;
-
-          details = {
-            ...details,
-            balance: balanceToUse,
-          };
-        } catch (e) {
-          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-          log.warn('Failed to get token balance. Error:', e);
-        }
-      }
-    }
-
-    return {
-      ...details,
-      decimals: details?.decimals?.toString(10),
-      balance: details?.balance?.toString(10),
-    };
+    return this.controllerMessenger.call(
+      'TokenResolution:getTokenStandardAndDetails',
+      address,
+      userAddress,
+      tokenId,
+    );
   }
 
   /**

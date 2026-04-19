@@ -21,6 +21,7 @@ import { registerActions as registerVaultActions } from './vault-management';
 import { registerActions as registerAccountActions } from './account-management';
 import { registerActions as registerPermissionActions } from './permission-management';
 import { registerActions as registerTransactionActions } from './transaction-lifecycle';
+import { registerActions as registerTokenActions } from './token-resolution';
 
 export function registerWalletServices(messenger: RootMessenger): void {
   // Cast: RootMessenger satisfies each module's structural messenger type at
@@ -31,4 +32,5 @@ export function registerWalletServices(messenger: RootMessenger): void {
   registerAccountActions(m);
   registerPermissionActions(m);
   registerTransactionActions(m);
+  registerTokenActions(m);
 }
