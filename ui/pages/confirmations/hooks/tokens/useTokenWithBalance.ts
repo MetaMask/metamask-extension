@@ -13,6 +13,7 @@ import {
 import { getTokenBalances } from '../../../../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state/feature-flags';
 import { useTokenFiatRate } from './useTokenFiatRates';
 
 export type TokenWithBalance = {
@@ -33,10 +34,11 @@ export function useTokenWithBalance(
   const fiatFormatter = useFiatFormatter();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address as Hex | undefined;
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-
   const nativeTokenInfo = getNativeTokenInfo(
     networkConfigurationsByChainId,
     chainId,
@@ -94,6 +96,11 @@ export function useTokenWithBalance(
   const tokenFiatRate = useTokenFiatRate(tokenAddress, chainId, 'USD') ?? 0;
 
   return useMemo(() => {
+    // When unified assets state is active the caller uses a different mechanism.
+    if (isAssetsUnifyStateEnabled) {
+      return undefined;
+    }
+
     if (!token && !isNative) {
       return undefined;
     }
@@ -124,6 +131,7 @@ export function useTokenWithBalance(
   }, [
     chainId,
     fiatFormatter,
+    isAssetsUnifyStateEnabled,
     isNative,
     ticker,
     token,

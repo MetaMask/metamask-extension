@@ -75,7 +75,9 @@ jest.mock('../../../store/actions', () => ({
     .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
   importCustomAssetsBatch: jest
     .fn()
-    .mockImplementation(() => ({ type: 'IMPORT_CUSTOM_ASSETS_BATCH' })),
+    .mockImplementation(
+      () => () => Promise.resolve({ type: 'IMPORT_CUSTOM_ASSETS_BATCH' }),
+    ),
   addImportedTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'ADD_IMPORTED_TOKENS' })),
