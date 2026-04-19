@@ -1786,8 +1786,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
+    return this.controllerMessenger.call(
+      'SnapManagement:handleSnapRequest',
       args,
     );
   }
@@ -5224,39 +5224,11 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  handleWatchAssetRequest = async ({
-    asset,
-    type,
-    origin,
-    networkClientId,
-  }) => {
-    switch (type) {
-      case ERC20: {
-        const unifyWatchAsset = this.#isAssetsUnifyStateEnabled();
-        if (unifyWatchAsset) {
-          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-        }
-        await this.tokensController.watchAsset({
-          asset,
-          type,
-          networkClientId,
-        });
-        if (unifyWatchAsset) {
-          await this.#persistUnifiedWatchAsset(asset, networkClientId);
-        }
-        return undefined;
-      }
-      case ERC721:
-      case ERC1155:
-        return this.nftController.watchNft(
-          asset,
-          type,
-          origin,
-          networkClientId,
-        );
-      default:
-        throw new Error(`Asset type ${type} not supported`);
-    }
+  handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
+    return this.controllerMessenger.call(
+      'SnapManagement:handleWatchAssetRequest',
+      { asset, type, origin, networkClientId },
+    );
   };
 
   async updateSecurityAlertResponse(
