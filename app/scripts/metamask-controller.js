@@ -5062,13 +5062,9 @@ export default class MetamaskController extends EventEmitter {
    * to third parties.
    */
   removeAllScopePermissions(scopeString) {
-    this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutators[Caip25CaveatType].removeScope(
-          existingScopes,
-          scopeString,
-        ),
+    this.controllerMessenger.call(
+      'PermissionManagement:removeAllScopePermissions',
+      scopeString,
     );
   }
 
@@ -5083,13 +5079,9 @@ export default class MetamaskController extends EventEmitter {
    * to third parties.
    */
   removeAllAccountPermissions(targetAccount) {
-    this.permissionController.updatePermissionsByCaveat(
-      Caip25CaveatType,
-      (existingScopes) =>
-        Caip25CaveatMutators[Caip25CaveatType].removeAccount(
-          existingScopes,
-          targetAccount,
-        ),
+    this.controllerMessenger.call(
+      'PermissionManagement:removeAllAccountPermissions',
+      targetAccount,
     );
   }
 
@@ -5147,20 +5139,12 @@ export default class MetamaskController extends EventEmitter {
    * @param [options] - Optional. Additional properties to define on the requestData object
    */
   async requestPermissionApproval(origin, permissions, options = {}) {
-    const id = nanoid();
-    return this.approvalController.addAndShowApprovalRequest({
-      id,
+    return this.controllerMessenger.call(
+      'PermissionManagement:requestPermissionApproval',
       origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions,
-        ...options,
-      },
-      type: MethodNames.RequestPermissions,
-    });
+      permissions,
+      options,
+    );
   }
 
   /**
@@ -5170,28 +5154,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {Hex} chainId - The chainId to add incrementally.
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    const caveatValueWithChains = setPermittedEthChainIds(
-      {
-        requiredScopes: {},
-        optionalScopes: {},
-        sessionProperties: {},
-        isMultichainOrigin: false,
-      },
-      [chainId],
-    );
-
-    await this.permissionController.requestPermissionsIncremental(
-      { origin },
-      {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithChains,
-            },
-          ],
-        },
-      },
+    return this.controllerMessenger.call(
+      'PermissionManagement:requestApprovalPermittedChainsPermission',
+      origin,
+      chainId,
     );
   }
 
@@ -7389,28 +7355,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   updateCaveat = (origin, target, caveatType, caveatValue) => {
-    try {
-      this.controllerMessenger.call(
-        'PermissionController:updateCaveat',
-        origin,
-        target,
-        caveatType,
-        caveatValue,
-      );
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
+    this.controllerMessenger.call(
+      'PermissionManagement:updateCaveat',
+      origin,
+      target,
+      caveatType,
+      caveatValue,
+    );
   };
 
   updateNetworksList = (chainIds) => {
-    try {
-      this.networkOrderController.updateNetworksList(chainIds);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
+    this.controllerMessenger.call(
+      'PermissionManagement:updateNetworksList',
+      chainIds,
+    );
   };
 
   /**
@@ -7430,14 +7388,10 @@ export default class MetamaskController extends EventEmitter {
   };
 
   setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
+    return this.controllerMessenger.call(
+      'PermissionManagement:setEnabledNetworks',
+      chainId,
+    );
   };
 
   setEnabledAllPopularNetworks = async () => {
@@ -7531,7 +7485,8 @@ export default class MetamaskController extends EventEmitter {
     actionId,
     walletType,
   }) => {
-    await this.resolvePendingApproval(
+    await this.controllerMessenger.call(
+      'PermissionManagement:resolvePendingApproval',
       String(txId),
       { txMeta, actionId },
       { waitForResult: true, walletType },
