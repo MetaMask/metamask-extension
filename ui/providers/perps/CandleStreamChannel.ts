@@ -301,6 +301,10 @@ export class CandleStreamChannel {
     for (const [key, entry] of this.channels.entries()) {
       // Only reconnect channels that have active subscribers
       if (entry.subscribers.size > 0) {
+        if (entry.pendingConnectTimer !== undefined) {
+          clearTimeout(entry.pendingConnectTimer);
+          entry.pendingConnectTimer = undefined;
+        }
         // Disconnect existing source
         if (entry.unsubscribeFromSource) {
           entry.unsubscribeFromSource();

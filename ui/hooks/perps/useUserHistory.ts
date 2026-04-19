@@ -2,7 +2,10 @@ import { useCallback, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { coalesceBackgroundRequest } from './coalesceBackgroundRequest';
+import {
+  coalesceBackgroundRequest,
+  invalidateCoalescedRequest,
+} from './coalesceBackgroundRequest';
 
 /**
  * Parameters for the useUserHistory hook
@@ -50,12 +53,13 @@ export function useUserHistory({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const cacheKey = `perpsGetUserHistory:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
+
   const fetchUserHistory = useCallback(async (): Promise<UserHistoryItem[]> => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const cacheKey = `perpsGetUserHistory:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
       const history = await coalesceBackgroundRequest<UserHistoryItem[]>(
         cacheKey,
         () =>
@@ -75,12 +79,17 @@ export function useUserHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [startTime, endTime, accountId]);
+  }, [cacheKey, startTime, endTime, accountId]);
+
+  const refetch = useCallback(async (): Promise<UserHistoryItem[]> => {
+    invalidateCoalescedRequest(cacheKey);
+    return fetchUserHistory();
+  }, [cacheKey, fetchUserHistory]);
 
   return {
     userHistory,
     isLoading,
     error,
-    refetch: fetchUserHistory,
+    refetch,
   };
 }

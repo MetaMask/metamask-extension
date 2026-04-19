@@ -15,7 +15,10 @@ import type {
 import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
-import { coalesceBackgroundRequest } from './coalesceBackgroundRequest';
+import {
+  coalesceBackgroundRequest,
+  invalidateCoalescedRequest,
+} from './coalesceBackgroundRequest';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -190,11 +193,19 @@ export function usePerpsTransactionHistory({
   }, [startTime, endTime, accountId]);
 
   const refetch = useCallback(async () => {
-    // Fetch user history first, then fetch all transactions
+    // Pull-to-refresh must bypass the short-TTL coalesce cache. Drop the three
+    // keys fetchAllTransactions consumes (refetchUserHistory invalidates its
+    // own key internally).
+    const accountKey = accountId ?? '';
+    invalidateCoalescedRequest(`perpsGetOrderFills:${accountKey}:false`);
+    invalidateCoalescedRequest(`perpsGetOrders:${accountKey}`);
+    invalidateCoalescedRequest(
+      `perpsGetFunding:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
+    );
     const freshUserHistory = await refetchUserHistory();
     userHistoryRef.current = freshUserHistory;
     await fetchAllTransactions();
-  }, [fetchAllTransactions, refetchUserHistory]);
+  }, [fetchAllTransactions, refetchUserHistory, accountId, startTime, endTime]);
 
   useEffect(() => {
     if (!skipInitialFetch && !initialFetchDone.current) {
