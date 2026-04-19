@@ -4181,33 +4181,11 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Array} accounts - The discovered accounts to count by provider.
    */
-  getDiscoveryCountByProvider(accounts) {
-    // count includes Bitcoin to maintain return type for the ImportSRP component
-    const counts = {
-      Bitcoin: 0,
-      Solana: 0,
-      Tron: 0,
-    };
-
-    const solanaAccountTypes = Object.values(SolAccountType);
-    const bitcoinAccountTypes = Object.values(BtcAccountType);
-    const tronAccountTypes = Object.values(TrxAccountType);
-
-    for (const account of accounts) {
-      // Newly supported account types should be added here
-      // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
-      if (solanaAccountTypes.includes(account.type)) {
-        counts.Solana += 1;
-      }
-      if (bitcoinAccountTypes.includes(account.type)) {
-        counts.Bitcoin += 1;
-      }
-      if (tronAccountTypes.includes(account.type)) {
-        counts.Tron += 1;
-      }
-    }
-
-    return counts;
+  async getDiscoveryCountByProvider(accounts) {
+    return this.controllerMessenger.call(
+      'AccountManagement:getDiscoveryCountByProvider',
+      accounts,
+    );
   }
 
   /**
@@ -4217,43 +4195,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // If no keyring id is provided, we assume one keyring was added to the vault
-      const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0]?.metadata.id;
-
-      if (!keyringIdToDiscover) {
-        throw new Error('No keyring id to discover accounts for');
-      }
-
-      // Ensure the snap keyring is initialized
-      await this.getSnapKeyring();
-
-      const wallet = this.multichainAccountService.getMultichainAccountWallet({
-        entropySource: keyringIdToDiscover,
-      });
-
-      const result = await wallet.discoverAccounts();
-
-      const counts = this.getDiscoveryCountByProvider(result);
-
-      return counts;
-    } catch (error) {
-      log.warn(`Failed to add accounts with balance. ${error}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
-    }
+    return this.controllerMessenger.call(
+      'AccountManagement:discoverAndCreateAccounts',
+      id,
+    );
   }
 
   /**
@@ -4337,23 +4282,9 @@ export default class MetamaskController extends EventEmitter {
    * Imports accounts with balances to the keyring.
    */
   async _importAccountsWithBalances() {
-    const { keyrings } = this.keyringController.state;
-
-    // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { metadata } of keyrings) {
-      // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyring(
-        { id: metadata.id },
-        async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
-        },
-      );
-      if (isHdKeyring) {
-        await this.getSnapKeyring();
-        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        await this.discoverAndCreateAccounts(metadata.id);
-      }
-    }
+    return this.controllerMessenger.call(
+      'AccountManagement:importAccountsWithBalances',
+    );
   }
 
   /**
@@ -4430,26 +4361,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
-      this._getMetaMaskState(),
+    return this.controllerMessenger.call(
+      'AccountManagement:getBalance',
+      address,
+      provider,
     );
-    const accounts = accountsByChainId[this.#getGlobalChainId()];
-    const cached = accounts?.[toChecksumHexAddress(address)];
-
-    if (cached && cached.balance) {
-      return cached.balance;
-    }
-
-    try {
-      const balance = await provider.request({
-        method: 'eth_getBalance',
-        params: [address, 'latest'],
-      });
-      return balance || '0x0';
-    } catch (error) {
-      log.error(error);
-      throw error;
-    }
   }
 
   /**
@@ -4791,54 +4707,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount, _keyringId) {
-    const oldAccounts = await this.keyringController.getAccounts();
-    const keyringSelector = _keyringId
-      ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
-
-    const addedAccountAddress = await this.keyringController.withKeyring(
-      keyringSelector,
-      async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
-          throw new Error('Cannot add account to non-HD keyring');
-        }
-        const accountsInKeyring = await keyring.getAccounts();
-
-        // Only add an account if the accountCount matches the accounts in the keyring.
-        if (accountCount && accountCount !== accountsInKeyring.length) {
-          if (accountCount > accountsInKeyring.length) {
-            throw new Error('Account out of sequence');
-          }
-
-          const existingAccount = accountsInKeyring[accountCount];
-
-          if (!existingAccount) {
-            throw new Error(`Can't find account at index ${accountCount}`);
-          }
-
-          return existingAccount;
-        }
-
-        const [newAddress] = await keyring.addAccounts(1);
-        if (oldAccounts.includes(newAddress)) {
-          await keyring.removeAccount(newAddress);
-          throw new Error(`Cannot add duplicate ${newAddress} account`);
-        }
-        return newAddress;
-      },
+    return this.controllerMessenger.call(
+      'AccountManagement:addNewAccount',
+      accountCount,
+      _keyringId,
     );
-
-    if (!oldAccounts.includes(addedAccountAddress)) {
-      const internalAccount =
-        this.accountsController.getAccountByAddress(addedAccountAddress);
-      if (internalAccount) {
-        this.accountsController.setSelectedAccount(internalAccount.id);
-      } else {
-        throw new Error(`No account found for address: ${addedAccountAddress}`);
-      }
-    }
-
-    return addedAccountAddress;
   }
 
   /**
@@ -4869,29 +4742,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The current selected address.
    */
   async resetAccount() {
-    const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
-
-    const globalChainId = this.#getGlobalChainId();
-
-    this.txController.wipeTransactions({
-      address: selectedAddress,
-      chainId: globalChainId,
-    });
-
-    this.smartTransactionsController.wipeSmartTransactions({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.bridgeStatusController.wipeBridgeStatus({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.networkController.resetConnection();
-
-    return selectedAddress;
+    return this.controllerMessenger.call('AccountManagement:resetAccount');
   }
 
   /**
@@ -4941,8 +4792,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Hex[]} The sorted evm accounts addresses.
    */
   sortEvmAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+    return this.controllerMessenger.call(
+      'AccountManagement:sortEvmAccountsByLastSelected',
+      addresses,
+    );
   }
 
   /**
@@ -4953,34 +4806,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortMultichainAccountsByLastSelected(addresses) {
-    const getLastSelected = (address) => {
-      const account = this.accountsController.getAccountByAddress(address);
-      if (!account) {
-        return undefined;
-      }
-      const context = this.accountTreeController.getAccountContext(account.id);
-      if (!context) {
-        return undefined;
-      }
-      // Get the group object to find the EOA account having lastSelected set
-      const group = this.accountTreeController.getAccountGroupObject(
-        context.groupId,
-      );
-      if (!group) {
-        return undefined;
-      }
-      // Find the EVM EOA account in this group, as it's the only one with lastSelected
-      for (const accountId of group.accounts) {
-        const groupAccount = this.accountsController.getAccount(accountId);
-        if (groupAccount && isEvmAccountType(groupAccount.type)) {
-          return groupAccount.metadata.lastSelected;
-        }
-      }
-      return undefined;
-    };
-
-    return addresses.sort(
-      (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
+    return this.controllerMessenger.call(
+      'AccountManagement:sortMultichainAccountsByLastSelected',
+      addresses,
     );
   }
 
@@ -4993,44 +4821,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
+    return this.controllerMessenger.call(
+      'AccountManagement:sortAddressesWithInternalAccounts',
+      addresses,
+      internalAccounts,
+    );
   }
 
   /**
@@ -5317,51 +5112,12 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-
-    const importedAccountAddress =
-      await this.keyringController.importAccountWithStrategy(strategy, args);
-
-    if (this.onboardingController.getIsSocialLoginFlow()) {
-      // Use withKeyring to get keyring metadata for an address
-      const { id: keyringId, privateKey: privateKeyFromKeyring } =
-        await this.keyringController.withKeyring(
-          { address: importedAccountAddress },
-          async ({ keyring, metadata }) => {
-            const privateKey = await keyring.exportAccount(
-              importedAccountAddress,
-            );
-            return { id: metadata.id, privateKey };
-          },
-        );
-
-      try {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewPrivateKeyBackup(
-          privateKeyFromKeyring,
-          keyringId,
-          shouldCreateSocialBackup,
-        );
-      } catch (err) {
-        // handle seedless controller import error by reverting keyring controller mnemonic import
-        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-        await this.keyringController.removeAccount(importedAccountAddress);
-        throw err;
-      }
-    }
-
-    if (shouldSelectAccount) {
-      const account = this.accountsController.getAccountByAddress(
-        importedAccountAddress,
-      );
-      if (account) {
-        this.accountsController.setSelectedAccount(account.id);
-      } else {
-        throw new Error(
-          `No account found for address: ${importedAccountAddress}`,
-        );
-      }
-    }
+    return this.controllerMessenger.call(
+      'AccountManagement:importAccountWithStrategy',
+      strategy,
+      args,
+      options,
+    );
   }
 
   /**
