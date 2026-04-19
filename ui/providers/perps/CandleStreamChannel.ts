@@ -307,6 +307,7 @@ export class CandleStreamChannel {
           entry.unsubscribeFromSource = null;
         }
         entry.isConnected = false;
+        entry.lastConnectAt = undefined;
 
         // Re-activate background stream for this key
         this.connect(key, entry);
@@ -415,6 +416,7 @@ export class CandleStreamChannel {
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
+    entry.lastConnectAt = undefined;
     const { symbol, interval } = parseCacheKey(key);
     submitRequestToBackground('perpsDeactivateCandleStream', [
       { symbol, interval },
