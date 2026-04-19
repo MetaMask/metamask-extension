@@ -48,9 +48,8 @@ import {
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
-  isValidStopLossPrice,
+  getStopLossValidationResult,
   getTakeProfitErrorDirection,
-  getStopLossErrorDirection,
 } from '../utils/tpslValidation';
 
 // RoE (Return on Equity) preset percentages - matching mobile
@@ -250,17 +249,35 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [editingTpPrice, currentPrice, positionDirection],
   );
 
+  const liquidationPrice = useMemo(() => {
+    if (!position.liquidationPrice) {
+      return null;
+    }
+
+    const parsedLiquidationPrice = Number.parseFloat(
+      position.liquidationPrice.replaceAll(',', ''),
+    );
+    return Number.isNaN(parsedLiquidationPrice) ? null : parsedLiquidationPrice;
+  }, [position.liquidationPrice]);
+
+  const stopLossValidation = useMemo(
+    () =>
+      getStopLossValidationResult(editingSlPrice, {
+        currentPrice,
+        direction: positionDirection,
+        liquidationPrice,
+      }),
+    [editingSlPrice, currentPrice, positionDirection, liquidationPrice],
+  );
+
   const isSlInvalid = useMemo(
     () =>
       Boolean(
         editingSlPrice.replaceAll(',', '').trim() &&
           currentPrice > 0 &&
-          !isValidStopLossPrice(editingSlPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+          !stopLossValidation.isValid,
       ),
-    [editingSlPrice, currentPrice, positionDirection],
+    [editingSlPrice, currentPrice, stopLossValidation.isValid],
   );
 
   const hasInvalidTPSL = isTpInvalid || isSlInvalid;
@@ -755,10 +772,17 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             color={TextColor.ErrorDefault}
             data-testid="sl-validation-error"
           >
-            {t('perpsStopLossInvalidPrice', [
-              getStopLossErrorDirection(positionDirection),
-              'current',
-            ])}
+            {t(
+              stopLossValidation.referencePrice === 'liquidation'
+                ? 'perpsStopLossInvalidLiquidationPrice'
+                : 'perpsStopLossInvalidPrice',
+              [
+                stopLossValidation.direction,
+                stopLossValidation.referencePrice === 'liquidation'
+                  ? undefined
+                  : 'current',
+              ].filter(Boolean) as string[],
+            )}
           </Text>
         )}
       </Box>

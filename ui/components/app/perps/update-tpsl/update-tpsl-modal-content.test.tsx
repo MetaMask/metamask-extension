@@ -167,6 +167,33 @@ describe('UpdateTPSLModalContent', () => {
     });
   });
 
+  describe('stop loss validation', () => {
+    it('shows a liquidation-price validation error and disables submit for short positions above liquidation', async () => {
+      const shortPosition = mockPositions[1];
+
+      renderTpslModalContent({
+        position: shortPosition,
+        currentPrice: 45000,
+      });
+
+      const slInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+
+      fireEvent.change(slInput, { target: { value: '50000' } });
+
+      expect(screen.getByTestId('sl-validation-error')).toHaveTextContent(
+        'Stop loss must be below liquidation price',
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-update-tpsl-modal-submit'),
+        ).toBeDisabled();
+      });
+    });
+  });
+
   describe('initialization', () => {
     it('initializes TP/SL prices from position data', () => {
       renderTpslModalContent();

@@ -16,6 +16,13 @@ type Direction = 'long' | 'short';
 type ValidationParams = {
   currentPrice: number;
   direction?: Direction;
+  liquidationPrice?: number | null;
+};
+
+export type StopLossValidationResult = {
+  isValid: boolean;
+  direction: 'above' | 'below' | '';
+  referencePrice: 'current' | 'liquidation' | '';
 };
 
 /**
@@ -52,21 +59,69 @@ export const isValidTakeProfitPrice = (
  * @param params.currentPrice
  * @param params.direction
  */
-export const isValidStopLossPrice = (
+export function isValidStopLossPrice(price: string, params: ValidationParams) {
+  return getStopLossValidationResult(price, params).isValid;
+}
+
+/**
+ * Validates stop loss against both the current price and, when available,
+ * the liquidation price. A valid stop loss must stay between those two
+ * boundaries for the current position direction.
+ *
+ * @param price - The stop loss price string (may include `$` / `,` formatting)
+ * @param params - Object with `currentPrice`, `direction`, and optional `liquidationPrice`
+ * @param params.currentPrice
+ * @param params.direction
+ * @param params.liquidationPrice
+ */
+export function getStopLossValidationResult(
   price: string,
-  { currentPrice, direction }: ValidationParams,
-): boolean => {
+  { currentPrice, direction, liquidationPrice }: ValidationParams,
+): StopLossValidationResult {
   if (!currentPrice || !direction || !price) {
-    return true;
+    return { isValid: true, direction: '', referencePrice: '' };
   }
 
   const slPrice = Number.parseFloat(price.replaceAll(/[$,]/gu, ''));
   if (Number.isNaN(slPrice)) {
-    return true;
+    return { isValid: true, direction: '', referencePrice: '' };
   }
 
-  return direction === 'long' ? slPrice < currentPrice : slPrice > currentPrice;
-};
+  const isWithinCurrentBoundary =
+    direction === 'long' ? slPrice < currentPrice : slPrice > currentPrice;
+
+  if (!isWithinCurrentBoundary) {
+    return {
+      isValid: false,
+      direction: direction === 'long' ? 'below' : 'above',
+      referencePrice: 'current',
+    };
+  }
+
+  if (
+    liquidationPrice === undefined ||
+    liquidationPrice === null ||
+    !Number.isFinite(liquidationPrice) ||
+    liquidationPrice <= 0
+  ) {
+    return { isValid: true, direction: '', referencePrice: '' };
+  }
+
+  const isWithinLiquidationBoundary =
+    direction === 'long'
+      ? slPrice > liquidationPrice
+      : slPrice < liquidationPrice;
+
+  if (!isWithinLiquidationBoundary) {
+    return {
+      isValid: false,
+      direction: direction === 'long' ? 'above' : 'below',
+      referencePrice: 'liquidation',
+    };
+  }
+
+  return { isValid: true, direction: '', referencePrice: '' };
+}
 
 /**
  * Returns the directional word for a take-profit validation error message.

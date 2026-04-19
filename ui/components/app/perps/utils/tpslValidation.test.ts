@@ -1,6 +1,7 @@
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  getStopLossValidationResult,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';
@@ -132,6 +133,26 @@ describe('tpslValidation', () => {
           }),
         ).toBe(false);
       });
+
+      it('returns false when SL is below liquidation price', () => {
+        expect(
+          isValidStopLossPrice('39000', {
+            currentPrice,
+            direction: 'long',
+            liquidationPrice: 40000,
+          }),
+        ).toBe(false);
+      });
+
+      it('returns true when SL is between current and liquidation price', () => {
+        expect(
+          isValidStopLossPrice('45000', {
+            currentPrice,
+            direction: 'long',
+            liquidationPrice: 40000,
+          }),
+        ).toBe(true);
+      });
     });
 
     describe('short direction', () => {
@@ -151,6 +172,26 @@ describe('tpslValidation', () => {
             direction: 'short',
           }),
         ).toBe(false);
+      });
+
+      it('returns false when SL is above liquidation price', () => {
+        expect(
+          isValidStopLossPrice('61000', {
+            currentPrice,
+            direction: 'short',
+            liquidationPrice: 60000,
+          }),
+        ).toBe(false);
+      });
+
+      it('returns true when SL is between current and liquidation price', () => {
+        expect(
+          isValidStopLossPrice('55000', {
+            currentPrice,
+            direction: 'short',
+            liquidationPrice: 60000,
+          }),
+        ).toBe(true);
       });
     });
 
@@ -180,6 +221,16 @@ describe('tpslValidation', () => {
         expect(isValidStopLossPrice('100', { currentPrice })).toBe(true);
       });
 
+      it('falls back to current price validation when liquidation price is unavailable', () => {
+        expect(
+          isValidStopLossPrice('55000', {
+            currentPrice,
+            direction: 'short',
+            liquidationPrice: null,
+          }),
+        ).toBe(true);
+      });
+
       it('handles formatted prices with commas and dollar signs', () => {
         expect(
           isValidStopLossPrice('$45,000', {
@@ -194,6 +245,52 @@ describe('tpslValidation', () => {
             direction: 'long',
           }),
         ).toBe(false);
+      });
+    });
+  });
+
+  describe('getStopLossValidationResult', () => {
+    const currentPrice = 50000;
+
+    it('reports current price boundary errors for short positions', () => {
+      expect(
+        getStopLossValidationResult('45000', {
+          currentPrice,
+          direction: 'short',
+          liquidationPrice: 60000,
+        }),
+      ).toStrictEqual({
+        isValid: false,
+        direction: 'above',
+        referencePrice: 'current',
+      });
+    });
+
+    it('reports liquidation price boundary errors for short positions', () => {
+      expect(
+        getStopLossValidationResult('61000', {
+          currentPrice,
+          direction: 'short',
+          liquidationPrice: 60000,
+        }),
+      ).toStrictEqual({
+        isValid: false,
+        direction: 'below',
+        referencePrice: 'liquidation',
+      });
+    });
+
+    it('reports liquidation price boundary errors for long positions', () => {
+      expect(
+        getStopLossValidationResult('39000', {
+          currentPrice,
+          direction: 'long',
+          liquidationPrice: 40000,
+        }),
+      ).toStrictEqual({
+        isValid: false,
+        direction: 'above',
+        referencePrice: 'liquidation',
       });
     });
   });
