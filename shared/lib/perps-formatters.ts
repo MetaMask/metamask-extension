@@ -473,7 +473,10 @@ export const formatPositionSize = (
   }
 
   if (szDecimals !== undefined) {
-    return value.toFixed(szDecimals).replace(/\.?0+$/u, '');
+    const fixed = value.toFixed(szDecimals);
+    // Only strip trailing zeros when a decimal point is present; toFixed(0)
+    // returns an integer string and the regex would otherwise eat valid zeros.
+    return fixed.includes('.') ? fixed.replace(/\.?0+$/u, '') : fixed;
   }
 
   const abs = Math.abs(value);
