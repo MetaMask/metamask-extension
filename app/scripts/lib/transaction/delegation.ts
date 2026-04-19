@@ -4,7 +4,7 @@ import {
   IsAtomicBatchSupportedResult,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { Hex, add0x, bytesToHex, createProjectLogger } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
@@ -33,7 +33,6 @@ import { stripSingleLeadingZero } from './util';
 const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
-const DELEGATION_SALT = '0x00';
 
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
@@ -306,11 +305,15 @@ async function signAndWrapDelegation({
   delegatee?: Hex;
   delegationSignature?: Hex;
 }): Promise<Delegation[][]> {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const salt = bytesToHex(bytes);
+
   const unsignedDelegation: UnsignedDelegation = {
     delegator: transaction.txParams.from as Hex,
     delegate: delegatee ?? ANY_BENEFICIARY,
     authority: ROOT_AUTHORITY,
-    salt: DELEGATION_SALT,
+    salt,
     caveats,
   };
 

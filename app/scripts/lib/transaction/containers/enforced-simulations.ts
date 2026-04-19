@@ -191,6 +191,10 @@ function generateCaveats(
     }
   }
 
+  if (caveats.length === 0) {
+    throw new Error('No caveats generated for enforced simulations');
+  }
+
   return caveats;
 }
 

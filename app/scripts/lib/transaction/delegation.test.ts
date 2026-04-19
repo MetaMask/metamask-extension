@@ -17,6 +17,7 @@ import {
   ROOT_AUTHORITY,
   type Hex,
 } from '@metamask/delegation-core';
+import { bytesToHex } from '@metamask/utils';
 import {
   BATCH_DEFAULT_MODE,
   ExecutionStruct,
@@ -119,6 +120,15 @@ describe('delegation', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    jest.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
+      if (array) {
+        new Uint8Array(array.buffer, array.byteOffset, array.byteLength).fill(
+          0x42,
+        );
+      }
+      return array as ArrayBufferView;
+    });
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
@@ -437,11 +447,13 @@ describe('delegation', () => {
     });
 
     it('signs delegation via DelegationController:signDelegation messenger action', async () => {
+      const expectedSalt = bytesToHex(new Uint8Array(32).fill(0x42));
+
       const expectedUnsignedDelegation = {
         delegator: TRANSACTION_META_MOCK.txParams.from,
         delegate: ANY_BENEFICIARY,
         authority: ROOT_AUTHORITY,
-        salt: '0x00',
+        salt: expectedSalt,
         caveats: [
           {
             enforcer: LIMITED_CALLS_ENFORCER_MOCK,
@@ -482,6 +494,51 @@ describe('delegation', () => {
           ],
         }),
       );
+    });
+
+    it('uses a random salt for each delegation', async () => {
+      const randomSalt1 = new Uint8Array(32).fill(0x5a);
+      const randomSalt2 = new Uint8Array(32).fill(0x5b);
+
+      const getRandomValuesSpy = jest
+        .spyOn(crypto, 'getRandomValues')
+        .mockImplementationOnce((array) => {
+          if (!array) {
+            throw new Error('getRandomValues expected a buffer');
+          }
+          new Uint8Array(array.buffer, array.byteOffset, array.byteLength).set(
+            randomSalt1,
+          );
+          return array;
+        })
+        .mockImplementationOnce((array) => {
+          if (!array) {
+            throw new Error('getRandomValues expected a buffer');
+          }
+          new Uint8Array(array.buffer, array.byteOffset, array.byteLength).set(
+            randomSalt2,
+          );
+          return array;
+        });
+
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+      });
+
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+      });
+
+      const firstSalt = signDelegationMock.mock.calls[0][0].delegation.salt;
+      const secondSalt = signDelegationMock.mock.calls[1][0].delegation.salt;
+
+      expect(firstSalt).toBe(bytesToHex(randomSalt1));
+      expect(secondSalt).toBe(bytesToHex(randomSalt2));
+      expect(firstSalt).not.toBe(secondSalt);
+
+      getRandomValuesSpy.mockRestore();
     });
 
     it('returns delegation manager address as to', async () => {
