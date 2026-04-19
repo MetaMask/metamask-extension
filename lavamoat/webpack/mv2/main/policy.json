@@ -1057,11 +1057,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/client-controller": {
-      "packages": {
-        "@metamask/base-controller": true
-      }
-    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
