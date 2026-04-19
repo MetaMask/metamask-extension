@@ -200,9 +200,7 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
@@ -249,6 +247,7 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 import { ControllerRegistry } from './lib/ControllerRegistry';
+import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
@@ -324,12 +323,10 @@ import {
 } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
-  ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
 import {
@@ -667,13 +664,11 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       MultichainRoutingService: MultichainRoutingServiceInit,
       ///: END:ONLY_INCLUDE_IF
@@ -776,7 +771,6 @@ export default class MetamaskController extends EventEmitter {
     this.assetsContractController =
       messengerClientsByName.AssetsContractController;
     this.assetsController = messengerClientsByName.AssetsController;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       messengerClientsByName.MultichainAssetsController;
     this.multichainBalancesController =
@@ -787,7 +781,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.MultichainAssetsRatesController;
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
-    ///: END:ONLY_INCLUDE_IF
     this.tokenBalancesController =
       messengerClientsByName.TokenBalancesController;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
@@ -1354,12 +1347,10 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: this.multichainAssetsController,
       MultichainBalancesController: this.multichainBalancesController,
       MultichainTransactionsController: this.multichainTransactionsController,
       MultichainAssetsRatesController: this.multichainAssetsRatesController,
-      ///: END:ONLY_INCLUDE_IF
       TokenRatesController: this.tokenRatesController,
       MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
@@ -2549,9 +2540,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
-      ///: END:ONLY_INCLUDE_IF
       staticAssetsController,
     } = this;
 
@@ -3620,7 +3609,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesStartPolling:
         multichainAssetsRatesController.startPolling.bind(
           multichainAssetsRatesController,
@@ -3629,7 +3617,6 @@ export default class MetamaskController extends EventEmitter {
         multichainAssetsRatesController.stopPollingByPollingToken.bind(
           multichainAssetsRatesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -3823,7 +3810,6 @@ export default class MetamaskController extends EventEmitter {
       },
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -3840,7 +3826,6 @@ export default class MetamaskController extends EventEmitter {
         this.multichainTransactionsController.updateTransactionsForAccount(
           accountId,
         ),
-      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
@@ -4120,14 +4105,12 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   async _getMultichainWalletSnapClient(snapId) {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
     return new MultichainWalletSnapClient(snapId, keyring, messenger);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Adds accounts with balances to the keyring.
@@ -4160,7 +4143,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} client - The Snap client instance.
    * @param {object} options - The options to pass to the createAccount method.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   async _addSnapAccount(keyringId, client, options = {}) {
     let entropySource = keyringId;
     try {
@@ -4190,7 +4172,6 @@ export default class MetamaskController extends EventEmitter {
       return null;
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
