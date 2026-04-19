@@ -1,0 +1,84 @@
+/**
+ * Module-level coalescing helper for perps background requests.
+ *
+ * Rationale: under rapid UI navigation (or mount/unmount cycles on the perps
+ * activity page), the transaction-history hooks fire 4 concurrent HL REST
+ * calls on every mount — getUserHistory, getOrderFills, getOrders, getFunding.
+ * Each call consumes HL weight against the 1200 wgt/min per-IP budget. Without
+ * coalescing, back-to-back mounts and parallel hook instances on the same
+ * params produce duplicate REST traffic that can tip us over the 429 line.
+ *
+ * Two layers of dedup are provided: concurrent callers for the same key share
+ * one in-flight Promise, and follow-up callers inside the TTL window get the
+ * cached value without issuing a new request. 10 s matches the window where a
+ * user could reasonably mount → unmount → re-mount the activity page from
+ * rapid navigation without staleness being user-visible.
+ *
+ * Explicit refetch paths (pull-to-refresh) bypass the cache via invalidate().
+ */
+
+const DEFAULT_TTL_MS = 10_000;
+
+type CacheEntry<TValue> = { at: number; value: TValue };
+
+const cache = new Map<string, CacheEntry<unknown>>();
+const inFlight = new Map<string, Promise<unknown>>();
+
+/**
+ * Coalesce a background request by key. Concurrent callers with the same key
+ * share one in-flight Promise; callers within the TTL window get the cached
+ * value.
+ *
+ * @param key - Stable key derived from the request method and its params.
+ * @param fn - Thunk that issues the underlying request. Only called on miss.
+ * @param ttlMs - Optional override for the short-cache TTL.
+ * @returns Resolved value from the request (fresh or cached).
+ */
+export async function coalesceBackgroundRequest<TResult>(
+  key: string,
+  fn: () => Promise<TResult>,
+  ttlMs: number = DEFAULT_TTL_MS,
+): Promise<TResult> {
+  const now = Date.now();
+  const cached = cache.get(key) as CacheEntry<TResult> | undefined;
+  if (cached && now - cached.at < ttlMs) {
+    return cached.value;
+  }
+
+  const existing = inFlight.get(key) as Promise<TResult> | undefined;
+  if (existing !== undefined) {
+    return existing;
+  }
+
+  const promise = (async () => {
+    try {
+      const value = await fn();
+      cache.set(key, { at: Date.now(), value });
+      return value;
+    } finally {
+      inFlight.delete(key);
+    }
+  })();
+
+  inFlight.set(key, promise);
+  return promise;
+}
+
+/**
+ * Drop the cached entry for a key. Use before an explicit refetch to force a
+ * fresh request (e.g. user-initiated pull-to-refresh).
+ *
+ * @param key - Key previously used with coalesceBackgroundRequest.
+ */
+export function invalidateCoalescedRequest(key: string): void {
+  cache.delete(key);
+}
+
+/**
+ * Test-only reset. Clears both the cache and any in-flight entries so each
+ * test starts from a clean state.
+ */
+export function resetCoalesceCacheForTests(): void {
+  cache.clear();
+  inFlight.clear();
+}

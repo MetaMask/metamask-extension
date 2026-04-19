@@ -15,6 +15,7 @@ import type {
 import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
+import { coalesceBackgroundRequest } from './coalesceBackgroundRequest';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -84,7 +85,10 @@ export function usePerpsTransactionHistory({
   skipInitialFetch = false,
 }: UsePerpsTransactionHistoryParams = {}): UsePerpsTransactionHistoryResult {
   const [transactions, setTransactions] = useState<PerpsTransaction[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // Start in loading state when the hook will auto-fetch on mount so consumers
+  // (e.g. Recent Activity) render a skeleton instead of the empty-state
+  // "No transactions yet" during the render cycle before the effect fires.
+  const [isLoading, setIsLoading] = useState(!skipInitialFetch);
   const [error, setError] = useState<string | null>(null);
 
   // Get user history (includes deposits/withdrawals) - single source of truth
@@ -113,14 +117,25 @@ export function usePerpsTransactionHistory({
       setIsLoading(true);
       setError(null);
 
+      const accountKey = accountId ?? '';
       const [fillsResult, ordersResult, funding] = await Promise.all([
-        submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
-          { accountId, aggregateByTime: false },
-        ]),
-        submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
-        submitRequestToBackground<Funding[]>('perpsGetFunding', [
-          { accountId, startTime, endTime },
-        ]),
+        coalesceBackgroundRequest<OrderFill[]>(
+          `perpsGetOrderFills:${accountKey}:false`,
+          () =>
+            submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
+              { accountId, aggregateByTime: false },
+            ]),
+        ),
+        coalesceBackgroundRequest<Order[]>(`perpsGetOrders:${accountKey}`, () =>
+          submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
+        ),
+        coalesceBackgroundRequest<Funding[]>(
+          `perpsGetFunding:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
+          () =>
+            submitRequestToBackground<Funding[]>('perpsGetFunding', [
+              { accountId, startTime, endTime },
+            ]),
+        ),
       ]);
 
       const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];

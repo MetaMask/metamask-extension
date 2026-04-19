@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { coalesceBackgroundRequest } from './coalesceBackgroundRequest';
 
 /**
  * Parameters for the useUserHistory hook
@@ -54,9 +55,13 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const history = await submitRequestToBackground<UserHistoryItem[]>(
-        'perpsGetUserHistory',
-        [{ startTime, endTime, accountId }],
+      const cacheKey = `perpsGetUserHistory:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
+      const history = await coalesceBackgroundRequest<UserHistoryItem[]>(
+        cacheKey,
+        () =>
+          submitRequestToBackground<UserHistoryItem[]>('perpsGetUserHistory', [
+            { startTime, endTime, accountId },
+          ]),
       );
 
       setUserHistory(history);

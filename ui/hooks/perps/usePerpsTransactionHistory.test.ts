@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
+import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';
 
 // Mock responses
 const mockFills: OrderFill[] = [
@@ -71,6 +72,7 @@ jest.mock('./stream/usePerpsLiveFills', () => ({
 describe('usePerpsTransactionHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetCoalesceCacheForTests();
     // Default: return appropriate data per method
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsGetOrderFills') {
