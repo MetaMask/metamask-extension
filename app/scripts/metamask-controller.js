@@ -5309,13 +5309,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} MetaMask state
    */
   async createCancelTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.stopTransaction(
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createCancelTransaction',
       originalTxId,
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   /**
@@ -5332,25 +5331,19 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} MetaMask state
    */
   async createSpeedUpTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.speedUpTransaction(
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createSpeedUpTransaction',
       originalTxId,
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   async estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      this.provider
-        .request({
-          method: 'eth_estimateGas',
-          params: [estimateGasParams],
-        })
-        .then((result) => resolve(result.toString(16)))
-        .catch((err) => reject(err));
-    });
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:estimateGas',
+      estimateGasParams,
+    );
   }
 
   handleWatchAssetRequest = async ({
@@ -6936,10 +6929,10 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   getExternalPendingTransactions(address) {
-    return this.smartTransactionsController.getTransactions({
-      addressFrom: address,
-      status: 'pending',
-    });
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:getExternalPendingTransactions',
+      address,
+    );
   }
 
   /**
@@ -7507,13 +7500,11 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getCode(address, networkClientId) {
-    const { provider } =
-      this.networkController.getNetworkClientById(networkClientId);
-
-    return await provider.request({
-      method: 'eth_getCode',
-      params: [address],
-    });
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:getCode',
+      address,
+      networkClientId,
+    );
   }
 
   async _onAccountChange(newAddress) {
@@ -7634,221 +7625,23 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _createTransactionNotifcation(transactionMeta) {
-    const { chainId } = transactionMeta;
-    let rpcPrefs = {};
-
-    if (chainId) {
-      const networkConfiguration =
-        this.networkController.state.networkConfigurationsByChainId?.[chainId];
-
-      const blockExplorerUrl =
-        networkConfiguration?.blockExplorerUrls?.[
-          networkConfiguration?.defaultBlockExplorerUrlIndex
-        ];
-
-      rpcPrefs = { blockExplorerUrl };
-    }
-
-    try {
-      await this.platform.showTransactionNotification(
-        transactionMeta,
-        rpcPrefs,
-      );
-    } catch (error) {
-      log.error('Failed to create transaction notification', error);
-    }
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:createTransactionNotification',
+      transactionMeta,
+    );
   }
 
   async _updateNFTOwnership(transactionMeta) {
-    // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
-    // in which case we will want to check and update ownership status of the transferred NFT.
-
-    const { type, txParams, chainId, txReceipt } = transactionMeta;
-    const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
-
-    const { allNfts } = this.nftController.state;
-    const txReceiptLogs = txReceipt?.logs;
-
-    const isContractInteractionTx =
-      type === TransactionType.contractInteraction && txReceiptLogs;
-    const isTransferFromTx =
-      (type === TransactionType.tokenMethodTransferFrom ||
-        type === TransactionType.tokenMethodSafeTransferFrom) &&
-      txParams !== undefined;
-
-    if (!isContractInteractionTx && !isTransferFromTx) {
-      return;
-    }
-
-    const networkClientId =
-      this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
-        ?.rpcEndpoints[
-        this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
-          ?.defaultRpcEndpointIndex
-      ]?.networkClientId;
-
-    if (isTransferFromTx) {
-      const { data, to: contractAddress, from: userAddress } = txParams;
-      const transactionData = parseStandardTokenTransactionData(data);
-      // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-      // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-      // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-      const transactionDataTokenId =
-        getTokenIdParam(transactionData) ?? getTokenValueParam(transactionData);
-
-      // check if its a known NFT
-      const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
-        ({ address, tokenId }) =>
-          isEqualCaseInsensitive(address, contractAddress) &&
-          tokenId === transactionDataTokenId,
-      );
-
-      // if it is we check and update ownership status.
-      if (knownNft) {
-        this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-          knownNft,
-          networkClientId,
-          // TODO add networkClientId once it is available in the transactionMeta
-          // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
-          // because the check would use the provider for the globally selected network, not the chainId passed here.
-          { userAddress },
-        );
-      }
-    } else {
-      // Else if contract interaction we will parse the logs
-
-      const allNftTransferLog = txReceiptLogs.map((txReceiptLog) => {
-        const isERC1155NftTransfer =
-          txReceiptLog.topics &&
-          txReceiptLog.topics[0] === TRANSFER_SINFLE_LOG_TOPIC_HASH;
-        const isERC721NftTransfer =
-          txReceiptLog.topics &&
-          txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-        let isTransferToSelectedAddress;
-
-        if (isERC1155NftTransfer) {
-          isTransferToSelectedAddress =
-            txReceiptLog.topics &&
-            txReceiptLog.topics[3] &&
-            txReceiptLog.topics[3].match(selectedAddress?.slice(2));
-        }
-
-        if (isERC721NftTransfer) {
-          isTransferToSelectedAddress =
-            txReceiptLog.topics &&
-            txReceiptLog.topics[2] &&
-            txReceiptLog.topics[2].match(selectedAddress?.slice(2));
-        }
-
-        return {
-          isERC1155NftTransfer,
-          isERC721NftTransfer,
-          isTransferToSelectedAddress,
-          ...txReceiptLog,
-        };
-      });
-      if (allNftTransferLog.length !== 0) {
-        const allNftParsedLog = [];
-        allNftTransferLog.forEach((singleLog) => {
-          if (
-            singleLog.isTransferToSelectedAddress &&
-            (singleLog.isERC1155NftTransfer || singleLog.isERC721NftTransfer)
-          ) {
-            let iface;
-            if (singleLog.isERC1155NftTransfer) {
-              iface = new Interface(abiERC1155);
-            } else {
-              iface = new Interface(abiERC721);
-            }
-            try {
-              const parsedLog = iface.parseLog({
-                data: singleLog.data,
-                topics: singleLog.topics,
-              });
-              allNftParsedLog.push({
-                contract: singleLog.address,
-                ...parsedLog,
-              });
-            } catch (err) {
-              // ignore
-            }
-          }
-        });
-        // Filter known nfts and new Nfts
-        const knownNFTs = [];
-        const newNFTs = [];
-        allNftParsedLog.forEach((single) => {
-          const tokenIdFromLog = getTokenIdParam(single);
-          const existingNft = allNfts?.[selectedAddress]?.[chainId]?.find(
-            ({ address, tokenId }) => {
-              return (
-                isEqualCaseInsensitive(address, single.contract) &&
-                tokenId === tokenIdFromLog
-              );
-            },
-          );
-          if (existingNft) {
-            knownNFTs.push(existingNft);
-          } else {
-            newNFTs.push({
-              tokenId: tokenIdFromLog,
-              ...single,
-            });
-          }
-        });
-        // For known nfts only refresh ownership
-        const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
-          return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-            singleNft,
-            networkClientId,
-            // TODO add networkClientId once it is available in the transactionMeta
-            // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
-            // because the check would use the provider for the globally selected network, not the chainId passed here.
-            { selectedAddress },
-          );
-        });
-        await Promise.allSettled(refreshOwnershipNFts);
-        // For new nfts, add them to state
-        const addNftPromises = newNFTs.map(async (singleNft) => {
-          return this.nftController.addNft(
-            singleNft.contract,
-            singleNft.tokenId,
-            networkClientId,
-          );
-        });
-        await Promise.allSettled(addNftPromises);
-      }
-    }
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:updateNFTOwnership',
+      transactionMeta,
+    );
   }
 
   _trackTransactionFailure(transactionMeta) {
-    const { txReceipt } = transactionMeta;
-    const metamaskState = this.getState();
-    const allTokens = getTokensControllerAllTokens({ metamask: metamaskState });
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const tokens =
-      allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
-
-    if (!txReceipt || txReceipt.status !== '0x0') {
-      return;
-    }
-
-    this.metaMetricsController.trackEvent(
-      {
-        event: 'Tx Status Update: On-Chain Failure',
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          action: 'Transactions',
-          errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: tokens.length,
-          // TODO: remove this once we have migrated to the new account balances state
-          numberOfAccounts: Object.keys(metamaskState.accounts).length,
-        },
-      },
-      {
-        matomoEvent: true,
-      },
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:trackTransactionFailure',
+      transactionMeta,
     );
   }
 
@@ -8053,31 +7846,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{transactionHash: string, delegatedTo: string}>}
    */
   async upgradeAccount(address, upgradeContractAddress, chainId) {
-    // Get the network client for the specified chain
-    const networkClientId = this.networkController.findNetworkClientIdByChainId(
-      toHex(chainId),
-    );
-
-    return createEIP7702UpgradeTransaction(
-      {
-        address,
-        upgradeContractAddress,
-        networkClientId,
-      },
-      async (transactionParams, options) => {
-        const transactionMeta = await addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: {
-              ...options,
-              origin: 'metamask',
-              requireApproval: true,
-            },
-            waitForSubmit: true,
-          }),
-        );
-        return transactionMeta;
-      },
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:upgradeAccount',
+      address,
+      upgradeContractAddress,
+      chainId,
     );
   }
 
@@ -8090,27 +7863,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
    */
   async isEip7702Supported(request) {
-    const { address, chainId } = request;
-    const normalizedAccount = address;
-
-    const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
-      address: normalizedAccount,
-      chainIds: [chainId],
-    });
-
-    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
-      atomicBatchSupport,
-      chainId,
+    return this.controllerMessenger.call(
+      'TransactionLifecycle:isEip7702Supported',
+      request,
     );
-
-    const { isSupported, upgradeContractAddress } = checkEip7702Support(
-      atomicBatchChainSupport,
-    );
-
-    return {
-      isSupported,
-      upgradeContractAddress,
-    };
   }
 
   #isAssetsUnifyStateEnabled() {

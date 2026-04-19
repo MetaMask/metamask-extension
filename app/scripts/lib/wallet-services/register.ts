@@ -20,6 +20,7 @@ import type { RootMessenger } from '../messenger';
 import { registerActions as registerVaultActions } from './vault-management';
 import { registerActions as registerAccountActions } from './account-management';
 import { registerActions as registerPermissionActions } from './permission-management';
+import { registerActions as registerTransactionActions } from './transaction-lifecycle';
 
 export function registerWalletServices(messenger: RootMessenger): void {
   // Cast: RootMessenger satisfies each module's structural messenger type at
@@ -29,4 +30,5 @@ export function registerWalletServices(messenger: RootMessenger): void {
   registerVaultActions(m);
   registerAccountActions(m);
   registerPermissionActions(m);
+  registerTransactionActions(m);
 }
