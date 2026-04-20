@@ -886,7 +886,7 @@ describe('buildBenchmarkSection', () => {
 
       expect(html).not.toContain('<code>importWalletToSocialScreen</code>');
       expect(html).toContain('<code>doneButtonToHomeScreen</code>');
-      expect(html).toMatch(/<div>🔴/u);
+      expect(html).toMatch(/🔴 <code>doneButtonToHomeScreen<\/code>/u);
     });
 
     it('does not show timer details for benchmarks without timer data', () => {

@@ -1,6 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import type { OrderFill } from '@metamask/perps-controller';
-import { usePerpsMarketFills } from './usePerpsMarketFills';
+import {
+  usePerpsMarketFills,
+  clearPerpsMarketFillsModuleCache,
+} from './usePerpsMarketFills';
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
@@ -14,6 +17,8 @@ jest.mock('./stream/usePerpsLiveFills', () => ({
 }));
 
 const mockGetSelectedInternalAccount = jest.fn();
+const mockSelectPerpsActiveProvider = jest.fn();
+const mockSelectPerpsIsTestnet = jest.fn();
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector: (...args: unknown[]) => unknown) =>
     selector(),
@@ -21,6 +26,10 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: () => mockGetSelectedInternalAccount(),
+}));
+jest.mock('../../selectors/perps-controller', () => ({
+  selectPerpsActiveProvider: () => mockSelectPerpsActiveProvider(),
+  selectPerpsIsTestnet: () => mockSelectPerpsIsTestnet(),
 }));
 
 function makeFill(overrides: Partial<OrderFill> = {}): OrderFill {
@@ -50,8 +59,11 @@ function setRestFillsResponse(fills: OrderFill[] | null) {
 describe('usePerpsMarketFills', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    clearPerpsMarketFillsModuleCache();
     setLiveFills([]);
     mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
+    mockSelectPerpsActiveProvider.mockReturnValue('hyperliquid');
+    mockSelectPerpsIsTestnet.mockReturnValue(false);
     setRestFillsResponse([]);
   });
 
@@ -318,6 +330,209 @@ describe('usePerpsMarketFills', () => {
 
       expect(result.current.fills).toHaveLength(1);
       expect(result.current.fills[0].orderId).toBe('b-1');
+    });
+  });
+
+  describe('module-level cache', () => {
+    it('skips REST fetch and returns immediately when cache is warm', async () => {
+      const fill = makeFill({ orderId: 'cached-1', timestamp: 1000 });
+      setRestFillsResponse([fill]);
+
+      // First render — populates cache
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      // Second render (e.g. re-navigation) — cache is warm, no additional REST call
+      const { result: result2 } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(result2.current.isInitialLoading).toBe(false);
+      expect(result2.current.fills).toHaveLength(1);
+    });
+
+    it('populates module cache when hook unmounts before REST resolves', async () => {
+      let resolveRest!: (fills: OrderFill[]) => void;
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise<OrderFill[]>((resolve) => {
+          resolveRest = resolve;
+        }),
+      );
+
+      const { unmount } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      unmount();
+
+      await act(async () => {
+        resolveRest([
+          makeFill({ orderId: 'completed-after-unmount', timestamp: 1000 }),
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      const { result } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(result.current.isInitialLoading).toBe(false);
+      expect(result.current.fills).toHaveLength(1);
+      expect(result.current.fills[0].orderId).toBe('completed-after-unmount');
+    });
+
+    it('re-fetches after TTL expires', async () => {
+      jest.useFakeTimers();
+      const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1_000_000);
+
+      try {
+        setRestFillsResponse([
+          makeFill({ orderId: 'fresh-1', timestamp: 1000 }),
+        ]);
+
+        const { waitForNextUpdate: waitFirst } = renderHook(() =>
+          usePerpsMarketFills({ symbol: 'BTC' }),
+        );
+        await waitFirst();
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+        mockSubmitRequestToBackground.mockClear();
+
+        // Advance time past the 30s TTL
+        nowSpy.mockReturnValue(1_000_000 + 30_001);
+        setRestFillsResponse([
+          makeFill({ orderId: 'stale-1', timestamp: 2000 }),
+        ]);
+
+        const { waitForNextUpdate: waitSecond } = renderHook(() =>
+          usePerpsMarketFills({ symbol: 'BTC' }),
+        );
+        await waitSecond();
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOrderFills',
+          expect.anything(),
+        );
+      } finally {
+        nowSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('re-fetches for a different account even when cache is warm', async () => {
+      setRestFillsResponse([makeFill({ orderId: 'abc-1', timestamp: 1000 })]);
+
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      mockSubmitRequestToBackground.mockClear();
+
+      // Different address — cache scope includes address
+      mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
+      setRestFillsResponse([makeFill({ orderId: 'def-1', timestamp: 2000 })]);
+
+      const { result: result2, waitForNextUpdate: waitSecond } = renderHook(
+        () => usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitSecond();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(result2.current.fills[0].orderId).toBe('def-1');
+    });
+
+    it('re-fetches when mainnet vs testnet scope changes even when cache is warm', async () => {
+      setRestFillsResponse([makeFill({ orderId: 'main-1', timestamp: 1000 })]);
+
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      mockSubmitRequestToBackground.mockClear();
+
+      mockSelectPerpsIsTestnet.mockReturnValue(true);
+      setRestFillsResponse([makeFill({ orderId: 'test-1', timestamp: 2000 })]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(result.current.fills[0].orderId).toBe('test-1');
+    });
+
+    it('excludes live fills while scope is transitioning to prevent mixing env data', async () => {
+      let resolveNewEnvRest!: (fills: OrderFill[]) => void;
+
+      // Populate mainnet cache and mount the hook on mainnet
+      setRestFillsResponse([
+        makeFill({ orderId: 'main-rest', timestamp: 1000 }),
+      ]);
+      const {
+        result,
+        waitForNextUpdate: waitFirst,
+        rerender,
+      } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await waitFirst();
+
+      // Switch to testnet with an in-flight REST request
+      mockSelectPerpsIsTestnet.mockReturnValue(true);
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise<OrderFill[]>((resolve) => {
+          resolveNewEnvRest = resolve;
+        }),
+      );
+      const mainnetLiveFill = makeFill({
+        orderId: 'mainnet-live',
+        timestamp: 5000,
+      });
+      setLiveFills([mainnetLiveFill]);
+
+      // Trigger a re-render with the new env — currentScopeKey still on mainnet key
+      rerender();
+
+      // Before testnet REST resolves, live fills from mainnet must not appear
+      expect(
+        result.current.fills.every((f) => f.orderId !== 'mainnet-live'),
+      ).toBe(true);
+
+      // Testnet REST resolves — currentScopeKey advances, live fills are now accepted
+      await act(async () => {
+        resolveNewEnvRest([
+          makeFill({ orderId: 'test-rest', timestamp: 2000 }),
+        ]);
+      });
+
+      expect(
+        result.current.fills.some((f) => f.orderId === 'mainnet-live'),
+      ).toBe(true);
+    });
+
+    it('re-fetches after clearPerpsMarketFillsModuleCache', async () => {
+      setRestFillsResponse([makeFill({ orderId: 'first', timestamp: 1000 })]);
+
+      const { waitForNextUpdate: waitFirst } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitFirst();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      clearPerpsMarketFillsModuleCache();
+      setRestFillsResponse([makeFill({ orderId: 'second', timestamp: 2000 })]);
+
+      const { result, waitForNextUpdate } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await waitForNextUpdate();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      expect(result.current.fills[0].orderId).toBe('second');
     });
   });
 });
