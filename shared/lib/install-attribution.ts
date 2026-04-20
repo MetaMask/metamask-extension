@@ -31,16 +31,19 @@ export function getInstallAttributionFromCookies(
   cookies: InstallAttributionCookie[],
 ): InstallAttribution {
   let deferredDeepLink: DeferredDeepLink | null = null;
-  let hasDeferredDeepLinkCookie = false;
   let hasGoogleAnalyticsCookie = false;
-  const traits: Partial<MetaMetricsUserTraits> = {};
+  const traits: Partial<
+    Pick<
+      MetaMetricsUserTraits,
+      MetaMetricsUserTrait.CookieId | MetaMetricsUserTrait.GaClientId
+    >
+  > = {};
 
   for (const cookie of cookies) {
     if (
-      !hasDeferredDeepLinkCookie &&
+      deferredDeepLink === null &&
       cookie.name === DEFERRED_DEEPLINK_COOKIE_NAME
     ) {
-      hasDeferredDeepLinkCookie = true;
       deferredDeepLink = parseDeferredDeepLinkCookieValue(cookie.value);
     } else if (
       !hasGoogleAnalyticsCookie &&
@@ -58,7 +61,7 @@ export function getInstallAttributionFromCookies(
       }
     }
 
-    if (hasDeferredDeepLinkCookie && hasGoogleAnalyticsCookie) {
+    if (deferredDeepLink !== null && hasGoogleAnalyticsCookie) {
       break;
     }
   }
