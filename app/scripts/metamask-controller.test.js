@@ -1191,12 +1191,8 @@ describe('MetaMaskController', () => {
 
         metamaskController.messengerClientsByName.PerpsController = {};
         metamaskController.messengerClientApi.perpsDisconnect = perpsDisconnect;
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockImplementation()
+        metamaskController.messengerClientApi.perpsGetConnectionState = jest
+          .fn()
           .mockReturnValue('connected');
 
         metamaskController._onLock();
@@ -1213,12 +1209,8 @@ describe('MetaMaskController', () => {
 
         delete metamaskController.messengerClientsByName.PerpsController;
         metamaskController.messengerClientApi.perpsDisconnect = perpsDisconnect;
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockImplementation()
+        metamaskController.messengerClientApi.perpsGetConnectionState = jest
+          .fn()
           .mockReturnValue('connected');
 
         metamaskController._onLock();
@@ -3655,12 +3647,8 @@ describe('MetaMaskController', () => {
 
         metamaskController.messengerClientsByName.PerpsController = {};
         metamaskController.messengerClientApi.perpsDisconnect = perpsDisconnect;
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockImplementation()
+        metamaskController.messengerClientApi.perpsGetConnectionState = jest
+          .fn()
           .mockReturnValue('connected');
 
         const firstStream = createTestStream();
