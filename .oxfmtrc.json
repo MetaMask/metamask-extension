@@ -1,5 +1,4 @@
 {
-  "endOfLine": "lf",
   "ignorePatterns": [
     "*.scss",
     "*.json",
@@ -34,6 +33,5 @@
   ],
   "printWidth": 80,
   "singleQuote": true,
-  "sortPackageJson": false,
-  "trailingComma": "all"
+  "sortPackageJson": false
 }
