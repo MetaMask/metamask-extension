@@ -80,4 +80,20 @@ describe('coalesceBackgroundRequest', () => {
     expect(result).toBe('recovered');
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
+  it('drops in-flight entry when fn throws synchronously so the next caller retries', async () => {
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockImplementationOnce(() => {
+        throw new Error('sync boom');
+      })
+      .mockResolvedValueOnce('recovered');
+
+    await expect(coalesceBackgroundRequest('k', fn)).rejects.toThrow(
+      'sync boom',
+    );
+    const result = await coalesceBackgroundRequest('k', fn);
+    expect(result).toBe('recovered');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
 });

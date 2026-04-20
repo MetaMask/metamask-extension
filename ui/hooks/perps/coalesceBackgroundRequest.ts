@@ -50,7 +50,12 @@ export async function coalesceBackgroundRequest<TResult>(
     return existing;
   }
 
-  const promise = (async () => {
+  // Defer fn() invocation to a microtask so `inFlight.set` below has already
+  // committed by the time the body runs. Without this, a synchronous throw in
+  // fn() runs the `finally` cleanup before the entry is inserted (no-op delete),
+  // and the subsequent set stores a permanently-rejected promise that every
+  // future caller re-subscribes to.
+  const promise = Promise.resolve().then(async () => {
     try {
       const value = await fn();
       cache.set(key, { at: Date.now(), value });
@@ -58,7 +63,7 @@ export async function coalesceBackgroundRequest<TResult>(
     } finally {
       inFlight.delete(key);
     }
-  })();
+  });
 
   inFlight.set(key, promise);
   return promise;
