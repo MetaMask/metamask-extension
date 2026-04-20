@@ -118,9 +118,7 @@ describe('AssetBanner', () => {
         />,
       );
       expect(getByTestId('bridge-asset-verified-badge')).toBeInTheDocument();
-      expect(
-        queryByText(en.bridgeSuspicious.message),
-      ).not.toBeInTheDocument();
+      expect(queryByText(en.bridgeSuspicious.message)).not.toBeInTheDocument();
     });
   });
 

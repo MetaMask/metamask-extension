@@ -751,7 +751,7 @@ describe('Bridge selectors', () => {
         tokenFiatAmount: undefined,
         rwaData: undefined,
         isVerified: undefined,
-        securityData: undefined
+        securityData: undefined,
       });
     });
   });
