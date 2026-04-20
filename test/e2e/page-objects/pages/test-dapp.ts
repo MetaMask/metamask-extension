@@ -308,8 +308,9 @@ class TestDapp {
     text: host,
   });
 
-  private readonly metaMaskConnectConfirmButton = {
-    testId: 'confirm-btn',
+  private readonly connectDappButton = {
+    text: 'Connect',
+    tag: 'button',
   };
 
   /**
@@ -822,7 +823,7 @@ class TestDapp {
   async clickConnectAccountButtonAndWaitForWindowToClose() {
     console.log('Click connect account button and wait for window to close');
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.metaMaskConnectConfirmButton,
+      this.connectDappButton,
     );
   }
 
