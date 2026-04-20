@@ -118,7 +118,7 @@ export function usePerpsMarketFills({
     );
   }, [restFills, liveFills, currentScopeKey, fillsCacheKey, symbol]);
 
-  const isInitialLoading = wsLoading && isRestLoading; // We received some fills
+  const isInitialLoading = isRestLoading;
 
   return {
     fills,
