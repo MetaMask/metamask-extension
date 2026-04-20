@@ -42,6 +42,12 @@ const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
     p95: { warn: 50000, fail: 60000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=485ms, p95=559ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 575, fail: 625 },
+    p95: { warn: 675, fail: 725 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const ONBOARDING_NEW_WALLET: ThresholdConfig = {
@@ -75,6 +81,12 @@ const ONBOARDING_NEW_WALLET: ThresholdConfig = {
     p95: { warn: 16000, fail: 21000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=326ms, p95=377ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 400, fail: 425 },
+    p95: { warn: 450, fail: 500 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const IMPORT_SRP_HOME: ThresholdConfig = {
@@ -93,6 +105,12 @@ const IMPORT_SRP_HOME: ThresholdConfig = {
     p95: { warn: 32000, fail: 40000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=3354ms, p95=3552ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 4000, fail: 4350 },
+    p95: { warn: 4250, fail: 4625 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const SWAP: ThresholdConfig = {
@@ -104,6 +122,12 @@ const SWAP: ThresholdConfig = {
   fetchAndDisplaySwapQuotes: {
     p75: { warn: 2800, fail: 5000 },
     p95: { warn: 3500, fail: 6000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  // Baseline: p75=438ms, p95=483ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 525, fail: 575 },
+    p95: { warn: 575, fail: 625 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -124,6 +148,12 @@ const SEND_TRANSACTIONS: ThresholdConfig = {
     p95: { warn: 5000, fail: 7000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=151ms, p95=151ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 200, fail: 225 },
+    p95: { warn: 200, fail: 225 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const ASSET_DETAILS: ThresholdConfig = {
@@ -132,12 +162,24 @@ const ASSET_DETAILS: ThresholdConfig = {
     p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=95ms, p95=127ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 125, fail: 150 },
+    p95: { warn: 150, fail: 175 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const SOLANA_ASSET_DETAILS: ThresholdConfig = {
   assetClickToPriceChart: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  // Baseline: p75≈1ms, p95≈1ms — floor applied (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 50, fail: 75 },
+    p95: { warn: 75, fail: 100 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -158,6 +200,12 @@ const STANDARD_HOME: ThresholdConfig = {
     p95: { warn: 1800, fail: 2400 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  // Baseline: p75=313ms, p95=351ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 375, fail: 425 },
+    p95: { warn: 425, fail: 475 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const POWER_USER_HOME: ThresholdConfig = {
@@ -174,6 +222,12 @@ const POWER_USER_HOME: ThresholdConfig = {
   loadScripts: {
     p75: { warn: 2000, fail: 2800 },
     p95: { warn: 2800, fail: 3800 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  // Baseline: p75=1189ms, p95=1367ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 1425, fail: 1550 },
+    p95: { warn: 1650, fail: 1775 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
