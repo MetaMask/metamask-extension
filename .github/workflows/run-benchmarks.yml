@@ -128,7 +128,7 @@ jobs:
       - name: Run the benchmark
         if: ${{ env.BENCHMARK_GATED == 'true' }}
         run: >-
-          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
+          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
 
       - name: Send benchmark results to Sentry (main/release only)
