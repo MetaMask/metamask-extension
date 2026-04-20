@@ -74,7 +74,7 @@ import {
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
 import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
-import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -87,13 +87,16 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
+  PerpsControllerInit: jest.fn().mockImplementation(() => ({
     messengerClient: {
       state: {},
       name: 'PerpsController',
     },
-    api: {},
-  }),
+    api: {
+      perpsDisconnect: jest.fn().mockResolvedValue(undefined),
+      perpsGetConnectionState: jest.fn().mockReturnValue('disconnected'),
+    },
+  })),
 }));
 
 jest.mock('webextension-polyfill', () => ({
@@ -562,6 +565,9 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
+      jest
+        .spyOn(environment, 'getIsPerpsIncludedInBuild')
+        .mockReturnValue(false);
 
       jest
         .spyOn(
@@ -1179,6 +1185,77 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('_onLock', () => {
+      it('disconnects an active perps websocket', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not disconnect perps when no perps controller is available', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        delete metamaskController.messengerClientsByName.PerpsController;
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+      });
+
+      it('does not disconnect perps when connection is already disconnected', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('disconnected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+      });
+    });
+
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
@@ -1652,7 +1729,7 @@ describe('MetaMaskController', () => {
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
       beforeEach(() => {
         jest
-          .mocked(getEnabledAdvancedPermissions)
+          .mocked(environment.getEnabledAdvancedPermissions)
           .mockReturnValue(['erc20-token-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
@@ -1799,7 +1876,7 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
         jest
-          .mocked(getEnabledAdvancedPermissions)
+          .mocked(environment.getEnabledAdvancedPermissions)
           .mockReturnValue(['erc20-token-revocation']);
       });
 
@@ -3580,6 +3657,48 @@ describe('MetaMaskController', () => {
         await testStreams[0].onFinishedCallbackPromise;
 
         expect(metamaskController.activeControllerConnections).toBe(0);
+      });
+
+      it('disconnects perps only after the final controller connection closes', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        jest
+          .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
+          .mockImplementation(perpsDisconnect);
+        jest
+          .spyOn(
+            metamaskController.messengerClientApi,
+            'perpsGetConnectionState',
+          )
+          .mockReturnValue('connected');
+
+        const firstStream = createTestStream();
+        const secondStream = createTestStream();
+
+        metamaskController.setupTrustedCommunication(
+          firstStream.testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          secondStream.testStream,
+          {},
+        );
+
+        await firstStream.onStreamEndPromise;
+        firstStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+
+        await secondStream.onStreamEndPromise;
+        secondStream.testStream.end();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).toHaveBeenCalledTimes(1);
       });
 
       // this test could be improved by testing for actual behavior of handlers,
