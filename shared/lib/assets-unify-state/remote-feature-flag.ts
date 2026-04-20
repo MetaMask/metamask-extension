@@ -26,7 +26,8 @@ export const isAssetsUnifyStateFeatureEnabled = (
   );
   if (
     process.env.IN_TEST &&
-    process.env.METAMASK_ENVIRONMENT === 'development'
+    (process.env.METAMASK_ENVIRONMENT === 'development' ||
+      process.env.METAMASK_ENVIRONMENT === 'testing')
   ) {
     return true;
   }
