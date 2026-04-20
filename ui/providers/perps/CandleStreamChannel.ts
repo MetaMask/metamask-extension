@@ -51,8 +51,13 @@ type ChannelEntry = {
   duration: TimeDuration | undefined;
   /** Pending leading-edge debounce timer for connect() */
   pendingConnectTimer?: ReturnType<typeof setTimeout>;
-  /** Timestamp of the last connect() call that actually fired */
-  lastConnectAt?: number;
+  /**
+   * Timestamp of the most recent disconnect(). Used by connect() to coalesce
+   * the unsubscribe→resubscribe burst produced by rapid remounts. Measuring
+   * from the last connect time would make the debounce skip any stream that
+   * had been open longer than CONNECT_DEBOUNCE_MS (i.e. every real visit).
+   */
+  lastDisconnectAt?: number;
 };
 
 /**
@@ -311,7 +316,10 @@ export class CandleStreamChannel {
           entry.unsubscribeFromSource = null;
         }
         entry.isConnected = false;
-        entry.lastConnectAt = undefined;
+        // WebSocket reconnect is authoritative — clear the last-disconnect
+        // timestamp so the follow-up connect() fires immediately instead of
+        // being debounced.
+        entry.lastDisconnectAt = undefined;
 
         // Re-activate background stream for this key
         this.connect(key, entry);
@@ -355,7 +363,11 @@ export class CandleStreamChannel {
     }
 
     const now = Date.now();
-    const elapsed = now - (entry.lastConnectAt ?? 0);
+    // Measure from the most recent disconnect, not the last connect: the
+    // debounce exists to coalesce unsubscribe→resubscribe bursts, so it must
+    // fire on any stream that has just been torn down, regardless of how long
+    // the previous subscription was alive.
+    const elapsed = now - (entry.lastDisconnectAt ?? 0);
 
     if (elapsed >= CONNECT_DEBOUNCE_MS) {
       this.fireConnect(key, entry);
@@ -385,7 +397,6 @@ export class CandleStreamChannel {
     const { symbol, interval } = parseCacheKey(key);
 
     entry.isConnected = true;
-    entry.lastConnectAt = Date.now();
 
     submitRequestToBackground('perpsActivateCandleStream', [
       { symbol, interval, duration: entry.duration },
@@ -420,10 +431,10 @@ export class CandleStreamChannel {
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
-    // Intentionally preserve entry.lastConnectAt so that the connect() debounce
-    // window spans the disconnect→connect burst produced by remounts. Clearing
-    // it here would make every subsequent connect() call fire immediately and
-    // the CONNECT_DEBOUNCE_MS coalescing would never engage.
+    // Stamp the disconnect moment so the next connect() call can measure the
+    // gap and debounce remount bursts. Without this, connect() would fall
+    // through to the immediate path on every resubscribe.
+    entry.lastDisconnectAt = Date.now();
     const { symbol, interval } = parseCacheKey(key);
     submitRequestToBackground('perpsDeactivateCandleStream', [
       { symbol, interval },

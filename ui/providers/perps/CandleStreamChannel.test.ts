@@ -245,6 +245,41 @@ describe('CandleStreamChannel', () => {
       expect(activateCallsAfter).toHaveLength(1);
     });
 
+    it('debounces resubscribe even when the prior stream was long-lived', () => {
+      const unsubscribe = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+
+      // Let the stream stay open well past the debounce window — this is the
+      // normal case for any real market visit. Measuring from the last
+      // connect would put us past CONNECT_DEBOUNCE_MS and skip debouncing;
+      // measuring from the last disconnect keeps the burst coalesced.
+      jest.advanceTimersByTime(60_000);
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubscribe();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+
+      const activateCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([name]) => name === 'perpsActivateCandleStream',
+      );
+      expect(activateCalls).toHaveLength(0);
+
+      jest.advanceTimersByTime(200);
+      const activateCallsAfter =
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([name]) => name === 'perpsActivateCandleStream',
+        );
+      expect(activateCallsAfter).toHaveLength(1);
+    });
+
     it('does not re-activate when other subscribers remain', () => {
       const unsubscribe1 = channel.subscribe({
         symbol: 'BTC',
