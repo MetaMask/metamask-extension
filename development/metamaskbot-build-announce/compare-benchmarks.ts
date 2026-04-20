@@ -36,6 +36,8 @@ import {
   type BenchmarkEntryComparison,
 } from './comparison-utils';
 import { resolveBaselineFromArtifactName } from './utils';
+import { sendBenchmarkNotifications } from './slack-notifications';
+import type { SlackContext } from './slack-notifications';
 
 type LoadedBenchmark = {
   name: string;
@@ -332,6 +334,27 @@ async function main(): Promise<void> {
 
   const result = runComparison(benchmarks, baseline);
   printReport(result);
+
+  // Phase 2: Send Slack notification on fail verdict
+  const webhookUrl = process.env.SLACK_BENCHMARK_WEBHOOK_URL;
+  if (webhookUrl && result.anyFailed) {
+    const { OWNER, REPOSITORY, RUN_ID, PR_NUMBER, PR_AUTHOR } = process.env;
+    const slackContext: SlackContext = {
+      webhookUrl,
+      prNumber: PR_NUMBER,
+      prAuthor: PR_AUTHOR,
+      ciRunUrl:
+        OWNER && REPOSITORY && RUN_ID
+          ? `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}`
+          : undefined,
+      prUrl:
+        OWNER && REPOSITORY && PR_NUMBER
+          ? `https://github.com/${OWNER}/${REPOSITORY}/pull/${PR_NUMBER}`
+          : undefined,
+    };
+
+    await sendBenchmarkNotifications(result.comparisons, slackContext);
+  }
 
   process.exit(result.anyFailed ? 1 : 0);
 }
