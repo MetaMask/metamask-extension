@@ -14,7 +14,7 @@
       "error: Error: No metadata found for": 1
     },
     "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js": {
-      "MetaMask: RPC middleware errors": 10
+      "MetaMask: RPC middleware errors": 15
     },
     "app/scripts/lib/dapp-swap/dapp-swap-middleware.test.ts": {
       "error: Error: Error fetching dapp swap": 1,
