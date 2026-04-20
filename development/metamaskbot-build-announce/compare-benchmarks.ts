@@ -86,6 +86,13 @@ export function runComparison(
 
   for (const { name, data } of benchmarks) {
     for (const [entryName, results] of Object.entries(data)) {
+      if (!results.p75 || !results.p95) {
+        console.warn(
+          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
+        );
+        continue;
+      }
+
       const thresholdConfig = THRESHOLD_REGISTRY[entryName];
 
       if (!thresholdConfig) {

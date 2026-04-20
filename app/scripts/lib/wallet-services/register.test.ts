@@ -13,8 +13,18 @@ jest.mock('./transaction-lifecycle', () => ({ registerActions: jest.fn() }));
 jest.mock('./token-resolution', () => ({ registerActions: jest.fn() }));
 jest.mock('./snap-management', () => ({ registerActions: jest.fn() }));
 
+// Mock @metamask/messenger to avoid real Messenger constructor side effects.
+// The child messenger is only used for its `registerActionHandler` method;
+// its actual namespace-validation logic is not relevant here.
+jest.mock('@metamask/messenger', () => ({
+  Messenger: jest.fn().mockImplementation(() => ({
+    registerActionHandler: jest.fn(),
+  })),
+}));
+
 describe('registerWalletServices', () => {
-  const MOCK_MESSENGER = Symbol('messenger') as never;
+  const MOCK_CALL = jest.fn();
+  const MOCK_MESSENGER = { call: MOCK_CALL } as never;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -34,7 +44,7 @@ describe('registerWalletServices', () => {
     }
   });
 
-  it('passes the messenger to every module', () => {
+  it('passes a messenger whose call delegates to the root messenger', () => {
     registerWalletServices(MOCK_MESSENGER);
     for (const fn of [
       registerVaultActions,
@@ -44,8 +54,14 @@ describe('registerWalletServices', () => {
       registerTokenActions,
       registerSnapActions,
     ]) {
-      // Each module receives the same messenger (cast to never at the call site)
-      expect(fn).toHaveBeenCalledWith(MOCK_MESSENGER);
+      const [messengerArg] = (fn as jest.Mock).mock.calls[0];
+      // Each module gets a hybrid messenger — call routes through the root.
+      messengerArg.call('SomeController:someAction', 'arg1');
+      expect(MOCK_CALL).toHaveBeenCalledWith(
+        'SomeController:someAction',
+        'arg1',
+      );
+      MOCK_CALL.mockClear();
     }
   });
 });
