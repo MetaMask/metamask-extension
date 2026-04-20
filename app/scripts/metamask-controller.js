@@ -1700,23 +1700,25 @@ export default class MetamaskController extends EventEmitter {
    * Perps is an optional feature, so guard on build inclusion, controller
    * presence, and active connection state before calling into the controller.
    */
-  async #disconnectPerpsIfActive() {
-    if (
-      !getIsPerpsIncludedInBuild() ||
-      !this.messengerClientsByName.PerpsController ||
-      typeof this.messengerClientApi.perpsDisconnect !== 'function'
-    ) {
-      return;
-    }
-
-    if (
-      this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
-    ) {
-      return;
-    }
-
+  #disconnectPerpsIfActive() {
     try {
-      await this.messengerClientApi.perpsDisconnect();
+      if (
+        !getIsPerpsIncludedInBuild() ||
+        !this.messengerClientsByName.PerpsController ||
+        typeof this.messengerClientApi.perpsDisconnect !== 'function'
+      ) {
+        return;
+      }
+
+      if (
+        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+      ) {
+        return;
+      }
+
+      this.messengerClientApi.perpsDisconnect().catch((error) => {
+        console.error(error);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -7100,6 +7102,7 @@ export default class MetamaskController extends EventEmitter {
       messengerSubscriptions.clear();
       perpsStream?.destroy();
       if (this.activeControllerConnections === 0) {
+        // Destroy the UI bridge stream first, then disconnect the controller-owned Perps WS.
         this.#disconnectPerpsIfActive();
       }
     });

@@ -1218,6 +1218,24 @@ describe('MetaMaskController', () => {
 
         expect(perpsDisconnect).not.toHaveBeenCalled();
       });
+
+      it('does not disconnect perps when connection is already disconnected', async () => {
+        jest
+          .spyOn(environment, 'getIsPerpsIncludedInBuild')
+          .mockReturnValue(true);
+        const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
+
+        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientApi.perpsDisconnect = perpsDisconnect;
+        metamaskController.messengerClientApi.perpsGetConnectionState = jest
+          .fn()
+          .mockReturnValue('disconnected');
+
+        metamaskController._onLock();
+        await waitForAllPromises();
+
+        expect(perpsDisconnect).not.toHaveBeenCalled();
+      });
     });
 
     describe('#createNewVaultAndKeychain', () => {
