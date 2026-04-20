@@ -99,8 +99,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -132,8 +130,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -176,8 +172,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -223,8 +217,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -273,8 +265,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -320,8 +310,6 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         // connect to dapp and disconnect
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
