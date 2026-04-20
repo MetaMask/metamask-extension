@@ -56,15 +56,33 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
-  // Calculate order value in USD (size * price), formatted like position values
+  // Limit/market: notional (size × limit price). TP/SL: trigger level (take-profit / stop-loss price).
   const orderValueUsd = useMemo(() => {
+    const isTriggerBasedOrder =
+      order.isTrigger === true || order.isPositionTpsl === true;
+
+    if (isTriggerBasedOrder) {
+      const triggerLevel =
+        parseFloat(order.triggerPrice || order.price || '0') || 0;
+      if (triggerLevel > 0) {
+        return formatCurrencyWithMinThreshold(triggerLevel, 'USD');
+      }
+    }
+
     const size = parseFloat(order.size) || 0;
     const price = parseFloat(order.price) || 0;
     if (size > 0 && price > 0) {
       return formatCurrencyWithMinThreshold(size * price, 'USD');
     }
     return null;
-  }, [order.size, order.price, formatCurrencyWithMinThreshold]);
+  }, [
+    order.isTrigger,
+    order.isPositionTpsl,
+    order.triggerPrice,
+    order.size,
+    order.price,
+    formatCurrencyWithMinThreshold,
+  ]);
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
   const variantStyles =

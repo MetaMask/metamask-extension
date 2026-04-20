@@ -146,6 +146,23 @@ describe('OrderCard', () => {
     expect(screen.getByText('$3,500.00')).toBeInTheDocument();
   });
 
+  it('displays TP/SL trigger price, not size × price notional', () => {
+    const order = createMockOrder({
+      orderType: 'limit',
+      side: 'sell',
+      isTrigger: true,
+      reduceOnly: true,
+      detailedOrderType: 'Take Profit Limit',
+      triggerPrice: '3200.00',
+      price: '3200.00',
+      size: '2.0',
+    });
+    renderWithProvider(<OrderCard order={order} />, mockStore);
+
+    expect(screen.getByText('$3,200.00')).toBeInTheDocument();
+    expect(screen.queryByText('$6,400.00')).not.toBeInTheDocument();
+  });
+
   it('displays Market label when order value is zero', () => {
     const order = createMockOrder({
       orderType: 'market',

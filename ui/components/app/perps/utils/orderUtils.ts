@@ -167,24 +167,21 @@ export const isOrderAssociatedWithFullPosition = (
 };
 
 /**
- * Determines whether an order should be shown in Market Details > Orders.
+ * Determines whether an order should be shown in Market Details > Orders
+ * (the perps asset / position detail screen).
  *
- * - All non-reduce-only orders are shown.
- * - Reduce-only orders are shown only when they are NOT full-position TP/SL.
+ * Full-position TP/SL and `isPositionTpsl` rows are included here so users can
+ * see and act on them alongside other open orders, in addition to the position
+ * summary. `isOrderAssociatedWithFullPosition` remains for other call sites.
  *
- * @param order - The order to check
- * @param position - The current position (if any)
+ * @param _order - The order to check (reserved for future filtering)
+ * @param _position - The current position (reserved for future filtering)
  * @returns Whether the order should be displayed
  */
 export const shouldDisplayOrderInMarketDetailsOrders = (
-  order: Order,
-  position?: Position,
-): boolean => {
-  if (!order.reduceOnly) {
-    return true;
-  }
-  return !isOrderAssociatedWithFullPosition(order, position);
-};
+  _order: Order,
+  _position?: Position,
+): boolean => true;
 
 const buildSyntheticTriggerOrder = (
   parentOrder: Order,
@@ -306,7 +303,7 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
- * filtering (hides full-position TP/SL, keeps everything else).
+ * filtering (currently all enriched orders are shown, including full-position TP/SL).
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize

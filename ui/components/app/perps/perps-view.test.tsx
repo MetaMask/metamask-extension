@@ -177,6 +177,35 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
     });
 
+    it('renders TP/SL trigger orders in Open orders', () => {
+      jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValueOnce({
+        orders: [
+          {
+            orderId: 'tp-only-1',
+            symbol: 'ARB',
+            side: 'sell',
+            orderType: 'limit',
+            size: '500.0',
+            originalSize: '500.0',
+            price: '1.15',
+            filledSize: '0',
+            remainingSize: '500.0',
+            status: 'open',
+            timestamp: Date.now(),
+            isTrigger: true,
+            triggerPrice: '1.15',
+            detailedOrderType: 'Take Profit Limit',
+            reduceOnly: true,
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('order-card-tp-only-1')).toBeInTheDocument();
+    });
+
     it('displays position section header', () => {
       renderWithProvider(<PerpsView />, mockStore);
 

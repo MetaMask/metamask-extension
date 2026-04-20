@@ -116,27 +116,24 @@ describe('orderUtils', () => {
   });
 
   describe('shouldDisplayOrderInMarketDetailsOrders', () => {
-    it('shows non-reduce-only orders', () => {
-      const order = makeOrder({ reduceOnly: false });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
+    it('includes non-reduce-only and limit orders', () => {
+      expect(shouldDisplayOrderInMarketDetailsOrders(makeOrder())).toBe(true);
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(
+          makeOrder({ orderType: 'limit', reduceOnly: false }),
+        ),
+      ).toBe(true);
     });
 
-    it('shows limit orders', () => {
-      const order = makeOrder({ orderType: 'limit', reduceOnly: false });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
-    });
-
-    it('shows trigger orders that are not position-attached', () => {
-      const order = makeOrder({
+    it('includes trigger orders and partial reduce-only closes', () => {
+      const triggerOrder = makeOrder({
         isTrigger: true,
         reduceOnly: false,
         triggerPrice: '3200.00',
       });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
-    });
+      expect(shouldDisplayOrderInMarketDetailsOrders(triggerOrder)).toBe(true);
 
-    it('shows reduce-only orders not associated with full position', () => {
-      const order = makeOrder({
+      const partialClose = makeOrder({
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -144,13 +141,13 @@ describe('orderUtils', () => {
         originalSize: '0.5',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order, position)).toBe(
-        true,
-      );
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(partialClose, position),
+      ).toBe(true);
     });
 
-    it('hides reduce-only orders associated with full position', () => {
-      const order = makeOrder({
+    it('includes full-position reduce-only and isPositionTpsl orders', () => {
+      const fullClose = makeOrder({
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -158,17 +155,15 @@ describe('orderUtils', () => {
         originalSize: '1.0',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order, position)).toBe(
-        false,
+      expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
+        true,
       );
-    });
 
-    it('hides orders with isPositionTpsl true', () => {
-      const order = makeOrder({
+      const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(false);
+      expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(true);
     });
   });
 
@@ -290,7 +285,7 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
-    it('hides full-position TP/SL reduce-only orders', () => {
+    it('includes full-position TP/SL reduce-only orders', () => {
       const tpslOrder = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
@@ -299,7 +294,8 @@ describe('orderUtils', () => {
         detailedOrderType: 'Take Profit Limit',
       });
       const result = normalizeMarketDetailsOrders({ orders: [tpslOrder] });
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(1);
+      expect(result[0].orderId).toBe('order-1');
     });
 
     it('shows partial-close reduce-only orders', () => {
@@ -318,7 +314,7 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
-    it('adds synthetic TP/SL rows and filters them through position check', () => {
+    it('adds synthetic TP/SL rows and keeps them in the list', () => {
       const limitOrder = makeOrder({
         orderType: 'limit',
         reduceOnly: false,
