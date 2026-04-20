@@ -470,9 +470,7 @@ export async function discoverAndCreateAccounts(
       result,
       opts.getDiscoveryCountByProviderOpts,
     );
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn(`Failed to add accounts with balance.`, error);
+  } catch {
     return { bitcoin: 0, solana: 0, tron: 0 };
   }
 }
@@ -703,9 +701,7 @@ export async function addAccountsWithBalance(
     }
 
     return discoveredAccounts;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn(`Failed to add accounts with balance.`, e);
+  } catch {
     return { bitcoin: 0, solana: 0, tron: 0 };
   }
 }

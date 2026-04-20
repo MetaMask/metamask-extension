@@ -23,11 +23,16 @@ import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { Messenger } from '@metamask/messenger';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import {
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectType,
 } from '@metamask/permission-controller';
+import {
+  RecoveryError,
+  SeedlessOnboardingControllerErrorMessage,
+} from '@metamask/seedless-onboarding-controller';
 import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
@@ -145,7 +150,13 @@ import { getIsSmartTransaction } from '../../shared/lib/selectors';
 
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
-import { trace, endTrace } from '../../shared/lib/trace';
+import {
+  JsonRpcError,
+  trace,
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -871,15 +882,18 @@ export default class MetamaskController extends EventEmitter {
       this.snapController.setClientActive(...a),
     );
 
-    // ApprovalController — real method is `acceptRequest`, not `accept`
+    // ApprovalController — real methods are `acceptRequest`/`rejectRequest`
     forceRegister('ApprovalController:accept', (...a) =>
       this.approvalController.acceptRequest(...a),
     );
     forceRegister('ApprovalController:reject', (...a) =>
-      this.approvalController.reject(...a),
+      this.approvalController.rejectRequest(...a),
     );
 
     // SeedlessOnboardingController
+    forceRegister('SeedlessOnboardingController:submitPassword', (...a) =>
+      this.seedlessOnboardingController.submitPassword(...a),
+    );
     forceRegister(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       (...a) => this.seedlessOnboardingController.checkIsPasswordOutdated(...a),
@@ -897,6 +911,9 @@ export default class MetamaskController extends EventEmitter {
     );
     forceRegister('PermissionController:removeAllAccountPermissions', (...a) =>
       this.permissionController.removeAllAccountPermissions(...a),
+    );
+    forceRegister('PermissionController:revokePermissions', (...a) =>
+      this.permissionController.revokePermissions(...a),
     );
 
     // TransactionController
@@ -986,9 +1003,12 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // PreferencesController
-    forceRegister('PreferencesController:setSelectedAddress', (...a) =>
-      this.preferencesController.setSelectedAddress(...a),
-    );
+    forceRegister('PreferencesController:setSelectedAddress', (address) => {
+      const account = this.accountsController.getAccountByAddress(address);
+      if (account) {
+        this.accountsController.setSelectedAccount(account.id);
+      }
+    });
     forceRegister('PreferencesController:resetState', (...a) =>
       this.preferencesController.resetState(...a),
     );
@@ -4083,13 +4103,112 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  // syncPasswordAndUnlockWallet — TODO: extract to vault-management module.
-  // Full seedless unlock logic is complex; keeping MC impl until messenger-based
-  // SeedlessOnboardingController actions are fully mapped.
+  // syncPasswordAndUnlockWallet — TODO: extract to vault-management module once
+  // all SeedlessOnboardingController messenger actions are mapped.
   async syncPasswordAndUnlockWallet(password) {
-    // Delegate to submitPassword for the non-seedless case.
-    // Seedless password-sync path still runs inline — see TODO above.
-    await this.submitPasswordOrEncryptionKey({ password });
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    let isPasswordOutdated = false;
+    if (isSocialLoginFlow) {
+      try {
+        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: true,
+        });
+      } catch (error) {
+        log.error('error while checking if password is outdated', error);
+      }
+    }
+
+    if (!isSocialLoginFlow || !isPasswordOutdated) {
+      await this.submitPassword(password);
+      if (isSocialLoginFlow) {
+        this.seedlessOnboardingController
+          .revokePendingRefreshTokens()
+          .catch((err) => {
+            log.error('error while revoking pending refresh tokens', err);
+          });
+      }
+      return;
+    }
+    const releaseLock = await this.seedlessOperationMutex.acquire();
+
+    try {
+      const isKeyringPasswordValid = await this.keyringController
+        .verifyPassword(password)
+        .then(() => true)
+        .catch((err) => {
+          if (err.message.includes('Incorrect password')) {
+            return false;
+          }
+          log.error('error while verifying keyring password', err.message);
+          throw err;
+        });
+
+      await this.seedlessOnboardingController
+        .submitGlobalPassword({
+          globalPassword: password,
+          maxKeyChainLength: 20,
+        })
+        .catch((err) => {
+          if (err instanceof RecoveryError) {
+            if (
+              err?.message ===
+                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
+              isKeyringPasswordValid
+            ) {
+              throw new Error(
+                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+              );
+            }
+            throw new JsonRpcError(-32603, err.message, err.data);
+          }
+          log.error(`error while submitting global password: ${err.message}`);
+          throw err;
+        });
+
+      const keyringEncryptionKey =
+        await this.seedlessOnboardingController.loadKeyringEncryptionKey();
+      await this.submitEncryptionKey(keyringEncryptionKey);
+
+      let changePasswordSuccess = false;
+      try {
+        await this.seedlessOnboardingController.syncLatestGlobalPassword({
+          globalPassword: password,
+        });
+
+        this.metaMetricsController.bufferedTrace?.({
+          name: TraceName.OnboardingResetPassword,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
+        await this.keyringController.changePassword(password);
+        changePasswordSuccess = true;
+        await this.syncKeyringEncryptionKey();
+
+        await this.checkIsSeedlessPasswordOutdated({
+          skipCache: true,
+          captureSentryError: true,
+        });
+
+        this.seedlessOnboardingController
+          .revokePendingRefreshTokens()
+          .catch((err) => {
+            log.error('error while revoking pending refresh tokens', err);
+          });
+      } catch (err) {
+        this.controllerMessenger?.captureException?.(
+          createSentryError(TraceName.OnboardingResetPasswordError, err),
+        );
+        await this.setLocked({ skipSeedlessOperationLock: true });
+        throw err;
+      } finally {
+        this.metaMetricsController.bufferedEndTrace?.({
+          name: TraceName.OnboardingResetPassword,
+          data: { success: changePasswordSuccess },
+        });
+      }
+    } finally {
+      releaseLock();
+    }
   }
 
   /**
@@ -7485,36 +7604,61 @@ export default class MetamaskController extends EventEmitter {
     actionId,
     walletType,
   }) => {
-    await this.controllerMessenger.call(
-      'PermissionManagement:resolvePendingApproval',
+    await this.resolvePendingApproval(
       String(txId),
       { txMeta, actionId },
       { waitForResult: true, walletType },
     );
   };
 
-  async removePermissionsFor(subjects) {
-    return this.controllerMessenger.call(
-      'PermissionManagement:removePermissionsFor',
-      subjects,
-    );
+  removePermissionsFor(subjects) {
+    try {
+      this.controllerMessenger.call(
+        'PermissionManagement:removePermissionsFor',
+        subjects,
+      );
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
   }
 
-  async rejectPendingApproval(id, error) {
-    return this.controllerMessenger.call(
-      'PermissionManagement:rejectPendingApproval',
-      id,
-      error,
-    );
+  rejectPendingApproval(id, error) {
+    try {
+      this.controllerMessenger.call(
+        'PermissionManagement:rejectPendingApproval',
+        id,
+        error,
+      );
+    } catch (exp) {
+      if (!(exp instanceof ApprovalRequestNotFoundError)) {
+        throw exp;
+      }
+    }
   }
 
-  async resolvePendingApproval(id, value, options) {
-    return this.controllerMessenger.call(
-      'PermissionManagement:resolvePendingApproval',
-      id,
-      value,
-      options,
-    );
+  async resolvePendingApproval(id, value, options = {}) {
+    const { walletType, waitForResult } = options ?? {};
+    const approvalOptions =
+      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
+    try {
+      await this.controllerMessenger.call(
+        'PermissionManagement:resolvePendingApproval',
+        id,
+        value,
+        approvalOptions,
+      );
+    } catch (error) {
+      if (error instanceof ApprovalRequestNotFoundError) {
+        return;
+      }
+      if (walletType) {
+        await this.#handleHardwareWalletError(error, walletType);
+        return;
+      }
+      throw error;
+    }
   }
 
   rejectAllPendingApprovals() {

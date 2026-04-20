@@ -28,6 +28,18 @@
  * builds an engine, ConnectionManager pipes a port stream through it.
  */
 
+import type { GenericPermissionController } from '@metamask/permission-controller';
+import type { SubjectMetadataController } from '@metamask/permission-controller';
+import type { NetworkController } from '@metamask/network-controller';
+import type { AccountsController } from '@metamask/accounts-controller';
+import type { SelectedNetworkController } from '@metamask/selected-network-controller';
+import type { PhishingController } from '@metamask/phishing-controller';
+import type { PPOMController } from '@metamask/ppom-validator';
+import type { PermissionLogController } from '@metamask/permission-log-controller';
+import type { AppStateController } from '../controllers/app-state-controller';
+import type { PreferencesController } from '../controllers/preferences-controller';
+import type { MetaMetricsController } from '../controllers/metametrics-controller';
+import type { OnboardingController } from '../controllers/onboarding';
 import type { RootMessenger } from './messenger';
 
 // ---------------------------------------------------------------------------
@@ -45,21 +57,18 @@ import type { RootMessenger } from './messenger';
  */
 export type ProviderEngineDependencies = {
   messenger: RootMessenger;
-  // Controller instances still needed until their methods are exposed as
-  // messenger actions. Kept typed as `unknown` here to avoid circular
-  // imports — callers cast to the real types at the injection site.
-  permissionController: unknown;
-  networkController: unknown;
-  appStateController: unknown;
-  preferencesController: unknown;
-  phishingController: unknown;
-  ppomController: unknown;
-  metaMetricsController: unknown;
-  accountsController: unknown;
-  onboardingController: unknown;
-  subjectMetadataController: unknown;
-  selectedNetworkController: unknown;
-  permissionLogController: unknown;
+  permissionController: GenericPermissionController;
+  networkController: NetworkController;
+  appStateController: AppStateController;
+  preferencesController: PreferencesController;
+  phishingController: PhishingController;
+  ppomController: PPOMController;
+  metaMetricsController: MetaMetricsController;
+  accountsController: AccountsController;
+  onboardingController: OnboardingController;
+  subjectMetadataController: SubjectMetadataController;
+  selectedNetworkController: SelectedNetworkController;
+  permissionLogController: PermissionLogController;
   multichainRouter: unknown;
 };
 
@@ -77,17 +86,17 @@ export type ProviderEngineDependencies = {
 export class ProviderEngineFactory {
   readonly #messenger: RootMessenger;
 
-  readonly #permissionController: unknown;
+  readonly #permissionController: GenericPermissionController;
 
-  readonly #networkController: unknown;
+  readonly #networkController: NetworkController;
 
-  readonly #appStateController: unknown;
+  readonly #appStateController: AppStateController;
 
-  readonly #preferencesController: unknown;
+  readonly #preferencesController: PreferencesController;
 
-  readonly #selectedNetworkController: unknown;
+  readonly #selectedNetworkController: SelectedNetworkController;
 
-  readonly #permissionLogController: unknown;
+  readonly #permissionLogController: PermissionLogController;
 
   constructor(deps: ProviderEngineDependencies) {
     this.#messenger = deps.messenger;
