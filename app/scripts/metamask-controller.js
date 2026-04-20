@@ -857,8 +857,7 @@ export default class MetamaskController extends EventEmitter {
     );
     forceRegister(
       'MultichainAccountService:discoverAndCreateAccounts',
-      (...a) =>
-        this.multichainAccountService.discoverAndCreateAccounts(...a),
+      (...a) => this.multichainAccountService.discoverAndCreateAccounts(...a),
     );
     forceRegister('MultichainAccountService:addAccountsWithBalance', (...a) =>
       this.multichainAccountService.addAccountsWithBalance(...a),
@@ -883,8 +882,7 @@ export default class MetamaskController extends EventEmitter {
     // SeedlessOnboardingController
     forceRegister(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
-      (...a) =>
-        this.seedlessOnboardingController.checkIsPasswordOutdated(...a),
+      (...a) => this.seedlessOnboardingController.checkIsPasswordOutdated(...a),
     );
     forceRegister('SeedlessOnboardingController:setLocked', (...a) =>
       this.seedlessOnboardingController.setLocked(...a),
@@ -905,9 +903,8 @@ export default class MetamaskController extends EventEmitter {
     forceRegister('TransactionController:wipeTransactions', (...a) =>
       this.txController.wipeTransactions(...a),
     );
-    forceRegister(
-      'TransactionController:clearUnapprovedTransactions',
-      (...a) => this.txController.clearUnapprovedTransactions(...a),
+    forceRegister('TransactionController:clearUnapprovedTransactions', (...a) =>
+      this.txController.clearUnapprovedTransactions(...a),
     );
 
     // AccountTreeController
@@ -925,19 +922,16 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // AccountOrderController
-    forceRegister(
-      'AccountOrderController:updateHiddenAccountsList',
-      (...a) => this.accountOrderController.updateHiddenAccountsList(...a),
+    forceRegister('AccountOrderController:updateHiddenAccountsList', (...a) =>
+      this.accountOrderController.updateHiddenAccountsList(...a),
     );
 
     // AppStateController
-    forceRegister(
-      'AppStateController:setIsWalletResetInProgress',
-      (...a) => this.appStateController.setIsWalletResetInProgress(...a),
+    forceRegister('AppStateController:setIsWalletResetInProgress', (...a) =>
+      this.appStateController.setIsWalletResetInProgress(...a),
     );
-    forceRegister(
-      'AppStateController:getIsWalletResetInProgress',
-      (...a) => this.appStateController.getIsWalletResetInProgress(...a),
+    forceRegister('AppStateController:getIsWalletResetInProgress', (...a) =>
+      this.appStateController.getIsWalletResetInProgress(...a),
     );
 
     // OnboardingController
@@ -959,9 +953,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // SmartTransactionsController
-    forceRegister(
-      'SmartTransactionsController:wipeSmartTransactions',
-      (...a) => this.smartTransactionsController.wipeSmartTransactions(...a),
+    forceRegister('SmartTransactionsController:wipeSmartTransactions', (...a) =>
+      this.smartTransactionsController.wipeSmartTransactions(...a),
     );
 
     // NetworkController
