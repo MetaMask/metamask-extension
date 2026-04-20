@@ -25693,7 +25693,7 @@ authors: undefined
 ******************************
 
 @metamask/perps-controller
-3.0.0 <https://github.com/MetaMask/core>
+3.1.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
