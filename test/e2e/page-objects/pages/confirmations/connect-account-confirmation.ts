@@ -18,11 +18,6 @@ class ConnectAccountConfirmation {
     testId: 'confirm-btn',
   };
 
-  private readonly connectAccountConfirmationButton = {
-    text: 'Connect',
-    tag: 'button',
-  };
-
   private readonly connectAccountConfirmationTitle = {
     text: 'Connect this website with MetaMask',
     tag: 'p',
@@ -56,7 +51,7 @@ class ConnectAccountConfirmation {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectAccountConfirmationTitle,
-        this.connectAccountConfirmationButton,
+        this.confirmConnectButton,
         this.originHeader(origin),
       ]);
     } catch (e) {
@@ -79,7 +74,7 @@ class ConnectAccountConfirmation {
   async confirmConnect(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.connectAccountConfirmationButton,
+      this.confirmConnectButton,
     );
   }
 
