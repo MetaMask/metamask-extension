@@ -35,7 +35,7 @@ export function BridgeFeeRow({
   tooltipDescription,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter();
+  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayLoading();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
