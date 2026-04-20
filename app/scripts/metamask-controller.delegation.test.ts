@@ -288,3 +288,5 @@ describe('MetamaskController getApi() binds delegation stubs to the instance', (
     },
   );
 });
+
+export {};
