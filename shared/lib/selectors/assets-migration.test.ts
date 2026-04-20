@@ -22,6 +22,12 @@ import {
   getRatesControllerFiatCurrency,
 } from './assets-migration';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these selector tests exercise the real feature-flag gating logic.
+jest.mock('../assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../assets-unify-state/remote-feature-flag'),
+);
+
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
 
