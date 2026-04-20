@@ -827,6 +827,36 @@ describe('PerpsStreamBridge', () => {
       jest.useRealTimers();
     });
 
+    it('does not subscribe when destroy() runs while init is pending', async () => {
+      const controller = createMockController();
+      let resolveInit: (() => void) | undefined;
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsInit.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveInit = resolve;
+          }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<string>;
+
+      const pending = activate({ symbol: 'BTC', interval: '5m' });
+      // Let the activation queue behind init, then tear the bridge down.
+      await Promise.resolve();
+      bridge.destroy();
+
+      resolveInit?.();
+      await pending;
+
+      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
+    });
+
     it('coalesces concurrent activate calls for the same key across pending init', async () => {
       const controller = createMockController();
       let resolveInit: (() => void) | undefined;

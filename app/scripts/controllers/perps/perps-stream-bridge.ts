@@ -116,6 +116,13 @@ export class PerpsStreamBridge {
 
   #activated = false;
 
+  /**
+   * Set by destroy(); short-circuits any in-flight candle activation that was
+   * awaiting init when destroy() ran, so it cannot issue a subscribe after
+   * the bridge's static unsubs have been torn down.
+   */
+  #destroyed = false;
+
   #wasDisconnected = false;
 
   #isHydrating = false;
@@ -214,10 +221,6 @@ export class PerpsStreamBridge {
         if (pendingTimer !== undefined) {
           clearTimeout(pendingTimer);
           this.#pendingCandleTeardowns.delete(key);
-          console.debug(
-            '[PerpsStreamBridge] deferred teardown cancelled for',
-            key,
-          );
         }
 
         if (this.#dynamicUnsubs[key]) {
@@ -232,6 +235,12 @@ export class PerpsStreamBridge {
 
         const activation = (async () => {
           await this.#initAndActivate();
+          // destroy() may have fired during the await; never subscribe after
+          // the bridge has been torn down (the subscribe would leak past the
+          // point where static/dynamic unsubs are cleared).
+          if (this.#destroyed) {
+            return;
+          }
           // Another caller may have raced us through activation; re-check
           // before issuing the subscribe so we never double-subscribe.
           if (this.#dynamicUnsubs[key]) {
@@ -297,6 +306,8 @@ export class PerpsStreamBridge {
   }
 
   destroy(): void {
+    this.#destroyed = true;
+
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }
