@@ -62,8 +62,9 @@ const PerpsActivityPage: React.FC = () => {
   // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
   // the live-fills WebSocket merge, so without this the page could render a
   // stale snapshot. The hook's in-flight dedup still suppresses bursts.
-  const { transactions, isLoading, error, refetch } =
-    usePerpsTransactionHistory({ forceFreshOnMount: true });
+  const { transactions, isLoading, error } = usePerpsTransactionHistory({
+    forceFreshOnMount: true,
+  });
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,

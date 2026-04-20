@@ -827,6 +827,39 @@ describe('PerpsStreamBridge', () => {
       jest.useRealTimers();
     });
 
+    it('coalesces concurrent activate calls for the same key across pending init', async () => {
+      const controller = createMockController();
+      let resolveInit: (() => void) | undefined;
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsInit.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveInit = resolve;
+          }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+      const activate = api.perpsActivateCandleStream as (
+        p: Record<string, unknown>,
+      ) => Promise<string>;
+
+      const first = activate({ symbol: 'BTC', interval: '5m' });
+      const second = activate({ symbol: 'BTC', interval: '5m' });
+      const third = activate({ symbol: 'BTC', interval: '5m' });
+
+      // Let both callers pass the synchronous guards and queue behind init.
+      await Promise.resolve();
+
+      resolveInit?.();
+      await Promise.all([first, second, third]);
+
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
+      expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
+    });
+
     it('cancels deferred teardown when matching activate arrives within 150ms', async () => {
       jest.useFakeTimers();
       const controller = createMockController();

@@ -103,6 +103,17 @@ export class PerpsStreamBridge {
     ReturnType<typeof setTimeout>
   >();
 
+  /**
+   * Concurrent-activation guard for candle streams. The synchronous
+   * `#dynamicUnsubs[key]` check only trips after `#activateCandleStream` has
+   * run, which happens *after* `await #initAndActivate()`. Without this map,
+   * two callers for the same {symbol, interval} arriving before init resolves
+   * both pass the early-return and each issue a `subscribeToCandles` (and its
+   * backing `candleSnapshot` REST hit) — exactly the rate-limit burst this
+   * PR is trying to eliminate on cold init / reconnect / rapid market switch.
+   */
+  readonly #pendingCandleActivations = new Map<string, Promise<void>>();
+
   #activated = false;
 
   #wasDisconnected = false;
@@ -213,9 +224,30 @@ export class PerpsStreamBridge {
           return;
         }
 
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activateCandleStream({ symbol, interval, duration });
+        const existing = this.#pendingCandleActivations.get(key);
+        if (existing !== undefined) {
+          await existing;
+          return;
+        }
+
+        const activation = (async () => {
+          await this.#initAndActivate();
+          // Another caller may have raced us through activation; re-check
+          // before issuing the subscribe so we never double-subscribe.
+          if (this.#dynamicUnsubs[key]) {
+            return;
+          }
+          if (this.#isConnectionAlive()) {
+            this.#activateCandleStream({ symbol, interval, duration });
+          }
+        })();
+        this.#pendingCandleActivations.set(key, activation);
+        try {
+          await activation;
+        } finally {
+          if (this.#pendingCandleActivations.get(key) === activation) {
+            this.#pendingCandleActivations.delete(key);
+          }
         }
       },
       perpsDeactivateCandleStream: ({
@@ -578,6 +610,10 @@ export class PerpsStreamBridge {
       clearTimeout(handle);
     }
     this.#pendingCandleTeardowns.clear();
+    // In-flight activations cannot be aborted, but dropping the map means the
+    // next perpsActivateCandleStream after teardown issues a fresh activation
+    // instead of awaiting an obsolete promise from the pre-teardown session.
+    this.#pendingCandleActivations.clear();
 
     for (const unsub of Object.values(this.#dynamicUnsubs)) {
       this.#callAndClearUnsub(unsub);
