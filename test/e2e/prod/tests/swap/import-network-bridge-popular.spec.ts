@@ -46,6 +46,10 @@ type BridgeRouteConfig = {
   toSymbol: string;
   fromAmount: string;
   destinationAddress: string;
+  homeNetworkFilter: string;
+  acceptedActivityLabels: string[];
+  swapActivityLabel: string;
+  acceptedDetailStatuses?: string[];
   hardFailOnInsufficientFunds?: boolean;
 };
 
@@ -53,6 +57,7 @@ const BASE_CHAIN_ID_HEX = '0x2105';
 const BASE_USDC_ADDRESS = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 const BRIDGE_TO_SWAP_TRANSITION_TIMEOUT = 240000;
 const INITIAL_ACTIVITY_LABEL_TIMEOUT = 120000;
+const DEFAULT_ACCEPTED_DETAIL_STATUSES = ['pending', 'confirmed', 'complete'];
 
 const BRIDGE_ROUTES: BridgeRouteConfig[] = [
   {
@@ -63,6 +68,9 @@ const BRIDGE_ROUTES: BridgeRouteConfig[] = [
     toSymbol: 'USDC',
     fromAmount: '20',
     destinationAddress: BASE_USDC_ADDRESS,
+    homeNetworkFilter: 'Monad',
+    acceptedActivityLabels: ['Bridged to Base', 'Swap MON to USDC'],
+    swapActivityLabel: 'Swap MON to USDC',
   },
   {
     label: 'USDC -> MON (Base -> Monad)',
@@ -72,11 +80,20 @@ const BRIDGE_ROUTES: BridgeRouteConfig[] = [
     toSymbol: 'MON',
     fromAmount: '0.5',
     destinationAddress: 'MON',
+    homeNetworkFilter: 'Base',
+    acceptedActivityLabels: ['Bridged to Monad', 'Swap USDC to MON'],
+    swapActivityLabel: 'Swap USDC to MON',
     hardFailOnInsufficientFunds: true,
   },
 ];
 
-async function selectPopularNetwork(
+/**
+ * Networks pre-configured in the fixture (via withNetworkControllerOnMonad etc.)
+ * can be switched to directly without going through the Popular tab.
+ */
+const FIXTURE_CONFIGURED_NETWORKS = new Set(['Monad']);
+
+async function switchToNetwork(
   driver: Driver,
   networkName: string,
 ): Promise<void> {
@@ -86,22 +103,32 @@ async function selectPopularNetwork(
 
   await networkManager.openNetworkManager();
 
-  // Try Popular first, fallback to Add if network is not in Popular.
-  try {
-    await networkManager.selectTab('Popular');
+  if (FIXTURE_CONFIGURED_NETWORKS.has(networkName)) {
+    // Network is pre-configured in the fixture — switch directly without Popular tab.
     try {
       await networkManager.checkNetworkIsSelected(networkName);
       await networkManager.closeNetworkManager();
     } catch (_error) {
       await networkManager.selectNetworkByName(networkName);
     }
-  } catch (_error) {
-    await networkManager.selectTab('Add');
+  } else {
+    // Network may need to be added — try Popular tab first, then Add tab.
     try {
-      await networkManager.checkNetworkIsSelected(networkName);
-      await networkManager.closeNetworkManager();
-    } catch (_innerError) {
-      await networkManager.selectNetworkByName(networkName);
+      await networkManager.selectTab('Popular');
+      try {
+        await networkManager.checkNetworkIsSelected(networkName);
+        await networkManager.closeNetworkManager();
+      } catch (_error) {
+        await networkManager.selectNetworkByName(networkName);
+      }
+    } catch (_error) {
+      await networkManager.selectTab('Add');
+      try {
+        await networkManager.checkNetworkIsSelected(networkName);
+        await networkManager.closeNetworkManager();
+      } catch (_innerError) {
+        await networkManager.selectNetworkByName(networkName);
+      }
     }
   }
 
@@ -117,10 +144,11 @@ async function selectPopularNetwork(
 }
 
 async function ensureBaseUsdcImported(driver: Driver): Promise<void> {
-  await selectPopularNetwork(driver, 'Base');
+  await switchToNetwork(driver, 'Base');
 
+  const homePage = new HomePage(driver);
   const assetListPage = new AssetListPage(driver);
-  await driver.clickElement('[data-testid="account-overview__asset-tab"]');
+  await homePage.goToTokensTab();
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   try {
@@ -162,7 +190,66 @@ async function assertNoInsufficientFunds(
   }
 }
 
-async function assertActivityHasAcceptedStatus(driver: Driver): Promise<string> {
+async function resetToTokensHomeForRoute(
+  driver: Driver,
+  route: BridgeRouteConfig,
+): Promise<void> {
+  const homePage = new HomePage(driver);
+  const assetListPage = new AssetListPage(driver);
+
+  await recoverToHome(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.goToTokensTab();
+  await driver.delay(PROD_DELAYS.API_RESPONSE);
+  await assetListPage.selectNetworkFilter(route.homeNetworkFilter);
+  await assetListPage.checkNetworkFilterText(route.homeNetworkFilter);
+  await driver.delay(PROD_DELAYS.API_RESPONSE);
+}
+
+async function openActivityTabFromHome(driver: Driver): Promise<void> {
+  const homePage = new HomePage(driver);
+
+  await homePage.goToActivityList();
+  await driver.waitForSelector(
+    '[data-testid="account-overview__activity-tab"]',
+  );
+  await driver.delay(PROD_DELAYS.API_RESPONSE);
+}
+
+async function waitForAnyActivityLabel(
+  driver: Driver,
+  acceptedLabels: string[],
+  timeout: number,
+): Promise<string> {
+  let matchedLabel = '';
+
+  await driver.waitUntil(
+    async () => {
+      for (const label of acceptedLabels) {
+        const matches = await driver.findElements({ tag: 'p', text: label });
+        if (matches.length > 0) {
+          matchedLabel = label;
+          return true;
+        }
+      }
+
+      return false;
+    },
+    { timeout, interval: 1000 },
+  );
+
+  if (!matchedLabel) {
+    throw new Error(
+      `No accepted activity label appeared within ${timeout}ms. Expected one of: ${acceptedLabels.join(', ')}`,
+    );
+  }
+
+  return matchedLabel;
+}
+
+async function assertActivityHasAcceptedStatus(
+  driver: Driver,
+): Promise<string> {
   const acceptedStatuses = ['pending', 'confirmed'];
 
   for (const status of acceptedStatuses) {
@@ -196,60 +283,43 @@ async function submitBridgeAndWaitForActivity(
   driver: Driver,
   route: BridgeRouteConfig,
 ): Promise<{ transitionToSwap: boolean; activityLabel: string }> {
-  const bridgedLabel = `Bridged to ${route.destinationNetwork}`;
-  const swapLabel = `Swap ${route.fromSymbol} to ${route.toSymbol}`;
-
   console.log(
-    `[EXEC] Submitting bridge and waiting for activity. Initial labels: "${bridgedLabel}" or "${swapLabel}"`,
+    `[EXEC] Submitting bridge and waiting for activity. Accepted labels: ${route.acceptedActivityLabels.join(', ')}`,
   );
   await driver.clickElement('[data-testid="bridge-cta-button"]');
 
   // Allow the transaction to be submitted before returning home.
   await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
-  await recoverToHome(driver);
+  await resetToTokensHomeForRoute(driver, route);
+  await openActivityTabFromHome(driver);
 
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  const initialLabelFound = await waitForAnyActivityLabel(
+    driver,
+    route.acceptedActivityLabels,
+    INITIAL_ACTIVITY_LABEL_TIMEOUT,
+  );
+  console.log(`[EXEC] Activity appeared as: "${initialLabelFound}"`);
 
-  let initialLabelFound = '';
-  try {
-    await driver.waitForSelector({ tag: 'p', text: bridgedLabel }, {
-      timeout: INITIAL_ACTIVITY_LABEL_TIMEOUT,
-    });
-    initialLabelFound = bridgedLabel;
-    console.log(`[EXEC] Activity appeared as: "${bridgedLabel}"`);
-  } catch (_error) {
-    try {
-      await driver.waitForSelector({ tag: 'p', text: swapLabel }, {
-        timeout: INITIAL_ACTIVITY_LABEL_TIMEOUT,
-      });
-      initialLabelFound = swapLabel;
-      console.log(`[EXEC] Activity appeared directly as: "${swapLabel}"`);
-    } catch (_innerError) {
-      throw new Error(
-        `No expected activity label appeared within ${INITIAL_ACTIVITY_LABEL_TIMEOUT}ms. ` +
-          `Expected "${bridgedLabel}" or "${swapLabel}"`,
-      );
-    }
-  }
-
-  if (initialLabelFound === swapLabel) {
-    return { transitionToSwap: true, activityLabel: swapLabel };
+  if (initialLabelFound === route.swapActivityLabel) {
+    return { transitionToSwap: true, activityLabel: route.swapActivityLabel };
   }
 
   console.log(
-    `[EXEC] Waiting for Bridged->Swap transition: "${swapLabel}" (timeout: ${BRIDGE_TO_SWAP_TRANSITION_TIMEOUT}ms)`,
+    `[EXEC] Waiting for Bridged->Swap transition: "${route.swapActivityLabel}" (timeout: ${BRIDGE_TO_SWAP_TRANSITION_TIMEOUT}ms)`,
   );
   try {
-    await driver.waitForSelector({ tag: 'p', text: swapLabel }, {
-      timeout: BRIDGE_TO_SWAP_TRANSITION_TIMEOUT,
-    });
+    await waitForAnyActivityLabel(
+      driver,
+      [route.swapActivityLabel],
+      BRIDGE_TO_SWAP_TRANSITION_TIMEOUT,
+    );
     console.log('[EXEC] ✅ Activity transitioned from Bridged to Swap');
-    return { transitionToSwap: true, activityLabel: swapLabel };
+    return { transitionToSwap: true, activityLabel: route.swapActivityLabel };
   } catch (_error) {
     console.warn(
       `[EXEC] ⚠️  ALERT: Activity did not transition from Bridged to Swap within ${BRIDGE_TO_SWAP_TRANSITION_TIMEOUT}ms. Proceeding to Bridge details validation.`,
     );
-    return { transitionToSwap: false, activityLabel: bridgedLabel };
+    return { transitionToSwap: false, activityLabel: initialLabelFound };
   }
 }
 
@@ -259,9 +329,7 @@ async function openLatestBridgeActivityRecord(
 ): Promise<void> {
   const normalize = (value: string) =>
     value.replace(/\s+/gu, ' ').trim().toUpperCase();
-  const expectedFrom = normalize(route.fromSymbol);
-  const expectedTo = normalize(route.toSymbol);
-  const expectedDestinationNetwork = normalize(route.destinationNetwork);
+  const acceptedActivityLabels = route.acceptedActivityLabels.map(normalize);
 
   await driver.waitForSelector('[data-testid="activity-list-item-action"]');
   const activityRows = await driver.findElements(
@@ -271,14 +339,11 @@ async function openLatestBridgeActivityRecord(
   let clicked = false;
   for (const row of activityRows) {
     const text = normalize(await row.getText());
-    const isSwapMatch =
-      text.includes('SWAP') &&
-      text.includes(expectedFrom) &&
-      text.includes(expectedTo);
-    const isBridgeMatch =
-      text.includes('BRIDGED TO') && text.includes(expectedDestinationNetwork);
+    const isAcceptedMatch = acceptedActivityLabels.some((label) =>
+      text.includes(label),
+    );
 
-    if (isSwapMatch || isBridgeMatch) {
+    if (isAcceptedMatch) {
       console.log(
         `[EXEC] Opening matching activity row for bridge route: "${text}"`,
       );
@@ -289,17 +354,29 @@ async function openLatestBridgeActivityRecord(
   }
 
   if (!clicked) {
-    const swapLabel = `Swap ${route.fromSymbol} to ${route.toSymbol}`;
-    const bridgedLabel = `Bridged to ${route.destinationNetwork}`;
-
-    try {
-      await driver.clickElement({ tag: 'p', text: swapLabel });
-    } catch (_error) {
-      await driver.clickElement({ tag: 'p', text: bridgedLabel });
+    for (const activityLabel of route.acceptedActivityLabels) {
+      try {
+        await driver.clickElement({ tag: 'p', text: activityLabel });
+        clicked = true;
+        break;
+      } catch (_error) {
+        // Try the next accepted activity label.
+      }
     }
   }
 
+  if (!clicked) {
+    throw new Error(
+      `Could not open any matching activity record for route ${route.label}`,
+    );
+  }
+
   await driver.waitForUrlContaining({ url: '/cross-chain/tx-details' });
+}
+
+async function navigateBackToActivityTab(driver: Driver): Promise<void> {
+  await navigateBackToHome(driver);
+  await driver.waitForSelector('[data-testid="activity-list-item-action"]');
 }
 
 async function getDetailRowText(
@@ -325,10 +402,11 @@ async function assertBridgeDetailsPage(
     '[data-testid="bridge-transaction-details-tx-status"]',
   );
   const statusText = (await statusElement.getText()).trim().toLowerCase();
-  const acceptedStatuses = ['pending', 'confirmed', 'complete'];
+  const acceptedStatuses =
+    route.acceptedDetailStatuses ?? DEFAULT_ACCEPTED_DETAIL_STATUSES;
   if (!acceptedStatuses.includes(statusText)) {
     throw new Error(
-      `Bridge details status is not accepted. Got "${statusText}", expected pending/confirmed/complete`,
+      `Bridge details status is not accepted. Got "${statusText}", expected ${acceptedStatuses.join('/')}`,
     );
   }
   detailMessages.push(`Status: ${statusText}`);
@@ -353,7 +431,11 @@ async function assertBridgeDetailsPage(
   }
   detailMessages.push(`Time stamp: ${timeStampValue}`);
 
-  await assertDetailRow(driver, 'You sent', `${fromAmount} ${route.fromSymbol}`);
+  await assertDetailRow(
+    driver,
+    'You sent',
+    `${fromAmount} ${route.fromSymbol}`,
+  );
   detailMessages.push(`You sent includes: ${fromAmount} ${route.fromSymbol}`);
 
   const receivedRowText = await getDetailRowText(driver, 'You received');
@@ -410,7 +492,7 @@ describe('Production E2E: Popular Network Bridge Execution', function (this: Sui
         await ensureBaseUsdcImported(driver);
 
         // Return to Monad for route 1 start.
-        await selectPopularNetwork(driver, 'Monad');
+        await switchToNetwork(driver, 'Monad');
 
         for (const route of BRIDGE_ROUTES) {
           const routeResult: SwapRouteResult = {
@@ -437,8 +519,12 @@ describe('Production E2E: Popular Network Bridge Execution', function (this: Sui
             console.log(
               `[TEST] Selecting source network: ${route.sourceNetwork}`,
             );
-            await selectPopularNetwork(driver, route.sourceNetwork);
-            recordValidation('Source network selected', 'passed', route.sourceNetwork);
+            await switchToNetwork(driver, route.sourceNetwork);
+            recordValidation(
+              'Source network selected',
+              'passed',
+              route.sourceNetwork,
+            );
 
             await performSwapFlow(driver, {
               sourceTokenSymbol: route.fromSymbol,
@@ -463,10 +549,8 @@ describe('Production E2E: Popular Network Bridge Execution', function (this: Sui
             routeResult.fromAmount = fromAmount;
             routeResult.toAmount = toAmount;
 
-            const activityTransitionResult = await submitBridgeAndWaitForActivity(
-              driver,
-              route,
-            );
+            const activityTransitionResult =
+              await submitBridgeAndWaitForActivity(driver, route);
             if (activityTransitionResult.transitionToSwap) {
               recordValidation(
                 'Activity transition Bridged->Swap',
@@ -491,7 +575,8 @@ describe('Production E2E: Popular Network Bridge Execution', function (this: Sui
               `-${fromAmount} ${route.fromSymbol}`,
             );
 
-            const activityStatus = await assertActivityHasAcceptedStatus(driver);
+            const activityStatus =
+              await assertActivityHasAcceptedStatus(driver);
             recordValidation('Activity status', 'passed', activityStatus);
 
             await openLatestBridgeActivityRecord(driver, route);
@@ -508,7 +593,19 @@ describe('Production E2E: Popular Network Bridge Execution', function (this: Sui
               detailResult.details.join(' | '),
             );
 
-            await navigateBackToHome(driver);
+            await navigateBackToActivityTab(driver);
+            recordValidation(
+              'Returned to activity tab',
+              'passed',
+              route.homeNetworkFilter,
+            );
+
+            await resetToTokensHomeForRoute(driver, route);
+            recordValidation(
+              'Returned to tokens home',
+              'passed',
+              route.homeNetworkFilter,
+            );
 
             routeResult.status = 'passed';
             console.log(`[TEST] ✅ Route passed: ${route.label}`);
