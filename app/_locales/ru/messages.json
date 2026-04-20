@@ -111,9 +111,6 @@
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
-  "accountIdenticonDescription": {
-    "message": "Выбирайте из трех различных стилей уникальных значков, которые помогут вам быстро находить счета."
-  },
   "accountIsntConnectedToastText": {
     "message": "$1 не подключен к $2"
   },
