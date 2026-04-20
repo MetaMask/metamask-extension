@@ -39,7 +39,7 @@ import {
   createSnapsMethodMiddleware,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -49,33 +49,12 @@ import {
   BridgeBackgroundAction,
 } from '@metamask/bridge-controller';
 
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { Interface } from '@ethersproject/abi';
-import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import {
-  isEvmAccountType,
-  SolAccountType,
-  EthScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  BtcScope,
-  ///: END:ONLY_INCLUDE_IF
-  SolScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  TrxScope,
-  TrxAccountType,
-  ///: END:ONLY_INCLUDE_IF
-  BtcAccountType,
-} from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  add0x,
-  hexToBytes,
-  bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
 } from '@metamask/utils';
@@ -109,12 +88,10 @@ import {
 } from '@metamask/eip-7702-internal-rpc-middleware';
 
 import {
-  Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getSessionScopes,
-  setPermittedEthChainIds,
   getPermittedAccountsForScopes,
   getAllScopesFromCaip25CaveatValue,
   requestPermittedChainsPermissionIncremental,
@@ -122,25 +99,15 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
-import {
-  SeedlessOnboardingControllerErrorMessage,
-  SecretType,
-  RecoveryError,
-} from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
-import {
-  findAtomicBatchSupportForChain,
-  checkEip7702Support,
-} from '../../shared/lib/eip7702-support-utils';
-import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
+
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
 } from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import {
-  CHAIN_IDS,
   CHAIN_SPEC_URL,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
@@ -153,7 +120,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -170,46 +137,26 @@ import {
   getStorageItem,
   setStorageItem,
 } from '../../shared/lib/storage-helpers';
-import {
-  getTokenIdParam,
-  fetchTokenBalance,
-  fetchERC1155Balance,
-} from '../../shared/lib/token-util';
-import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
 import { getIsSmartTransaction } from '../../shared/lib/selectors';
-import {
-  TOKEN_TRANSFER_LOG_TOPIC_HASH,
-  TRANSFER_SINFLE_LOG_TOPIC_HASH,
-} from '../../shared/lib/transactions-controller-utils';
+
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
-import {
-  trace,
-  endTrace,
-  TraceName,
-  TraceOperation,
-} from '../../shared/lib/trace';
+import { trace, endTrace } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: BEGIN:ONLY_INCLUDE_IF(tron)
-import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsAssetsUnifiedStateIncludedInBuild,
@@ -221,16 +168,14 @@ import {
   updatePreferencesAndMetricsForShieldSubscription,
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
-import { createSentryError } from '../../shared/lib/error';
 import {
   toHardwareWalletError,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
-import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -340,7 +285,6 @@ import { TransactionPayControllerInit } from './messenger-client-init/transactio
 import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
-import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
@@ -440,10 +384,8 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './messenger-client-init/claims';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
-import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { registerWalletServices } from './lib/wallet-services/register';
 
@@ -908,7 +850,6 @@ export default class MetamaskController extends EventEmitter {
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
-
 
     const walletFundsObtainedMonitorMessenger = new Messenger({
       namespace: 'WalletFundsObtainedMonitor',
@@ -1768,6 +1709,17 @@ export default class MetamaskController extends EventEmitter {
       'SnapManagement:handleSnapRequest',
       args,
     );
+  }
+
+  updateSnap(origin, requestedSnaps) {
+    // Deliberately not awaited: return null to signal to UI that it is safe
+    // to redirect to the update flow while snap installation continues.
+    this.controllerMessenger.call(
+      'SnapController:install',
+      origin,
+      requestedSnaps,
+    );
+    return null;
   }
 
   /**
@@ -2660,11 +2612,7 @@ export default class MetamaskController extends EventEmitter {
       addNewAccount: this.addNewAccount.bind(this),
       getSeedPhrase: this.getSeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
-      removeAccount: (address) =>
-        this.controllerMessenger.call(
-          'AccountManagement:removeAccount',
-          address,
-        ),
+      removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
       getNextAvailableAccountName:
         accountsController.getNextAvailableAccountName.bind(accountsController),
@@ -2815,11 +2763,7 @@ export default class MetamaskController extends EventEmitter {
           'VaultManagement:submitPassword',
           password,
         ),
-      verifyPassword: (password) =>
-        this.controllerMessenger.call(
-          'VaultManagement:verifyPassword',
-          password,
-        ),
+      verifyPassword: this.verifyPassword.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -2922,12 +2866,7 @@ export default class MetamaskController extends EventEmitter {
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
 
-      setAccountLabel: (address, label) =>
-        this.controllerMessenger.call(
-          'AccountManagement:setAccountLabel',
-          address,
-          label,
-        ),
+      setAccountLabel: this.setAccountLabel.bind(this),
 
       // AccountTreeController
       setSelectedMultichainAccount: (accountGroupId) => {
@@ -2968,13 +2907,7 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // AssetsContractController
-      getTokenStandardAndDetails: (address, userAddress, tokenId) =>
-        this.controllerMessenger.call(
-          'TokenResolution:getTokenStandardAndDetails',
-          address,
-          userAddress,
-          tokenId,
-        ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: (address) =>
         this.controllerMessenger
           .call('TokenResolution:getERC20TokenInfo', address)
@@ -3205,50 +3138,19 @@ export default class MetamaskController extends EventEmitter {
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
-      setLocked: (options) =>
-        this.controllerMessenger.call('VaultManagement:setLocked', options),
-      createNewVaultAndKeychain: (password) =>
-        this.controllerMessenger.call(
-          'VaultManagement:createNewVaultAndKeychain',
-          password,
-        ),
-      createNewVaultAndRestore: (password, encodedSeedPhrase) =>
-        this.controllerMessenger.call(
-          'VaultManagement:createNewVaultAndRestore',
-          password,
-          encodedSeedPhrase,
-        ),
+      setLocked: this.setLocked.bind(this),
+      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
+      createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      exportAccount: (address, password) =>
-        this.controllerMessenger.call(
-          'VaultManagement:exportAccount',
-          address,
-          password,
-        ),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: (originalTxId, customGasSettings, options) =>
-        this.controllerMessenger.call(
-          'TransactionLifecycle:createCancelTransaction',
-          originalTxId,
-          customGasSettings,
-          options,
-        ),
-      createSpeedUpTransaction: (originalTxId, customGasSettings, options) =>
-        this.controllerMessenger.call(
-          'TransactionLifecycle:createSpeedUpTransaction',
-          originalTxId,
-          customGasSettings,
-          options,
-        ),
-      estimateGas: (params) =>
-        this.controllerMessenger.call(
-          'TransactionLifecycle:estimateGas',
-          params,
-        ),
+      createCancelTransaction: this.createCancelTransaction.bind(this),
+      createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
+      estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
       getNextNonce: this.getNextNonce.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
@@ -3269,11 +3171,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
-        ),
-      createTransactionEventFragment:
-        createTransactionEventFragmentWithTxId.bind(
-          null,
-          this.getTransactionMetricsRequest(),
         ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
@@ -3317,11 +3214,7 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: (subjects) =>
-        this.controllerMessenger.call(
-          'PermissionManagement:removePermissionsFor',
-          subjects,
-        ),
+      removePermissionsFor: this.removePermissionsFor.bind(this),
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods({
@@ -3341,22 +3234,12 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enable',
       ),
-      updateSnap: (origin, requestedSnaps) => {
-        // We deliberately do not await this promise as that would mean waiting for the update to complete
-        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
-        this.controllerMessenger.call(
-          'SnapController:install',
-          origin,
-          requestedSnaps,
-        );
-        return null;
-      },
+      updateSnap: this.updateSnap.bind(this),
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:remove',
       ),
-      handleSnapRequest: (args) =>
-        this.controllerMessenger.call('SnapManagement:handleSnapRequest', args),
+      handleSnapRequest: this.handleSnapRequest.bind(this),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',
@@ -3365,17 +3248,9 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
-      updateNetworksList: (chainIds) =>
-        this.controllerMessenger.call(
-          'PermissionManagement:updateNetworksList',
-          chainIds,
-        ),
+      updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
-      setEnabledNetworks: (chainId) =>
-        this.controllerMessenger.call(
-          'PermissionManagement:setEnabledNetworks',
-          chainId,
-        ),
+      setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
@@ -3574,21 +3449,10 @@ export default class MetamaskController extends EventEmitter {
 
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
-      rejectPendingApproval: (id, error) =>
-        this.controllerMessenger.call(
-          'PermissionManagement:rejectPendingApproval',
-          id,
-          error,
-        ),
+      rejectPendingApproval: this.rejectPendingApproval.bind(this),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
-      resolvePendingApproval: (id, value, options) =>
-        this.controllerMessenger.call(
-          'PermissionManagement:resolvePendingApproval',
-          id,
-          value,
-          options,
-        ),
+      resolvePendingApproval: this.resolvePendingApproval.bind(this),
       approveHardwareWalletTransaction:
         this.approveHardwareWalletTransaction.bind(this),
 
@@ -3897,13 +3761,37 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async createNewVaultAndKeychain(password) {
+    return this.controllerMessenger.call(
+      'VaultManagement:createNewVaultAndKeychain',
+      password,
+    );
+  }
+
+  async createNewVaultAndRestore(password, encodedSeedPhrase) {
+    return this.controllerMessenger.call(
+      'VaultManagement:createNewVaultAndRestore',
+      password,
+      encodedSeedPhrase,
+    );
+  }
+
+  async getTokenStandardAndDetails(address, userAddress, tokenId) {
+    return this.controllerMessenger.call(
+      'TokenResolution:getTokenStandardAndDetails',
+      address,
+      userAddress,
+      tokenId,
+    );
+  }
+
   // getTokenStandardAndDetailsByChain — TODO: extract to token-resolution module.
   // Currently still needed by getApi(); keeping as thin delegator until extracted.
   async getTokenStandardAndDetailsByChain(
     address,
     userAddress,
     tokenId,
-    chainId,
+    _chainId,
   ) {
     return this.controllerMessenger.call(
       'TokenResolution:getTokenStandardAndDetails',
@@ -4223,6 +4111,13 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     await this.submitPasswordOrEncryptionKey({ password });
+  }
+
+  async verifyPassword(password) {
+    return this.controllerMessenger.call(
+      'VaultManagement:verifyPassword',
+      password,
+    );
   }
 
   /**
@@ -4557,6 +4452,21 @@ export default class MetamaskController extends EventEmitter {
       'AccountManagement:addNewAccount',
       accountCount,
       _keyringId,
+    );
+  }
+
+  async removeAccount(address) {
+    return this.controllerMessenger.call(
+      'AccountManagement:removeAccount',
+      address,
+    );
+  }
+
+  async setAccountLabel(address, label) {
+    return this.controllerMessenger.call(
+      'AccountManagement:setAccountLabel',
+      address,
+      label,
     );
   }
 
@@ -7304,6 +7214,30 @@ export default class MetamaskController extends EventEmitter {
     );
   };
 
+  async removePermissionsFor(subjects) {
+    return this.controllerMessenger.call(
+      'PermissionManagement:removePermissionsFor',
+      subjects,
+    );
+  }
+
+  async rejectPendingApproval(id, error) {
+    return this.controllerMessenger.call(
+      'PermissionManagement:rejectPendingApproval',
+      id,
+      error,
+    );
+  }
+
+  async resolvePendingApproval(id, value, options) {
+    return this.controllerMessenger.call(
+      'PermissionManagement:resolvePendingApproval',
+      id,
+      value,
+      options,
+    );
+  }
+
   rejectAllPendingApprovals() {
     const deleteInterface = (id) =>
       this.controllerMessenger.call(
@@ -7628,11 +7562,7 @@ export default class MetamaskController extends EventEmitter {
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      removeAccount: (address) =>
-        this.controllerMessenger.call(
-          'AccountManagement:removeAccount',
-          address,
-        ),
+      removeAccount: this.removeAccount.bind(this),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
