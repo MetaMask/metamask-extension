@@ -470,7 +470,7 @@ describe('MultichainConnectPage', () => {
   it('renders image icon correctly', () => {
     const { getByAltText } = render();
 
-    const image = getByAltText('metamask.github.io logo');
+    const image = getByAltText('metamask.github.io');
     expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
@@ -487,7 +487,9 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
+    const divElement = container.querySelector(
+      'div.inline-flex.shrink-0.items-center.justify-center.rounded-full.h-10.w-10',
+    );
     expect(divElement).toHaveTextContent('m');
   });
 
@@ -502,7 +504,9 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
+    const divElement = container.querySelector(
+      'div.inline-flex.shrink-0.items-center.justify-center.rounded-full.h-10.w-10',
+    );
     expect(divElement).toHaveTextContent('?');
   });
 

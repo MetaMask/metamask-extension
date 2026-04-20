@@ -20,33 +20,33 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center mb-8"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="flex flex-row gap-2 items-center justify-center mb-1"
             >
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
                 style="word-break: break-word; white-space: normal;"
               >
                 metamask.github.io
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
@@ -91,10 +91,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -195,21 +195,32 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="flex flex-row justify-start mt-4 p-4"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="flex flex-row items-center justify-center mr-4 p-2 bg-info-muted connect-page__edit-icon rounded-md"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                    style="mask-image: url('./images/icons/edit.svg');"
-                  />
+                  <svg
+                    class="inline-block w-5 h-5 text-info-default"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+                    />
+                  </svg>
                 </div>
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
                   data-testid="edit"
+                  role="button"
                 >
-                  Edit accounts
+                  <span
+                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Edit accounts
+                  </span>
                 </button>
               </div>
             </div>
@@ -220,22 +231,32 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-col gap-4 w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="flex flex-row gap-4 w-full"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="cancel-btn"
+              role="button"
             >
-              Cancel
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Cancel
+              </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="confirm-btn"
+              role="button"
             >
-              Connect
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Connect
+              </span>
             </button>
           </div>
         </div>
@@ -265,33 +286,33 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center mb-8"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="flex flex-row gap-2 items-center justify-center mb-1"
             >
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
                 style="word-break: break-word; white-space: normal;"
               >
                 metamask.github.io
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
@@ -336,10 +357,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -440,21 +461,32 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="flex flex-row justify-start mt-4 p-4"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="flex flex-row items-center justify-center mr-4 p-2 bg-info-muted connect-page__edit-icon rounded-md"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                    style="mask-image: url('./images/icons/edit.svg');"
-                  />
+                  <svg
+                    class="inline-block w-5 h-5 text-info-default"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+                    />
+                  </svg>
                 </div>
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
                   data-testid="edit"
+                  role="button"
                 >
-                  Edit accounts
+                  <span
+                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Edit accounts
+                  </span>
                 </button>
               </div>
             </div>
@@ -465,22 +497,32 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-col gap-4 w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="flex flex-row gap-4 w-full"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="cancel-btn"
+              role="button"
             >
-              Cancel
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Cancel
+              </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="confirm-btn"
+              role="button"
             >
-              Connect
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Connect
+              </span>
             </button>
           </div>
         </div>
@@ -510,33 +552,33 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center mb-8"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="flex flex-row gap-2 items-center justify-center mb-1"
             >
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
                 style="word-break: break-word; white-space: normal;"
               >
                 metamask.github.io
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="flex flex-row justify-center"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
@@ -581,10 +623,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -685,21 +727,32 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="flex flex-row justify-start mt-4 p-4"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="flex flex-row items-center justify-center mr-4 p-2 bg-info-muted connect-page__edit-icon rounded-md"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                    style="mask-image: url('./images/icons/edit.svg');"
-                  />
+                  <svg
+                    class="inline-block w-5 h-5 text-info-default"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+                    />
+                  </svg>
                 </div>
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
                   data-testid="edit"
+                  role="button"
                 >
-                  Edit accounts
+                  <span
+                    class="text-info-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Edit accounts
+                  </span>
                 </button>
               </div>
             </div>
@@ -710,22 +763,32 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-col gap-4 w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="flex flex-row gap-4 w-full"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="cancel-btn"
+              role="button"
             >
-              Cancel
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Cancel
+              </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
               data-testid="confirm-btn"
+              role="button"
             >
-              Connect
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Connect
+              </span>
             </button>
           </div>
         </div>
