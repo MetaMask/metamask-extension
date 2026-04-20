@@ -54,6 +54,9 @@
     "app/scripts/messenger-client-init/snaps/snap-controller-init.test.ts": {
       "error: Error: A handler for SnapController:setClientActive": 2
     },
+    "app/scripts/metamask-controller.delegation.test.ts": {
+      "error: This browser doesn't support cancelAnimationFrame.": 1
+    },
     "app/scripts/metamask-controller.actions.test.js": {
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,

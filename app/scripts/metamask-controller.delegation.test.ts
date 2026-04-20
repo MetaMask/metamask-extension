@@ -25,13 +25,14 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
   })),
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const MetamaskController = require('./metamask-controller').default;
 
 // ---------------------------------------------------------------------------
 // Shared setup
 // ---------------------------------------------------------------------------
 
-function makeContext(returnValue = Promise.resolve('result')) {
+function makeContext(returnValue: Promise<unknown> = Promise.resolve('result')) {
   const call = jest.fn().mockReturnValue(returnValue);
   return { controllerMessenger: { call } };
 }
@@ -254,9 +255,7 @@ describe('MetamaskController getApi() binds delegation stubs to the instance', (
   it.each(DELEGATION_METHODS)(
     'getApi().%s delegates to the prototype method on the instance',
     (methodName) => {
-      // We test the binding contract without a full MC instance by verifying
-      // that the prototype method exists and can be called on a minimal context.
-      const proto = MetamaskController.prototype;
+      const proto = MetamaskController.prototype as Record<string, unknown>;
       expect(typeof proto[methodName]).toBe('function');
     },
   );
