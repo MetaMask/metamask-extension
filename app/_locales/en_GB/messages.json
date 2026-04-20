@@ -1095,6 +1095,9 @@
   "bridgeMaliciousTokenTitle": {
     "message": "Malicious token"
   },
+  "bridgeMalicious": {
+    "message": "Malicious"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market closed"
   },
@@ -1269,6 +1272,9 @@
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Suspicious token"
+  },
+  "bridgeSuspicious": {
+    "message": "Suspicious"
   },
   "bridgeTo": {
     "message": "Bridge to"
