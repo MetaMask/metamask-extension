@@ -78,3 +78,8 @@ export const getIsTronTestnetSupportEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ tronTestnetsEnabled }) => Boolean(tronTestnetsEnabled),
 );
+
+export const getIsTransactionLabelsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionTransactionLabels }) => Boolean(extensionTransactionLabels),
+);

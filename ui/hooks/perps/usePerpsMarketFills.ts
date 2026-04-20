@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
-import { useSelector } from 'react-redux';
-import { PERPS_CONSTANTS } from '../../components/app/perps/constants';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  clearPerpsMarketFillsModuleCache,
+  fetchFillsForCacheKey,
+  peekWarmFills,
+} from '../../providers/perps/perps-cache';
 import { usePerpsLiveFills } from './stream';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
+
+export { clearPerpsMarketFillsModuleCache };
 
 type UsePerpsMarketFillsParams = {
   symbol: string;
@@ -36,38 +40,45 @@ export function usePerpsMarketFills({
   symbol,
   throttleMs = 0,
 }: UsePerpsMarketFillsParams): UsePerpsMarketFillsReturn {
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
+  const fillsCacheKey = usePerpsCacheKey();
 
   const { fills: liveFills, isInitialLoading: wsLoading } = usePerpsLiveFills({
     throttleMs,
   });
 
-  const [restFills, setRestFills] = useState<OrderFill[]>([]);
-  const [isRestLoading, setIsRestLoading] = useState(true);
+  const [restFills, setRestFills] = useState<OrderFill[]>(
+    () => peekWarmFills(fillsCacheKey) ?? [],
+  );
+  const [isRestLoading, setIsRestLoading] = useState(
+    () => peekWarmFills(fillsCacheKey) === undefined,
+  );
 
-  const fetchRestFills = useCallback(async () => {
-    const startTime = Date.now() - PERPS_CONSTANTS.FILLS_LOOKBACK_MS;
-    const result = await submitRequestToBackground<OrderFill[]>(
-      'perpsGetOrderFills',
-      [{ aggregateByTime: false, startTime }],
-    );
-    return Array.isArray(result) ? result : [];
-  }, []);
+  // Tracks the scope for which we have confirmed REST fills. Starts equal to
+  // fillsCacheKey so initial live fills (before REST resolves) are always
+  // shown. When the env changes (testnet toggle, provider switch), this lags
+  // behind fillsCacheKey, suppressing stale-env live fills until REST confirms
+  // we're on the new scope.
+  const [currentScopeKey, setCurrentScopeKey] = useState(fillsCacheKey);
 
   useEffect(() => {
+    const cached = peekWarmFills(fillsCacheKey);
+    if (cached !== undefined) {
+      setRestFills(cached);
+      setCurrentScopeKey(fillsCacheKey);
+      setIsRestLoading(false);
+      return undefined;
+    }
+
     let cancelled = false;
     setRestFills([]);
     setIsRestLoading(true);
 
-    fetchRestFills()
+    fetchFillsForCacheKey(fillsCacheKey)
       .then((result) => {
         if (!cancelled) {
           setRestFills(result);
+          setCurrentScopeKey(fillsCacheKey);
         }
-      })
-      .catch(() => {
-        // REST fetch failed silently — WebSocket fills still work
       })
       .finally(() => {
         if (!cancelled) {
@@ -78,7 +89,7 @@ export function usePerpsMarketFills({
     return () => {
       cancelled = true;
     };
-  }, [fetchRestFills, selectedAddress]);
+  }, [fillsCacheKey]);
 
   const fills = useMemo(() => {
     const fillsMap = new Map<string, OrderFill>();
@@ -90,7 +101,12 @@ export function usePerpsMarketFills({
       }
     }
 
-    for (const fill of liveFills) {
+    // Exclude live fills while the scope is transitioning (e.g. testnet/provider
+    // change with same address) to avoid merging fills from two environments.
+    const effectiveLiveFills =
+      currentScopeKey === fillsCacheKey ? liveFills : [];
+
+    for (const fill of effectiveLiveFills) {
       if (fill.symbol === symbol) {
         const key = `${fill.orderId}-${fill.timestamp}-${fill.size}-${fill.price}`;
         fillsMap.set(key, fill);
@@ -100,7 +116,7 @@ export function usePerpsMarketFills({
     return Array.from(fillsMap.values()).sort(
       (a, b) => b.timestamp - a.timestamp,
     );
-  }, [restFills, liveFills, symbol]);
+  }, [restFills, liveFills, currentScopeKey, fillsCacheKey, symbol]);
 
   const isInitialLoading = wsLoading || isRestLoading;
 

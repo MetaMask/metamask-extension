@@ -3,10 +3,6 @@ name: Run build
 on:
   workflow_call:
     inputs:
-      is-high-risk-environment:
-        type: boolean
-        default: true
-        description: Whether the build is running in a high-risk environment (e.g. production) or not.
       build-name:
         required: true
         type: string
@@ -95,7 +91,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
       # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node
