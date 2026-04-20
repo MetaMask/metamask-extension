@@ -348,58 +348,58 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   ],
   //   blockExplorerUrl: 'https://blockscout.injective.network',
   // },
-  {
-    networkId: 'Rootstock',
-    networkName: 'Rootstock Mainnet',
-    chainId: 30,
-    symbol: 'RBTC',
-    rpcUrl: 'https://public-node.rsk.co',
-    rpcName: 'Rootstock RPC',
-    tokenlistUrl: 'https://tokens.rootstock.io/tokenlist.json',
-    manualTokens: [
-      {
-        symbol: 'RIF',
-        address: '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5',
-      },
-      {
-        symbol: 'USDRIF',
-        address: '0x3A15461d8aE0F0Fb5Fa2629e9DA7D66A794a6e37',
-      },
-      {
-        symbol: 'WRBTC',
-        address: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
-      },
-      {
-        symbol: 'DOC',
-        address: '0xE700691Da7B9851F2F35f8b8182C69C53ccad9DB',
-      },
-      {
-        symbol: 'USDT0',
-        address: '0x779dED0C9e1022225F8e0630b35A9B54Be713736',
-      },
-      {
-        symbol: 'USDT',
-        address: '0xAF368c91793cb22739386DFCBbB2f1A9E4bcBEBf',
-      },
-      {
-        symbol: 'stRIF',
-        address: '0x5db91e24bd32059584bbdb831a901f1199f3d459',
-      },
-      {
-        symbol: 'RIFP',
-        address: '0xF4d27C56595eD59B66cC7f03CFF5193E4Bd74a61',
-      },
-      {
-        symbol: 'BITP',
-        address: '0x440cd83C160de5C96DDb20246815EA44C7Abbca8',
-      },
-      {
-        symbol: 'USDC.e',
-        address: '0x74C9F2B00581F1b11Aa7Ff05aa9f608B7389de67',
-      },
-    ],
-    blockExplorerUrl: 'https://explorer.rsk.co',
-  },
+  // {
+  //   networkId: 'Rootstock',
+  //   networkName: 'Rootstock Mainnet',
+  //   chainId: 30,
+  //   symbol: 'RBTC',
+  //   rpcUrl: 'https://public-node.rsk.co',
+  //   rpcName: 'Rootstock RPC',
+  //   tokenlistUrl: 'https://tokens.rootstock.io/tokenlist.json',
+  //   manualTokens: [
+  //     {
+  //       symbol: 'RIF',
+  //       address: '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5',
+  //     },
+  //     {
+  //       symbol: 'USDRIF',
+  //       address: '0x3A15461d8aE0F0Fb5Fa2629e9DA7D66A794a6e37',
+  //     },
+  //     {
+  //       symbol: 'WRBTC',
+  //       address: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
+  //     },
+  //     {
+  //       symbol: 'DOC',
+  //       address: '0xE700691Da7B9851F2F35f8b8182C69C53ccad9DB',
+  //     },
+  //     {
+  //       symbol: 'USDT0',
+  //       address: '0x779dED0C9e1022225F8e0630b35A9B54Be713736',
+  //     },
+  //     {
+  //       symbol: 'USDT',
+  //       address: '0xAF368c91793cb22739386DFCBbB2f1A9E4bcBEBf',
+  //     },
+  //     {
+  //       symbol: 'stRIF',
+  //       address: '0x5db91e24bd32059584bbdb831a901f1199f3d459',
+  //     },
+  //     {
+  //       symbol: 'RIFP',
+  //       address: '0xF4d27C56595eD59B66cC7f03CFF5193E4Bd74a61',
+  //     },
+  //     {
+  //       symbol: 'BITP',
+  //       address: '0x440cd83C160de5C96DDb20246815EA44C7Abbca8',
+  //     },
+  //     {
+  //       symbol: 'USDC.e',
+  //       address: '0x74C9F2B00581F1b11Aa7Ff05aa9f608B7389de67',
+  //     },
+  //   ],
+  //   blockExplorerUrl: 'https://explorer.rsk.co',
+  // },
   // {
   //   networkId: 'Genesys',
   //   networkName: 'Genesys Mainnet',
@@ -638,6 +638,16 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
   //   blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
   // },
+  {
+    networkId: 'Mantle',
+    networkName: 'Mantle',
+    chainId: 5000,
+    symbol: 'MNT',
+    rpcUrl: 'https://rpc.mantle.xyz',
+    rpcName: 'Mantle RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://mantlescan.xyz',
+  },
 ];
 
 /**
