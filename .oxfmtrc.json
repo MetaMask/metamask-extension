@@ -28,6 +28,7 @@
     "/test/e2e/tests/phishing-controller/mock-page-with-disallowed-iframe/index.html",
     "/app/html/partials/partial-head.html",
     "/app/scripts/lib/ppom/ppom.js",
+    "/app/scripts/**/*-method-action-types.ts",
     ".github/**",
     ".storybook/**"
   ],

@@ -1,6 +1,17 @@
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
+  overrides: [
+    {
+      files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
+      rules: {
+        // Keep generated messenger action type formatting stable while the
+        // repository transitions from eslint-plugin-prettier to oxfmt.
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      },
+    },
+  ],
+
   plugins: ['@metamask/design-tokens'],
 
   globals: {
