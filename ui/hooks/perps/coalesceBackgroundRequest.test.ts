@@ -81,6 +81,54 @@ describe('coalesceBackgroundRequest', () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
+  it('invalidate() mid-flight drops the in-flight promise so the next caller issues a fresh request', async () => {
+    let resolveFirst: ((v: string) => void) | undefined;
+    const firstPromise = new Promise<string>((resolve) => {
+      resolveFirst = resolve;
+    });
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockReturnValueOnce(firstPromise)
+      .mockResolvedValueOnce('fresh');
+
+    const firstCall = coalesceBackgroundRequest('k', fn);
+    // Flush microtasks so fn() runs and the in-flight entry is settled.
+    await Promise.resolve();
+    invalidateCoalescedRequest('k');
+
+    const secondCall = coalesceBackgroundRequest('k', fn);
+    resolveFirst?.('stale');
+
+    const [first, second] = await Promise.all([firstCall, secondCall]);
+    expect(first).toBe('stale');
+    expect(second).toBe('fresh');
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not overwrite a newer cache entry when a previously-invalidated promise resolves late', async () => {
+    let resolveFirst: ((v: string) => void) | undefined;
+    const firstPromise = new Promise<string>((resolve) => {
+      resolveFirst = resolve;
+    });
+    const fn = jest
+      .fn<Promise<string>, []>()
+      .mockReturnValueOnce(firstPromise)
+      .mockResolvedValueOnce('fresh');
+
+    const firstCall = coalesceBackgroundRequest('k', fn);
+    await Promise.resolve();
+    invalidateCoalescedRequest('k');
+    const secondCall = coalesceBackgroundRequest('k', fn);
+    // Resolve the newer call first so its value lands in the cache.
+    await secondCall;
+    // Now the older, evicted promise settles — it must not clobber the fresh cache.
+    resolveFirst?.('stale');
+    await firstCall;
+
+    const third = await coalesceBackgroundRequest('k', fn);
+    expect(third).toBe('fresh');
+  });
+
   it('drops in-flight entry when fn throws synchronously so the next caller retries', async () => {
     const fn = jest
       .fn<Promise<string>, []>()

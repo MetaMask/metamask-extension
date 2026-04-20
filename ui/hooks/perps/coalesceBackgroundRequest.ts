@@ -55,13 +55,21 @@ export async function coalesceBackgroundRequest<TResult>(
   // fn() runs the `finally` cleanup before the entry is inserted (no-op delete),
   // and the subsequent set stores a permanently-rejected promise that every
   // future caller re-subscribes to.
-  const promise = Promise.resolve().then(async () => {
+  let promise: Promise<TResult>;
+  // eslint-disable-next-line prefer-const -- promise is self-referenced inside its own body for identity checks, so the assignment must appear after the declaration.
+  promise = Promise.resolve().then(async () => {
     try {
       const value = await fn();
-      cache.set(key, { at: Date.now(), value });
+      // Only persist if this promise still owns the slot; invalidate() may
+      // have evicted us mid-flight in favor of a newer request.
+      if (inFlight.get(key) === promise) {
+        cache.set(key, { at: Date.now(), value });
+      }
       return value;
     } finally {
-      inFlight.delete(key);
+      if (inFlight.get(key) === promise) {
+        inFlight.delete(key);
+      }
     }
   });
 
@@ -70,13 +78,18 @@ export async function coalesceBackgroundRequest<TResult>(
 }
 
 /**
- * Drop the cached entry for a key. Use before an explicit refetch to force a
- * fresh request (e.g. user-initiated pull-to-refresh).
+ * Drop the cached entry and any in-flight promise for a key. Use before an
+ * explicit refetch to force a fresh request (e.g. user-initiated pull-to-
+ * refresh). Clearing the in-flight entry ensures the next caller issues a
+ * new request instead of awaiting the older snapshot we are trying to bypass;
+ * the older promise still runs to completion but will skip the cache write
+ * and the in-flight cleanup because it no longer owns the slot.
  *
  * @param key - Key previously used with coalesceBackgroundRequest.
  */
 export function invalidateCoalescedRequest(key: string): void {
   cache.delete(key);
+  inFlight.delete(key);
 }
 
 /**

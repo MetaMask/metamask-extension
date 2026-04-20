@@ -69,6 +69,7 @@ export type UsePerpsTransactionHistoryResult = {
  * @param params.endTime - Optional end time for filtering history (Unix timestamp in ms)
  * @param params.accountId - Optional account ID to fetch history for
  * @param params.skipInitialFetch - Skip the initial fetch on mount (default: false)
+ * @param params.forceFreshOnMount - Force a fresh fetch on mount, bypassing the coalesce TTL cache (default: false)
  * @returns Object containing transactions array, loading state, error, and refetch function
  * @example
  * ```tsx
@@ -124,8 +125,11 @@ export function usePerpsTransactionHistory({
 
   // Store userHistory in ref to avoid recreating fetchAllTransactions callback
   const userHistoryRef = useRef(userHistory);
-  // Track if initial fetch has been done to prevent duplicate fetches
-  const initialFetchDone = useRef(false);
+  // Last scope fingerprint we fetched for. Used to re-fire the initial/refresh
+  // fetch when the account, testnet flag, provider, or time range changes
+  // while the hook stays mounted — without this, switching accounts in-place
+  // would render the previous session's transactions.
+  const lastFetchedScopeRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     userHistoryRef.current = userHistory;
@@ -228,9 +232,7 @@ export function usePerpsTransactionHistory({
     invalidateCoalescedRequest(
       `perpsGetOrderFills:${perpsScopeKey}:${accountKey}:false`,
     );
-    invalidateCoalescedRequest(
-      `perpsGetOrders:${perpsScopeKey}:${accountKey}`,
-    );
+    invalidateCoalescedRequest(`perpsGetOrders:${perpsScopeKey}:${accountKey}`);
     invalidateCoalescedRequest(
       `perpsGetFunding:${perpsScopeKey}:${accountKey}:${startTime ?? ''}:${endTime ?? ''}`,
     );
@@ -247,19 +249,38 @@ export function usePerpsTransactionHistory({
   ]);
 
   useEffect(() => {
-    if (!skipInitialFetch && !initialFetchDone.current) {
-      initialFetchDone.current = true;
-      // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
-      // must force a fresh fetch so they never surface a stale snapshot held
-      // by a sibling consumer inside the TTL window. Passive previews (e.g.
-      // Recent Activity on the perps home) still share the cached snapshot.
-      if (forceFreshOnMount) {
-        refetch();
-      } else {
-        initialFetch();
-      }
+    if (skipInitialFetch) {
+      return;
     }
-  }, [skipInitialFetch, forceFreshOnMount, initialFetch, refetch]);
+    // Re-fire the initial fetch whenever the effective scope changes — account
+    // switch, testnet toggle, provider swap, or time-window change — so a hook
+    // that stays mounted across a scope transition never renders the previous
+    // session's transactions. The fingerprint gate keeps unrelated re-renders
+    // from triggering redundant fetches.
+    const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}`;
+    if (lastFetchedScopeRef.current === scopeFingerprint) {
+      return;
+    }
+    lastFetchedScopeRef.current = scopeFingerprint;
+    // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
+    // must force a fresh fetch so they never surface a stale snapshot held
+    // by a sibling consumer inside the TTL window. Passive previews (e.g.
+    // Recent Activity on the perps home) still share the cached snapshot.
+    if (forceFreshOnMount) {
+      refetch();
+    } else {
+      initialFetch();
+    }
+  }, [
+    skipInitialFetch,
+    forceFreshOnMount,
+    perpsScopeKey,
+    accountId,
+    startTime,
+    endTime,
+    initialFetch,
+    refetch,
+  ]);
 
   // Combine loading states
   const combinedIsLoading = useMemo(
