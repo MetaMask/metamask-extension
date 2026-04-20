@@ -170,9 +170,6 @@ describe('Swap tests', function (this: Suite) {
             ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
             refreshRate: 30000,
           },
-          // false,
-          // true,
-          // true,
           tokenWarnings: [
             {
               type: TokenFeatureType.MALICIOUS,
@@ -203,6 +200,7 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
+        await bridgePage.submitQuoteAndDismiss();
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -235,9 +233,6 @@ describe('Swap tests', function (this: Suite) {
               error: 0.0001,
             },
           },
-          // false,
-          // true,
-          // true,
           tokenWarnings: [
             {
               type: TokenFeatureType.MALICIOUS,
@@ -305,6 +300,7 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved price impact modal and submitted swap');
 
+        await bridgePage.submitQuoteAndDismiss();
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -337,8 +333,6 @@ describe('Swap tests', function (this: Suite) {
               error: 0.0001,
             },
           },
-          // false,
-          // true,
           tokenWarnings: [
             {
               type: TokenFeatureType.MALICIOUS,

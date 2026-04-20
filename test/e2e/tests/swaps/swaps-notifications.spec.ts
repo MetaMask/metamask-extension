@@ -64,9 +64,6 @@ describe('Swaps - notifications', function () {
           ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           refreshRate: 30000,
         },
-        // false,
-        // true,
-        // true,
         tokenWarnings: [
           {
             type: TokenFeatureType.MALICIOUS,
