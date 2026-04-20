@@ -15,6 +15,7 @@ const mockCreate = jest.fn();
 const mockGetAppConfiguration = jest.fn();
 const mockGetAddress = jest.fn();
 const mockClearSignTransaction = jest.fn();
+const mockSignTransaction = jest.fn();
 const mockSignPersonalMessage = jest.fn();
 const mockSignEIP712Message = jest.fn();
 const mockSignEIP712HashedMessage = jest.fn();
@@ -97,6 +98,7 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
       getAppConfiguration: mockGetAppConfiguration,
       getAddress: mockGetAddress,
       clearSignTransaction: mockClearSignTransaction,
+      signTransaction: mockSignTransaction,
       signPersonalMessage: mockSignPersonalMessage,
       signEIP712Message: mockSignEIP712Message,
       signEIP712HashedMessage: mockSignEIP712HashedMessage,
@@ -535,6 +537,51 @@ describe('Ledger Offscreen', () => {
             nft: false,
           }),
         );
+      });
+
+      it('falls back to blind signTransaction when clearSignTransaction fails (GH 41602)', async () => {
+        const blindSignature = {
+          v: '1c',
+          r: 'deadbeef',
+          s: 'cafebabe',
+        };
+        mockClearSignTransaction.mockRejectedValue(
+          new Error('Plugin data is not available for this transaction'),
+        );
+        mockSignTransaction.mockResolvedValue(blindSignature);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+          tx: '0xdeadbeef',
+        });
+
+        expect(mockClearSignTransaction).toHaveBeenCalledTimes(1);
+        expect(mockSignTransaction).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          '0xdeadbeef',
+          null,
+        );
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(blindSignature);
+      });
+
+      it('does not fall back when the device rejects the transaction (0x6985)', async () => {
+        const rejection = Object.assign(
+          new Error('CONDITIONS_OF_USE_NOT_SATISFIED'),
+          {
+            statusCode: 0x6985,
+            statusText: 'CONDITIONS_OF_USE_NOT_SATISFIED',
+          },
+        );
+        mockClearSignTransaction.mockRejectedValue(rejection);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+          tx: '0xdeadbeef',
+        });
+
+        expect(response.success).toBe(false);
+        expect(mockSignTransaction).not.toHaveBeenCalled();
       });
     });
 
