@@ -13,6 +13,7 @@ import {
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  ADD_DEVICE_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
@@ -76,6 +77,7 @@ import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
+import AddDevice from './add-device';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -399,6 +401,11 @@ class SettingsPage extends PureComponent {
         key: ADVANCED_ROUTE,
       },
       {
+        content: t('addDevice'),
+        icon: <Icon name={IconName.Mobile} />,
+        key: ADD_DEVICE_ROUTE,
+      },
+      {
         content: t('backupAndSync'),
         icon: <Icon name={IconName.SecurityTime} />,
         key: BACKUPANDSYNC_ROUTE,
@@ -499,6 +506,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={toRelativeRoutePath(ADVANCED_ROUTE, SETTINGS_ROUTE)}
           element={<AdvancedTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(ADD_DEVICE_ROUTE, SETTINGS_ROUTE)}
+          element={<AddDevice />}
         />
         <Route
           path={toRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_ROUTE)}

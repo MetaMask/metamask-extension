@@ -36,6 +36,7 @@ export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
+export const ADD_DEVICE_ROUTE = '/settings/add-device';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';

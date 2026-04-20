@@ -233,6 +233,9 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
+  "addDevice": {
+    "message": "Add device"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -341,6 +344,12 @@
   },
   "addWallet": {
     "message": "Add wallet"
+  },
+  "add_wallets": {
+    "message": "Add wallets"
+  },
+  "add_wallets_desc": {
+    "message": "Pick the wallets you’d like to use on this device. You can add or remove them later."
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
@@ -2720,6 +2729,18 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
+  },
+  "enter_verification_code": {
+    "message": "Enter verification code"
+  },
+  "enter_verification_code_desc": {
+    "message": "For security, enter the code shown in the MetaMask app on your device."
+  },
+  "enter_your_password": {
+    "message": "Enter your password"
+  },
+  "enter_your_password_desc": {
+    "message": "For account security, enter your password to view the QR code."
   },
   "errorCode": {
     "message": "Code: $1",
@@ -6895,6 +6916,12 @@
   "scanQrCode": {
     "message": "Scan QR code"
   },
+  "scan_qr_code": {
+    "message": "Scan QR code"
+  },
+  "scan_qr_code_desc": {
+    "message": "Scan this with the MetaMask app on the device you want to add."
+  },
   "scrollDown": {
     "message": "Scroll down"
   },
@@ -7083,6 +7110,9 @@
   },
   "selectType": {
     "message": "Select type"
+  },
+  "select_all": {
+    "message": "Select all"
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
@@ -9015,6 +9045,9 @@
   },
   "time": {
     "message": "Time"
+  },
+  "title": {
+    "message": "Add device"
   },
   "to": {
     "message": "To"
