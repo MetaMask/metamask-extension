@@ -1359,7 +1359,7 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
-      this.approvalController.clear.bind(this.approvalController),
+      this.approvalController.clearRequests.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 

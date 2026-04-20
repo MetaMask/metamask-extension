@@ -1,10 +1,3 @@
-jest.mock('./vault-management', () => ({ registerActions: jest.fn() }));
-jest.mock('./account-management', () => ({ registerActions: jest.fn() }));
-jest.mock('./permission-management', () => ({ registerActions: jest.fn() }));
-jest.mock('./transaction-lifecycle', () => ({ registerActions: jest.fn() }));
-jest.mock('./token-resolution', () => ({ registerActions: jest.fn() }));
-jest.mock('./snap-management', () => ({ registerActions: jest.fn() }));
-
 import { registerActions as registerVaultActions } from './vault-management';
 import { registerActions as registerAccountActions } from './account-management';
 import { registerActions as registerPermissionActions } from './permission-management';
@@ -12,6 +5,13 @@ import { registerActions as registerTransactionActions } from './transaction-lif
 import { registerActions as registerTokenActions } from './token-resolution';
 import { registerActions as registerSnapActions } from './snap-management';
 import { registerWalletServices } from './register';
+
+jest.mock('./vault-management', () => ({ registerActions: jest.fn() }));
+jest.mock('./account-management', () => ({ registerActions: jest.fn() }));
+jest.mock('./permission-management', () => ({ registerActions: jest.fn() }));
+jest.mock('./transaction-lifecycle', () => ({ registerActions: jest.fn() }));
+jest.mock('./token-resolution', () => ({ registerActions: jest.fn() }));
+jest.mock('./snap-management', () => ({ registerActions: jest.fn() }));
 
 describe('registerWalletServices', () => {
   const MOCK_MESSENGER = Symbol('messenger') as never;
