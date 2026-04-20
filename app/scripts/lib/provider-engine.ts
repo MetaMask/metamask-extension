@@ -28,7 +28,7 @@
  * builds an engine, ConnectionManager pipes a port stream through it.
  */
 
-import type { RootMessenger } from '../messenger';
+import type { RootMessenger } from './messenger';
 
 // ---------------------------------------------------------------------------
 // Dependency types

@@ -47,11 +47,13 @@ function makeModuleMessenger(
   const child = new Messenger({ namespace, parent: rootMessenger as never });
   return {
     call: (...args: unknown[]) =>
-      (rootMessenger as { call: (...a: unknown[]) => unknown }).call(...args),
+      (rootMessenger as unknown as { call: (...a: unknown[]) => unknown }).call(
+        ...args,
+      ),
     registerActionHandler: (
       name: string,
       handler: (...args: never[]) => unknown,
-    ) => child.registerActionHandler(name, handler),
+    ) => child.registerActionHandler(name as never, handler),
   } as never;
 }
 

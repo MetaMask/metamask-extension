@@ -782,6 +782,206 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    // -----------------------------------------------------------------------
+    // Bridge handlers: expose direct-call controller methods as Messenger
+    // action handlers so the wallet-services modules can invoke them via
+    // `messenger.call(...)`.  These will eventually move into the controllers
+    // themselves; the bridges exist only during the PoC transition.
+    // -----------------------------------------------------------------------
+    const tryRegister = (name, handler) => {
+      try {
+        this.controllerMessenger.registerActionHandler(name, handler);
+      } catch (_) {
+        // Already registered by the controller — no bridge needed.
+      }
+    };
+
+    // KeyringController (only signing + keyring-management actions are
+    // auto-registered; vault/lock operations are not)
+    tryRegister('KeyringController:setLocked', (...a) =>
+      this.keyringController.setLocked(...a),
+    );
+    tryRegister('KeyringController:submitPassword', (...a) =>
+      this.keyringController.submitPassword(...a),
+    );
+    tryRegister('KeyringController:verifyPassword', (...a) =>
+      this.keyringController.verifyPassword(...a),
+    );
+    tryRegister('KeyringController:changePassword', (...a) =>
+      this.keyringController.changePassword(...a),
+    );
+    tryRegister('KeyringController:exportSeedPhrase', (...a) =>
+      this.keyringController.exportSeedPhrase(...a),
+    );
+    tryRegister('KeyringController:exportAccount', (...a) =>
+      this.keyringController.exportAccount(...a),
+    );
+    tryRegister('KeyringController:submitEncryptionKey', (...a) =>
+      this.keyringController.submitEncryptionKey(...a),
+    );
+    tryRegister('KeyringController:exportEncryptionKey', (...a) =>
+      this.keyringController.exportEncryptionKey(...a),
+    );
+
+    // MultichainAccountService (service class — no action handlers registered)
+    tryRegister('MultichainAccountService:createWallet', (...a) =>
+      this.multichainAccountService.createMultichainAccountWallet(...a),
+    );
+    tryRegister('MultichainAccountService:init', (...a) =>
+      this.multichainAccountService.init(...a),
+    );
+    tryRegister(
+      'MultichainAccountService:createMultichainAccountWallet',
+      (...a) =>
+        this.multichainAccountService.createMultichainAccountWallet(...a),
+    );
+    tryRegister(
+      'MultichainAccountService:removeMultichainAccountWallet',
+      (...a) =>
+        this.multichainAccountService.removeMultichainAccountWallet(...a),
+    );
+    tryRegister(
+      'MultichainAccountService:discoverAndCreateAccounts',
+      (...a) =>
+        this.multichainAccountService.discoverAndCreateAccounts(...a),
+    );
+    tryRegister('MultichainAccountService:addAccountsWithBalance', (...a) =>
+      this.multichainAccountService.addAccountsWithBalance(...a),
+    );
+
+    // SnapController
+    tryRegister('SnapController:clearState', (...a) =>
+      this.snapController.clearState(...a),
+    );
+
+    // ApprovalController
+    tryRegister('ApprovalController:accept', (...a) =>
+      this.approvalController.accept(...a),
+    );
+    tryRegister('ApprovalController:reject', (...a) =>
+      this.approvalController.reject(...a),
+    );
+
+    // SeedlessOnboardingController
+    tryRegister(
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
+      (...a) =>
+        this.seedlessOnboardingController.checkIsPasswordOutdated(...a),
+    );
+    tryRegister('SeedlessOnboardingController:setLocked', (...a) =>
+      this.seedlessOnboardingController.setLocked(...a),
+    );
+    tryRegister('SeedlessOnboardingController:clearState', (...a) =>
+      this.seedlessOnboardingController.clearState(...a),
+    );
+
+    // PermissionController
+    tryRegister('PermissionController:clearState', (...a) =>
+      this.permissionController.clearState(...a),
+    );
+    tryRegister('PermissionController:removeAllAccountPermissions', (...a) =>
+      this.permissionController.removeAllAccountPermissions(...a),
+    );
+
+    // TransactionController
+    tryRegister('TransactionController:wipeTransactions', (...a) =>
+      this.txController.wipeTransactions(...a),
+    );
+    tryRegister(
+      'TransactionController:clearUnapprovedTransactions',
+      (...a) => this.txController.clearUnapprovedTransactions(...a),
+    );
+
+    // AccountTreeController
+    tryRegister('AccountTreeController:clearState', (...a) =>
+      this.accountTreeController.clearState(...a),
+    );
+    tryRegister('AccountTreeController:reinit', (...a) =>
+      this.accountTreeController.reinit(...a),
+    );
+    tryRegister('AccountTreeController:init', (...a) =>
+      this.accountTreeController.init(...a),
+    );
+    tryRegister('AccountTreeController:syncWithUserStorage', (...a) =>
+      this.accountTreeController.syncWithUserStorage(...a),
+    );
+
+    // AccountOrderController
+    tryRegister(
+      'AccountOrderController:updateHiddenAccountsList',
+      (...a) => this.accountOrderController.updateHiddenAccountsList(...a),
+    );
+
+    // AppStateController
+    tryRegister(
+      'AppStateController:setIsWalletResetInProgress',
+      (...a) => this.appStateController.setIsWalletResetInProgress(...a),
+    );
+    tryRegister(
+      'AppStateController:getIsWalletResetInProgress',
+      (...a) => this.appStateController.getIsWalletResetInProgress(...a),
+    );
+
+    // OnboardingController
+    tryRegister('OnboardingController:getIsSocialLoginFlow', (...a) =>
+      this.onboardingController.getIsSocialLoginFlow(...a),
+    );
+    tryRegister('OnboardingController:resetOnboarding', (...a) =>
+      this.onboardingController.resetOnboarding(...a),
+    );
+
+    // AuthenticationController
+    tryRegister('AuthenticationController:performSignOut', (...a) =>
+      this.authenticationController.performSignOut(...a),
+    );
+
+    // TokenDetectionController
+    tryRegister('TokenDetectionController:enable', (...a) =>
+      this.tokenDetectionController.enable(...a),
+    );
+
+    // SmartTransactionsController
+    tryRegister(
+      'SmartTransactionsController:wipeSmartTransactions',
+      (...a) => this.smartTransactionsController.wipeSmartTransactions(...a),
+    );
+
+    // NetworkController
+    tryRegister('NetworkController:resetConnection', (...a) =>
+      this.networkController.resetConnection(...a),
+    );
+
+    // SubscriptionController
+    tryRegister('SubscriptionController:stopAllPolling', (...a) =>
+      this.subscriptionService.stopAllPolling(...a),
+    );
+    tryRegister('SubscriptionController:clearState', (...a) =>
+      this.subscriptionService.clearState(...a),
+    );
+
+    // AddressBookController
+    tryRegister('AddressBookController:clear', (...a) =>
+      this.addressBookController.clear(...a),
+    );
+
+    // ShieldController
+    tryRegister('ShieldController:clearState', (...a) =>
+      this.shieldController.clearState(...a),
+    );
+
+    // ClaimsController
+    tryRegister('ClaimsController:clearState', (...a) =>
+      this.claimsController.clearState(...a),
+    );
+
+    // PreferencesController
+    tryRegister('PreferencesController:resetState', (...a) =>
+      this.preferencesController.resetState(...a),
+    );
+    tryRegister('PreferencesController:setPasswordForgotten', (...a) =>
+      this.preferencesController.setPasswordForgotten(...a),
+    );
+
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
     this.appMetadataController.maybeRecordFirstTimeInfo(version);

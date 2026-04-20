@@ -199,7 +199,7 @@ export async function addNewAccount(
     'KeyringController:getAccounts',
   );
 
-  const addedAccountAddress: string = await deps.messenger.call(
+  const addedAccountAddress = (await deps.messenger.call(
     'KeyringController:withKeyring',
     keyringId ? { id: keyringId } : { type: 'HD Key Tree' },
     async ({
@@ -235,7 +235,7 @@ export async function addNewAccount(
       }
       return newAddress;
     },
-  );
+  )) as string;
 
   if (!oldAccounts.includes(addedAccountAddress)) {
     deps.messenger.call(

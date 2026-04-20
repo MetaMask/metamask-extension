@@ -280,13 +280,12 @@ describe('MetamaskController getApi() binds delegation stubs to the instance', (
     'resolvePendingApproval',
   ];
 
-  it.each(DELEGATION_METHODS)(
-    'getApi().%s delegates to the prototype method on the instance',
-    (methodName) => {
+  for (const methodName of DELEGATION_METHODS) {
+    it(`getApi().${methodName} delegates to the prototype method on the instance`, () => {
       const proto = MetamaskController.prototype as Record<string, unknown>;
       expect(typeof proto[methodName]).toBe('function');
-    },
-  );
+    });
+  }
 });
 
 export {};

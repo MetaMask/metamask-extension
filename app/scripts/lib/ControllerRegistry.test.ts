@@ -14,7 +14,7 @@ function makeMockController(
   for (const [key] of Object.entries(state)) {
     metadata[key] = { persist: persistFlags[key] ?? true, anonymous: false };
   }
-  return { name, state, metadata };
+  return { name, state, metadata } as never;
 }
 
 function makeMockMessenger() {
