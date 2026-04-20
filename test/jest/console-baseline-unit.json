@@ -535,9 +535,6 @@
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/ui/slider/slider.component.test.js": {
-      "Material-UI: JSS warnings": 4
-    },
     "ui/components/ui/survey-toast/survey-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
